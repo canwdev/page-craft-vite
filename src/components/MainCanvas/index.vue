@@ -1,28 +1,44 @@
+<script lang="ts">
+import {useCraftStore} from "@/store/craft";
+
+export default defineComponent({
+  name: 'MainCanvas',
+  setup() {
+    const mainCanvasRef = ref()
+    const craftStore = useCraftStore()
+
+    const addComponent = (event: Event) => {
+      // console.log('[event]', event)
+      let targetEl
+      if (event.target) {
+        targetEl = event.target
+      } else {
+        targetEl = mainCanvasRef.value
+      }
+      const {currentBlock} = craftStore
+      // console.log('[craftStore]', craftStore, currentBlock.value)
+
+      const ael = document.createElement(currentBlock.tag)
+      ael.innerText = craftStore.innerText || ''
+      ael.className = craftStore.className || ''
+      targetEl.appendChild(ael)
+      console.log('[ael]', ael)
+    }
+
+    return {
+      craftStore,
+      mainCanvasRef,
+      addComponent
+    }
+  }
+})
+</script>
+
 <template>
-  <div class="main-canvas" ref="mainCanvasRef" id="main_canvas" @click="addComponent">
+  <div id="main_canvas" ref="mainCanvasRef" class="main-canvas" @click="addComponent">
 
   </div>
 </template>
-
-<script>
-export default {
-  name: 'MainCanvas',
-  methods: {
-    addComponent(e) {
-      console.log('e', e)
-      let targetEl
-      if (e.target) {
-        targetEl = e.target
-      } else {
-        targetEl = this.$refs.mainCanvasRef
-      }
-      const ael = document.createElement('div')
-      ael.innerText = 'Block!'
-      targetEl.appendChild(ael)
-    }
-  }
-}
-</script>
 
 <style lang="scss">
 .main-canvas {

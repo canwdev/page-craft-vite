@@ -10,6 +10,7 @@ declare module '@vue/runtime-core' {
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     MainCanvas: typeof import('./src/components/MainCanvas/index.vue')['default']
     NButton: typeof import('naive-ui')['NButton']
+    NInput: typeof import('naive-ui')['NInput']
     ToolBar: typeof import('./src/components/ToolBar/index.vue')['default']
   }
 }
