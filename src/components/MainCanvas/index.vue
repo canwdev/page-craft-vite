@@ -35,7 +35,9 @@ export default defineComponent({
 
       const ael = document.createElement(currentBlock.tag)
       ael.innerText = craftStore.innerText || ''
-      ael.className = craftStore.className || ''
+      if (craftStore.className) {
+        ael.className = craftStore.className || ''
+      }
       targetEl.appendChild(ael)
       console.log('[ael]', ael)
     }
@@ -143,6 +145,8 @@ export default defineComponent({
         border-color: blue;
         background-color: rgba(137, 137, 106, 0.1);
       }
+
+
     }
   }
 

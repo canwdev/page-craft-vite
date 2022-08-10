@@ -9,6 +9,7 @@ export const blockDiv: BlockItem = {tag: 'div'}
 export const blockList: BlockItem[] = [
   blockDiv,
   {tag: 'span'},
+  {tag: 'br'},
   {tag: 'button'},
   {tag: 'input'},
   {tag: 'a'},
