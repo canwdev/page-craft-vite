@@ -1,5 +1,5 @@
 export interface BlockItem {
-  tag: string
+  tag: string | null
   innerText?: string
   className?: string
 }
@@ -7,6 +7,7 @@ export interface BlockItem {
 export const blockDiv: BlockItem = {tag: 'div'}
 
 export const blockList: BlockItem[] = [
+  {tag: null},
   blockDiv,
   {tag: 'span'},
   {tag: 'br'},

@@ -1,6 +1,11 @@
 <script lang="ts">
 import {useCraftStore} from "@/store/craft";
 import {copyToClipboard} from "@/utils";
+import {throttle} from 'throttle-debounce'
+
+const LS_KEY_MAIN_HTML = 'page_craft_main_html'
+const LS_KEY_MAIN_CSS = 'page_craft_main_css'
+
 
 export default defineComponent({
   name: 'MainCanvas',
@@ -12,17 +17,55 @@ export default defineComponent({
     const isShowImportDialog = ref(false)
 
     onMounted(() => {
-      // mainCanvasRef.value.addEventListener('mousemove', handleMouseMove)
+      const html = localStorage.getItem(LS_KEY_MAIN_HTML)
+      if (html) {
+        handleImportHtml(html)
+      }
+      mainCanvasRef.value.addEventListener('mousemove', handleMouseMove)
     })
     onBeforeUnmount(() => {
-      // mainCanvasRef.value.removeEventListener('mousemove', handleMouseMove)
+      mainCanvasRef.value.removeEventListener('mousemove', handleMouseMove)
+    })
+
+    const saveData = () => {
+      const innerHTML = mainCanvasRef.value.innerHTML
+      localStorage.setItem(LS_KEY_MAIN_HTML, innerHTML)
+    }
+
+    const isInsertMode = computed(() => {
+      return Boolean(craftStore.currentBlock.tag)
+    })
+
+    const currentHoveredEl = ref<any>(null)
+    const handleScrollDebounced = throttle(300, false, (event: Event) => {
+      // console.log('event', event.target)
+      currentHoveredEl.value = event.target
+    })
+    const hoveredElDisplay = computed(() => {
+      if (currentHoveredEl.value) {
+        let str = `${currentHoveredEl.value.localName}`
+        if (currentHoveredEl.value.className) {
+          str += `  ( ${currentHoveredEl.value.className} )`
+        }
+        return str
+      }
+      return ''
     })
 
     const handleMouseMove = (event: Event) => {
-      console.log(event)
+      if (isInsertMode.value) {
+        return
+      }
+      handleScrollDebounced(event)
     }
 
-    const addComponent = (event: Event) => {
+    const addBlock = (event: Event) => {
+      // console.log('[craftStore]', craftStore, currentBlock.value)
+      const {currentBlock} = craftStore
+      if (!currentBlock.tag) {
+        return
+      }
+
       // console.log('[event]', event)
       let targetEl
       if (event.target) {
@@ -30,8 +73,6 @@ export default defineComponent({
       } else {
         targetEl = mainCanvasRef.value
       }
-      const {currentBlock} = craftStore
-      // console.log('[craftStore]', craftStore, currentBlock.value)
 
       const ael = document.createElement(currentBlock.tag)
       ael.innerText = craftStore.innerText || ''
@@ -43,7 +84,6 @@ export default defineComponent({
     }
 
     const copyInnerHtml = () => {
-      console.log('mainCanvasRef', mainCanvasRef)
       const innerHTML = mainCanvasRef.value.innerHTML
       copyToClipboard(innerHTML)
       message.success(
@@ -52,8 +92,8 @@ export default defineComponent({
     }
 
     const importHtml = ref('')
-    const handleImportHtml = () => {
-      mainCanvasRef.value.innerHTML = importHtml.value
+    const handleImportHtml = (html?: string) => {
+      mainCanvasRef.value.innerHTML = html || importHtml.value
     }
 
     return {
@@ -63,8 +103,11 @@ export default defineComponent({
       isShowImportDialog,
       handleImportHtml,
       importHtml,
-      addComponent,
-      enableDevHelpClass
+      addBlock,
+      enableDevHelpClass,
+      saveData,
+      hoveredElDisplay,
+      isInsertMode
     }
   }
 })
@@ -94,6 +137,7 @@ export default defineComponent({
         <n-button-group size="small">
           <n-button type="info" @click="isShowImportDialog = true">Import</n-button>
           <n-button type="primary" @click="copyInnerHtml">Copy HTML</n-button>
+          <n-button type="warning" @click="saveData">Save LocalStorage</n-button>
         </n-button-group>
         <n-switch  v-model:value="enableDevHelpClass">
           <template #checked>
@@ -104,12 +148,15 @@ export default defineComponent({
           </template>
         </n-switch>
       </n-space>
-      <n-space>
-        {{0}}
+      <n-space style="font-family: monospace">
+        {{isInsertMode ? `Insert ${craftStore.currentBlock.tag}` : hoveredElDisplay}}
       </n-space>
     </div>
-    <div ref="mainCanvasRef" :class="{'main-canvas--dev': enableDevHelpClass}" class="main-canvas"
-         @click="addComponent"></div>
+    <div ref="mainCanvasRef" :class="{
+      'main-canvas--dev': enableDevHelpClass,
+      'main-canvas--is-insert': isInsertMode,
+    }" class="main-canvas"
+         @click="addBlock"></div>
   </div>
 </template>
 
@@ -117,6 +164,8 @@ export default defineComponent({
 .main-canvas-wrap {
   max-width: 1200px;
   min-height: 800px;
+  max-height: 100vh;
+  overflow: auto;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -135,6 +184,9 @@ export default defineComponent({
 }
 
 .main-canvas {
+  &--is-insert {
+    cursor: crosshair;
+  }
 
   &--dev {
     * {

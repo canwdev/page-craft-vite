@@ -2,7 +2,7 @@
 import {useCraftStore} from "@/store/craft";
 import {blockList} from "@/enum/block";
 
-const LS_KEY_GLOBAL_STYLE = 'ls_key_global_style'
+const LS_KEY_GLOBAL_STYLE = 'page_craft_global_style'
 
 export default defineComponent({
   name: 'ToolBar',
@@ -58,11 +58,16 @@ export default defineComponent({
 
     <div class="enhanced-toolbar-above">
       <n-space size="small">
-        <n-button>
-          {{ craftStore.currentBlock }}
-        </n-button>
-        <n-input v-model:value="craftStore.className" placeholder="className"/>
-        <n-input v-model:value="craftStore.innerText" placeholder="innerText"/>
+
+        <n-input-group>
+          <n-input-group-label>className</n-input-group-label>
+          <n-input v-model:value="craftStore.className" placeholder="className"/>
+        </n-input-group>
+        <n-input-group>
+          <n-input-group-label>innerText</n-input-group-label>
+          <n-input v-model:value="craftStore.innerText" placeholder="innerText"/>
+        </n-input-group>
+
       </n-space>
       <n-space size="small">
         <n-button type="primary" @click="isShowGlobalStyleDialog = true">Global Style</n-button>
