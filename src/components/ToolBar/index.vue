@@ -38,7 +38,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="enhanced-toolbar">
+  <div class="page-craft-enhanced-toolbar">
     <n-modal
       v-model:show="isShowGlobalStyleDialog"
       negative-text="Cancel"
@@ -56,7 +56,7 @@ export default defineComponent({
       />
     </n-modal>
 
-    <div class="enhanced-toolbar-above">
+    <div class="page-craft-enhanced-toolbar-above">
       <n-space size="small">
 
         <n-input-group>
@@ -74,7 +74,7 @@ export default defineComponent({
 
       </n-space>
     </div>
-    <div class="enhanced-toolbar-main">
+    <div class="page-craft-enhanced-toolbar-main">
       <div
         v-for="(item, index) in blockList"
         :key="index"
@@ -92,7 +92,7 @@ export default defineComponent({
 </template>
 
 <style lang="scss" scoped>
-.enhanced-toolbar {
+.page-craft-enhanced-toolbar {
   position: absolute;
   bottom: 0;
   left: 0;
@@ -103,13 +103,13 @@ export default defineComponent({
   margin-right: auto;
   font-family: monospace;
 
-  .enhanced-toolbar-above {
+  .page-craft-enhanced-toolbar-above {
     padding: 5px 0;
     display: flex;
     justify-content: space-between;
   }
 
-  .enhanced-toolbar-main {
+  .page-craft-enhanced-toolbar-main {
     background-color: #ccc;
     border: 5px solid #939393;
     height: 50px;

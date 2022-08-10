@@ -3,7 +3,7 @@ import MainCanvas from './components/MainCanvas/index.vue'
 import ToolBar from './components/ToolBar/index.vue'</script>
 
 <template>
-  <div class="mine-page-craft">
+  <div class="page-craft-root">
     <n-message-provider>
       <MainCanvas/>
 
@@ -13,7 +13,7 @@ import ToolBar from './components/ToolBar/index.vue'</script>
 </template>
 
 <style scoped>
-.mine-page-craft {
+.page-craft-root {
   position: relative;
   height: 100%;
   width: 100%;
@@ -21,7 +21,7 @@ import ToolBar from './components/ToolBar/index.vue'</script>
   overflow: hidden;
 }
 
-.main-canvas {
+.page-craft-main-canvas {
 
 }
 
