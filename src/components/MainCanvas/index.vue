@@ -143,7 +143,7 @@ export default defineComponent({
       &:hover {
         padding: 10px;
         border-color: blue;
-        background-color: rgba(137, 137, 106, 0.1);
+        //background-color: rgba(137, 137, 106, 0.1);
       }
 
 
