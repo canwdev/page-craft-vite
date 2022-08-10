@@ -11,6 +11,8 @@ export const blockList: BlockItem[] = [
   {tag: 'span'},
   {tag: 'button'},
   {tag: 'input'},
+  {tag: 'a'},
+  {tag: 'p'},
   {tag: 'h1'},
   {tag: 'h2'},
   {tag: 'h3'},

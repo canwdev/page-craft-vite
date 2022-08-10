@@ -5,8 +5,8 @@ export const useCraftStore = defineStore('craft', {
   state: () => {
     return {
       currentBlock: blockDiv,
-      className: 'test-class',
-      innerText: 'Block!',
+      className: '',
+      innerText: 'Block',
     }
   },
   // could also be defined as

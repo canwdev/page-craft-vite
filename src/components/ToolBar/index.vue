@@ -2,14 +2,36 @@
 import {useCraftStore} from "@/store/craft";
 import {blockList} from "@/enum/block";
 
+const LS_KEY_GLOBAL_STYLE = 'ls_key_global_style'
+
 export default defineComponent({
   name: 'ToolBar',
   setup() {
     const craftStore = useCraftStore()
 
+    const isShowGlobalStyleDialog = ref(false)
+    const globalStyleText = ref('')
+    const handleSaveGlobalStyle = () => {
+      localStorage.setItem(LS_KEY_GLOBAL_STYLE, globalStyleText.value)
+      const styleEl = document.getElementById('globalStyle')
+      if (styleEl) {
+        styleEl.innerHTML = globalStyleText.value
+      }
+    }
+    onMounted(() => {
+      const style = localStorage.getItem(LS_KEY_GLOBAL_STYLE)
+      if (style) {
+        globalStyleText.value = style
+        handleSaveGlobalStyle()
+      }
+    })
+
     return {
       blockList,
       craftStore,
+      isShowGlobalStyleDialog,
+      handleSaveGlobalStyle,
+      globalStyleText,
     }
   }
 })
@@ -17,12 +39,35 @@ export default defineComponent({
 
 <template>
   <div class="enhanced-toolbar">
+    <n-modal
+      v-model:show="isShowGlobalStyleDialog"
+      negative-text="Cancel"
+      positive-text="Save"
+      preset="dialog"
+      title="Global Style"
+      @positive-click="handleSaveGlobalStyle"
+    >
+      <n-input
+        v-model:value="globalStyleText"
+        placeholder="CSS Code Only"
+        rows="20"
+        style="font-family: monospace;"
+        type="textarea"
+      />
+    </n-modal>
+
     <div class="enhanced-toolbar-above">
-      <n-button>
-        {{ craftStore.currentBlock }}
-      </n-button>
-      <n-input v-model:value="craftStore.className" placeholder="className"/>
-      <n-input v-model:value="craftStore.innerText" placeholder="innerText"/>
+      <n-space size="small">
+        <n-button>
+          {{ craftStore.currentBlock }}
+        </n-button>
+        <n-input v-model:value="craftStore.className" placeholder="className"/>
+        <n-input v-model:value="craftStore.innerText" placeholder="innerText"/>
+      </n-space>
+      <n-space size="small">
+        <n-button type="primary" @click="isShowGlobalStyleDialog = true">Global Style</n-button>
+
+      </n-space>
     </div>
     <div class="enhanced-toolbar-main">
       <div
@@ -54,7 +99,9 @@ export default defineComponent({
   font-family: monospace;
 
   .enhanced-toolbar-above {
+    padding: 5px 0;
     display: flex;
+    justify-content: space-between;
   }
 
   .enhanced-toolbar-main {

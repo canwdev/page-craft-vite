@@ -1,13 +1,14 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import MainCanvas from './components/MainCanvas/index.vue'
-import ToolBar from './components/ToolBar/index.vue'
-</script>
+import ToolBar from './components/ToolBar/index.vue'</script>
 
 <template>
   <div class="mine-page-craft">
-    <MainCanvas />
+    <n-message-provider>
+      <MainCanvas/>
 
-    <ToolBar />
+      <ToolBar/>
+    </n-message-provider>
   </div>
 </template>
 
@@ -19,6 +20,7 @@ import ToolBar from './components/ToolBar/index.vue'
   background-color: aliceblue;
   overflow: hidden;
 }
+
 .main-canvas {
 
 }
