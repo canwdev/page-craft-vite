@@ -22,6 +22,7 @@ const removeMouseOverDomElementEffect = () => {
   if ($el2.length) {
     $el2.removeClass(CLASS_MOUSE_OVER_PARENT);
   }
+  $('*[class=""]').removeAttr('class')
 };
 
 export default defineComponent({
@@ -32,12 +33,13 @@ export default defineComponent({
     const message = useMessage()
     const enableDevHelpClass = ref(true)
     const enableSelection = ref(true)
+    const enableExpand = ref(false)
     const isShowImportDialog = ref(false)
 
     onMounted(() => {
       const html = localStorage.getItem(LS_KEY_MAIN_HTML)
       if (html) {
-        handleImportHtml(html)
+        setMainCanvasHtml(html)
       }
       mainCanvasRef.value.addEventListener('mousemove', handleMouseMove)
     })
@@ -46,6 +48,7 @@ export default defineComponent({
     })
 
     const saveData = () => {
+      removeMouseOverDomElementEffect()
       const innerHTML = mainCanvasRef.value.innerHTML
       localStorage.setItem(LS_KEY_MAIN_HTML, innerHTML)
     }
@@ -80,8 +83,10 @@ export default defineComponent({
     const hoveredElDisplay = computed(() => {
       if (currentHoveredEl.value) {
         let str = `${currentHoveredEl.value.localName}`
-        if (currentHoveredEl.value.className) {
-          str += `  ( ${currentHoveredEl.value.className} )`
+        let className = currentHoveredEl.value.className || ''
+          className = className.replace(CLASS_MOUSE_OVER, '').trim()
+        if (className) {
+          str += `  ( ${className} )`
         }
         return str
       }
@@ -121,13 +126,16 @@ export default defineComponent({
       const addEl = document.createElement(currentBlock.tag)
       addEl.innerText = craftStore.innerText || ''
       if (craftStore.className) {
-        addEl.className = craftStore.className || ''
+        addEl.className = craftStore.className
       }
       targetEl.appendChild(addEl)
       console.log('[addEl]', addEl)
+
+      saveData()
     }
 
     const copyInnerHtml = () => {
+      removeMouseOverDomElementEffect()
       const innerHTML = mainCanvasRef.value.innerHTML
       copyToClipboard(innerHTML)
       message.success(
@@ -136,8 +144,8 @@ export default defineComponent({
     }
 
     const importHtml = ref('')
-    const handleImportHtml = (html?: string) => {
-      mainCanvasRef.value.innerHTML = html || importHtml.value
+    const setMainCanvasHtml = (html?: string) => {
+      mainCanvasRef.value.innerHTML = html
     }
 
     return {
@@ -145,11 +153,12 @@ export default defineComponent({
       mainCanvasRef,
       copyInnerHtml,
       isShowImportDialog,
-      handleImportHtml,
+      setMainCanvasHtml,
       importHtml,
       addBlock,
       enableDevHelpClass,
       enableSelection,
+      enableExpand,
       saveData,
       hoveredElDisplay,
       isInsertMode
@@ -166,7 +175,7 @@ export default defineComponent({
       positive-text="Import"
       preset="dialog"
       title="Import HTML"
-      @positive-click="handleImportHtml"
+      @positive-click="setMainCanvasHtml(importHtml)"
     >
       <n-input
         v-model:value="importHtml"
@@ -182,11 +191,15 @@ export default defineComponent({
         <n-button-group size="small">
           <n-button type="info" @click="isShowImportDialog = true">Import</n-button>
           <n-button type="primary" @click="copyInnerHtml">Copy HTML</n-button>
-          <n-button type="warning" @click="saveData">Save LocalStorage</n-button>
+          <n-button v-if="false" type="warning" @click="saveData">Save LocalStorage</n-button>
         </n-button-group>
         <div>
           DevClass:
           <n-switch  v-model:value="enableDevHelpClass" />
+        </div>
+        <div>
+          Expand:
+          <n-switch  v-model:value="enableExpand" />
         </div>
         <div>
           Selection:
@@ -194,12 +207,13 @@ export default defineComponent({
         </div>
       </n-space>
       <div class="indicator-text">
-        {{isInsertMode ? `Insert ${craftStore.currentBlock.tag}` : hoveredElDisplay}}
+        {{ hoveredElDisplay }}
       </div>
     </div>
     <div ref="mainCanvasRef" :class="{
       'page-craft-main-canvas--dev': enableDevHelpClass,
       'page-craft-main-canvas--is-insert': isInsertMode,
+      'page-craft-main-canvas--expand': enableExpand,
     }" class="page-craft-main-canvas"
          @click="addBlock"></div>
   </div>
@@ -228,6 +242,7 @@ export default defineComponent({
       top: 0;
       font-size: 12px;
       font-family: monospace;
+      max-width: 500px;
     }
   }
 
@@ -240,23 +255,22 @@ export default defineComponent({
 .page-craft-main-canvas {
   &--is-insert {
     cursor: crosshair;
-    &.page-craft-main-canvas--dev {
-      * {
-        // set 1px border for selection
-        border: 1px dashed red;
-        outline: none;
-        transition: padding .4s;
-      }
-
-      .page-craft-mouse-over-dom-element-parent,
-      .page-craft-mouse-over-dom-element {
-        padding: 10px;
-      }
-    }
   }
   &--dev {
     * {
-      outline: 1px dashed red;
+      // set 1px border for selection
+      border: 1px dashed red;
+      outline: none;
+    }
+
+    .page-craft-mouse-over-dom-element-parent,
+    .page-craft-mouse-over-dom-element {
+    }
+  }
+  &--expand {
+    * {
+      transition: padding 1s;
+      padding: 10px;
     }
   }
 
