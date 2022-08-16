@@ -100,7 +100,6 @@ export default defineComponent({
   margin-left: auto;
   margin-right: auto;
   font-family: monospace;
-  background-color: rgba(255, 255, 255, 0.6);
   border-bottom: 0;
   border-radius: 0;
   border-top-left-radius: 10px;

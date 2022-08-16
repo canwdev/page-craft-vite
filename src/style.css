@@ -18,10 +18,10 @@ html, body, #app {
 }
 
 /**
-https://khang-nd.github.io/7.css/
+Inspired by https://khang-nd.github.io/7.css/
  */
 .page-craft-aero-panel {
-  background: linear-gradient(90deg,hsla(0,0%,100%,.4),rgba(0,0,0,.1),hsla(0,0%,100%,.2)),linear-gradient(55deg,transparent,rgba(0,0,0,.1) 20%,rgba(0,0,0,.1) 50%,transparent 53%),#4580c4;
+  background-color: rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(2px);
   border: 1px solid rgba(0,0,0,.4);
   border-radius: 6px;

@@ -7,6 +7,7 @@ import $ from 'jquery'
 
 const LS_KEY_MAIN_HTML = 'page_craft_main_html'
 const LS_KEY_MAIN_CSS = 'page_craft_main_css'
+const LS_KEY_INDICATOR_OPTIONS = 'page_craft_indicator_options'
 
 const CLASS_MOUSE_OVER = 'page-craft-mouse-over-dom-element'
 const DOT_CLASS_MOUSE_OVER = '.' + CLASS_MOUSE_OVER
@@ -26,6 +27,12 @@ const removeMouseOverDomElementEffect = () => {
   $('*[class=""]').removeAttr('class')
 };
 
+type IndicatorOptions = {
+  enableDevHelpClass: boolean
+  enableExpand: boolean
+  enableSelection: boolean
+}
+
 export default defineComponent({
   name: 'MainCanvas',
   components: {
@@ -35,9 +42,11 @@ export default defineComponent({
     const mainCanvasRef = ref()
     const craftStore = useCraftStore()
     const message = useMessage()
-    const enableDevHelpClass = ref(true)
-    const enableSelection = ref(true)
-    const enableExpand = ref(false)
+    const indicatorOptions = reactive<IndicatorOptions>(JSON.parse(localStorage.getItem(LS_KEY_INDICATOR_OPTIONS) || 'null') || {
+      enableDevHelpClass: true,
+      enableExpand: false,
+      enableSelection: true
+    })
     const isShowImportDialog = ref(false)
 
     onMounted(() => {
@@ -50,6 +59,10 @@ export default defineComponent({
     onBeforeUnmount(() => {
       mainCanvasRef.value.removeEventListener('mousemove', handleMouseMove)
     })
+
+    watch(indicatorOptions, () => {
+      localStorage.setItem(LS_KEY_INDICATOR_OPTIONS, JSON.stringify({...indicatorOptions}))
+    }, {deep: true})
 
     const saveData = () => {
       removeMouseOverDomElementEffect()
@@ -97,13 +110,13 @@ export default defineComponent({
       return ''
     })
 
-    watch(enableSelection, (val) => {
+    watch(() => indicatorOptions.enableSelection, (val) => {
       if (!val) {
         removeMouseOverDomElementEffect()
       }
     })
     const handleMouseMove = (event: Event) => {
-      if (!enableSelection.value) {
+      if (!indicatorOptions.enableSelection) {
         return
       }
       handleMousemoveDebounced(event)
@@ -166,9 +179,7 @@ export default defineComponent({
       setMainCanvasHtml,
       importHtml,
       addBlock,
-      enableDevHelpClass,
-      enableSelection,
-      enableExpand,
+      indicatorOptions,
       saveData,
       hoveredElDisplay,
       isInsertMode,
@@ -212,7 +223,7 @@ export default defineComponent({
             </template>
             Add 1px outline per element for better distinction
           </n-tooltip>
-          <n-switch v-model:value="enableDevHelpClass"/>
+          <n-switch v-model:value="indicatorOptions.enableDevHelpClass"/>
         </div>
 
         <div>
@@ -222,7 +233,7 @@ export default defineComponent({
             </template>
             Pad each element with 10px for selection
           </n-tooltip>
-          <n-switch v-model:value="enableExpand"/>
+          <n-switch v-model:value="indicatorOptions.enableExpand"/>
         </div>
 
         <div>
@@ -232,7 +243,7 @@ export default defineComponent({
             </template>
             Add cursor selection effect
           </n-tooltip>
-          <n-switch v-model:value="enableSelection"/>
+          <n-switch v-model:value="indicatorOptions.enableSelection"/>
         </div>
 
       </n-space>
@@ -241,9 +252,9 @@ export default defineComponent({
       </div>
     </div>
     <div ref="mainCanvasRef" :class="{
-      'page-craft-main-canvas--dev': enableDevHelpClass,
+      'page-craft-main-canvas--dev': indicatorOptions.enableDevHelpClass,
       'page-craft-main-canvas--is-insert': isInsertMode,
-      'page-craft-main-canvas--expand': enableExpand,
+      'page-craft-main-canvas--expand': indicatorOptions.enableExpand,
     }" class="page-craft-main-canvas"
          @click="addBlock"></div>
 
@@ -273,7 +284,6 @@ export default defineComponent({
     align-items: center;
     position: sticky;
     top: 0;
-    background-color: rgba(255, 255, 255, 0.6);
     border-top: 0;
     border-radius: 0;
     border-bottom-left-radius: 10px;
@@ -292,7 +302,7 @@ export default defineComponent({
 
   .page-craft-main-canvas {
     flex: 1;
-    //background: white;
+    background: white;
   }
 }
 
