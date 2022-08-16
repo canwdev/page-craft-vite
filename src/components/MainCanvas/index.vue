@@ -8,9 +8,9 @@ const LS_KEY_MAIN_HTML = 'page_craft_main_html'
 const LS_KEY_MAIN_CSS = 'page_craft_main_css'
 
 const CLASS_MOUSE_OVER = 'page-craft-mouse-over-dom-element'
-const DOT_CLASS_MOUSE_OVER = '.'+CLASS_MOUSE_OVER
+const DOT_CLASS_MOUSE_OVER = '.' + CLASS_MOUSE_OVER
 const CLASS_MOUSE_OVER_PARENT = 'page-craft-mouse-over-dom-element-parent'
-const DOT_CLASS_MOUSE_OVER_PARENT = '.'+CLASS_MOUSE_OVER_PARENT
+const DOT_CLASS_MOUSE_OVER_PARENT = '.' + CLASS_MOUSE_OVER_PARENT
 const CLASS_MAIN_CANVAS_ROOT = 'page-craft-main-canvas'
 
 const removeMouseOverDomElementEffect = () => {
@@ -84,7 +84,7 @@ export default defineComponent({
       if (currentHoveredEl.value) {
         let str = `${currentHoveredEl.value.localName}`
         let className = currentHoveredEl.value.className || ''
-          className = className.replace(CLASS_MOUSE_OVER, '').trim()
+        className = className.replace(CLASS_MOUSE_OVER, '').trim()
         if (className) {
           str += `  ( ${className} )`
         }
@@ -193,18 +193,38 @@ export default defineComponent({
           <n-button type="primary" @click="copyInnerHtml">Copy HTML</n-button>
           <n-button v-if="false" type="warning" @click="saveData">Save LocalStorage</n-button>
         </n-button-group>
+
+
         <div>
-          DevClass:
-          <n-switch  v-model:value="enableDevHelpClass" />
+          <n-tooltip trigger="hover">
+            <template #trigger>
+              DevClass:
+            </template>
+            Add 1px outline per element for better distinction
+          </n-tooltip>
+          <n-switch v-model:value="enableDevHelpClass"/>
         </div>
+
         <div>
-          Expand:
-          <n-switch  v-model:value="enableExpand" />
+          <n-tooltip trigger="hover">
+            <template #trigger>
+              Padding:
+            </template>
+            Pad each element with 10px for selection
+          </n-tooltip>
+          <n-switch v-model:value="enableExpand"/>
         </div>
+
         <div>
-          Selection:
-          <n-switch  v-model:value="enableSelection" />
+          <n-tooltip trigger="hover">
+            <template #trigger>
+              Selection:
+            </template>
+            Add cursor selection effect
+          </n-tooltip>
+          <n-switch v-model:value="enableSelection"/>
         </div>
+
       </n-space>
       <div class="indicator-text">
         {{ hoveredElDisplay }}
@@ -256,17 +276,17 @@ export default defineComponent({
   &--is-insert {
     cursor: crosshair;
   }
+
   &--dev {
     * {
-      // set 1px border for selection
-      border: 1px dashed red;
-      outline: none;
+      outline: 1px dashed red;
     }
 
     .page-craft-mouse-over-dom-element-parent,
     .page-craft-mouse-over-dom-element {
     }
   }
+
   &--expand {
     * {
       transition: padding 1s;
@@ -281,7 +301,7 @@ export default defineComponent({
     background-color: rgba(144, 205, 238, 0.7) !important;
     //color: #111 !important;
     opacity: 0.85 !important;
-    fill: #f7ff00 !important;   /* Helps in highlighting SVG elements */
+    fill: #f7ff00 !important; /* Helps in highlighting SVG elements */
   }
 
 
