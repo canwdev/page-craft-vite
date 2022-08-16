@@ -266,8 +266,7 @@ export default defineComponent({
 <style lang="scss">
 .page-craft-main-canvas-wrap {
   width: 100%;
-  min-height: 800px;
-  max-height: 100%;
+  height: 100%;
   overflow: auto;
   margin: 0 auto;
   display: flex;
