@@ -38,7 +38,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="page-craft-enhanced-toolbar">
+  <div class="page-craft-enhanced-toolbar page-craft-aero-panel">
     <n-modal
       v-model:show="isShowGlobalStyleDialog"
       negative-text="Cancel"
@@ -93,15 +93,20 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .page-craft-enhanced-toolbar {
-  position: absolute;
+  position: sticky;
   bottom: 0;
-  left: 0;
-  right: 0;
   user-select: none;
   width: 1200px;
   margin-left: auto;
   margin-right: auto;
   font-family: monospace;
+  background-color: rgba(255, 255, 255, 0.6);
+  border-bottom: 0;
+  border-radius: 0;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  padding: 5px 10px;
+  z-index: 999;
 
   .page-craft-enhanced-toolbar-above {
     padding: 5px 0;
@@ -114,6 +119,7 @@ export default defineComponent({
     border: 5px solid #939393;
     height: 50px;
     display: flex;
+    box-sizing: unset;
 
     .list-item-frame {
       border-right: 5px solid #939393;

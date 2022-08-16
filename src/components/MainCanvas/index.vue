@@ -1,6 +1,7 @@
 <script lang="ts">
 import {useCraftStore} from "@/store/craft";
 import {copyToClipboard} from "@/utils";
+import ToolBar from '@/components/ToolBar/index.vue'
 import {throttle} from 'throttle-debounce'
 import $ from 'jquery'
 
@@ -27,6 +28,9 @@ const removeMouseOverDomElementEffect = () => {
 
 export default defineComponent({
   name: 'MainCanvas',
+  components: {
+    ToolBar
+  },
   setup() {
     const mainCanvasRef = ref()
     const craftStore = useCraftStore()
@@ -148,6 +152,12 @@ export default defineComponent({
       mainCanvasRef.value.innerHTML = html
     }
 
+    const handleImport = (html: string) => {
+      setMainCanvasHtml(html)
+
+      saveData()
+    }
+
     return {
       craftStore,
       mainCanvasRef,
@@ -161,7 +171,8 @@ export default defineComponent({
       enableExpand,
       saveData,
       hoveredElDisplay,
-      isInsertMode
+      isInsertMode,
+      handleImport
     }
   }
 })
@@ -175,7 +186,7 @@ export default defineComponent({
       positive-text="Import"
       preset="dialog"
       title="Import HTML"
-      @positive-click="setMainCanvasHtml(importHtml)"
+      @positive-click="handleImport(importHtml)"
     >
       <n-input
         v-model:value="importHtml"
@@ -186,14 +197,13 @@ export default defineComponent({
       />
     </n-modal>
 
-    <div class="page-craft-main-canvas-indicator">
-      <n-space size="small">
+    <div class="page-craft-main-canvas-indicator page-craft-aero-panel">
+      <n-space size="small" align="center">
         <n-button-group size="small">
           <n-button type="info" @click="isShowImportDialog = true">Import</n-button>
           <n-button type="primary" @click="copyInnerHtml">Copy HTML</n-button>
           <n-button v-if="false" type="warning" @click="saveData">Save LocalStorage</n-button>
         </n-button-group>
-
 
         <div>
           <n-tooltip trigger="hover">
@@ -236,30 +246,44 @@ export default defineComponent({
       'page-craft-main-canvas--expand': enableExpand,
     }" class="page-craft-main-canvas"
          @click="addBlock"></div>
+
+
+    <ToolBar/>
   </div>
 </template>
 
 <style lang="scss">
 .page-craft-main-canvas-wrap {
-  max-width: 1200px;
+  width: 100%;
   min-height: 800px;
-  max-height: 100vh;
+  max-height: 100%;
   overflow: auto;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
+  position: relative;
 
   .page-craft-main-canvas-indicator {
-    padding: 5px 0;
+    width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 5px 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: relative;
+    position: sticky;
+    top: 0;
+    background-color: rgba(255, 255, 255, 0.6);
+    border-top: 0;
+    border-radius: 0;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    z-index: 999;
 
     .indicator-text {
       position: absolute;
-      right: 0;
-      top: 0;
+      right: 5px;
+      top: 5px;
       font-size: 12px;
       font-family: monospace;
       max-width: 500px;
@@ -268,7 +292,7 @@ export default defineComponent({
 
   .page-craft-main-canvas {
     flex: 1;
-    background: white;
+    //background: white;
   }
 }
 

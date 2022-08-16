@@ -1,13 +1,11 @@
 <script lang="ts" setup>
 import MainCanvas from './components/MainCanvas/index.vue'
-import ToolBar from './components/ToolBar/index.vue'</script>
+</script>
 
 <template>
   <div class="page-craft-root">
     <n-message-provider>
       <MainCanvas/>
-
-      <ToolBar/>
     </n-message-provider>
   </div>
 </template>
@@ -17,7 +15,11 @@ import ToolBar from './components/ToolBar/index.vue'</script>
   position: relative;
   height: 100%;
   width: 100%;
-  background-color: aliceblue;
+  background-color: white;
+  /*background-image: url("https://api.dujin.org/bing/1920.php");*/
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
   overflow: hidden;
 }
 
