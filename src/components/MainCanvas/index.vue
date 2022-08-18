@@ -31,6 +31,9 @@ type IndicatorOptions = {
   enableDevHelpClass: boolean
   enableExpand: boolean
   enableSelection: boolean
+  fullWidth: boolean
+  bgTransparent: boolean
+  centeredElements: boolean
 }
 
 export default defineComponent({
@@ -45,7 +48,10 @@ export default defineComponent({
     const indicatorOptions = reactive<IndicatorOptions>(JSON.parse(localStorage.getItem(LS_KEY_INDICATOR_OPTIONS) || 'null') || {
       enableDevHelpClass: true,
       enableExpand: false,
-      enableSelection: true
+      enableSelection: true,
+      fullWidth: false,
+      bgTransparent: false,
+      centeredElements: false,
     })
     const isShowImportDialog = ref(false)
 
@@ -209,7 +215,7 @@ export default defineComponent({
     </n-modal>
 
     <div class="page-craft-main-canvas-indicator page-craft-aero-panel">
-      <n-space size="small" align="center">
+      <n-space align="center" size="small">
         <n-button-group size="small">
           <n-button type="info" @click="isShowImportDialog = true">Import</n-button>
           <n-button type="primary" @click="copyInnerHtml">Copy HTML</n-button>
@@ -246,16 +252,36 @@ export default defineComponent({
           <n-switch v-model:value="indicatorOptions.enableSelection"/>
         </div>
 
+        <div>
+          FullWidth:
+          <n-switch v-model:value="indicatorOptions.fullWidth"/>
+        </div>
+
+        <div>
+          bgTransparent:
+          <n-switch v-model:value="indicatorOptions.bgTransparent"/>
+        </div>
+
+        <div>
+          centeredElements:
+          <n-switch v-model:value="indicatorOptions.centeredElements"/>
+        </div>
+
       </n-space>
       <div class="indicator-text">
         {{ hoveredElDisplay }}
       </div>
     </div>
-    <div ref="mainCanvasRef" :class="{
+    <div ref="mainCanvasRef"
+         :class="{
       'page-craft-main-canvas--dev': indicatorOptions.enableDevHelpClass,
       'page-craft-main-canvas--is-insert': isInsertMode,
       'page-craft-main-canvas--expand': indicatorOptions.enableExpand,
-    }" class="page-craft-main-canvas"
+      'page-craft-main-canvas--full-width': indicatorOptions.fullWidth,
+      'page-craft-main-canvas--transparent': indicatorOptions.bgTransparent,
+      'page-craft-main-canvas--centered': indicatorOptions.centeredElements,
+    }"
+         class="page-craft-main-canvas"
          @click="addBlock"></div>
 
 
@@ -295,17 +321,21 @@ export default defineComponent({
       top: 5px;
       font-size: 12px;
       font-family: monospace;
-      max-width: 500px;
+      max-width: 300px;
+      transform: scale(.8);
+      transform-origin: top right;
     }
   }
 
-  .page-craft-main-canvas {
-    flex: 1;
-    background: white;
-  }
 }
 
 .page-craft-main-canvas {
+  flex: 1;
+  background-color: white;
+  width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+
   &--is-insert {
     cursor: crosshair;
   }
@@ -325,6 +355,17 @@ export default defineComponent({
       transition: padding 1s;
       padding: 10px;
     }
+  }
+  &--full-width {
+    width: 100%;
+  }
+  &--transparent {
+    background-color: transparent;
+  }
+  &--centered {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   &.page-craft-mouse-over-dom-element,
