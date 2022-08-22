@@ -192,6 +192,19 @@ export default defineComponent({
       saveData()
     }
 
+    const toggleList = [
+      {
+        flag: 'enableDevHelpClass',
+        title: 'DevClass',
+        desc: 'Add 1px outline per element for better distinction',
+      },
+      {flag: 'enableExpand', title: 'Padding', desc: 'Pad each element with 10px for selection'},
+      {flag: 'enableSelection', title: 'Selection', desc: 'Add cursor selection effect'},
+      {flag: 'centeredElements', title: 'centeredElements', desc: ''},
+      {flag: 'bgTransparent', title: 'bgTransparent', desc: ''},
+      {flag: 'fullWidth', title: 'fullWidth', desc: ''},
+    ]
+
     return {
       craftStore,
       mainCanvasRef,
@@ -205,6 +218,7 @@ export default defineComponent({
       hoveredElDisplay,
       handleImport,
       BlockManualType,
+      toggleList,
     }
   },
 })
@@ -229,51 +243,19 @@ export default defineComponent({
       />
     </n-modal>
 
-    <div class="page-craft-main-canvas-indicator page-craft-aero-panel">
+    <div class="page-craft-main-canvas-indicator page-craft-aero-panel win7">
       <n-space align="center" size="small">
-        <n-button-group size="small">
-          <n-button type="info" @click="isShowImportDialog = true">Import</n-button>
-          <n-button type="primary" @click="copyInnerHtml">Copy HTML</n-button>
-          <n-button v-if="false" type="warning" @click="saveData">Save LocalStorage</n-button>
-        </n-button-group>
+        <button @click="isShowImportDialog = true">Import...</button>
+        <button @click="copyInnerHtml">Copy HTML</button>
+        <button v-if="false" @click="saveData">Save LocalStorage</button>
 
-        <div>
-          <n-tooltip trigger="hover">
-            <template #trigger> DevClass: </template>
-            Add 1px outline per element for better distinction
-          </n-tooltip>
-          <n-switch v-model:value="indicatorOptions.enableDevHelpClass" />
-        </div>
-
-        <div>
-          <n-tooltip trigger="hover">
-            <template #trigger> Padding: </template>
-            Pad each element with 10px for selection
-          </n-tooltip>
-          <n-switch v-model:value="indicatorOptions.enableExpand" />
-        </div>
-
-        <div>
-          <n-tooltip trigger="hover">
-            <template #trigger> Selection: </template>
-            Add cursor selection effect
-          </n-tooltip>
-          <n-switch v-model:value="indicatorOptions.enableSelection" />
-        </div>
-
-        <div>
-          FullWidth:
-          <n-switch v-model:value="indicatorOptions.fullWidth" />
-        </div>
-
-        <div>
-          bgTransparent:
-          <n-switch v-model:value="indicatorOptions.bgTransparent" />
-        </div>
-
-        <div>
-          centeredElements:
-          <n-switch v-model:value="indicatorOptions.centeredElements" />
+        <div v-for="item in toggleList" :key="item.flag" class="toggle-list">
+          <input
+            type="checkbox"
+            :id="`checkbox_${item.flag}`"
+            v-model="indicatorOptions[item.flag]"
+          />
+          <label :for="`checkbox_${item.flag}`" :title="item.desc">{{ item.title }}</label>
         </div>
       </n-space>
       <div class="indicator-text">
@@ -336,6 +318,10 @@ export default defineComponent({
       max-width: 300px;
       transform: scale(0.8);
       transform-origin: top right;
+    }
+
+    .toggle-list {
+      text-shadow: 0 0 10px white;
     }
   }
 }

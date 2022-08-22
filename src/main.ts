@@ -8,7 +8,7 @@ import {
   NButton,
 } from 'naive-ui'
 import {createPinia} from 'pinia'
-
+import '7.css/dist/7.scoped.css'
 const naive = create({
   components: [NButton],
 })

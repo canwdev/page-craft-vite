@@ -60,25 +60,36 @@ export default defineComponent({
       />
     </n-modal>
 
-    <div class="page-craft-enhanced-toolbar-above">
+    <div class="page-craft-enhanced-toolbar-above win7">
       <n-space size="small">
-        <n-input-group>
-          <n-input-group-label>Class</n-input-group-label>
-          <n-input v-model:value="craftStore.className" placeholder="" />
-        </n-input-group>
-        <n-input-group>
-          <n-input-group-label>Content</n-input-group-label>
-          <n-input v-model:value="craftStore.innerText" placeholder="innerText?" />
-        </n-input-group>
-        <n-button type="primary" @click="isShowGlobalStyleDialog = true">Global Style</n-button>
+        <div class="field-row">
+          <label for="inputClass">Class </label>
+          <input
+            id="inputClass"
+            type="text"
+            v-model="craftStore.className"
+            placeholder="CSS Class"
+          />
+        </div>
+
+        <div class="field-row">
+          <label for="inputContent">Content </label>
+          <input
+            id="inputContent"
+            type="text"
+            v-model="craftStore.innerText"
+            placeholder="innerText | src | value"
+          />
+        </div>
       </n-space>
+      <button @click="isShowGlobalStyleDialog = true">Global Style...</button>
     </div>
     <div class="page-craft-enhanced-toolbar-main">
       <ToolItem
         v-for="(item, index) in blockList"
         :key="index"
         :item="item"
-        @click.native="() => craftStore.setCurrentBlock(item)"
+        @click="() => craftStore.setCurrentBlock(item)"
       />
     </div>
   </div>
@@ -100,9 +111,12 @@ export default defineComponent({
   z-index: 999;
 
   .page-craft-enhanced-toolbar-above {
-    padding: 5px 0;
+    padding: 2px 0 8px;
     display: flex;
     justify-content: space-between;
+    label {
+      text-shadow: 0 0 10px white;
+    }
   }
 
   .page-craft-enhanced-toolbar-main {
