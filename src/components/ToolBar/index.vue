@@ -84,7 +84,8 @@ export default defineComponent({
              class="list-item-inner"
              @click="() => craftStore.setCurrentBlock(item)"
         >
-          {{ item.tag }}
+          <img v-if="item.icon" :src="item.icon" alt="icon">
+          <span class="item-text" v-else>{{ item.tag }}</span>
         </div>
       </div>
     </div>
@@ -114,31 +115,57 @@ export default defineComponent({
   }
 
   .page-craft-enhanced-toolbar-main {
-    background-color: #ccc;
-    border: 5px solid #939393;
-    height: 50px;
-    display: flex;
-    box-sizing: unset;
-
-    .list-item-frame {
-      border-right: 5px solid #939393;
-    }
+    width: 724px;
+    height: 44px;
+    margin-left: auto;
+    margin-right: auto;
+    display: grid;
+    grid-template-columns: repeat(18, 1fr);
+    grid-template-rows: auto;
+    background-image: url("@/assets/gui/widgets-bar.png");
+    border-left: 2px solid black;
+    border-right: 2px solid black;
 
     .list-item-inner {
-      width: 50px;
-      height: 50px;
-      background: #efefef;
+      width: 39px;
+      height: 44px;
+      color: white;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 14px;
-
-      &.active {
-        outline: 2px solid crimson;
+      font-size: 13px;
+      position: relative;
+      &::before {
+        width: 48px;
+        height: 48px;
+        background-image: url("@/assets/gui/widgets-item-selected.png");
+        background-size: contain;
+        position: absolute;
+        transform: translateX(2px);
+        z-index: 0;
+        content: "";
+        opacity: 0;
+        visibility: hidden;
+        transition: all .3s;
       }
 
-      & + .list-item {
+      &.active {
+        &::before {
+          opacity: 1;
+          visibility: visible;
+        }
+      }
+
+      img {
+        width: 32px;
+        height: 32px;
+        image-rendering: pixelated;
+      }
+
+      .item-text {
+        transform: rotate(-45deg);
+        text-shadow: 2px 2px 0px black;
       }
     }
   }

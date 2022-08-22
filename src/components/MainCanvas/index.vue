@@ -81,7 +81,7 @@ export default defineComponent({
     })
 
     const currentHoveredEl = ref<any>(null)
-    const handleMousemoveDebounced = throttle(80, false, (event: Event) => {
+    const handleMousemoveDebounced = throttle(50, false, (event: Event) => {
       const currentNode: any = event.target
       if (currentHoveredEl.value === currentNode) {
         return;
@@ -335,9 +335,14 @@ export default defineComponent({
   width: 1200px;
   margin-left: auto;
   margin-right: auto;
+  cursor: url("@/assets/textures/iron_sword--cursor.png") 0 0, default;
 
   &--is-insert {
     cursor: crosshair;
+  }
+
+  &--is-pickaxe {
+    cursor: url("@/assets/textures/iron_pickaxe--cursor.png") 6 24, default;
   }
 
   &--dev {

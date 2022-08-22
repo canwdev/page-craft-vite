@@ -1,5 +1,9 @@
+import iconArrow from '../assets/textures/arrow.png?url'
+import ironSword from '../assets/textures/iron_sword.png?url'
+
 export interface BlockItem {
   tag: string | null
+  icon?: string
   innerText?: string
   className?: string
 }
@@ -7,7 +11,7 @@ export interface BlockItem {
 export const blockDiv: BlockItem = {tag: 'div'}
 
 export const blockList: BlockItem[] = [
-  {tag: null},
+  {tag: null, icon: ironSword},
   blockDiv,
   {tag: 'span'},
   {tag: 'br'},
