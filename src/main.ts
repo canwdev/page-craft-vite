@@ -1,16 +1,16 @@
-import { createApp } from 'vue'
+import {createApp} from 'vue'
 import './style.css'
 import App from './App.vue'
 import {
   // create naive ui
   create,
   // component
-  NButton
+  NButton,
 } from 'naive-ui'
 import {createPinia} from 'pinia'
 
 const naive = create({
-  components: [NButton]
+  components: [NButton],
 })
 
 const app = createApp(App)

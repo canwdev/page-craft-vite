@@ -1,14 +1,14 @@
 <script lang="ts">
 import {defineComponent, PropType} from 'vue'
-import {useCraftStore} from "@/store/craft";
-import {BlockItem} from "@/enum/block";
+import {useCraftStore} from '@/store/craft'
+import {BlockItem} from '@/enum/block'
 
 export default defineComponent({
   name: 'ToolItem',
   props: {
     item: {
       type: Object as PropType<BlockItem>,
-      required: true
+      required: true,
     },
   },
   setup(props) {
@@ -17,24 +17,22 @@ export default defineComponent({
 
     const isActive = computed(() => {
       if (item.value.manualType) {
-        return  item.value.manualType === craftStore.currentBlock.manualType
+        return item.value.manualType === craftStore.currentBlock.manualType
       }
       return item.value.tag === craftStore.currentBlock.tag
     })
 
     return {
       craftStore,
-      isActive
+      isActive,
     }
-  }
+  },
 })
 </script>
 
 <template>
-  <div :class="{active: isActive}"
-       class="tool-item"
-  >
-    <img v-if="item.icon" :src="item.icon" alt="icon">
+  <div :class="{active: isActive}" class="tool-item">
+    <img v-if="item.icon" :src="item.icon" alt="icon" />
     <span v-else class="item-text">{{ item.tag }}</span>
   </div>
 </template>
@@ -54,15 +52,15 @@ export default defineComponent({
   &::before {
     width: 48px;
     height: 48px;
-    background-image: url("@/assets/gui/widgets-item-selected.png");
+    background-image: url('@/assets/gui/widgets-item-selected.png');
     background-size: contain;
     position: absolute;
-    transform: translateX(2px);
+    transform: translateX(1px);
     z-index: 0;
-    content: "";
+    content: '';
     opacity: 0;
     visibility: hidden;
-    transition: all .3s;
+    transition: all 0.3s;
   }
 
   &.active {

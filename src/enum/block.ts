@@ -2,7 +2,6 @@ import iconArrow from '../assets/textures/arrow.png?url'
 import ironSword from '../assets/textures/iron_sword.png?url'
 import ironPickaxe from '../assets/textures/iron_pickaxe.png?url'
 
-
 export const BlockManualType = {
   CURSOR: 'CURSOR',
   DELETE: 'DELETE',

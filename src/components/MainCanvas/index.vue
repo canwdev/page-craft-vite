@@ -1,10 +1,10 @@
 <script lang="ts">
-import {useCraftStore} from "@/store/craft";
-import {copyToClipboard} from "@/utils";
+import {useCraftStore} from '@/store/craft'
+import {copyToClipboard} from '@/utils'
 import ToolBar from '@/components/ToolBar/index.vue'
 import {throttle} from 'throttle-debounce'
 import $ from 'jquery'
-import {BlockManualType} from "@/enum/block";
+import {BlockManualType} from '@/enum/block'
 
 const LS_KEY_MAIN_HTML = 'page_craft_main_html'
 const LS_KEY_MAIN_CSS = 'page_craft_main_css'
@@ -17,16 +17,16 @@ const DOT_CLASS_MOUSE_OVER_PARENT = '.' + CLASS_MOUSE_OVER_PARENT
 const CLASS_MAIN_CANVAS_ROOT = 'page-craft-main-canvas'
 
 const removeMouseOverDomElementEffect = () => {
-  const $el = $(DOT_CLASS_MOUSE_OVER);
+  const $el = $(DOT_CLASS_MOUSE_OVER)
   if ($el.length) {
-    $el.removeClass(CLASS_MOUSE_OVER);
+    $el.removeClass(CLASS_MOUSE_OVER)
   }
-  const $el2 = $(DOT_CLASS_MOUSE_OVER_PARENT);
+  const $el2 = $(DOT_CLASS_MOUSE_OVER_PARENT)
   if ($el2.length) {
-    $el2.removeClass(CLASS_MOUSE_OVER_PARENT);
+    $el2.removeClass(CLASS_MOUSE_OVER_PARENT)
   }
   $('*[class=""]').removeAttr('class')
-};
+}
 
 type IndicatorOptions = {
   enableDevHelpClass: boolean
@@ -40,20 +40,22 @@ type IndicatorOptions = {
 export default defineComponent({
   name: 'MainCanvas',
   components: {
-    ToolBar
+    ToolBar,
   },
   setup() {
     const mainCanvasRef = ref()
     const craftStore = useCraftStore()
     const message = useMessage()
-    const indicatorOptions = reactive<IndicatorOptions>(JSON.parse(localStorage.getItem(LS_KEY_INDICATOR_OPTIONS) || 'null') || {
-      enableDevHelpClass: true,
-      enableExpand: false,
-      enableSelection: true,
-      fullWidth: false,
-      bgTransparent: false,
-      centeredElements: false,
-    })
+    const indicatorOptions = reactive<IndicatorOptions>(
+      JSON.parse(localStorage.getItem(LS_KEY_INDICATOR_OPTIONS) || 'null') || {
+        enableDevHelpClass: true,
+        enableExpand: false,
+        enableSelection: true,
+        fullWidth: false,
+        bgTransparent: false,
+        centeredElements: false,
+      }
+    )
     const isShowImportDialog = ref(false)
 
     onMounted(() => {
@@ -67,9 +69,13 @@ export default defineComponent({
       mainCanvasRef.value.removeEventListener('mousemove', handleMouseMove)
     })
 
-    watch(indicatorOptions, () => {
-      localStorage.setItem(LS_KEY_INDICATOR_OPTIONS, JSON.stringify({...indicatorOptions}))
-    }, {deep: true})
+    watch(
+      indicatorOptions,
+      () => {
+        localStorage.setItem(LS_KEY_INDICATOR_OPTIONS, JSON.stringify({...indicatorOptions}))
+      },
+      {deep: true}
+    )
 
     const saveData = () => {
       removeMouseOverDomElementEffect()
@@ -81,7 +87,7 @@ export default defineComponent({
     const handleMousemoveDebounced = throttle(50, false, (event: Event) => {
       const currentNode: any = event.target
       if (currentHoveredEl.value === currentNode) {
-        return;
+        return
       }
       currentHoveredEl.value = currentNode
       // console.log('event', event.target)
@@ -97,7 +103,7 @@ export default defineComponent({
           $parent.addClass(CLASS_MOUSE_OVER_PARENT)
         }
       }
-      $(currentNode).addClass(CLASS_MOUSE_OVER);
+      $(currentNode).addClass(CLASS_MOUSE_OVER)
     })
 
     const hoveredElDisplay = computed(() => {
@@ -113,11 +119,14 @@ export default defineComponent({
       return ''
     })
 
-    watch(() => indicatorOptions.enableSelection, (val) => {
-      if (!val) {
-        removeMouseOverDomElementEffect()
+    watch(
+      () => indicatorOptions.enableSelection,
+      (val) => {
+        if (!val) {
+          removeMouseOverDomElementEffect()
+        }
       }
-    })
+    )
     const handleMouseMove = (event: Event) => {
       if (!indicatorOptions.enableSelection) {
         return
@@ -144,7 +153,7 @@ export default defineComponent({
           if (targetEl === mainCanvasRef.value) {
             return
           }
-          targetEl.parentNode.removeChild(targetEl);
+          targetEl.parentNode.removeChild(targetEl)
         }
       } else {
         const addEl = document.createElement(currentBlock.tag)
@@ -162,7 +171,6 @@ export default defineComponent({
         // console.log('[addEl]', addEl)
       }
 
-
       saveData()
     }
 
@@ -170,9 +178,7 @@ export default defineComponent({
       removeMouseOverDomElementEffect()
       const innerHTML = mainCanvasRef.value.innerHTML
       copyToClipboard(innerHTML)
-      message.success(
-        "Copy Success!"
-      )
+      message.success('Copy Success!')
     }
 
     const importHtml = ref('')
@@ -198,9 +204,9 @@ export default defineComponent({
       saveData,
       hoveredElDisplay,
       handleImport,
-      BlockManualType
+      BlockManualType,
     }
-  }
+  },
 })
 </script>
 
@@ -218,7 +224,7 @@ export default defineComponent({
         v-model:value="importHtml"
         placeholder="Basic HTML"
         rows="20"
-        style="font-family: monospace;"
+        style="font-family: monospace"
         type="textarea"
       />
     </n-modal>
@@ -233,69 +239,65 @@ export default defineComponent({
 
         <div>
           <n-tooltip trigger="hover">
-            <template #trigger>
-              DevClass:
-            </template>
+            <template #trigger> DevClass: </template>
             Add 1px outline per element for better distinction
           </n-tooltip>
-          <n-switch v-model:value="indicatorOptions.enableDevHelpClass"/>
+          <n-switch v-model:value="indicatorOptions.enableDevHelpClass" />
         </div>
 
         <div>
           <n-tooltip trigger="hover">
-            <template #trigger>
-              Padding:
-            </template>
+            <template #trigger> Padding: </template>
             Pad each element with 10px for selection
           </n-tooltip>
-          <n-switch v-model:value="indicatorOptions.enableExpand"/>
+          <n-switch v-model:value="indicatorOptions.enableExpand" />
         </div>
 
         <div>
           <n-tooltip trigger="hover">
-            <template #trigger>
-              Selection:
-            </template>
+            <template #trigger> Selection: </template>
             Add cursor selection effect
           </n-tooltip>
-          <n-switch v-model:value="indicatorOptions.enableSelection"/>
+          <n-switch v-model:value="indicatorOptions.enableSelection" />
         </div>
 
         <div>
           FullWidth:
-          <n-switch v-model:value="indicatorOptions.fullWidth"/>
+          <n-switch v-model:value="indicatorOptions.fullWidth" />
         </div>
 
         <div>
           bgTransparent:
-          <n-switch v-model:value="indicatorOptions.bgTransparent"/>
+          <n-switch v-model:value="indicatorOptions.bgTransparent" />
         </div>
 
         <div>
           centeredElements:
-          <n-switch v-model:value="indicatorOptions.centeredElements"/>
+          <n-switch v-model:value="indicatorOptions.centeredElements" />
         </div>
-
       </n-space>
       <div class="indicator-text">
         {{ hoveredElDisplay }}
       </div>
     </div>
-    <div ref="mainCanvasRef"
-         :class="{
-      'page-craft-main-canvas--dev': indicatorOptions.enableDevHelpClass,
-      'page-craft-main-canvas--cursor-insert': !craftStore.currentBlock.manualType && Boolean(craftStore.currentBlock.tag),
-      'page-craft-main-canvas--cursor-pickaxe': craftStore.currentBlock.manualType === BlockManualType.DELETE ,
-      'page-craft-main-canvas--expand': indicatorOptions.enableExpand,
-      'page-craft-main-canvas--full-width': indicatorOptions.fullWidth,
-      'page-craft-main-canvas--transparent': indicatorOptions.bgTransparent,
-      'page-craft-main-canvas--centered': indicatorOptions.centeredElements,
-    }"
-         class="page-craft-main-canvas"
-         @click="addBlock"></div>
+    <div
+      ref="mainCanvasRef"
+      :class="{
+        'page-craft-main-canvas--dev': indicatorOptions.enableDevHelpClass,
+        'page-craft-main-canvas--cursor-insert':
+          !craftStore.currentBlock.manualType && Boolean(craftStore.currentBlock.tag),
+        'page-craft-main-canvas--cursor-pickaxe':
+          craftStore.currentBlock.manualType === BlockManualType.DELETE,
+        'page-craft-main-canvas--expand': indicatorOptions.enableExpand,
+        'page-craft-main-canvas--full-width': indicatorOptions.fullWidth,
+        'page-craft-main-canvas--transparent': indicatorOptions.bgTransparent,
+        'page-craft-main-canvas--centered': indicatorOptions.centeredElements,
+      }"
+      class="page-craft-main-canvas"
+      @click="addBlock"
+    ></div>
 
-
-    <ToolBar/>
+    <ToolBar />
   </div>
 </template>
 
@@ -332,11 +334,10 @@ export default defineComponent({
       font-size: 12px;
       font-family: monospace;
       max-width: 300px;
-      transform: scale(.8);
+      transform: scale(0.8);
       transform-origin: top right;
     }
   }
-
 }
 
 .page-craft-main-canvas {
@@ -345,7 +346,7 @@ export default defineComponent({
   width: 1200px;
   margin-left: auto;
   margin-right: auto;
-  cursor: url("@/assets/textures/iron_sword--cursor.png") 0 0, default;
+  cursor: url('@/assets/textures/iron_sword--cursor.png') 0 0, default;
 
   &--cursor-insert {
     cursor: crosshair;
@@ -355,9 +356,9 @@ export default defineComponent({
   }
 
   &--cursor-pickaxe {
-    cursor: url("@/assets/textures/iron_pickaxe--cursor.png") 6 24, default;
+    cursor: url('@/assets/textures/iron_pickaxe--cursor.png') 6 24, default;
     * {
-      cursor: url("@/assets/textures/iron_pickaxe--cursor.png") 6 24, default;
+      cursor: url('@/assets/textures/iron_pickaxe--cursor.png') 6 24, default;
     }
   }
 
@@ -398,7 +399,5 @@ export default defineComponent({
     opacity: 0.85 !important;
     fill: #f7ff00 !important; /* Helps in highlighting SVG elements */
   }
-
-
 }
 </style>

@@ -1,14 +1,14 @@
 <script lang="ts">
-import {useCraftStore} from "@/store/craft";
-import {blockList} from "@/enum/block";
-import ToolItem from "@/components/ToolBar/ToolItem.vue";
+import {useCraftStore} from '@/store/craft'
+import {blockList} from '@/enum/block'
+import ToolItem from '@/components/ToolBar/ToolItem.vue'
 
 const LS_KEY_GLOBAL_STYLE = 'page_craft_global_style'
 
 export default defineComponent({
   name: 'ToolBar',
   components: {
-    ToolItem
+    ToolItem,
   },
   setup() {
     const craftStore = useCraftStore()
@@ -37,7 +37,7 @@ export default defineComponent({
       handleSaveGlobalStyle,
       globalStyleText,
     }
-  }
+  },
 })
 </script>
 
@@ -55,27 +55,22 @@ export default defineComponent({
         v-model:value="globalStyleText"
         placeholder="CSS Code Only"
         rows="20"
-        style="font-family: monospace;"
+        style="font-family: monospace"
         type="textarea"
       />
     </n-modal>
 
     <div class="page-craft-enhanced-toolbar-above">
       <n-space size="small">
-
         <n-input-group>
-          <n-input-group-label>className</n-input-group-label>
-          <n-input v-model:value="craftStore.className" placeholder="className"/>
+          <n-input-group-label>Class</n-input-group-label>
+          <n-input v-model:value="craftStore.className" placeholder="" />
         </n-input-group>
         <n-input-group>
-          <n-input-group-label>innerText?</n-input-group-label>
-          <n-input v-model:value="craftStore.innerText" placeholder="innerText"/>
+          <n-input-group-label>Content</n-input-group-label>
+          <n-input v-model:value="craftStore.innerText" placeholder="innerText?" />
         </n-input-group>
-
-      </n-space>
-      <n-space size="small">
         <n-button type="primary" @click="isShowGlobalStyleDialog = true">Global Style</n-button>
-
       </n-space>
     </div>
     <div class="page-craft-enhanced-toolbar-main">
@@ -94,7 +89,6 @@ export default defineComponent({
   position: sticky;
   bottom: 0;
   user-select: none;
-  width: 1200px;
   margin-left: auto;
   margin-right: auto;
   font-family: monospace;
@@ -119,7 +113,7 @@ export default defineComponent({
     display: grid;
     grid-template-columns: repeat(18, 1fr);
     grid-template-rows: auto;
-    background-image: url("@/assets/gui/widgets-bar.png");
+    background-image: url('@/assets/gui/widgets-bar.png');
     border-left: 2px solid black;
     border-right: 2px solid black;
   }

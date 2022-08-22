@@ -1,8 +1,7 @@
-import {blockDiv} from "@/enum/block";
-import {BlockItem} from "@/enum/block";
+import {blockDiv} from '@/enum/block'
+import {BlockItem} from '@/enum/block'
 
 const LS_KEY_CURRENT_BLOCK = 'page_craft_current_block'
-
 
 export const useCraftStore = defineStore('craft', {
   state: () => {

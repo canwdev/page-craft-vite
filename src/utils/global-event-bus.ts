@@ -5,5 +5,4 @@ const globalEventBus = mitt()
 
 export default globalEventBus
 
-export const GlobalEvents = {
-}
+export const GlobalEvents = {}

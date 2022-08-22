@@ -5,7 +5,7 @@ import MainCanvas from './components/MainCanvas/index.vue'
 <template>
   <div class="page-craft-root">
     <n-message-provider>
-      <MainCanvas/>
+      <MainCanvas />
     </n-message-provider>
   </div>
 </template>
@@ -17,7 +17,7 @@ import MainCanvas from './components/MainCanvas/index.vue'
   width: 100%;
   background-color: aliceblue;
   /*background-image: url("https://api.dujin.org/bing/1920.php");*/
-  background-image: url("@/assets/bg/night.png");
+  background-image: url('@/assets/bg/night.png');
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
@@ -25,7 +25,5 @@ import MainCanvas from './components/MainCanvas/index.vue'
 }
 
 .page-craft-main-canvas {
-
 }
-
 </style>
