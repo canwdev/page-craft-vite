@@ -55,7 +55,7 @@ export default defineComponent({
     background-image: url('@/assets/gui/widgets-item-selected.png');
     background-size: contain;
     position: absolute;
-    transform: translateX(1px);
+    transform: translateX(1px) scale(0.9);
     z-index: 0;
     content: '';
     opacity: 0;
@@ -67,6 +67,7 @@ export default defineComponent({
     &::before {
       opacity: 1;
       visibility: visible;
+      transform: translateX(1px) scale(1);
     }
   }
 

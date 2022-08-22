@@ -134,7 +134,7 @@ export default defineComponent({
       handleMousemoveDebounced(event)
     }
 
-    const addBlock = (event: Event) => {
+    const handleBlockClick = (event: Event) => {
       // console.log('[craftStore]', craftStore, currentBlock.value)
       const {currentBlock} = craftStore
 
@@ -205,6 +205,49 @@ export default defineComponent({
       {flag: 'fullWidth', title: 'fullWidth', desc: ''},
     ]
 
+    const MAX_WAIT_TIME = 0.5 * 1000
+    const waitingTime = ref(0)
+    const waitTimer = ref<any>(null)
+    const cursorX = ref(0)
+    const cursorY = ref(0)
+    const clearWait = () => {
+      clearInterval(waitTimer.value)
+      waitingTime.value = 0
+      cursorX.value = 0
+      cursorY.value = 0
+    }
+    const waitingProgress = computed(() => {
+      return ((waitingTime.value / MAX_WAIT_TIME) * 100).toFixed(2)
+    })
+    const handleMouseDown = (event: MouseEvent) => {
+      if (craftStore.currentBlock.manualType !== BlockManualType.DELETE) {
+        return
+      }
+      // 仿 Minecraft 挖掘等待时间效果
+      console.log('[handleMouseDown]', event.x, event.y)
+      clearWait()
+      waitTimer.value = setInterval(() => {
+        if (waitingTime.value > MAX_WAIT_TIME) {
+          clearWait()
+          // console.log('fire!!')
+          handleBlockClick(event)
+          return
+        }
+        waitingTime.value += 50
+      }, 50)
+      cursorX.value = event.x - 10
+      cursorY.value = event.y + 10
+      event.preventDefault()
+    }
+    const handleMouseUp = (event: MouseEvent) => {
+      // console.log('[handleMouseUp]', event)
+      if (craftStore.currentBlock.manualType !== BlockManualType.DELETE) {
+        handleBlockClick(event)
+        return
+      }
+      clearWait()
+    }
+
     return {
       craftStore,
       mainCanvasRef,
@@ -212,13 +255,18 @@ export default defineComponent({
       isShowImportDialog,
       setMainCanvasHtml,
       importHtml,
-      addBlock,
+      handleBlockClick,
       indicatorOptions,
       saveData,
       hoveredElDisplay,
       handleImport,
       BlockManualType,
       toggleList,
+      handleMouseDown,
+      handleMouseUp,
+      waitingProgress,
+      cursorX,
+      cursorY,
     }
   },
 })
@@ -276,8 +324,20 @@ export default defineComponent({
         'page-craft-main-canvas--centered': indicatorOptions.centeredElements,
       }"
       class="page-craft-main-canvas"
-      @click="addBlock"
+      @mousedown="handleMouseDown"
+      @mouseup="handleMouseUp"
+      @mouseleave="handleMouseUp"
     ></div>
+
+    <div
+      v-if="cursorX"
+      class="action-progress win7"
+      :style="{top: cursorY + 'px', left: cursorX + 'px'}"
+    >
+      <div role="progressbar" class="animate error">
+        <div :style="`width: ${waitingProgress}%`"></div>
+      </div>
+    </div>
 
     <ToolBar />
   </div>
@@ -320,9 +380,16 @@ export default defineComponent({
       transform-origin: top right;
     }
 
-    .toggle-list {
-      text-shadow: 0 0 10px white;
-    }
+    text-shadow: 0 0 10px white;
+  }
+
+  .action-progress {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 999;
+    width: 50px;
+    pointer-events: none;
   }
 }
 

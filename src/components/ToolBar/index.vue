@@ -104,10 +104,8 @@ export default defineComponent({
   margin-right: auto;
   font-family: monospace;
   border-bottom: 0;
-  border-radius: 0;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-  padding: 5px 10px;
+  border-radius: 10px 10px 0 0;
+  padding: 5px 10px 6px;
   z-index: 999;
 
   .page-craft-enhanced-toolbar-above {
