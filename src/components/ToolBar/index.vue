@@ -1,11 +1,15 @@
 <script lang="ts">
 import {useCraftStore} from "@/store/craft";
 import {blockList} from "@/enum/block";
+import ToolItem from "@/components/ToolBar/ToolItem.vue";
 
 const LS_KEY_GLOBAL_STYLE = 'page_craft_global_style'
 
 export default defineComponent({
   name: 'ToolBar',
+  components: {
+    ToolItem
+  },
   setup() {
     const craftStore = useCraftStore()
 
@@ -64,7 +68,7 @@ export default defineComponent({
           <n-input v-model:value="craftStore.className" placeholder="className"/>
         </n-input-group>
         <n-input-group>
-          <n-input-group-label>innerText</n-input-group-label>
+          <n-input-group-label>innerText?</n-input-group-label>
           <n-input v-model:value="craftStore.innerText" placeholder="innerText"/>
         </n-input-group>
 
@@ -75,19 +79,12 @@ export default defineComponent({
       </n-space>
     </div>
     <div class="page-craft-enhanced-toolbar-main">
-      <div
+      <ToolItem
         v-for="(item, index) in blockList"
         :key="index"
-        class="list-item-frame"
-      >
-        <div :class="{active: item.tag === craftStore.currentBlock.tag}"
-             class="list-item-inner"
-             @click="() => craftStore.setCurrentBlock(item)"
-        >
-          <img v-if="item.icon" :src="item.icon" alt="icon">
-          <span class="item-text" v-else>{{ item.tag }}</span>
-        </div>
-      </div>
+        :item="item"
+        @click.native="() => craftStore.setCurrentBlock(item)"
+      />
     </div>
   </div>
 </template>
@@ -125,49 +122,6 @@ export default defineComponent({
     background-image: url("@/assets/gui/widgets-bar.png");
     border-left: 2px solid black;
     border-right: 2px solid black;
-
-    .list-item-inner {
-      width: 39px;
-      height: 44px;
-      color: white;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 13px;
-      position: relative;
-      &::before {
-        width: 48px;
-        height: 48px;
-        background-image: url("@/assets/gui/widgets-item-selected.png");
-        background-size: contain;
-        position: absolute;
-        transform: translateX(2px);
-        z-index: 0;
-        content: "";
-        opacity: 0;
-        visibility: hidden;
-        transition: all .3s;
-      }
-
-      &.active {
-        &::before {
-          opacity: 1;
-          visibility: visible;
-        }
-      }
-
-      img {
-        width: 32px;
-        height: 32px;
-        image-rendering: pixelated;
-      }
-
-      .item-text {
-        transform: rotate(-45deg);
-        text-shadow: 2px 2px 0px black;
-      }
-    }
   }
 }
 </style>

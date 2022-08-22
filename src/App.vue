@@ -17,7 +17,7 @@ import MainCanvas from './components/MainCanvas/index.vue'
   width: 100%;
   background-color: aliceblue;
   /*background-image: url("https://api.dujin.org/bing/1920.php");*/
-  background-image: url("@/assets/bg.png");
+  background-image: url("@/assets/bg/night.png");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;

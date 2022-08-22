@@ -4,6 +4,7 @@ import {copyToClipboard} from "@/utils";
 import ToolBar from '@/components/ToolBar/index.vue'
 import {throttle} from 'throttle-debounce'
 import $ from 'jquery'
+import {BlockManualType} from "@/enum/block";
 
 const LS_KEY_MAIN_HTML = 'page_craft_main_html'
 const LS_KEY_MAIN_CSS = 'page_craft_main_css'
@@ -76,10 +77,6 @@ export default defineComponent({
       localStorage.setItem(LS_KEY_MAIN_HTML, innerHTML)
     }
 
-    const isInsertMode = computed(() => {
-      return Boolean(craftStore.currentBlock.tag)
-    })
-
     const currentHoveredEl = ref<any>(null)
     const handleMousemoveDebounced = throttle(50, false, (event: Event) => {
       const currentNode: any = event.target
@@ -140,19 +137,31 @@ export default defineComponent({
         targetEl = mainCanvasRef.value
       }
 
-      console.log('[targetEl]', targetEl)
+      // console.log('[targetEl]', targetEl)
 
       if (!currentBlock.tag) {
-        return
+        if (currentBlock.manualType === BlockManualType.DELETE) {
+          if (targetEl === mainCanvasRef.value) {
+            return
+          }
+          targetEl.parentNode.removeChild(targetEl);
+        }
+      } else {
+        const addEl = document.createElement(currentBlock.tag)
+        if (currentBlock.tag === 'img') {
+          addEl.src = craftStore.innerText || ''
+        } else if (currentBlock.tag === 'input') {
+          addEl.value = craftStore.innerText || ''
+        } else {
+          addEl.innerText = craftStore.innerText || ''
+        }
+        if (craftStore.className) {
+          addEl.className = craftStore.className
+        }
+        targetEl.appendChild(addEl)
+        // console.log('[addEl]', addEl)
       }
 
-      const addEl = document.createElement(currentBlock.tag)
-      addEl.innerText = craftStore.innerText || ''
-      if (craftStore.className) {
-        addEl.className = craftStore.className
-      }
-      targetEl.appendChild(addEl)
-      console.log('[addEl]', addEl)
 
       saveData()
     }
@@ -188,8 +197,8 @@ export default defineComponent({
       indicatorOptions,
       saveData,
       hoveredElDisplay,
-      isInsertMode,
-      handleImport
+      handleImport,
+      BlockManualType
     }
   }
 })
@@ -275,7 +284,8 @@ export default defineComponent({
     <div ref="mainCanvasRef"
          :class="{
       'page-craft-main-canvas--dev': indicatorOptions.enableDevHelpClass,
-      'page-craft-main-canvas--is-insert': isInsertMode,
+      'page-craft-main-canvas--cursor-insert': !craftStore.currentBlock.manualType && Boolean(craftStore.currentBlock.tag),
+      'page-craft-main-canvas--cursor-pickaxe': craftStore.currentBlock.manualType === BlockManualType.DELETE ,
       'page-craft-main-canvas--expand': indicatorOptions.enableExpand,
       'page-craft-main-canvas--full-width': indicatorOptions.fullWidth,
       'page-craft-main-canvas--transparent': indicatorOptions.bgTransparent,
@@ -337,12 +347,18 @@ export default defineComponent({
   margin-right: auto;
   cursor: url("@/assets/textures/iron_sword--cursor.png") 0 0, default;
 
-  &--is-insert {
+  &--cursor-insert {
     cursor: crosshair;
+    * {
+      cursor: crosshair;
+    }
   }
 
-  &--is-pickaxe {
+  &--cursor-pickaxe {
     cursor: url("@/assets/textures/iron_pickaxe--cursor.png") 6 24, default;
+    * {
+      cursor: url("@/assets/textures/iron_pickaxe--cursor.png") 6 24, default;
+    }
   }
 
   &--dev {
