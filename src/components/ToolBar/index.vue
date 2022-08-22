@@ -108,6 +108,10 @@ export default defineComponent({
   padding: 5px 10px 6px;
   z-index: 999;
 
+  * {
+    box-sizing: border-box;
+  }
+
   .page-craft-enhanced-toolbar-above {
     padding: 2px 0 8px;
     display: flex;
