@@ -1,4 +1,6 @@
 export const beautifyCSS = (cssCode, options: any = {}) => {
+  // @ts-ignore
+  const csspretty = window.csspretty
   const useTabs = options.useTabs,
     useSpaceCount = options.useSpaceCount
 

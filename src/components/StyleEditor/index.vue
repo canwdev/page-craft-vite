@@ -114,7 +114,7 @@ export default defineComponent({
         },
         colorpicker: true,
         extraKeys: {
-          Tab: function (cm: any) {
+          Tab: (cm: any) => {
             if (cm.doc.somethingSelected()) {
               return CodeMirror.Pass
             }
@@ -125,7 +125,8 @@ export default defineComponent({
             }
           },
           // when ctrl+k  keys pressed, color picker is able to open.
-          'Ctrl-K': function (cm, event) {
+          // @ts-ignore
+          'Ctrl-K': (cm, event) => {
             return cm.state.colorpicker.popup_color_picker()
           },
         },
@@ -234,32 +235,33 @@ export default defineComponent({
 </script>
 
 <template>
-  <div v-show="mVisible" class="style-editor-dialog win7" ref="dialogRef">
-    <div class="window window-color is-bright glass">
-      <div class="title-bar" ref="titleBarRef">
-        <div class="title-bar-text">Style Editor</div>
-        <div class="title-bar-controls">
-          <!--          <button aria-label="Minimize"></button>-->
-          <!--          <button aria-label="Maximize"></button>-->
-          <button @click="copyStyle" title="Copy code">
-            <img src="~@/assets/textures/map.png" alt="copy" />
-          </button>
-          <button @click="execBeautifyCssAction" title="Format code">
-            <img src="~@/assets/textures/redstone.png" alt="format" />
-          </button>
-          <button title="Select an element in the page to generate its CSS Selector">
-            <img
-              src="~@/assets/textures/arrow.png"
-              alt="select"
-              style="transform: rotateY(180deg)"
-            />
-          </button>
-          <button title="Close" aria-label="Close" @click="mVisible = false"></button>
+  <transition name="zoom">
+    <div v-show="mVisible" class="style-editor-dialog win7" ref="dialogRef">
+      <div class="window window-color is-bright glass">
+        <div class="title-bar" ref="titleBarRef">
+          <div class="title-bar-text">Style Editor</div>
+          <div class="title-bar-controls">
+            <!--          <button aria-label="Minimize"></button>-->
+            <!--          <button aria-label="Maximize"></button>-->
+            <button @click="copyStyle" title="Copy code">
+              <img src="~@/assets/textures/map.png" alt="copy" />
+            </button>
+            <button @click="execBeautifyCssAction" title="Format code">
+              <img src="~@/assets/textures/redstone.png" alt="format" />
+            </button>
+            <button title="Select an element in the page to generate its CSS Selector">
+              <img
+                src="~@/assets/textures/arrow.png"
+                alt="select"
+                style="transform: rotateY(180deg)"
+              />
+            </button>
+            <button title="Close" aria-label="Close" @click="mVisible = false"></button>
+          </div>
         </div>
-      </div>
 
-      <div class="window-body-1">
-        <!--        <section class="tabs">
+        <div class="window-body-1">
+          <!--        <section class="tabs">
           <menu role="tablist">
             <button role="tab" aria-selected="false">CSS</button>
             <button role="tab" aria-selected="true">SASS</button>
@@ -275,10 +277,11 @@ export default defineComponent({
           <article role="tabpanel" v-show="false">Tab B is active</article>
         </section>-->
 
-        <div class="code-editor-placeholder" ref="textareaRef"></div>
+          <div class="code-editor-placeholder" ref="textareaRef"></div>
+        </div>
       </div>
     </div>
-  </div>
+  </transition>
 </template>
 
 <style lang="scss" scoped>

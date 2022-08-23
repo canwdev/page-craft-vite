@@ -292,26 +292,31 @@ export default defineComponent({
     </n-modal>
 
     <div class="page-craft-main-canvas-indicator page-craft-aero-panel win7">
-      <n-space align="center" size="small">
-        <button @click="isShowImportDialog = true">Import...</button>
-        <button @click="copyInnerHtml">Copy HTML</button>
-        <button @click="saveData" title="Save DOM to LocalStorage">Save</button>
+      <n-space align="center">
+        <n-space align="center" size="small">
+          <button @click="isShowImportDialog = true">Import...</button>
+          <button @click="copyInnerHtml">Copy HTML</button>
+          <button @click="saveData" title="Save DOM to LocalStorage">Save</button>
 
-        <div v-for="item in toggleList" :key="item.flag" class="toggle-list">
-          <input
-            type="checkbox"
-            :id="`checkbox_${item.flag}`"
-            v-model="indicatorOptions[item.flag]"
-          />
-          <label :for="`checkbox_${item.flag}`" :title="item.desc">{{ item.title }}</label>
+          <div v-for="item in toggleList" :key="item.flag" class="toggle-list">
+            <input
+              type="checkbox"
+              :id="`checkbox_${item.flag}`"
+              v-model="indicatorOptions[item.flag]"
+            />
+            <label :for="`checkbox_${item.flag}`" :title="item.desc">{{ item.title }}</label>
+          </div>
+        </n-space>
+        <button
+          style="min-width: 120px"
+          @click="indicatorOptions.showStyleEditor = !indicatorOptions.showStyleEditor"
+        >
+          {{ indicatorOptions.showStyleEditor ? 'Hide' : 'Show' }} StyleEditor
+        </button>
+        <div v-if="false" class="indicator-text">
+          {{ hoveredElDisplay }}
         </div>
       </n-space>
-      <button @click="indicatorOptions.showStyleEditor = !indicatorOptions.showStyleEditor">
-        {{ indicatorOptions.showStyleEditor ? 'Hide' : 'Show' }} StyleEditor
-      </button>
-      <div v-if="false" class="indicator-text">
-        {{ hoveredElDisplay }}
-      </div>
     </div>
     <div
       ref="mainCanvasRef"
@@ -332,15 +337,17 @@ export default defineComponent({
       @mouseleave="handleMouseUp"
     ></div>
 
-    <div
-      v-if="cursorX"
-      class="action-progress win7"
-      :style="{top: cursorY + 'px', left: cursorX + 'px'}"
-    >
-      <div role="progressbar" class="animate error">
-        <div :style="`width: ${waitingProgress}%`"></div>
+    <transition name="fade">
+      <div
+        v-if="cursorX"
+        class="action-progress win7"
+        :style="{top: cursorY + 'px', left: cursorX + 'px'}"
+      >
+        <div role="progressbar" class="animate error">
+          <div :style="`width: ${waitingProgress}%`"></div>
+        </div>
       </div>
-    </div>
+    </transition>
 
     <ToolBar />
     <StyleEditor v-model:visible="indicatorOptions.showStyleEditor" />
@@ -358,7 +365,7 @@ export default defineComponent({
   position: relative;
 
   .page-craft-main-canvas-indicator {
-    width: 1200px;
+    //width: 1200px;
     margin-left: auto;
     margin-right: auto;
     padding: 5px 10px;

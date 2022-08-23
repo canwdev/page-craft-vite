@@ -7,18 +7,11 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
-    HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     MainCanvas: typeof import('./src/components/MainCanvas/index.vue')['default']
-    NButton: typeof import('naive-ui')['NButton']
-    NButtonGroup: typeof import('naive-ui')['NButtonGroup']
     NInput: typeof import('naive-ui')['NInput']
-    NInputGroup: typeof import('naive-ui')['NInputGroup']
-    NInputGroupLabel: typeof import('naive-ui')['NInputGroupLabel']
     NMessageProvider: typeof import('naive-ui')['NMessageProvider']
     NModal: typeof import('naive-ui')['NModal']
     NSpace: typeof import('naive-ui')['NSpace']
-    NSwitch: typeof import('naive-ui')['NSwitch']
-    NTooltip: typeof import('naive-ui')['NTooltip']
     StyleEditor: typeof import('./src/components/StyleEditor/index.vue')['default']
     ToolBar: typeof import('./src/components/ToolBar/index.vue')['default']
     ToolItem: typeof import('./src/components/ToolBar/ToolItem.vue')['default']
