@@ -7,12 +7,25 @@ import 'codemirror/lib/codemirror.css'
 import 'codemirror/mode/sass/sass' // 代码高亮
 import 'codemirror/theme/darcula.css'
 import 'codemirror/keymap/sublime'
+import 'codemirror/addon/comment/comment'
+import 'codemirror/addon/display/placeholder'
+import 'codemirror/addon/edit/closebrackets'
+import 'codemirror/addon/edit/matchbrackets'
+import 'codemirror/addon/hint/css-hint'
+import 'codemirror/addon/hint/show-hint.css'
+import 'codemirror/addon/hint/show-hint'
+// import 'codemirror/addon/lint/css-lint'
+import 'codemirror/addon/lint/lint'
+import 'codemirror/addon/search/searchcursor'
+import 'codemirror/addon/selection/active-line'
 import emmet from '@emmetio/codemirror-plugin'
 import {debounce, throttle} from 'throttle-debounce'
 import {LS_KEYS} from '@/enum'
 import {createOrFindStyleNode} from '@/utils/dom'
 import 'codemirror-colorpicker/dist/codemirror-colorpicker.css'
 import 'codemirror-colorpicker'
+import {beautifyCSS} from '@/utils/css'
+import {copyToClipboard, isCharacterKeyPress} from '@/utils'
 
 // Register extension on CodeMirror object
 emmet(CodeMirror)
@@ -25,7 +38,7 @@ type StyleEditorOptions = {
 }
 
 // do not use vue ref for CodeMirror: https://github.com/codemirror/codemirror5/issues/6805#issuecomment-955151134
-let codeMirrorInstance: CodeMirror = null
+let codeMirrorInstance: any = null
 
 export default defineComponent({
   name: 'StyleEditor',
@@ -82,6 +95,8 @@ export default defineComponent({
 
       codeMirrorInstance = CodeMirror(textareaRef.value, {
         value: style,
+        placeholder: 'Write your style code here...',
+        lint: true,
         theme: 'darcula', // 主题样式
         keyMap: 'sublime',
         undoDepth: 1000,
@@ -99,7 +114,7 @@ export default defineComponent({
         },
         colorpicker: true,
         extraKeys: {
-          Tab: function (cm) {
+          Tab: function (cm: any) {
             if (cm.doc.somethingSelected()) {
               return CodeMirror.Pass
             }
@@ -111,13 +126,21 @@ export default defineComponent({
           },
           // when ctrl+k  keys pressed, color picker is able to open.
           'Ctrl-K': function (cm, event) {
-            cm.state.colorpicker.popup_color_picker()
+            return cm.state.colorpicker.popup_color_picker()
           },
         },
       })
       codeMirrorInstance.on('change', () => {
         handleEditorChangeDebounced(codeMirrorInstance)
       })
+
+      // codeMirrorInstance.on('keypress', (cm, evt) => {
+      //   if (isCharacterKeyPress(evt)) {
+      //     if (CodeMirror.showHint) {
+      //       CodeMirror.showHint(cm)
+      //     }
+      //   }
+      // })
 
       new ResizeObserver(() => {
         handleResizeDebounced()
@@ -171,12 +194,40 @@ export default defineComponent({
       textareaRef.value.style.height = styleEditorOptions.wHeight
     }
 
+    const message = useMessage()
+    const execBeautifyCssAction = async () => {
+      const editor = codeMirrorInstance
+      const textValue = editor.getValue()
+      if (!textValue.trim()) {
+        message.info('Please type some code to be beautified')
+      } else {
+        const beautifiedCSS = await beautifyCSS(textValue)
+        if (textValue.trim() !== beautifiedCSS.trim()) {
+          await editor.setValue(beautifiedCSS)
+          handleUpdateStyle(beautifiedCSS)
+          // await editor.reInitTextComponent({pleaseIgnoreCursorActivity: true})
+
+          message.success('Your code has been beautified :-)')
+        } else {
+          message.success('Your code already looks beautiful :-)')
+        }
+      }
+      editor.focus()
+    }
+
+    const copyStyle = () => {
+      copyToClipboard(codeMirrorInstance.getValue())
+      message.success('Copy Success!')
+    }
+
     return {
       dialogRef,
       titleBarRef,
       mVisible,
       handleUpdateStyle,
       textareaRef,
+      execBeautifyCssAction,
+      copyStyle,
     }
   },
 })
@@ -190,10 +241,10 @@ export default defineComponent({
         <div class="title-bar-controls">
           <!--          <button aria-label="Minimize"></button>-->
           <!--          <button aria-label="Maximize"></button>-->
-          <button title="Copy code">
+          <button @click="copyStyle" title="Copy code">
             <img src="~@/assets/textures/map.png" alt="copy" />
           </button>
-          <button title="Format code">
+          <button @click="execBeautifyCssAction" title="Format code">
             <img src="~@/assets/textures/redstone.png" alt="format" />
           </button>
           <button title="Select an element in the page to generate its CSS Selector">
