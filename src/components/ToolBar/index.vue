@@ -69,6 +69,7 @@ export default defineComponent({
             type="text"
             v-model="craftStore.className"
             placeholder="CSS Class"
+            style="font-family: monospace"
           />
         </div>
 

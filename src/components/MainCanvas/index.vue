@@ -221,6 +221,7 @@ export default defineComponent({
     })
     const handleMouseDown = (event: MouseEvent) => {
       if (craftStore.currentBlock.manualType !== BlockManualType.DELETE) {
+        handleBlockClick(event)
         return
       }
       // 仿 Minecraft 挖掘等待时间效果
@@ -242,7 +243,6 @@ export default defineComponent({
     const handleMouseUp = (event: MouseEvent) => {
       // console.log('[handleMouseUp]', event)
       if (craftStore.currentBlock.manualType !== BlockManualType.DELETE) {
-        handleBlockClick(event)
         return
       }
       clearWait()
@@ -295,7 +295,7 @@ export default defineComponent({
       <n-space align="center" size="small">
         <button @click="isShowImportDialog = true">Import...</button>
         <button @click="copyInnerHtml">Copy HTML</button>
-        <button v-if="false" @click="saveData">Save LocalStorage</button>
+        <button @click="saveData" title="Save DOM to LocalStorage">Save</button>
 
         <div v-for="item in toggleList" :key="item.flag" class="toggle-list">
           <input
