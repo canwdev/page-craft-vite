@@ -372,7 +372,7 @@ export default defineComponent({
     border-radius: 0;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
-    z-index: 999;
+    z-index: 997;
 
     .indicator-text {
       position: absolute;

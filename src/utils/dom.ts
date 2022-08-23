@@ -1,4 +1,4 @@
-export const createOrFindStyleNode = (id, cssText) => {
+export const createOrFindStyleNode = (id, cssText?) => {
   const find = document.querySelector(id)
   if (find) {
     return find

@@ -3,6 +3,7 @@ import {useCraftStore} from '@/store/craft'
 import {blockList} from '@/enum/block'
 import ToolItem from '@/components/ToolBar/ToolItem.vue'
 import {LS_KEYS} from '@/enum'
+import {createOrFindStyleNode} from "@/utils/dom";
 
 export default defineComponent({
   name: 'ToolBar',
@@ -11,21 +12,25 @@ export default defineComponent({
   },
   setup() {
     const craftStore = useCraftStore()
+    const styleEl = ref<HTMLElement | null>(null)
 
     const isShowGlobalStyleDialog = ref(false)
     const globalStyleText = ref('')
-    const handleSaveGlobalStyle = () => {
-      localStorage.setItem(LS_KEYS.GLOBAL_STYLE, globalStyleText.value)
-      const styleEl = document.getElementById('globalStyle')
-      if (styleEl) {
-        styleEl.innerHTML = globalStyleText.value
+
+    const applyGlobalStyle = () => {
+      if (styleEl.value) {
+        styleEl.value.innerHTML = globalStyleText.value
+        localStorage.setItem(LS_KEYS.GLOBAL_STYLE, globalStyleText.value)
       }
     }
+
     onMounted(() => {
-      const style = localStorage.getItem(LS_KEYS.GLOBAL_STYLE)
+      styleEl.value = createOrFindStyleNode(LS_KEYS.GLOBAL_STYLE)
+      const style = localStorage.getItem(LS_KEYS.GLOBAL_STYLE) || ''
+
       if (style) {
         globalStyleText.value = style
-        handleSaveGlobalStyle()
+        applyGlobalStyle()
       }
     })
 
@@ -33,7 +38,7 @@ export default defineComponent({
       blockList,
       craftStore,
       isShowGlobalStyleDialog,
-      handleSaveGlobalStyle,
+      applyGlobalStyle,
       globalStyleText,
     }
   },
@@ -48,7 +53,7 @@ export default defineComponent({
       positive-text="Save"
       preset="dialog"
       title="Global Style"
-      @positive-click="handleSaveGlobalStyle"
+      @positive-click="applyGlobalStyle"
     >
       <n-input
         v-model:value="globalStyleText"

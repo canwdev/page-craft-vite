@@ -7,6 +7,8 @@ import 'codemirror/lib/codemirror.css'
 import 'codemirror/mode/sass/sass' // 代码高亮
 import 'codemirror/theme/darcula.css'
 import {debounce, throttle} from 'throttle-debounce'
+import {LS_KEYS} from "@/enum";
+import {createOrFindStyleNode} from "@/utils/dom";
 
 export default defineComponent({
   name: 'StyleEditor',
@@ -25,6 +27,7 @@ export default defineComponent({
     const codeEditor = ref<any>()
 
     const clearDraggable = ref<any>(null)
+    const styleEl = ref<HTMLElement | null>(null)
     onMounted(() => {
       clearDraggable.value = setDraggableMouse({
         dragHandleEl: titleBarRef.value,
@@ -57,6 +60,11 @@ export default defineComponent({
         handleResizeDebounced()
       }).observe(textareaRef.value)
       codeEditor.value = editor
+
+      styleEl.value = createOrFindStyleNode(LS_KEYS.MAIN_STYLE)
+      const style = localStorage.getItem(LS_KEYS.MAIN_STYLE) || ''
+      handleUpdateStyle(style)
+      editor.setValue(style)
     })
 
     onBeforeUnmount(() => {
@@ -77,10 +85,9 @@ export default defineComponent({
     })
 
     const handleUpdateStyle = (value) => {
-      // localStorage.setItem(GLOBAL_STYLE, e.value)
-      const styleEl = document.getElementById('canvasStyle')
-      if (styleEl) {
-        styleEl.innerHTML = value
+      if (styleEl.value) {
+        styleEl.value.innerHTML = value
+        localStorage.setItem(LS_KEYS.MAIN_STYLE, value)
       }
     }
 
@@ -97,7 +104,7 @@ export default defineComponent({
 
 <template>
   <div v-show="mVisible" class="style-editor-dialog win7" ref="dialogRef">
-    <div class="window is-bright glass">
+    <div class="window window-color is-bright glass">
       <div class="title-bar" ref="titleBarRef">
         <div class="title-bar-text">Style Editor</div>
         <div class="title-bar-controls">
@@ -146,7 +153,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .style-editor-dialog {
   position: fixed;
-  z-index: 1000;
+  z-index: 998;
   top: 30%;
   left: 30%;
   .title-bar {
@@ -157,6 +164,10 @@ export default defineComponent({
     margin-bottom: 0;
     padding: 0px;
     display: flex;
+  }
+  .window-color::before,
+  .window-color > .title-bar {
+    background-color: #8dbc5d;
   }
 
   .window-body-1 {
