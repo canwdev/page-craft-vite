@@ -19,6 +19,7 @@ declare module '@vue/runtime-core' {
     NSpace: typeof import('naive-ui')['NSpace']
     NSwitch: typeof import('naive-ui')['NSwitch']
     NTooltip: typeof import('naive-ui')['NTooltip']
+    StyleEditor: typeof import('./src/components/StyleEditor/index.vue')['default']
     ToolBar: typeof import('./src/components/ToolBar/index.vue')['default']
     ToolItem: typeof import('./src/components/ToolBar/ToolItem.vue')['default']
   }

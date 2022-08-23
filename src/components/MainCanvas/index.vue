@@ -2,6 +2,7 @@
 import {useCraftStore} from '@/store/craft'
 import {copyToClipboard} from '@/utils'
 import ToolBar from '@/components/ToolBar/index.vue'
+import StyleEditor from '@/components/StyleEditor/index.vue'
 import {throttle} from 'throttle-debounce'
 import $ from 'jquery'
 import {BlockManualType} from '@/enum/block'
@@ -35,12 +36,14 @@ type IndicatorOptions = {
   fullWidth: boolean
   bgTransparent: boolean
   centeredElements: boolean
+  showStyleEditor: boolean
 }
 
 export default defineComponent({
   name: 'MainCanvas',
   components: {
     ToolBar,
+    StyleEditor,
   },
   setup() {
     const mainCanvasRef = ref()
@@ -54,6 +57,7 @@ export default defineComponent({
         fullWidth: false,
         bgTransparent: false,
         centeredElements: false,
+        showStyleEditor: false,
       }
     )
     const isShowImportDialog = ref(false)
@@ -306,7 +310,10 @@ export default defineComponent({
           <label :for="`checkbox_${item.flag}`" :title="item.desc">{{ item.title }}</label>
         </div>
       </n-space>
-      <div class="indicator-text">
+      <button @click="indicatorOptions.showStyleEditor = !indicatorOptions.showStyleEditor">
+        {{ indicatorOptions.showStyleEditor ? 'Hide' : 'Show' }} StyleEditor
+      </button>
+      <div v-if="false" class="indicator-text">
         {{ hoveredElDisplay }}
       </div>
     </div>
@@ -340,6 +347,7 @@ export default defineComponent({
     </div>
 
     <ToolBar />
+    <StyleEditor v-model:visible="indicatorOptions.showStyleEditor" />
   </div>
 </template>
 

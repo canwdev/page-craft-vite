@@ -23,7 +23,4 @@ import MainCanvas from './components/MainCanvas/index.vue'
   background-position: center;
   overflow: hidden;
 }
-
-.page-craft-main-canvas {
-}
 </style>
