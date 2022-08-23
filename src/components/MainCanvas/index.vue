@@ -6,10 +6,7 @@ import StyleEditor from '@/components/StyleEditor/index.vue'
 import {throttle} from 'throttle-debounce'
 import $ from 'jquery'
 import {BlockManualType} from '@/enum/block'
-
-const LS_KEY_MAIN_HTML = 'page_craft_main_html'
-const LS_KEY_MAIN_CSS = 'page_craft_main_css'
-const LS_KEY_INDICATOR_OPTIONS = 'page_craft_indicator_options'
+import {LS_KEYS} from '@/enum'
 
 const CLASS_MOUSE_OVER = 'page-craft-mouse-over-dom-element'
 const DOT_CLASS_MOUSE_OVER = '.' + CLASS_MOUSE_OVER
@@ -50,7 +47,7 @@ export default defineComponent({
     const craftStore = useCraftStore()
     const message = useMessage()
     const indicatorOptions = reactive<IndicatorOptions>(
-      JSON.parse(localStorage.getItem(LS_KEY_INDICATOR_OPTIONS) || 'null') || {
+      JSON.parse(localStorage.getItem(LS_KEYS.INDICATOR_OPTIONS) || 'null') || {
         enableDevHelpClass: true,
         enableExpand: false,
         enableSelection: true,
@@ -63,7 +60,7 @@ export default defineComponent({
     const isShowImportDialog = ref(false)
 
     onMounted(() => {
-      const html = localStorage.getItem(LS_KEY_MAIN_HTML)
+      const html = localStorage.getItem(LS_KEYS.MAIN_HTML)
       if (html) {
         setMainCanvasHtml(html)
       }
@@ -76,7 +73,7 @@ export default defineComponent({
     watch(
       indicatorOptions,
       () => {
-        localStorage.setItem(LS_KEY_INDICATOR_OPTIONS, JSON.stringify({...indicatorOptions}))
+        localStorage.setItem(LS_KEYS.INDICATOR_OPTIONS, JSON.stringify({...indicatorOptions}))
       },
       {deep: true}
     )
@@ -84,7 +81,7 @@ export default defineComponent({
     const saveData = () => {
       removeMouseOverDomElementEffect()
       const innerHTML = mainCanvasRef.value.innerHTML
-      localStorage.setItem(LS_KEY_MAIN_HTML, innerHTML)
+      localStorage.setItem(LS_KEYS.MAIN_HTML, innerHTML)
     }
 
     const currentHoveredEl = ref<any>(null)

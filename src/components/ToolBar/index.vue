@@ -2,8 +2,7 @@
 import {useCraftStore} from '@/store/craft'
 import {blockList} from '@/enum/block'
 import ToolItem from '@/components/ToolBar/ToolItem.vue'
-
-const LS_KEY_GLOBAL_STYLE = 'page_craft_global_style'
+import {LS_KEYS} from '@/enum'
 
 export default defineComponent({
   name: 'ToolBar',
@@ -16,14 +15,14 @@ export default defineComponent({
     const isShowGlobalStyleDialog = ref(false)
     const globalStyleText = ref('')
     const handleSaveGlobalStyle = () => {
-      localStorage.setItem(LS_KEY_GLOBAL_STYLE, globalStyleText.value)
+      localStorage.setItem(LS_KEYS.GLOBAL_STYLE, globalStyleText.value)
       const styleEl = document.getElementById('globalStyle')
       if (styleEl) {
         styleEl.innerHTML = globalStyleText.value
       }
     }
     onMounted(() => {
-      const style = localStorage.getItem(LS_KEY_GLOBAL_STYLE)
+      const style = localStorage.getItem(LS_KEYS.GLOBAL_STYLE)
       if (style) {
         globalStyleText.value = style
         handleSaveGlobalStyle()

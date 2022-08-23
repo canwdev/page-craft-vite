@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "7.css": "^0.7.0",
+    "codemirror": "5.65.8",
     "jquery": "^3.6.0",
     "mitt": "^3.0.0",
     "normalize.css": "^8.0.1",

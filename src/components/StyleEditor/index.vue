@@ -2,6 +2,11 @@
 import {defineComponent} from 'vue'
 import {setDraggableMouse} from '@/utils/draggable-mouse'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
+import CodeMirror from 'codemirror'
+import 'codemirror/lib/codemirror.css'
+import 'codemirror/mode/sass/sass' // 代码高亮
+import 'codemirror/theme/darcula.css'
+import {debounce, throttle} from 'throttle-debounce'
 
 export default defineComponent({
   name: 'StyleEditor',
@@ -16,6 +21,8 @@ export default defineComponent({
     const mVisible = useModelWrapper(props, emit, 'visible')
     const dialogRef = ref()
     const titleBarRef = ref()
+    const textareaRef = ref()
+    const codeEditor = ref<any>()
 
     const clearDraggable = ref<any>(null)
     onMounted(() => {
@@ -24,6 +31,32 @@ export default defineComponent({
         dragTargetEl: dialogRef.value,
         allowOut: true,
       })
+
+      const editor = CodeMirror(textareaRef.value, {
+        // mode: 'application/json',
+        theme: 'darcula', // 主题样式
+        // lint: true,
+        placeholder:
+          'Write Sass code here.\nThe code gets applied immediately.\n\nExample:' +
+          '\nimg {\n    opacity: 0.5;\n}',
+        tabSize: 2,
+        smartIndent: true, // 是否智能缩进
+        styleActiveLine: true, // 当前行高亮
+        lineNumbers: true, // 显示行号
+        gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter', 'CodeMirror-lint-markers'],
+        lineWrapping: true, // 自动换行
+        matchBrackets: true, // 括号匹配显示
+        autoCloseBrackets: true, // 输入和退格时成对
+        foldGutter: true,
+      })
+      editor.on('change', () => {
+        handleEditorChangeDebounced(editor)
+      })
+
+      new ResizeObserver(() => {
+        handleResizeDebounced()
+      }).observe(textareaRef.value)
+      codeEditor.value = editor
     })
 
     onBeforeUnmount(() => {
@@ -32,11 +65,22 @@ export default defineComponent({
       }
     })
 
-    const handleUpdateStyle = (e) => {
-      // localStorage.setItem(LS_KEY_GLOBAL_STYLE, e.value)
+    const handleResizeDebounced = throttle(100, false, () => {
+      const width = textareaRef.value.offsetWidth
+      const height = textareaRef.value.offsetHeight
+
+      codeEditor.value.setSize(width, height)
+    })
+
+    const handleEditorChangeDebounced = debounce(500, false, (editor) => {
+      handleUpdateStyle(editor.getValue())
+    })
+
+    const handleUpdateStyle = (value) => {
+      // localStorage.setItem(GLOBAL_STYLE, e.value)
       const styleEl = document.getElementById('canvasStyle')
       if (styleEl) {
-        styleEl.innerHTML = e.target.value
+        styleEl.innerHTML = value
       }
     }
 
@@ -45,6 +89,7 @@ export default defineComponent({
       titleBarRef,
       mVisible,
       handleUpdateStyle,
+      textareaRef,
     }
   },
 })
@@ -58,18 +103,41 @@ export default defineComponent({
         <div class="title-bar-controls">
           <!--          <button aria-label="Minimize"></button>-->
           <!--          <button aria-label="Maximize"></button>-->
-          <button style="color: white; text-shadow: 0 0 2px black">A</button>
-          <button aria-label="Close" @click="mVisible = false"></button>
+          <button title="Copy code">
+            <img src="~@/assets/textures/map.png" alt="copy" />
+          </button>
+          <button title="Format code">
+            <img src="~@/assets/textures/redstone.png" alt="format" />
+          </button>
+          <button title="Select an element in the page to generate its CSS Selector">
+            <img
+              src="~@/assets/textures/arrow.png"
+              alt="select"
+              style="transform: rotateY(180deg)"
+            />
+          </button>
+          <button title="Close" aria-label="Close" @click="mVisible = false"></button>
         </div>
       </div>
 
-      <div class="window-body">
-        <textarea
-          rows="10"
-          cols="50"
-          style="font-family: monospace"
-          @change="handleUpdateStyle"
-        ></textarea>
+      <div class="window-body-1">
+        <!--        <section class="tabs">
+          <menu role="tablist">
+            <button role="tab" aria-selected="false">CSS</button>
+            <button role="tab" aria-selected="true">SASS</button>
+          </menu>
+          <article role="tabpanel">
+            <textarea
+              rows="10"
+              cols="50"
+              style="font-family: monospace"
+              @change="handleUpdateStyle"
+            ></textarea>
+          </article>
+          <article role="tabpanel" v-show="false">Tab B is active</article>
+        </section>-->
+
+        <div class="code-editor-placeholder" ref="textareaRef"></div>
       </div>
     </div>
   </div>
@@ -83,6 +151,23 @@ export default defineComponent({
   left: 30%;
   .title-bar {
     user-select: none;
+  }
+
+  :deep([role='tabpanel']) {
+    margin-bottom: 0;
+    padding: 0px;
+    display: flex;
+  }
+
+  .window-body-1 {
+    margin: 0 6px 6px;
+
+    .code-editor-placeholder {
+      min-width: 300px;
+      min-height: 300px;
+      resize: both;
+      overflow: auto !important;
+    }
   }
 }
 </style>
