@@ -289,6 +289,11 @@
   resolved "https://registry.npmmirror.com/@css-render/vue3-ssr/-/vue3-ssr-0.15.10.tgz#0a5f58e8480b3e125f0667137b33217eee0b8f95"
   integrity sha512-keGKnkB2nyVGoA8GezMKNsmvTGXEzgLOGGlgshwOTSEzd1dsROyZ2m/khJ9jV5zbzDM4rWeAWbWF0zwHemsJcw==
 
+"@emmetio/codemirror-plugin@^1.2.4":
+  version "1.2.4"
+  resolved "https://registry.npmmirror.com/@emmetio/codemirror-plugin/-/codemirror-plugin-1.2.4.tgz#f880a36098536f6555747eadece9b7cc2df597e3"
+  integrity sha512-wVw2gqI6X+uVWYVRtTVymzTgbo4hEZIcPCNj4xrXw4l/+L3Qa+tAC/yf+Xy9nenRPCqRq0RLqGiQL+Qf/wYE9Q==
+
 "@emotion/hash@~0.8.0":
   version "0.8.0"
   resolved "https://registry.npmmirror.com/@emotion/hash/-/hash-0.8.0.tgz#bbbff68978fefdbe68ccb533bc8cbe1d1afb5413"
@@ -847,6 +852,11 @@ chalk@^4.0.0:
     readdirp "~3.6.0"
   optionalDependencies:
     fsevents "~2.3.2"
+
+codemirror-colorpicker@^1.9.80:
+  version "1.9.80"
+  resolved "https://registry.npmmirror.com/codemirror-colorpicker/-/codemirror-colorpicker-1.9.80.tgz#aa3c39527e840dd245f0c85830b7a435296b808f"
+  integrity sha512-7lGqNxf5haBJXLnVR1ynPiPkN2d1Whm0jdy8Z9QsSOhRWVyK2C2ihgm1dX4DCks57ht/jKMdpL9lYv+zAphxWQ==
 
 codemirror@5.65.8:
   version "5.65.8"

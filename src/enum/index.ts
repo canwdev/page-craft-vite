@@ -4,4 +4,5 @@ export const LS_KEYS = {
   MAIN_HTML: 'page_craft_main_html',
   MAIN_STYLE: 'page_craft_main_style',
   INDICATOR_OPTIONS: 'page_craft_indicator_options',
+  STYLE_EDITOR_OPTIONS: 'page_craft_style_editor_options',
 }

@@ -57,6 +57,13 @@ export default defineComponent({
         showStyleEditor: false,
       }
     )
+    watch(
+      indicatorOptions,
+      () => {
+        localStorage.setItem(LS_KEYS.INDICATOR_OPTIONS, JSON.stringify({...indicatorOptions}))
+      },
+      {deep: true}
+    )
     const isShowImportDialog = ref(false)
 
     onMounted(() => {
@@ -69,14 +76,6 @@ export default defineComponent({
     onBeforeUnmount(() => {
       mainCanvasRef.value.removeEventListener('mousemove', handleMouseMove)
     })
-
-    watch(
-      indicatorOptions,
-      () => {
-        localStorage.setItem(LS_KEYS.INDICATOR_OPTIONS, JSON.stringify({...indicatorOptions}))
-      },
-      {deep: true}
-    )
 
     const saveData = () => {
       removeMouseOverDomElementEffect()

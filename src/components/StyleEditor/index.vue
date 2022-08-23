@@ -6,9 +6,26 @@ import CodeMirror from 'codemirror'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/mode/sass/sass' // 代码高亮
 import 'codemirror/theme/darcula.css'
+import 'codemirror/keymap/sublime'
+import emmet from '@emmetio/codemirror-plugin'
 import {debounce, throttle} from 'throttle-debounce'
-import {LS_KEYS} from "@/enum";
-import {createOrFindStyleNode} from "@/utils/dom";
+import {LS_KEYS} from '@/enum'
+import {createOrFindStyleNode} from '@/utils/dom'
+import 'codemirror-colorpicker/dist/codemirror-colorpicker.css'
+import 'codemirror-colorpicker'
+
+// Register extension on CodeMirror object
+emmet(CodeMirror)
+
+type StyleEditorOptions = {
+  wTop: string
+  wLeft: string
+  wWidth: string
+  wHeight: string
+}
+
+// do not use vue ref for CodeMirror: https://github.com/codemirror/codemirror5/issues/6805#issuecomment-955151134
+let codeMirrorInstance: CodeMirror = null
 
 export default defineComponent({
   name: 'StyleEditor',
@@ -24,47 +41,91 @@ export default defineComponent({
     const dialogRef = ref()
     const titleBarRef = ref()
     const textareaRef = ref()
-    const codeEditor = ref<any>()
 
     const clearDraggable = ref<any>(null)
     const styleEl = ref<HTMLElement | null>(null)
+
+    const styleEditorOptions = reactive<StyleEditorOptions>(
+      JSON.parse(localStorage.getItem(LS_KEYS.STYLE_EDITOR_OPTIONS) || 'null') || {
+        wTop: '100px',
+        wLeft: '100px',
+        wWidth: '300px',
+        wHeight: '300px',
+      }
+    )
+    watch(
+      styleEditorOptions,
+      () => {
+        localStorage.setItem(LS_KEYS.STYLE_EDITOR_OPTIONS, JSON.stringify({...styleEditorOptions}))
+      },
+      {deep: true}
+    )
+
+    watch(mVisible, () => {
+      if (mVisible) {
+        codeMirrorInstance.refresh()
+      }
+    })
+
     onMounted(() => {
       clearDraggable.value = setDraggableMouse({
         dragHandleEl: titleBarRef.value,
         dragTargetEl: dialogRef.value,
         allowOut: true,
+        onMove(data) {
+          handleMoveDebounced(data)
+        },
       })
 
-      const editor = CodeMirror(textareaRef.value, {
-        // mode: 'application/json',
+      styleEl.value = createOrFindStyleNode(LS_KEYS.MAIN_STYLE)
+      const style = localStorage.getItem(LS_KEYS.MAIN_STYLE) || ''
+
+      codeMirrorInstance = CodeMirror(textareaRef.value, {
+        value: style,
         theme: 'darcula', // 主题样式
-        // lint: true,
-        placeholder:
-          'Write Sass code here.\nThe code gets applied immediately.\n\nExample:' +
-          '\nimg {\n    opacity: 0.5;\n}',
-        tabSize: 2,
+        keyMap: 'sublime',
+        undoDepth: 1000,
         smartIndent: true, // 是否智能缩进
-        styleActiveLine: true, // 当前行高亮
+        indentUnit: 2,
         lineNumbers: true, // 显示行号
         gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter', 'CodeMirror-lint-markers'],
         lineWrapping: true, // 自动换行
         matchBrackets: true, // 括号匹配显示
         autoCloseBrackets: true, // 输入和退格时成对
         foldGutter: true,
+        showCursorWhenSelecting: true,
+        styleActiveLine: {
+          nonEmpty: true,
+        },
+        colorpicker: true,
+        extraKeys: {
+          Tab: function (cm) {
+            if (cm.doc.somethingSelected()) {
+              return CodeMirror.Pass
+            }
+            var emmetExpanded = cm.execCommand('emmetExpandAbbreviation')
+            if (emmetExpanded === CodeMirror.Pass) {
+              // If it didn't expand, then "emmetExpanded === CodeMirror.Pass function"
+              cm.replaceSelection('  ', 'end')
+            }
+          },
+          // when ctrl+k  keys pressed, color picker is able to open.
+          'Ctrl-K': function (cm, event) {
+            cm.state.colorpicker.popup_color_picker()
+          },
+        },
       })
-      editor.on('change', () => {
-        handleEditorChangeDebounced(editor)
+      codeMirrorInstance.on('change', () => {
+        handleEditorChangeDebounced(codeMirrorInstance)
       })
 
       new ResizeObserver(() => {
         handleResizeDebounced()
       }).observe(textareaRef.value)
-      codeEditor.value = editor
 
-      styleEl.value = createOrFindStyleNode(LS_KEYS.MAIN_STYLE)
-      const style = localStorage.getItem(LS_KEYS.MAIN_STYLE) || ''
       handleUpdateStyle(style)
-      editor.setValue(style)
+
+      initDialogStyle()
     })
 
     onBeforeUnmount(() => {
@@ -73,11 +134,22 @@ export default defineComponent({
       }
     })
 
+    const handleMoveDebounced = throttle(500, false, ({top, left}) => {
+      styleEditorOptions.wTop = top
+      styleEditorOptions.wLeft = left
+    })
+
     const handleResizeDebounced = throttle(100, false, () => {
+      if (!mVisible.value) {
+        return
+      }
       const width = textareaRef.value.offsetWidth
       const height = textareaRef.value.offsetHeight
 
-      codeEditor.value.setSize(width, height)
+      codeMirrorInstance.setSize(width, height)
+
+      styleEditorOptions.wWidth = width + 'px'
+      styleEditorOptions.wHeight = height + 'px'
     })
 
     const handleEditorChangeDebounced = debounce(500, false, (editor) => {
@@ -89,6 +161,14 @@ export default defineComponent({
         styleEl.value.innerHTML = value
         localStorage.setItem(LS_KEYS.MAIN_STYLE, value)
       }
+    }
+
+    const initDialogStyle = () => {
+      dialogRef.value.style.top = styleEditorOptions.wTop
+      dialogRef.value.style.left = styleEditorOptions.wLeft
+
+      textareaRef.value.style.width = styleEditorOptions.wWidth
+      textareaRef.value.style.height = styleEditorOptions.wHeight
     }
 
     return {
