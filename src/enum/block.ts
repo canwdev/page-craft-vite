@@ -4,6 +4,7 @@ import ironPickaxe from '../assets/textures/iron_pickaxe.png?url'
 
 export const BlockManualType = {
   CURSOR: 'CURSOR',
+  SELECTION: 'SELECTION',
   DELETE: 'DELETE',
 }
 
@@ -16,10 +17,16 @@ export interface BlockItem {
 }
 
 export const blockDiv: BlockItem = {tag: 'div'}
+export const blockSelection: BlockItem = {
+  tag: null,
+  manualType: BlockManualType.SELECTION,
+  icon: iconArrow,
+}
 
 export const blockList: BlockItem[] = [
   {tag: null, manualType: BlockManualType.CURSOR, icon: ironSword},
   {tag: null, manualType: BlockManualType.DELETE, icon: ironPickaxe},
+  // blockSelection,
   blockDiv,
   {tag: 'span'},
   {tag: 'br'},

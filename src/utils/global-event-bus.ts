@@ -5,4 +5,6 @@ const globalEventBus = mitt()
 
 export default globalEventBus
 
-export const GlobalEvents = {}
+export const GlobalEvents = {
+  ON_NODE_SELECT: 'ON_NODE_SELECT',
+}

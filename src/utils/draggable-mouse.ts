@@ -1,18 +1,33 @@
 type DraggableOptions = {
-  dragHandleEl: HTMLElement
-  dragTargetEl: HTMLElement
-  allowOut?: boolean
-  opacify?: boolean
-  onMove?: Function
+  dragHandleEl: HTMLElement // 被鼠标按下的 handle 元素
+  dragTargetEl: HTMLElement // 窗体元素
+  allowOut?: boolean // 是否允许将窗体移动到视口之外
+  opacify?: boolean // 移动时是否让窗体透明
+  onMove?: Function // 移动中回调函数
+  preventNode?: HTMLElement // 包含在这个元素下面的子元素将不会触发移动
 }
 
 export function setDraggableMouse(options: DraggableOptions) {
-  const {dragHandleEl, dragTargetEl, allowOut = false, opacify = false, onMove} = options
+  const {
+    dragHandleEl,
+    dragTargetEl,
+    allowOut = false,
+    opacify = false,
+    onMove,
+    preventNode,
+  } = options
   const docEl = document.documentElement
   let deltaX = 0
   let deltaY = 0
 
   function handleStart(event: MouseEvent) {
+    if (preventNode) {
+      // console.log(preventNode, event.target)
+      if (preventNode.contains(event.target as Node)) {
+        return false
+      }
+    }
+
     deltaX = event.clientX - dragTargetEl.getBoundingClientRect().left
     deltaY = event.clientY - dragTargetEl.getBoundingClientRect().top
 

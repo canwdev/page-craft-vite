@@ -1,6 +1,8 @@
+// @ts-ignore
+const csspretty = window.csspretty
+const Sass = window.Sass
+
 export const beautifyCSS = (cssCode, options: any = {}) => {
-  // @ts-ignore
-  const csspretty = window.csspretty
   const useTabs = options.useTabs,
     useSpaceCount = options.useSpaceCount
 
@@ -35,4 +37,23 @@ export const beautifyCSS = (cssCode, options: any = {}) => {
   //             autosemicolon: true
   //         }
   //     );
+}
+
+export const minifyCSS = (cssCode) => {
+  return csspretty({
+    mode: 'minify',
+    source: cssCode,
+  })
+}
+
+export const sassToCSS = (sassCode, options?): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    Sass.compile(sassCode, (output) => {
+      if (output.message) {
+        reject(output)
+      } else {
+        resolve(output.text)
+      }
+    })
+  })
 }

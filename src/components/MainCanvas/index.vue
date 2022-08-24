@@ -7,12 +7,13 @@ import {throttle} from 'throttle-debounce'
 import $ from 'jquery'
 import {BlockManualType} from '@/enum/block'
 import {LS_KEYS} from '@/enum'
+import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 
 const CLASS_MOUSE_OVER = 'page-craft-mouse-over-dom-element'
 const DOT_CLASS_MOUSE_OVER = '.' + CLASS_MOUSE_OVER
 const CLASS_MOUSE_OVER_PARENT = 'page-craft-mouse-over-dom-element-parent'
 const DOT_CLASS_MOUSE_OVER_PARENT = '.' + CLASS_MOUSE_OVER_PARENT
-const CLASS_MAIN_CANVAS_ROOT = 'page-craft-main-canvas'
+const CLASS_MAIN_CANVAS_ROOT = 'page-craft-mc'
 
 const removeMouseOverDomElementEffect = () => {
   const $el = $(DOT_CLASS_MOUSE_OVER)
@@ -119,16 +120,17 @@ export default defineComponent({
       return ''
     })
 
-    watch(
-      () => indicatorOptions.enableSelection,
-      (val) => {
-        if (!val) {
-          removeMouseOverDomElementEffect()
-        }
+    const isSelectMode = computed(() => {
+      return craftStore.isSelectMode || indicatorOptions.enableSelection
+    })
+
+    watch(isSelectMode, (val) => {
+      if (!val) {
+        removeMouseOverDomElementEffect()
       }
-    )
+    })
     const handleMouseMove = (event: Event) => {
-      if (!indicatorOptions.enableSelection) {
+      if (!isSelectMode.value) {
         return
       }
       handleMousemoveDebounced(event)
@@ -154,6 +156,9 @@ export default defineComponent({
             return
           }
           targetEl.parentNode.removeChild(targetEl)
+        } else if (currentBlock.manualType === BlockManualType.SELECTION) {
+          globalEventBus.emit(GlobalEvents.ON_NODE_SELECT, targetEl)
+          return
         }
       } else {
         const addEl = document.createElement(currentBlock.tag)
@@ -273,7 +278,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="page-craft-main-canvas-wrap">
+  <div class="page-craft-mc-wrap">
     <n-modal
       v-model:show="isShowImportDialog"
       negative-text="Cancel"
@@ -291,7 +296,7 @@ export default defineComponent({
       />
     </n-modal>
 
-    <div class="page-craft-main-canvas-indicator page-craft-aero-panel win7">
+    <div class="page-craft-mc-indicator page-craft-aero-panel win7">
       <n-space align="center">
         <n-space align="center" size="small">
           <button @click="isShowImportDialog = true">Import...</button>
@@ -321,17 +326,19 @@ export default defineComponent({
     <div
       ref="mainCanvasRef"
       :class="{
-        'page-craft-main-canvas--dev': indicatorOptions.enableDevHelpClass,
-        'page-craft-main-canvas--cursor-insert':
+        'page-craft-mc--dev': indicatorOptions.enableDevHelpClass,
+        'page-craft-mc--cursor-insert':
           !craftStore.currentBlock.manualType && Boolean(craftStore.currentBlock.tag),
-        'page-craft-main-canvas--cursor-pickaxe':
+        'page-craft-mc--cursor-pickaxe':
           craftStore.currentBlock.manualType === BlockManualType.DELETE,
-        'page-craft-main-canvas--expand': indicatorOptions.enableExpand,
-        'page-craft-main-canvas--full-width': indicatorOptions.fullWidth,
-        'page-craft-main-canvas--transparent': indicatorOptions.bgTransparent,
-        'page-craft-main-canvas--centered': indicatorOptions.centeredElements,
+        'page-craft-mc--cursor-arrow':
+          craftStore.currentBlock.manualType === BlockManualType.SELECTION,
+        'page-craft-mc--expand': indicatorOptions.enableExpand,
+        'page-craft-mc--full-width': indicatorOptions.fullWidth,
+        'page-craft-mc--transparent': indicatorOptions.bgTransparent,
+        'page-craft-mc--centered': indicatorOptions.centeredElements,
       }"
-      class="page-craft-main-canvas"
+      class="page-craft-mc"
       @mousedown="handleMouseDown"
       @mouseup="handleMouseUp"
       @mouseleave="handleMouseUp"
@@ -355,7 +362,7 @@ export default defineComponent({
 </template>
 
 <style lang="scss">
-.page-craft-main-canvas-wrap {
+.page-craft-mc-wrap {
   width: 100%;
   height: 100%;
   overflow: auto;
@@ -364,7 +371,7 @@ export default defineComponent({
   flex-direction: column;
   position: relative;
 
-  .page-craft-main-canvas-indicator {
+  .page-craft-mc-indicator {
     //width: 1200px;
     margin-left: auto;
     margin-right: auto;
@@ -404,13 +411,13 @@ export default defineComponent({
   }
 }
 
-.page-craft-main-canvas {
+.page-craft-mc {
   flex: 1;
   background-color: white;
   width: 1200px;
   margin-left: auto;
   margin-right: auto;
-  cursor: url('@/assets/textures/iron_sword--cursor.png') 0 0, default;
+  //cursor: url('@/assets/textures/iron_sword--cursor.png') 0 0, default;
 
   &--cursor-insert {
     cursor: crosshair;
@@ -423,6 +430,13 @@ export default defineComponent({
     cursor: url('@/assets/textures/iron_pickaxe--cursor.png') 6 24, default;
     * {
       cursor: url('@/assets/textures/iron_pickaxe--cursor.png') 6 24, default;
+    }
+  }
+
+  &--cursor-arrow {
+    cursor: url('@/assets/textures/arrow--cursor.png') 2 4, default;
+    * {
+      cursor: url('@/assets/textures/arrow--cursor.png') 2 4, default;
     }
   }
 

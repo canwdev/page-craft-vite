@@ -8,6 +8,7 @@ export const useCraftStore = defineStore('craft', {
       currentBlock: JSON.parse(localStorage.getItem(LS_KEYS.CURRENT_BLOCK) || 'null') || blockDiv,
       className: '',
       innerText: '',
+      isSelectMode: false,
     }
   },
   // could also be defined as

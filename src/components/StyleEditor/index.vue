@@ -5,7 +5,7 @@ import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import CodeMirror from 'codemirror'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/mode/sass/sass' // 代码高亮
-import 'codemirror/theme/darcula.css'
+import 'codemirror/theme/dracula.css'
 import 'codemirror/keymap/sublime'
 import 'codemirror/addon/comment/comment'
 import 'codemirror/addon/display/placeholder'
@@ -24,8 +24,11 @@ import {LS_KEYS} from '@/enum'
 import {createOrFindStyleNode} from '@/utils/dom'
 import 'codemirror-colorpicker/dist/codemirror-colorpicker.css'
 import 'codemirror-colorpicker'
-import {beautifyCSS} from '@/utils/css'
+import {beautifyCSS, sassToCSS} from '@/utils/css'
 import {copyToClipboard, isCharacterKeyPress} from '@/utils'
+import {useCraftStore} from '@/store/craft'
+import {BlockItem, blockSelection} from '@/enum/block'
+import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 
 // Register extension on CodeMirror object
 emmet(CodeMirror)
@@ -53,7 +56,9 @@ export default defineComponent({
     const mVisible = useModelWrapper(props, emit, 'visible')
     const dialogRef = ref()
     const titleBarRef = ref()
+    const titleBarButtonsRef = ref()
     const textareaRef = ref()
+    const craftStore = useCraftStore()
 
     const clearDraggable = ref<any>(null)
     const styleEl = ref<HTMLElement | null>(null)
@@ -85,6 +90,7 @@ export default defineComponent({
         dragHandleEl: titleBarRef.value,
         dragTargetEl: dialogRef.value,
         allowOut: true,
+        preventNode: titleBarButtonsRef.value,
         onMove(data) {
           handleMoveDebounced(data)
         },
@@ -95,9 +101,10 @@ export default defineComponent({
 
       codeMirrorInstance = CodeMirror(textareaRef.value, {
         value: style,
-        placeholder: 'Write your style code here...',
+        mode: 'text/x-scss',
+        placeholder: 'Write your SASS(SCSS) code here...',
         lint: true,
-        theme: 'darcula', // 主题样式
+        theme: 'dracula', // 主题样式
         keyMap: 'sublime',
         undoDepth: 1000,
         smartIndent: true, // 是否智能缩进
@@ -150,12 +157,15 @@ export default defineComponent({
       handleUpdateStyle(style)
 
       initDialogStyle()
+
+      globalEventBus.on(GlobalEvents.ON_NODE_SELECT, handleNodeSelect)
     })
 
     onBeforeUnmount(() => {
       if (clearDraggable.value) {
         clearDraggable.value()
       }
+      globalEventBus.off(GlobalEvents.ON_NODE_SELECT, handleNodeSelect)
     })
 
     const handleMoveDebounced = throttle(500, false, ({top, left}) => {
@@ -180,10 +190,19 @@ export default defineComponent({
       handleUpdateStyle(editor.getValue())
     })
 
-    const handleUpdateStyle = (value) => {
+    const errorTip = ref('')
+    const handleUpdateStyle = async (value) => {
       if (styleEl.value) {
-        styleEl.value.innerHTML = value
-        localStorage.setItem(LS_KEYS.MAIN_STYLE, value)
+        try {
+          styleEl.value.innerHTML = await sassToCSS(value)
+          localStorage.setItem(LS_KEYS.MAIN_STYLE, value)
+
+          errorTip.value = ''
+        } catch (error: any) {
+          console.error(error)
+          // message.error(error.message)
+          errorTip.value = error.message
+        }
       }
     }
 
@@ -205,7 +224,7 @@ export default defineComponent({
         const beautifiedCSS = await beautifyCSS(textValue)
         if (textValue.trim() !== beautifiedCSS.trim()) {
           await editor.setValue(beautifiedCSS)
-          handleUpdateStyle(beautifiedCSS)
+          await handleUpdateStyle(beautifiedCSS)
           // await editor.reInitTextComponent({pleaseIgnoreCursorActivity: true})
 
           message.success('Your code has been beautified :-)')
@@ -221,14 +240,38 @@ export default defineComponent({
       message.success('Copy Success!')
     }
 
+    const backupBlock = ref<BlockItem | null>(null)
+    const enterSelectMode = () => {
+      if (craftStore.isSelectMode) {
+        return exitSelectMode()
+      }
+      backupBlock.value = craftStore.currentBlock
+      craftStore.isSelectMode = true
+      craftStore.currentBlock = blockSelection
+    }
+    const exitSelectMode = () => {
+      craftStore.currentBlock = backupBlock.value
+      craftStore.isSelectMode = false
+      backupBlock.value = null
+    }
+    const handleNodeSelect = (el) => {
+      console.log('[handleNodeSelect]', el)
+      exitSelectMode()
+    }
+
     return {
       dialogRef,
       titleBarRef,
+      titleBarButtonsRef,
       mVisible,
       handleUpdateStyle,
       textareaRef,
       execBeautifyCssAction,
       copyStyle,
+      enterSelectMode,
+      exitSelectMode,
+      craftStore,
+      errorTip,
     }
   },
 })
@@ -240,22 +283,30 @@ export default defineComponent({
       <div class="window window-color is-bright glass">
         <div class="title-bar" ref="titleBarRef">
           <div class="title-bar-text">Style Editor</div>
-          <div class="title-bar-controls">
+          <div class="title-bar-controls" ref="titleBarButtonsRef">
             <!--          <button aria-label="Minimize"></button>-->
             <!--          <button aria-label="Maximize"></button>-->
+
             <button @click="copyStyle" title="Copy code">
               <img src="~@/assets/textures/map.png" alt="copy" />
             </button>
+
             <button @click="execBeautifyCssAction" title="Format code">
               <img src="~@/assets/textures/redstone.png" alt="format" />
             </button>
-            <button title="Select an element in the page to generate its CSS Selector">
+
+            <button
+              @click="enterSelectMode"
+              title="Select an element in the page to generate its CSS Selector"
+              :class="{active: craftStore.isSelectMode}"
+            >
               <img
                 src="~@/assets/textures/arrow.png"
                 alt="select"
                 style="transform: rotateY(180deg)"
               />
             </button>
+
             <button title="Close" aria-label="Close" @click="mVisible = false"></button>
           </div>
         </div>
@@ -276,6 +327,9 @@ export default defineComponent({
           </article>
           <article role="tabpanel" v-show="false">Tab B is active</article>
         </section>-->
+          <transition name="fade">
+            <div v-show="errorTip" class="code-error-tip">{{ errorTip }}</div>
+          </transition>
 
           <div class="code-editor-placeholder" ref="textareaRef"></div>
         </div>
@@ -292,6 +346,10 @@ export default defineComponent({
   left: 30%;
   .title-bar {
     user-select: none;
+
+    img {
+      pointer-events: none;
+    }
   }
 
   :deep([role='tabpanel']) {
@@ -306,12 +364,27 @@ export default defineComponent({
 
   .window-body-1 {
     margin: 0 6px 6px;
+    position: relative;
 
     .code-editor-placeholder {
       min-width: 300px;
       min-height: 300px;
       resize: both;
       overflow: auto !important;
+    }
+
+    .code-error-tip {
+      position: absolute;
+      right: 0;
+      top: 0;
+      font-size: 12px;
+      font-family: monospace;
+      max-width: 300px;
+      transform-origin: top right;
+      background-color: rgba(0, 0, 0, 0.5);
+      color: #ff6a6a;
+      z-index: 1;
+      padding: 5px 5px 5px 10px;
     }
   }
 }
