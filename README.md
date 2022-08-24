@@ -1,15 +1,19 @@
 # PageCraft
 
-网页快速生成工具，通过这个工具你可以快速创建页面的div结构，配合浏览器的控制台修改样式，然后复制到项目中。
+Web page rapid generation tool, through this tool you can quickly create the DOM structure of the page, support to modify the style directly on the page, with Chrome DevTools can quickly achieve static content.
+
+网页快速生成工具，通过这个工具你可以快速创建页面的DOM结构，支持直接在页面上修改样式，配合 Chrome DevTools 可以快速实现静态内容。
 
 ![img](./screenshot.png)
 
 ## Tips
 
-- 请勿做类似 `<h1>TestH1<h2>TestH2</h2></h1>` 这样的嵌套，虽然在编辑器中可以插入，但是这样不符合 HTML 规范，导入后也无法复原。
+Do not do nesting like `<h1>TestH1<h2>TestH2</h2></h1>`. Although it can be inserted in the editor, it does not conform to the HTML specification and cannot be restored after importing.
 
-## 推荐配合插件
+请勿做类似 `<h1>TestH1<h2>TestH2</h2></h1>` 这样的嵌套，虽然在编辑器中可以插入，但是这样不符合 HTML 规范，导入后也无法复原。
 
-- Chrome DevTools
-- [Web Developer](https://chrome.google.com/webstore/detail/web-developer/bfbameneiokkgbdmiekhjnmfkcnldhhm/related?utm_source=chrome-ntp-icon)
+
+## Reference
+
+- [Minecraft Assets](https://mcasset.cloud/)
 - [Live editor for CSS, Less & Sass - Magic CSS](https://chrome.google.com/webstore/detail/live-editor-for-css-less/ifhikkcafabcgolfjegfcgloomalapol/related?utm_source=chrome-ntp-icon)

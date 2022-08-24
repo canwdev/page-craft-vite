@@ -23,10 +23,11 @@ const generateFullSelector = function (el: HTMLElement, options?) {
     if (id) {
       selectorForThisNode += '#' + CSS.escape(id)
     }
+    // @ts-ignore
     var className = (
       typeof currentNode.className === 'string'
         ? currentNode.className
-        : (currentNode.className || {}).baseVal
+        : ((currentNode.className || {}) as any).baseVal
     ).trim()
     if (skipClass) {
       className = className.replace(skipClass, '').trim()
@@ -448,6 +449,7 @@ export const getMatchingAndSuggestedSelectors = (targetElement: HTMLElement) => 
     return self.indexOf(item) == pos
   })
 
+  // @ts-ignore
   matchingSelectors = matchingSelectors.concat(suggestedSelectors)
 
   // Object.keys(workingSetOfSelectors).forEach(function (key) {

@@ -1,7 +1,9 @@
 // @ts-ignore
 import {TOOL_CLASSES} from '@/enum'
 
+// @ts-ignore
 const csspretty = window.csspretty
+// @ts-ignore
 const Sass = window.Sass
 
 export const beautifyCSS = (cssCode, options: any = {}) => {
