@@ -3,8 +3,11 @@ import {useCraftStore} from '@/store/craft'
 import {copyToClipboard} from '@/utils'
 import ToolBar from '@/components/ToolBar/index.vue'
 import StyleEditor from '@/components/StyleEditor/index.vue'
+import FileChooser from '@/components/FileChooser.vue'
 import {throttle} from 'throttle-debounce'
 import $ from 'jquery'
+import FileSaver from 'file-saver'
+import moment from 'moment'
 import {BlockManualType} from '@/enum/block'
 import {LS_KEYS, TOOL_CLASSES} from '@/enum'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
@@ -36,9 +39,11 @@ export default defineComponent({
   components: {
     ToolBar,
     StyleEditor,
+    FileChooser,
   },
   setup() {
     const mainCanvasRef = ref()
+    const fileChooserRef = ref()
     const craftStore = useCraftStore()
     const message = useMessage()
     const indicatorOptions = reactive<IndicatorOptions>(
@@ -178,18 +183,97 @@ export default defineComponent({
       const innerHTML = mainCanvasRef.value.innerHTML
       copyToClipboard(innerHTML)
       message.success('Copy Success!')
+
+      saveData()
     }
 
-    const importHtml = ref('')
+    const handleImportJson = (data) => {
+      const {html, style} = data
+      handleImportHtml(html)
+      globalEventBus.emit(GlobalEvents.ON_IMPORT_STYLE, style)
+      message.success('Import Success!')
+    }
+
+    const handleImportJsonSelected = (file) => {
+      const reader = new FileReader()
+      reader.onload = () => {
+        try {
+          handleImportJson(JSON.parse(reader.result as string))
+        } catch (error: any) {
+          message.error('Import Failed! ' + error.message)
+        }
+      }
+      reader.readAsText(file)
+    }
+
+    const handleExportJson = () => {
+      const dateStr = moment(new Date()).format('YYYYMMDD_HHmmss')
+      const filenamePrefix = prompt(`Export filename`, `pagecraft_${dateStr}`)
+      if (!filenamePrefix) {
+        return
+      }
+      const html = mainCanvasRef.value.innerHTML
+      const style = localStorage.getItem(LS_KEYS.MAIN_STYLE) || ''
+      const dataObj = {
+        html,
+        style,
+        styleType: 'sass',
+      }
+      const blob = new Blob([JSON.stringify(dataObj, null, 2)], {
+        type: 'text/plain;charset=utf-8',
+      })
+      FileSaver.saveAs(blob, filenamePrefix + '.json')
+    }
+
+    const pasteHtmlText = ref('')
     const setMainCanvasHtml = (html?: string) => {
       mainCanvasRef.value.innerHTML = html
     }
 
-    const handleImport = (html: string) => {
+    const handleImportHtml = (html: string) => {
       setMainCanvasHtml(html)
 
       saveData()
     }
+
+    const menuOptions = [
+      {
+        label: 'Import JSON...',
+        props: {
+          onClick: async () => {
+            fileChooserRef.value.chooseFile()
+          },
+        },
+      },
+      {
+        label: 'Paste HTML...',
+        props: {
+          onClick: async () => {
+            isShowImportDialog.value = true
+          },
+        },
+      },
+      {
+        type: 'divider',
+        label: 'd0',
+      },
+      {
+        label: 'Export JSON...',
+        props: {
+          onClick: async () => {
+            handleExportJson()
+          },
+        },
+      },
+      {
+        label: 'Copy HTML',
+        props: {
+          onClick: async () => {
+            copyInnerHtml()
+          },
+        },
+      },
+    ]
 
     const toggleList = [
       {
@@ -250,17 +334,18 @@ export default defineComponent({
     return {
       craftStore,
       mainCanvasRef,
-      copyInnerHtml,
+      fileChooserRef,
       isShowImportDialog,
       setMainCanvasHtml,
-      importHtml,
+      pasteHtmlText,
       handleBlockClick,
       indicatorOptions,
-      saveData,
       hoveredElDisplay,
-      handleImport,
+      handleImportHtml,
+      handleImportJsonSelected,
       BlockManualType,
       toggleList,
+      menuOptions,
       handleMouseDown,
       handleMouseUp,
       waitingProgress,
@@ -278,11 +363,11 @@ export default defineComponent({
       negative-text="Cancel"
       positive-text="Import"
       preset="dialog"
-      title="Import HTML"
-      @positive-click="handleImport(importHtml)"
+      title="Paste HTML"
+      @positive-click="handleImportHtml(pasteHtmlText)"
     >
       <n-input
-        v-model:value="importHtml"
+        v-model:value="pasteHtmlText"
         placeholder="Basic HTML"
         rows="20"
         style="font-family: monospace"
@@ -290,12 +375,23 @@ export default defineComponent({
       />
     </n-modal>
 
+    <FileChooser
+      ref="fileChooserRef"
+      accept="application/JSON"
+      @selected="handleImportJsonSelected"
+    />
+
     <div class="page-craft-mc-indicator page-craft-aero-panel win7">
       <n-space align="center">
         <n-space align="center" size="small">
-          <button @click="isShowImportDialog = true">Import...</button>
-          <button @click="copyInnerHtml">Copy HTML</button>
-          <button @click="saveData" title="Save DOM to LocalStorage">Save</button>
+          <n-dropdown
+            :options="menuOptions"
+            key-field="label"
+            placement="bottom-start"
+            trigger="click"
+          >
+            <button>Import & Export</button>
+          </n-dropdown>
 
           <div v-for="item in toggleList" :key="item.flag" class="toggle-list">
             <input

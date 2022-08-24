@@ -159,6 +159,7 @@ export default defineComponent({
       initDialogStyle()
 
       globalEventBus.on(GlobalEvents.ON_NODE_SELECT, handleNodeSelect)
+      globalEventBus.on(GlobalEvents.ON_IMPORT_STYLE, handleImportStyle)
     })
 
     onBeforeUnmount(() => {
@@ -166,6 +167,7 @@ export default defineComponent({
         clearDraggable.value()
       }
       globalEventBus.off(GlobalEvents.ON_NODE_SELECT, handleNodeSelect)
+      globalEventBus.off(GlobalEvents.ON_IMPORT_STYLE, handleImportStyle)
     })
 
     const handleMoveDebounced = throttle(500, false, ({top, left}) => {
@@ -174,7 +176,7 @@ export default defineComponent({
     })
 
     const handleResizeDebounced = throttle(100, false, () => {
-      if (!mVisible.value) {
+      if (!mVisible.value || !textareaRef.value) {
         return
       }
       const width = textareaRef.value.offsetWidth
@@ -194,7 +196,8 @@ export default defineComponent({
     const handleUpdateStyle = async (value) => {
       if (styleEl.value) {
         try {
-          styleEl.value.innerHTML = await sassToCSS(value)
+          styleEl.value.innerHTML = value ? await sassToCSS(value) : ''
+
           localStorage.setItem(LS_KEYS.MAIN_STYLE, value)
 
           errorTip.value = ''
@@ -265,6 +268,10 @@ export default defineComponent({
         doc.replaceRange(className, cursor)
       })
       exitSelectMode()
+    }
+
+    const handleImportStyle = (style) => {
+      codeMirrorInstance.setValue(style)
     }
 
     return {
@@ -388,8 +395,8 @@ export default defineComponent({
       font-family: monospace;
       max-width: 300px;
       transform-origin: top right;
-      background-color: rgba(0, 0, 0, 0.5);
-      color: #ff6a6a;
+      background-color: rgba(0, 0, 0, 0.7);
+      color: #ff8989;
       z-index: 1;
       padding: 5px 5px 5px 10px;
     }
