@@ -1,4 +1,6 @@
 // @ts-ignore
+import {TOOL_CLASSES} from '@/enum'
+
 const csspretty = window.csspretty
 const Sass = window.Sass
 
@@ -56,4 +58,13 @@ export const sassToCSS = (sassCode, options?): Promise<string> => {
       }
     })
   })
+}
+
+export const suggestElementClass = (el: HTMLElement) => {
+  let className = el.className
+  className = className.replace(TOOL_CLASSES.CLASS_MOUSE_OVER, '').trim()
+  if (className) {
+    return '.' + className.split(' ').join('.')
+  }
+  return el.tagName.toLowerCase()
 }

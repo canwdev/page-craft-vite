@@ -6,23 +6,17 @@ import StyleEditor from '@/components/StyleEditor/index.vue'
 import {throttle} from 'throttle-debounce'
 import $ from 'jquery'
 import {BlockManualType} from '@/enum/block'
-import {LS_KEYS} from '@/enum'
+import {LS_KEYS, TOOL_CLASSES} from '@/enum'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 
-const CLASS_MOUSE_OVER = 'page-craft-mouse-over-dom-element'
-const DOT_CLASS_MOUSE_OVER = '.' + CLASS_MOUSE_OVER
-const CLASS_MOUSE_OVER_PARENT = 'page-craft-mouse-over-dom-element-parent'
-const DOT_CLASS_MOUSE_OVER_PARENT = '.' + CLASS_MOUSE_OVER_PARENT
-const CLASS_MAIN_CANVAS_ROOT = 'page-craft-mc'
-
 const removeMouseOverDomElementEffect = () => {
-  const $el = $(DOT_CLASS_MOUSE_OVER)
+  const $el = $(TOOL_CLASSES.DOT_CLASS_MOUSE_OVER)
   if ($el.length) {
-    $el.removeClass(CLASS_MOUSE_OVER)
+    $el.removeClass(TOOL_CLASSES.CLASS_MOUSE_OVER)
   }
-  const $el2 = $(DOT_CLASS_MOUSE_OVER_PARENT)
+  const $el2 = $(TOOL_CLASSES.DOT_CLASS_MOUSE_OVER_PARENT)
   if ($el2.length) {
-    $el2.removeClass(CLASS_MOUSE_OVER_PARENT)
+    $el2.removeClass(TOOL_CLASSES.CLASS_MOUSE_OVER_PARENT)
   }
   $('*[class=""]').removeAttr('class')
 }
@@ -96,22 +90,22 @@ export default defineComponent({
       if (!currentNode) {
         return
       }
-      if (currentNode.classList.contains(CLASS_MAIN_CANVAS_ROOT)) {
+      if (currentNode.classList.contains(TOOL_CLASSES.CLASS_MAIN_CANVAS_ROOT)) {
         // do nothing
       } else {
         const $parent = $(currentNode).parent()
         if ($parent) {
-          $parent.addClass(CLASS_MOUSE_OVER_PARENT)
+          $parent.addClass(TOOL_CLASSES.CLASS_MOUSE_OVER_PARENT)
         }
       }
-      $(currentNode).addClass(CLASS_MOUSE_OVER)
+      $(currentNode).addClass(TOOL_CLASSES.CLASS_MOUSE_OVER)
     })
 
     const hoveredElDisplay = computed(() => {
       if (currentHoveredEl.value) {
         let str = `${currentHoveredEl.value.localName}`
         let className = currentHoveredEl.value.className || ''
-        className = className.replace(CLASS_MOUSE_OVER, '').trim()
+        className = className.replace(TOOL_CLASSES.CLASS_MOUSE_OVER, '').trim()
         if (className) {
           str += `  ( ${className} )`
         }

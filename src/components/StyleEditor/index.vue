@@ -24,7 +24,7 @@ import {LS_KEYS} from '@/enum'
 import {createOrFindStyleNode} from '@/utils/dom'
 import 'codemirror-colorpicker/dist/codemirror-colorpicker.css'
 import 'codemirror-colorpicker'
-import {beautifyCSS, sassToCSS} from '@/utils/css'
+import {beautifyCSS, sassToCSS, suggestElementClass} from '@/utils/css'
 import {copyToClipboard, isCharacterKeyPress} from '@/utils'
 import {useCraftStore} from '@/store/craft'
 import {BlockItem, blockSelection} from '@/enum/block'
@@ -255,7 +255,15 @@ export default defineComponent({
       backupBlock.value = null
     }
     const handleNodeSelect = (el) => {
-      console.log('[handleNodeSelect]', el)
+      nextTick(() => {
+        let className = suggestElementClass(el)
+        // console.log('[handleNodeSelect]', className)
+        className = `\n\n${className} {\n\n}\n`
+
+        const doc = codeMirrorInstance.getDoc()
+        const cursor = doc.getCursor()
+        doc.replaceRange(className, cursor)
+      })
       exitSelectMode()
     }
 
@@ -286,15 +294,6 @@ export default defineComponent({
           <div class="title-bar-controls" ref="titleBarButtonsRef">
             <!--          <button aria-label="Minimize"></button>-->
             <!--          <button aria-label="Maximize"></button>-->
-
-            <button @click="copyStyle" title="Copy code">
-              <img src="~@/assets/textures/map.png" alt="copy" />
-            </button>
-
-            <button @click="execBeautifyCssAction" title="Format code">
-              <img src="~@/assets/textures/redstone.png" alt="format" />
-            </button>
-
             <button
               @click="enterSelectMode"
               title="Select an element in the page to generate its CSS Selector"
@@ -305,6 +304,14 @@ export default defineComponent({
                 alt="select"
                 style="transform: rotateY(180deg)"
               />
+            </button>
+
+            <button @click="execBeautifyCssAction" title="Format code">
+              <img src="~@/assets/textures/redstone.png" alt="format" />
+            </button>
+
+            <button @click="copyStyle" title="Copy code">
+              <img src="~@/assets/textures/map.png" alt="copy" />
             </button>
 
             <button title="Close" aria-label="Close" @click="mVisible = false"></button>
