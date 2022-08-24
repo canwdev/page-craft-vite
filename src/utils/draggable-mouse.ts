@@ -2,20 +2,13 @@ type DraggableOptions = {
   dragHandleEl: HTMLElement // 被鼠标按下的 handle 元素
   dragTargetEl: HTMLElement // 窗体元素
   allowOut?: boolean // 是否允许将窗体移动到视口之外
-  opacify?: boolean // 移动时是否让窗体透明
+  opacify?: number // 移动时是否让窗体透明，如：0.8
   onMove?: Function // 移动中回调函数
   preventNode?: HTMLElement // 包含在这个元素下面的子元素将不会触发移动
 }
 
 export function setDraggableMouse(options: DraggableOptions) {
-  const {
-    dragHandleEl,
-    dragTargetEl,
-    allowOut = false,
-    opacify = false,
-    onMove,
-    preventNode,
-  } = options
+  const {dragHandleEl, dragTargetEl, allowOut = false, opacify, onMove, preventNode} = options
   const docEl = document.documentElement
   let deltaX = 0
   let deltaY = 0
@@ -58,7 +51,7 @@ export function setDraggableMouse(options: DraggableOptions) {
     }
 
     if (opacify) {
-      dragTargetEl.style.opacity = '0.8'
+      dragTargetEl.style.opacity = String(opacify)
     }
 
     // return false;

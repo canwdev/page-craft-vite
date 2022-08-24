@@ -41,4 +41,6 @@ export const blockList: BlockItem[] = [
   {tag: 'h4'},
   {tag: 'h5'},
   {tag: 'h6'},
+  {tag: 'ol'},
+  {tag: 'li'},
 ]

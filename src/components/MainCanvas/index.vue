@@ -165,7 +165,7 @@ export default defineComponent({
           addEl.src = craftStore.innerText || ''
         } else if (currentBlock.tag === 'input') {
           addEl.value = craftStore.innerText || ''
-        } else {
+        } else if (currentBlock.tag !== 'br') {
           addEl.innerText = craftStore.innerText || ''
         }
         if (craftStore.className) {
@@ -236,7 +236,7 @@ export default defineComponent({
       saveData()
     }
 
-    const menuOptions = [
+    const exportMenuOptions = [
       {
         label: 'Import JSON...',
         props: {
@@ -246,10 +246,10 @@ export default defineComponent({
         },
       },
       {
-        label: 'Paste HTML...',
+        label: 'Export JSON...',
         props: {
           onClick: async () => {
-            isShowImportDialog.value = true
+            handleExportJson()
           },
         },
       },
@@ -258,10 +258,10 @@ export default defineComponent({
         label: 'd0',
       },
       {
-        label: 'Export JSON...',
+        label: 'Paste HTML...',
         props: {
           onClick: async () => {
-            handleExportJson()
+            isShowImportDialog.value = true
           },
         },
       },
@@ -273,19 +273,35 @@ export default defineComponent({
           },
         },
       },
+      {
+        type: 'divider',
+        label: 'd1',
+      },
+      {
+        label: 'Clear All',
+        props: {
+          onClick: async () => {
+            if (confirm('Confirm clear all code? this can not be undo!')) {
+              handleImportHtml('')
+              globalEventBus.emit(GlobalEvents.ON_IMPORT_STYLE, '')
+              message.success('Clear!')
+            }
+          },
+        },
+      },
     ]
 
     const toggleList = [
       {
         flag: 'enableDevHelpClass',
-        title: 'DevClass',
+        title: 'Outline',
         desc: 'Add 1px outline per element for better distinction',
       },
       {flag: 'enableExpand', title: 'Padding', desc: 'Pad each element with 10px for selection'},
       {flag: 'enableSelection', title: 'Selection', desc: 'Add cursor selection effect'},
-      {flag: 'centeredElements', title: 'centeredElements', desc: ''},
-      {flag: 'bgTransparent', title: 'bgTransparent', desc: ''},
-      {flag: 'fullWidth', title: 'fullWidth', desc: ''},
+      {flag: 'centeredElements', title: 'Centered', desc: ''},
+      {flag: 'bgTransparent', title: 'Transparent BG', desc: ''},
+      {flag: 'fullWidth', title: 'Full Width', desc: ''},
     ]
 
     const MAX_WAIT_TIME = 0.5 * 1000
@@ -345,7 +361,7 @@ export default defineComponent({
       handleImportJsonSelected,
       BlockManualType,
       toggleList,
-      menuOptions,
+      exportMenuOptions,
       handleMouseDown,
       handleMouseUp,
       waitingProgress,
@@ -385,7 +401,7 @@ export default defineComponent({
       <n-space align="center">
         <n-space align="center" size="small">
           <n-dropdown
-            :options="menuOptions"
+            :options="exportMenuOptions"
             key-field="label"
             placement="bottom-start"
             trigger="click"

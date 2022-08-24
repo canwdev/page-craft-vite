@@ -29,6 +29,7 @@ import {copyToClipboard, isCharacterKeyPress} from '@/utils'
 import {useCraftStore} from '@/store/craft'
 import {BlockItem, blockSelection} from '@/enum/block'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
+import {cssSnippetList} from '@/enum/styles'
 
 // Register extension on CodeMirror object
 emmet(CodeMirror)
@@ -90,6 +91,7 @@ export default defineComponent({
         dragHandleEl: titleBarRef.value,
         dragTargetEl: dialogRef.value,
         allowOut: true,
+        opacify: 0.5,
         preventNode: titleBarButtonsRef.value,
         onMove(data) {
           handleMoveDebounced(data)
@@ -261,18 +263,33 @@ export default defineComponent({
       nextTick(() => {
         let className = suggestElementClass(el)
         // console.log('[handleNodeSelect]', className)
-        className = `\n\n${className} {\n\n}\n`
-
-        const doc = codeMirrorInstance.getDoc()
-        const cursor = doc.getCursor()
-        doc.replaceRange(className, cursor)
+        insertStyleCode(`\n${className} {\n\n}\n`)
       })
       exitSelectMode()
+    }
+
+    const insertStyleCode = (code) => {
+      const doc = codeMirrorInstance.getDoc()
+      const cursor = doc.getCursor()
+      doc.replaceRange(code, cursor)
     }
 
     const handleImportStyle = (style) => {
       codeMirrorInstance.setValue(style)
     }
+
+    const toolOptions = [
+      ...cssSnippetList.map((item) => {
+        return {
+          label: item.name,
+          props: {
+            onClick: async () => {
+              insertStyleCode(item.code)
+            },
+          },
+        }
+      }),
+    ]
 
     return {
       dialogRef,
@@ -287,6 +304,7 @@ export default defineComponent({
       exitSelectMode,
       craftStore,
       errorTip,
+      toolOptions,
     }
   },
 })
@@ -313,8 +331,20 @@ export default defineComponent({
               />
             </button>
 
-            <button @click="execBeautifyCssAction" title="Format code">
-              <img src="~@/assets/textures/redstone.png" alt="format" />
+            <n-dropdown
+              :options="toolOptions"
+              key-field="label"
+              placement="bottom-start"
+              trigger="hover"
+              size="small"
+            >
+              <button title="Tools">
+                <img src="~@/assets/textures/iron_hoe.png" alt="iron_hoe" />
+              </button>
+            </n-dropdown>
+
+            <button @click="execBeautifyCssAction" title="Beautify code">
+              <img src="~@/assets/textures/redstone.png" alt="redstone" />
             </button>
 
             <button @click="copyStyle" title="Copy code">
