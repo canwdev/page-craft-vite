@@ -31,6 +31,10 @@ export const cssSnippetList = [
       'background-size: cover;',
     ].join('\n'),
   },
+  {
+    name: 'Width Center',
+    code: ['max-width: 1200px', 'margin-left: auto;', 'margin-right: auto;'].join('\n'),
+  },
   // {
   //   name: '',
   //   code: '',

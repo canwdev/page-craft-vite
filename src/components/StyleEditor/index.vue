@@ -204,7 +204,7 @@ export default defineComponent({
 
           errorTip.value = ''
         } catch (error: any) {
-          console.error(error)
+          // console.error(error)
           // message.error(error.message)
           errorTip.value = error.message
         }
@@ -279,16 +279,19 @@ export default defineComponent({
     }
 
     const toolOptions = [
-      ...cssSnippetList.map((item) => {
-        return {
-          label: item.name,
-          props: {
-            onClick: async () => {
-              insertStyleCode(item.code)
+      {
+        label: 'CSS Snippets',
+        children: cssSnippetList.map((item) => {
+          return {
+            label: item.name,
+            props: {
+              onClick: async () => {
+                insertStyleCode(item.code)
+              },
             },
-          },
-        }
-      }),
+          }
+        }),
+      },
     ]
 
     return {
@@ -334,9 +337,10 @@ export default defineComponent({
             <n-dropdown
               :options="toolOptions"
               key-field="label"
-              placement="bottom-start"
+              placement="bottom"
               trigger="hover"
               size="small"
+              :show-arrow="true"
             >
               <button title="Tools">
                 <img src="~@/assets/textures/iron_hoe.png" alt="iron_hoe" />
