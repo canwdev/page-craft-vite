@@ -3,7 +3,7 @@ import {useCraftStore} from '@/store/craft'
 import {blockList} from '@/enum/block'
 import ToolItem from '@/components/ToolBar/ToolItem.vue'
 import {LS_KEYS} from '@/enum'
-import {createOrFindStyleNode} from "@/utils/dom";
+import {createOrFindStyleNode} from '@/utils/dom'
 
 export default defineComponent({
   name: 'ToolBar',
@@ -83,7 +83,7 @@ export default defineComponent({
             id="inputContent"
             type="text"
             v-model="craftStore.innerText"
-            placeholder="innerText | src | value"
+            placeholder="innerHTML | src | value"
           />
         </div>
       </n-space>

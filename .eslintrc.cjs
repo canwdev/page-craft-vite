@@ -5,6 +5,7 @@ module.exports = {
     "es2021": true
   },
   "extends": [
+    'plugin:vue/vue3-strongly-recommended',
     "plugin:vue/vue3-essential",
     'plugin:prettier/recommended',
   ],
@@ -20,5 +21,13 @@ module.exports = {
     "vue",
     "@typescript-eslint"
   ],
-  "rules": {}
+  "rules": {
+    'vue/component-tags-order': [
+      'error',
+      {
+        // order: [['script', 'template'], 'style'],
+        order: ['script', 'template', 'style'],
+      },
+    ],
+  }
 }

@@ -32,6 +32,7 @@ type IndicatorOptions = {
   bgTransparent: boolean
   centeredElements: boolean
   showStyleEditor: boolean
+  contentEditable: boolean
 }
 
 export default defineComponent({
@@ -55,6 +56,7 @@ export default defineComponent({
         bgTransparent: false,
         centeredElements: false,
         showStyleEditor: false,
+        contentEditable: false,
       }
     )
     watch(
@@ -166,7 +168,7 @@ export default defineComponent({
         } else if (currentBlock.tag === 'input') {
           addEl.value = craftStore.innerText || ''
         } else if (currentBlock.tag !== 'br') {
-          addEl.innerText = craftStore.innerText || ''
+          addEl.innerHTML = craftStore.innerText || ''
         }
         if (craftStore.className) {
           addEl.className = craftStore.className
@@ -218,6 +220,7 @@ export default defineComponent({
         html,
         style,
         styleType: 'sass',
+        timestamp: Date.now(),
       }
       const blob = new Blob([JSON.stringify(dataObj, null, 2)], {
         type: 'text/plain;charset=utf-8',
@@ -298,6 +301,11 @@ export default defineComponent({
         desc: 'Add 1px outline per element for better distinction',
       },
       {flag: 'enableExpand', title: 'Padding', desc: 'Pad each element with 10px for selection'},
+      {
+        flag: 'contentEditable',
+        title: 'Content Editable',
+        desc: 'Enable HTML contenteditable feature!',
+      },
       {flag: 'enableSelection', title: 'Selection', desc: 'Add cursor selection effect'},
       {flag: 'centeredElements', title: 'Centered', desc: ''},
       {flag: 'bgTransparent', title: 'Transparent BG', desc: ''},
@@ -448,6 +456,7 @@ export default defineComponent({
       @mousedown="handleMouseDown"
       @mouseup="handleMouseUp"
       @mouseleave="handleMouseUp"
+      :contenteditable="indicatorOptions.contentEditable"
     ></div>
 
     <transition name="fade">

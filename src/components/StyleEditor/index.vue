@@ -317,15 +317,15 @@ export default defineComponent({
   <transition name="zoom">
     <div v-show="mVisible" class="style-editor-dialog win7" ref="dialogRef">
       <div class="window window-color is-bright glass">
-        <div class="title-bar" ref="titleBarRef">
+        <div ref="titleBarRef" class="title-bar">
           <div class="title-bar-text">Style Editor</div>
-          <div class="title-bar-controls" ref="titleBarButtonsRef">
+          <div ref="titleBarButtonsRef" class="title-bar-controls">
             <!--          <button aria-label="Minimize"></button>-->
             <!--          <button aria-label="Maximize"></button>-->
             <button
-              @click="enterSelectMode"
               title="Select an element in the page to generate its CSS Selector"
               :class="{active: craftStore.isSelectMode}"
+              @click="enterSelectMode"
             >
               <img
                 src="~@/assets/textures/arrow.png"
@@ -347,15 +347,15 @@ export default defineComponent({
               </button>
             </n-dropdown>
 
-            <button @click="execBeautifyCssAction" title="Beautify code">
+            <button title="Beautify code" @click="execBeautifyCssAction">
               <img src="~@/assets/textures/redstone.png" alt="redstone" />
             </button>
 
-            <button @click="copyStyle" title="Copy code">
+            <button title="Copy code" @click="copyStyle">
               <img src="~@/assets/textures/map.png" alt="copy" />
             </button>
 
-            <button title="Close" aria-label="Close" @click="mVisible = false"></button>
+            <button title="Close" aria-label="Close" @click="mVisible = false" />
           </div>
         </div>
 
@@ -376,10 +376,12 @@ export default defineComponent({
           <article role="tabpanel" v-show="false">Tab B is active</article>
         </section>-->
           <transition name="fade">
-            <div v-show="errorTip" class="code-error-tip">{{ errorTip }}</div>
+            <div v-show="errorTip" class="code-error-tip">
+              {{ errorTip }}
+            </div>
           </transition>
 
-          <div class="code-editor-placeholder" ref="textareaRef"></div>
+          <div ref="textareaRef" class="code-editor-placeholder" />
         </div>
       </div>
     </div>
