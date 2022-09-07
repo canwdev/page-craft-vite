@@ -190,7 +190,7 @@ export default defineComponent({
     }
 
     const handleImportJson = (data) => {
-      const {html, style} = data
+      const {html = '', style = ''} = data
       handleImportHtml(html)
       globalEventBus.emit(GlobalEvents.ON_IMPORT_STYLE, style)
       message.success('Import Success!')
@@ -202,6 +202,7 @@ export default defineComponent({
         try {
           handleImportJson(JSON.parse(reader.result as string))
         } catch (error: any) {
+          console.error(error)
           message.error('Import Failed! ' + error.message)
         }
       }
