@@ -274,7 +274,7 @@ export default defineComponent({
       doc.replaceRange(code, cursor)
     }
 
-    const handleImportStyle = (style = '') => {
+    const handleImportStyle = (style: any = '') => {
       codeMirrorInstance.setValue(style)
     }
 
