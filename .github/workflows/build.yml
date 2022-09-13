@@ -15,13 +15,12 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Setup node
-        - uses: actions/setup-node@v3
-          with:
-            node-version: '14'
-            cache: 'yarn'
-        - run: yarn install
+      uses: actions/setup-node@v3
+      with:
+        node-version: '14'
+        cache: 'yarn'
     - name: Build
-      run: yarn build
+      run: yarn install && yarn build
     - name: Deploy
       uses: JamesIves/github-pages-deploy-action@4.1.1
       with:
