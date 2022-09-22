@@ -343,12 +343,12 @@ export default defineComponent({
               :show-arrow="true"
             >
               <button title="Tools">
-                <img src="~@/assets/textures/iron_hoe.png" alt="iron_hoe" />
+                <img src="~@/assets/textures/redstone.png" alt="tools" />
               </button>
             </n-dropdown>
 
             <button title="Beautify code" @click="execBeautifyCssAction">
-              <img src="~@/assets/textures/redstone.png" alt="redstone" />
+              <img src="~@/assets/textures/iron_hoe.png" alt="beautify" />
             </button>
 
             <button title="Copy code" @click="copyStyle">

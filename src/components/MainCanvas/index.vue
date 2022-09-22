@@ -6,11 +6,13 @@ import StyleEditor from '@/components/StyleEditor/index.vue'
 import FileChooser from '@/components/FileChooser.vue'
 import {throttle} from 'throttle-debounce'
 import $ from 'jquery'
-import FileSaver from 'file-saver'
 import moment from 'moment'
 import {BlockManualType} from '@/enum/block'
 import {LS_KEYS, TOOL_CLASSES} from '@/enum'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
+import {ExportData, handleExportJson, handleExportVue} from '@/utils/exporter'
+import {formatHtml} from '@/utils/dom'
+import {beautifyCSS} from '@/utils/css'
 
 const removeMouseOverDomElementEffect = () => {
   const $el = $(TOOL_CLASSES.DOT_CLASS_MOUSE_OVER)
@@ -182,8 +184,7 @@ export default defineComponent({
 
     const copyInnerHtml = () => {
       removeMouseOverDomElementEffect()
-      const innerHTML = mainCanvasRef.value.innerHTML
-      copyToClipboard(innerHTML)
+      copyToClipboard(formatHtml(mainCanvasRef.value.innerHTML))
       message.success('Copy Success!')
 
       saveData()
@@ -209,24 +210,16 @@ export default defineComponent({
       reader.readAsText(file)
     }
 
-    const handleExportJson = () => {
-      const dateStr = moment(new Date()).format('YYYYMMDD_HHmmss')
-      const filenamePrefix = prompt(`Export filename`, `pagecraft_${dateStr}`)
-      if (!filenamePrefix) {
-        return
-      }
-      const html = mainCanvasRef.value.innerHTML
+    const getExportData = async (): Promise<ExportData> => {
+      const html = mainCanvasRef.value.innerHTML || ''
       const style = localStorage.getItem(LS_KEYS.MAIN_STYLE) || ''
-      const dataObj = {
-        html,
-        style,
-        styleType: 'sass',
+
+      return {
+        html: formatHtml(html),
+        style: await beautifyCSS(style),
+        styleLang: 'scss',
         timestamp: Date.now(),
       }
-      const blob = new Blob([JSON.stringify(dataObj, null, 2)], {
-        type: 'text/plain;charset=utf-8',
-      })
-      FileSaver.saveAs(blob, filenamePrefix + '.json')
     }
 
     const pasteHtmlText = ref('')
@@ -242,7 +235,7 @@ export default defineComponent({
 
     const exportMenuOptions = [
       {
-        label: 'Import JSON...',
+        label: '📥 Import JSON...',
         props: {
           onClick: async () => {
             fileChooserRef.value.chooseFile()
@@ -250,19 +243,40 @@ export default defineComponent({
         },
       },
       {
-        label: 'Export JSON...',
+        label: '📃 Export JSON',
         props: {
           onClick: async () => {
-            handleExportJson()
+            handleExportJson(await getExportData())
           },
         },
+      },
+      {
+        label: '📤 Export',
+        children: [
+          {
+            label: '💚 Export Vue 2 SFC',
+            props: {
+              onClick: async () => {
+                handleExportVue(await getExportData())
+              },
+            },
+          },
+          {
+            label: '💚 Export Vue 3 SFC',
+            props: {
+              onClick: async () => {
+                handleExportVue(await getExportData(), 3)
+              },
+            },
+          },
+        ],
       },
       {
         type: 'divider',
         label: 'd0',
       },
       {
-        label: 'Paste HTML...',
+        label: '📄 Paste HTML...',
         props: {
           onClick: async () => {
             isShowImportDialog.value = true
@@ -270,7 +284,7 @@ export default defineComponent({
         },
       },
       {
-        label: 'Copy HTML',
+        label: '📄 Copy HTML',
         props: {
           onClick: async () => {
             copyInnerHtml()
@@ -282,7 +296,7 @@ export default defineComponent({
         label: 'd1',
       },
       {
-        label: 'Clear All',
+        label: '❌ Clear All',
         props: {
           onClick: async () => {
             if (confirm('Confirm clear all code? this can not be undo!')) {
@@ -413,7 +427,7 @@ export default defineComponent({
             :options="exportMenuOptions"
             key-field="label"
             placement="bottom-start"
-            trigger="click"
+            trigger="hover"
           >
             <button>Import & Export</button>
           </n-dropdown>
