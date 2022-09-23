@@ -28,7 +28,7 @@ import 'codemirror-colorpicker'
 import {sassToCSS, suggestElementClass} from '@/utils/css'
 import {copyToClipboard, isCharacterKeyPress} from '@/utils'
 import {useCraftStore} from '@/store/craft'
-import {BlockItem, blockSelection} from '@/enum/block'
+import {BlockItem, ActionBlockItems} from '@/enum/block'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {cssSnippetList} from '@/enum/styles'
 import {formatCss} from '@/utils/formater'
@@ -254,7 +254,7 @@ export default defineComponent({
       }
       backupBlock.value = craftStore.currentBlock
       craftStore.isSelectMode = true
-      craftStore.currentBlock = blockSelection
+      craftStore.currentBlock = ActionBlockItems.SELECTION
     }
     const exitSelectMode = () => {
       craftStore.currentBlock = backupBlock.value

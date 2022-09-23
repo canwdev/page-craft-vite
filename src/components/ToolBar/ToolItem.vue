@@ -16,10 +16,7 @@ export default defineComponent({
     const craftStore = useCraftStore()
 
     const isActive = computed(() => {
-      if (item.value.manualType) {
-        return item.value.manualType === craftStore.currentBlock.manualType
-      }
-      return item.value.tag === craftStore.currentBlock.tag
+      return item.value.id === craftStore.currentBlock.id
     })
 
     return {
@@ -31,9 +28,9 @@ export default defineComponent({
 </script>
 
 <template>
-  <div :class="{active: isActive}" class="tool-item">
+  <div :class="{active: isActive}" class="tool-item" :title="item.title">
     <img v-if="item.icon" :src="item.icon" alt="icon" />
-    <span v-else class="item-text">{{ item.tag }}</span>
+    <span v-else class="item-text">{{ item.title }}</span>
   </div>
 </template>
 

@@ -1,18 +1,12 @@
 import moment from 'moment/moment'
 import FileSaver from 'file-saver'
+import {ComponentBlockItem} from '@/enum/block'
 
-export type ExportData = {
-  html: string
-  style: string
-  styleLang: string
-  timestamp: number
-}
-
-export const handleExportJson = (exportData: ExportData) => {
+export const handleExportJson = (exportData: ComponentBlockItem) => {
   handleExportFile(getFileName(), JSON.stringify(exportData, null, 2), '.json')
 }
 
-export const handleExportVue = (exportData: ExportData, version = 2) => {
+export const handleExportVue = (exportData: ComponentBlockItem, version = 2) => {
   const {html, style, styleLang} = exportData
   const name = getFileName()
 

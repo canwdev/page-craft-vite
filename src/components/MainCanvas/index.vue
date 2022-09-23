@@ -6,11 +6,10 @@ import StyleEditor from '@/components/StyleEditor/index.vue'
 import FileChooser from '@/components/FileChooser.vue'
 import {throttle} from 'throttle-debounce'
 import $ from 'jquery'
-import moment from 'moment'
-import {BlockManualType} from '@/enum/block'
+import {ActionType, BlockType, ComponentBlockItem} from '@/enum/block'
 import {LS_KEYS, TOOL_CLASSES} from '@/enum'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
-import {ExportData, handleExportJson, handleExportVue} from '@/utils/exporter'
+import {handleExportJson, handleExportVue} from '@/utils/exporter'
 import {formatCss, formatHtml} from '@/utils/formater'
 
 const removeMouseOverDomElementEffect = () => {
@@ -152,23 +151,24 @@ export default defineComponent({
 
       // console.log('[targetEl]', targetEl)
 
-      if (!currentBlock.tag) {
-        if (currentBlock.manualType === BlockManualType.DELETE) {
+      if (currentBlock.blockType === BlockType.ACTIONS) {
+        if (currentBlock.actionType === ActionType.DELETE) {
           if (targetEl === mainCanvasRef.value) {
             return
           }
           targetEl.parentNode.removeChild(targetEl)
-        } else if (currentBlock.manualType === BlockManualType.SELECTION) {
+        } else if (currentBlock.actionType === ActionType.SELECTION) {
           globalEventBus.emit(GlobalEvents.ON_NODE_SELECT, targetEl)
           return
         }
-      } else {
-        const addEl = document.createElement(currentBlock.tag)
-        if (currentBlock.tag === 'img') {
+      } else if (currentBlock.blockType === BlockType.HTML_ELEMENT) {
+        const tag = currentBlock.data.tag
+        const addEl: any = document.createElement(tag)
+        if (tag === 'img') {
           addEl.src = craftStore.innerText || ''
-        } else if (currentBlock.tag === 'input') {
+        } else if (tag === 'input') {
           addEl.value = craftStore.innerText || ''
-        } else if (currentBlock.tag !== 'br') {
+        } else if (tag !== 'br') {
           addEl.innerHTML = craftStore.innerText || ''
         }
         if (craftStore.className) {
@@ -209,16 +209,14 @@ export default defineComponent({
       reader.readAsText(file)
     }
 
-    const getExportData = async (): Promise<ExportData> => {
+    const getEntityData = async (): Promise<ComponentBlockItem> => {
       const html = mainCanvasRef.value.innerHTML || ''
       const style = localStorage.getItem(LS_KEYS.MAIN_STYLE) || ''
 
-      return {
+      return new ComponentBlockItem({
         html: formatHtml(html),
         style: formatCss(style),
-        styleLang: 'scss',
-        timestamp: Date.now(),
-      }
+      })
     }
 
     const pasteHtmlText = ref('')
@@ -245,7 +243,7 @@ export default defineComponent({
         label: '📃 Export JSON',
         props: {
           onClick: async () => {
-            handleExportJson(await getExportData())
+            handleExportJson(await getEntityData())
           },
         },
       },
@@ -256,7 +254,7 @@ export default defineComponent({
             label: '💚 Export Vue 2 SFC',
             props: {
               onClick: async () => {
-                handleExportVue(await getExportData())
+                handleExportVue(await getEntityData())
               },
             },
           },
@@ -264,7 +262,7 @@ export default defineComponent({
             label: '💚 Export Vue 3 SFC',
             props: {
               onClick: async () => {
-                handleExportVue(await getExportData(), 3)
+                handleExportVue(await getEntityData(), 3)
               },
             },
           },
@@ -341,33 +339,47 @@ export default defineComponent({
       return ((waitingTime.value / MAX_WAIT_TIME) * 100).toFixed(2)
     })
     const handleMouseDown = (event: MouseEvent) => {
-      if (craftStore.currentBlock.manualType !== BlockManualType.DELETE) {
-        handleBlockClick(event)
+      if (craftStore.currentBlock.actionType === ActionType.DELETE) {
+        // 仿 Minecraft 挖掘等待时间效果
+        console.log('[handleMouseDown]', event.x, event.y)
+        clearWait()
+        waitTimer.value = setInterval(() => {
+          if (waitingTime.value > MAX_WAIT_TIME) {
+            clearWait()
+            // console.log('fire!!')
+            handleBlockClick(event)
+            return
+          }
+          waitingTime.value += 50
+        }, 50)
+        cursorX.value = event.x - 10
+        cursorY.value = event.y + 10
+        event.preventDefault()
         return
       }
-      // 仿 Minecraft 挖掘等待时间效果
-      console.log('[handleMouseDown]', event.x, event.y)
-      clearWait()
-      waitTimer.value = setInterval(() => {
-        if (waitingTime.value > MAX_WAIT_TIME) {
-          clearWait()
-          // console.log('fire!!')
-          handleBlockClick(event)
-          return
-        }
-        waitingTime.value += 50
-      }, 50)
-      cursorX.value = event.x - 10
-      cursorY.value = event.y + 10
-      event.preventDefault()
+      handleBlockClick(event)
     }
     const handleMouseUp = (event: MouseEvent) => {
       // console.log('[handleMouseUp]', event)
-      if (craftStore.currentBlock.manualType !== BlockManualType.DELETE) {
+      if (craftStore.currentBlock.actionType === ActionType.DELETE) {
         return
       }
       clearWait()
     }
+
+    const mainCanvasClass = computed(() => {
+      const currentBlock = craftStore.currentBlock
+      return {
+        'page-craft-mc--dev': indicatorOptions.enableDevHelpClass,
+        'page-craft-mc--cursor-insert': currentBlock.blockType !== BlockType.ACTIONS,
+        'page-craft-mc--cursor-pickaxe': currentBlock.actionType === ActionType.DELETE,
+        'page-craft-mc--cursor-arrow': currentBlock.actionType === ActionType.SELECTION,
+        'page-craft-mc--expand': indicatorOptions.enableExpand,
+        'page-craft-mc--full-width': indicatorOptions.fullWidth,
+        'page-craft-mc--transparent': indicatorOptions.bgTransparent,
+        'page-craft-mc--centered': indicatorOptions.centeredElements,
+      }
+    })
 
     return {
       craftStore,
@@ -381,7 +393,7 @@ export default defineComponent({
       hoveredElDisplay,
       handleImportHtml,
       handleImportJsonSelected,
-      BlockManualType,
+      BlockType: ActionType,
       toggleList,
       exportMenuOptions,
       handleMouseDown,
@@ -389,6 +401,7 @@ export default defineComponent({
       waitingProgress,
       cursorX,
       cursorY,
+      mainCanvasClass,
     }
   },
 })
@@ -453,19 +466,7 @@ export default defineComponent({
     </div>
     <div
       ref="mainCanvasRef"
-      :class="{
-        'page-craft-mc--dev': indicatorOptions.enableDevHelpClass,
-        'page-craft-mc--cursor-insert':
-          !craftStore.currentBlock.manualType && Boolean(craftStore.currentBlock.tag),
-        'page-craft-mc--cursor-pickaxe':
-          craftStore.currentBlock.manualType === BlockManualType.DELETE,
-        'page-craft-mc--cursor-arrow':
-          craftStore.currentBlock.manualType === BlockManualType.SELECTION,
-        'page-craft-mc--expand': indicatorOptions.enableExpand,
-        'page-craft-mc--full-width': indicatorOptions.fullWidth,
-        'page-craft-mc--transparent': indicatorOptions.bgTransparent,
-        'page-craft-mc--centered': indicatorOptions.centeredElements,
-      }"
+      :class="mainCanvasClass"
       class="page-craft-mc"
       @mousedown="handleMouseDown"
       @mouseup="handleMouseUp"
