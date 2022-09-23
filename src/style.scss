@@ -10,6 +10,7 @@
 
 body {
   margin: 0;
+  font-family: "SF Pro SC", "SF Pro Text", "SF Pro Icons", "PingFang SC", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 }
 
 
@@ -21,12 +22,23 @@ html, body, #app {
 Inspired by https://khang-nd.github.io/7.css/
  */
 .page-craft-aero-panel {
-  background-color: rgba(117, 117, 117, 0.6);
-  color: white;
+  background-color: rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(2px);
   border: 1px solid rgba(0, 0, 0, .4);
   border-radius: 0;
   box-shadow: 0 1px 10px rgba(0, 0, 0, 0.27), inset 0 0 0.5px #fff;
+  .n-button {
+    background-color: white !important;
+  }
+
+  &._dark {
+    background-color: rgba(117, 117, 117, 0.6);
+    color: white;
+    .n-button {
+      background-color: transparent !important;
+    }
+  }
+
 }
 
 /* Vue transitions */

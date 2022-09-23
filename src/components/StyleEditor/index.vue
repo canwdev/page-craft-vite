@@ -21,7 +21,7 @@ import 'codemirror/addon/search/searchcursor'
 import 'codemirror/addon/selection/active-line'
 import emmet from '@emmetio/codemirror-plugin'
 import {debounce, throttle} from 'throttle-debounce'
-import {LS_KEYS} from '@/enum'
+import {LsKeys} from '@/enum'
 import {createOrFindStyleNode} from '@/utils/dom'
 import 'codemirror-colorpicker/dist/codemirror-colorpicker.css'
 import 'codemirror-colorpicker'
@@ -32,6 +32,7 @@ import {BlockItem, ActionBlockItems} from '@/enum/block'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {cssSnippetList} from '@/enum/styles'
 import {formatCss} from '@/utils/formater'
+import {useIsDarkMode} from '@/hooks/use-global-theme'
 
 // Register extension on CodeMirror object
 emmet(CodeMirror)
@@ -67,7 +68,7 @@ export default defineComponent({
     const styleEl = ref<HTMLElement | null>(null)
 
     const styleEditorOptions = reactive<StyleEditorOptions>(
-      JSON.parse(localStorage.getItem(LS_KEYS.STYLE_EDITOR_OPTIONS) || 'null') || {
+      JSON.parse(localStorage.getItem(LsKeys.STYLE_EDITOR_OPTIONS) || 'null') || {
         wTop: '100px',
         wLeft: '100px',
         wWidth: '300px',
@@ -77,7 +78,7 @@ export default defineComponent({
     watch(
       styleEditorOptions,
       () => {
-        localStorage.setItem(LS_KEYS.STYLE_EDITOR_OPTIONS, JSON.stringify({...styleEditorOptions}))
+        localStorage.setItem(LsKeys.STYLE_EDITOR_OPTIONS, JSON.stringify({...styleEditorOptions}))
       },
       {deep: true}
     )
@@ -86,6 +87,14 @@ export default defineComponent({
       if (mVisible) {
         codeMirrorInstance.refresh()
       }
+    })
+    const {isDarkMode} = useIsDarkMode()
+
+    const getThemeName = () => {
+      return isDarkMode.value ? 'dracula' : 'idea'
+    }
+    watch(isDarkMode, (val) => {
+      codeMirrorInstance.setOption('theme', getThemeName())
     })
 
     onMounted(() => {
@@ -100,15 +109,15 @@ export default defineComponent({
         },
       })
 
-      styleEl.value = createOrFindStyleNode(LS_KEYS.MAIN_STYLE)
-      const style = localStorage.getItem(LS_KEYS.MAIN_STYLE) || ''
+      styleEl.value = createOrFindStyleNode(LsKeys.MAIN_STYLE)
+      const style = localStorage.getItem(LsKeys.MAIN_STYLE) || ''
 
       codeMirrorInstance = CodeMirror(textareaRef.value, {
         value: style,
         mode: 'text/x-scss',
         placeholder: 'Write your SASS(SCSS) code here...',
         lint: true,
-        theme: 'dracula', // 主题样式
+        theme: getThemeName(), // 主题样式
         keyMap: 'sublime',
         undoDepth: 1000,
         smartIndent: true, // 是否智能缩进
@@ -202,7 +211,7 @@ export default defineComponent({
         try {
           styleEl.value.innerHTML = value ? await sassToCSS(value) : ''
 
-          localStorage.setItem(LS_KEYS.MAIN_STYLE, value)
+          localStorage.setItem(LsKeys.MAIN_STYLE, value)
 
           errorTip.value = ''
         } catch (error: any) {
@@ -310,6 +319,7 @@ export default defineComponent({
       craftStore,
       errorTip,
       toolOptions,
+      isDarkMode,
     }
   },
 })
@@ -317,8 +327,13 @@ export default defineComponent({
 
 <template>
   <transition name="zoom">
-    <div v-show="mVisible" class="style-editor-dialog win7" ref="dialogRef">
-      <div class="window window-color is-bright glass">
+    <div
+      v-show="mVisible"
+      class="style-editor-dialog win7"
+      :class="{_dark: isDarkMode}"
+      ref="dialogRef"
+    >
+      <div class="window window-color glass">
         <div ref="titleBarRef" class="title-bar">
           <div class="title-bar-text" style="display: flex; align-items: center; height: 14px">
             <img src="~@/assets/textures/redstone.png" alt="tools" />
@@ -412,9 +427,12 @@ export default defineComponent({
     padding: 0px;
     display: flex;
   }
-  .window-color::before,
-  .window-color > .title-bar {
-    //background-color: #5d89bc;
+
+  &._dark {
+    .window-color::before {
+      background-color: rgba(117, 117, 117, 0.6);
+      color: white;
+    }
   }
 
   .window-body-1 {

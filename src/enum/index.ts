@@ -1,4 +1,5 @@
-export const LS_KEYS = {
+export const LsKeys = {
+  LS_KEY_THEME: 'ck_keenote_theme',
   GLOBAL_STYLE: 'page_craft_global_style',
   CURRENT_BLOCK: 'page_craft_current_block',
   MAIN_HTML: 'page_craft_main_html',

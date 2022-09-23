@@ -7,10 +7,11 @@ import FileChooser from '@/components/FileChooser.vue'
 import {throttle} from 'throttle-debounce'
 import $ from 'jquery'
 import {ActionType, BlockType, ComponentBlockItem} from '@/enum/block'
-import {LS_KEYS, TOOL_CLASSES} from '@/enum'
+import {LsKeys, TOOL_CLASSES} from '@/enum'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {handleExportJson, handleExportVue} from '@/utils/exporter'
 import {formatCss, formatHtml} from '@/utils/formater'
+import {useIsDarkMode} from '@/hooks/use-global-theme'
 
 const removeMouseOverDomElementEffect = () => {
   const $el = $(TOOL_CLASSES.DOT_CLASS_MOUSE_OVER)
@@ -48,7 +49,7 @@ export default defineComponent({
     const craftStore = useCraftStore()
     const message = useMessage()
     const indicatorOptions = reactive<IndicatorOptions>(
-      JSON.parse(localStorage.getItem(LS_KEYS.INDICATOR_OPTIONS) || 'null') || {
+      JSON.parse(localStorage.getItem(LsKeys.INDICATOR_OPTIONS) || 'null') || {
         enableDevHelpClass: true,
         enableExpand: false,
         enableSelection: true,
@@ -62,14 +63,14 @@ export default defineComponent({
     watch(
       indicatorOptions,
       () => {
-        localStorage.setItem(LS_KEYS.INDICATOR_OPTIONS, JSON.stringify({...indicatorOptions}))
+        localStorage.setItem(LsKeys.INDICATOR_OPTIONS, JSON.stringify({...indicatorOptions}))
       },
       {deep: true}
     )
     const isShowImportDialog = ref(false)
 
     onMounted(() => {
-      const html = localStorage.getItem(LS_KEYS.MAIN_HTML)
+      const html = localStorage.getItem(LsKeys.MAIN_HTML)
       if (html) {
         setMainCanvasHtml(html)
       }
@@ -82,7 +83,7 @@ export default defineComponent({
     const saveData = () => {
       removeMouseOverDomElementEffect()
       const innerHTML = mainCanvasRef.value.innerHTML
-      localStorage.setItem(LS_KEYS.MAIN_HTML, innerHTML)
+      localStorage.setItem(LsKeys.MAIN_HTML, innerHTML)
     }
 
     const currentHoveredEl = ref<any>(null)
@@ -211,7 +212,7 @@ export default defineComponent({
 
     const getEntityData = async (): Promise<ComponentBlockItem> => {
       const html = mainCanvasRef.value.innerHTML || ''
-      const style = localStorage.getItem(LS_KEYS.MAIN_STYLE) || ''
+      const style = localStorage.getItem(LsKeys.MAIN_STYLE) || ''
 
       return new ComponentBlockItem({
         html: formatHtml(html),
@@ -374,6 +375,8 @@ export default defineComponent({
       clearWait()
     }
 
+    const {isDarkMode} = useIsDarkMode()
+
     const mainCanvasClass = computed(() => {
       const currentBlock = craftStore.currentBlock
       return {
@@ -385,6 +388,7 @@ export default defineComponent({
         'page-craft-mc--full-width': indicatorOptions.fullWidth,
         'page-craft-mc--transparent': indicatorOptions.bgTransparent,
         'page-craft-mc--centered': indicatorOptions.centeredElements,
+        _dark: isDarkMode.value,
       }
     })
 
@@ -409,6 +413,7 @@ export default defineComponent({
       cursorX,
       cursorY,
       mainCanvasClass,
+      isDarkMode,
     }
   },
 })
@@ -439,7 +444,7 @@ export default defineComponent({
       @selected="handleImportJsonSelected"
     />
 
-    <div class="page-craft-mc-indicator page-craft-aero-panel">
+    <div class="page-craft-mc-indicator page-craft-aero-panel" :class="{_dark: isDarkMode}">
       <n-space align="center">
         <n-space align="center" size="small">
           <n-dropdown
@@ -451,22 +456,31 @@ export default defineComponent({
             <n-button size="tiny">Import & Export</n-button>
           </n-dropdown>
 
-          <div v-for="item in toggleList" :key="item.flag" class="toggle-list">
-            <n-checkbox
-              size="small"
-              :label="item.title"
-              v-model:checked="indicatorOptions[item.flag]"
-              :title="item.desc"
-            />
-          </div>
+          <n-popover trigger="hover" :show-arrow="false" :duration="300">
+            <template #trigger>
+              <n-button size="tiny">Options</n-button>
+            </template>
+            <template #header> </template>
+            <div v-for="item in toggleList" :key="item.flag" class="toggle-list">
+              <n-checkbox
+                size="small"
+                :label="item.title"
+                v-model:checked="indicatorOptions[item.flag]"
+                :title="item.desc"
+              />
+            </div>
+            <template #footer>
+              <slot name="settingsButtons"></slot>
+            </template>
+          </n-popover>
+          <n-button
+            size="tiny"
+            style="min-width: 120px"
+            @click="indicatorOptions.showStyleEditor = !indicatorOptions.showStyleEditor"
+          >
+            {{ indicatorOptions.showStyleEditor ? 'Hide' : 'Show' }} StyleEditor
+          </n-button>
         </n-space>
-        <n-button
-          size="tiny"
-          style="min-width: 120px"
-          @click="indicatorOptions.showStyleEditor = !indicatorOptions.showStyleEditor"
-        >
-          {{ indicatorOptions.showStyleEditor ? 'Hide' : 'Show' }} StyleEditor
-        </n-button>
         <div v-if="false" class="indicator-text">
           {{ hoveredElDisplay }}
         </div>
@@ -554,6 +568,10 @@ export default defineComponent({
   margin-right: auto;
   //cursor: url('@/assets/textures/iron_sword--cursor.png') 0 0, default;
 
+  &._dark {
+    background-color: #1e1e1e;
+  }
+
   @media screen and (max-width: 1200px) {
     width: 100%;
   }
@@ -599,7 +617,7 @@ export default defineComponent({
     width: 100%;
   }
   &--transparent {
-    background-color: transparent;
+    background-color: transparent !important;
   }
   &--centered {
     display: flex;

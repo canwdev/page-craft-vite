@@ -1,6 +1,6 @@
 import {ActionBlockItems} from '@/enum/block'
 import {BlockItem} from '@/enum/block'
-import {LS_KEYS} from '@/enum'
+import {LsKeys} from '@/enum'
 
 type CraftStore = {
   currentBlock: BlockItem
@@ -13,7 +13,7 @@ export const useCraftStore = defineStore('craft', {
   state: (): CraftStore => {
     return {
       currentBlock:
-        JSON.parse(localStorage.getItem(LS_KEYS.CURRENT_BLOCK) || 'null') ||
+        JSON.parse(localStorage.getItem(LsKeys.CURRENT_BLOCK) || 'null') ||
         ActionBlockItems.SELECTION,
       className: '',
       innerText: '',
@@ -25,7 +25,7 @@ export const useCraftStore = defineStore('craft', {
   actions: {
     setCurrentBlock(block: BlockItem) {
       this.currentBlock = block
-      localStorage.setItem(LS_KEYS.CURRENT_BLOCK, JSON.stringify(block))
+      localStorage.setItem(LsKeys.CURRENT_BLOCK, JSON.stringify(block))
     },
   },
 })

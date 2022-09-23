@@ -2,8 +2,7 @@
 import {useCraftStore} from '@/store/craft'
 import {blockList} from '@/enum/block'
 import ToolItem from '@/components/ToolBar/ToolItem.vue'
-import {LS_KEYS} from '@/enum'
-import {createOrFindStyleNode} from '@/utils/dom'
+import {useIsDarkMode} from '@/hooks/use-global-theme'
 
 export default defineComponent({
   name: 'BottomToolBar',
@@ -12,58 +11,18 @@ export default defineComponent({
   },
   setup() {
     const craftStore = useCraftStore()
-    const styleEl = ref<HTMLElement | null>(null)
-
-    const isShowGlobalStyleDialog = ref(false)
-    const globalStyleText = ref('')
-
-    const applyGlobalStyle = () => {
-      if (styleEl.value) {
-        styleEl.value.innerHTML = globalStyleText.value
-        localStorage.setItem(LS_KEYS.GLOBAL_STYLE, globalStyleText.value)
-      }
-    }
-
-    onMounted(() => {
-      styleEl.value = createOrFindStyleNode(LS_KEYS.GLOBAL_STYLE)
-      const style = localStorage.getItem(LS_KEYS.GLOBAL_STYLE) || ''
-
-      if (style) {
-        globalStyleText.value = style
-        applyGlobalStyle()
-      }
-    })
 
     return {
       blockList,
       craftStore,
-      isShowGlobalStyleDialog,
-      applyGlobalStyle,
-      globalStyleText,
+      ...useIsDarkMode(),
     }
   },
 })
 </script>
 
 <template>
-  <div class="page-craft-enhanced-toolbar page-craft-aero-panel">
-    <n-modal
-      v-model:show="isShowGlobalStyleDialog"
-      negative-text="Cancel"
-      positive-text="Save"
-      preset="dialog"
-      title="Global Style"
-      @positive-click="applyGlobalStyle"
-    >
-      <n-input
-        v-model:value="globalStyleText"
-        placeholder="CSS Code Only"
-        rows="20"
-        style="font-family: monospace"
-        type="textarea"
-      />
-    </n-modal>
-
+  <div class="page-craft-enhanced-toolbar page-craft-aero-panel" :class="{_dark: isDarkMode}">
     <div class="page-craft-enhanced-toolbar-above">
       <n-space size="small">
         <div class="field-row">
@@ -91,7 +50,7 @@ export default defineComponent({
           />
         </div>
       </n-space>
-      <n-button size="tiny" @click="isShowGlobalStyleDialog = true">Global Style...</n-button>
+      <n-button size="tiny" @click="">...</n-button>
     </div>
     <div class="page-craft-enhanced-toolbar-main">
       <ToolItem
