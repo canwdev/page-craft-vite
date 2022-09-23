@@ -109,7 +109,7 @@ export default defineComponent({
   margin-right: auto;
   font-family: monospace;
   border-bottom: 0;
-  border-radius: 10px 10px 0 0;
+  border-bottom: 0;
   padding: 5px 10px 6px;
   z-index: 999;
 

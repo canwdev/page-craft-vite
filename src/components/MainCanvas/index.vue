@@ -512,9 +512,6 @@ export default defineComponent({
     position: sticky;
     top: 0;
     border-top: 0;
-    border-radius: 0;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
     z-index: 997;
 
     .indicator-text {

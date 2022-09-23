@@ -1,5 +1,4 @@
 import {createApp} from 'vue'
-import './style.scss'
 import App from './App.vue'
 import {
   // create naive ui
@@ -7,8 +6,9 @@ import {
   // component
   NButton,
 } from 'naive-ui'
-import {createPinia} from 'pinia'
 import '7.css/dist/7.scoped.css'
+import './style.scss'
+import {createPinia} from 'pinia'
 const naive = create({
   components: [NButton],
 })

@@ -91,7 +91,7 @@ export default defineComponent({
         dragHandleEl: titleBarRef.value,
         dragTargetEl: dialogRef.value,
         allowOut: true,
-        opacify: 0.5,
+        // opacify: 0.5,
         preventNode: titleBarButtonsRef.value,
         onMove(data) {
           handleMoveDebounced(data)
@@ -409,7 +409,7 @@ export default defineComponent({
   }
   .window-color::before,
   .window-color > .title-bar {
-    background-color: #8dbc5d;
+    //background-color: #5d89bc;
   }
 
   .window-body-1 {
