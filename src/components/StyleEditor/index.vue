@@ -6,6 +6,7 @@ import CodeMirror from 'codemirror'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/mode/sass/sass' // 代码高亮
 import 'codemirror/theme/dracula.css'
+import 'codemirror/theme/idea.css'
 import 'codemirror/keymap/sublime'
 import 'codemirror/addon/comment/comment'
 import 'codemirror/addon/display/placeholder'
@@ -24,12 +25,13 @@ import {LS_KEYS} from '@/enum'
 import {createOrFindStyleNode} from '@/utils/dom'
 import 'codemirror-colorpicker/dist/codemirror-colorpicker.css'
 import 'codemirror-colorpicker'
-import {beautifyCSS, sassToCSS, suggestElementClass} from '@/utils/css'
+import {sassToCSS, suggestElementClass} from '@/utils/css'
 import {copyToClipboard, isCharacterKeyPress} from '@/utils'
 import {useCraftStore} from '@/store/craft'
 import {BlockItem, blockSelection} from '@/enum/block'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {cssSnippetList} from '@/enum/styles'
+import {formatCss} from '@/utils/formater'
 
 // Register extension on CodeMirror object
 emmet(CodeMirror)
@@ -226,7 +228,7 @@ export default defineComponent({
       if (!textValue.trim()) {
         message.info('Please type some code to be beautified')
       } else {
-        const beautifiedCSS = await beautifyCSS(textValue)
+        const beautifiedCSS = formatCss(textValue)
         if (textValue.trim() !== beautifiedCSS.trim()) {
           await editor.setValue(beautifiedCSS)
           await handleUpdateStyle(beautifiedCSS)
@@ -318,7 +320,10 @@ export default defineComponent({
     <div v-show="mVisible" class="style-editor-dialog win7" ref="dialogRef">
       <div class="window window-color is-bright glass">
         <div ref="titleBarRef" class="title-bar">
-          <div class="title-bar-text">Style Editor</div>
+          <div class="title-bar-text" style="display: flex; align-items: center; height: 14px">
+            <img src="~@/assets/textures/redstone.png" alt="tools" />
+            &nbsp;Style Editor
+          </div>
           <div ref="titleBarButtonsRef" class="title-bar-controls">
             <!--          <button aria-label="Minimize"></button>-->
             <!--          <button aria-label="Maximize"></button>-->
@@ -343,7 +348,7 @@ export default defineComponent({
               :show-arrow="true"
             >
               <button title="Tools">
-                <img src="~@/assets/textures/redstone.png" alt="tools" />
+                <img src="~@/assets/textures/enchanted_book.png" alt="tools" />
               </button>
             </n-dropdown>
 
@@ -415,6 +420,7 @@ export default defineComponent({
   .window-body-1 {
     margin: 0 6px 6px;
     position: relative;
+    border: 1px solid rgba(0, 0, 0, 0.6);
 
     .code-editor-placeholder {
       min-width: 300px;

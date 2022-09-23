@@ -11,8 +11,7 @@ import {BlockManualType} from '@/enum/block'
 import {LS_KEYS, TOOL_CLASSES} from '@/enum'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {ExportData, handleExportJson, handleExportVue} from '@/utils/exporter'
-import {formatHtml} from '@/utils/dom'
-import {beautifyCSS} from '@/utils/css'
+import {formatCss, formatHtml} from '@/utils/formater'
 
 const removeMouseOverDomElementEffect = () => {
   const $el = $(TOOL_CLASSES.DOT_CLASS_MOUSE_OVER)
@@ -216,7 +215,7 @@ export default defineComponent({
 
       return {
         html: formatHtml(html),
-        style: await beautifyCSS(style),
+        style: formatCss(style),
         styleLang: 'scss',
         timestamp: Date.now(),
       }
