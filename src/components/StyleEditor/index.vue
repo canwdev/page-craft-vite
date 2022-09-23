@@ -266,7 +266,9 @@ export default defineComponent({
       craftStore.currentBlock = ActionBlockItems.SELECTION
     }
     const exitSelectMode = () => {
-      craftStore.currentBlock = backupBlock.value
+      if (backupBlock.value) {
+        craftStore.currentBlock = backupBlock.value
+      }
       craftStore.isSelectMode = false
       backupBlock.value = null
     }

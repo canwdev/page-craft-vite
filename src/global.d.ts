@@ -8,6 +8,6 @@ declare global {
     $notification: NotificationApiInjection
     $dialog: DialogApiInjection
     $loadingBar: LoadingBarApiInjection
-    $electronAPI: any
+    Sass: any
   }
 }
