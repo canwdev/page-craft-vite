@@ -335,7 +335,7 @@ export default defineComponent({
       :class="{_dark: isDarkMode}"
       ref="dialogRef"
     >
-      <div class="window window-color glass">
+      <div class="window _window-color glass">
         <div ref="titleBarRef" class="title-bar">
           <div class="title-bar-text" style="display: flex; align-items: center; height: 14px">
             <img src="~@/assets/textures/redstone.png" alt="tools" />
@@ -381,7 +381,7 @@ export default defineComponent({
           </div>
         </div>
 
-        <div class="window-body-1">
+        <div class="_window-body">
           <!--        <section class="tabs">
           <menu role="tablist">
             <button role="tab" aria-selected="false">CSS</button>
@@ -430,17 +430,8 @@ export default defineComponent({
     display: flex;
   }
 
-  &._dark {
-    .window-color::before {
-      background-color: rgba(117, 117, 117, 0.6);
-      color: white;
-    }
-  }
-
-  .window-body-1 {
-    margin: 0 6px 6px;
+  ._window-body {
     position: relative;
-    border: 1px solid rgba(0, 0, 0, 0.6);
 
     .code-editor-placeholder {
       min-width: 300px;

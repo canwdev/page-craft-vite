@@ -15,8 +15,8 @@ export enum BlockType {
 
 export interface HtmlBlockItem {
   tag: string
-  className?: string
-  innerText?: string
+  // className?: string
+  // innerText?: string
 }
 
 export class HtmlBlockItem {
@@ -25,8 +25,8 @@ export class HtmlBlockItem {
       throw new Error('tag is required')
     }
     this.tag = prop.tag
-    this.className = prop.className || ''
-    this.innerText = prop.innerText || ''
+    // this.className = prop.className || ''
+    // this.innerText = prop.innerText || ''
   }
 }
 
@@ -71,7 +71,7 @@ export class BlockItem {
   }
 }
 
-const presetHtmlTags = 'div,span,br,button,input,img,a,p,h1,h2,h3,h4,h5,h6,ul,ol,li'.split(',')
+const presetHtmlTags = 'div,span,br,button,input,img,a,p,h1,h2,h3,h4,h5,ul,ol,li'.split(',')
 
 export const ActionBlockItems = {
   SELECTION: new BlockItem({
@@ -95,13 +95,15 @@ export const ActionBlockItems = {
   }),
 }
 
+export const getHtmlBlockItem = (tag) =>
+  new BlockItem({
+    blockType: BlockType.HTML_ELEMENT,
+    data: new HtmlBlockItem({tag}),
+  })
+
+export const actionBlockItemList = Object.values(ActionBlockItems).filter((item) => !item.hidden)
+
 export const blockList: BlockItem[] = [
-  ...Object.values(ActionBlockItems),
-  ...presetHtmlTags.map(
-    (tag) =>
-      new BlockItem({
-        blockType: BlockType.HTML_ELEMENT,
-        data: new HtmlBlockItem({tag}),
-      })
-  ),
-].filter((item) => !item.hidden)
+  ...actionBlockItemList,
+  ...presetHtmlTags.map((tag) => getHtmlBlockItem(tag)),
+]

@@ -8,8 +8,13 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     FileChooser: typeof import('./src/components/FileChooser.vue')['default']
+    InventoryItem: typeof import('./src/components/InventoryModal/InventoryItem.vue')['default']
+    InventoryList: typeof import('./src/components/InventoryModal/InventoryList.vue')['default']
+    InventoryModal: typeof import('./src/components/InventoryModal/index.vue')['default']
     MainCanvas: typeof import('./src/components/MainCanvas/index.vue')['default']
+    NA: typeof import('naive-ui')['NA']
     NButton: typeof import('naive-ui')['NButton']
+    NCard: typeof import('naive-ui')['NCard']
     NCheckbox: typeof import('naive-ui')['NCheckbox']
     NConfigProvider: typeof import('naive-ui')['NConfigProvider']
     NDialogProvider: typeof import('naive-ui')['NDialogProvider']
@@ -24,7 +29,8 @@ declare module '@vue/runtime-core' {
     NPopover: typeof import('naive-ui')['NPopover']
     NSelect: typeof import('naive-ui')['NSelect']
     NSpace: typeof import('naive-ui')['NSpace']
-    NText: typeof import('naive-ui')['NText']
+    NTabPane: typeof import('naive-ui')['NTabPane']
+    NTabs: typeof import('naive-ui')['NTabs']
     NThing: typeof import('naive-ui')['NThing']
     StyleEditor: typeof import('./src/components/StyleEditor/index.vue')['default']
     ToolBar: typeof import('./src/components/ToolBar/index.vue')['default']

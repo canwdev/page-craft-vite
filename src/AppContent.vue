@@ -60,6 +60,9 @@ export default defineComponent({
         <n-button size="tiny" @click="isShowSettings = true">Settings</n-button>
         <n-button size="tiny" @click="isShowGlobalStyleDialog = true">Global Style...</n-button>
       </n-space>
+      <n-space size="small">
+        <n-a href="https://github.com/canwdev/page-craft-vite" target="_blank">Github</n-a>
+      </n-space>
     </template>
   </MainCanvas>
 

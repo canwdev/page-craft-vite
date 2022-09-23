@@ -4,12 +4,16 @@ import {useCraftStore} from '@/store/craft'
 import {BlockItem} from '@/enum/block'
 
 export default defineComponent({
-  name: 'ToolItem',
+  name: 'InventoryItem',
   props: {
     item: {
       type: Object as PropType<BlockItem>,
       required: true,
     },
+    // isActive: {
+    //   type: Boolean,
+    //   default: false,
+    // },
   },
   setup(props) {
     const {item} = toRefs(props)
@@ -36,16 +40,28 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .tool-item {
-  width: 39px;
-  height: 44px;
-  color: white;
+  width: 50px;
+  height: 50px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
+  font-size: 14px;
+  font-weight: 600;
   position: relative;
+  background-color: rgba(204, 204, 204, 0.2);
   font-family: 'Operator Mono', 'Source Code Pro', Menlo, Monaco, Consolas, Courier New, monospace;
+  transition: all 0.3s;
+
+  &:hover {
+    background-color: rgba(11, 216, 44, 0.29);
+    outline: 3px solid #18a058;
+    box-shadow: 0 0 10px #18a058;
+  }
+
+  &:active {
+    opacity: 0.7;
+  }
 
   &::before {
     width: 48px;
@@ -74,10 +90,8 @@ export default defineComponent({
     height: 32px;
     image-rendering: pixelated;
   }
-
   .item-text {
     transform: rotate(-45deg);
-    text-shadow: 2px 2px 0px black;
     &::before {
       content: '<';
       color: #0bd82c;
