@@ -6,7 +6,7 @@ import {LS_KEYS} from '@/enum'
 import {createOrFindStyleNode} from '@/utils/dom'
 
 export default defineComponent({
-  name: 'ToolBar',
+  name: 'BottomToolBar',
   components: {
     ToolItem,
   },
@@ -64,30 +64,34 @@ export default defineComponent({
       />
     </n-modal>
 
-    <div class="page-craft-enhanced-toolbar-above win7">
+    <div class="page-craft-enhanced-toolbar-above">
       <n-space size="small">
         <div class="field-row">
           <label for="inputClass">Class </label>
-          <input
+          <n-input
+            size="tiny"
             id="inputClass"
             type="text"
             v-model="craftStore.className"
             placeholder="CSS Class"
             style="font-family: monospace"
+            clearable
           />
         </div>
 
         <div class="field-row">
           <label for="inputContent">Content </label>
-          <input
+          <n-input
+            size="tiny"
             id="inputContent"
             type="text"
             v-model="craftStore.innerText"
             placeholder="innerHTML | src | value"
+            clearable
           />
         </div>
       </n-space>
-      <button @click="isShowGlobalStyleDialog = true">Global Style...</button>
+      <n-button size="tiny" @click="isShowGlobalStyleDialog = true">Global Style...</n-button>
     </div>
     <div class="page-craft-enhanced-toolbar-main">
       <ToolItem
@@ -107,7 +111,6 @@ export default defineComponent({
   user-select: none;
   margin-left: auto;
   margin-right: auto;
-  font-family: monospace;
   border-bottom: 0;
   border-bottom: 0;
   padding: 5px 10px 6px;
@@ -123,6 +126,12 @@ export default defineComponent({
     justify-content: space-between;
     label {
       text-shadow: 0 0 10px white;
+    }
+    .field-row {
+      display: flex;
+      .n-input {
+        margin-left: 5px;
+      }
     }
   }
 

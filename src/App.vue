@@ -1,16 +1,42 @@
-<script lang="ts" setup>
-import MainCanvas from './components/MainCanvas/index.vue'
+<script lang="ts">
+import {GlobalThemeOverrides, darkTheme} from 'naive-ui'
+import AppContent from '@/AppContent.vue'
+
+export default defineComponent({
+  components: {
+    AppContent,
+  },
+  setup() {
+    const themeOverrides: GlobalThemeOverrides = {
+      common: {
+        borderRadiusSmall: '0px',
+        borderRadius: '0px',
+      },
+    }
+
+    return {
+      themeOverrides,
+      darkTheme,
+    }
+  },
+})
 </script>
 
 <template>
-  <div class="page-craft-root">
-    <n-message-provider>
-      <MainCanvas />
-    </n-message-provider>
-  </div>
+  <n-config-provider :theme="darkTheme" class="page-craft-root" :theme-overrides="themeOverrides">
+    <n-loading-bar-provider>
+      <n-notification-provider>
+        <n-message-provider>
+          <n-dialog-provider>
+            <AppContent />
+          </n-dialog-provider>
+        </n-message-provider>
+      </n-notification-provider>
+    </n-loading-bar-provider>
+  </n-config-provider>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .page-craft-root {
   position: relative;
   height: 100%;

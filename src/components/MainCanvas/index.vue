@@ -296,11 +296,18 @@ export default defineComponent({
         label: '❌ Clear All',
         props: {
           onClick: async () => {
-            if (confirm('Confirm clear all code? this can not be undo!')) {
-              handleImportHtml('')
-              globalEventBus.emit(GlobalEvents.ON_IMPORT_STYLE, '')
-              message.success('Clear!')
-            }
+            window.$dialog.warning({
+              title: 'Confirm',
+              content: `Confirm clear all code? this can not be undo!`,
+              positiveText: 'OK',
+              negativeText: 'Cancel',
+              onPositiveClick: () => {
+                handleImportHtml('')
+                globalEventBus.emit(GlobalEvents.ON_IMPORT_STYLE, '')
+                message.success('Clear!')
+              },
+              onNegativeClick: () => {},
+            })
           },
         },
       },
@@ -432,7 +439,7 @@ export default defineComponent({
       @selected="handleImportJsonSelected"
     />
 
-    <div class="page-craft-mc-indicator page-craft-aero-panel win7">
+    <div class="page-craft-mc-indicator page-craft-aero-panel">
       <n-space align="center">
         <n-space align="center" size="small">
           <n-dropdown
@@ -441,24 +448,25 @@ export default defineComponent({
             placement="bottom-start"
             trigger="hover"
           >
-            <button>Import & Export</button>
+            <n-button size="tiny">Import & Export</n-button>
           </n-dropdown>
 
           <div v-for="item in toggleList" :key="item.flag" class="toggle-list">
-            <input
-              type="checkbox"
-              :id="`checkbox_${item.flag}`"
-              v-model="indicatorOptions[item.flag]"
+            <n-checkbox
+              size="small"
+              :label="item.title"
+              v-model:checked="indicatorOptions[item.flag]"
+              :title="item.desc"
             />
-            <label :for="`checkbox_${item.flag}`" :title="item.desc">{{ item.title }}</label>
           </div>
         </n-space>
-        <button
+        <n-button
+          size="tiny"
           style="min-width: 120px"
           @click="indicatorOptions.showStyleEditor = !indicatorOptions.showStyleEditor"
         >
           {{ indicatorOptions.showStyleEditor ? 'Hide' : 'Show' }} StyleEditor
-        </button>
+        </n-button>
         <div v-if="false" class="indicator-text">
           {{ hoveredElDisplay }}
         </div>
@@ -545,6 +553,10 @@ export default defineComponent({
   margin-left: auto;
   margin-right: auto;
   //cursor: url('@/assets/textures/iron_sword--cursor.png') 0 0, default;
+
+  @media screen and (max-width: 1200px) {
+    width: 100%;
+  }
 
   &--cursor-insert {
     cursor: crosshair;
