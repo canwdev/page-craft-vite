@@ -165,7 +165,7 @@ export default defineComponent({
       } else if (currentBlock.blockType === BlockType.HTML_ELEMENT) {
         const tag = currentBlock.data.tag
         const addEl: any = document.createElement(tag)
-        if (tag === 'img') {
+        if (tag === 'img' || tag === 'iframe') {
           addEl.src = craftStore.innerText || ''
         } else if (tag === 'input') {
           addEl.value = craftStore.innerText || ''

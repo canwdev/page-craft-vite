@@ -41,7 +41,10 @@ export default defineComponent({
 
 <template>
   <div class="inventory-list-wrap">
-    <div v-if="showFilter" style="position: sticky; top: 0; left: 0; right: 0; padding: 5px">
+    <div
+      v-if="showFilter"
+      style="position: sticky; top: 0; left: 0; right: 0; padding: 0px; z-index: 1"
+    >
       <n-input v-model:value="filterText" clearable placeholder="Filter Items" size="tiny" />
     </div>
     <div v-if="!blockItemList.length" style="padding: 40px; text-align: center; font-size: 20px">
