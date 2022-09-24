@@ -68,17 +68,9 @@ export default defineComponent({
 
         <div class="_window-body _bg">
           <n-tabs v-model:value="currentTab" size="small" type="segment" animated>
-            <n-tab-pane :name="BlockType.HTML_ELEMENT" tab="HTML">
+            <n-tab-pane :name="BlockType.HTML_ELEMENT" tab="Blocks">
               <InventoryList
-                :block-item-list="htmlBlockItemList"
-                @onItemClick="(v) => $emit('onItemClick', v)"
-                :is-mini="isMini"
-              />
-            </n-tab-pane>
-            <n-tab-pane :name="BlockType.ACTIONS" tab="Actions">
-              <InventoryList
-                :block-item-list="actionBlockItemList"
-                :show-filter="false"
+                :block-item-list="[...actionBlockItemList, ...htmlBlockItemList]"
                 @onItemClick="(v) => $emit('onItemClick', v)"
                 :is-mini="isMini"
               />

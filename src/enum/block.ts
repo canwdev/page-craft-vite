@@ -49,7 +49,7 @@ export class ComponentBlockItem {
 export interface BlockItem {
   id: string
   blockType: BlockType
-  title?: string
+  title: string
   icon?: string
   data: HtmlBlockItem
   actionType?: ActionType
@@ -64,7 +64,7 @@ export class BlockItem {
     this.id = prop.blockType === BlockType.HTML_ELEMENT ? prop.data.tag : prop.actionType
     this.blockType = prop.blockType
     this.actionType = prop.actionType
-    this.title = prop.title || prop?.data?.tag
+    this.title = prop.title || prop?.data?.tag || ''
     this.icon = prop.icon || ''
     this.data = prop.data || {}
     this.hidden = prop.hidden || false
@@ -79,16 +79,16 @@ export const ActionBlockItems = {
     actionType: ActionType.SELECTION,
     hidden: true,
   }),
-  EMPTY: new BlockItem({
-    blockType: BlockType.ACTIONS,
-    title: '',
-    actionType: ActionType.CURSOR,
-  }),
   DELETE: new BlockItem({
     blockType: BlockType.ACTIONS,
     title: 'Delete',
     icon: ironPickaxe,
     actionType: ActionType.DELETE,
+  }),
+  EMPTY: new BlockItem({
+    blockType: BlockType.ACTIONS,
+    title: '',
+    actionType: ActionType.CURSOR,
   }),
 }
 

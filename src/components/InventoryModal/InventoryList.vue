@@ -30,8 +30,9 @@ export default defineComponent({
     const filterText = ref('')
 
     const blockItemListFiltered = computed(() => {
+      const text = filterText.value.toLowerCase()
       return filterText.value
-        ? blockItemList.value.filter((item) => item.data?.tag?.includes(filterText.value))
+        ? blockItemList.value.filter((item: BlockItem) => item.title.toLowerCase().includes(text))
         : blockItemList.value
     })
 

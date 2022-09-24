@@ -134,7 +134,7 @@ export default defineComponent({
       <div class="page-craft-enhanced-toolbar-main">
         <ToolItem
           v-for="(item, index) in toolBarList"
-          :key="item.id"
+          :key="index"
           :item="item"
           @click="handleToolItemClick(item, index)"
           :active="currentIndex === index"

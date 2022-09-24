@@ -12,6 +12,7 @@ import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {handleExportJson, handleExportVue} from '@/utils/exporter'
 import {formatCss, formatHtml} from '@/utils/formater'
 import {useIsDarkMode} from '@/hooks/use-global-theme'
+import {appendCustomBlock} from '@/utils/dom'
 
 const removeMouseOverDomElementEffect = () => {
   const $el = $(TOOL_CLASSES.DOT_CLASS_MOUSE_OVER)
@@ -152,32 +153,7 @@ export default defineComponent({
 
       // console.log('[targetEl]', targetEl)
 
-      if (currentBlock.blockType === BlockType.ACTIONS) {
-        if (currentBlock.actionType === ActionType.DELETE) {
-          if (targetEl === mainCanvasRef.value) {
-            return
-          }
-          targetEl.parentNode.removeChild(targetEl)
-        } else if (currentBlock.actionType === ActionType.SELECTION) {
-          globalEventBus.emit(GlobalEvents.ON_NODE_SELECT, targetEl)
-          return
-        }
-      } else if (currentBlock.blockType === BlockType.HTML_ELEMENT) {
-        const tag = currentBlock.data.tag
-        const addEl: any = document.createElement(tag)
-        if (tag === 'img' || tag === 'iframe') {
-          addEl.src = craftStore.innerText || ''
-        } else if (tag === 'input') {
-          addEl.value = craftStore.innerText || ''
-        } else if (tag !== 'br') {
-          addEl.innerHTML = craftStore.innerText || ''
-        }
-        if (craftStore.className) {
-          addEl.className = craftStore.className
-        }
-        targetEl.appendChild(addEl)
-        // console.log('[addEl]', addEl)
-      }
+      appendCustomBlock(currentBlock, targetEl, craftStore, mainCanvasRef)
 
       saveData()
     }
