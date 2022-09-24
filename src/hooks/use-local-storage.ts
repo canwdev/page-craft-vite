@@ -43,3 +43,15 @@ export const useLocalStorageNumber = (key, defaultValue = 0): Ref<number> => {
   })
   return val
 }
+
+export const useLocalStorageObject = (key, defaultValue = {}): Ref<any> => {
+  const val = ref<object>(JSON.parse(localStorage.getItem(key) || 'null') || defaultValue)
+  watch(val, (val) => {
+    if (val) {
+      localStorage.setItem(key, JSON.stringify(val))
+    } else {
+      localStorage.removeItem(key)
+    }
+  })
+  return val
+}

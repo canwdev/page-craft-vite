@@ -13,6 +13,7 @@
     "@emmetio/codemirror-plugin": "^1.2.4",
     "codemirror": "5.65.8",
     "codemirror-colorpicker": "^1.9.80",
+    "color-hash": "^2.0.1",
     "file-saver": "^2.0.5",
     "jquery": "^3.6.1",
     "js-beautify": "^1.14.6",

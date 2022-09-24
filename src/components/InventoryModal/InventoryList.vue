@@ -19,6 +19,10 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    isMini: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: ['onItemClick'],
   setup(props) {
@@ -40,7 +44,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="inventory-list-wrap">
+  <div class="inventory-list-wrap" :class="{_mini: isMini}">
     <div
       v-if="showFilter"
       style="position: sticky; top: 0; left: 0; right: 0; padding: 0px; z-index: 1"
@@ -66,8 +70,13 @@ export default defineComponent({
 <style lang="scss" scoped>
 .inventory-list-wrap {
   height: 40vh;
-  min-height: 200px;
+  min-height: 100px;
   overflow: auto;
+  transition: height 0.3s;
+
+  &._mini {
+    height: 150px;
+  }
   .inventory-list {
     padding: 10px;
     display: grid;

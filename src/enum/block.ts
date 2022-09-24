@@ -71,8 +71,6 @@ export class BlockItem {
   }
 }
 
-const presetHtmlTags = 'div,span,br,button,input,img,a,p,h1,h2,h3,h4,h5,ul,ol,li'.split(',')
-
 export const ActionBlockItems = {
   SELECTION: new BlockItem({
     blockType: BlockType.ACTIONS,
@@ -81,10 +79,9 @@ export const ActionBlockItems = {
     actionType: ActionType.SELECTION,
     hidden: true,
   }),
-  CURSOR: new BlockItem({
+  EMPTY: new BlockItem({
     blockType: BlockType.ACTIONS,
-    title: 'Cursor',
-    icon: ironSword,
+    title: '',
     actionType: ActionType.CURSOR,
   }),
   DELETE: new BlockItem({
@@ -103,7 +100,11 @@ export const getHtmlBlockItem = (tag) =>
 
 export const actionBlockItemList = Object.values(ActionBlockItems).filter((item) => !item.hidden)
 
-export const blockList: BlockItem[] = [
-  ...actionBlockItemList,
+const presetHtmlTags = 'div,span,br,button,input,img,a,p,h1,h2,h3,ul,ol,li'.split(',')
+export const initToolbarList: BlockItem[] = [
+  ActionBlockItems.EMPTY,
+  ActionBlockItems.DELETE,
   ...presetHtmlTags.map((tag) => getHtmlBlockItem(tag)),
+  ActionBlockItems.EMPTY,
+  ActionBlockItems.EMPTY,
 ]

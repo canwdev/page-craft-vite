@@ -1,9 +1,11 @@
 <script lang="ts">
 import {useCraftStore} from '@/store/craft'
-import {blockList} from '@/enum/block'
+import {BlockItem, initToolbarList} from '@/enum/block'
 import ToolItem from '@/components/ToolBar/ToolItem.vue'
 import {useIsDarkMode} from '@/hooks/use-global-theme'
 import InventoryModal from '@/components/InventoryModal/index.vue'
+import {LsKeys} from '@/enum'
+import {useLocalStorageObject} from '@/hooks/use-local-storage'
 
 export default defineComponent({
   name: 'BottomToolBar',
@@ -15,11 +17,67 @@ export default defineComponent({
     const craftStore = useCraftStore()
     const isShowInventoryModal = ref(false)
 
+    const currentIndex = ref(0)
+    const toolBarList = useLocalStorageObject(LsKeys.TOOL_BAR_LIST, [...initToolbarList])
+
+    const handleInvItemClick = (item: BlockItem) => {
+      const list = [...toolBarList.value]
+      list.splice(currentIndex.value, 1, item)
+      toolBarList.value = list
+      updateCurrentBlock(item)
+    }
+
+    const updateCurrentBlock = (item: BlockItem) => {
+      craftStore.setCurrentBlock(item)
+    }
+
+    const handleToolItemClick = (item: BlockItem, index) => {
+      currentIndex.value = index
+    }
+
+    watch(currentIndex, (newIndex) => {
+      updateCurrentBlock(toolBarList.value[newIndex])
+    })
+
+    const handleScroll = (event) => {
+      event.preventDefault()
+      if (event.deltaY > 0) {
+        if (currentIndex.value === toolBarList.value.length - 1) {
+          currentIndex.value = 0
+          return
+        }
+        currentIndex.value += 1
+      } else {
+        if (currentIndex.value <= 0) {
+          currentIndex.value = toolBarList.value.length - 1
+          return
+        }
+        currentIndex.value -= 1
+      }
+    }
+
+    const toolbarRef = ref()
+
+    onMounted(() => {
+      toolbarRef.value.addEventListener('wheel', handleScroll, {passive: false})
+    })
+    onBeforeUnmount(() => {
+      toolbarRef.value.removeEventListener('wheel', handleScroll)
+    })
+
     return {
-      blockList,
+      toolbarRef,
+      toolBarList,
       craftStore,
       ...useIsDarkMode(),
       isShowInventoryModal,
+      handleInvItemClick,
+      currentIndex,
+      handleToolItemClick,
+      resetToolbar() {
+        toolBarList.value = [...initToolbarList]
+        window.$message.success('Toolbar reset success!')
+      },
     }
   },
 })
@@ -27,8 +85,12 @@ export default defineComponent({
 
 <template>
   <div class="page-craft-enhanced-toolbar-wrapper">
-    <InventoryModal v-model:visible="isShowInventoryModal" />
-    <div class="page-craft-enhanced-toolbar page-craft-aero-panel" :class="{_dark: isDarkMode}">
+    <InventoryModal v-model:visible="isShowInventoryModal" @onItemClick="handleInvItemClick" />
+    <div
+      ref="toolbarRef"
+      class="page-craft-enhanced-toolbar page-craft-aero-panel"
+      :class="{_dark: isDarkMode}"
+    >
       <div class="page-craft-enhanced-toolbar-above">
         <n-space size="small">
           <div class="field-row">
@@ -56,16 +118,26 @@ export default defineComponent({
             />
           </div>
         </n-space>
-        <n-button size="tiny" @click="isShowInventoryModal = !isShowInventoryModal"
-          >{{ isShowInventoryModal ? 'Hide' : 'Show' }} Inventory</n-button
-        >
+        <n-space size="small">
+          <n-popconfirm @positive-click="resetToolbar">
+            <template #trigger>
+              <n-button size="tiny"> Reset </n-button>
+            </template>
+            Confirm reset toolbar?
+          </n-popconfirm>
+
+          <n-button size="tiny" @click="isShowInventoryModal = !isShowInventoryModal">
+            {{ isShowInventoryModal ? 'Hide' : 'Show' }} Inventory
+          </n-button>
+        </n-space>
       </div>
       <div class="page-craft-enhanced-toolbar-main">
         <ToolItem
-          v-for="item in blockList"
+          v-for="(item, index) in toolBarList"
           :key="item.id"
           :item="item"
-          @click="() => craftStore.setCurrentBlock(item)"
+          @click="handleToolItemClick(item, index)"
+          :active="currentIndex === index"
         />
       </div>
     </div>
@@ -79,13 +151,13 @@ export default defineComponent({
   user-select: none;
   margin-left: auto;
   margin-right: auto;
+  z-index: 999;
 }
 .page-craft-enhanced-toolbar {
   border-bottom: 0;
   border-bottom: 0;
   padding: 5px 10px 6px;
-  z-index: 999;
-
+  overflow: hidden;
   * {
     box-sizing: border-box;
   }

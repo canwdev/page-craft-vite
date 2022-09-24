@@ -51,10 +51,10 @@ export default defineComponent({
     const indicatorOptions = reactive<IndicatorOptions>(
       JSON.parse(localStorage.getItem(LsKeys.INDICATOR_OPTIONS) || 'null') || {
         enableDevHelpClass: true,
-        enableExpand: false,
-        enableSelection: true,
+        enableExpand: true,
+        enableSelection: false,
         fullWidth: false,
-        bgTransparent: false,
+        bgTransparent: true,
         centeredElements: false,
         showStyleEditor: false,
         contentEditable: false,
