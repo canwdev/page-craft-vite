@@ -7,6 +7,9 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    BlockListItem: typeof import('./src/components/InventoryModal/BlockListItem.vue')['default']
+    ComponentItem: typeof import('./src/components/InventoryModal/ComponentItem.vue')['default']
+    ComponentListItem: typeof import('./src/components/InventoryModal/ComponentListItem.vue')['default']
     FileChooser: typeof import('./src/components/FileChooser.vue')['default']
     InventoryItem: typeof import('./src/components/InventoryModal/InventoryItem.vue')['default']
     InventoryList: typeof import('./src/components/InventoryModal/InventoryList.vue')['default']

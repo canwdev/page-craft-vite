@@ -52,7 +52,7 @@ export const appendCustomBlock = (block: BlockItem, targetEl, craftStore, mainCa
       addEl.src = craftStore.innerText || ''
     } else if (tag === 'input') {
       addEl.value = craftStore.innerText || ''
-    } else if (['br', 'hr'].includes(tag)) {
+    } else if (!['br', 'hr'].includes(tag)) {
       addEl.innerHTML = craftStore.innerText || ''
     }
     if (craftStore.className) {

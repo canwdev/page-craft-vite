@@ -6,13 +6,14 @@ import StyleEditor from '@/components/StyleEditor/index.vue'
 import FileChooser from '@/components/FileChooser.vue'
 import {throttle} from 'throttle-debounce'
 import $ from 'jquery'
-import {ActionType, BlockType, ComponentBlockItem} from '@/enum/block'
+import {ActionType, BlockType, ExportItem} from '@/enum/block'
 import {LsKeys, TOOL_CLASSES} from '@/enum'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {handleExportJson, handleExportVue} from '@/utils/exporter'
 import {formatCss, formatHtml} from '@/utils/formater'
 import {useIsDarkMode} from '@/hooks/use-global-theme'
 import {appendCustomBlock} from '@/utils/dom'
+import {useComponentStorage} from '@/hooks/use-component-storage'
 
 const removeMouseOverDomElementEffect = () => {
   const $el = $(TOOL_CLASSES.DOT_CLASS_MOUSE_OVER)
@@ -32,7 +33,9 @@ type IndicatorOptions = {
   enableSelection: boolean
   fullWidth: boolean
   bgTransparent: boolean
-  centeredElements: boolean
+  bgDark: boolean
+  centeredElementsY: boolean
+  centeredElementsX: boolean
   showStyleEditor: boolean
   contentEditable: boolean
 }
@@ -56,7 +59,9 @@ export default defineComponent({
         enableSelection: false,
         fullWidth: false,
         bgTransparent: true,
-        centeredElements: false,
+        bgDark: false,
+        centeredElementsY: false,
+        centeredElementsX: false,
         showStyleEditor: false,
         contentEditable: false,
       }
@@ -70,11 +75,22 @@ export default defineComponent({
     )
     const isShowImportDialog = ref(false)
 
-    onMounted(() => {
-      const html = localStorage.getItem(LsKeys.MAIN_HTML)
-      if (html) {
-        setMainCanvasHtml(html)
+    const {loadStorageHtml, saveStorageHtml, loadStorageStyle} = useComponentStorage()
+
+    watch(
+      () => craftStore.currentComponentName,
+      () => {
+        reloadCanvasHtml()
       }
+    )
+
+    const reloadCanvasHtml = () => {
+      const html = loadStorageHtml()
+      setMainCanvasHtml(html)
+    }
+
+    onMounted(() => {
+      reloadCanvasHtml()
       mainCanvasRef.value.addEventListener('mousemove', handleMouseMove)
     })
     onBeforeUnmount(() => {
@@ -84,7 +100,7 @@ export default defineComponent({
     const saveData = () => {
       removeMouseOverDomElementEffect()
       const innerHTML = mainCanvasRef.value.innerHTML
-      localStorage.setItem(LsKeys.MAIN_HTML, innerHTML)
+      saveStorageHtml(innerHTML)
     }
 
     const currentHoveredEl = ref<any>(null)
@@ -186,11 +202,11 @@ export default defineComponent({
       reader.readAsText(file)
     }
 
-    const getEntityData = async (): Promise<ComponentBlockItem> => {
+    const getEntityData = async (): Promise<ExportItem> => {
       const html = mainCanvasRef.value.innerHTML || ''
-      const style = localStorage.getItem(LsKeys.MAIN_STYLE) || ''
+      const style = loadStorageStyle()
 
-      return new ComponentBlockItem({
+      return new ExportItem({
         html: formatHtml(html),
         style: formatCss(style),
       })
@@ -198,7 +214,9 @@ export default defineComponent({
 
     const pasteHtmlText = ref('')
     const setMainCanvasHtml = (html?: string) => {
-      mainCanvasRef.value.innerHTML = html
+      if (mainCanvasRef.value) {
+        mainCanvasRef.value.innerHTML = html
+      }
     }
 
     const handleImportHtml = (html: string) => {
@@ -302,9 +320,11 @@ export default defineComponent({
         title: 'Content Editable',
         desc: 'Enable HTML contenteditable feature!',
       },
-      {flag: 'enableSelection', title: 'Selection', desc: 'Add cursor selection effect'},
-      {flag: 'centeredElements', title: 'Centered', desc: ''},
+      {flag: 'enableSelection', title: 'Hover Locate', desc: 'Add cursor hover locate effect'},
+      {flag: 'centeredElementsY', title: 'Centered Y', desc: ''},
+      {flag: 'centeredElementsX', title: 'Centered X', desc: ''},
       {flag: 'bgTransparent', title: 'Transparent BG', desc: ''},
+      {flag: 'bgDark', title: 'Dark BG', desc: ''},
       {flag: 'fullWidth', title: 'Full Width', desc: ''},
     ]
 
@@ -365,8 +385,9 @@ export default defineComponent({
         'page-craft-mc--expand': indicatorOptions.enableExpand,
         'page-craft-mc--full-width': indicatorOptions.fullWidth,
         'page-craft-mc--transparent': indicatorOptions.bgTransparent,
-        'page-craft-mc--centered': indicatorOptions.centeredElements,
-        _dark: isDarkMode.value,
+        'page-craft-mc--centered-y': indicatorOptions.centeredElementsY,
+        'page-craft-mc--centered-x': indicatorOptions.centeredElementsX,
+        _dark: indicatorOptions.bgDark,
       }
     })
 
@@ -548,6 +569,7 @@ export default defineComponent({
 
   &._dark {
     background-color: #1e1e1e;
+    color: white;
   }
 
   @media screen and (max-width: 1200px) {
@@ -597,9 +619,12 @@ export default defineComponent({
   &--transparent {
     background-color: transparent !important;
   }
-  &--centered {
+  &--centered-y {
     display: flex;
     align-items: center;
+  }
+  &--centered-x {
+    display: flex;
     justify-content: center;
   }
 

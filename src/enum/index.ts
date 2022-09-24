@@ -9,6 +9,8 @@ export const LsKeys = {
   INVENTORY_TAB: 'page_craft_inventory_tab',
   TOOL_BAR_LIST: 'page_craft_tool_bar_list',
   TOOL_BAR_INDEX: 'page_craft_tool_bar_index',
+  COMPONENT_LIST: 'page_craft_component_list',
+  CURRENT_COMPONENT_NAME: 'page_craft_current_component_name',
 }
 
 const CLASS_MOUSE_OVER = 'page-craft-mouse-over-dom-element'

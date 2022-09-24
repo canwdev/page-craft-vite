@@ -1,11 +1,13 @@
 import iconArrow from '../assets/textures/arrow.png?url'
-import ironSword from '../assets/textures/iron_sword.png?url'
-import ironPickaxe from '../assets/textures/iron_pickaxe.png?url'
+import iconIronPickaxe from '../assets/textures/iron_pickaxe.png?url'
+import iconOakSign from '../assets/textures/oak_sign.png?url'
+import iconRedStone from '../assets/textures/redstone.png?url'
 
 export enum ActionType {
   CURSOR = 'CURSOR',
   SELECTION = 'SELECTION',
   DELETE = 'DELETE',
+  ADD_COMPONENT = 'ADD_COMPONENT',
 }
 export enum BlockType {
   HTML_ELEMENT = 'HTML_ELEMENT',
@@ -30,14 +32,14 @@ export class HtmlBlockItem {
   }
 }
 
-export interface ComponentBlockItem {
+export interface ExportItem {
   html: string
   style: string
   styleLang: string
   timestamp: number
 }
 
-export class ComponentBlockItem {
+export class ExportItem {
   constructor(prop: any = {}) {
     this.html = prop.html || ''
     this.style = prop.style || ''
@@ -51,7 +53,7 @@ export interface BlockItem {
   blockType: BlockType
   title: string
   icon?: string
-  data: HtmlBlockItem
+  data: HtmlBlockItem | ExportItem | any
   actionType?: ActionType
   hidden: boolean
 }
@@ -61,7 +63,13 @@ export class BlockItem {
     if (!prop.blockType) {
       throw new Error('blockType is required')
     }
-    this.id = prop.blockType === BlockType.HTML_ELEMENT ? prop.data.tag : prop.actionType
+    if (prop.blockType === BlockType.HTML_ELEMENT) {
+      this.id = prop.data.tag
+    } else if (prop.blockType === BlockType.ACTIONS) {
+      this.id = prop.actionType
+    } else if (prop.blockType === BlockType.COMPONENT) {
+      this.id = prop.title
+    }
     this.blockType = prop.blockType
     this.actionType = prop.actionType
     this.title = prop.title || prop?.data?.tag || ''
@@ -82,7 +90,7 @@ export const ActionBlockItems = {
   DELETE: new BlockItem({
     blockType: BlockType.ACTIONS,
     title: 'Delete',
-    icon: ironPickaxe,
+    icon: iconIronPickaxe,
     actionType: ActionType.DELETE,
   }),
   EMPTY: new BlockItem({
@@ -90,9 +98,16 @@ export const ActionBlockItems = {
     title: '',
     actionType: ActionType.CURSOR,
   }),
+  ADD_COMPONENT: new BlockItem({
+    blockType: BlockType.ACTIONS,
+    title: 'AddComponent',
+    icon: iconOakSign,
+    actionType: ActionType.ADD_COMPONENT,
+    hidden: true,
+  }),
 }
 
-export const getHtmlBlockItem = (tag) =>
+export const createHtmlBlockItem = (tag: string) =>
   new BlockItem({
     blockType: BlockType.HTML_ELEMENT,
     data: new HtmlBlockItem({tag}),
@@ -104,7 +119,14 @@ const presetHtmlTags = 'div,span,br,button,input,img,a,p,h1,h2,h3,ul,ol,li'.spli
 export const initToolbarList: BlockItem[] = [
   ActionBlockItems.EMPTY,
   ActionBlockItems.DELETE,
-  ...presetHtmlTags.map((tag) => getHtmlBlockItem(tag)),
+  ...presetHtmlTags.map((tag) => createHtmlBlockItem(tag)),
   ActionBlockItems.EMPTY,
   ActionBlockItems.EMPTY,
 ]
+
+export const createComponentBlockItem = (name: string) =>
+  new BlockItem({
+    blockType: BlockType.COMPONENT,
+    title: name,
+    data: new ExportItem(),
+  })

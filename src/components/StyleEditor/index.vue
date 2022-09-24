@@ -33,6 +33,7 @@ import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {cssSnippetList} from '@/enum/styles'
 import {formatCss} from '@/utils/formater'
 import {useIsDarkMode} from '@/hooks/use-global-theme'
+import {useComponentStorage} from '@/hooks/use-component-storage'
 
 // Register extension on CodeMirror object
 emmet(CodeMirror)
@@ -97,6 +98,21 @@ export default defineComponent({
       codeMirrorInstance.setOption('theme', getThemeName())
     })
 
+    const {loadStorageStyle, saveStorageStyle} = useComponentStorage()
+
+    watch(
+      () => craftStore.currentComponentName,
+      () => {
+        reloadStyle()
+      }
+    )
+
+    const reloadStyle = () => {
+      const style = loadStorageStyle()
+      handleImportStyle(style)
+      handleUpdateStyle(style, false)
+    }
+
     onMounted(() => {
       clearDraggable.value = setDraggableMouse({
         dragHandleEl: titleBarRef.value,
@@ -110,7 +126,7 @@ export default defineComponent({
       })
 
       styleEl.value = createOrFindStyleNode(LsKeys.MAIN_STYLE)
-      const style = localStorage.getItem(LsKeys.MAIN_STYLE) || ''
+      const style = loadStorageStyle()
 
       codeMirrorInstance = CodeMirror(textareaRef.value, {
         value: style,
@@ -167,7 +183,7 @@ export default defineComponent({
         handleResizeDebounced()
       }).observe(textareaRef.value)
 
-      handleUpdateStyle(style)
+      handleUpdateStyle(style, false)
 
       initDialogStyle()
 
@@ -206,12 +222,14 @@ export default defineComponent({
     })
 
     const errorTip = ref('')
-    const handleUpdateStyle = async (value) => {
+    const handleUpdateStyle = async (value, isSave = true) => {
       if (styleEl.value) {
         try {
           styleEl.value.innerHTML = value ? await sassToCSS(value) : ''
 
-          localStorage.setItem(LsKeys.MAIN_STYLE, value)
+          if (isSave) {
+            saveStorageStyle(value)
+          }
 
           errorTip.value = ''
         } catch (error: any) {

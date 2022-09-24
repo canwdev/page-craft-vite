@@ -1,15 +1,17 @@
 <script lang="ts">
 import {defineComponent, PropType} from 'vue'
-import InventoryItem from '@/components/InventoryModal/InventoryItem.vue'
+import BlockListItem from '@/components/InventoryModal/BlockListItem.vue'
+import ComponentListItem from '@/components/InventoryModal/ComponentListItem.vue'
 import {BlockItem} from '@/enum/block'
 
 export default defineComponent({
   name: 'InventoryList',
   components: {
-    InventoryItem,
+    BlockListItem,
+    ComponentListItem,
   },
   props: {
-    blockItemList: {
+    itemList: {
       type: Array as PropType<BlockItem[]>,
       default() {
         return []
@@ -19,51 +21,59 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
-    isMini: {
+    isMinHeight: {
+      type: Boolean,
+      default: false,
+    },
+    isComponentBlock: {
       type: Boolean,
       default: false,
     },
   },
   emits: ['onItemClick'],
   setup(props) {
-    const {blockItemList} = toRefs(props)
+    const {itemList} = toRefs(props)
     const filterText = ref('')
 
-    const blockItemListFiltered = computed(() => {
+    const itemListFiltered = computed(() => {
       const text = filterText.value.toLowerCase()
       return filterText.value
-        ? blockItemList.value.filter((item: BlockItem) => item.title.toLowerCase().includes(text))
-        : blockItemList.value
+        ? itemList.value.filter((item: BlockItem) => item.title.toLowerCase().includes(text))
+        : itemList.value
     })
 
     return {
       filterText,
-      blockItemListFiltered,
+      itemListFiltered,
     }
   },
 })
 </script>
 
 <template>
-  <div class="inventory-list-wrap" :class="{_mini: isMini}">
+  <div class="inventory-list-wrap" :class="{'_min-height': isMinHeight}">
     <div
       v-if="showFilter"
       style="position: sticky; top: 0; left: 0; right: 0; padding: 0px; z-index: 1"
     >
       <n-input v-model:value="filterText" clearable placeholder="Filter Items" size="tiny" />
     </div>
-    <div v-if="!blockItemList.length" style="padding: 40px; text-align: center; font-size: 20px">
+    <div v-if="!itemListFiltered.length" style="padding: 40px; text-align: center; font-size: 20px">
       No Items.
     </div>
-    <div v-else class="inventory-list">
-      <InventoryItem
-        class="list-item"
-        v-for="item in blockItemListFiltered"
-        :key="item.id"
-        :item="item"
-        bordered
-        @click="$emit('onItemClick', item)"
-      />
+    <div v-else class="inventory-list" :class="{_big: isComponentBlock}">
+      <template v-for="(item, index) in itemListFiltered" :key="item.id">
+        <ComponentListItem
+          v-if="isComponentBlock"
+          :item="item"
+          @click="$emit('onItemClick', item, index)"
+        >
+          <template #actionMenu="{item}">
+            <slot name="actionMenu" :item="item"></slot>
+          </template>
+        </ComponentListItem>
+        <BlockListItem v-else class="list-item" :item="item" @click="$emit('onItemClick', item)" />
+      </template>
     </div>
   </div>
 </template>
@@ -75,15 +85,19 @@ export default defineComponent({
   overflow: auto;
   transition: height 0.3s;
 
-  &._mini {
+  &._min-height {
     height: 150px;
   }
   .inventory-list {
     padding: 10px;
     display: grid;
-    grid-template-columns: repeat(11, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
     grid-template-rows: auto;
     gap: 10px;
+    &._big {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px 10px;
+    }
   }
 }
 </style>
