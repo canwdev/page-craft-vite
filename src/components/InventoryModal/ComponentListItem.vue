@@ -20,10 +20,6 @@ export default defineComponent({
       return item.value.title && colorHash.hex(item.value.title)
     })
 
-    const showActions = computed(() => {
-      return !item.value.actionType
-    })
-
     const isActive = computed(() => {
       return item.value.title === craftStore.currentComponentName
     })
@@ -31,7 +27,6 @@ export default defineComponent({
     return {
       craftStore,
       color,
-      showActions,
       isActive,
       formatDate,
     }
@@ -48,7 +43,7 @@ export default defineComponent({
       boxShadow: `0 0 4px ${color}, 0 0 1px 1px ${color}`,
     }"
   >
-    <n-popover v-if="showActions" trigger="hover" :show-arrow="false" :duration="300">
+    <n-popover trigger="hover" :show-arrow="false" :duration="300">
       <template #trigger>
         <n-button size="tiny" class="action-btn" @click.stop> ... </n-button>
       </template>

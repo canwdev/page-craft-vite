@@ -112,6 +112,23 @@ export default defineComponent({
       })
     }
 
+    const handleDeleteAll = (item: BlockItem) => {
+      window.$dialog.warning({
+        title: 'Confirm',
+        content: `Are you sure to delete all components?`,
+        positiveText: 'OK',
+        negativeText: 'Cancel',
+        onPositiveClick: () => {
+          currentComponentName.value = ''
+          componentList.value.forEach((item) => {
+            clearComponentStorage(item.title)
+          })
+          componentList.value = []
+        },
+        onNegativeClick: () => {},
+      })
+    }
+
     const handleComponentRename = (item: BlockItem) => {
       const name = prompt('请输入组件名称', item.title)
       if (!name) {
@@ -145,6 +162,7 @@ export default defineComponent({
       componentList,
       handleComponentDelete,
       handleComponentRename,
+      handleDeleteAll,
     }
   },
 })
@@ -186,8 +204,13 @@ export default defineComponent({
                 @onItemClick="handleComponentItemClick"
               >
                 <template #actionMenu="{item}">
-                  <n-button size="tiny" @click="handleComponentDelete(item)"> Delete </n-button>
-                  <n-button size="tiny" @click="handleComponentRename(item)"> Rename </n-button>
+                  <template v-if="item.actionType">
+                    <n-button size="tiny" @click="handleDeleteAll(item)"> Delete All </n-button>
+                  </template>
+                  <template v-else>
+                    <n-button size="tiny" @click="handleComponentDelete(item)"> Delete </n-button>
+                    <n-button size="tiny" @click="handleComponentRename(item)"> Rename </n-button>
+                  </template>
                 </template>
               </InventoryList>
             </n-tab-pane>
