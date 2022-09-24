@@ -5,7 +5,7 @@ import ToolItem from '@/components/ToolBar/ToolItem.vue'
 import {useIsDarkMode} from '@/hooks/use-global-theme'
 import InventoryModal from '@/components/InventoryModal/index.vue'
 import {LsKeys} from '@/enum'
-import {useLocalStorageObject} from '@/hooks/use-local-storage'
+import {useLocalStorageNumber, useLocalStorageObject} from '@/hooks/use-local-storage'
 
 export default defineComponent({
   name: 'BottomToolBar',
@@ -17,7 +17,7 @@ export default defineComponent({
     const craftStore = useCraftStore()
     const isShowInventoryModal = ref(false)
 
-    const currentIndex = ref(0)
+    const currentIndex = useLocalStorageNumber(LsKeys.TOOL_BAR_INDEX, 0)
     const toolBarList = useLocalStorageObject(LsKeys.TOOL_BAR_LIST, [...initToolbarList])
 
     const handleInvItemClick = (item: BlockItem) => {
@@ -57,6 +57,10 @@ export default defineComponent({
     }
 
     const toolbarRef = ref()
+
+    onBeforeUnmount(() => {
+      updateCurrentBlock(toolBarList.value[currentIndex.value])
+    })
 
     onMounted(() => {
       toolbarRef.value.addEventListener('wheel', handleScroll, {passive: false})

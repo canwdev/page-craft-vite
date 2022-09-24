@@ -8,6 +8,7 @@ export const LsKeys = {
   STYLE_EDITOR_OPTIONS: 'page_craft_style_editor_options',
   INVENTORY_TAB: 'page_craft_inventory_tab',
   TOOL_BAR_LIST: 'page_craft_tool_bar_list',
+  TOOL_BAR_INDEX: 'page_craft_tool_bar_index',
 }
 
 const CLASS_MOUSE_OVER = 'page-craft-mouse-over-dom-element'
