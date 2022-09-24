@@ -33,6 +33,7 @@ declare module '@vue/runtime-core' {
     NTabPane: typeof import('naive-ui')['NTabPane']
     NTabs: typeof import('naive-ui')['NTabs']
     NThing: typeof import('naive-ui')['NThing']
+    NTooltip: typeof import('naive-ui')['NTooltip']
     StyleEditor: typeof import('./src/components/StyleEditor/index.vue')['default']
     ToolBar: typeof import('./src/components/ToolBar/index.vue')['default']
     ToolItem: typeof import('./src/components/ToolBar/ToolItem.vue')['default']

@@ -347,6 +347,9 @@ export default defineComponent({
       return ((waitingTime.value / MAX_WAIT_TIME) * 100).toFixed(2)
     })
     const handleMouseDown = (event: MouseEvent) => {
+      if (event.button !== 0) {
+        return
+      }
       if (craftStore.currentBlock.actionType === ActionType.DELETE) {
         // 仿 Minecraft 挖掘等待时间效果
         console.log('[handleMouseDown]', event.x, event.y)
@@ -370,9 +373,8 @@ export default defineComponent({
     const handleMouseUp = (event: MouseEvent) => {
       // console.log('[handleMouseUp]', event)
       if (craftStore.currentBlock.actionType === ActionType.DELETE) {
-        return
+        clearWait()
       }
-      clearWait()
     }
 
     const {isDarkMode} = useIsDarkMode()
