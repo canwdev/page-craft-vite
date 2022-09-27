@@ -59,3 +59,12 @@ export const useComponentStorage = () => {
     renameComponentStorage,
   }
 }
+
+export const useComponentImportExport = () => {
+  const exportAll = () => {
+    console.log('exportAll')
+  }
+  return {
+    exportAll,
+  }
+}

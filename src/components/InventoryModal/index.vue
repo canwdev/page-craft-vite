@@ -18,7 +18,6 @@ import {useCraftStore} from '@/store/craft'
 import {useLocalStorageObject, useLocalStorageString} from '@/hooks/use-local-storage'
 import {LsKeys} from '@/enum'
 import {useComponentStorage} from '@/hooks/use-component-storage'
-import globalEventBus, {GlobalEvents, syncStorageData} from '@/utils/global-event-bus'
 
 let idx = 1
 
@@ -189,6 +188,26 @@ export default defineComponent({
         props: {
           onClick: async () => {
             handleDeleteAll()
+          },
+        },
+      },
+      {
+        type: 'divider',
+        label: 'd0',
+      },
+      {
+        label: '📥 Import All (JSON)',
+        props: {
+          onClick: async () => {
+            window.$message.error('Not implemented yet')
+          },
+        },
+      },
+      {
+        label: '📃 Export All (JSON)',
+        props: {
+          onClick: async () => {
+            window.$message.error('Not implemented yet')
           },
         },
       },

@@ -234,7 +234,7 @@ export default defineComponent({
 
     const exportMenuOptions = [
       {
-        label: '📥 Import JSON...',
+        label: '📥 Import JSON',
         props: {
           onClick: async () => {
             fileChooserRef.value.chooseFile()
