@@ -33,6 +33,7 @@ export class HtmlBlockItem {
 }
 
 export interface ExportItem {
+  name: string
   html: string
   style: string
   styleLang: string
@@ -41,6 +42,7 @@ export interface ExportItem {
 
 export class ExportItem {
   constructor(prop: any = {}) {
+    this.name = prop.name || ''
     this.html = prop.html || ''
     this.style = prop.style || ''
     this.styleLang = prop.styleLang || 'scss'

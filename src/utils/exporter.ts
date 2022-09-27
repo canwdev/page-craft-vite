@@ -3,12 +3,12 @@ import FileSaver from 'file-saver'
 import {ExportItem} from '@/enum/block'
 
 export const handleExportJson = (exportData: ExportItem) => {
-  handleExportFile(getFileName(), JSON.stringify(exportData, null, 2), '.json')
+  handleExportFile(getFileName(exportData.name), JSON.stringify(exportData, null, 2), '.json')
 }
 
 export const handleExportVue = (exportData: ExportItem, version = 2) => {
   const {html, style, styleLang} = exportData
-  const name = getFileName()
+  const name = getFileName(exportData.name)
 
   const styleStr = `
 <style lang="${styleLang}" scoped>
@@ -51,9 +51,11 @@ ${styleStr}
   handleExportFile(name, sfcStr, '.vue')
 }
 
-const getFileName = () => {
-  const dateStr = moment(new Date()).format('YYYYMMDD_HHmmss')
-  return prompt(`Export filename`, `PageCraft_${dateStr}`)
+const getFileName = (name?) => {
+  return prompt(
+    `Export filename`,
+    name || `PageCraft_${moment(new Date()).format('YYYYMMDD_HHmmss')}`
+  )
 }
 
 export const handleExportFile = (filename, contentStr, ext) => {

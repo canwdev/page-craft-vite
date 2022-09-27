@@ -26,9 +26,9 @@ import {createOrFindStyleNode} from '@/utils/dom'
 import 'codemirror-colorpicker/dist/codemirror-colorpicker.css'
 import 'codemirror-colorpicker'
 import {sassToCSS, suggestElementClass} from '@/utils/css'
-import {copyToClipboard, isCharacterKeyPress} from '@/utils'
+import {copyToClipboard} from '@/utils'
 import {useCraftStore} from '@/store/craft'
-import {BlockItem, ActionBlockItems} from '@/enum/block'
+import {ActionBlockItems, BlockItem} from '@/enum/block'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {cssSnippetList} from '@/enum/styles'
 import {formatCss} from '@/utils/formater'
@@ -109,7 +109,8 @@ export default defineComponent({
 
     const reloadStyle = () => {
       const style = loadStorageStyle()
-      handleImportStyle(style)
+      codeMirrorInstance.setValue(style)
+      // call instantly
       handleUpdateStyle(style, false)
     }
 
@@ -188,7 +189,7 @@ export default defineComponent({
       initDialogStyle()
 
       globalEventBus.on(GlobalEvents.ON_NODE_SELECT, handleNodeSelect)
-      globalEventBus.on(GlobalEvents.ON_IMPORT_STYLE, handleImportStyle)
+      globalEventBus.on(GlobalEvents.IMPORT_SUCCESS, reloadStyle)
     })
 
     onBeforeUnmount(() => {
@@ -196,7 +197,7 @@ export default defineComponent({
         clearDraggable.value()
       }
       globalEventBus.off(GlobalEvents.ON_NODE_SELECT, handleNodeSelect)
-      globalEventBus.off(GlobalEvents.ON_IMPORT_STYLE, handleImportStyle)
+      globalEventBus.off(GlobalEvents.IMPORT_SUCCESS, reloadStyle)
     })
 
     const handleMoveDebounced = throttle(500, false, ({top, left}) => {
@@ -222,15 +223,20 @@ export default defineComponent({
     })
 
     const errorTip = ref('')
+    const _prevStyleValue = ref('') // 创建一个临时变量防止重复更新
     const handleUpdateStyle = async (value, isSave = true) => {
       if (styleEl.value) {
         try {
+          if (_prevStyleValue.value === value) {
+            // console.log('prevent update')
+            return
+          }
+          // console.warn('handleUpdateStyle')
+          _prevStyleValue.value = value
           styleEl.value.innerHTML = value ? await sassToCSS(value) : ''
-
           if (isSave) {
             saveStorageStyle(value)
           }
-
           errorTip.value = ''
         } catch (error: any) {
           // console.error(error)
@@ -303,10 +309,6 @@ export default defineComponent({
       const doc = codeMirrorInstance.getDoc()
       const cursor = doc.getCursor()
       doc.replaceRange(code, cursor)
-    }
-
-    const handleImportStyle = (style: any = '') => {
-      codeMirrorInstance.setValue(style)
     }
 
     const toolOptions = [

@@ -43,12 +43,9 @@ export default defineComponent({
       boxShadow: `0 0 4px ${color}, 0 0 1px 1px ${color}`,
     }"
   >
-    <n-popover trigger="hover" :show-arrow="false" :duration="300">
-      <template #trigger>
-        <n-button size="tiny" class="action-btn" @click.stop> ... </n-button>
-      </template>
+    <div class="action-menu">
       <slot name="actionMenu" :item="item"></slot>
-    </n-popover>
+    </div>
     <img v-if="item.icon" :src="item.icon" alt="icon" style="margin-right: 5px" />
     <span v-if="item.title" class="item-text">{{ item.title }}</span>
     <span class="timestamp" v-if="item.data.timestamp">{{
@@ -74,9 +71,7 @@ export default defineComponent({
   padding: 5px;
 
   &:hover {
-    background-color: rgba(11, 216, 44, 0.29);
-    outline: 3px solid #18a058;
-    box-shadow: 0 0 10px #18a058 !important;
+    background-color: rgba(11, 216, 76, 0.08);
   }
 
   &:active {
@@ -86,6 +81,7 @@ export default defineComponent({
   &.active {
     background-color: rgba(11, 216, 44, 0.29);
     outline: 3px solid #18a058;
+    box-shadow: 0 0 10px #18a058 !important;
   }
 
   img {
@@ -94,11 +90,10 @@ export default defineComponent({
     image-rendering: pixelated;
   }
 
-  .action-btn {
+  .action-menu {
     position: absolute;
     top: 0;
     right: 0;
-    min-width: 10px;
   }
 
   .timestamp {

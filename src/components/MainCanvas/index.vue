@@ -3,17 +3,17 @@ import {useCraftStore} from '@/store/craft'
 import {copyToClipboard} from '@/utils'
 import ToolBar from '@/components/ToolBar/index.vue'
 import StyleEditor from '@/components/StyleEditor/index.vue'
-import FileChooser from '@/components/FileChooser.vue'
 import {throttle} from 'throttle-debounce'
 import $ from 'jquery'
 import {ActionType, BlockType, ExportItem} from '@/enum/block'
 import {LsKeys, TOOL_CLASSES} from '@/enum'
-import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
-import {handleExportJson, handleExportVue} from '@/utils/exporter'
+import globalEventBus, {GlobalEvents, syncStorageData} from '@/utils/global-event-bus'
 import {formatCss, formatHtml} from '@/utils/formater'
 import {useIsDarkMode} from '@/hooks/use-global-theme'
 import {appendCustomBlock} from '@/utils/dom'
 import {useComponentStorage} from '@/hooks/use-component-storage'
+import {handleExportJson, handleExportVue} from '@/utils/exporter'
+import FileChooser from '@/components/FileChooser.vue'
 
 const removeMouseOverDomElementEffect = () => {
   const $el = $(TOOL_CLASSES.DOT_CLASS_MOUSE_OVER)
@@ -51,7 +51,6 @@ export default defineComponent({
     const mainCanvasRef = ref()
     const fileChooserRef = ref()
     const craftStore = useCraftStore()
-    const message = useMessage()
     const indicatorOptions = reactive<IndicatorOptions>(
       JSON.parse(localStorage.getItem(LsKeys.INDICATOR_OPTIONS) || 'null') || {
         enableDevHelpClass: true,
@@ -75,32 +74,40 @@ export default defineComponent({
     )
     const isShowImportDialog = ref(false)
 
-    const {loadStorageHtml, saveStorageHtml, loadStorageStyle} = useComponentStorage()
+    const {loadStorageHtml, saveStorageHtml, saveStorageStyle, loadStorageStyle} =
+      useComponentStorage()
 
     watch(
       () => craftStore.currentComponentName,
       () => {
-        reloadCanvasHtml()
+        reloadHtml()
       }
     )
 
-    const reloadCanvasHtml = () => {
+    const reloadHtml = () => {
       const html = loadStorageHtml()
       setMainCanvasHtml(html)
     }
 
     onMounted(() => {
-      reloadCanvasHtml()
+      reloadHtml()
       mainCanvasRef.value.addEventListener('mousemove', handleMouseMove)
+      globalEventBus.on(GlobalEvents.SYNC_STORAGE_DATA, saveData)
+      globalEventBus.on(GlobalEvents.IMPORT_SUCCESS, reloadHtml)
     })
     onBeforeUnmount(() => {
       mainCanvasRef.value.removeEventListener('mousemove', handleMouseMove)
+      globalEventBus.off(GlobalEvents.SYNC_STORAGE_DATA, saveData)
+      globalEventBus.off(GlobalEvents.IMPORT_SUCCESS, reloadHtml)
     })
 
-    const saveData = () => {
+    const saveData = (cb?) => {
       removeMouseOverDomElementEffect()
       const innerHTML = mainCanvasRef.value.innerHTML
       saveStorageHtml(innerHTML)
+      if (cb) {
+        cb()
+      }
     }
 
     const currentHoveredEl = ref<any>(null)
@@ -177,18 +184,18 @@ export default defineComponent({
     const copyInnerHtml = () => {
       removeMouseOverDomElementEffect()
       copyToClipboard(formatHtml(mainCanvasRef.value.innerHTML))
-      message.success('Copy Success!')
+      window.$message.success('Copy Success!')
 
       saveData()
     }
 
     const handleImportJson = (data) => {
-      const {html = '', style = ''} = data
-      handleImportHtml(html)
-      globalEventBus.emit(GlobalEvents.ON_IMPORT_STYLE, style)
-      message.success('Import Success!')
+      const {html = '', style = ''} = new ExportItem(data)
+      saveStorageHtml(html)
+      saveStorageStyle(style)
+      globalEventBus.emit(GlobalEvents.IMPORT_SUCCESS, style)
+      window.$message.success('Import Success!')
     }
-
     const handleImportJsonSelected = (file) => {
       const reader = new FileReader()
       reader.onload = () => {
@@ -196,22 +203,11 @@ export default defineComponent({
           handleImportJson(JSON.parse(reader.result as string))
         } catch (error: any) {
           console.error(error)
-          message.error('Import Failed! ' + error.message)
+          window.$message.error('Import Failed! ' + error.message)
         }
       }
       reader.readAsText(file)
     }
-
-    const getEntityData = async (): Promise<ExportItem> => {
-      const html = mainCanvasRef.value.innerHTML || ''
-      const style = loadStorageStyle()
-
-      return new ExportItem({
-        html: formatHtml(html),
-        style: formatCss(style),
-      })
-    }
-
     const pasteHtmlText = ref('')
     const setMainCanvasHtml = (html?: string) => {
       if (mainCanvasRef.value) {
@@ -223,6 +219,17 @@ export default defineComponent({
       setMainCanvasHtml(html)
 
       saveData()
+    }
+    const getEntityData = async (): Promise<ExportItem> => {
+      await syncStorageData()
+      const html = loadStorageHtml() || ''
+      const style = loadStorageStyle()
+
+      return new ExportItem({
+        name: craftStore.currentComponentName,
+        html: formatHtml(html),
+        style: formatCss(style),
+      })
     }
 
     const exportMenuOptions = [
@@ -288,7 +295,7 @@ export default defineComponent({
         label: 'd1',
       },
       {
-        label: '❌ Clear All',
+        label: '❌ Clear All Code',
         props: {
           onClick: async () => {
             window.$dialog.warning({
@@ -298,8 +305,8 @@ export default defineComponent({
               negativeText: 'Cancel',
               onPositiveClick: () => {
                 handleImportHtml('')
-                globalEventBus.emit(GlobalEvents.ON_IMPORT_STYLE, '')
-                message.success('Clear!')
+                globalEventBus.emit(GlobalEvents.IMPORT_SUCCESS, '')
+                window.$message.success('Clear!')
               },
               onNegativeClick: () => {},
             })
@@ -442,7 +449,6 @@ export default defineComponent({
       accept="application/JSON"
       @selected="handleImportJsonSelected"
     />
-
     <div class="page-craft-mc-indicator page-craft-aero-panel" :class="{_dark: isDarkMode}">
       <n-space align="center">
         <n-space align="center" size="small">
@@ -452,7 +458,7 @@ export default defineComponent({
             placement="bottom-start"
             trigger="hover"
           >
-            <n-button size="tiny">Import & Export</n-button>
+            <n-button size="tiny">{{ craftStore.currentComponentName || '🎨' }} </n-button>
           </n-dropdown>
 
           <n-popover trigger="hover" :show-arrow="false" :duration="300">

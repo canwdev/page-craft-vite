@@ -9,6 +9,7 @@ import {
   ActionType,
   initToolbarList,
   createComponentBlockItem,
+  ExportItem,
 } from '@/enum/block'
 import {htmlBlockItemList} from '@/enum/inventory'
 import {ActionBlockItems} from '@/enum/block'
@@ -17,6 +18,7 @@ import {useCraftStore} from '@/store/craft'
 import {useLocalStorageObject, useLocalStorageString} from '@/hooks/use-local-storage'
 import {LsKeys} from '@/enum'
 import {useComponentStorage} from '@/hooks/use-component-storage'
+import globalEventBus, {GlobalEvents, syncStorageData} from '@/utils/global-event-bus'
 
 let idx = 1
 
@@ -65,11 +67,11 @@ export default defineComponent({
         handleCreateComponent(item)
         return
       }
-      if (item.title === currentComponentName.value) {
-        currentComponentName.value = ''
-        return
-      }
       currentComponentName.value = item.title
+    }
+
+    const cancelSelectComponent = () => {
+      currentComponentName.value = ''
     }
 
     const handleCreateComponent = (item: BlockItem) => {
@@ -112,7 +114,7 @@ export default defineComponent({
       })
     }
 
-    const handleDeleteAll = (item: BlockItem) => {
+    const handleDeleteAll = () => {
       window.$dialog.warning({
         title: 'Confirm',
         content: `Are you sure to delete all components?`,
@@ -143,10 +145,54 @@ export default defineComponent({
       list.splice(index, 1, item)
       componentList.value = list
 
+      if (item.title === currentComponentName.value) {
+        currentComponentName.value = name
+      }
+
       // rename local storage
       renameComponentStorage(item.title, name)
       item.title = name
     }
+    const {loadStorageHtml, saveStorageHtml, loadStorageStyle, saveStorageStyle} =
+      useComponentStorage()
+
+    const getCompMenuOptions = (item) => [
+      {
+        label: '🖊 Rename',
+        props: {
+          onClick: async () => {
+            handleComponentRename(item)
+          },
+        },
+      },
+      {
+        label: '❌ Delete',
+        props: {
+          onClick: async () => {
+            handleComponentDelete(item)
+          },
+        },
+      },
+    ]
+
+    const commonMenuOptions = [
+      {
+        label: '🧹 Cancel Select',
+        props: {
+          onClick: async () => {
+            cancelSelectComponent()
+          },
+        },
+      },
+      {
+        label: '❌ Delete All',
+        props: {
+          onClick: async () => {
+            handleDeleteAll()
+          },
+        },
+      },
+    ]
 
     return {
       mVisible,
@@ -163,6 +209,9 @@ export default defineComponent({
       handleComponentDelete,
       handleComponentRename,
       handleDeleteAll,
+      cancelSelectComponent,
+      getCompMenuOptions,
+      commonMenuOptions,
     }
   },
 })
@@ -205,11 +254,24 @@ export default defineComponent({
               >
                 <template #actionMenu="{item}">
                   <template v-if="item.actionType">
-                    <n-button size="tiny" @click="handleDeleteAll(item)"> Delete All </n-button>
+                    <n-dropdown
+                      :options="commonMenuOptions"
+                      key-field="label"
+                      placement="bottom-start"
+                      trigger="hover"
+                    >
+                      <n-button size="tiny" style="min-width: 10px" @click.stop>...</n-button>
+                    </n-dropdown>
                   </template>
                   <template v-else>
-                    <n-button size="tiny" @click="handleComponentDelete(item)"> Delete </n-button>
-                    <n-button size="tiny" @click="handleComponentRename(item)"> Rename </n-button>
+                    <n-dropdown
+                      :options="getCompMenuOptions(item)"
+                      key-field="label"
+                      placement="bottom-start"
+                      trigger="hover"
+                    >
+                      <n-button size="tiny" style="min-width: 10px" @click.stop>...</n-button>
+                    </n-dropdown>
                   </template>
                 </template>
               </InventoryList>
