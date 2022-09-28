@@ -4,7 +4,7 @@ import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import {NaiveUiResolver} from 'unplugin-vue-components/resolvers'
 import {fileURLToPath, URL} from 'url'
-
+import {VitePWA} from 'vite-plugin-pwa'
 // https://vitejs.dev/config/
 export default defineConfig({
   base: './',
@@ -14,6 +14,7 @@ export default defineConfig({
     },
   },
   plugins: [
+    VitePWA(),
     vue(),
     AutoImport({
       dts: './src/auto-import.d.ts',
