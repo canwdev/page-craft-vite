@@ -51,7 +51,7 @@ ${styleStr}
   handleExportFile(name, sfcStr, '.vue')
 }
 
-const getFileName = (name?) => {
+export const getFileName = (name?) => {
   return prompt(
     `Export filename`,
     name || `PageCraft_${moment(new Date()).format('YYYYMMDD_HHmmss')}`
@@ -66,4 +66,19 @@ export const handleExportFile = (filename, contentStr, ext) => {
     type: 'text/plain;charset=utf-8',
   })
   FileSaver.saveAs(blob, filename + ext)
+}
+
+export const handleReadSelectedFile = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => {
+      try {
+        resolve(reader.result)
+      } catch (error: any) {
+        reject(error)
+        window.$message.error('Import Failed! ' + error.message)
+      }
+    }
+    reader.readAsText(file)
+  })
 }

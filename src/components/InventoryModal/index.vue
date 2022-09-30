@@ -17,7 +17,10 @@ import InventoryList from '@/components/InventoryModal/InventoryList.vue'
 import {useCraftStore} from '@/store/craft'
 import {useLocalStorageObject, useLocalStorageString} from '@/hooks/use-local-storage'
 import {LsKeys} from '@/enum'
-import {useComponentStorage} from '@/hooks/use-component-storage'
+import {useComponentImportExport, useComponentStorage} from '@/hooks/use-component-storage'
+import FileChooser from '@/components/FileChooser.vue'
+import DomPreview from '@/components/DomPreview/DomPreview.vue'
+import {colorHash} from '@/utils'
 
 let idx = 1
 
@@ -25,6 +28,8 @@ export default defineComponent({
   name: 'InventoryModal',
   components: {
     InventoryList,
+    FileChooser,
+    DomPreview,
   },
   props: {
     visible: {
@@ -47,8 +52,10 @@ export default defineComponent({
       craftStore.setCurrentBlock(item)
     }
 
-    const currentComponentName = useLocalStorageString(LsKeys.CURRENT_COMPONENT_NAME, '')
-    const componentList = useLocalStorageObject(LsKeys.COMPONENT_LIST, [])
+    const {exportAll, handleImportAll, componentList, currentComponentName} =
+      useComponentImportExport()
+    const importFileChooserRef = ref()
+
     const componentListFormatted = computed(() => {
       return [ActionBlockItems.ADD_COMPONENT, ...[...componentList.value].reverse()]
     })
@@ -152,8 +159,6 @@ export default defineComponent({
       renameComponentStorage(item.title, name)
       item.title = name
     }
-    const {loadStorageHtml, saveStorageHtml, loadStorageStyle, saveStorageStyle} =
-      useComponentStorage()
 
     const getCompMenuOptions = (item) => [
       {
@@ -199,7 +204,7 @@ export default defineComponent({
         label: '📥 Import All (JSON)',
         props: {
           onClick: async () => {
-            window.$message.error('Not implemented yet')
+            importFileChooserRef.value.chooseFile()
           },
         },
       },
@@ -207,7 +212,7 @@ export default defineComponent({
         label: '📃 Export All (JSON)',
         props: {
           onClick: async () => {
-            window.$message.error('Not implemented yet')
+            await exportAll()
           },
         },
       },
@@ -231,6 +236,9 @@ export default defineComponent({
       cancelSelectComponent,
       getCompMenuOptions,
       commonMenuOptions,
+      importFileChooserRef,
+      handleImportAll,
+      colorHash,
     }
   },
 })
@@ -240,6 +248,17 @@ export default defineComponent({
   <transition name="zoom">
     <div class="inventory-modal win7" v-show="mVisible" :class="{_dark: isDarkMode}">
       <div class="window _window-color glass">
+        <!--        <template v-if="mVisible">-->
+        <!--          <DomPreview-->
+        <!--            v-for="i in ['aaa', 'asdasda', 'vn8w9rw3', 'asdasd21233332323', 'asdxc33333']"-->
+        <!--            :key="i"-->
+        <!--            :id="`Comp${i}`"-->
+        <!--            :style="`div { color: ${colorHash.hex(i)} }`"-->
+        <!--          >-->
+        <!--            <div>Hello world</div>-->
+        <!--          </DomPreview>-->
+        <!--        </template>-->
+
         <div ref="titleBarRef" class="title-bar">
           <div class="title-bar-text" style="display: flex; align-items: center; height: 14px">
             <img src="~@/assets/textures/crafting_table_top.png" alt="tools" />
@@ -298,6 +317,12 @@ export default defineComponent({
           </n-tabs>
         </div>
       </div>
+
+      <FileChooser
+        ref="importFileChooserRef"
+        accept="application/JSON"
+        @selected="handleImportAll"
+      />
     </div>
   </transition>
 </template>

@@ -12,7 +12,7 @@ import {formatCss, formatHtml} from '@/utils/formater'
 import {useIsDarkMode} from '@/hooks/use-global-theme'
 import {appendCustomBlock} from '@/utils/dom'
 import {useComponentStorage} from '@/hooks/use-component-storage'
-import {handleExportJson, handleExportVue} from '@/utils/exporter'
+import {handleExportJson, handleExportVue, handleReadSelectedFile} from '@/utils/exporter'
 import FileChooser from '@/components/FileChooser.vue'
 
 const removeMouseOverDomElementEffect = () => {
@@ -196,17 +196,9 @@ export default defineComponent({
       globalEventBus.emit(GlobalEvents.IMPORT_SUCCESS, style)
       window.$message.success('Import Success!')
     }
-    const handleImportJsonSelected = (file) => {
-      const reader = new FileReader()
-      reader.onload = () => {
-        try {
-          handleImportJson(JSON.parse(reader.result as string))
-        } catch (error: any) {
-          console.error(error)
-          window.$message.error('Import Failed! ' + error.message)
-        }
-      }
-      reader.readAsText(file)
+    const handleImportJsonSelected = async (file) => {
+      const str = await handleReadSelectedFile(file)
+      handleImportJson(JSON.parse(str as string))
     }
     const pasteHtmlText = ref('')
     const setMainCanvasHtml = (html?: string) => {

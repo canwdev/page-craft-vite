@@ -5,7 +5,11 @@ import ToolItem from '@/components/ToolBar/ToolItem.vue'
 import {useIsDarkMode} from '@/hooks/use-global-theme'
 import InventoryModal from '@/components/InventoryModal/index.vue'
 import {LsKeys} from '@/enum'
-import {useLocalStorageNumber, useLocalStorageObject} from '@/hooks/use-local-storage'
+import {
+  useLocalStorageBoolean,
+  useLocalStorageNumber,
+  useLocalStorageObject,
+} from '@/hooks/use-local-storage'
 
 export default defineComponent({
   name: 'BottomToolBar',
@@ -15,7 +19,7 @@ export default defineComponent({
   },
   setup() {
     const craftStore = useCraftStore()
-    const isShowInventoryModal = ref(false)
+    const isShowInventoryModal = useLocalStorageBoolean(LsKeys.IS_SHOW_INVENTORY, false)
 
     const currentIndex = useLocalStorageNumber(LsKeys.TOOL_BAR_INDEX, 0)
     const toolBarList = useLocalStorageObject(LsKeys.TOOL_BAR_LIST, [...initToolbarList])

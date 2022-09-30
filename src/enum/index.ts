@@ -9,6 +9,7 @@ export const LsKeys = {
   INVENTORY_TAB: 'page_craft_inventory_tab',
   TOOL_BAR_LIST: 'page_craft_tool_bar_list',
   TOOL_BAR_INDEX: 'page_craft_tool_bar_index',
+  IS_SHOW_INVENTORY: 'page_craft_is_show_inventory',
   COMPONENT_LIST: 'page_craft_component_list',
   CURRENT_COMPONENT_NAME: 'page_craft_current_component_name',
 }

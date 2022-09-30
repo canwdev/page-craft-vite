@@ -126,9 +126,9 @@ export const initToolbarList: BlockItem[] = [
   ActionBlockItems.EMPTY,
 ]
 
-export const createComponentBlockItem = (name: string) =>
+export const createComponentBlockItem = (name: string, data = {}) =>
   new BlockItem({
     blockType: BlockType.COMPONENT,
     title: name,
-    data: new ExportItem(),
+    data: new ExportItem(data),
   })

@@ -1,5 +1,9 @@
 import {useCraftStore} from '@/store/craft'
 import {LsKeys} from '@/enum'
+import {useLocalStorageObject, useLocalStorageString} from '@/hooks/use-local-storage'
+import {BlockItem, createComponentBlockItem, ExportItem} from '@/enum/block'
+import {syncStorageData} from '@/utils/global-event-bus'
+import {getFileName, handleExportFile, handleReadSelectedFile} from '@/utils/exporter'
 
 const splitter = '__'
 
@@ -61,10 +65,58 @@ export const useComponentStorage = () => {
 }
 
 export const useComponentImportExport = () => {
-  const exportAll = () => {
-    console.log('exportAll')
+  const componentList = useLocalStorageObject(LsKeys.COMPONENT_LIST, [])
+  const currentComponentName = useLocalStorageString(LsKeys.CURRENT_COMPONENT_NAME, '')
+
+  const handleImportAll = async (file) => {
+    const str = await handleReadSelectedFile(file)
+    const importList: ExportItem[] = JSON.parse(str as string).map((i) => new ExportItem(i))
+
+    const newList: BlockItem[] = []
+    importList.forEach((item) => {
+      newList.push(createComponentBlockItem(item.name, {timestamp: item.timestamp}))
+      localStorage.setItem(LsKeys.MAIN_HTML + splitter + item.name, item.html)
+      localStorage.setItem(LsKeys.MAIN_STYLE + splitter + item.name, item.style)
+    })
+
+    // Merge old item if name is same
+    const list1: BlockItem[] = []
+    const list2: BlockItem[] = [...componentList.value]
+    newList.forEach((item) => {
+      const idx = list2.findIndex((i) => i.title === item.title)
+      if (idx > -1) {
+        list2.splice(idx, 1, item)
+      } else {
+        list1.push(item)
+      }
+    })
+    componentList.value = [...list1, ...list2]
+
+    window.$message.success('Import success!')
+  }
+
+  const exportAll = async () => {
+    await syncStorageData()
+    const exportList: ExportItem[] = []
+    componentList.value.forEach((item) => {
+      exportList.push(
+        new ExportItem({
+          name: item.title,
+          html: localStorage.getItem(LsKeys.MAIN_HTML + splitter + item.title) || '',
+          style: localStorage.getItem(LsKeys.MAIN_STYLE + splitter + item.title) || '',
+          timestamp: item.data.timestamp,
+        })
+      )
+    })
+
+    // console.log(exportList)
+    handleExportFile(getFileName(), JSON.stringify(exportList), '.json')
+    window.$message.success('Exported success!')
   }
   return {
+    currentComponentName,
+    componentList,
     exportAll,
+    handleImportAll,
   }
 }
