@@ -14,6 +14,7 @@ import {appendCustomBlock} from '@/utils/dom'
 import {useComponentStorage} from '@/hooks/use-component-storage'
 import {handleExportJson, handleExportVue, handleReadSelectedFile} from '@/utils/exporter'
 import FileChooser from '@/components/FileChooser.vue'
+import IndicatorInfo from '@/components/MainCanvas/IndicatorInfo.vue'
 
 const removeMouseOverDomElementEffect = () => {
   const $el = $(TOOL_CLASSES.DOT_CLASS_MOUSE_OVER)
@@ -46,6 +47,7 @@ export default defineComponent({
     ToolBar,
     StyleEditor,
     FileChooser,
+    IndicatorInfo,
   },
   setup() {
     const mainCanvasRef = ref()
@@ -68,6 +70,9 @@ export default defineComponent({
     watch(
       indicatorOptions,
       () => {
+        if (!indicatorOptions.enableSelection) {
+          currentHoveredEl.value = null
+        }
         localStorage.setItem(LsKeys.INDICATOR_OPTIONS, JSON.stringify({...indicatorOptions}))
       },
       {deep: true}
@@ -133,25 +138,13 @@ export default defineComponent({
       $(currentNode).addClass(TOOL_CLASSES.CLASS_MOUSE_OVER)
     })
 
-    const hoveredElDisplay = computed(() => {
-      if (currentHoveredEl.value) {
-        let str = `${currentHoveredEl.value.localName}`
-        let className = currentHoveredEl.value.className || ''
-        className = className.replace(TOOL_CLASSES.CLASS_MOUSE_OVER, '').trim()
-        if (className) {
-          str += `  ( ${className} )`
-        }
-        return str
-      }
-      return ''
-    })
-
     const isSelectMode = computed(() => {
       return craftStore.isSelectMode || indicatorOptions.enableSelection
     })
 
     watch(isSelectMode, (val) => {
       if (!val) {
+        currentHoveredEl.value = null
         removeMouseOverDomElementEffect()
       }
     })
@@ -319,7 +312,11 @@ export default defineComponent({
         title: 'Content Editable',
         desc: 'Enable HTML contenteditable feature!',
       },
-      {flag: 'enableSelection', title: 'Hover Locate', desc: 'Add cursor hover locate effect'},
+      {
+        flag: 'enableSelection',
+        title: 'Enable Hover',
+        desc: 'Add cursor hover locate effect',
+      },
       {flag: 'centeredElementsY', title: 'Centered Y', desc: ''},
       {flag: 'centeredElementsX', title: 'Centered X', desc: ''},
       {flag: 'bgTransparent', title: 'Transparent BG', desc: ''},
@@ -399,7 +396,7 @@ export default defineComponent({
       pasteHtmlText,
       handleBlockClick,
       indicatorOptions,
-      hoveredElDisplay,
+      currentHoveredEl,
       handleImportHtml,
       handleImportJsonSelected,
       BlockType: ActionType,
@@ -419,6 +416,8 @@ export default defineComponent({
 
 <template>
   <div class="page-craft-mc-wrap">
+    <IndicatorInfo :current-el="currentHoveredEl" />
+
     <n-modal
       v-model:show="isShowImportDialog"
       negative-text="Cancel"
@@ -478,9 +477,6 @@ export default defineComponent({
             {{ indicatorOptions.showStyleEditor ? 'Hide' : 'Show' }} StyleEditor
           </n-button>
         </n-space>
-        <div v-if="false" class="indicator-text">
-          {{ hoveredElDisplay }}
-        </div>
       </n-space>
     </div>
     <div
@@ -532,17 +528,6 @@ export default defineComponent({
     top: 0;
     border-top: 0;
     z-index: 997;
-
-    .indicator-text {
-      position: absolute;
-      right: 5px;
-      top: 5px;
-      font-size: 12px;
-      font-family: monospace;
-      max-width: 300px;
-      transform: scale(0.8);
-      transform-origin: top right;
-    }
 
     text-shadow: 0 0 10px white;
   }

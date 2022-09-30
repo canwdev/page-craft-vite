@@ -11,6 +11,7 @@ declare module '@vue/runtime-core' {
     ComponentListItem: typeof import('./src/components/InventoryModal/ComponentListItem.vue')['default']
     DomPreview: typeof import('./src/components/DomPreview/DomPreview.vue')['default']
     FileChooser: typeof import('./src/components/FileChooser.vue')['default']
+    IndicatorInfo: typeof import('./src/components/MainCanvas/IndicatorInfo.vue')['default']
     InventoryList: typeof import('./src/components/InventoryModal/InventoryList.vue')['default']
     InventoryModal: typeof import('./src/components/InventoryModal/index.vue')['default']
     MainCanvas: typeof import('./src/components/MainCanvas/index.vue')['default']

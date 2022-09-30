@@ -25,7 +25,7 @@ export default defineComponent({
     })
 
     const color = computed(() => {
-      return item.value.title && colorHash.hex(item.value.title)
+      return item.value.title && colorHash.rgb(item.value.title).join(', ')
     })
 
     return {
@@ -43,8 +43,7 @@ export default defineComponent({
     class="tool-item"
     :title="item.title"
     :style="{
-      backgroundColor: color,
-      boxShadow: `0 0 4px ${color}`,
+      '--block-color-rgb': color,
     }"
   >
     <img v-if="item.icon" :src="item.icon" alt="icon" />
@@ -54,6 +53,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .tool-item {
+  --block-color-rgb: 204, 204, 204;
   width: 50px;
   height: 50px;
   cursor: pointer;
@@ -63,19 +63,22 @@ export default defineComponent({
   font-size: 14px;
   font-weight: 600;
   position: relative;
-  background-color: rgba(204, 204, 204, 0.2);
   font-family: 'Operator Mono', 'Source Code Pro', Menlo, Monaco, Consolas, Courier New, monospace;
   color: white;
-  transition: box-shadow 0.3s;
+  transition: all 0.3s;
+  outline: 1px solid rgb(var(--block-color-rgb));
+  background-color: rgba(var(--block-color-rgb), 0.65);
 
   &:hover {
-    background-color: rgba(11, 216, 44, 0.29);
-    outline: 3px solid #18a058;
-    box-shadow: 0 0 10px #18a058 !important;
+    background-color: rgb(var(--block-color-rgb));
+    box-shadow: 0 0 10px rgb(var(--block-color-rgb)) !important;
+    transform: scale(1.2);
   }
 
   &:active {
     opacity: 0.7;
+    transform: scale(0.9);
+    transition: all 0.1s;
   }
 
   &::before {
