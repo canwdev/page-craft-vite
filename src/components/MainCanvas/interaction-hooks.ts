@@ -1,6 +1,6 @@
-import {ActionType} from '@/enum/block'
+import {ActionType, BlockType} from '@/enum/block'
 import {useCraftStore} from '@/store/craft'
-import {appendCustomBlock} from '@/utils/dom'
+import {appendCustomBlock, createBlockElement} from '@/utils/dom'
 import {TOOL_CLASSES} from '@/enum'
 import {throttle} from 'throttle-debounce'
 import $ from 'jquery'
@@ -33,11 +33,84 @@ export const useInteractionHooks = (options) => {
   onMounted(() => {
     mainCanvasRef.value.addEventListener('mousemove', handleMouseMove)
     mainCanvasRef.value.addEventListener('contextmenu', handleContextMenu)
+    mainCanvasRef.value.addEventListener('pointerdown', handleCancelSelection, true)
+    mainCanvasRef.value.addEventListener('pointerup', handleSelection)
   })
   onBeforeUnmount(() => {
     mainCanvasRef.value.removeEventListener('mousemove', handleMouseMove)
     mainCanvasRef.value.removeEventListener('contextmenu', handleContextMenu)
+    mainCanvasRef.value.removeEventListener('pointerdown', handleCancelSelection)
+    mainCanvasRef.value.removeEventListener('pointerup', handleSelection)
   })
+
+  const selectionRef = ref<Selection | null>(null)
+  const selectionActionStyle = ref<any>(null)
+  const isShowSelectionAction = ref(false)
+
+  const handleSelection = (e) => {
+    const selection = window.getSelection()
+    selectionRef.value = selection
+    if (!selection) {
+      return
+    }
+    const text = selection.toString()
+    if (!text) {
+      return
+    }
+
+    let rect = selection.getRangeAt(0).getBoundingClientRect()
+    selectionActionStyle.value = {
+      top: `calc(${rect.top}px + ${rect.height}px + 2px)`,
+      left: `calc(${rect.left}px + calc(${rect.width}px / 2) - 110px)`,
+    }
+    isShowSelectionAction.value = true
+  }
+  const handleCancelSelection = (e: MouseEvent) => {
+    if (e.button === 2) {
+      return
+    }
+    // @ts-ignore
+    window.getSelection().removeAllRanges()
+    isShowSelectionAction.value = false
+  }
+  const surroundSelection = (element: Element) => {
+    try {
+      if (window.getSelection) {
+        const sel = window.getSelection()
+        if (sel && sel.rangeCount) {
+          const range = sel.getRangeAt(0).cloneRange()
+          range.surroundContents(element)
+          sel.removeAllRanges()
+        }
+      }
+    } catch (e) {
+      window.$message.error(e.message)
+      console.error(e)
+    }
+  }
+  const selectionPopupOptions = [
+    ...[
+      'b',
+      'i',
+      'u',
+      'del',
+      'code',
+      'mark',
+      'kbd',
+      'sup',
+      'sub',
+      'small',
+      'big',
+      'span',
+      'div',
+    ].map((tag) => ({
+      label: tag,
+      onClick: () => {
+        surroundSelection(document.createElement(tag))
+        saveData()
+      },
+    })),
+  ]
 
   const pasteHtml = async (targetEl, position = 'beforeend') => {
     const text = await navigator.clipboard.readText()
@@ -45,6 +118,11 @@ export const useInteractionHooks = (options) => {
       <'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend'>position,
       text
     )
+    saveData()
+  }
+
+  const insertCurrentBlock = (targetEl, position = 'append') => {
+    targetEl[<any>position](createBlockElement(craftStore.currentBlock, craftStore))
     saveData()
   }
 
@@ -63,6 +141,19 @@ export const useInteractionHooks = (options) => {
       targetEl === mainCanvasRef.value
         ? []
         : [
+            {
+              label: '✏️ Rename Class',
+              props: {
+                onClick: async () => {
+                  removeMouseOverDomElementEffect()
+                  const className = await prompt('Rename Class', targetEl.className)
+                  if (className) {
+                    targetEl.className = className
+                    saveData()
+                  }
+                },
+              },
+            },
             {
               label: '📄 Copy HTML',
               props: {
@@ -93,9 +184,26 @@ export const useInteractionHooks = (options) => {
             },
           ]
     return [
+      craftStore.currentBlock.blockType === BlockType.HTML_ELEMENT && {
+        label: `➕ Insert ${craftStore.currentBlock.title}`,
+        children: ['before', 'prepend', 'append', 'after'].map((position) => ({
+          label: `Insert ${position}`,
+          props: {
+            onClick: async () => {
+              insertCurrentBlock(targetEl, position)
+            },
+          },
+        })),
+        props: {
+          onClick: async () => {
+            insertCurrentBlock(targetEl)
+            contextMenuEtc.showRightMenu.value = false
+          },
+        },
+      },
       ...blockMenu,
       {
-        label: '📃 Paste',
+        label: '📃 Paste outerHTML',
         children: ['beforebegin', 'afterbegin', 'beforeend', 'afterend'].map((position) => ({
           label: `Paste at ${position}`,
           props: {
@@ -107,6 +215,7 @@ export const useInteractionHooks = (options) => {
         props: {
           onClick: async () => {
             await pasteHtml(targetEl)
+            contextMenuEtc.showRightMenu.value = false
           },
         },
       },
@@ -122,11 +231,12 @@ export const useInteractionHooks = (options) => {
           },
         },
       },
-    ]
+    ].filter(Boolean)
   })
 
   const handleContextMenu = (e: MouseEvent) => {
-    if (!indicatorOptions.enableRightClick) {
+    const selectedText = selectionRef.value?.toString()
+    if (!indicatorOptions.enableRightClick || selectedText) {
       return
     }
     e.preventDefault()
@@ -235,5 +345,8 @@ export const useInteractionHooks = (options) => {
     cursorX,
     cursorY,
     contextMenuEtc,
+    selectionActionStyle,
+    isShowSelectionAction,
+    selectionPopupOptions,
   }
 }

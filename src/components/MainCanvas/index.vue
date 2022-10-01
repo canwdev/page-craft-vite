@@ -44,6 +44,9 @@ export default defineComponent({
       cursorX,
       cursorY,
       contextMenuEtc,
+      selectionActionStyle,
+      isShowSelectionAction,
+      selectionPopupOptions,
     } = useInteractionHooks({
       mainCanvasRef,
       saveData,
@@ -82,6 +85,9 @@ export default defineComponent({
       pasteHtmlText,
       handleImportHtml,
       handleImportJsonSelected,
+      selectionActionStyle,
+      isShowSelectionAction,
+      selectionPopupOptions,
       ...contextMenuEtc,
     }
   },
@@ -92,7 +98,26 @@ export default defineComponent({
   <div class="page-craft-mc-wrap">
     <IndicatorInfo :current-el="currentHoveredEl" />
 
+    <transition name="fade">
+      <div
+        class="selection-action"
+        v-if="isShowSelectionAction"
+        :style="selectionActionStyle"
+        @click="isShowSelectionAction = false"
+      >
+        <button
+          v-for="item in selectionPopupOptions"
+          :key="item.label"
+          @click="item.onClick"
+          class="btn-no-style font-code"
+        >
+          {{ item.label }}
+        </button>
+      </div>
+    </transition>
+
     <n-dropdown
+      size="small"
       trigger="manual"
       placement="bottom-start"
       :show="showRightMenu"
@@ -138,7 +163,7 @@ export default defineComponent({
             <n-button size="tiny">{{ craftStore.currentComponentName || '🎨' }}</n-button>
           </n-dropdown>
 
-          <n-popover :duration="300" :show-arrow="false" trigger="hover">
+          <n-popover :duration="100" :show-arrow="false" trigger="hover">
             <template #trigger>
               <n-button size="tiny">Options</n-button>
             </template>
@@ -189,6 +214,58 @@ export default defineComponent({
   display: flex;
   flex: 1;
   flex-direction: column;
+}
+
+.selection-action {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  background: #13181e;
+  color: #fcffff;
+  box-sizing: border-box;
+  z-index: 100;
+  font-size: 11px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
+  outline: 1px solid #41484e;
+  border-top: 2px solid rgb(225, 101, 101);
+  max-width: 220px;
+
+  button {
+    padding: 2px 5px;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.32);
+    }
+
+    &:active {
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
+
+  &:before {
+    bottom: -20px;
+    border-color: #41484e transparent transparent transparent;
+  }
+
+  &.reverse {
+    flex-direction: column-reverse;
+  }
+
+  &.reverse:before,
+  &.reverse:after {
+    bottom: 0;
+    top: -19px;
+    border-color: transparent transparent #13181e transparent;
+  }
+
+  &.reverse:before {
+    bottom: 0;
+    top: -20px;
+    border-color: transparent transparent #41484e transparent;
+  }
 }
 
 .page-craft-mc-indicator {

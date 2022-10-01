@@ -47,7 +47,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div :data-app-name="id" style="transform: scale(0.8)">
+  <div :data-app-name="id">
     <VStyle :id="id">{{ styleRewrote }}</VStyle>
     <slot></slot>
   </div>

@@ -162,7 +162,7 @@ export default defineComponent({
 
     const getCompMenuOptions = (item) => [
       {
-        label: '🖊 Rename',
+        label: '✏️ Rename',
         props: {
           onClick: async () => {
             nodeAction(item, () => {

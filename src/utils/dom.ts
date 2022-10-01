@@ -31,6 +31,27 @@ const srcTags = [
   'link',
 ]
 
+// block.blockType === BlockType.HTML_ELEMENT
+export const createBlockElement = (block: BlockItem, craftStore?) => {
+  const text = craftStore?.innerText || ''
+  const tag = block.data.tag
+  const addEl: any = document.createElement(tag)
+  if (srcTags.includes(tag)) {
+    if (['audio', 'video'].includes(tag)) {
+      addEl.controls = true
+    }
+    addEl.src = text
+  } else if (tag === 'input') {
+    addEl.value = text
+  } else if (!['br', 'hr'].includes(tag)) {
+    addEl.innerHTML = text
+  }
+  if (craftStore?.className) {
+    addEl.className = craftStore.className
+  }
+  return addEl
+}
+
 export const appendCustomBlock = (block: BlockItem, event, craftStore, mainCanvasRef) => {
   let targetEl
   if (event.target) {
@@ -56,22 +77,8 @@ export const appendCustomBlock = (block: BlockItem, event, craftStore, mainCanva
       return
     }
   } else if (block.blockType === BlockType.HTML_ELEMENT) {
-    const tag = block.data.tag
-    const addEl: any = document.createElement(tag)
-    if (srcTags.includes(tag)) {
-      if (['audio', 'video'].includes(tag)) {
-        addEl.controls = true
-      }
-      addEl.src = craftStore.innerText || ''
-    } else if (tag === 'input') {
-      addEl.value = craftStore.innerText || ''
-    } else if (!['br', 'hr'].includes(tag)) {
-      addEl.innerHTML = craftStore.innerText || ''
-    }
-    if (craftStore.className) {
-      addEl.className = craftStore.className
-    }
-    targetEl.appendChild(addEl)
+    const addEl = createBlockElement(block, craftStore)
     // console.log('[addEl]', addEl)
+    targetEl.appendChild(addEl)
   }
 }

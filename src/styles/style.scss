@@ -49,6 +49,26 @@ Inspired by https://khang-nd.github.io/7.css/
   font-family: 'Operator Mono', 'Source Code Pro', Menlo, Monaco, Consolas, Courier New, monospace;
 }
 
+.btn-no-style {
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  color: inherit;
+  padding: 0;
+  text-decoration: none;
+
+  &:active {
+    opacity: 0.8;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+
 /* Vue transitions */
 .fade-enter-active,
 .fade-leave-active {
