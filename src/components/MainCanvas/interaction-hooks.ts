@@ -4,6 +4,8 @@ import {appendCustomBlock} from '@/utils/dom'
 import {TOOL_CLASSES} from '@/enum'
 import {throttle} from 'throttle-debounce'
 import $ from 'jquery'
+import {useContextMenu} from '@/hooks/use-context-menu'
+import {copyToClipboard} from '@/utils'
 
 export const removeMouseOverDomElementEffect = () => {
   const $el = $(TOOL_CLASSES.DOT_CLASS_MOUSE_OVER)
@@ -20,7 +22,7 @@ export const removeMouseOverDomElementEffect = () => {
 const MAX_WAIT_TIME = 0.5 * 1000
 
 export const useInteractionHooks = (options) => {
-  const {mainCanvasRef, saveData, indicatorOptions} = options
+  const {mainCanvasRef, saveData, indicatorOptions, copyHtml} = options
   const craftStore = useCraftStore()
   const waitingTime = ref(0)
   const waitTimer = ref<any>(null)
@@ -30,10 +32,109 @@ export const useInteractionHooks = (options) => {
 
   onMounted(() => {
     mainCanvasRef.value.addEventListener('mousemove', handleMouseMove)
+    mainCanvasRef.value.addEventListener('contextmenu', handleContextMenu)
   })
   onBeforeUnmount(() => {
     mainCanvasRef.value.removeEventListener('mousemove', handleMouseMove)
+    mainCanvasRef.value.removeEventListener('contextmenu', handleContextMenu)
   })
+
+  const pasteHtml = async (targetEl, position = 'beforeend') => {
+    const text = await navigator.clipboard.readText()
+    targetEl.insertAdjacentHTML(
+      <'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend'>position,
+      text
+    )
+    saveData()
+  }
+
+  const {
+    editingNode,
+    nodeAction,
+    handleContextmenu: _handleContextmenu,
+    ...contextMenuEtc
+  } = useContextMenu((e: Event) => {
+    // @ts-ignore
+    const targetEl: HTMLElement = e.target
+    if (!targetEl) {
+      return []
+    }
+    const blockMenu =
+      targetEl === mainCanvasRef.value
+        ? []
+        : [
+            {
+              label: '📄 Copy HTML',
+              props: {
+                onClick: async () => {
+                  copyHtml(targetEl)
+                },
+              },
+            },
+            {
+              label: '✂️ Cut',
+              props: {
+                onClick: async () => {
+                  removeMouseOverDomElementEffect()
+                  copyToClipboard(targetEl.outerHTML)
+                  targetEl.parentNode?.removeChild(targetEl)
+                  saveData()
+                },
+              },
+            },
+            {
+              label: '❌ Remove Element',
+              props: {
+                onClick: async () => {
+                  targetEl.parentNode?.removeChild(targetEl)
+                  saveData()
+                },
+              },
+            },
+          ]
+    return [
+      ...blockMenu,
+      {
+        label: '📃 Paste',
+        children: ['beforebegin', 'afterbegin', 'beforeend', 'afterend'].map((position) => ({
+          label: `Paste at ${position}`,
+          props: {
+            onClick: async () => {
+              await pasteHtml(targetEl, position)
+            },
+          },
+        })),
+        props: {
+          onClick: async () => {
+            await pasteHtml(targetEl)
+          },
+        },
+      },
+      {
+        type: 'divider',
+        label: 'd10',
+      },
+      {
+        label: '💻 Print to Console',
+        props: {
+          onClick: async () => {
+            console.log(e.target)
+          },
+        },
+      },
+    ]
+  })
+
+  const handleContextMenu = (e: MouseEvent) => {
+    if (!indicatorOptions.enableRightClick) {
+      return
+    }
+    e.preventDefault()
+    if (craftStore.currentBlock.actionType === ActionType.DEBUG) {
+      console.log('[handleContextMenu]', e)
+    }
+    _handleContextmenu(e, e)
+  }
 
   const isSelectMode = computed(() => {
     return (
@@ -133,5 +234,6 @@ export const useInteractionHooks = (options) => {
     waitingProgress,
     cursorX,
     cursorY,
+    contextMenuEtc,
   }
 }

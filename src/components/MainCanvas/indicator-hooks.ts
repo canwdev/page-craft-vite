@@ -13,6 +13,7 @@ export type IndicatorOptions = {
   centeredElementsX: boolean
   showStyleEditor: boolean
   contentEditable: boolean
+  enableRightClick: boolean
 }
 
 export const useIndicator = () => {
@@ -30,6 +31,7 @@ export const useIndicator = () => {
       centeredElementsX: false,
       showStyleEditor: false,
       contentEditable: false,
+      enableRightClick: true,
     }
   )
   watch(
@@ -74,6 +76,7 @@ export const useIndicator = () => {
       title: 'Enable Hover',
       desc: 'Add cursor hover locate effect',
     },
+    {flag: 'enableRightClick', title: 'Enable Right Click', desc: ''},
     {flag: 'centeredElementsY', title: 'Centered Y', desc: ''},
     {flag: 'centeredElementsX', title: 'Centered X', desc: ''},
     {flag: 'bgTransparent', title: 'Transparent BG', desc: ''},

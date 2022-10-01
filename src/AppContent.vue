@@ -3,10 +3,11 @@ import MainCanvas from '@/components/MainCanvas/index.vue'
 import {LsKeys} from '@/enum'
 import {createOrFindStyleNode} from '@/utils/dom'
 import {getUserTheme, themeOptions, ThemeType, useHandleThemeChange} from '@/hooks/use-global-theme'
+import HomeView from '@/views/HomeView.vue'
 
 export default defineComponent({
   components: {
-    MainCanvas,
+    HomeView,
   },
   emits: ['themeChange'],
   setup() {
@@ -54,7 +55,7 @@ export default defineComponent({
 })
 </script>
 <template>
-  <MainCanvas>
+  <HomeView>
     <template #settingsButtons>
       <n-space size="small">
         <n-button size="tiny" @click="isShowSettings = true">Settings</n-button>
@@ -64,7 +65,7 @@ export default defineComponent({
         <n-a href="https://github.com/canwdev/page-craft-vite" target="_blank">Github</n-a>
       </n-space>
     </template>
-  </MainCanvas>
+  </HomeView>
 
   <n-modal
     v-model:show="isShowGlobalStyleDialog"

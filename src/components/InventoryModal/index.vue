@@ -276,17 +276,6 @@ export default defineComponent({
   <transition name="zoom">
     <div class="inventory-modal win7" v-show="mVisible" :class="{_dark: isDarkMode}">
       <div class="window _window-color glass">
-        <!--        <template v-if="mVisible">-->
-        <!--          <DomPreview-->
-        <!--            v-for="i in ['aaa', 'asdasda', 'vn8w9rw3', 'asdasd21233332323', 'asdxc33333']"-->
-        <!--            :key="i"-->
-        <!--            :id="`Comp${i}`"-->
-        <!--            :style="`div { color: ${colorHash.hex(i)} }`"-->
-        <!--          >-->
-        <!--            <div>Hello world</div>-->
-        <!--          </DomPreview>-->
-        <!--        </template>-->
-
         <div ref="titleBarRef" class="title-bar">
           <div
             class="title-bar-text font-minecraft"

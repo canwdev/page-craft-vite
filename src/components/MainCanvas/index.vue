@@ -1,7 +1,5 @@
 <script lang="ts">
 import {useCraftStore} from '@/store/craft'
-import ToolBar from '@/components/ToolBar/index.vue'
-import StyleEditor from '@/components/StyleEditor/index.vue'
 import {ActionType} from '@/enum/block'
 import {useIsDarkMode} from '@/hooks/use-global-theme'
 import FileChooser from '@/components/FileChooser.vue'
@@ -13,8 +11,6 @@ import {useMcMain} from '@/components/MainCanvas/main-hooks'
 export default defineComponent({
   name: 'MainCanvas',
   components: {
-    ToolBar,
-    StyleEditor,
     FileChooser,
     IndicatorInfo,
   },
@@ -32,6 +28,7 @@ export default defineComponent({
       handleImportHtml,
       handleImportJsonSelected,
       saveData,
+      copyHtml,
     } = useMcMain({
       mainCanvasRef,
     })
@@ -46,10 +43,12 @@ export default defineComponent({
       waitingProgress,
       cursorX,
       cursorY,
+      contextMenuEtc,
     } = useInteractionHooks({
       mainCanvasRef,
       saveData,
       indicatorOptions,
+      copyHtml,
     })
 
     watch(
@@ -83,6 +82,7 @@ export default defineComponent({
       pasteHtmlText,
       handleImportHtml,
       handleImportJsonSelected,
+      ...contextMenuEtc,
     }
   },
 })
@@ -91,6 +91,18 @@ export default defineComponent({
 <template>
   <div class="page-craft-mc-wrap">
     <IndicatorInfo :current-el="currentHoveredEl" />
+
+    <n-dropdown
+      trigger="manual"
+      placement="bottom-start"
+      :show="showRightMenu"
+      :options="rightMenuOptions"
+      :x="xRef"
+      :y="yRef"
+      @select="handleSelect"
+      key-field="label"
+      :on-clickoutside="handleClickOutside"
+    />
 
     <n-modal
       v-model:show="isShowImportDialog"
@@ -143,13 +155,8 @@ export default defineComponent({
               <slot name="settingsButtons"></slot>
             </template>
           </n-popover>
-          <n-button
-            size="tiny"
-            style="min-width: 120px"
-            @click="indicatorOptions.showStyleEditor = !indicatorOptions.showStyleEditor"
-          >
-            {{ indicatorOptions.showStyleEditor ? 'Hide' : 'Show' }} StyleEditor
-          </n-button>
+
+          <slot name="barExtra"></slot>
         </n-space>
       </n-space>
     </div>
@@ -174,46 +181,38 @@ export default defineComponent({
         </div>
       </div>
     </transition>
-
-    <ToolBar />
-    <StyleEditor v-model:visible="indicatorOptions.showStyleEditor" />
   </div>
 </template>
 
 <style lang="scss">
 .page-craft-mc-wrap {
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  margin: 0 auto;
   display: flex;
+  flex: 1;
   flex-direction: column;
-  position: relative;
+}
 
-  .page-craft-mc-indicator {
-    //width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 5px 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: sticky;
-    top: 0;
-    border-top: 0;
-    z-index: 997;
+.page-craft-mc-indicator {
+  //width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 5px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  border-top: 0;
+  z-index: 997;
 
-    text-shadow: 0 0 10px white;
-  }
-
-  .action-progress {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    z-index: 999;
-    width: 50px;
-    pointer-events: none;
-  }
+  text-shadow: 0 0 10px white;
+}
+.action-progress {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 999;
+  width: 50px;
+  pointer-events: none;
 }
 
 .page-craft-mc {

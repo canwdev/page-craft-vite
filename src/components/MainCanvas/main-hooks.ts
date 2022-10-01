@@ -24,9 +24,10 @@ export const useMcMain = (options) => {
     globalEventBus.off(GlobalEvents.IMPORT_SUCCESS, reloadHtml)
   })
 
-  const copyInnerHtml = () => {
+  const copyHtml = (el?) => {
     removeMouseOverDomElementEffect()
-    copyToClipboard(formatHtml(mainCanvasRef.value.innerHTML))
+    const html = el ? el.outerHTML : mainCanvasRef.value.innerHTML
+    copyToClipboard(formatHtml(html))
     window.$message.success('Copy Success!')
 
     saveData()
@@ -140,10 +141,10 @@ export const useMcMain = (options) => {
       },
     },
     {
-      label: '📄 Copy HTML',
+      label: '📄 Copy All HTML',
       props: {
         onClick: async () => {
-          copyInnerHtml()
+          copyHtml()
         },
       },
     },
@@ -181,5 +182,6 @@ export const useMcMain = (options) => {
     handleImportHtml,
     handleImportJsonSelected,
     saveData,
+    copyHtml,
   }
 }

@@ -4,6 +4,7 @@ import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {BlockItem} from '@/enum/block'
 import DomPreview from '@/components/DomPreview/DomPreview.vue'
 import {loadComponentHtml, loadComponentStyle} from '@/hooks/use-component-storage'
+import {throttle} from 'throttle-debounce'
 
 export default defineComponent({
   name: 'PopWindow',
@@ -24,11 +25,11 @@ export default defineComponent({
     const css = ref('')
 
     onMounted(() => {
-      globalEventBus.on(GlobalEvents.ON_COMP_HOVER, handleCompHover)
+      globalEventBus.on(GlobalEvents.ON_COMP_HOVER, handleMousemoveDebounced)
       globalEventBus.on(GlobalEvents.ON_COMP_HOVER_OUT, handleCompHoverOut)
     })
     onBeforeUnmount(() => {
-      globalEventBus.off(GlobalEvents.ON_COMP_HOVER, handleCompHover)
+      globalEventBus.off(GlobalEvents.ON_COMP_HOVER, handleMousemoveDebounced)
       globalEventBus.off(GlobalEvents.ON_COMP_HOVER_OUT, handleCompHoverOut)
     })
 
@@ -51,6 +52,9 @@ export default defineComponent({
       css.value = loadComponentStyle(val.title)
     })
 
+    const handleMousemoveDebounced = throttle(50, true, (options) => {
+      handleCompHover(options)
+    })
     const handleCompHover = (options) => {
       const {event, item} = options || {}
       currentItem.value = item
@@ -58,6 +62,7 @@ export default defineComponent({
       y.value = event.clientY
       mVisible.value = true
     }
+
     const handleCompHoverOut = () => {
       // currentItem.value = null
       mVisible.value = false

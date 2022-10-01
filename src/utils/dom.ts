@@ -42,7 +42,7 @@ export const appendCustomBlock = (block: BlockItem, event, craftStore, mainCanva
   if (block.blockType === BlockType.ACTIONS) {
     if (block.actionType === ActionType.DEBUG) {
       console.log('[event]', event)
-      console.log('[targetEl]', targetEl, targetEl.closest('p'))
+      console.log('[targetEl]', targetEl)
 
       return
     }
