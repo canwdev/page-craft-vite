@@ -97,6 +97,7 @@ export const useInteractionHooks = (options) => {
       'code',
       'mark',
       'kbd',
+      'a',
       'sup',
       'sub',
       'small',
