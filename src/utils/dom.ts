@@ -31,8 +31,21 @@ const srcTags = [
   'link',
 ]
 
-export const appendCustomBlock = (block: BlockItem, targetEl, craftStore, mainCanvasRef) => {
+export const appendCustomBlock = (block: BlockItem, event, craftStore, mainCanvasRef) => {
+  let targetEl
+  if (event.target) {
+    targetEl = event.target
+  } else {
+    targetEl = mainCanvasRef.value
+  }
+
   if (block.blockType === BlockType.ACTIONS) {
+    if (block.actionType === ActionType.DEBUG) {
+      console.log('[event]', event)
+      console.log('[targetEl]', targetEl, targetEl.closest('p'))
+
+      return
+    }
     if (block.actionType === ActionType.DELETE) {
       if (targetEl === mainCanvasRef.value) {
         return

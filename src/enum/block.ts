@@ -1,5 +1,6 @@
 import iconArrow from '../assets/textures/arrow.png?url'
 import iconIronPickaxe from '../assets/textures/iron_pickaxe.png?url'
+import iconIronSword from '../assets/textures/iron_sword.png?url'
 import iconOakSign from '../assets/textures/oak_sign.png?url'
 import iconRedStone from '../assets/textures/redstone.png?url'
 
@@ -8,6 +9,7 @@ export enum ActionType {
   SELECTION = 'SELECTION',
   DELETE = 'DELETE',
   ADD_COMPONENT = 'ADD_COMPONENT',
+  DEBUG = 'DEBUG',
 }
 export enum BlockType {
   HTML_ELEMENT = 'HTML_ELEMENT',
@@ -88,6 +90,12 @@ export const ActionBlockItems = {
     icon: iconArrow,
     actionType: ActionType.SELECTION,
     hidden: true,
+  }),
+  DEBUG: new BlockItem({
+    blockType: BlockType.ACTIONS,
+    title: 'Debug',
+    icon: iconIronSword,
+    actionType: ActionType.DEBUG,
   }),
   DELETE: new BlockItem({
     blockType: BlockType.ACTIONS,
