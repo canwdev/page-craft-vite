@@ -83,7 +83,7 @@ export const useInteractionHooks = (options) => {
           sel.removeAllRanges()
         }
       }
-    } catch (e) {
+    } catch (e: any) {
       window.$message.error(e.message)
       console.error(e)
     }
