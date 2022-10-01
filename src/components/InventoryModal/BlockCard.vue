@@ -5,7 +5,7 @@ import {BlockItem} from '@/enum/block'
 import {colorHash} from '@/utils'
 
 export default defineComponent({
-  name: 'BlockListItem',
+  name: 'BlockCard',
   props: {
     item: {
       type: Object as PropType<BlockItem>,

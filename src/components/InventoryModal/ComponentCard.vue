@@ -5,13 +5,14 @@ import {BlockItem} from '@/enum/block'
 import {colorHash, formatDate} from '@/utils'
 
 export default defineComponent({
-  name: 'ComponentItem',
+  name: 'ComponentCard',
   props: {
     item: {
       type: Object as PropType<BlockItem>,
       required: true,
     },
   },
+  emits: ['contextmenu'],
   setup(props) {
     const {item} = toRefs(props)
     const craftStore = useCraftStore()
@@ -42,6 +43,7 @@ export default defineComponent({
     :style="{
       '--block-color-rgb': color,
     }"
+    @contextmenu="$emit('contextmenu', $event, item)"
   >
     <div class="action-menu">
       <slot name="actionMenu" :item="item"></slot>
@@ -75,12 +77,10 @@ export default defineComponent({
   &:hover {
     background-color: rgba(var(--block-color-rgb), 0.08);
     box-shadow: 0 0 10px rgb(var(--block-color-rgb)) !important;
-    transform: scale(1.1);
   }
 
   &:active {
     opacity: 0.7;
-    transform: scale(0.9);
     transition: all 0.1s;
   }
 

@@ -7,11 +7,14 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    BlockCard: typeof import('./src/components/InventoryModal/BlockCard.vue')['default']
     BlockListItem: typeof import('./src/components/InventoryModal/BlockListItem.vue')['default']
+    ComponentCard: typeof import('./src/components/InventoryModal/ComponentCard.vue')['default']
     ComponentListItem: typeof import('./src/components/InventoryModal/ComponentListItem.vue')['default']
     DomPreview: typeof import('./src/components/DomPreview/DomPreview.vue')['default']
     FileChooser: typeof import('./src/components/FileChooser.vue')['default']
     IndicatorInfo: typeof import('./src/components/MainCanvas/IndicatorInfo.vue')['default']
+    InventoryCard: typeof import('./src/components/InventoryModal/InventoryList.vue')['default']
     InventoryList: typeof import('./src/components/InventoryModal/InventoryList.vue')['default']
     InventoryModal: typeof import('./src/components/InventoryModal/index.vue')['default']
     MainCanvas: typeof import('./src/components/MainCanvas/index.vue')['default']
@@ -35,7 +38,7 @@ declare module '@vue/runtime-core' {
     NTabPane: typeof import('naive-ui')['NTabPane']
     NTabs: typeof import('naive-ui')['NTabs']
     NThing: typeof import('naive-ui')['NThing']
-    ScopedStyle: typeof import('./src/components/DomPreview/ScopedStyle.vue')['default']
+    PopWindow: typeof import('./src/components/PopWindow.vue')['default']
     StyleEditor: typeof import('./src/components/StyleEditor/index.vue')['default']
     ToolBar: typeof import('./src/components/ToolBar/index.vue')['default']
     ToolItem: typeof import('./src/components/ToolBar/ToolItem.vue')['default']

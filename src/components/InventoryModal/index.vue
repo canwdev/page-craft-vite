@@ -7,9 +7,7 @@ import {
   actionBlockItemList,
   BlockItem,
   ActionType,
-  initToolbarList,
   createComponentBlockItem,
-  ExportItem,
 } from '@/enum/block'
 import {htmlBlockItemList} from '@/enum/inventory'
 import {ActionBlockItems} from '@/enum/block'
@@ -21,6 +19,8 @@ import {useComponentImportExport, useComponentStorage} from '@/hooks/use-compone
 import FileChooser from '@/components/FileChooser.vue'
 import DomPreview from '@/components/DomPreview/DomPreview.vue'
 import {colorHash} from '@/utils'
+import PopWindow from '@/components/PopWindow.vue'
+import {useContextMenu} from '@/hooks/use-context-menu'
 
 let idx = 1
 
@@ -30,6 +30,7 @@ export default defineComponent({
     InventoryList,
     FileChooser,
     DomPreview,
+    PopWindow,
   },
   props: {
     visible: {
@@ -96,7 +97,8 @@ export default defineComponent({
       idx++
     }
 
-    const handleComponentDelete = (item: BlockItem) => {
+    const handleComponentDelete = () => {
+      const item = editingNode.value
       window.$dialog.warning({
         title: 'Confirm',
         content: `Are you sure to delete ${item.title}?`,
@@ -137,7 +139,8 @@ export default defineComponent({
       })
     }
 
-    const handleComponentRename = (item: BlockItem) => {
+    const handleComponentRename = () => {
+      const item = editingNode.value
       const name = prompt('请输入组件名称', item.title)
       if (!name) {
         return
@@ -165,7 +168,9 @@ export default defineComponent({
         label: '🖊 Rename',
         props: {
           onClick: async () => {
-            handleComponentRename(item)
+            nodeAction(item, () => {
+              handleComponentRename()
+            })
           },
         },
       },
@@ -173,50 +178,60 @@ export default defineComponent({
         label: '❌ Delete',
         props: {
           onClick: async () => {
-            handleComponentDelete(item)
+            nodeAction(item, () => {
+              handleComponentDelete()
+            })
           },
         },
       },
     ]
 
-    const commonMenuOptions = [
-      {
-        label: '🧹 Cancel Select',
-        props: {
-          onClick: async () => {
-            cancelSelectComponent()
+    const getMenuOptions = (item: BlockItem) => {
+      if (item.blockType === BlockType.COMPONENT) {
+        return getCompMenuOptions(item)
+      }
+      return [
+        {
+          label: '🧹 Cancel Select',
+          props: {
+            onClick: async () => {
+              cancelSelectComponent()
+            },
           },
         },
-      },
-      {
-        label: '❌ Delete All',
-        props: {
-          onClick: async () => {
-            handleDeleteAll()
+        {
+          label: '❌ Delete All',
+          props: {
+            onClick: async () => {
+              handleDeleteAll()
+            },
           },
         },
-      },
-      {
-        type: 'divider',
-        label: 'd0',
-      },
-      {
-        label: '📥 Import All (JSON)',
-        props: {
-          onClick: async () => {
-            importFileChooserRef.value.chooseFile()
+        {
+          type: 'divider',
+          label: 'd0',
+        },
+        {
+          label: '📥 Import All (JSON)',
+          props: {
+            onClick: async () => {
+              importFileChooserRef.value.chooseFile()
+            },
           },
         },
-      },
-      {
-        label: '📃 Export All (JSON)',
-        props: {
-          onClick: async () => {
-            await exportAll()
+        {
+          label: '📃 Export All (JSON)',
+          props: {
+            onClick: async () => {
+              await exportAll()
+            },
           },
         },
-      },
-    ]
+      ]
+    }
+
+    const {editingNode, nodeAction, handleContextmenu, ...contextMenuEtc} =
+      useContextMenu(getMenuOptions)
 
     return {
       mVisible,
@@ -234,17 +249,32 @@ export default defineComponent({
       handleComponentRename,
       handleDeleteAll,
       cancelSelectComponent,
-      getCompMenuOptions,
-      commonMenuOptions,
+      getMenuOptions,
       importFileChooserRef,
       handleImportAll,
       colorHash,
+      handleContextmenu,
+      ...contextMenuEtc,
     }
   },
 })
 </script>
 
 <template>
+  <PopWindow />
+
+  <n-dropdown
+    trigger="manual"
+    placement="bottom-start"
+    :show="showRightMenu"
+    :options="rightMenuOptions"
+    :x="xRef"
+    :y="yRef"
+    @select="handleSelect"
+    key-field="label"
+    :on-clickoutside="handleClickOutside"
+  />
+
   <transition name="zoom">
     <div class="inventory-modal win7" v-show="mVisible" :class="{_dark: isDarkMode}">
       <div class="window _window-color glass">
@@ -289,28 +319,17 @@ export default defineComponent({
                 is-component-block
                 :is-min-height="isMinHeight"
                 @onItemClick="handleComponentItemClick"
+                @contextmenu="handleContextmenu"
               >
                 <template #actionMenu="{item}">
-                  <template v-if="item.actionType">
-                    <n-dropdown
-                      :options="commonMenuOptions"
-                      key-field="label"
-                      placement="bottom-start"
-                      trigger="hover"
-                    >
-                      <n-button size="tiny" style="min-width: 10px" @click.stop>...</n-button>
-                    </n-dropdown>
-                  </template>
-                  <template v-else>
-                    <n-dropdown
-                      :options="getCompMenuOptions(item)"
-                      key-field="label"
-                      placement="bottom-start"
-                      trigger="hover"
-                    >
-                      <n-button size="tiny" style="min-width: 10px" @click.stop>...</n-button>
-                    </n-dropdown>
-                  </template>
+                  <n-dropdown
+                    :options="getMenuOptions(item)"
+                    key-field="label"
+                    placement="bottom-start"
+                    trigger="hover"
+                  >
+                    <n-button size="tiny" style="min-width: 10px" @click.stop>...</n-button>
+                  </n-dropdown>
                 </template>
               </InventoryList>
             </n-tab-pane>

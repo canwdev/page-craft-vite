@@ -1,14 +1,14 @@
 <script lang="ts">
 import {defineComponent, PropType} from 'vue'
-import BlockListItem from '@/components/InventoryModal/BlockListItem.vue'
-import ComponentListItem from '@/components/InventoryModal/ComponentListItem.vue'
+import BlockCard from '@/components/InventoryModal/BlockCard.vue'
+import ComponentCard from '@/components/InventoryModal/ComponentCard.vue'
 import {BlockItem} from '@/enum/block'
 
 export default defineComponent({
   name: 'InventoryList',
   components: {
-    BlockListItem,
-    ComponentListItem,
+    BlockCard,
+    ComponentCard,
   },
   props: {
     itemList: {
@@ -30,7 +30,7 @@ export default defineComponent({
       default: false,
     },
   },
-  emits: ['onItemClick'],
+  emits: ['onItemClick', 'contextmenu'],
   setup(props) {
     const {itemList} = toRefs(props)
     const filterText = ref('')
@@ -63,16 +63,17 @@ export default defineComponent({
     </div>
     <div v-else class="inventory-list" :class="{_big: isComponentBlock}">
       <template v-for="(item, index) in itemListFiltered" :key="item.id">
-        <ComponentListItem
+        <ComponentCard
           v-if="isComponentBlock"
           :item="item"
           @click="$emit('onItemClick', item, index)"
+          @contextmenu="(...args) => $emit('contextmenu', ...args)"
         >
           <template #actionMenu="{item}">
             <slot name="actionMenu" :item="item"></slot>
           </template>
-        </ComponentListItem>
-        <BlockListItem v-else class="list-item" :item="item" @click="$emit('onItemClick', item)" />
+        </ComponentCard>
+        <BlockCard v-else class="list-item" :item="item" @click="$emit('onItemClick', item)" />
       </template>
     </div>
   </div>
