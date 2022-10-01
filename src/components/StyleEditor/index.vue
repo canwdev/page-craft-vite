@@ -418,7 +418,7 @@ export default defineComponent({
           <article role="tabpanel" v-show="false">Tab B is active</article>
         </section>-->
           <transition name="fade">
-            <div v-show="errorTip" class="code-error-tip">
+            <div v-show="errorTip" class="code-error-tip font-code">
               {{ errorTip }}
             </div>
           </transition>
@@ -465,7 +465,6 @@ export default defineComponent({
       right: 0;
       top: 0;
       font-size: 12px;
-      font-family: monospace;
       max-width: 300px;
       transform-origin: top right;
       background-color: rgba(0, 0, 0, 0.7);

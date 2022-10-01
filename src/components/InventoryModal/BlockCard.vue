@@ -40,7 +40,7 @@ export default defineComponent({
 <template>
   <div
     :class="{active: isActive}"
-    class="tool-item"
+    class="tool-item font-code"
     :title="item.title"
     :style="{
       '--block-color-rgb': color,
@@ -60,10 +60,9 @@ export default defineComponent({
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
   position: relative;
-  font-family: 'Operator Mono', 'Source Code Pro', Menlo, Monaco, Consolas, Courier New, monospace;
   color: white;
   transition: all 0.3s;
   outline: 1px solid rgb(var(--block-color-rgb));
@@ -115,7 +114,7 @@ export default defineComponent({
   $bracket_color: currentColor;
   .item-text {
     transform: rotate(-45deg);
-    text-shadow: 0 0 2px black, 0 0 1px black;
+    text-shadow: 0 0 3px black, 0 0 2px black, 0 0 1px black;
     &::before {
       content: '<';
       color: $bracket_color;

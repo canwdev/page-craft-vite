@@ -36,7 +36,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div :class="{active}" class="tool-item" :title="item.title">
+  <div :class="{active}" class="tool-item font-minecraft" :title="item.title">
     <div
       :style="{
         backgroundColor: color,
@@ -56,9 +56,8 @@ export default defineComponent({
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
+  font-size: 12px;
   position: relative;
-  font-family: 'Operator Mono', 'Source Code Pro', Menlo, Monaco, Consolas, Courier New, monospace;
   color: white;
 
   &::before {
@@ -104,7 +103,7 @@ export default defineComponent({
   $bracket_color: currentColor;
   .item-text {
     transform: rotate(-45deg);
-    text-shadow: 0 0 2px black, 0 0 1px black;
+    text-shadow: 1px 1px 1px black;
     &::before {
       content: '<';
       color: $bracket_color;

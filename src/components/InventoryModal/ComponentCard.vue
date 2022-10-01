@@ -46,7 +46,7 @@ export default defineComponent({
 <template>
   <div
     :class="{active: isActive}"
-    class="tool-item"
+    class="tool-item font-code"
     :style="{
       '--block-color-rgb': color,
     }"
@@ -77,7 +77,6 @@ export default defineComponent({
   font-size: 14px;
   font-weight: 600;
   position: relative;
-  font-family: 'Operator Mono', 'Source Code Pro', Menlo, Monaco, Consolas, Courier New, monospace;
   padding: 5px;
   transition: all 0.3s;
   outline: 1px dashed rgb(var(--block-color-rgb));

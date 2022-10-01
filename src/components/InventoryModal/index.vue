@@ -288,7 +288,10 @@ export default defineComponent({
         <!--        </template>-->
 
         <div ref="titleBarRef" class="title-bar">
-          <div class="title-bar-text" style="display: flex; align-items: center; height: 14px">
+          <div
+            class="title-bar-text font-minecraft"
+            style="display: flex; align-items: center; height: 14px"
+          >
             <img src="~@/assets/textures/crafting_table_top.png" alt="tools" />
             &nbsp;Inventory List
           </div>
@@ -302,7 +305,7 @@ export default defineComponent({
           </div>
         </div>
 
-        <div class="_window-body _bg">
+        <div class="_window-body _bg font-minecraft">
           <n-tabs v-model:value="currentTab" size="small" type="segment" animated>
             <n-tab-pane :name="BlockType.HTML_ELEMENT" tab="Blocks">
               <InventoryList

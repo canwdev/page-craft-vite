@@ -32,7 +32,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div v-if="hoveredElDisplay" class="indicator-info">{{ hoveredElDisplay }}</div>
+  <div v-if="hoveredElDisplay" class="indicator-info font-code">{{ hoveredElDisplay }}</div>
 </template>
 
 <style lang="scss" scoped>
@@ -42,7 +42,6 @@ export default defineComponent({
   top: 0;
   z-index: 100;
   font-size: 12px;
-  font-family: monospace;
   max-width: 300px;
   padding: 5px;
   background-color: rgba(30, 30, 30, 0.5);
