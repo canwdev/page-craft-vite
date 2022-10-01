@@ -9,6 +9,8 @@ export const GlobalEvents = {
   ON_NODE_SELECT: 'ON_NODE_SELECT',
   IMPORT_SUCCESS: 'IMPORT_SUCCESS',
   SYNC_STORAGE_DATA: 'SYNC_STORAGE_DATA',
+  ON_COMP_HOVER: 'ON_COMP_HOVER',
+  ON_COMP_HOVER_OUT: 'ON_COMP_HOVER_OUT',
 }
 
 export const syncStorageData = () => {

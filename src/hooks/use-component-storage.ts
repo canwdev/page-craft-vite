@@ -13,7 +13,20 @@ const renameLocalStorageKey = (key: string, newKey: string) => {
   localStorage.removeItem(key)
 }
 
-export const useComponentStorage = () => {
+export const loadComponentHtml = (name) => {
+  return localStorage.getItem(LsKeys.MAIN_HTML + splitter + name) || ''
+}
+export const saveComponentHtml = (name, html = '') => {
+  return localStorage.setItem(LsKeys.MAIN_HTML + splitter + name, html)
+}
+export const loadComponentStyle = (name) => {
+  return localStorage.getItem(LsKeys.MAIN_STYLE + splitter + name) || ''
+}
+export const saveComponentStyle = (name, style = '') => {
+  return localStorage.setItem(LsKeys.MAIN_STYLE + splitter + name, style)
+}
+
+export const useCompStorage = () => {
   const craftStore = useCraftStore()
 
   const getKeyWithSuffix = (key: string, suffix = craftStore.currentComponentName) => {
@@ -24,26 +37,26 @@ export const useComponentStorage = () => {
     }
   }
 
-  const loadStorageHtml = () => {
+  const loadCurCompHtml = () => {
     return localStorage.getItem(getKeyWithSuffix(LsKeys.MAIN_HTML)) || ''
   }
-  const saveStorageHtml = (text: string) => {
+  const saveCurCompHtml = (text: string) => {
     localStorage.setItem(getKeyWithSuffix(LsKeys.MAIN_HTML), text)
   }
 
-  const loadStorageStyle = () => {
+  const loadCurCompStyle = () => {
     return localStorage.getItem(getKeyWithSuffix(LsKeys.MAIN_STYLE)) || ''
   }
-  const saveStorageStyle = (text: string) => {
+  const saveCurCompStyle = (text: string) => {
     localStorage.setItem(getKeyWithSuffix(LsKeys.MAIN_STYLE), text)
   }
 
-  const clearComponentStorage = (name) => {
+  const clearCompStorage = (name) => {
     localStorage.removeItem(getKeyWithSuffix(LsKeys.MAIN_HTML, name))
     localStorage.removeItem(getKeyWithSuffix(LsKeys.MAIN_STYLE, name))
   }
 
-  const renameComponentStorage = (name, newName: string) => {
+  const renameCompStorage = (name, newName: string) => {
     renameLocalStorageKey(
       getKeyWithSuffix(LsKeys.MAIN_HTML, name),
       getKeyWithSuffix(LsKeys.MAIN_HTML, newName)
@@ -55,16 +68,16 @@ export const useComponentStorage = () => {
   }
 
   return {
-    loadStorageHtml,
-    saveStorageHtml,
-    loadStorageStyle,
-    saveStorageStyle,
-    clearComponentStorage,
-    renameComponentStorage,
+    loadCurCompHtml,
+    saveCurCompHtml,
+    loadCurCompStyle,
+    saveCurCompStyle,
+    clearCompStorage,
+    renameCompStorage,
   }
 }
 
-export const useComponentImportExport = () => {
+export const useCompImportExport = () => {
   const componentList = useLocalStorageObject(LsKeys.COMPONENT_LIST, [])
   const currentComponentName = useLocalStorageString(LsKeys.CURRENT_COMPONENT_NAME, '')
 
@@ -75,8 +88,8 @@ export const useComponentImportExport = () => {
     const newList: BlockItem[] = []
     importList.forEach((item) => {
       newList.push(createComponentBlockItem(item.name, {timestamp: item.timestamp}))
-      localStorage.setItem(LsKeys.MAIN_HTML + splitter + item.name, item.html)
-      localStorage.setItem(LsKeys.MAIN_STYLE + splitter + item.name, item.style)
+      saveComponentHtml(item.name, item.html)
+      saveComponentStyle(item.name, item.style)
     })
 
     // Merge old item if name is same
@@ -102,8 +115,8 @@ export const useComponentImportExport = () => {
       exportList.push(
         new ExportItem({
           name: item.title,
-          html: localStorage.getItem(LsKeys.MAIN_HTML + splitter + item.title) || '',
-          style: localStorage.getItem(LsKeys.MAIN_STYLE + splitter + item.title) || '',
+          html: loadComponentHtml(item.title),
+          style: loadComponentStyle(item.title),
           timestamp: item.data.timestamp,
         })
       )

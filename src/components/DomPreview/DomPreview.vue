@@ -13,17 +13,18 @@ export default defineComponent({
       type: String,
       required: true,
     },
-    style: {
+    css: {
       type: String,
       default: '',
     },
   },
-  setup(props) {
-    const {style, id} = toRefs(props)
+  emits: ['styleCompiled'],
+  setup(props, {emit}) {
+    const {css, id} = toRefs(props)
     const styleRewrote = ref('')
 
     watch(
-      style,
+      css,
       async (val) => {
         try {
           styleRewrote.value = await sassToCSS(`div[data-app-name="${id.value}"] { ${val} }`)
@@ -31,6 +32,9 @@ export default defineComponent({
           console.error(e)
           styleRewrote.value = ''
         }
+        nextTick(() => {
+          emit('styleCompiled')
+        })
       },
       {immediate: true}
     )
@@ -43,7 +47,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div :data-app-name="id">
+  <div :data-app-name="id" style="transform: scale(0.8)">
     <VStyle :id="id">{{ styleRewrote }}</VStyle>
     <slot></slot>
   </div>

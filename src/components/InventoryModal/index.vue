@@ -13,13 +13,12 @@ import {htmlBlockItemList} from '@/enum/inventory'
 import {ActionBlockItems} from '@/enum/block'
 import InventoryList from '@/components/InventoryModal/InventoryList.vue'
 import {useCraftStore} from '@/store/craft'
-import {useLocalStorageObject, useLocalStorageString} from '@/hooks/use-local-storage'
+import {useLocalStorageString} from '@/hooks/use-local-storage'
 import {LsKeys} from '@/enum'
-import {useComponentImportExport, useComponentStorage} from '@/hooks/use-component-storage'
+import {useCompImportExport, useCompStorage} from '@/hooks/use-component-storage'
 import FileChooser from '@/components/FileChooser.vue'
-import DomPreview from '@/components/DomPreview/DomPreview.vue'
 import {colorHash} from '@/utils'
-import PopWindow from '@/components/PopWindow.vue'
+import PopWindow from '@/components/DomPreview/PopWindow.vue'
 import {useContextMenu} from '@/hooks/use-context-menu'
 
 let idx = 1
@@ -29,7 +28,6 @@ export default defineComponent({
   components: {
     InventoryList,
     FileChooser,
-    DomPreview,
     PopWindow,
   },
   props: {
@@ -44,7 +42,7 @@ export default defineComponent({
     const {isDarkMode} = useIsDarkMode()
     const craftStore = useCraftStore()
 
-    const {clearComponentStorage, renameComponentStorage} = useComponentStorage()
+    const {clearCompStorage, renameCompStorage} = useCompStorage()
 
     const currentTab = useLocalStorageString(LsKeys.INVENTORY_TAB, BlockType.COMPONENT)
     const isMinHeight = ref(false)
@@ -53,8 +51,7 @@ export default defineComponent({
       craftStore.setCurrentBlock(item)
     }
 
-    const {exportAll, handleImportAll, componentList, currentComponentName} =
-      useComponentImportExport()
+    const {exportAll, handleImportAll, componentList, currentComponentName} = useCompImportExport()
     const importFileChooserRef = ref()
 
     const componentListFormatted = computed(() => {
@@ -111,7 +108,7 @@ export default defineComponent({
           componentList.value = list
 
           // remove local storage
-          clearComponentStorage(item.title)
+          clearCompStorage(item.title)
 
           // reset current component name
           if (currentComponentName.value === item.title) {
@@ -131,7 +128,7 @@ export default defineComponent({
         onPositiveClick: () => {
           currentComponentName.value = ''
           componentList.value.forEach((item) => {
-            clearComponentStorage(item.title)
+            clearCompStorage(item.title)
           })
           componentList.value = []
         },
@@ -159,7 +156,7 @@ export default defineComponent({
       }
 
       // rename local storage
-      renameComponentStorage(item.title, name)
+      renameCompStorage(item.title, name)
       item.title = name
     }
 
@@ -261,9 +258,10 @@ export default defineComponent({
 </script>
 
 <template>
-  <PopWindow />
+  <PopWindow v-if="mVisible" />
 
   <n-dropdown
+    v-if="mVisible"
     trigger="manual"
     placement="bottom-start"
     :show="showRightMenu"

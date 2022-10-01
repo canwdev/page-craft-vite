@@ -33,7 +33,7 @@ import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {cssSnippetList} from '@/enum/styles'
 import {formatCss} from '@/utils/formater'
 import {useIsDarkMode} from '@/hooks/use-global-theme'
-import {useComponentStorage} from '@/hooks/use-component-storage'
+import {useCompStorage} from '@/hooks/use-component-storage'
 
 // Register extension on CodeMirror object
 emmet(CodeMirror)
@@ -98,7 +98,7 @@ export default defineComponent({
       codeMirrorInstance.setOption('theme', getThemeName())
     })
 
-    const {loadStorageStyle, saveStorageStyle} = useComponentStorage()
+    const {loadCurCompStyle, saveCurCompStyle} = useCompStorage()
 
     watch(
       () => craftStore.currentComponentName,
@@ -108,7 +108,7 @@ export default defineComponent({
     )
 
     const reloadStyle = () => {
-      const style = loadStorageStyle()
+      const style = loadCurCompStyle()
       codeMirrorInstance.setValue(style)
       // call instantly
       handleUpdateStyle(style, false)
@@ -127,7 +127,7 @@ export default defineComponent({
       })
 
       styleEl.value = createOrFindStyleNode(LsKeys.MAIN_STYLE)
-      const style = loadStorageStyle()
+      const style = loadCurCompStyle()
 
       codeMirrorInstance = CodeMirror(textareaRef.value, {
         value: style,
@@ -235,7 +235,7 @@ export default defineComponent({
           _prevStyleValue.value = value
           styleEl.value.innerHTML = value ? await sassToCSS(value) : ''
           if (isSave) {
-            saveStorageStyle(value)
+            saveCurCompStyle(value)
           }
           errorTip.value = ''
         } catch (error: any) {

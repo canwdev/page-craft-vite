@@ -11,7 +11,7 @@ import globalEventBus, {GlobalEvents, syncStorageData} from '@/utils/global-even
 import {formatCss, formatHtml} from '@/utils/formater'
 import {useIsDarkMode} from '@/hooks/use-global-theme'
 import {appendCustomBlock} from '@/utils/dom'
-import {useComponentStorage} from '@/hooks/use-component-storage'
+import {useCompStorage} from '@/hooks/use-component-storage'
 import {handleExportJson, handleExportVue, handleReadSelectedFile} from '@/utils/exporter'
 import FileChooser from '@/components/FileChooser.vue'
 import IndicatorInfo from '@/components/MainCanvas/IndicatorInfo.vue'
@@ -79,8 +79,7 @@ export default defineComponent({
     )
     const isShowImportDialog = ref(false)
 
-    const {loadStorageHtml, saveStorageHtml, saveStorageStyle, loadStorageStyle} =
-      useComponentStorage()
+    const {loadCurCompHtml, saveCurCompHtml, saveCurCompStyle, loadCurCompStyle} = useCompStorage()
 
     watch(
       () => craftStore.currentComponentName,
@@ -90,7 +89,7 @@ export default defineComponent({
     )
 
     const reloadHtml = () => {
-      const html = loadStorageHtml()
+      const html = loadCurCompHtml()
       setMainCanvasHtml(html)
     }
 
@@ -109,7 +108,7 @@ export default defineComponent({
     const saveData = (cb?) => {
       removeMouseOverDomElementEffect()
       const innerHTML = mainCanvasRef.value.innerHTML
-      saveStorageHtml(innerHTML)
+      saveCurCompHtml(innerHTML)
       if (cb) {
         cb()
       }
@@ -184,8 +183,8 @@ export default defineComponent({
 
     const handleImportJson = (data) => {
       const {html = '', style = ''} = new ExportItem(data)
-      saveStorageHtml(html)
-      saveStorageStyle(style)
+      saveCurCompHtml(html)
+      saveCurCompStyle(style)
       globalEventBus.emit(GlobalEvents.IMPORT_SUCCESS, style)
       window.$message.success('Import Success!')
     }
@@ -207,8 +206,8 @@ export default defineComponent({
     }
     const getEntityData = async (): Promise<ExportItem> => {
       await syncStorageData()
-      const html = loadStorageHtml() || ''
-      const style = loadStorageStyle()
+      const html = loadCurCompHtml() || ''
+      const style = loadCurCompStyle()
 
       return new ExportItem({
         name: craftStore.currentComponentName,

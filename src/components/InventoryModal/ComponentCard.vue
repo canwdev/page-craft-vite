@@ -1,8 +1,9 @@
 <script lang="ts">
 import {defineComponent, PropType} from 'vue'
 import {useCraftStore} from '@/store/craft'
-import {BlockItem} from '@/enum/block'
+import {ActionType, BlockItem} from '@/enum/block'
 import {colorHash, formatDate} from '@/utils'
+import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 
 export default defineComponent({
   name: 'ComponentCard',
@@ -25,11 +26,18 @@ export default defineComponent({
       return item.value.title === craftStore.currentComponentName
     })
 
+    const isCrate = computed(() => {
+      return item.value.actionType === ActionType.ADD_COMPONENT
+    })
+
     return {
       craftStore,
       color,
       isActive,
       formatDate,
+      globalEventBus,
+      GlobalEvents,
+      isCrate,
     }
   },
 })
@@ -39,11 +47,12 @@ export default defineComponent({
   <div
     :class="{active: isActive}"
     class="tool-item"
-    :title="item.title"
     :style="{
       '--block-color-rgb': color,
     }"
     @contextmenu="$emit('contextmenu', $event, item)"
+    @mousemove="!isCrate && globalEventBus.emit(GlobalEvents.ON_COMP_HOVER, {event: $event, item})"
+    @mouseleave="!isCrate && globalEventBus.emit(GlobalEvents.ON_COMP_HOVER_OUT)"
   >
     <div class="action-menu">
       <slot name="actionMenu" :item="item"></slot>
