@@ -30,14 +30,56 @@ export default defineComponent({
       return item.value.actionType === ActionType.ADD_COMPONENT
     })
 
+    const isHover = ref(false)
+    const hoverTimer = ref<any>(null)
+
+    // mouse hover delay
+    const startHoverTimer = (cb) => {
+      if (hoverTimer.value) {
+        return
+      }
+      hoverTimer.value = setTimeout(() => {
+        isHover.value = true
+        clearTimeout(hoverTimer.value)
+        hoverTimer.value = null
+        cb()
+      }, 800)
+    }
+
+    const emitMouseMove = (event) => {
+      globalEventBus.emit(GlobalEvents.ON_COMP_HOVER, {event, item: item.value})
+    }
+
+    const handleMouseMove = (event) => {
+      if (isCrate.value) {
+        return
+      }
+      if (!isHover.value) {
+        startHoverTimer(() => {
+          emitMouseMove(event)
+        })
+        return
+      }
+      emitMouseMove(event)
+    }
+    const handleMouseLeave = () => {
+      if (isCrate.value) {
+        return
+      }
+      isHover.value = false
+      globalEventBus.emit(GlobalEvents.ON_COMP_HOVER_OUT)
+      clearTimeout(hoverTimer.value)
+      hoverTimer.value = null
+    }
+
     return {
       craftStore,
       color,
       isActive,
       formatDate,
-      globalEventBus,
-      GlobalEvents,
       isCrate,
+      handleMouseMove,
+      handleMouseLeave,
     }
   },
 })
@@ -51,8 +93,8 @@ export default defineComponent({
       '--block-color-rgb': color,
     }"
     @contextmenu="$emit('contextmenu', $event, item)"
-    @mousemove="!isCrate && globalEventBus.emit(GlobalEvents.ON_COMP_HOVER, {event: $event, item})"
-    @mouseleave="!isCrate && globalEventBus.emit(GlobalEvents.ON_COMP_HOVER_OUT)"
+    @mousemove="handleMouseMove"
+    @mouseleave="handleMouseLeave"
   >
     <div class="action-menu">
       <slot name="actionMenu" :item="item"></slot>
