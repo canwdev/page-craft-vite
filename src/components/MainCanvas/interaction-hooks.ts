@@ -22,7 +22,7 @@ export const removeMouseOverDomElementEffect = () => {
 const MAX_WAIT_TIME = 0.5 * 1000
 
 export const useInteractionHooks = (options) => {
-  const {mainCanvasRef, saveData, indicatorOptions, copyHtml} = options
+  const {mainCanvasRef, saveData, indicatorOptions, copyHtml, recordUndo} = options
   const craftStore = useCraftStore()
   const waitingTime = ref(0)
   const waitTimer = ref<any>(null)
@@ -107,6 +107,7 @@ export const useInteractionHooks = (options) => {
     ].map((tag) => ({
       label: tag,
       onClick: () => {
+        recordUndo()
         surroundSelection(document.createElement(tag))
         saveData()
       },
@@ -114,6 +115,7 @@ export const useInteractionHooks = (options) => {
   ]
 
   const pasteHtml = async (targetEl, position = 'beforeend') => {
+    recordUndo()
     const text = await navigator.clipboard.readText()
     targetEl.insertAdjacentHTML(
       <'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend'>position,
@@ -123,6 +125,7 @@ export const useInteractionHooks = (options) => {
   }
 
   const insertCurrentBlock = (targetEl, position = 'append') => {
+    recordUndo()
     targetEl[<any>position](createBlockElement(craftStore.currentBlock, craftStore))
     saveData()
   }
@@ -149,6 +152,7 @@ export const useInteractionHooks = (options) => {
                   removeMouseOverDomElementEffect()
                   const className = await prompt('Rename Class', targetEl.className)
                   if (className) {
+                    recordUndo()
                     targetEl.className = className
                     saveData()
                   }
@@ -169,6 +173,7 @@ export const useInteractionHooks = (options) => {
                 onClick: async () => {
                   removeMouseOverDomElementEffect()
                   copyToClipboard(targetEl.outerHTML)
+                  recordUndo()
                   targetEl.parentNode?.removeChild(targetEl)
                   saveData()
                 },
@@ -178,6 +183,7 @@ export const useInteractionHooks = (options) => {
               label: '❌ Remove Element',
               props: {
                 onClick: async () => {
+                  recordUndo()
                   targetEl.parentNode?.removeChild(targetEl)
                   saveData()
                 },
@@ -292,6 +298,7 @@ export const useInteractionHooks = (options) => {
   })
 
   const handleBlockClick = (event: Event) => {
+    recordUndo()
     const {currentBlock} = craftStore
     appendCustomBlock(currentBlock, event, craftStore, mainCanvasRef)
     saveData()

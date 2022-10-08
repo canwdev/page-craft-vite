@@ -6,6 +6,7 @@ import {formatCss, formatHtml} from '@/utils/formater'
 import {ExportItem} from '@/enum/block'
 import {useCompStorage} from '@/hooks/use-component-storage'
 import {useCraftStore} from '@/store/craft'
+import {UndoRedo} from '@/utils/undo-redo'
 
 export const useMcMain = (options) => {
   const {mainCanvasRef} = options
@@ -13,6 +14,7 @@ export const useMcMain = (options) => {
   const fileChooserRef = ref()
   const isShowImportDialog = ref(false)
   const {loadCurCompHtml, saveCurCompHtml, saveCurCompStyle, loadCurCompStyle} = useCompStorage()
+  const undoRedo = ref(new UndoRedo(10))
 
   onMounted(() => {
     reloadHtml()
@@ -62,7 +64,7 @@ export const useMcMain = (options) => {
     }
   )
 
-  const setMainCanvasHtml = (html?: string) => {
+  const setMainCanvasHtml = (html: string = '') => {
     if (mainCanvasRef.value) {
       mainCanvasRef.value.innerHTML = html
     }
@@ -71,6 +73,7 @@ export const useMcMain = (options) => {
   const reloadHtml = () => {
     const html = loadCurCompHtml()
     setMainCanvasHtml(html)
+    undoRedo.value.clear()
   }
 
   const getEntityData = async (): Promise<ExportItem> => {
@@ -86,6 +89,7 @@ export const useMcMain = (options) => {
   }
 
   const handleImportHtml = (html: string) => {
+    recordUndo()
     setMainCanvasHtml(html)
     saveData()
   }
@@ -158,7 +162,7 @@ export const useMcMain = (options) => {
         onClick: async () => {
           window.$dialog.warning({
             title: 'Confirm',
-            content: `Confirm clear all code? this can not be undo!`,
+            content: `Confirm clear current HTML + Style code? This can not be undo!`,
             positiveText: 'OK',
             negativeText: 'Cancel',
             onPositiveClick: () => {
@@ -173,6 +177,26 @@ export const useMcMain = (options) => {
     },
   ]
 
+  // record html before action
+  const recordUndo = () => {
+    const innerHTML = mainCanvasRef.value.innerHTML
+    undoRedo.value.recordUndo(innerHTML)
+  }
+
+  const handleUndo = () => {
+    const innerHTML = mainCanvasRef.value.innerHTML
+    const html = undoRedo.value.undo(innerHTML)
+    setMainCanvasHtml(html)
+    saveData()
+  }
+
+  const handleRedo = () => {
+    const innerHTML = mainCanvasRef.value.innerHTML
+    const html = undoRedo.value.redo(innerHTML)
+    setMainCanvasHtml(html)
+    saveData()
+  }
+
   return {
     exportMenuOptions,
     fileChooserRef,
@@ -183,5 +207,9 @@ export const useMcMain = (options) => {
     handleImportJsonSelected,
     saveData,
     copyHtml,
+    undoRedo,
+    recordUndo,
+    handleUndo,
+    handleRedo,
   }
 }

@@ -5,6 +5,8 @@ import {ActionType, BlockItem} from '@/enum/block'
 import {colorHash, formatDate} from '@/utils'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 
+let currentEvent: any
+
 export default defineComponent({
   name: 'ComponentCard',
   props: {
@@ -46,21 +48,22 @@ export default defineComponent({
       }, 800)
     }
 
-    const emitMouseMove = (event) => {
-      globalEventBus.emit(GlobalEvents.ON_COMP_HOVER, {event, item: item.value})
+    const emitMouseMove = () => {
+      globalEventBus.emit(GlobalEvents.ON_COMP_HOVER, {event: currentEvent, item: item.value})
     }
 
     const handleMouseMove = (event) => {
       if (isCrate.value) {
         return
       }
+      currentEvent = event
       if (!isHover.value) {
         startHoverTimer(() => {
-          emitMouseMove(event)
+          emitMouseMove()
         })
         return
       }
-      emitMouseMove(event)
+      emitMouseMove()
     }
     const handleMouseLeave = () => {
       if (isCrate.value) {

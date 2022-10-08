@@ -29,6 +29,10 @@ export default defineComponent({
       handleImportJsonSelected,
       saveData,
       copyHtml,
+      undoRedo,
+      recordUndo,
+      handleUndo,
+      handleRedo,
     } = useMcMain({
       mainCanvasRef,
     })
@@ -52,6 +56,7 @@ export default defineComponent({
       saveData,
       indicatorOptions,
       copyHtml,
+      recordUndo,
     })
 
     watch(
@@ -89,6 +94,9 @@ export default defineComponent({
       isShowSelectionAction,
       selectionPopupOptions,
       ...contextMenuEtc,
+      undoRedo,
+      handleUndo,
+      handleRedo,
     }
   },
 })
@@ -180,6 +188,23 @@ export default defineComponent({
               <slot name="settingsButtons"></slot>
             </template>
           </n-popover>
+
+          <span>|</span>
+          <n-button
+            size="tiny"
+            title="Undo"
+            :disabled="!undoRedo.undoStack.length"
+            @click="handleUndo"
+            >↩</n-button
+          >
+          <n-button
+            size="tiny"
+            title="Redo"
+            :disabled="!undoRedo.redoStack.length"
+            @click="handleRedo"
+            >↪</n-button
+          >
+          <span>|</span>
 
           <slot name="barExtra"></slot>
         </n-space>
