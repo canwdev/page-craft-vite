@@ -14,7 +14,28 @@ export default defineConfig({
     },
   },
   plugins: [
-    VitePWA(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      includeAssets: ['favicon.png'],
+      manifest: {
+        name: 'PageCraft',
+        short_name: 'PageCraft',
+        description: 'Web page rapid generation tool',
+        theme_color: '#83B253',
+        icons: [
+          {
+            src: 'favicon.png',
+            sizes: '192x192',
+            type: 'image/png',
+          },
+          {
+            src: 'favicon.png',
+            sizes: '512x512',
+            type: 'image/png',
+          },
+        ],
+      },
+    }),
     vue(),
     AutoImport({
       dts: './src/auto-import.d.ts',
