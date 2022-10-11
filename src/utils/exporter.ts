@@ -12,9 +12,6 @@ export const handleExportHtml = async (exportData: ExportItem, isEmail = false) 
   const {html, style, styleLang} = exportData
   const name = getFileName(exportData.name)
 
-  console.log(inlineCss)
-  return
-
   const htmlStr = `<!doctype html>
 <html>
 <head>

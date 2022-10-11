@@ -1,4 +1,9 @@
-import {handleExportJson, handleExportVue, handleReadSelectedFile} from '@/utils/exporter'
+import {
+  handleExportHtml,
+  handleExportJson,
+  handleExportVue,
+  handleReadSelectedFile,
+} from '@/utils/exporter'
 import globalEventBus, {GlobalEvents, syncStorageData} from '@/utils/global-event-bus'
 import {removeMouseOverDomElementEffect} from '@/components/MainCanvas/interaction-hooks'
 import {copyToClipboard} from '@/utils'
@@ -127,6 +132,14 @@ export const useMcMain = (options) => {
           props: {
             onClick: async () => {
               handleExportVue(await getEntityData(), 3)
+            },
+          },
+        },
+        {
+          label: '📑 Export HTML',
+          props: {
+            onClick: async () => {
+              handleExportHtml(await getEntityData())
             },
           },
         },
