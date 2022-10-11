@@ -68,7 +68,7 @@ export default defineComponent({
 
     const handleComponentItemClick = (item: BlockItem) => {
       if (item.actionType === ActionType.ADD_COMPONENT) {
-        handleCreateComponent(item)
+        handleCreateComponent()
         return
       }
       currentComponentName.value = item.title
