@@ -42,7 +42,7 @@ export default defineComponent({
     const {isDarkMode} = useIsDarkMode()
     const craftStore = useCraftStore()
 
-    const {clearCompStorage, renameCompStorage} = useCompStorage()
+    const {clearCompStorage, renameCompStorage, copyCompStorage} = useCompStorage()
 
     const currentTab = useLocalStorageString(LsKeys.INVENTORY_TAB, BlockType.COMPONENT)
     const isMinHeight = ref(false)
@@ -78,16 +78,22 @@ export default defineComponent({
       currentComponentName.value = ''
     }
 
-    const handleCreateComponent = (item: BlockItem) => {
-      let name = `Component${idx}`
-      name = prompt('Please enter the component name', name) || ''
+    const getNamePrompt = (message = '', name = '') => {
+      name = prompt(message, name) || ''
       if (!name) {
-        return
+        const message = 'The component name cannot be empty'
+        throw new Error(message)
       }
       if (componentList.value.find((item) => item.title === name)) {
-        window.$message.error('The component name already exists')
-        return
+        const message = 'The component name already exists'
+        window.$message.error(message)
+        throw new Error(message)
       }
+      return name
+    }
+
+    const handleCreateComponent = () => {
+      let name = getNamePrompt('Please enter the component name', `Component${idx}`)
 
       componentList.value = [...componentList.value, createComponentBlockItem(name)]
       currentComponentName.value = name
@@ -138,14 +144,8 @@ export default defineComponent({
 
     const handleComponentRename = () => {
       const item = editingNode.value
-      const name = prompt('请输入组件名称', item.title)
-      if (!name) {
-        return
-      }
-      if (componentList.value.find((item) => item.title === name)) {
-        window.$message.error('The component name already exists')
-        return
-      }
+      const name = getNamePrompt('Please input component name', item.title)
+
       const index = componentList.value.findIndex((i) => i.id === item.id)
       const list = [...componentList.value]
       list.splice(index, 1, item)
@@ -160,6 +160,17 @@ export default defineComponent({
       item.title = name
     }
 
+    const handleComponentDuplicate = () => {
+      const item = editingNode.value
+      const name = getNamePrompt('Please input new component name', item.title + '-1')
+
+      copyCompStorage(item.title, name)
+
+      componentList.value = [...componentList.value, createComponentBlockItem(name)]
+      currentComponentName.value = name
+      idx++
+    }
+
     const getCompMenuOptions = (item) => [
       {
         label: '✏️ Rename',
@@ -167,6 +178,16 @@ export default defineComponent({
           onClick: async () => {
             nodeAction(item, () => {
               handleComponentRename()
+            })
+          },
+        },
+      },
+      {
+        label: '📄 Duplicate',
+        props: {
+          onClick: async () => {
+            nodeAction(item, () => {
+              handleComponentDuplicate()
             })
           },
         },

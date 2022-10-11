@@ -13,6 +13,11 @@ const renameLocalStorageKey = (key: string, newKey: string) => {
   localStorage.removeItem(key)
 }
 
+const copyLocalStorageKey = (key: string, newKey: string) => {
+  const value = localStorage.getItem(key) || ''
+  localStorage.setItem(newKey, value)
+}
+
 export const loadComponentHtml = (name) => {
   return localStorage.getItem(LsKeys.MAIN_HTML + splitter + name) || ''
 }
@@ -67,6 +72,17 @@ export const useCompStorage = () => {
     )
   }
 
+  const copyCompStorage = (name, newName: string) => {
+    copyLocalStorageKey(
+      getKeyWithSuffix(LsKeys.MAIN_HTML, name),
+      getKeyWithSuffix(LsKeys.MAIN_HTML, newName)
+    )
+    copyLocalStorageKey(
+      getKeyWithSuffix(LsKeys.MAIN_STYLE, name),
+      getKeyWithSuffix(LsKeys.MAIN_STYLE, newName)
+    )
+  }
+
   return {
     loadCurCompHtml,
     saveCurCompHtml,
@@ -74,6 +90,7 @@ export const useCompStorage = () => {
     saveCurCompStyle,
     clearCompStorage,
     renameCompStorage,
+    copyCompStorage,
   }
 }
 
