@@ -102,7 +102,7 @@ export default defineComponent({
       <div class="page-craft-enhanced-toolbar-above">
         <n-space size="small">
           <div class="field-row">
-            <label for="inputClass">Class </label>
+            <label for="inputClass" class="font-minecraft">Class </label>
             <n-input
               size="tiny"
               id="inputClass"
@@ -115,7 +115,7 @@ export default defineComponent({
           </div>
 
           <div class="field-row">
-            <label for="inputContent">Content </label>
+            <label for="inputContent" class="font-minecraft">Content </label>
             <n-input
               size="tiny"
               id="inputContent"

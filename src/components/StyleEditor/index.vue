@@ -30,7 +30,13 @@ import {copyToClipboard} from '@/utils'
 import {useCraftStore} from '@/store/craft'
 import {ActionBlockItems, BlockItem} from '@/enum/block'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
-import {cssSnippetList} from '@/enum/styles'
+import {
+  cssHelperClassList,
+  cssKeyFramesList,
+  cssSnippetList,
+  sassVariablesList,
+  vue2TransitionsList,
+} from '@/enum/styles'
 import {formatCss} from '@/utils/formater'
 import {useIsDarkMode} from '@/hooks/use-global-theme'
 import {useCompStorage} from '@/hooks/use-component-storage'
@@ -311,19 +317,39 @@ export default defineComponent({
       doc.replaceRange(code, cursor)
     }
 
+    const getToolChildren = (list) => {
+      return list.map((item) => {
+        return {
+          label: item.name,
+          props: {
+            onClick: async () => {
+              insertStyleCode(item.code)
+            },
+          },
+        }
+      })
+    }
+
     const toolOptions = [
       {
         label: 'CSS Snippets',
-        children: cssSnippetList.map((item) => {
-          return {
-            label: item.name,
-            props: {
-              onClick: async () => {
-                insertStyleCode(item.code)
-              },
-            },
-          }
-        }),
+        children: getToolChildren(cssSnippetList),
+      },
+      {
+        label: 'CSS Helper Classes',
+        children: getToolChildren(cssHelperClassList),
+      },
+      {
+        label: '@keyframes',
+        children: getToolChildren(cssKeyFramesList),
+      },
+      {
+        label: 'Vue 2 Transitions',
+        children: getToolChildren(vue2TransitionsList),
+      },
+      {
+        label: 'Sass Variables',
+        children: getToolChildren(sassVariablesList),
       },
     ]
 
@@ -357,7 +383,10 @@ export default defineComponent({
     >
       <div class="window _window-color glass">
         <div ref="titleBarRef" class="title-bar">
-          <div class="title-bar-text" style="display: flex; align-items: center; height: 14px">
+          <div
+            class="title-bar-text font-minecraft"
+            style="display: flex; align-items: center; height: 14px"
+          >
             <img src="~@/assets/textures/redstone.png" alt="tools" />
             &nbsp;Style Editor
           </div>
@@ -381,8 +410,9 @@ export default defineComponent({
               key-field="label"
               placement="bottom"
               trigger="hover"
-              size="small"
-              :show-arrow="true"
+              size="medium"
+              :animated="false"
+              class="font-code"
             >
               <button title="Tools">
                 <img src="~@/assets/textures/enchanted_book.png" alt="tools" />

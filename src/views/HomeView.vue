@@ -30,7 +30,7 @@ export default defineComponent({
       </template>
       <template #barExtra>
         <n-button size="tiny" style="min-width: 120px" @click="showStyleEditor = !showStyleEditor">
-          {{ showStyleEditor ? 'Hide' : 'Show' }} StyleEditor
+          {{ showStyleEditor ? '✔' : '' }} Style Editor
         </n-button>
       </template>
     </MainCanvas>

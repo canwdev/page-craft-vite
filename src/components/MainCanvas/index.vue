@@ -159,7 +159,11 @@ export default defineComponent({
       accept="application/JSON"
       @selected="handleImportJsonSelected"
     />
-    <div :class="{_dark: isDarkMode}" class="page-craft-mc-indicator page-craft-aero-panel">
+
+    <div
+      :class="{_dark: isDarkMode}"
+      class="page-craft-mc-indicator page-craft-aero-panel font-minecraft"
+    >
       <n-space align="center">
         <n-space align="center" size="small">
           <n-dropdown
