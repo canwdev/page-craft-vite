@@ -127,8 +127,9 @@ export const actionBlockItemList = Object.values(ActionBlockItems).filter((item)
 
 const presetHtmlTags = 'div,span,br,button,input,img,a,p,h1,h2,h3,ul,ol,li'.split(',')
 export const initToolbarList: BlockItem[] = [
-  ActionBlockItems.EMPTY,
+  ActionBlockItems.DEBUG,
   ActionBlockItems.DELETE,
+  ActionBlockItems.EMPTY,
   ...presetHtmlTags.map((tag) => createHtmlBlockItem(tag)),
   ActionBlockItems.EMPTY,
   ActionBlockItems.EMPTY,
