@@ -138,11 +138,11 @@ export default defineComponent({
       codeMirrorInstance = CodeMirror(textareaRef.value, {
         value: style,
         mode: 'text/x-scss',
-        placeholder: 'Write your SASS(SCSS) code here...',
+        placeholder: 'Write your Sass(scss) code here...',
         lint: true,
         theme: getThemeName(), // 主题样式
         keyMap: 'sublime',
-        undoDepth: 1000,
+        undoDepth: 500,
         smartIndent: true, // 是否智能缩进
         indentUnit: 2,
         lineNumbers: true, // 显示行号
@@ -177,14 +177,6 @@ export default defineComponent({
       codeMirrorInstance.on('change', () => {
         handleEditorChangeDebounced(codeMirrorInstance)
       })
-
-      // codeMirrorInstance.on('keypress', (cm, evt) => {
-      //   if (isCharacterKeyPress(evt)) {
-      //     if (CodeMirror.showHint) {
-      //       CodeMirror.showHint(cm)
-      //     }
-      //   }
-      // })
 
       new ResizeObserver(() => {
         handleResizeDebounced()
@@ -228,7 +220,12 @@ export default defineComponent({
       handleUpdateStyle(editor.getValue())
     })
 
-    const errorTip = ref('')
+    const errorTip = ref()
+    const handleErrorTipClick = () => {
+      console.warn(errorTip.value.message, {...errorTip.value})
+      errorTip.value = null
+    }
+
     const _prevStyleValue = ref('') // 创建一个临时变量防止重复更新
     const handleUpdateStyle = async (value, isSave = true) => {
       if (styleEl.value) {
@@ -247,7 +244,7 @@ export default defineComponent({
         } catch (error: any) {
           // console.error(error)
           // message.error(error.message)
-          errorTip.value = error.message
+          errorTip.value = error
         }
       }
     }
@@ -366,6 +363,7 @@ export default defineComponent({
       exitSelectMode,
       craftStore,
       errorTip,
+      handleErrorTipClick,
       toolOptions,
       isDarkMode,
     }
@@ -448,8 +446,8 @@ export default defineComponent({
           <article role="tabpanel" v-show="false">Tab B is active</article>
         </section>-->
           <transition name="fade">
-            <div v-show="errorTip" class="code-error-tip font-code">
-              {{ errorTip }}
+            <div v-show="errorTip" class="code-error-tip font-code" @click="handleErrorTipClick">
+              {{ errorTip?.message }}
             </div>
           </transition>
 
@@ -492,7 +490,7 @@ export default defineComponent({
 
     .code-error-tip {
       position: absolute;
-      right: 0;
+      left: 0;
       top: 0;
       font-size: 12px;
       max-width: 300px;
