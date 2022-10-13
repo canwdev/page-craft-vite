@@ -9,5 +9,6 @@ declare global {
     $dialog: DialogApiInjection
     $loadingBar: LoadingBarApiInjection
     Sass: any
+    stylusSupermacyFormat: any
   }
 }

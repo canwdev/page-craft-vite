@@ -5,6 +5,7 @@ import StyleEditor from '@/components/StyleEditor/index.vue'
 import MainCanvas from '@/components/MainCanvas/index.vue'
 import {useLocalStorageBoolean} from '@/hooks/use-local-storage'
 import {LsKeys} from '@/enum'
+import StylusTools from '@/components/StyleEditor/StylusTools.vue'
 
 export default defineComponent({
   name: 'HomeView',
@@ -12,11 +13,14 @@ export default defineComponent({
     ToolBar,
     StyleEditor,
     MainCanvas,
+    StylusTools,
   },
   setup() {
-    const showStyleEditor = useLocalStorageBoolean(LsKeys.IS_SHOW_STYLE_EDITOR)
+    const isShowStyleEditorStyleEditor = useLocalStorageBoolean(LsKeys.IS_SHOW_STYLE_EDITOR)
+    const isShowStylusTools = ref(false)
     return {
-      showStyleEditor,
+      isShowStyleEditorStyleEditor,
+      isShowStylusTools,
     }
   },
 })
@@ -29,13 +33,29 @@ export default defineComponent({
         <slot name="settingsButtons"> </slot>
       </template>
       <template #barExtra>
-        <n-button size="tiny" style="min-width: 120px" @click="showStyleEditor = !showStyleEditor">
-          {{ showStyleEditor ? '✔' : '' }} Style Editor
-        </n-button>
+        <n-popover :duration="100" :show-arrow="false" trigger="hover" :delay="300">
+          <template #trigger>
+            <n-button
+              size="tiny"
+              style="min-width: 120px"
+              @click="isShowStyleEditorStyleEditor = !isShowStyleEditorStyleEditor"
+            >
+              {{ isShowStyleEditorStyleEditor ? '✔' : '' }} Style Editor
+            </n-button>
+          </template>
+          <n-button
+            size="small"
+            style="min-width: 120px"
+            @click="isShowStylusTools = !isShowStylusTools"
+          >
+            Stylus Tools
+          </n-button>
+        </n-popover>
       </template>
     </MainCanvas>
     <ToolBar />
-    <StyleEditor v-model:visible="showStyleEditor" />
+    <StyleEditor v-model:visible="isShowStyleEditorStyleEditor" />
+    <StylusTools v-model:visible="isShowStylusTools" />
   </div>
 </template>
 

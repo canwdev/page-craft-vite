@@ -37,6 +37,8 @@ declare module '@vue/runtime-core' {
     NThing: typeof import('naive-ui')['NThing']
     PopWindow: typeof import('./src/components/DomPreview/PopWindow.vue')['default']
     StyleEditor: typeof import('./src/components/StyleEditor/index.vue')['default']
+    StyleTools: typeof import('./src/components/StyleEditor/StyleTools.vue')['default']
+    StylusTools: typeof import('./src/components/StyleEditor/StylusTools.vue')['default']
     ToolBar: typeof import('./src/components/ToolBar/index.vue')['default']
     ToolItem: typeof import('./src/components/ToolBar/ToolItem.vue')['default']
     VStyle: typeof import('./src/components/DomPreview/VStyle.vue')['default']
