@@ -18,3 +18,5 @@ Do not do nesting like `<h1>TestH1<h2>TestH2</h2></h1>`. Although it can be inse
 - [Minecraft Assets](https://mcasset.cloud/)
 - [7.css](https://khang-nd.github.io/7.css/)
 - [Live editor for CSS, Less & Sass - Magic CSS](https://chrome.google.com/webstore/detail/live-editor-for-css-less/ifhikkcafabcgolfjegfcgloomalapol/related?utm_source=chrome-ntp-icon)
+- [Stylus Supermacy](https://thisismanta.github.io/stylus-supremacy/#demo)
+- [Juice](https://github.com/Automattic/juice)

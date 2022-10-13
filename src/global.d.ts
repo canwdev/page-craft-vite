@@ -10,5 +10,6 @@ declare global {
     $loadingBar: LoadingBarApiInjection
     Sass: any
     stylusSupermacyFormat: any
+    $juice: any
   }
 }

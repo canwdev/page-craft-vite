@@ -2,17 +2,24 @@ import moment from 'moment/moment'
 import FileSaver from 'file-saver'
 import {ExportItem} from '@/enum/block'
 import {sassToCSS} from '@/utils/css'
-import {formatCss} from '@/utils/formater'
+import {formatCss, formatHtml} from '@/utils/formater'
 
 export const handleExportJson = (exportData: ExportItem) => {
   handleExportFile(getFileName(exportData.name), JSON.stringify(exportData, null, 2), '.json')
 }
 
-export const handleExportHtml = async (exportData: ExportItem, isEmail = false) => {
+export const handleExportHtml = async (exportData: ExportItem, isInline = false) => {
   const {html, style, styleLang} = exportData
   const name = getFileName(exportData.name)
 
-  const htmlStr = `<!doctype html>
+  const cssCode = formatCss(await sassToCSS(style))
+  let htmlStr
+  if (isInline) {
+    htmlStr = window.$juice(`<style>${cssCode}</style>
+${html}`)
+    htmlStr = formatHtml(htmlStr)
+  } else {
+    htmlStr = `<!doctype html>
 <html>
 <head>
   <meta charset="UTF-8">
@@ -21,7 +28,7 @@ export const handleExportHtml = async (exportData: ExportItem, isEmail = false) 
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>${name}</title>
   <style>
-    ${formatCss(await sassToCSS(style))}
+    ${cssCode}
   </style>
 </head>
 <body>
@@ -29,6 +36,8 @@ ${html}
 </body>
 </html>
 `
+  }
+
   handleExportFile(name, htmlStr, '.html')
 }
 export const handleExportVue = (exportData: ExportItem, version = 2) => {

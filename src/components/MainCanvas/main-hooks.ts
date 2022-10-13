@@ -143,6 +143,14 @@ export const useMcMain = (options) => {
             },
           },
         },
+        {
+          label: '📧 Export Email HTML',
+          props: {
+            onClick: async () => {
+              handleExportHtml(await getEntityData(), true)
+            },
+          },
+        },
       ],
     },
     {
