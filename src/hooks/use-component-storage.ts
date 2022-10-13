@@ -140,7 +140,7 @@ export const useCompImportExport = () => {
     })
 
     // console.log(exportList)
-    handleExportFile(getFileName(), JSON.stringify(exportList), '.json')
+    handleExportFile(getFileName('', 'PageCraftAllComponents'), JSON.stringify(exportList), '.json')
     window.$message.success('Exported success!')
   }
   return {

@@ -9,10 +9,10 @@ export const handleExportJson = (exportData: ExportItem) => {
 }
 
 export const handleExportHtml = async (exportData: ExportItem, isInline = false) => {
-  const {html, style, styleLang} = exportData
-  const name = getFileName(exportData.name)
+  const {html, style} = exportData
+  let name = getFileName(exportData.name ? exportData.name + (isInline ? '-inline' : '') : '')
 
-  const cssCode = formatCss(await sassToCSS(style))
+  const cssCode = style ? formatCss(await sassToCSS(style)) : ''
   let htmlStr
   if (isInline) {
     htmlStr = window.$juice(`<style>${cssCode}</style>
@@ -85,10 +85,10 @@ ${styleStr}
   handleExportFile(name, sfcStr, '.vue')
 }
 
-export const getFileName = (name?) => {
+export const getFileName = (name?, fallbackPrefix = 'PageCraft') => {
   return prompt(
     `Export filename`,
-    name || `PageCraft_${moment(new Date()).format('YYYYMMDD_HHmmss')}`
+    name || `${fallbackPrefix}_${moment(new Date()).format('YYYYMMDD_HHmmss')}`
   )
 }
 
