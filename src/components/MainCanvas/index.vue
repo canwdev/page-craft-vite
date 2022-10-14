@@ -224,17 +224,19 @@ export default defineComponent({
       @mouseup="handleMouseUp"
     ></div>
 
-    <transition name="fade">
+    <div
+      v-if="cursorX"
+      class="mc-digging-wrap"
+      :style="{top: cursorY + 'px', left: cursorX + 'px'}"
+    >
       <div
-        v-if="cursorX"
-        :style="{top: cursorY + 'px', left: cursorX + 'px'}"
-        class="action-progress win7"
-      >
-        <div class="animate error" role="progressbar">
-          <div :style="`width: ${waitingProgress}%`"></div>
-        </div>
-      </div>
-    </transition>
+        class="mc-digging-inner"
+        :style="{
+          width: `${waitingProgress}%`,
+          height: `${waitingProgress}%`,
+        }"
+      ></div>
+    </div>
   </div>
 </template>
 
@@ -312,13 +314,28 @@ export default defineComponent({
 
   text-shadow: 0 0 10px white;
 }
-.action-progress {
+.mc-digging-wrap {
+  $fill-color: white;
   position: fixed;
   top: 50%;
   left: 50%;
-  z-index: 999;
-  width: 50px;
+  z-index: 9999;
   pointer-events: none;
+  transform: translate(-50%, -50%);
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  outline: 4px solid $fill-color;
+  mix-blend-mode: difference;
+
+  .mc-digging-inner {
+    border-radius: 50%;
+    background-color: $fill-color;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 }
 
 .page-craft-mc {
@@ -406,12 +423,12 @@ export default defineComponent({
 
   &.page-craft-mouse-over-dom-element,
   .page-craft-mouse-over-dom-element {
-    outline: 1px solid #f7ff00 !important;
-    border-color: #0066ff !important;
-    background-color: rgba(144, 205, 238, 0.7) !important;
+    outline: 1px solid deeppink !important;
+    border-color: deeppink !important;
+    background-color: rgba(255, 192, 203, 0.5) !important;
     //color: #111 !important;
     opacity: 0.85 !important;
-    fill: #f7ff00 !important; /* Helps in highlighting SVG elements */
+    fill: deeppink !important; /* Helps in highlighting SVG elements */
   }
 }
 </style>

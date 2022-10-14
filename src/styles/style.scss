@@ -132,7 +132,8 @@ Inspired by https://khang-nd.github.io/7.css/
     }
   }
   .window.glass {
-    backdrop-filter: blur(4px);
+    //backdrop-filter: blur(4px);
+    backdrop-filter: unset;
   }
 
   .window.glass>.title-bar {

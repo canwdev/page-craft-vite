@@ -166,7 +166,7 @@ export const useMcMain = (options) => {
       },
     },
     {
-      label: '📄 Copy All HTML',
+      label: '📄 Copy HTML',
       props: {
         onClick: async () => {
           copyHtml()

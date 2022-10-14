@@ -19,7 +19,7 @@ export const removeMouseOverDomElementEffect = () => {
   $('*[class=""]').removeAttr('class')
 }
 
-const MAX_WAIT_TIME = 0.5 * 1000
+const MAX_WAIT_TIME = 1 * 1000
 
 export const useInteractionHooks = (options) => {
   const {mainCanvasRef, saveData, indicatorOptions, copyHtml, recordUndo} = options
@@ -33,21 +33,35 @@ export const useInteractionHooks = (options) => {
   onMounted(() => {
     mainCanvasRef.value.addEventListener('mousemove', handleMouseMove)
     mainCanvasRef.value.addEventListener('contextmenu', handleContextMenu)
-    mainCanvasRef.value.addEventListener('pointerdown', handleCancelSelection, true)
-    mainCanvasRef.value.addEventListener('pointerup', handleSelection)
+    mainCanvasRef.value.addEventListener('pointerdown', handlePointerDown)
+    mainCanvasRef.value.addEventListener('pointerup', handlePointerUp)
   })
   onBeforeUnmount(() => {
     mainCanvasRef.value.removeEventListener('mousemove', handleMouseMove)
     mainCanvasRef.value.removeEventListener('contextmenu', handleContextMenu)
-    mainCanvasRef.value.removeEventListener('pointerdown', handleCancelSelection)
-    mainCanvasRef.value.removeEventListener('pointerup', handleSelection)
+    mainCanvasRef.value.removeEventListener('pointerdown', handlePointerDown)
+    mainCanvasRef.value.removeEventListener('pointerup', handlePointerUp)
   })
 
   const selectionRef = ref<Selection | null>(null)
   const selectionActionStyle = ref<any>(null)
   const isShowSelectionAction = ref(false)
 
-  const handleSelection = (e) => {
+  const isPointerInCanvas = ref(false)
+  const handlePointerDown = (e: MouseEvent) => {
+    if (e.button === 2) {
+      return
+    }
+    isPointerInCanvas.value = true
+    // @ts-ignore
+    window.getSelection().removeAllRanges()
+    isShowSelectionAction.value = false
+  }
+  const handlePointerUp = (e) => {
+    if (!isPointerInCanvas.value) {
+      isShowSelectionAction.value = false
+      return
+    }
     const selection = window.getSelection()
     selectionRef.value = selection
     if (!selection) {
@@ -64,14 +78,7 @@ export const useInteractionHooks = (options) => {
       left: `calc(${rect.left}px + calc(${rect.width}px / 2) - 110px)`,
     }
     isShowSelectionAction.value = true
-  }
-  const handleCancelSelection = (e: MouseEvent) => {
-    if (e.button === 2) {
-      return
-    }
-    // @ts-ignore
-    window.getSelection().removeAllRanges()
-    isShowSelectionAction.value = false
+    isPointerInCanvas.value = false
   }
   const surroundSelection = (element: Element) => {
     try {
@@ -293,8 +300,8 @@ export const useInteractionHooks = (options) => {
       if ($parent) {
         $parent.addClass(TOOL_CLASSES.CLASS_MOUSE_OVER_PARENT)
       }
+      $(currentNode).addClass(TOOL_CLASSES.CLASS_MOUSE_OVER)
     }
-    $(currentNode).addClass(TOOL_CLASSES.CLASS_MOUSE_OVER)
   })
 
   const handleBlockClick = (event: Event) => {
@@ -319,7 +326,7 @@ export const useInteractionHooks = (options) => {
     }
     if (craftStore.currentBlock.actionType === ActionType.DELETE) {
       // 仿 Minecraft 挖掘等待时间效果
-      console.log('[handleMouseDown]', event.x, event.y)
+      // console.log('[handleMouseDown]', event.x, event.y)
       clearWait()
       waitTimer.value = setInterval(() => {
         if (waitingTime.value > MAX_WAIT_TIME) {
@@ -330,8 +337,8 @@ export const useInteractionHooks = (options) => {
         }
         waitingTime.value += 50
       }, 50)
-      cursorX.value = event.x - 10
-      cursorY.value = event.y + 10
+      cursorX.value = event.x
+      cursorY.value = event.y
       event.preventDefault()
       return
     }
