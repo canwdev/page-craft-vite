@@ -9,6 +9,7 @@ declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     BlockCard: typeof import('./src/components/InventoryModal/BlockCard.vue')['default']
     ComponentCard: typeof import('./src/components/InventoryModal/ComponentCard.vue')['default']
+    DialogInput: typeof import('./src/components/DialogInput.vue')['default']
     DomPreview: typeof import('./src/components/DomPreview/DomPreview.vue')['default']
     FileChooser: typeof import('./src/components/FileChooser.vue')['default']
     IndicatorInfo: typeof import('./src/components/MainCanvas/IndicatorInfo.vue')['default']

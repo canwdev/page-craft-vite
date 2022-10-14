@@ -250,13 +250,15 @@ export const useInteractionHooks = (options) => {
 
   const handleContextMenu = (e: MouseEvent) => {
     const selectedText = selectionRef.value?.toString()
-    if (!indicatorOptions.enableRightClick || selectedText) {
+    if (!indicatorOptions.enableRightClick || selectedText || e.ctrlKey) {
       return
     }
     e.preventDefault()
     if (craftStore.currentBlock.actionType === ActionType.DEBUG) {
       console.log('[handleContextMenu]', e)
     }
+    removeMouseOverDomElementEffect()
+    $(e.target).addClass(TOOL_CLASSES.CLASS_MOUSE_OVER)
     _handleContextmenu(e, e)
   }
 
