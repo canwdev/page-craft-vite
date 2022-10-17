@@ -112,7 +112,7 @@ export default defineComponent({
 
 <template>
   <div class="page-craft-mc-wrap">
-    <IndicatorInfo :current-el="currentHoveredEl" />
+    <IndicatorInfo :current-el="currentHoveredEl" v-if="currentHoveredEl !== mainCanvasRef" />
 
     <transition name="fade">
       <div

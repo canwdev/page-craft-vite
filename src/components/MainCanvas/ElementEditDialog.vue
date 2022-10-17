@@ -109,6 +109,7 @@ export default defineComponent({
           v-if="item.type === CustomFormInputType.SELECT"
           v-model:value="formValueRef.customProps[item.key]"
           :options="item.options"
+          filterable
         />
         <n-switch
           v-else-if="item.type === CustomFormInputType.SWITCH"

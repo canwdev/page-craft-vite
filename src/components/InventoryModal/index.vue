@@ -337,7 +337,7 @@ export default defineComponent({
                     :options="getMenuOptions(item)"
                     key-field="label"
                     placement="bottom-start"
-                    trigger="hover"
+                    trigger="click"
                   >
                     <n-button size="tiny" style="min-width: 10px" @click.stop>...</n-button>
                   </n-dropdown>

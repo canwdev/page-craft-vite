@@ -52,11 +52,8 @@ export default defineComponent({
 
 <template>
   <div class="inventory-list-wrap" :class="{'_min-height': isMinHeight}">
-    <div
-      v-if="showFilter"
-      style="position: sticky; top: 0; left: 0; right: 0; padding: 0px; z-index: 1"
-    >
-      <n-input v-model:value="filterText" clearable placeholder="Filter Items" size="tiny" />
+    <div class="filter-row" v-if="showFilter">
+      <n-input v-model:value="filterText" clearable placeholder="🔎 Filter Items" size="tiny" />
     </div>
     <div v-if="!itemListFiltered.length" style="padding: 40px; text-align: center; font-size: 20px">
       No Items.
@@ -83,13 +80,19 @@ export default defineComponent({
 .inventory-list-wrap {
   height: 40vh;
   min-height: 100px;
-  overflow: auto;
   transition: height 0.3s;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 
   &._min-height {
     height: 150px;
   }
+  .filter-row {
+  }
+
   .inventory-list {
+    overflow: auto;
     padding: 10px;
     display: grid;
     //grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));

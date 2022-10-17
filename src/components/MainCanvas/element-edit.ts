@@ -45,12 +45,44 @@ const srcProp = {
 const _inputProp = {
   getCustomProps: (el) => {
     return {
+      type: el.getAttribute('type'),
       placeholder: el.getAttribute('placeholder'),
       disabled: el.hasAttribute('disabled'),
       readonly: el.hasAttribute('readonly'),
     }
   },
   customFormItems: [
+    {
+      label: 'type (for <input/> only)',
+      key: 'type',
+      type: CustomFormInputType.SELECT,
+      options: formatSelectOptions([
+        'text',
+        'email',
+        'number',
+        'password',
+        'tel',
+        'button',
+        'submit',
+        'checkbox',
+        'radio',
+        'color',
+        'date',
+        'datetime',
+        'time',
+        'datetime-local',
+        'month',
+        'week',
+        'file',
+        'image',
+        'range',
+        'reset',
+        'search',
+        'url',
+        'hidden',
+        '',
+      ]),
+    },
     {
       label: 'placeholder',
       key: 'placeholder',
@@ -68,6 +100,9 @@ const _inputProp = {
     },
   ],
   updateElement(el, formData: ElementEditForm) {
+    if (el.tagName === 'INPUT') {
+      autoSetAttr(el, 'type', formData.customProps.type)
+    }
     autoSetAttr(el, 'placeholder', formData.customProps.placeholder)
     autoSetAttr(el, 'disabled', formData.customProps.disabled)
     autoSetAttr(el, 'readonly', formData.customProps.readonly)
@@ -75,12 +110,12 @@ const _inputProp = {
 }
 
 export const elementCustomPropsMap = {
-  img: srcProp,
   a: {
     getCustomProps: (el) => {
       return {
         href: el.getAttribute('href'),
         target: el.getAttribute('target'),
+        rel: el.getAttribute('rel'),
       }
     },
     customFormItems: [
@@ -95,10 +130,17 @@ export const elementCustomPropsMap = {
         type: CustomFormInputType.SELECT,
         options: formatSelectOptions(['', '_blank', '_self']),
       },
+      {
+        label: 'rel',
+        key: 'rel',
+        type: CustomFormInputType.SELECT,
+        options: formatSelectOptions(['', 'nofollow']),
+      },
     ],
     updateElement(el, formData: ElementEditForm) {
       autoSetAttr(el, 'href', formData.customProps.href)
       autoSetAttr(el, 'target', formData.customProps.target)
+      autoSetAttr(el, 'rel', formData.customProps.rel)
     },
   },
   input: _inputProp,

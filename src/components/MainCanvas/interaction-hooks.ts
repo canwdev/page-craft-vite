@@ -313,7 +313,7 @@ export const useInteractionHooks = (options) => {
     if (!currentNode) {
       return
     }
-    if (currentNode.classList.contains(TOOL_CLASSES.CLASS_MAIN_CANVAS_ROOT)) {
+    if (currentNode === mainCanvasRef.value) {
       // do nothing
     } else {
       const $parent = $(currentNode).parent()
