@@ -2,7 +2,7 @@
 import {defineComponent, PropType, ref} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {FormInst} from 'naive-ui'
-import {CustomFormItem, formatForm, getCustomFormItems} from './element-edit'
+import {CustomFormInputType, CustomFormItem, formatForm, getCustomFormItems} from './element-edit'
 
 export default defineComponent({
   name: 'ElementEditDialog',
@@ -65,6 +65,7 @@ export default defineComponent({
         mVisible.value = false
       },
       customFormItems,
+      CustomFormInputType,
     }
   },
 })
@@ -102,11 +103,22 @@ export default defineComponent({
         :key="item.key"
         :label="item.label"
         :path="`customForm.${item.key}`"
+        class="font-code"
       >
+        <n-select
+          v-if="item.type === CustomFormInputType.SELECT"
+          v-model:value="formValueRef.customProps[item.key]"
+          :options="item.options"
+        />
+        <n-switch
+          v-else-if="item.type === CustomFormInputType.SWITCH"
+          v-model:value="formValueRef.customProps[item.key]"
+        />
+
         <n-input
+          v-else
           v-model:value="formValueRef.customProps[item.key]"
           placeholder=""
-          class="font-code"
           clearable
           @keyup.enter="handleValidateClick"
         />

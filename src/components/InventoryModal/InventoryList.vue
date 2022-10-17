@@ -92,7 +92,8 @@ export default defineComponent({
   .inventory-list {
     padding: 10px;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+    //grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+    grid-template-columns: repeat(11, 1fr);
     grid-template-rows: auto;
     gap: 10px;
     &._big {

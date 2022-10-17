@@ -68,3 +68,12 @@ export function formatDate(date: Date) {
   const minutes = pad2Num(date.getMinutes())
   return [year, month, day, hours, minutes].join('')
 }
+
+export const formatSelectOptions = (list: string[]) => {
+  return list.map((item) => {
+    return {
+      value: item,
+      label: item,
+    }
+  })
+}

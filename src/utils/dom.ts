@@ -82,3 +82,13 @@ export const appendCustomBlock = (block: BlockItem, event, craftStore, mainCanva
     targetEl.appendChild(addEl)
   }
 }
+
+export const autoSetAttr = (el, attr, value) => {
+  if (value) {
+    if (el.getAttribute(attr) !== value) {
+      el.setAttribute(attr, value)
+    }
+  } else {
+    el.removeAttribute(attr)
+  }
+}
