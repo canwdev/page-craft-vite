@@ -7,12 +7,14 @@ import IndicatorInfo from '@/components/MainCanvas/IndicatorInfo.vue'
 import {useIndicator} from '@/components/MainCanvas/indicator-hooks'
 import {useInteractionHooks} from '@/components/MainCanvas/interaction-hooks'
 import {useMcMain} from '@/components/MainCanvas/main-hooks'
+import ElementEditDialog from '@/components/MainCanvas/ElementEditDialog.vue'
 
 export default defineComponent({
   name: 'MainCanvas',
   components: {
     FileChooser,
     IndicatorInfo,
+    ElementEditDialog,
   },
   setup() {
     const mainCanvasRef = ref()
@@ -51,6 +53,9 @@ export default defineComponent({
       selectionActionStyle,
       isShowSelectionAction,
       selectionPopupOptions,
+      isShowElementEdit,
+      editingNode,
+      updateEditingElement,
     } = useInteractionHooks({
       mainCanvasRef,
       saveData,
@@ -97,6 +102,9 @@ export default defineComponent({
       undoRedo,
       handleUndo,
       handleRedo,
+      isShowElementEdit,
+      editingNode,
+      updateEditingElement,
     }
   },
 })
@@ -153,6 +161,12 @@ export default defineComponent({
         type="textarea"
       />
     </n-modal>
+
+    <ElementEditDialog
+      v-model:visible="isShowElementEdit"
+      :editing-node="editingNode"
+      @onSave="updateEditingElement"
+    />
 
     <FileChooser
       ref="fileChooserRef"

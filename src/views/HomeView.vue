@@ -5,7 +5,7 @@ import StyleEditor from '@/components/StyleEditor/index.vue'
 import MainCanvas from '@/components/MainCanvas/index.vue'
 import {useLocalStorageBoolean} from '@/hooks/use-local-storage'
 import {LsKeys} from '@/enum'
-import StylusTools from '@/components/StyleEditor/StylusTools.vue'
+import StylusToolsDialog from '@/components/StyleEditor/StylusToolsDialog.vue'
 
 export default defineComponent({
   name: 'HomeView',
@@ -13,7 +13,7 @@ export default defineComponent({
     ToolBar,
     StyleEditor,
     MainCanvas,
-    StylusTools,
+    StylusToolsDialog,
   },
   setup() {
     const isShowStyleEditorStyleEditor = useLocalStorageBoolean(LsKeys.IS_SHOW_STYLE_EDITOR)
@@ -55,7 +55,7 @@ export default defineComponent({
     </MainCanvas>
     <ToolBar />
     <StyleEditor v-model:visible="isShowStyleEditorStyleEditor" />
-    <StylusTools v-model:visible="isShowStylusTools" />
+    <StylusToolsDialog v-model:visible="isShowStylusTools" />
   </div>
 </template>
 

@@ -14,6 +14,10 @@ export const cssSnippetList = [
   },
   {
     name: 'Text Overflow',
+    code: ['white-space: nowrap;', 'overflow: hidden;', 'text-overflow: ellipsis;'].join('\n'),
+  },
+  {
+    name: 'Text Overflow Limit 3',
     code: [
       'display: -webkit-box;',
       '-webkit-line-clamp: 3;',
@@ -30,6 +34,19 @@ export const cssSnippetList = [
       'background-position: center;',
       'background-size: cover;',
     ].join('\n'),
+  },
+  {
+    name: 'Absolute Center',
+    code: [
+      'position: absolute;',
+      'top: 50%;',
+      'left: 50%;',
+      'transform: translate(-50%, -50%);',
+    ].join('\n'),
+  },
+  {
+    name: 'Absolute Full',
+    code: ['position: absolute;', 'top: 0;', 'left: 0;', 'right: 0;', 'bottom: 0;'].join('\n'),
   },
   {
     name: 'Width Center',

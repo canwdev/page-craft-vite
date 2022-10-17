@@ -6,6 +6,7 @@ import {throttle} from 'throttle-debounce'
 import $ from 'jquery'
 import {useContextMenu} from '@/hooks/use-context-menu'
 import {copyToClipboard} from '@/utils'
+import {elementCustomPropsMap} from '@/components/MainCanvas/element-edit'
 
 export const removeMouseOverDomElementEffect = () => {
   const $el = $(TOOL_CLASSES.DOT_CLASS_MOUSE_OVER)
@@ -29,6 +30,7 @@ export const useInteractionHooks = (options) => {
   const cursorX = ref(0)
   const cursorY = ref(0)
   const currentHoveredEl = ref<any>(null)
+  const isShowElementEdit = ref(false)
 
   onMounted(() => {
     mainCanvasRef.value.addEventListener('mousemove', handleMouseMove)
@@ -153,7 +155,17 @@ export const useInteractionHooks = (options) => {
         ? []
         : [
             {
-              label: '✏️ Rename Class',
+              label: '✏️ Edit Element',
+              props: {
+                onClick: async () => {
+                  nodeAction(targetEl, () => {
+                    isShowElementEdit.value = true
+                  })
+                },
+              },
+            },
+            {
+              label: '🖍 Rename Class',
               props: {
                 onClick: async () => {
                   removeMouseOverDomElementEffect()
@@ -246,6 +258,12 @@ export const useInteractionHooks = (options) => {
         },
       },
     ].filter(Boolean)
+  })
+
+  watch(contextMenuEtc.showRightMenu, (val) => {
+    if (!val) {
+      removeMouseOverDomElementEffect()
+    }
   })
 
   const handleContextMenu = (e: MouseEvent) => {
@@ -353,6 +371,25 @@ export const useInteractionHooks = (options) => {
     }
   }
 
+  const updateEditingElement = ({el, formValueRef}) => {
+    if (!el) {
+      return
+    }
+    recordUndo()
+    const data = formValueRef.value
+    if (el.className !== data.className) {
+      el.className = data.className
+    }
+    if (el.innerHTML !== data.innerHTML) {
+      el.innerHTML = data.innerHTML
+    }
+    const customProps = elementCustomPropsMap[el?.tagName.toLowerCase()]
+    if (customProps) {
+      customProps.updateElement(el, data)
+    }
+    saveData()
+  }
+
   return {
     currentHoveredEl,
     handleBlockClick,
@@ -365,5 +402,8 @@ export const useInteractionHooks = (options) => {
     selectionActionStyle,
     isShowSelectionAction,
     selectionPopupOptions,
+    isShowElementEdit,
+    editingNode,
+    updateEditingElement,
   }
 }

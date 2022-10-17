@@ -1,10 +1,9 @@
 <script lang="ts">
 import {defineComponent, ref} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
-import {copyToClipboard} from '@/utils'
 
 export default defineComponent({
-  name: 'StylusTools',
+  name: 'StylusToolsDialog',
   props: {
     visible: {
       type: Boolean,
