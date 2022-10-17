@@ -17,7 +17,7 @@ export const createOrFindStyleNode = (id, cssText?) => {
   return styleNode
 }
 
-const srcTags = [
+export const tagsHasSrcAttr = [
   'img',
   'iframe',
   'video',
@@ -36,7 +36,7 @@ export const createBlockElement = (block: BlockItem, craftStore?) => {
   const text = craftStore?.innerText || ''
   const tag = block.data.tag
   const addEl: any = document.createElement(tag)
-  if (srcTags.includes(tag)) {
+  if (tagsHasSrcAttr.includes(tag)) {
     if (['audio', 'video'].includes(tag)) {
       addEl.controls = true
     }
