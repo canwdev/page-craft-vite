@@ -26,6 +26,7 @@ const srcProp = {
   getCustomProps: (el) => {
     return {
       src: el.getAttribute('src'),
+      alt: el.getAttribute('alt'),
     }
   },
   // 表单UI属性
@@ -35,10 +36,16 @@ const srcProp = {
       key: 'src',
       type: CustomFormInputType.TEXT,
     },
+    {
+      label: 'alt',
+      key: 'alt',
+      type: CustomFormInputType.TEXT,
+    },
   ],
   // 更新元素的函数
   updateElement(el, formData: ElementEditForm) {
     autoSetAttr(el, 'src', formData.customProps.src)
+    autoSetAttr(el, 'alt', formData.customProps.alt)
   },
 }
 

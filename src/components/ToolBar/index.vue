@@ -84,6 +84,7 @@ export default defineComponent({
       handleToolItemClick,
       resetToolbar() {
         toolBarList.value = [...initToolbarList]
+        updateCurrentBlock(toolBarList.value[currentIndex.value])
         window.$message.success('Toolbar reset success!')
       },
     }

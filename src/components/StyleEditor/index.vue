@@ -223,7 +223,9 @@ export default defineComponent({
     const errorTip = ref()
     const handleErrorTipClick = () => {
       console.warn(errorTip.value.message, {...errorTip.value})
-      errorTip.value = null
+      setTimeout(() => {
+        errorTip.value = null
+      }, 500)
     }
 
     const _prevStyleValue = ref('') // 创建一个临时变量防止重复更新
@@ -491,11 +493,11 @@ export default defineComponent({
     .code-error-tip {
       position: absolute;
       left: 0;
-      top: 0;
+      right: 0;
+      bottom: 0;
       font-size: 12px;
-      max-width: 300px;
       transform-origin: top right;
-      background-color: rgba(0, 0, 0, 0.7);
+      background-color: rgba(0, 0, 0, 0.6);
       color: #ff8989;
       z-index: 1;
       padding: 5px 5px 5px 10px;
