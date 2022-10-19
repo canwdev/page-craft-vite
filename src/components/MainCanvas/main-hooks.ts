@@ -1,6 +1,7 @@
 import {
   handleExportHtml,
   handleExportJson,
+  handleExportStyle,
   handleExportVue,
   handleReadSelectedFile,
 } from '@/utils/exporter'
@@ -12,9 +13,10 @@ import {ExportItem} from '@/enum/block'
 import {useCompStorage} from '@/hooks/use-component-storage'
 import {useCraftStore} from '@/store/craft'
 import {UndoRedo} from '@/utils/undo-redo'
+import {sassToCSS} from '@/utils/css'
 
 export const useMcMain = (options) => {
-  const {mainCanvasRef} = options
+  const {mainCanvasRef, emit} = options
   const craftStore = useCraftStore()
   const fileChooserRef = ref()
   const isShowImportDialog = ref(false)
@@ -35,6 +37,14 @@ export const useMcMain = (options) => {
     removeMouseOverDomElementEffect()
     const html = el ? el.outerHTML : mainCanvasRef.value.innerHTML
     copyToClipboard(formatHtml(html))
+    window.$message.success('Copy Success!')
+
+    saveData()
+  }
+  const copyCss = async () => {
+    const style = loadCurCompStyle()
+    const css = formatCss(await sassToCSS(style))
+    copyToClipboard(css)
     window.$message.success('Copy Success!')
 
     saveData()
@@ -99,7 +109,7 @@ export const useMcMain = (options) => {
     saveData()
   }
 
-  const exportMenuOptions = [
+  const htmlMenuOptions = [
     {
       label: '📥 Import JSON',
       props: {
@@ -198,6 +208,50 @@ export const useMcMain = (options) => {
     },
   ]
 
+  const styleMenuOptions = [
+    {
+      label: '📄 Copy Compiled CSS',
+      props: {
+        onClick: async () => {
+          await copyCss()
+        },
+      },
+    },
+    {
+      label: '📤 Export',
+      children: [
+        {
+          label: '📃 Export CSS File',
+          props: {
+            onClick: async () => {
+              await handleExportStyle(await getEntityData(), true)
+            },
+          },
+        },
+        {
+          label: '📃 Export SCSS File',
+          props: {
+            onClick: async () => {
+              await handleExportStyle(await getEntityData())
+            },
+          },
+        },
+      ],
+    },
+    {
+      type: 'divider',
+      label: 'd0',
+    },
+    {
+      label: 'Stylus Format Tool',
+      props: {
+        onClick: async () => {
+          emit('openStylusTools')
+        },
+      },
+    },
+  ]
+
   // record html before action
   const recordUndo = () => {
     const innerHTML = mainCanvasRef.value.innerHTML
@@ -219,7 +273,8 @@ export const useMcMain = (options) => {
   }
 
   return {
-    exportMenuOptions,
+    htmlMenuOptions,
+    styleMenuOptions,
     fileChooserRef,
     isShowImportDialog,
     setMainCanvasHtml,

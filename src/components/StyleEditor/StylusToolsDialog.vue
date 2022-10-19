@@ -59,7 +59,12 @@ multi-line comment
 </script>
 
 <template>
-  <n-modal v-model:show="mVisible" preset="dialog" title="Stylus Tools" style="min-width: 800px">
+  <n-modal
+    v-model:show="mVisible"
+    preset="dialog"
+    title="Stylus Format Tool"
+    style="min-width: 800px"
+  >
     <div class="style-tools">
       <div class="common-card">
         <div class="action-row">

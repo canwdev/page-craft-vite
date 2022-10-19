@@ -412,7 +412,6 @@ export default defineComponent({
               trigger="hover"
               size="medium"
               :animated="false"
-              class="font-code"
             >
               <button title="Tools">
                 <img src="~@/assets/textures/enchanted_book.png" alt="tools" />

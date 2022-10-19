@@ -8,6 +8,14 @@ export const handleExportJson = (exportData: ExportItem) => {
   handleExportFile(getFileName(exportData.name), JSON.stringify(exportData, null, 2), '.json')
 }
 
+export const handleExportStyle = async (exportData: ExportItem, isCss = false) => {
+  let style = exportData.style
+  if (isCss) {
+    style = formatCss(await sassToCSS(style))
+  }
+  handleExportFile(getFileName(exportData.name), style, isCss ? '.css' : '.scss')
+}
+
 export const handleExportHtml = async (exportData: ExportItem, isInline = false) => {
   const {html, style} = exportData
   let name = getFileName(exportData.name ? exportData.name + (isInline ? '-inline' : '') : '')

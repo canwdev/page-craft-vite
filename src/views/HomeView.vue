@@ -28,29 +28,18 @@ export default defineComponent({
 
 <template>
   <div class="page-craft-home-view">
-    <MainCanvas>
+    <MainCanvas @openStylusTools="isShowStylusTools = true">
       <template #settingsButtons>
         <slot name="settingsButtons"> </slot>
       </template>
       <template #barExtra>
-        <n-popover :duration="100" :show-arrow="false" trigger="hover" :delay="300">
-          <template #trigger>
-            <n-button
-              size="tiny"
-              style="min-width: 120px"
-              @click="isShowStyleEditorStyleEditor = !isShowStyleEditorStyleEditor"
-            >
-              {{ isShowStyleEditorStyleEditor ? '✔' : '' }} Style Editor
-            </n-button>
-          </template>
-          <n-button
-            size="small"
-            style="min-width: 120px"
-            @click="isShowStylusTools = !isShowStylusTools"
-          >
-            Stylus Tools
-          </n-button>
-        </n-popover>
+        <n-button
+          size="tiny"
+          style="min-width: 120px"
+          @click="isShowStyleEditorStyleEditor = !isShowStyleEditorStyleEditor"
+        >
+          {{ isShowStyleEditorStyleEditor ? '✔' : '' }} Style Editor
+        </n-button>
       </template>
     </MainCanvas>
     <ToolBar />

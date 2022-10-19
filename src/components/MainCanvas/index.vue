@@ -16,13 +16,14 @@ export default defineComponent({
     IndicatorInfo,
     ElementEditDialog,
   },
-  setup() {
+  setup(props, {emit}) {
     const mainCanvasRef = ref()
     const {isDarkMode} = useIsDarkMode()
     const craftStore = useCraftStore()
 
     const {
-      exportMenuOptions,
+      htmlMenuOptions,
+      styleMenuOptions,
       fileChooserRef,
       isShowImportDialog,
       setMainCanvasHtml,
@@ -37,6 +38,7 @@ export default defineComponent({
       handleRedo,
     } = useMcMain({
       mainCanvasRef,
+      emit,
     })
 
     const {indicatorOptions, mainCanvasClass, toggleList} = useIndicator()
@@ -88,7 +90,8 @@ export default defineComponent({
       cursorY,
       mainCanvasClass,
       isDarkMode,
-      exportMenuOptions,
+      htmlMenuOptions,
+      styleMenuOptions,
       fileChooserRef,
       isShowImportDialog,
       setMainCanvasHtml,
@@ -181,12 +184,12 @@ export default defineComponent({
       <n-space align="center">
         <n-space align="center" size="small">
           <n-dropdown
-            :options="exportMenuOptions"
+            :options="htmlMenuOptions"
             key-field="label"
             placement="bottom-start"
             trigger="hover"
           >
-            <n-button size="tiny">{{ craftStore.currentComponentName || '🎨' }}</n-button>
+            <n-button size="tiny">{{ craftStore.currentComponentName || '🎨HTML' }}</n-button>
           </n-dropdown>
 
           <n-popover :duration="100" :show-arrow="false" trigger="hover">
@@ -224,7 +227,14 @@ export default defineComponent({
           >
           <span>|</span>
 
-          <slot name="barExtra"></slot>
+          <n-dropdown
+            :options="styleMenuOptions"
+            key-field="label"
+            placement="bottom-start"
+            trigger="hover"
+          >
+            <slot name="barExtra"></slot>
+          </n-dropdown>
         </n-space>
       </n-space>
     </div>

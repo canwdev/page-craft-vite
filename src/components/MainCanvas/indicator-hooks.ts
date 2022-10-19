@@ -25,7 +25,7 @@ export const useIndicator = () => {
       enableExpand: true,
       enableSelection: false,
       fullWidth: false,
-      bgTransparent: true,
+      bgTransparent: false,
       bgDark: false,
       centeredElementsY: false,
       centeredElementsX: false,
