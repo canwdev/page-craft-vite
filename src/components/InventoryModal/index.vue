@@ -295,7 +295,11 @@ export default defineComponent({
   />
 
   <transition name="zoom">
-    <div class="inventory-modal page-craft-window" v-show="mVisible" :class="{_dark: isDarkMode}">
+    <div
+      class="inventory-modal page-craft-window _thin-window"
+      v-show="mVisible"
+      :class="{_dark: isDarkMode}"
+    >
       <div class="page-craft-window-content">
         <div ref="titleBarRef" class="page-craft-title-bar">
           <div

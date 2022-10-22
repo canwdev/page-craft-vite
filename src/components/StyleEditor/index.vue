@@ -146,7 +146,7 @@ export default defineComponent({
         wordWrap: 'on',
         foldingStrategy: 'indentation', // 代码可分小段折叠
         minimap: {
-          enabled: true,
+          enabled: false,
         },
         scrollbar: {
           alwaysConsumeMouseWheel: false,
@@ -390,7 +390,7 @@ export default defineComponent({
   <transition name="zoom">
     <div
       v-show="mVisible"
-      class="style-editor-dialog page-craft-window"
+      class="style-editor-dialog page-craft-window _thin-window"
       :class="{_dark: isDarkMode}"
       ref="dialogRef"
     >
@@ -481,8 +481,8 @@ export default defineComponent({
     position: relative;
 
     .code-editor-placeholder {
-      min-width: 300px;
-      min-height: 300px;
+      min-width: 400px;
+      min-height: 400px;
       width: 100%;
       height: 100%;
       resize: both;
