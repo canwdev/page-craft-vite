@@ -295,27 +295,27 @@ export default defineComponent({
   />
 
   <transition name="zoom">
-    <div class="inventory-modal win7" v-show="mVisible" :class="{_dark: isDarkMode}">
-      <div class="window _window-color glass">
-        <div ref="titleBarRef" class="title-bar">
+    <div class="inventory-modal page-craft-window" v-show="mVisible" :class="{_dark: isDarkMode}">
+      <div class="page-craft-window-content">
+        <div ref="titleBarRef" class="page-craft-title-bar">
           <div
-            class="title-bar-text font-minecraft"
+            class="page-craft-title-bar-text font-minecraft"
             style="display: flex; align-items: center; height: 14px"
           >
             <img src="~@/assets/textures/crafting_table_top.png" alt="tools" />
             &nbsp;Inventory List
           </div>
 
-          <div ref="titleBarButtonsRef" class="title-bar-controls">
-            <button title="Close" aria-label="Minimize" @click="mVisible = false" />
-            <button
-              :aria-label="isMinHeight ? 'Maximize' : 'Restore'"
-              @click="isMinHeight = !isMinHeight"
-            ></button>
+          <div ref="titleBarButtonsRef" class="page-craft-window-controls">
+            <button @click="isMinHeight = !isMinHeight">
+              {{ isMinHeight ? '🔼' : '🔽' }}
+            </button>
+
+            <button title="Close" @click="mVisible = false">❌</button>
           </div>
         </div>
 
-        <div class="_window-body _bg font-minecraft">
+        <div class="page-craft-window-body _bg font-minecraft">
           <n-tabs v-model:value="currentTab" size="small" type="segment" animated>
             <n-tab-pane :name="BlockType.HTML_ELEMENT" tab="Blocks">
               <InventoryList

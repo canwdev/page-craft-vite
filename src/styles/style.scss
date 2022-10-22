@@ -47,7 +47,7 @@ Inspired by https://khang-nd.github.io/7.css/
 }
 
 .font-code {
-  font-family: 'Operator Mono', 'Source Code Pro', Menlo, Monaco, Consolas, Courier New, monospace;
+  font-family: 'Operator Mono', 'Source Code Pro', Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
 .btn-no-style {
@@ -95,114 +95,100 @@ Inspired by https://khang-nd.github.io/7.css/
   transition: opacity 0.3s, transform 0.3s;
 }
 
-.win7 {
-  ._window-body {
-    margin: 0 6px 6px;
-    border: 1px solid rgba(0, 0, 0, 0.6);
-    &._bg {
-      background-color: rgba(255, 255, 255, 0.7);
+.page-craft-window {
+  box-shadow: 0 1px 10px rgba(0, 0, 0, 0.27), inset 0 0 0.5px #fff;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  padding: 0 6px 6px;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: unset;
+  //backdrop-filter: blur(4px);
+
+  .page-craft-title-bar {
+    margin-left: -6px;
+    margin-right: -6px;
+    padding: 0 6px 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-shadow: 0 0 10px white;
+
+    .page-craft-title-bar-text {
+      margin-top: 4px;
     }
   }
-
-  &._dark {
-    ._window-color::before {
-      color: white;
-    }
-    ._window-body {
-      &._bg {
-        background-color: rgba(30, 30, 30, 0.8);
-      }
-    }
-  }
-
-  .window,
-  .window::before,
-  button {
+  .page-craft-window-controls {
     border-radius: 0;
-  }
-  input {
-    border: none !important;
-    background-color: transparent !important;
-  }
-
-  .window {
-    box-shadow: 0 1px 10px rgba(0, 0, 0, 0.27), inset 0 0 0.5px #fff;
-    &:before {
-      background: white;
-    }
-  }
-  .window.glass {
-    //backdrop-filter: blur(4px);
-    backdrop-filter: unset;
-  }
-
-  .window.glass>.title-bar {
-    background: none;
-    border-radius: 0;
-    box-shadow: none;
-  }
-  .title-bar-text{
-  }
-
-  $button_bg: rgba(255, 255, 255, 0.5);
-
-  button {
-    background: $button_bg;
-
-    &:not(:disabled):hover {
-      background: #E5F1FB;
-      border-color: #0078D7;
-    }
-
-    &:focus {
-      box-shadow: none;
-      border-color: #0078D7;
-      outline: 1px dotted #0078D7;
-      outline-offset: -4px;
-    }
-
-    &.active,
-    &:active {
-      background: rgba(204, 228, 247, 0.6) !important;
-    }
-  }
-
-  .title-bar-controls {
-    border-radius: 0;
+    display: flex;
+    align-items: flex-start;
 
     button {
-      border-radius: 0 !important;
-      background: $button_bg;
-      box-shadow: inset 0 0 0 0.5px #fff;
+      margin-top: -1px;
+      height: 24px;
+      min-width: 30px;
+      border: 1px solid rgba(0, 0, 0, 0.5);
+      border-radius: 0;
+      background: rgba(255, 255, 255, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .3s;
+
+      & + button {
+        border-left: 0;
+      }
 
       &:hover {
-        background: rgba(223, 223, 223, 0.46);
+        background: rgba(222, 222, 222, 1);
       }
 
       &:active {
         background: rgba(181, 181, 181, 0.46);
       }
 
-      &[aria-label=Close] {
-        background-color: rgb(225, 101, 101);
+      &.active {
+        background: rgba(255, 105, 180, 0.8) !important;
+      }
+    }
+  }
+
+  .page-craft-window-body {
+    border: 1px solid rgba(0, 0, 0, 0.6);
+    &._bg {
+      background-color: rgba(255, 255, 255, 0.7);
+    }
+  }
+
+
+  &._dark {
+    background: rgba(117, 117, 117, 0.6);
+    .page-craft-title-bar {
+      color: white;
+      text-shadow: 0 0 10px black;
+    }
+    .page-craft-window-body {
+      &._bg {
+        background-color: rgba(30, 30, 30, 0.8);
+      }
+    }
+
+    .page-craft-window-controls {
+      border-radius: 0;
+      display: flex;
+      align-items: flex-start;
+
+      button {
+        background: transparent;
+
         &:hover {
-          background-color: rgba(199, 80, 80, 0.7);
-          background-image: none;
+          background: rgba(227, 227, 227, 1);
         }
+
         &:active {
-          background-color: rgba(151, 36, 36, 0.7) !important;
-          background-image: none;
-          box-shadow: none;
+          background: rgba(109, 109, 109, 1);
         }
       }
     }
   }
 
-  .CodeMirror {
-    background: rgba(255, 255, 255, 0.7);
-  }
 
-  .cm-s-dracula.CodeMirror, .cm-s-dracula .CodeMirror-gutters {
-    background-color: rgba(40, 42, 54, 0.8) !important;
-  }
 }

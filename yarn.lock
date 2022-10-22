@@ -2,11 +2,6 @@
 # yarn lockfile v1
 
 
-"7.css@^0.7.0":
-  version "0.7.0"
-  resolved "https://registry.npmmirror.com/7.css/-/7.css-0.7.0.tgz#e5132999160b5374b5d1092464d10d9c20641ada"
-  integrity sha512-TsSGs5vnBAfzEVVav7n1ngoCnERLwHcT5BbJsDM199RpOh0sHyLrqlJux35MYSQmGkwSUi9MPR1FpqNrS2Adsw==
-
 "@ampproject/remapping@^2.1.0":
   version "2.2.0"
   resolved "https://registry.npmmirror.com/@ampproject/remapping/-/remapping-2.2.0.tgz#56c133824780de3174aed5ab6834f3026790154d"
@@ -1105,10 +1100,24 @@
   resolved "https://registry.npmmirror.com/@css-render/vue3-ssr/-/vue3-ssr-0.15.10.tgz#0a5f58e8480b3e125f0667137b33217eee0b8f95"
   integrity sha512-keGKnkB2nyVGoA8GezMKNsmvTGXEzgLOGGlgshwOTSEzd1dsROyZ2m/khJ9jV5zbzDM4rWeAWbWF0zwHemsJcw==
 
-"@emmetio/codemirror-plugin@^1.2.4":
-  version "1.2.4"
-  resolved "https://registry.npmmirror.com/@emmetio/codemirror-plugin/-/codemirror-plugin-1.2.4.tgz#f880a36098536f6555747eadece9b7cc2df597e3"
-  integrity sha512-wVw2gqI6X+uVWYVRtTVymzTgbo4hEZIcPCNj4xrXw4l/+L3Qa+tAC/yf+Xy9nenRPCqRq0RLqGiQL+Qf/wYE9Q==
+"@emmetio/abbreviation@^2.2.3":
+  version "2.2.3"
+  resolved "https://registry.npmmirror.com/@emmetio/abbreviation/-/abbreviation-2.2.3.tgz#2b3c0383c1a4652f677d5b56fb3f1616fe16ef10"
+  integrity sha512-87pltuCPt99aL+y9xS6GPZ+Wmmyhll2WXH73gG/xpGcQ84DRnptBsI2r0BeIQ0EB/SQTOe2ANPqFqj3Rj5FOGA==
+  dependencies:
+    "@emmetio/scanner" "^1.0.0"
+
+"@emmetio/css-abbreviation@^2.1.4":
+  version "2.1.4"
+  resolved "https://registry.npmmirror.com/@emmetio/css-abbreviation/-/css-abbreviation-2.1.4.tgz#90362e8a1122ce3b76f6c3157907d30182f53f54"
+  integrity sha512-qk9L60Y+uRtM5CPbB0y+QNl/1XKE09mSO+AhhSauIfr2YOx/ta3NJw2d8RtCFxgzHeRqFRr8jgyzThbu+MZ4Uw==
+  dependencies:
+    "@emmetio/scanner" "^1.0.0"
+
+"@emmetio/scanner@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.npmmirror.com/@emmetio/scanner/-/scanner-1.0.0.tgz#065b2af6233fe7474d44823e3deb89724af42b5f"
+  integrity sha512-8HqW8EVqjnCmWXVpqAOZf+EGESdkR27odcMMMGefgKXtar00SoYNSryGv//TELI4T3QFsECo78p+0lmalk/CFA==
 
 "@emotion/hash@~0.8.0":
   version "0.8.0"
@@ -1293,18 +1302,6 @@
     magic-string "^0.25.0"
     string.prototype.matchall "^4.0.6"
 
-"@types/codemirror@^5.60.5":
-  version "5.60.5"
-  resolved "https://registry.npmmirror.com/@types/codemirror/-/codemirror-5.60.5.tgz#5b989a3b4bbe657458cf372c92b6bfda6061a2b7"
-  integrity sha512-TiECZmm8St5YxjFUp64LK0c8WU5bxMDt9YaAek1UqUb9swrSCoJhh92fWu1p3mTEqlHjhB5sY7OFBhWroJXZVg==
-  dependencies:
-    "@types/tern" "*"
-
-"@types/estree@*":
-  version "1.0.0"
-  resolved "https://registry.npmmirror.com/@types/estree/-/estree-1.0.0.tgz#5fb2e536c1ae9bf35366eed879e827fa59ca41c2"
-  integrity sha512-WulqXMDUTYAXCjZnk6JtIHPigp55cVtDgDrO2gHRwhyJto21+1zbVCtOYB2L1F9w4qCQ0rOGWBnBe0FNTiEJIQ==
-
 "@types/estree@0.0.39":
   version "0.0.39"
   resolved "https://registry.npmmirror.com/@types/estree/-/estree-0.0.39.tgz#e177e699ee1b8c22d23174caaa7422644389509f"
@@ -1343,13 +1340,6 @@
   integrity sha512-yy7HuzQhj0dhGpD8RLXSZWEkLsV9ibvxvi6EiJ3bkqLAO1RGo0WbkWQiwpRlSFymTJRz0d3k5LM3kkx8ArDbLw==
   dependencies:
     "@types/node" "*"
-
-"@types/tern@*":
-  version "0.23.4"
-  resolved "https://registry.npmmirror.com/@types/tern/-/tern-0.23.4.tgz#03926eb13dbeaf3ae0d390caf706b2643a0127fb"
-  integrity sha512-JAUw1iXGO1qaWwEOzxTKJZ/5JxVeON9kvGZ/osgZaJImBnyjyn0cjovPsf6FNLmyGY8Vw9DoXZCMlfMkMwHRWg==
-  dependencies:
-    "@types/estree" "*"
 
 "@types/trusted-types@^2.0.2":
   version "2.0.2"
@@ -1895,16 +1885,6 @@ chalk@^4.0.0, chalk@^4.0.2:
   optionalDependencies:
     fsevents "~2.3.2"
 
-codemirror-colorpicker@^1.9.80:
-  version "1.9.80"
-  resolved "https://registry.npmmirror.com/codemirror-colorpicker/-/codemirror-colorpicker-1.9.80.tgz#aa3c39527e840dd245f0c85830b7a435296b808f"
-  integrity sha512-7lGqNxf5haBJXLnVR1ynPiPkN2d1Whm0jdy8Z9QsSOhRWVyK2C2ihgm1dX4DCks57ht/jKMdpL9lYv+zAphxWQ==
-
-codemirror@5.65.8:
-  version "5.65.8"
-  resolved "https://registry.npmmirror.com/codemirror/-/codemirror-5.65.8.tgz#50f145ba7eb725091110c31f3a7c1fdef6bdc721"
-  integrity sha512-TNGkSkkoAsmZSf6W6g35LMVQJBHKasc2CKwhr/fTxSYun7cn6J+CbtyNjV/MYlFVkNTsqZoviegyCZimWhoMMA==
-
 color-convert@^1.9.0:
   version "1.9.3"
   resolved "https://registry.npmmirror.com/color-convert/-/color-convert-1.9.3.tgz#bb71850690e1f136567de629d2d5471deda4c1e8"
@@ -2079,6 +2059,21 @@ electron-to-chromium@^1.4.251:
   version "1.4.258"
   resolved "https://registry.npmmirror.com/electron-to-chromium/-/electron-to-chromium-1.4.258.tgz#44c5456f487be082f038282fbcfd7b06ae99720d"
   integrity sha512-vutF4q0dTUXoAFI7Vbtdwen/BJVwPgj8GRg/SElOodfH7VTX+svUe62A5BG41QRQGk5HsZPB0M++KH1lAlOt0A==
+
+emmet-monaco-es@^5.1.2:
+  version "5.1.2"
+  resolved "https://registry.npmmirror.com/emmet-monaco-es/-/emmet-monaco-es-5.1.2.tgz#25c58c02349637e4f117932496ebf3ca3a5b0031"
+  integrity sha512-P+GwbRfzCAN9socNCLj7hdlmjV1J535wYZX9uoXERRGbbfkzcmfz4i43ClDecqCVt6IsbP0RK8AgX370ClMcJA==
+  dependencies:
+    emmet "^2.3.6"
+
+emmet@^2.3.6:
+  version "2.3.6"
+  resolved "https://registry.npmmirror.com/emmet/-/emmet-2.3.6.tgz#1d93c1ac03164da9ddf74864c1f341ed6ff6c336"
+  integrity sha512-pLS4PBPDdxuUAmw7Me7+TcHbykTsBKN/S9XJbUOMFQrNv9MoshzyMFK/R57JBm94/6HSL4vHnDeEmxlC82NQ4A==
+  dependencies:
+    "@emmetio/abbreviation" "^2.2.3"
+    "@emmetio/css-abbreviation" "^2.1.4"
 
 es-abstract@^1.19.0, es-abstract@^1.19.1, es-abstract@^1.19.5:
   version "1.20.3"
@@ -3144,6 +3139,11 @@ moment@^2.29.4:
   version "2.29.4"
   resolved "https://registry.npmmirror.com/moment/-/moment-2.29.4.tgz#3dbe052889fe7c1b2ed966fcb3a77328964ef108"
   integrity sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==
+
+monaco-editor@^0.34.1:
+  version "0.34.1"
+  resolved "https://registry.npmmirror.com/monaco-editor/-/monaco-editor-0.34.1.tgz#1b75c4ad6bc4c1f9da656d740d98e0b850a22f87"
+  integrity sha512-FKc80TyiMaruhJKKPz5SpJPIjL+dflGvz4CpuThaPMc94AyN7SeC9HQ8hrvaxX7EyHdJcUY5i4D0gNyJj1vSZQ==
 
 ms@2.1.2:
   version "2.1.2"
