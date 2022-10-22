@@ -2,29 +2,9 @@
 import {defineComponent} from 'vue'
 import {setDraggableMouse} from '@/utils/draggable-mouse'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
-import CodeMirror from 'codemirror'
-import 'codemirror/lib/codemirror.css'
-import 'codemirror/mode/sass/sass' // 代码高亮
-import 'codemirror/theme/dracula.css'
-import 'codemirror/theme/idea.css'
-import 'codemirror/keymap/sublime'
-import 'codemirror/addon/comment/comment'
-import 'codemirror/addon/display/placeholder'
-import 'codemirror/addon/edit/closebrackets'
-import 'codemirror/addon/edit/matchbrackets'
-import 'codemirror/addon/hint/css-hint'
-import 'codemirror/addon/hint/show-hint.css'
-import 'codemirror/addon/hint/show-hint'
-// import 'codemirror/addon/lint/css-lint'
-import 'codemirror/addon/lint/lint'
-import 'codemirror/addon/search/searchcursor'
-import 'codemirror/addon/selection/active-line'
-import emmet from '@emmetio/codemirror-plugin'
 import {debounce, throttle} from 'throttle-debounce'
 import {LsKeys} from '@/enum'
 import {createOrFindStyleNode} from '@/utils/dom'
-import 'codemirror-colorpicker/dist/codemirror-colorpicker.css'
-import 'codemirror-colorpicker'
 import {sassToCSS, suggestElementClass} from '@/utils/css'
 import {copyToClipboard} from '@/utils'
 import {useCraftStore} from '@/store/craft'
@@ -41,8 +21,32 @@ import {formatCss} from '@/utils/formater'
 import {useIsDarkMode} from '@/hooks/use-global-theme'
 import {useCompStorage} from '@/hooks/use-component-storage'
 
-// Register extension on CodeMirror object
-emmet(CodeMirror)
+// import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
+import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
+// import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
+// import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
+// import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
+import * as monaco from 'monaco-editor'
+import {emmetHTML, emmetCSS} from 'emmet-monaco-es'
+
+self.MonacoEnvironment = {
+  // @ts-ignore
+  getWorker(_: string, label: string) {
+    // if (label === 'json') {
+    //   return new jsonWorker()
+    // }
+    if (label === 'css' || label === 'scss' || label === 'less') {
+      return new cssWorker()
+    }
+    // if (label === 'html' || label === 'handlebars' || label === 'razor') {
+    //   return new htmlWorker()
+    // }
+    // if (['typescript', 'javascript'].includes(label)) {
+    //   return new tsWorker()
+    // }
+    // return new EditorWorker()
+  },
+}
 
 type StyleEditorOptions = {
   wTop: string
@@ -51,8 +55,7 @@ type StyleEditorOptions = {
   wHeight: string
 }
 
-// do not use vue ref for CodeMirror: https://github.com/codemirror/codemirror5/issues/6805#issuecomment-955151134
-let codeMirrorInstance: any = null
+let editorInstance: monaco.editor.IStandaloneCodeEditor
 
 export default defineComponent({
   name: 'StyleEditor',
@@ -68,7 +71,7 @@ export default defineComponent({
     const dialogRef = ref()
     const titleBarRef = ref()
     const titleBarButtonsRef = ref()
-    const textareaRef = ref()
+    const editorContainerRef = ref()
     const craftStore = useCraftStore()
 
     const clearDraggable = ref<any>(null)
@@ -92,16 +95,16 @@ export default defineComponent({
 
     watch(mVisible, () => {
       if (mVisible) {
-        codeMirrorInstance.refresh()
+        editorInstance.layout()
       }
     })
     const {isDarkMode} = useIsDarkMode()
 
     const getThemeName = () => {
-      return isDarkMode.value ? 'dracula' : 'idea'
+      return isDarkMode.value ? 'vs-dark' : 'vs'
     }
     watch(isDarkMode, (val) => {
-      codeMirrorInstance.setOption('theme', getThemeName())
+      editorInstance.updateOptions({theme: getThemeName()})
     })
 
     const {loadCurCompStyle, saveCurCompStyle} = useCompStorage()
@@ -115,7 +118,7 @@ export default defineComponent({
 
     const reloadStyle = () => {
       const style = loadCurCompStyle()
-      codeMirrorInstance.setValue(style)
+      editorInstance.setValue(style)
       // call instantly
       handleUpdateStyle(style, false)
     }
@@ -125,7 +128,7 @@ export default defineComponent({
         dragHandleEl: titleBarRef.value,
         dragTargetEl: dialogRef.value,
         allowOut: true,
-        // opacify: 0.5,
+        opacify: 0.8,
         preventNode: titleBarButtonsRef.value,
         onMove(data) {
           handleMoveDebounced(data)
@@ -135,52 +138,34 @@ export default defineComponent({
       styleEl.value = createOrFindStyleNode(LsKeys.MAIN_STYLE)
       const style = loadCurCompStyle()
 
-      codeMirrorInstance = CodeMirror(textareaRef.value, {
+      emmetCSS(monaco, ['css', 'scss'])
+      editorInstance = monaco.editor.create(editorContainerRef.value, {
         value: style,
-        mode: 'text/x-scss',
-        placeholder: 'Write your Sass(scss) code here...',
-        lint: true,
-        theme: getThemeName(), // 主题样式
-        keyMap: 'sublime',
-        undoDepth: 500,
-        smartIndent: true, // 是否智能缩进
-        indentUnit: 2,
-        lineNumbers: true, // 显示行号
-        gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter', 'CodeMirror-lint-markers'],
-        lineWrapping: true, // 自动换行
-        matchBrackets: true, // 括号匹配显示
-        autoCloseBrackets: true, // 输入和退格时成对
-        foldGutter: true,
-        showCursorWhenSelecting: true,
-        styleActiveLine: {
-          nonEmpty: true,
+        language: 'scss',
+        theme: getThemeName(), // 'vs' 'hc-black' 'vs-dark'
+        wordWrap: 'on',
+        foldingStrategy: 'indentation', // 代码可分小段折叠
+        minimap: {
+          enabled: true,
         },
-        colorpicker: true,
-        extraKeys: {
-          Tab: (cm: any) => {
-            if (cm.doc.somethingSelected()) {
-              return CodeMirror.Pass
-            }
-            var emmetExpanded = cm.execCommand('emmetExpandAbbreviation')
-            if (emmetExpanded === CodeMirror.Pass) {
-              // If it didn't expand, then "emmetExpanded === CodeMirror.Pass function"
-              cm.replaceSelection('  ', 'end')
-            }
-          },
-          // when ctrl+k  keys pressed, color picker is able to open.
-          // @ts-ignore
-          'Ctrl-K': (cm, event) => {
-            return cm.state.colorpicker.popup_color_picker()
-          },
+        scrollbar: {
+          alwaysConsumeMouseWheel: false,
         },
+        quickSuggestions: true,
+        suggest: {
+          snippetsPreventQuickSuggestions: false,
+        },
+        // cursorSmoothCaretAnimation: true, // 是否启用光标平滑插入动画
+        tabSize: 2,
       })
-      codeMirrorInstance.on('change', () => {
-        handleEditorChangeDebounced(codeMirrorInstance)
+
+      editorInstance.onDidChangeModelContent(() => {
+        handleEditorChangeDebounced()
       })
 
       new ResizeObserver(() => {
         handleResizeDebounced()
-      }).observe(textareaRef.value)
+      }).observe(editorContainerRef.value)
 
       handleUpdateStyle(style, false)
 
@@ -194,6 +179,7 @@ export default defineComponent({
       if (clearDraggable.value) {
         clearDraggable.value()
       }
+      editorInstance.dispose()
       globalEventBus.off(GlobalEvents.ON_NODE_SELECT, handleNodeSelect)
       globalEventBus.off(GlobalEvents.IMPORT_SUCCESS, reloadStyle)
     })
@@ -204,20 +190,21 @@ export default defineComponent({
     })
 
     const handleResizeDebounced = throttle(100, false, () => {
-      if (!mVisible.value || !textareaRef.value) {
+      if (!mVisible.value || !editorContainerRef.value) {
         return
       }
-      const width = textareaRef.value.offsetWidth
-      const height = textareaRef.value.offsetHeight
+      const width = editorContainerRef.value.offsetWidth
+      const height = editorContainerRef.value.offsetHeight
 
-      codeMirrorInstance.setSize(width, height)
+      // update editor layout
+      editorInstance.layout()
 
       styleEditorOptions.wWidth = width + 'px'
       styleEditorOptions.wHeight = height + 'px'
     })
 
-    const handleEditorChangeDebounced = debounce(500, false, (editor) => {
-      handleUpdateStyle(editor.getValue())
+    const handleEditorChangeDebounced = debounce(500, false, () => {
+      handleUpdateStyle(editorInstance.getValue())
     })
 
     const errorTip = ref()
@@ -255,20 +242,34 @@ export default defineComponent({
       dialogRef.value.style.top = styleEditorOptions.wTop
       dialogRef.value.style.left = styleEditorOptions.wLeft
 
-      textareaRef.value.style.width = styleEditorOptions.wWidth
-      textareaRef.value.style.height = styleEditorOptions.wHeight
+      editorContainerRef.value.style.width = styleEditorOptions.wWidth
+      editorContainerRef.value.style.height = styleEditorOptions.wHeight
     }
 
     const message = useMessage()
     const execBeautifyCssAction = async () => {
-      const editor = codeMirrorInstance
-      const textValue = editor.getValue()
+      const textValue = editorInstance.getValue()
       if (!textValue.trim()) {
         message.info('Please type some code to be beautified')
       } else {
         const beautifiedCSS = formatCss(textValue)
         if (textValue.trim() !== beautifiedCSS.trim()) {
-          await editor.setValue(beautifiedCSS)
+          // Select all text
+          const fullRange = editorInstance.getModel()?.getFullModelRange()
+          if (fullRange) {
+            // Apply the text over the range
+            editorInstance.executeEdits(null, [
+              {
+                text: beautifiedCSS,
+                range: fullRange,
+              },
+            ])
+            // Indicates the above edit is a complete undo/redo change.
+            // editorInstance.pushUndoStop()
+          } else {
+            await editorInstance.setValue(beautifiedCSS)
+          }
+
           await handleUpdateStyle(beautifiedCSS)
           // await editor.reInitTextComponent({pleaseIgnoreCursorActivity: true})
 
@@ -277,11 +278,11 @@ export default defineComponent({
           message.success('Your code already looks beautiful :-)')
         }
       }
-      editor.focus()
+      editorInstance.focus()
     }
 
     const copyStyle = () => {
-      copyToClipboard(codeMirrorInstance.getValue())
+      copyToClipboard(editorInstance.getValue())
       message.success('Copy Success!')
     }
 
@@ -311,9 +312,21 @@ export default defineComponent({
     }
 
     const insertStyleCode = (code) => {
-      const doc = codeMirrorInstance.getDoc()
-      const cursor = doc.getCursor()
-      doc.replaceRange(code, cursor)
+      const selection = editorInstance.getSelection()
+      editorInstance.executeEdits('', [
+        {
+          range: new monaco.Range(
+            selection?.startLineNumber || 0,
+            selection?.startColumn || 0,
+            selection?.endLineNumber || 0,
+            selection?.endColumn || 0
+          ),
+          text: code,
+        },
+      ])
+      setTimeout(() => {
+        editorInstance.focus()
+      }, 100)
     }
 
     const getToolChildren = (list) => {
@@ -358,7 +371,7 @@ export default defineComponent({
       titleBarButtonsRef,
       mVisible,
       handleUpdateStyle,
-      textareaRef,
+      editorContainerRef,
       execBeautifyCssAction,
       copyStyle,
       enterSelectMode,
@@ -377,22 +390,20 @@ export default defineComponent({
   <transition name="zoom">
     <div
       v-show="mVisible"
-      class="style-editor-dialog win7"
+      class="style-editor-dialog page-craft-window"
       :class="{_dark: isDarkMode}"
       ref="dialogRef"
     >
-      <div class="window _window-color glass">
-        <div ref="titleBarRef" class="title-bar">
+      <div class="page-craft-window-content">
+        <div ref="titleBarRef" class="page-craft-title-bar">
           <div
-            class="title-bar-text font-minecraft"
+            class="page-craft-title-bar-text font-minecraft"
             style="display: flex; align-items: center; height: 14px"
           >
             <img src="~@/assets/textures/redstone.png" alt="tools" />
             &nbsp;Style Editor
           </div>
-          <div ref="titleBarButtonsRef" class="title-bar-controls">
-            <!--          <button aria-label="Minimize"></button>-->
-            <!--          <button aria-label="Maximize"></button>-->
+          <div ref="titleBarButtonsRef" class="page-craft-window-controls">
             <button
               title="Select an element in the page to generate its CSS Selector"
               :class="{active: craftStore.isSelectMode}"
@@ -426,33 +437,20 @@ export default defineComponent({
               <img src="~@/assets/textures/map.png" alt="copy" />
             </button>
 
-            <button title="Close" aria-label="Close" @click="mVisible = false" />
+            <button title="Close" @click="mVisible = false">
+              <img src="~@/assets/textures/barrier.png" alt="close" />
+            </button>
           </div>
         </div>
 
-        <div class="_window-body">
-          <!--        <section class="tabs">
-          <menu role="tablist">
-            <button role="tab" aria-selected="false">CSS</button>
-            <button role="tab" aria-selected="true">SASS</button>
-          </menu>
-          <article role="tabpanel">
-            <textarea
-              rows="10"
-              cols="50"
-              style="font-family: monospace"
-              @change="handleUpdateStyle"
-            ></textarea>
-          </article>
-          <article role="tabpanel" v-show="false">Tab B is active</article>
-        </section>-->
+        <div class="page-craft-window-body">
           <transition name="fade">
             <div v-show="errorTip" class="code-error-tip font-code" @click="handleErrorTipClick">
               {{ errorTip?.message }}
             </div>
           </transition>
 
-          <div ref="textareaRef" class="code-editor-placeholder" />
+          <div ref="editorContainerRef" class="code-editor-placeholder" />
         </div>
       </div>
     </div>
@@ -465,7 +463,7 @@ export default defineComponent({
   z-index: 998;
   top: 30%;
   left: 30%;
-  .title-bar {
+  .page-craft-title-bar {
     user-select: none;
 
     img {
@@ -479,14 +477,16 @@ export default defineComponent({
     display: flex;
   }
 
-  ._window-body {
+  .page-craft-window-body {
     position: relative;
 
     .code-editor-placeholder {
       min-width: 300px;
       min-height: 300px;
+      width: 100%;
+      height: 100%;
       resize: both;
-      overflow: auto !important;
+      overflow: hidden;
     }
 
     .code-error-tip {
