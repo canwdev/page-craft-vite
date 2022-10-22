@@ -482,7 +482,7 @@ export default defineComponent({
 
     .code-editor-placeholder {
       min-width: 400px;
-      min-height: 400px;
+      min-height: 200px;
       width: 100%;
       height: 100%;
       resize: both;
