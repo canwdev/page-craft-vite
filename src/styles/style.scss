@@ -23,7 +23,7 @@ Inspired by https://khang-nd.github.io/7.css/
  */
 .page-craft-aero-panel {
   background-color: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(2px);
+  //backdrop-filter: blur(2px);
   border: 1px solid rgba(0, 0, 0, .4);
   border-radius: 0;
   box-shadow: 0 1px 10px rgba(0, 0, 0, 0.27), inset 0 0 0.5px #fff;
@@ -32,10 +32,13 @@ Inspired by https://khang-nd.github.io/7.css/
   }
 
   &._dark {
-    background-color: rgba(117, 117, 117, 0.6);
+    background-color: rgba(88, 88, 88, 0.8);
     color: white;
     .n-button {
       background-color: transparent !important;
+    }
+    .n-input {
+      background-color: rgba(0, 0, 0, 0.5);
     }
   }
 
@@ -84,14 +87,14 @@ Inspired by https://khang-nd.github.io/7.css/
 
 .zoom-enter-active,
 .zoom-leave-active {
-  transform: scale(1) translateY(0);
+  transform: scale(1);
   transition: opacity 0.3s, transform 0.3s;
 }
 
 .zoom-enter-from,
 .zoom-leave-to {
   opacity: 0;
-  transform: scale(0.92) translateY(10px);
+  transform: scale(0.92);
   transition: opacity 0.3s, transform 0.3s;
 }
 
@@ -100,8 +103,7 @@ Inspired by https://khang-nd.github.io/7.css/
   border: 1px solid rgba(0, 0, 0, 0.5);
   padding: 0 6px 6px;
   background: rgba(255, 255, 255, 0.8);
-  //backdrop-filter: unset;
-  backdrop-filter: blur(4px);
+  //backdrop-filter: blur(4px);
 
   .page-craft-title-bar {
     margin-left: -6px;

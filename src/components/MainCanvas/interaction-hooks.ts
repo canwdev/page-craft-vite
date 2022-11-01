@@ -20,7 +20,7 @@ export const removeMouseOverDomElementEffect = () => {
   $('*[class=""]').removeAttr('class')
 }
 
-const MAX_WAIT_TIME = 1 * 1000
+const MAX_WAIT_TIME = 0.8 * 1000
 
 export const useInteractionHooks = (options) => {
   const {mainCanvasRef, saveData, indicatorOptions, copyHtml, recordUndo} = options
@@ -332,6 +332,7 @@ export const useInteractionHooks = (options) => {
   }
 
   const clearWait = () => {
+    removeMouseOverDomElementEffect()
     clearInterval(waitTimer.value)
     waitingTime.value = 0
     cursorX.value = 0
@@ -359,6 +360,8 @@ export const useInteractionHooks = (options) => {
       }, 50)
       cursorX.value = event.x
       cursorY.value = event.y
+      removeMouseOverDomElementEffect()
+      $(event.target).addClass(TOOL_CLASSES.CLASS_MOUSE_OVER)
       event.preventDefault()
       return
     }
