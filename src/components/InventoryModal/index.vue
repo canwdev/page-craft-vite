@@ -20,6 +20,7 @@ import FileChooser from '@/components/FileChooser.vue'
 import {colorHash} from '@/utils'
 import PopWindow from '@/components/DomPreview/PopWindow.vue'
 import {useContextMenu} from '@/hooks/use-context-menu'
+import {useInitComponents} from '@/hooks/use-init'
 
 let idx = 1
 
@@ -91,6 +92,13 @@ export default defineComponent({
       }
       return name
     }
+
+    onMounted(() => {
+      useInitComponents({
+        componentListRef: componentList,
+        currentComponentNameRef: currentComponentName,
+      })
+    })
 
     const handleCreateComponent = () => {
       let name = getNamePrompt('Please enter the component name', `Component${idx}`)

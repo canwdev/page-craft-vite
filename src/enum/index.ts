@@ -13,6 +13,7 @@ export const LsKeys = {
   IS_SHOW_INVENTORY: 'page_craft_is_show_inventory',
   COMPONENT_LIST: 'page_craft_component_list',
   CURRENT_COMPONENT_NAME: 'page_craft_current_component_name',
+  IS_INITIALIZED: 'page_craft_is_initialized',
 }
 
 const CLASS_MOUSE_OVER = 'page-craft-mouse-over-dom-element'
