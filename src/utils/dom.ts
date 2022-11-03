@@ -52,7 +52,7 @@ export const createBlockElement = (block: BlockItem, craftStore?) => {
   return addEl
 }
 
-export const appendCustomBlock = (block: BlockItem, event, craftStore, mainCanvasRef) => {
+export const appendCustomBlock = async (block: BlockItem, event, craftStore, mainCanvasRef) => {
   let targetEl
   if (event.target) {
     targetEl = event.target
@@ -61,6 +61,10 @@ export const appendCustomBlock = (block: BlockItem, event, craftStore, mainCanva
   }
 
   if (block.blockType === BlockType.ACTIONS) {
+    if (block.actionType === ActionType.PASTE_REPLACE) {
+      targetEl.innerHTML = await navigator.clipboard.readText()
+      return
+    }
     if (block.actionType === ActionType.DEBUG) {
       console.log('[event]', event)
       console.log('[targetEl]', targetEl)

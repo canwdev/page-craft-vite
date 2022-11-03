@@ -50,6 +50,7 @@ export const useIndicator = () => {
       'page-craft-mc--cursor-pickaxe': currentBlock.actionType === ActionType.DELETE,
       'page-craft-mc--cursor-arrow': currentBlock.actionType === ActionType.SELECTION,
       'page-craft-mc--cursor-sword': currentBlock.actionType === ActionType.DEBUG,
+      'page-craft-mc--cursor-oaksign': currentBlock.actionType === ActionType.PASTE_REPLACE,
       'page-craft-mc--expand': indicatorOptions.enableExpand,
       'page-craft-mc--full-width': indicatorOptions.fullWidth,
       'page-craft-mc--transparent': indicatorOptions.bgTransparent,

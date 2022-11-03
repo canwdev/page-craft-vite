@@ -409,6 +409,13 @@ export default defineComponent({
       cursor: url('@/assets/textures/iron_sword--cursor.png') 0 0, default;
     }
   }
+  &--cursor-oaksign {
+    cursor: url('@/assets/textures/oak_sign.png') 0 0, default;
+
+    * {
+      cursor: url('@/assets/textures/oak_sign.png') 0 0, default;
+    }
+  }
 
   &--dev {
     * {

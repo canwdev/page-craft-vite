@@ -10,6 +10,7 @@ export enum ActionType {
   DELETE = 'DELETE',
   ADD_COMPONENT = 'ADD_COMPONENT',
   DEBUG = 'DEBUG',
+  PASTE_REPLACE = 'PASTE_REPLACE',
 }
 export enum BlockType {
   HTML_ELEMENT = 'HTML_ELEMENT',
@@ -102,6 +103,12 @@ export const ActionBlockItems = {
     title: 'Delete',
     icon: iconIronPickaxe,
     actionType: ActionType.DELETE,
+  }),
+  PASTE_REPLACE: new BlockItem({
+    blockType: BlockType.ACTIONS,
+    title: '🎈 Paste & Replace innerHTML',
+    icon: iconOakSign,
+    actionType: ActionType.PASTE_REPLACE,
   }),
   EMPTY: new BlockItem({
     blockType: BlockType.ACTIONS,

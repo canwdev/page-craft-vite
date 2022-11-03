@@ -133,6 +133,12 @@ export const useInteractionHooks = (options) => {
     saveData()
   }
 
+  const pasteReplaceInnerHtml = async (targetEl) => {
+    recordUndo()
+    targetEl.innerHTML = await navigator.clipboard.readText()
+    saveData()
+  }
+
   const insertCurrentBlock = (targetEl, position = 'append') => {
     recordUndo()
     targetEl[<any>position](createBlockElement(craftStore.currentBlock, craftStore))
@@ -246,6 +252,15 @@ export const useInteractionHooks = (options) => {
         },
       },
       {
+        label: '🎈 Paste & Replace innerHTML',
+        props: {
+          onClick: async () => {
+            await pasteReplaceInnerHtml(targetEl)
+            contextMenuEtc.showRightMenu.value = false
+          },
+        },
+      },
+      {
         type: 'divider',
         label: 'd10',
       },
@@ -284,7 +299,8 @@ export const useInteractionHooks = (options) => {
     return (
       craftStore.isSelectMode ||
       indicatorOptions.enableSelection ||
-      craftStore.currentBlock.actionType === ActionType.DEBUG
+      craftStore.currentBlock.actionType === ActionType.DEBUG ||
+      craftStore.currentBlock.actionType === ActionType.PASTE_REPLACE
     )
   })
 
@@ -324,10 +340,10 @@ export const useInteractionHooks = (options) => {
     }
   })
 
-  const handleBlockClick = (event: Event) => {
+  const handleBlockClick = async (event: Event) => {
     recordUndo()
     const {currentBlock} = craftStore
-    appendCustomBlock(currentBlock, event, craftStore, mainCanvasRef)
+    await appendCustomBlock(currentBlock, event, craftStore, mainCanvasRef)
     saveData()
   }
 
