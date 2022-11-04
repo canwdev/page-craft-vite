@@ -7,7 +7,7 @@ export type IndicatorOptions = {
   enableExpand: boolean
   enableSelection: boolean
   fullWidth: boolean
-  bgTransparent: boolean
+  bgTransparentPercent: number
   bgDark: boolean
   centeredElementsY: boolean
   centeredElementsX: boolean
@@ -25,8 +25,8 @@ export const useIndicator = () => {
       enableExpand: true,
       enableSelection: false,
       fullWidth: false,
-      bgTransparent: false,
       bgDark: false,
+      bgTransparentPercent: 100,
       centeredElementsY: false,
       centeredElementsX: false,
       showStyleEditor: false,
@@ -53,7 +53,6 @@ export const useIndicator = () => {
       'page-craft-mc--cursor-oaksign': currentBlock.actionType === ActionType.PASTE_REPLACE,
       'page-craft-mc--expand': indicatorOptions.enableExpand,
       'page-craft-mc--full-width': indicatorOptions.fullWidth,
-      'page-craft-mc--transparent': indicatorOptions.bgTransparent,
       'page-craft-mc--centered-y': indicatorOptions.centeredElementsY,
       'page-craft-mc--centered-x': indicatorOptions.centeredElementsX,
       _dark: indicatorOptions.bgDark,
@@ -80,14 +79,25 @@ export const useIndicator = () => {
     {flag: 'enableRightClick', title: 'Enable Right Click', desc: ''},
     {flag: 'centeredElementsY', title: 'Centered Y', desc: ''},
     {flag: 'centeredElementsX', title: 'Centered X', desc: ''},
-    {flag: 'bgTransparent', title: 'Transparent BG', desc: ''},
-    {flag: 'bgDark', title: 'Dark BG', desc: ''},
     {flag: 'fullWidth', title: 'Full Width', desc: ''},
+    {flag: 'bgDark', title: 'Dark BG', desc: ''},
   ]
+
+  const backgroundStyle = computed(() => {
+    if (indicatorOptions.bgDark) {
+      return {
+        backgroundColor: `rgba(30, 30, 30,${indicatorOptions.bgTransparentPercent / 100})`,
+      }
+    }
+    return {
+      backgroundColor: `rgba(255,255,255,${indicatorOptions.bgTransparentPercent / 100})`,
+    }
+  })
 
   return {
     indicatorOptions,
     mainCanvasClass,
     toggleList,
+    backgroundStyle,
   }
 }

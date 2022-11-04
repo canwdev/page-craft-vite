@@ -1,9 +1,10 @@
 <script lang="ts">
-import MainCanvas from '@/components/MainCanvas/index.vue'
 import {LsKeys} from '@/enum'
 import {createOrFindStyleNode} from '@/utils/dom'
-import {getUserTheme, themeOptions, ThemeType, useHandleThemeChange} from '@/hooks/use-global-theme'
+import {getUserTheme, themeOptions, useHandleThemeChange} from '@/hooks/use-global-theme'
 import HomeView from '@/views/HomeView.vue'
+import {useMainStore} from '@/store/main-store'
+import {useLocalStorageBoolean} from '@/hooks/use-local-storage'
 
 export default defineComponent({
   components: {
@@ -15,6 +16,9 @@ export default defineComponent({
     window.$notification = useNotification()
     window.$dialog = useDialog()
     window.$loadingBar = useLoadingBar()
+    const mainStore = useMainStore()
+
+    const isEnableGlobalStyle = useLocalStorageBoolean(LsKeys.IS_ENABLE_GLOBAL_STYLE, true)
 
     const isShowSettings = ref(false)
     const themeValue = ref(getUserTheme())
@@ -27,19 +31,24 @@ export default defineComponent({
 
     const applyGlobalStyle = () => {
       if (styleEl.value) {
-        styleEl.value.innerHTML = globalStyleText.value
-        localStorage.setItem(LsKeys.GLOBAL_STYLE, globalStyleText.value)
+        if (isEnableGlobalStyle.value) {
+          styleEl.value.innerHTML = globalStyleText.value
+          localStorage.setItem(LsKeys.GLOBAL_STYLE, globalStyleText.value)
+        } else {
+          styleEl.value.innerHTML = ''
+        }
       }
     }
 
+    watch(isEnableGlobalStyle, (val) => {
+      applyGlobalStyle()
+    })
+
     onMounted(() => {
       styleEl.value = createOrFindStyleNode(LsKeys.GLOBAL_STYLE)
-      const style = localStorage.getItem(LsKeys.GLOBAL_STYLE) || ''
+      globalStyleText.value = localStorage.getItem(LsKeys.GLOBAL_STYLE) || ''
 
-      if (style) {
-        globalStyleText.value = style
-        applyGlobalStyle()
-      }
+      applyGlobalStyle()
     })
 
     return {
@@ -50,6 +59,8 @@ export default defineComponent({
       themeValue,
       themeOptions,
       handleThemeChange,
+      mainStore,
+      isEnableGlobalStyle,
     }
   },
 })
@@ -57,12 +68,9 @@ export default defineComponent({
 <template>
   <HomeView>
     <template #settingsButtons>
-      <n-space size="small">
-        <n-button size="tiny" @click="isShowSettings = true">Settings</n-button>
-        <n-button size="tiny" @click="isShowGlobalStyleDialog = true">Global Style...</n-button>
-      </n-space>
-      <n-space size="small">
-        <n-a href="https://github.com/canwdev/page-craft-vite" target="_blank">Github</n-a>
+      <n-space align="center" size="small">
+        <n-button size="small" @click="isShowSettings = true">Settings</n-button>
+        <n-a href="https://github.com/canwdev/page-craft-vite" target="_blank">Github...</n-a>
       </n-space>
     </template>
   </HomeView>
@@ -84,10 +92,10 @@ export default defineComponent({
     />
   </n-modal>
 
-  <n-modal v-model:show="isShowSettings" preset="dialog" title="Settings">
+  <n-modal v-model:show="isShowSettings" preset="dialog" title="PageCraft Settings">
     <n-list>
       <n-list-item>
-        <n-thing title="Toggle light/dark theme" />
+        <n-thing title="Toggle Theme" />
         <template #suffix>
           <n-select
             v-model:value="themeValue"
@@ -95,6 +103,15 @@ export default defineComponent({
             style="width: 150px"
             @update:value="handleThemeChange"
           />
+        </template>
+      </n-list-item>
+      <n-list-item>
+        <n-thing title="Global Style" />
+        <template #suffix>
+          <div style="display: flex; align-items: center">
+            <n-switch v-model:value="isEnableGlobalStyle" style="margin-right: 20px" />
+            <n-button @click="isShowGlobalStyleDialog = true"> Edit </n-button>
+          </div>
         </template>
       </n-list-item>
     </n-list>

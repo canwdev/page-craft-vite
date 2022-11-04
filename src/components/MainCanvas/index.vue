@@ -41,7 +41,7 @@ export default defineComponent({
       emit,
     })
 
-    const {indicatorOptions, mainCanvasClass, toggleList} = useIndicator()
+    const {indicatorOptions, mainCanvasClass, toggleList, backgroundStyle} = useIndicator()
 
     const {
       currentHoveredEl,
@@ -108,6 +108,7 @@ export default defineComponent({
       isShowElementEdit,
       editingNode,
       updateEditingElement,
+      backgroundStyle,
     }
   },
 })
@@ -205,6 +206,7 @@ export default defineComponent({
                 size="small"
               />
             </div>
+            <n-slider v-model:value="indicatorOptions.bgTransparentPercent" :step="1" />
             <template #footer>
               <slot name="settingsButtons"></slot>
             </template>
@@ -246,6 +248,7 @@ export default defineComponent({
       @mousedown="handleMouseDown"
       @mouseleave="handleMouseUp"
       @mouseup="handleMouseUp"
+      :style="backgroundStyle"
     ></div>
 
     <div

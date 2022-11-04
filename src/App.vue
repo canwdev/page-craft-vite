@@ -2,6 +2,7 @@
 import {darkTheme, GlobalThemeOverrides} from 'naive-ui'
 import AppContent from '@/AppContent.vue'
 import {useGlobalTheme} from '@/hooks/use-global-theme'
+import {useMainStore} from '@/store/main-store'
 
 export default defineComponent({
   components: {
@@ -28,7 +29,7 @@ export default defineComponent({
 
 <template>
   <n-config-provider
-    :class="{_dark: isAppDarkMode}"
+    :class="{_dark: isAppDarkMode, '_mc-bg': false}"
     :theme="isAppDarkMode ? darkTheme : null"
     :theme-overrides="themeOverrides"
     class="page-craft-root _line-grid"
