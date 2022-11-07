@@ -27,7 +27,7 @@ import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
 // import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
 // import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
 import * as monaco from 'monaco-editor'
-import {emmetHTML, emmetCSS} from 'emmet-monaco-es'
+import {emmetCSS} from 'emmet-monaco-es'
 
 self.MonacoEnvironment = {
   // @ts-ignore
@@ -133,6 +133,7 @@ export default defineComponent({
         onMove(data) {
           handleMoveDebounced(data)
         },
+        autoPosOnResize: true,
       })
 
       styleEl.value = createOrFindStyleNode(LsKeys.MAIN_STYLE)
