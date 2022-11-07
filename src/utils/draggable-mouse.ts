@@ -27,9 +27,22 @@ export function setDraggableMouse(options: DraggableOptions) {
   function isHidden(el = dragHandleEl) {
     return el.offsetParent === null
   }
-  function setFixedPosition({x, y}) {
-    const docWidth = docEl.clientWidth - dragTargetEl.clientWidth
-    const docHeight = docEl.clientHeight - dragTargetEl.clientHeight
+  function fixZoom() {
+    const rect = dragTargetEl.getBoundingClientRect()
+    const scaleX = rect.width / dragTargetEl.offsetWidth
+    const scaleY = rect.height / dragTargetEl.offsetHeight
+
+    return {
+      scaleX,
+      scaleY,
+    }
+  }
+
+  function setInScreenPosition({x, y}) {
+    const rect = dragTargetEl.getBoundingClientRect()
+    const docWidth = docEl.clientWidth - rect.width
+    const docHeight = docEl.clientHeight - rect.height
+
     const left = (dragTargetEl.style.left = Math.round(Math.min(docWidth, Math.max(0, x))) + 'px')
     const top = (dragTargetEl.style.top = Math.round(Math.min(docHeight, Math.max(0, y))) + 'px')
 
@@ -60,12 +73,13 @@ export function setDraggableMouse(options: DraggableOptions) {
 
     let left, top
     if (!allowOut) {
-      const pos = setFixedPosition({x, y})
+      const pos = setInScreenPosition({x, y})
       left = pos.left
       top = pos.top
     } else {
-      left = dragTargetEl.style.left = Math.round(x) + 'px'
-      top = dragTargetEl.style.top = Math.round(y) + 'px'
+      const {scaleX, scaleY} = fixZoom()
+      left = dragTargetEl.style.left = Math.round(x) * scaleX + 'px'
+      top = dragTargetEl.style.top = Math.round(y) * scaleY + 'px'
     }
 
     if (typeof onMove === 'function') {
@@ -94,7 +108,7 @@ export function setDraggableMouse(options: DraggableOptions) {
     if (isHidden()) {
       return
     }
-    const {left, top} = setFixedPosition({x: dragTargetEl.offsetLeft, y: dragTargetEl.offsetTop})
+    const {left, top} = setInScreenPosition({x: dragTargetEl.offsetLeft, y: dragTargetEl.offsetTop})
 
     if (typeof onMove === 'function') {
       onMove({top, left})

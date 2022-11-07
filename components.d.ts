@@ -7,6 +7,7 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    BackgroundLayer: typeof import('./src/components/BackgroundLayer/index.vue')['default']
     BlockCard: typeof import('./src/components/InventoryModal/BlockCard.vue')['default']
     ComponentCard: typeof import('./src/components/InventoryModal/ComponentCard.vue')['default']
     DomPreview: typeof import('./src/components/DomPreview/DomPreview.vue')['default']
@@ -40,6 +41,7 @@ declare module '@vue/runtime-core' {
     NTabPane: typeof import('naive-ui')['NTabPane']
     NTabs: typeof import('naive-ui')['NTabs']
     NThing: typeof import('naive-ui')['NThing']
+    NTooltip: typeof import('naive-ui')['NTooltip']
     PopWindow: typeof import('./src/components/DomPreview/PopWindow.vue')['default']
     StyleEditor: typeof import('./src/components/StyleEditor/index.vue')['default']
     StylusToolsDialog: typeof import('./src/components/StyleEditor/StylusToolsDialog.vue')['default']

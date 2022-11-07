@@ -63,7 +63,6 @@ export default defineComponent({
     right: 0;
     bottom: 0;
     pointer-events: none;
-    z-index: 0;
     background-image: url('@/assets/bg/grid-light.png');
     background-size: 100px;
     opacity: 0.4;

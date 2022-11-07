@@ -6,6 +6,7 @@ import MainCanvas from '@/components/MainCanvas/index.vue'
 import {useLocalStorageBoolean} from '@/hooks/use-local-storage'
 import {LsKeys} from '@/enum'
 import StylusToolsDialog from '@/components/StyleEditor/StylusToolsDialog.vue'
+import BackgroundLayer from '@/components/BackgroundLayer/index.vue'
 
 export default defineComponent({
   name: 'HomeView',
@@ -14,6 +15,7 @@ export default defineComponent({
     StyleEditor,
     MainCanvas,
     StylusToolsDialog,
+    BackgroundLayer,
   },
   setup() {
     const isShowStyleEditorStyleEditor = useLocalStorageBoolean(LsKeys.IS_SHOW_STYLE_EDITOR)
@@ -28,6 +30,7 @@ export default defineComponent({
 
 <template>
   <div class="page-craft-home-view">
+    <BackgroundLayer />
     <MainCanvas @openStylusTools="isShowStylusTools = true">
       <template #settingsButtons>
         <slot name="settingsButtons"> </slot>

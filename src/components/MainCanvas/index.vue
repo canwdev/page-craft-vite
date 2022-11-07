@@ -272,6 +272,7 @@ export default defineComponent({
   display: flex;
   flex: 1;
   flex-direction: column;
+  z-index: 1;
 }
 
 .selection-action {
