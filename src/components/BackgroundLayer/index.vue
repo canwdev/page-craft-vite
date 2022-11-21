@@ -11,7 +11,7 @@ export default defineComponent({
   setup() {
     const clearDraggable = ref<any>(null)
     const imageRef = ref()
-    const imageSrc = ref<string | null>(null)
+    const imageSrc = ref<string | undefined>(undefined)
     const imageChooserRef = ref()
     const isDragMode = ref(false)
     const zoomPercent = ref(100)
@@ -52,7 +52,7 @@ export default defineComponent({
         }
       },
       onRemoveImage() {
-        imageSrc.value = null
+        imageSrc.value = undefined
 
         imageRef.value.style.top = 0
         imageRef.value.style.left = 0
