@@ -1,5 +1,5 @@
 <script lang="ts">
-import {defineComponent} from 'vue'
+import {defineComponent, shallowRef} from 'vue'
 import {setDraggableMouse} from '@/utils/draggable-mouse'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {debounce, throttle} from 'throttle-debounce'
@@ -55,8 +55,6 @@ type StyleEditorOptions = {
   wHeight: string
 }
 
-let editorInstance: monaco.editor.IStandaloneCodeEditor
-
 export default defineComponent({
   name: 'StyleEditor',
   props: {
@@ -73,6 +71,7 @@ export default defineComponent({
     const titleBarButtonsRef = ref()
     const editorContainerRef = ref()
     const craftStore = useCraftStore()
+    const editorInstance = shallowRef<monaco.editor.IStandaloneCodeEditor>()
 
     const clearDraggable = ref<any>(null)
     const styleEl = ref<HTMLElement | null>(null)
@@ -95,7 +94,7 @@ export default defineComponent({
 
     watch(mVisible, () => {
       if (mVisible) {
-        editorInstance.layout()
+        editorInstance.value.layout()
       }
     })
     const {isDarkMode} = useIsDarkMode()
@@ -104,7 +103,7 @@ export default defineComponent({
       return isDarkMode.value ? 'vs-dark' : 'vs'
     }
     watch(isDarkMode, (val) => {
-      editorInstance.updateOptions({theme: getThemeName()})
+      editorInstance.value.updateOptions({theme: getThemeName()})
     })
 
     const {loadCurCompStyle, saveCurCompStyle} = useCompStorage()
@@ -118,7 +117,7 @@ export default defineComponent({
 
     const reloadStyle = () => {
       const style = loadCurCompStyle()
-      editorInstance.setValue(style)
+      editorInstance.value.setValue(style)
       // call instantly
       handleUpdateStyle(style, false)
     }
@@ -140,7 +139,7 @@ export default defineComponent({
       const style = loadCurCompStyle()
 
       emmetCSS(monaco, ['css', 'scss'])
-      editorInstance = monaco.editor.create(editorContainerRef.value, {
+      editorInstance.value = monaco.editor.create(editorContainerRef.value, {
         value: style,
         language: 'scss',
         theme: getThemeName(), // 'vs' 'hc-black' 'vs-dark'
@@ -160,7 +159,7 @@ export default defineComponent({
         tabSize: 2,
       })
 
-      editorInstance.onDidChangeModelContent(() => {
+      editorInstance.value.onDidChangeModelContent(() => {
         handleEditorChangeDebounced()
       })
 
@@ -180,7 +179,7 @@ export default defineComponent({
       if (clearDraggable.value) {
         clearDraggable.value()
       }
-      editorInstance.dispose()
+      editorInstance.value.dispose()
       globalEventBus.off(GlobalEvents.ON_NODE_SELECT, handleNodeSelect)
       globalEventBus.off(GlobalEvents.IMPORT_SUCCESS, reloadStyle)
     })
@@ -198,14 +197,14 @@ export default defineComponent({
       const height = editorContainerRef.value.offsetHeight
 
       // update editor layout
-      editorInstance.layout()
+      editorInstance.value.layout()
 
       styleEditorOptions.wWidth = width + 'px'
       styleEditorOptions.wHeight = height + 'px'
     })
 
     const handleEditorChangeDebounced = debounce(500, false, () => {
-      handleUpdateStyle(editorInstance.getValue())
+      handleUpdateStyle(editorInstance.value.getValue())
     })
 
     const errorTip = ref()
@@ -249,26 +248,26 @@ export default defineComponent({
 
     const message = useMessage()
     const execBeautifyCssAction = async () => {
-      const textValue = editorInstance.getValue()
+      const textValue = editorInstance.value.getValue()
       if (!textValue.trim()) {
         message.info('Please type some code to be beautified')
       } else {
         const beautifiedCSS = formatCss(textValue)
         if (textValue.trim() !== beautifiedCSS.trim()) {
           // Select all text
-          const fullRange = editorInstance.getModel()?.getFullModelRange()
+          const fullRange = editorInstance.value.getModel()?.getFullModelRange()
           if (fullRange) {
             // Apply the text over the range
-            editorInstance.executeEdits(null, [
+            editorInstance.value.executeEdits(null, [
               {
                 text: beautifiedCSS,
                 range: fullRange,
               },
             ])
             // Indicates the above edit is a complete undo/redo change.
-            // editorInstance.pushUndoStop()
+            // editorInstance.value.pushUndoStop()
           } else {
-            await editorInstance.setValue(beautifiedCSS)
+            await editorInstance.value.setValue(beautifiedCSS)
           }
 
           await handleUpdateStyle(beautifiedCSS)
@@ -279,11 +278,11 @@ export default defineComponent({
           message.success('Your code already looks beautiful :-)')
         }
       }
-      editorInstance.focus()
+      editorInstance.value.focus()
     }
 
     const copyStyle = () => {
-      copyToClipboard(editorInstance.getValue())
+      copyToClipboard(editorInstance.value.getValue())
       message.success('Copy Success!')
     }
 
@@ -313,8 +312,8 @@ export default defineComponent({
     }
 
     const insertStyleCode = (code) => {
-      const selection = editorInstance.getSelection()
-      editorInstance.executeEdits('', [
+      const selection = editorInstance.value.getSelection()
+      editorInstance.value.executeEdits('', [
         {
           range: new monaco.Range(
             selection?.startLineNumber || 0,
@@ -326,7 +325,7 @@ export default defineComponent({
         },
       ])
       setTimeout(() => {
-        editorInstance.focus()
+        editorInstance.value.focus()
       }, 100)
     }
 
