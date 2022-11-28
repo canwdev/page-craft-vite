@@ -35,6 +35,7 @@ export default defineComponent({
       console.log('[handleAddTranslate]')
       item.value.translates.push(formatTranslateItem())
     }
+    const isExpand = ref(true)
     return {
       handleAddChildren,
       handleAddTranslate,
@@ -54,14 +55,15 @@ export default defineComponent({
         list.splice(index, 1)
         item.value.translates = list
       },
+      isExpand,
     }
   },
 })
 </script>
 
 <template>
-  <n-card class="tree-item" v-if="item">
-    <div style="display: flex; margin-bottom: 10px">
+  <n-card size="small" class="tree-item" v-if="item">
+    <div style="display: flex">
       <n-input
         class="font-code"
         v-model:value="item.namespace"
@@ -69,7 +71,7 @@ export default defineComponent({
         clearable
         style="flex: 1"
       />
-      <n-space style="margin-left: 10px">
+      <n-space style="margin-left: 10px" align="center">
         <n-button type="info" @click="handleGetJSON">Copy JSON</n-button>
         <n-popconfirm v-if="!isRoot" @positive-click="$emit('onRemove')">
           <template #trigger>
@@ -77,32 +79,41 @@ export default defineComponent({
           </template>
           Remove Group?
         </n-popconfirm>
+        <n-switch v-model:value="isExpand">
+          <template #checked> Show </template>
+          <template #unchecked> Hide </template>
+        </n-switch>
       </n-space>
     </div>
 
-    <n-list v-if="item.translates && item.translates.length">
-      <TranslateItem
-        v-for="(vi, index) in item.translates"
-        :item="vi"
-        :tree-item="item"
-        :key="index"
-        @onRemove="handleRemoveItem(index)"
-      />
-    </n-list>
+    <n-collapse-transition :show="isExpand">
+      <n-list style="margin-top: 10px" v-if="item.translates && item.translates.length">
+        <TranslateItem
+          v-for="(vi, index) in item.translates"
+          :item="vi"
+          :tree-item="item"
+          :key="index"
+          @onRemove="handleRemoveItem(index)"
+        />
+      </n-list>
 
-    <template v-if="item.children && item.children.length">
-      <TranslateTreeItem
-        v-for="(vi, index) in item.children"
-        :item="vi"
-        :key="index"
-        :is-root="false"
-        @onRemove="handleRemoveTreeItem(index)"
-      />
-    </template>
-    <n-space justify="start" style="margin-top: 10px">
-      <n-button type="primary" @click="handleAddTranslate">Add Translate</n-button>
+      <n-space style="margin-top: 10px" justify="space-between" align="center">
+        <n-button type="primary" @click="handleAddTranslate">Add Translate</n-button>
+      </n-space>
+
+      <div style="border-top: 1px dashed darkseagreen; margin-top: 10px; margin-bottom: 10px" />
+
+      <template v-if="item.children && item.children.length">
+        <TranslateTreeItem
+          v-for="(vi, index) in item.children"
+          :item="vi"
+          :key="index"
+          :is-root="false"
+          @onRemove="handleRemoveTreeItem(index)"
+        />
+      </template>
       <n-button type="primary" @click="handleAddChildren">Add Children</n-button>
-    </n-space>
+    </n-collapse-transition>
   </n-card>
 </template>
 
@@ -112,6 +123,7 @@ export default defineComponent({
     outline: 1px solid green;
   }
 
+  margin-top: 10px;
   margin-bottom: 10px;
 }
 </style>

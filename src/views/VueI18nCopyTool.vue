@@ -72,7 +72,9 @@ export default defineComponent({
       </n-space>
     </n-card>
 
-    <TranslateTreeItem v-for="(item, index) in treeRootList" :key="index" :item="item" />
+    <div class="_container">
+      <TranslateTreeItem v-for="(item, index) in treeRootList" :key="index" :item="item" />
+    </div>
 
     <FileChooser ref="importFileChooserRef" accept="application/JSON" @selected="handleImport" />
   </div>
@@ -84,5 +86,11 @@ export default defineComponent({
   height: 100%;
   background-color: white;
   overflow: auto;
+
+  ._container {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 </style>
