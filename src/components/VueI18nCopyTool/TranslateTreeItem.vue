@@ -87,7 +87,11 @@ export default defineComponent({
     </div>
 
     <n-collapse-transition :show="isExpand">
-      <n-list style="margin-top: 10px" v-if="item.translates && item.translates.length">
+      <n-list
+        size="small"
+        style="margin-top: 10px"
+        v-if="item.translates && item.translates.length"
+      >
         <TranslateItem
           v-for="(vi, index) in item.translates"
           :item="vi"
@@ -97,7 +101,7 @@ export default defineComponent({
         />
       </n-list>
 
-      <n-space style="margin-top: 10px" justify="space-between" align="center">
+      <n-space justify="space-between" align="center" style="margin-top: 5px">
         <n-button type="primary" @click="handleAddTranslate">Add Translate</n-button>
       </n-space>
 

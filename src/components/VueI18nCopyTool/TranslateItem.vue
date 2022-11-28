@@ -33,21 +33,31 @@ export default defineComponent({
     })
 
     const nameDisplay = computed(() => {
-      if (!item.value) {
+      if (!item.value || !item.value.value) {
         return ''
       }
       let name = item.value.key
       if (namespacePrefix.value) {
         name = namespacePrefix.value + '.' + name
       }
-      return `$t('${name}')`
+      return name
     })
 
     return {
       namespacePrefix,
       nameDisplay,
-      handleCopy() {
-        copyToClipboard(nameDisplay.value)
+      handleCopy(type) {
+        let text = `$t('${nameDisplay.value}')`
+
+        if (type === 'html') {
+          text = `{{ $t('${nameDisplay.value}') }}`
+        } else if (type === 'v-html') {
+          text = `v-html="$t('${nameDisplay.value}')"`
+        } else if (type === 'js') {
+          text = `this.$t('${nameDisplay.value}')`
+        }
+
+        copyToClipboard(text)
         window.$message.success('Text Copied')
       },
       handleBlur() {
@@ -61,11 +71,18 @@ export default defineComponent({
 </script>
 
 <template>
-  <n-list-item v-if="item" class="translate-item">
-    <n-space justify="space-between">
-      <n-space>
-        <n-input class="font-code" v-model:value="item.key" placeholder="key" clearable />
+  <n-list-item size="small" v-if="item" class="translate-item">
+    <n-space size="small" justify="space-between">
+      <n-space size="small" align="center">
         <n-input
+          size="small"
+          class="font-code"
+          v-model:value="item.key"
+          placeholder="key"
+          clearable
+        />
+        <n-input
+          size="small"
           style="width: 350px"
           v-model:value="item.value"
           placeholder="value"
@@ -73,16 +90,25 @@ export default defineComponent({
           @blur="handleBlur"
         />
 
-        <n-input-group>
+        <n-space v-if="nameDisplay" size="small">
           <n-input
             class="font-code"
-            size="tiny"
-            style="width: 350px"
-            :value="nameDisplay"
+            size="small"
+            style="width: 300px"
+            :value="`$t('${nameDisplay}')`"
             readonly
           />
-          <n-button size="medium" type="info" @click="handleCopy"> Copy </n-button>
-        </n-input-group>
+          <n-button size="small" type="info" @click="handleCopy" title="Original"> Copy: </n-button>
+          <n-button size="small" type="info" @click="handleCopy('html')" title="HTML template">
+            H
+          </n-button>
+          <n-button size="small" type="info" @click="handleCopy('v-html')" title="v-html template">
+            VH
+          </n-button>
+          <n-button size="small" type="info" @click="handleCopy('js')" title="JS Script">
+            JS
+          </n-button>
+        </n-space>
       </n-space>
       <n-space>
         <n-popconfirm @positive-click="$emit('onRemove')">

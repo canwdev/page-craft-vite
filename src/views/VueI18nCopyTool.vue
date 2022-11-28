@@ -58,17 +58,26 @@ export default defineComponent({
 
 <template>
   <div class="vue-i18n-copy-tool">
-    <n-card size="small" style="margin-bottom: 10px">
-      <n-space>
-        <n-button @click="importFileChooserRef.chooseFile()" size="tiny">Import JSON</n-button>
-        <n-button @click="handleExport" size="tiny">Export JSON</n-button>
+    <n-card size="small" style="position: sticky; top: 0; z-index: 100; margin-bottom: 10px">
+      <n-space align="center" justify="space-between">
+        <n-space>
+          <n-button @click="importFileChooserRef.chooseFile()" size="tiny">Import JSON</n-button>
+          <n-button @click="handleExport" size="tiny">Export JSON</n-button>
 
-        <n-popconfirm @positive-click="loadDemo">
-          <template #trigger>
-            <n-button size="tiny">Demo</n-button>
-          </template>
-          Load Demo? This will override editing content.
-        </n-popconfirm>
+          <n-popconfirm @positive-click="loadDemo">
+            <template #trigger>
+              <n-button size="tiny">Demo</n-button>
+            </template>
+            Load Demo? This will override editing content.
+          </n-popconfirm>
+        </n-space>
+
+        <b>VueI18nCopyTool</b>
+        <n-space>
+          <n-button type="primary" @click="$router.push({name: 'HomeView'})" size="tiny"
+            >Home</n-button
+          >
+        </n-space>
       </n-space>
     </n-card>
 
@@ -86,9 +95,10 @@ export default defineComponent({
   height: 100%;
   background-color: white;
   overflow: auto;
+  position: relative;
 
   ._container {
-    max-width: 1200px;
+    max-width: 1600px;
     margin-left: auto;
     margin-right: auto;
   }

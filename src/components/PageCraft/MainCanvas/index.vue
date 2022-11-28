@@ -237,6 +237,17 @@ export default defineComponent({
           >
             <slot name="barExtra"></slot>
           </n-dropdown>
+
+          <n-popover :duration="100" trigger="hover">
+            <template #trigger>
+              <n-button size="tiny"> Tools </n-button>
+            </template>
+            <template #header>
+              <n-button size="tiny" @click="$router.push({name: 'VueI18nCopyTool'})">
+                VueI18nCopyTool
+              </n-button>
+            </template>
+          </n-popover>
         </n-space>
       </n-space>
     </div>
