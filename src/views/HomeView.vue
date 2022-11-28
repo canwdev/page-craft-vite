@@ -21,10 +21,6 @@ export default defineComponent({
     // BackgroundLayer,
   },
   setup() {
-    window.$message = useMessage()
-    window.$notification = useNotification()
-    window.$dialog = useDialog()
-    window.$loadingBar = useLoadingBar()
     const mainStore = useMainStore()
 
     const isEnableGlobalStyle = useLocalStorageBoolean(LsKeys.IS_ENABLE_GLOBAL_STYLE, true)

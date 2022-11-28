@@ -7,6 +7,7 @@ import {
   ITranslateTreeItem,
 } from '@/enum/vue-i18n-copy-tool'
 import TranslateItem from './TranslateItem.vue'
+import {copyToClipboard} from '@/utils'
 
 export default defineComponent({
   name: 'TranslateTreeItem',
@@ -40,6 +41,8 @@ export default defineComponent({
       handleGetJSON() {
         const obj = exportI18nTreeJsonObj([item.value])
         console.log(obj)
+        copyToClipboard(JSON.stringify(obj, null, 2))
+        window.$message.success('JSON Copied')
       },
       handleRemoveTreeItem(index) {
         const list = [...item.value.children]
@@ -58,16 +61,16 @@ export default defineComponent({
 
 <template>
   <n-card class="tree-item" v-if="item">
-    <n-input class="font-code" v-model:value="item.namespace" placeholder="namespace" clearable />
-
-    <n-space justify="space-between" style="margin-top: 10px; margin-bottom: 10px">
-      <n-space>
-        <n-button @click="handleAddChildren">Add Children</n-button>
-        <n-button type="primary" @click="handleAddTranslate">Add Translate</n-button>
-      </n-space>
-
-      <n-space>
-        <n-button @click="handleGetJSON">Get JSON</n-button>
+    <div style="display: flex; margin-bottom: 10px">
+      <n-input
+        class="font-code"
+        v-model:value="item.namespace"
+        placeholder="namespace"
+        clearable
+        style="flex: 1"
+      />
+      <n-space style="margin-left: 10px">
+        <n-button type="info" @click="handleGetJSON">Copy JSON</n-button>
         <n-popconfirm v-if="!isRoot" @positive-click="$emit('onRemove')">
           <template #trigger>
             <n-button type="error">Remove</n-button>
@@ -75,7 +78,7 @@ export default defineComponent({
           Remove Group?
         </n-popconfirm>
       </n-space>
-    </n-space>
+    </div>
 
     <n-list v-if="item.translates && item.translates.length">
       <TranslateItem
@@ -96,6 +99,10 @@ export default defineComponent({
         @onRemove="handleRemoveTreeItem(index)"
       />
     </template>
+    <n-space justify="start" style="margin-top: 10px">
+      <n-button type="primary" @click="handleAddTranslate">Add Translate</n-button>
+      <n-button type="primary" @click="handleAddChildren">Add Children</n-button>
+    </n-space>
   </n-card>
 </template>
 

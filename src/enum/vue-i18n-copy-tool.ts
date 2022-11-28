@@ -78,3 +78,14 @@ export const exportI18nTreeJsonObj = (tree: ITranslateTreeItem[], obj: any = {})
 
   return obj
 }
+
+export const formatI18nKey = (str: string): string => {
+  if (!str) {
+    return ''
+  }
+  str = str.toLowerCase()
+  str = str.replace(/[^a-zA-Z0-9\s]+/g, '')
+  str = str.replace(/\s/gi, '_')
+  str = str.slice(0, 20)
+  return str
+}

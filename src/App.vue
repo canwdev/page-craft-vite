@@ -1,9 +1,11 @@
 <script lang="ts">
 import {darkTheme, GlobalThemeOverrides} from 'naive-ui'
 import {useGlobalTheme} from '@/hooks/use-global-theme'
-
+import AppSub from '@/AppSub.vue'
 export default defineComponent({
-  components: {},
+  components: {
+    AppSub,
+  },
   setup() {
     const themeOverrides: GlobalThemeOverrides = {
       common: {
@@ -35,6 +37,7 @@ export default defineComponent({
         <n-message-provider placement="top-right">
           <n-dialog-provider>
             <RouterView />
+            <AppSub />
           </n-dialog-provider>
         </n-message-provider>
       </n-notification-provider>

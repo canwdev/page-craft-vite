@@ -1,6 +1,7 @@
 <script lang="ts">
 import {defineComponent, PropType} from 'vue'
-import {ITranslateItem, ITranslateTreeItem} from '@/enum/vue-i18n-copy-tool'
+import {formatI18nKey, ITranslateItem, ITranslateTreeItem} from '@/enum/vue-i18n-copy-tool'
+import {copyToClipboard} from '@/utils'
 
 export default defineComponent({
   name: 'TranslateItem',
@@ -39,27 +40,49 @@ export default defineComponent({
       if (namespacePrefix.value) {
         name = namespacePrefix.value + '.' + name
       }
-      return name
+      return `$t('${name}')`
     })
 
-    return {namespacePrefix, nameDisplay}
+    return {
+      namespacePrefix,
+      nameDisplay,
+      handleCopy() {
+        copyToClipboard(nameDisplay.value)
+        window.$message.success('Text Copied')
+      },
+      handleBlur() {
+        if (!item.value.key) {
+          item.value.key = formatI18nKey(item.value.value)
+        }
+      },
+    }
   },
 })
 </script>
 
 <template>
-  <n-list-item class="translate-item">
+  <n-list-item v-if="item" class="translate-item">
     <n-space justify="space-between">
       <n-space>
         <n-input class="font-code" v-model:value="item.key" placeholder="key" clearable />
-        <n-input style="width: 350px" v-model:value="item.value" placeholder="value" clearable />
         <n-input
-          class="font-code"
-          size="tiny"
           style="width: 350px"
-          :value="`$t('${nameDisplay}')`"
-          readonly
+          v-model:value="item.value"
+          placeholder="value"
+          clearable
+          @blur="handleBlur"
         />
+
+        <n-input-group>
+          <n-input
+            class="font-code"
+            size="tiny"
+            style="width: 350px"
+            :value="nameDisplay"
+            readonly
+          />
+          <n-button size="medium" type="info" @click="handleCopy"> Copy </n-button>
+        </n-input-group>
       </n-space>
       <n-space>
         <n-popconfirm @positive-click="$emit('onRemove')">
