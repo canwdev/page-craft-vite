@@ -3,12 +3,12 @@ import {defineComponent, shallowRef} from 'vue'
 import {setDraggableMouse} from '@/utils/draggable-mouse'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {debounce, throttle} from 'throttle-debounce'
-import {LsKeys} from '@/enum'
+import {LsKeys} from '@/enum/page-craft'
 import {createOrFindStyleNode} from '@/utils/dom'
 import {sassToCSS, suggestElementClass} from '@/utils/css'
 import {copyToClipboard} from '@/utils'
 import {useCraftStore} from '@/store/craft'
-import {ActionBlockItems, BlockItem} from '@/enum/block'
+import {ActionBlockItems, BlockItem} from '@/enum/page-craft/block'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {
   cssHelperClassList,
@@ -16,7 +16,7 @@ import {
   cssSnippetList,
   sassVariablesList,
   vue2TransitionsList,
-} from '@/enum/styles'
+} from '@/enum/page-craft/styles'
 import {formatCss} from '@/utils/formater'
 import {useIsDarkMode} from '@/hooks/use-global-theme'
 import {useCompStorage} from '@/hooks/use-component-storage'

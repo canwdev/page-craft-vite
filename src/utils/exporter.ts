@@ -1,6 +1,6 @@
 import moment from 'moment/moment'
 import FileSaver from 'file-saver'
-import {ExportItem} from '@/enum/block'
+import {ExportItem} from '@/enum/page-craft/block'
 import {sassToCSS} from '@/utils/css'
 import {formatCss, formatHtml} from '@/utils/formater'
 

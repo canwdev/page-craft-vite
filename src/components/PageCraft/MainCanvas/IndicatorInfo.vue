@@ -1,6 +1,6 @@
 <script lang="ts">
 import {defineComponent, toRefs} from 'vue'
-import {TOOL_CLASSES} from '@/enum'
+import {TOOL_CLASSES} from '@/enum/page-craft'
 
 export default defineComponent({
   name: 'IndicatorInfo',

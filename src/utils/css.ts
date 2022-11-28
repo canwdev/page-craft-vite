@@ -1,5 +1,5 @@
 // @ts-ignore
-import {TOOL_CLASSES} from '@/enum'
+import {TOOL_CLASSES} from '@/enum/page-craft'
 const Sass = window.Sass
 
 export const sassToCSS = (sassCode, options?): Promise<string> => {

@@ -1,8 +1,8 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
-import {BlockItem} from '@/enum/block'
-import DomPreview from '@/components/DomPreview/DomPreview.vue'
+import {BlockItem} from '@/enum/page-craft/block'
+import DomPreview from '@/components/PageCraft/DomPreview/DomPreview.vue'
 import {loadComponentHtml, loadComponentStyle} from '@/hooks/use-component-storage'
 import {throttle} from 'throttle-debounce'
 

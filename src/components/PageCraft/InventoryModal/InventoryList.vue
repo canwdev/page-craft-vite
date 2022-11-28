@@ -1,8 +1,8 @@
 <script lang="ts">
 import {defineComponent, PropType} from 'vue'
-import BlockCard from '@/components/InventoryModal/BlockCard.vue'
-import ComponentCard from '@/components/InventoryModal/ComponentCard.vue'
-import {BlockItem} from '@/enum/block'
+import BlockCard from '@/components/PageCraft/InventoryModal/BlockCard.vue'
+import ComponentCard from '@/components/PageCraft/InventoryModal/ComponentCard.vue'
+import {BlockItem} from '@/enum/page-craft/block'
 
 export default defineComponent({
   name: 'InventoryList',

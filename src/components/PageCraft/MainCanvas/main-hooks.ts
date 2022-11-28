@@ -6,10 +6,10 @@ import {
   handleReadSelectedFile,
 } from '@/utils/exporter'
 import globalEventBus, {GlobalEvents, syncStorageData} from '@/utils/global-event-bus'
-import {removeMouseOverDomElementEffect} from '@/components/MainCanvas/interaction-hooks'
+import {removeMouseOverDomElementEffect} from '@/components/PageCraft/MainCanvas/interaction-hooks'
 import {copyToClipboard} from '@/utils'
 import {formatCss, formatHtml} from '@/utils/formater'
-import {ExportItem} from '@/enum/block'
+import {ExportItem} from '@/enum/page-craft/block'
 import {useCompStorage} from '@/hooks/use-component-storage'
 import {useCraftStore} from '@/store/craft'
 import {UndoRedo} from '@/utils/undo-redo'

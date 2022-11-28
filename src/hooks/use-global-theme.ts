@@ -1,4 +1,4 @@
-import {LsKeys} from '@/enum'
+import {LsKeys} from '@/enum/page-craft'
 import {useMainStore} from '@/store/main-store'
 
 export enum ThemeType {

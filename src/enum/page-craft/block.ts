@@ -1,8 +1,8 @@
-import iconArrow from '../assets/textures/arrow.png?url'
-import iconIronPickaxe from '../assets/textures/iron_pickaxe.png?url'
-import iconIronSword from '../assets/textures/iron_sword.png?url'
-import iconOakSign from '../assets/textures/oak_sign.png?url'
-import iconRedStone from '../assets/textures/redstone.png?url'
+import iconArrow from '../../assets/textures/arrow.png?url'
+import iconIronPickaxe from '../../assets/textures/iron_pickaxe.png?url'
+import iconIronSword from '../../assets/textures/iron_sword.png?url'
+import iconOakSign from '../../assets/textures/oak_sign.png?url'
+import iconRedStone from '../../assets/textures/redstone.png?url'
 
 export enum ActionType {
   CURSOR = 'CURSOR',

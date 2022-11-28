@@ -1,13 +1,9 @@
 <script lang="ts">
 import {darkTheme, GlobalThemeOverrides} from 'naive-ui'
-import AppContent from '@/AppContent.vue'
 import {useGlobalTheme} from '@/hooks/use-global-theme'
-import {useMainStore} from '@/store/main-store'
 
 export default defineComponent({
-  components: {
-    AppContent,
-  },
+  components: {},
   setup() {
     const themeOverrides: GlobalThemeOverrides = {
       common: {
@@ -38,7 +34,7 @@ export default defineComponent({
       <n-notification-provider>
         <n-message-provider placement="top-right">
           <n-dialog-provider>
-            <AppContent />
+            <RouterView />
           </n-dialog-provider>
         </n-message-provider>
       </n-notification-provider>

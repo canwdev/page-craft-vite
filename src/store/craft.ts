@@ -1,6 +1,6 @@
-import {ActionBlockItems} from '@/enum/block'
-import {BlockItem} from '@/enum/block'
-import {LsKeys} from '@/enum'
+import {ActionBlockItems} from '@/enum/page-craft/block'
+import {BlockItem} from '@/enum/page-craft/block'
+import {LsKeys} from '@/enum/page-craft'
 
 type CraftStore = {
   currentBlock: BlockItem

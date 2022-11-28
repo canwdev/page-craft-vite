@@ -8,17 +8,17 @@ import {
   BlockItem,
   ActionType,
   createComponentBlockItem,
-} from '@/enum/block'
-import {htmlBlockItemList} from '@/enum/inventory'
-import {ActionBlockItems} from '@/enum/block'
-import InventoryList from '@/components/InventoryModal/InventoryList.vue'
+} from '@/enum/page-craft/block'
+import {htmlBlockItemList} from '@/enum/page-craft/inventory'
+import {ActionBlockItems} from '@/enum/page-craft/block'
+import InventoryList from '@/components/PageCraft/InventoryModal/InventoryList.vue'
 import {useCraftStore} from '@/store/craft'
 import {useLocalStorageString} from '@/hooks/use-local-storage'
-import {LsKeys} from '@/enum'
+import {LsKeys} from '@/enum/page-craft'
 import {useCompImportExport, useCompStorage} from '@/hooks/use-component-storage'
 import FileChooser from '@/components/FileChooser.vue'
 import {colorHash} from '@/utils'
-import PopWindow from '@/components/DomPreview/PopWindow.vue'
+import PopWindow from '@/components/PageCraft/DomPreview/PopWindow.vue'
 import {useContextMenu} from '@/hooks/use-context-menu'
 import {useInitComponents} from '@/hooks/use-init'
 

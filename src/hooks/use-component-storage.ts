@@ -1,7 +1,7 @@
 import {useCraftStore} from '@/store/craft'
-import {LsKeys} from '@/enum'
+import {LsKeys} from '@/enum/page-craft'
 import {useLocalStorageObject, useLocalStorageString} from '@/hooks/use-local-storage'
-import {BlockItem, createComponentBlockItem, ExportItem} from '@/enum/block'
+import {BlockItem, createComponentBlockItem, ExportItem} from '@/enum/page-craft/block'
 import {syncStorageData} from '@/utils/global-event-bus'
 import {getFileName, handleExportFile, handleReadSelectedFile} from '@/utils/exporter'
 

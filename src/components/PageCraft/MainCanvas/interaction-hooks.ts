@@ -1,12 +1,12 @@
-import {ActionType, BlockType} from '@/enum/block'
+import {ActionType, BlockType} from '@/enum/page-craft/block'
 import {useCraftStore} from '@/store/craft'
 import {appendCustomBlock, createBlockElement} from '@/utils/dom'
-import {TOOL_CLASSES} from '@/enum'
+import {TOOL_CLASSES} from '@/enum/page-craft'
 import {throttle} from 'throttle-debounce'
 import $ from 'jquery'
 import {useContextMenu} from '@/hooks/use-context-menu'
 import {copyToClipboard} from '@/utils'
-import {elementCustomPropsMap} from '@/components/MainCanvas/element-edit'
+import {elementCustomPropsMap} from '@/components/PageCraft/MainCanvas/element-edit'
 
 export const removeMouseOverDomElementEffect = () => {
   const $el = $(TOOL_CLASSES.DOT_CLASS_MOUSE_OVER)

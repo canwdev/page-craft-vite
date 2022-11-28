@@ -1,7 +1,7 @@
 // noinspection ES6ConvertVarToLetConst
 
 import $ from 'jquery'
-import {TOOL_CLASSES} from '@/enum'
+import {TOOL_CLASSES} from '@/enum/page-craft'
 
 const generateFullSelector = function (el: HTMLElement, options?) {
   options = options || {}

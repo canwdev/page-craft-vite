@@ -1,7 +1,7 @@
 <script lang="ts">
 import {defineComponent, PropType} from 'vue'
 import {useCraftStore} from '@/store/craft'
-import {ActionType, BlockItem} from '@/enum/block'
+import {ActionType, BlockItem} from '@/enum/page-craft/block'
 import {colorHash, formatDate} from '@/utils'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 

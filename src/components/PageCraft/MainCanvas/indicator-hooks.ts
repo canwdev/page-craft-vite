@@ -1,5 +1,5 @@
-import {LsKeys} from '@/enum'
-import {ActionType, BlockType} from '@/enum/block'
+import {LsKeys} from '@/enum/page-craft'
+import {ActionType, BlockType} from '@/enum/page-craft/block'
 import {useCraftStore} from '@/store/craft'
 
 export type IndicatorOptions = {

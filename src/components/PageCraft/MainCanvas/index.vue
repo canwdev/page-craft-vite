@@ -1,13 +1,13 @@
 <script lang="ts">
 import {useCraftStore} from '@/store/craft'
-import {ActionType} from '@/enum/block'
+import {ActionType} from '@/enum/page-craft/block'
 import {useIsDarkMode} from '@/hooks/use-global-theme'
 import FileChooser from '@/components/FileChooser.vue'
-import IndicatorInfo from '@/components/MainCanvas/IndicatorInfo.vue'
-import {useIndicator} from '@/components/MainCanvas/indicator-hooks'
-import {useInteractionHooks} from '@/components/MainCanvas/interaction-hooks'
-import {useMcMain} from '@/components/MainCanvas/main-hooks'
-import ElementEditDialog from '@/components/MainCanvas/ElementEditDialog.vue'
+import IndicatorInfo from '@/components/PageCraft/MainCanvas/IndicatorInfo.vue'
+import {useIndicator} from '@/components/PageCraft/MainCanvas/indicator-hooks'
+import {useInteractionHooks} from '@/components/PageCraft/MainCanvas/interaction-hooks'
+import {useMcMain} from '@/components/PageCraft/MainCanvas/main-hooks'
+import ElementEditDialog from '@/components/PageCraft/MainCanvas/ElementEditDialog.vue'
 
 export default defineComponent({
   name: 'MainCanvas',

@@ -1,10 +1,10 @@
 <script lang="ts">
 import {useCraftStore} from '@/store/craft'
-import {BlockItem, initToolbarList} from '@/enum/block'
-import ToolItem from '@/components/ToolBar/ToolItem.vue'
+import {BlockItem, initToolbarList} from '@/enum/page-craft/block'
+import ToolItem from '@/components/PageCraft/ToolBar/ToolItem.vue'
 import {useIsDarkMode} from '@/hooks/use-global-theme'
-import InventoryModal from '@/components/InventoryModal/index.vue'
-import {LsKeys} from '@/enum'
+import InventoryModal from '@/components/PageCraft/InventoryModal/index.vue'
+import {LsKeys} from '@/enum/page-craft'
 import {
   useLocalStorageBoolean,
   useLocalStorageNumber,

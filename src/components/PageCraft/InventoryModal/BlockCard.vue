@@ -1,7 +1,7 @@
 <script lang="ts">
 import {defineComponent, PropType} from 'vue'
 import {useCraftStore} from '@/store/craft'
-import {BlockItem} from '@/enum/block'
+import {BlockItem} from '@/enum/page-craft/block'
 import {colorHash} from '@/utils'
 
 export default defineComponent({
