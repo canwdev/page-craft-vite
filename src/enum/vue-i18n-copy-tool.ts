@@ -60,3 +60,21 @@ export const parseI18nJsonObj = (
   console.log(tree)
   return tree
 }
+
+export const exportI18nTreeJsonObj = (tree: ITranslateTreeItem[], obj: any = {}) => {
+  tree.forEach((item) => {
+    const o = {}
+
+    item.translates.forEach((t) => {
+      o[t.key] = t.value
+    })
+
+    exportI18nTreeJsonObj(item.children, o)
+
+    obj[item.namespace] = o
+  })
+
+  // console.log(obj)
+
+  return obj
+}

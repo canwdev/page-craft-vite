@@ -1,6 +1,7 @@
 <script lang="ts">
 import {defineComponent, PropType} from 'vue'
 import {
+  exportI18nTreeJsonObj,
   formatTranslateItem,
   formatTranslateTreeItem,
   ITranslateTreeItem,
@@ -37,7 +38,8 @@ export default defineComponent({
       handleAddChildren,
       handleAddTranslate,
       handleGetJSON() {
-        console.log(JSON.stringify({...item.value}))
+        const obj = exportI18nTreeJsonObj([item.value])
+        console.log(obj)
       },
       handleRemoveTreeItem(index) {
         const list = [...item.value.children]
@@ -56,7 +58,7 @@ export default defineComponent({
 
 <template>
   <n-card class="tree-item" v-if="item">
-    <n-input v-model:value="item.namespace" placeholder="namespace" clearable />
+    <n-input class="font-code" v-model:value="item.namespace" placeholder="namespace" clearable />
 
     <n-space justify="space-between" style="margin-top: 10px; margin-bottom: 10px">
       <n-space>

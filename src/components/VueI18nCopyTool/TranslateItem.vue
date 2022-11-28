@@ -16,22 +16,33 @@ export default defineComponent({
   },
   emits: ['onRemove'],
   setup(props) {
-    const {treeItem} = toRefs(props)
+    const {item, treeItem} = toRefs(props)
 
-    const codeDisplay = computed(() => {
+    const namespacePrefix = computed(() => {
       if (!treeItem.value) {
         return ''
       }
       const list: string[] = []
-      let i: ITranslateTreeItem = treeItem.value
+      let i: any = treeItem.value
       while (i) {
         list.push(i.namespace)
-        i = i.parent
+        i = i.parent || null
       }
       return list.reverse().join('.')
     })
 
-    return {codeDisplay}
+    const nameDisplay = computed(() => {
+      if (!item.value) {
+        return ''
+      }
+      let name = item.value.key
+      if (namespacePrefix.value) {
+        name = namespacePrefix.value + '.' + name
+      }
+      return name
+    })
+
+    return {namespacePrefix, nameDisplay}
   },
 })
 </script>
@@ -40,10 +51,15 @@ export default defineComponent({
   <n-list-item class="translate-item">
     <n-space justify="space-between">
       <n-space>
-        <n-input v-model:value="item.key" placeholder="key" clearable />
-        <n-input style="width: 450px" v-model:value="item.value" placeholder="value" clearable />
-
-        <span class="i18n-badge font-code">{{ `$t('${item.key}')` }} {{ codeDisplay }}</span>
+        <n-input class="font-code" v-model:value="item.key" placeholder="key" clearable />
+        <n-input style="width: 350px" v-model:value="item.value" placeholder="value" clearable />
+        <n-input
+          class="font-code"
+          size="tiny"
+          style="width: 350px"
+          :value="`$t('${nameDisplay}')`"
+          readonly
+        />
       </n-space>
       <n-space>
         <n-popconfirm @positive-click="$emit('onRemove')">

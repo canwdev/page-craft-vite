@@ -2,12 +2,13 @@
 import {defineComponent} from 'vue'
 import TranslateTreeItem from '@/components/VueI18nCopyTool/TranslateTreeItem.vue'
 import {
+  exportI18nTreeJsonObj,
   formatTranslateTreeItem,
   ITranslateTreeItem,
   parseI18nJsonObj,
 } from '@/enum/vue-i18n-copy-tool'
 import FileChooser from '@/components/FileChooser.vue'
-import {handleReadSelectedFile} from '@/utils/exporter'
+import {getFileName, handleExportFile, handleReadSelectedFile} from '@/utils/exporter'
 
 export default defineComponent({
   name: 'VueI18nCopyTool',
@@ -22,9 +23,8 @@ export default defineComponent({
     const handleImport = async (file) => {
       const str = await handleReadSelectedFile(file)
       const obj = JSON.parse(str as string)
-
-      console.log(obj)
-      console.log(parseI18nJsonObj(obj))
+      // console.log(obj)
+      treeRootList.value = parseI18nJsonObj(obj)
     }
 
     onMounted(() => {
@@ -74,6 +74,13 @@ export default defineComponent({
     return {
       treeRootList,
       handleImport,
+      handleExport() {
+        handleExportFile(
+          getFileName(null, 'i18n_export'),
+          JSON.stringify(exportI18nTreeJsonObj(treeRootList.value), null, 2),
+          '.json'
+        )
+      },
       importFileChooserRef,
     }
   },
@@ -85,7 +92,7 @@ export default defineComponent({
     <n-card size="small" style="margin-bottom: 10px">
       <n-space>
         <n-button @click="importFileChooserRef.chooseFile()" size="tiny">Import JSON</n-button>
-        <n-button size="tiny">Export JSON</n-button>
+        <n-button @click="handleExport" size="tiny">Export JSON</n-button>
       </n-space>
     </n-card>
 
