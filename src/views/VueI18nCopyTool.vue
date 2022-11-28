@@ -93,7 +93,6 @@ export default defineComponent({
 .vue-i18n-copy-tool {
   width: 100%;
   height: 100%;
-  background-color: white;
   overflow: auto;
   position: relative;
 

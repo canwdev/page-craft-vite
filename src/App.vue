@@ -79,10 +79,10 @@ export default defineComponent({
   }
 
   &._dark {
-    //background-color: #434343;
-    //background-image: linear-gradient(#434343, #282828);
-    background-color: #5480d3;
-    background-image: linear-gradient(#5480d3, #3256a7);
+    background-color: #434343;
+    background-image: linear-gradient(#434343, #282828);
+    //background-color: #5480d3;
+    //background-image: linear-gradient(#5480d3, #3256a7);
     &::before {
       background-image: url('@/assets/bg/grid.png');
     }
