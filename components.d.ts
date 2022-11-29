@@ -28,8 +28,6 @@ declare module '@vue/runtime-core' {
     NForm: typeof import('naive-ui')['NForm']
     NFormItem: typeof import('naive-ui')['NFormItem']
     NInput: typeof import('naive-ui')['NInput']
-    NInputGroup: typeof import('naive-ui')['NInputGroup']
-    NInputGroupLabel: typeof import('naive-ui')['NInputGroupLabel']
     NList: typeof import('naive-ui')['NList']
     NListItem: typeof import('naive-ui')['NListItem']
     NLoadingBarProvider: typeof import('naive-ui')['NLoadingBarProvider']
@@ -45,7 +43,6 @@ declare module '@vue/runtime-core' {
     NTabPane: typeof import('naive-ui')['NTabPane']
     NTabs: typeof import('naive-ui')['NTabs']
     NThing: typeof import('naive-ui')['NThing']
-    NTooltip: typeof import('naive-ui')['NTooltip']
     PopWindow: typeof import('./src/components/PageCraft/DomPreview/PopWindow.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
@@ -55,7 +52,6 @@ declare module '@vue/runtime-core' {
     ToolItem: typeof import('./src/components/PageCraft/ToolBar/ToolItem.vue')['default']
     TranslateItem: typeof import('./src/components/VueI18nCopyTool/TranslateItem.vue')['default']
     TranslateTreeItem: typeof import('./src/components/VueI18nCopyTool/TranslateTreeItem.vue')['default']
-    TreeItem: typeof import('./src/components/VueI18nCopyTool/TreeItem.vue')['default']
     VStyle: typeof import('./src/components/PageCraft/DomPreview/VStyle.vue')['default']
   }
 }

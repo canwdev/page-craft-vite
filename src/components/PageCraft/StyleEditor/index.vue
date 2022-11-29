@@ -71,7 +71,8 @@ export default defineComponent({
     const titleBarButtonsRef = ref()
     const editorContainerRef = ref()
     const craftStore = useCraftStore()
-    const editorInstance = shallowRef<monaco.editor.IStandaloneCodeEditor>()
+    // monaco.editor.IStandaloneCodeEditor
+    const editorInstance = shallowRef<any>()
 
     const clearDraggable = ref<any>(null)
     const styleEl = ref<HTMLElement | null>(null)
