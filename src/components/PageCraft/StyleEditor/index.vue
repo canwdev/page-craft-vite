@@ -417,14 +417,7 @@ export default defineComponent({
               />
             </button>
 
-            <n-dropdown
-              :options="toolOptions"
-              key-field="label"
-              placement="bottom"
-              trigger="hover"
-              size="medium"
-              :animated="false"
-            >
+            <n-dropdown :options="toolOptions" key-field="label" size="large">
               <button title="Tools">
                 <img src="~@/assets/textures/enchanted_book.png" alt="tools" />
               </button>

@@ -238,18 +238,6 @@ export const useMcMain = (options) => {
         },
       ],
     },
-    {
-      type: 'divider',
-      label: 'd0',
-    },
-    {
-      label: 'Stylus Format Tool',
-      props: {
-        onClick: async () => {
-          emit('openStylusTools')
-        },
-      },
-    },
   ]
 
   // record html before action

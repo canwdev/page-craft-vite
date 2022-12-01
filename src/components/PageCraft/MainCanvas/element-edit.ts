@@ -18,6 +18,7 @@ export type ElementEditForm = {
   tagName: string
   className: string
   innerHTML: string
+  outerHTML: string
   customProps: any
 }
 
@@ -166,6 +167,7 @@ export const formatForm = (el: HTMLElement | null): ElementEditForm => {
     tagName: options.tagName || '',
     className: options.className || '',
     innerHTML: options.innerHTML || '',
+    outerHTML: options.outerHTML || '',
     // get element specific custom props
     customProps: customProps && customProps.getCustomProps(el),
   }
@@ -183,4 +185,19 @@ export const getCustomFormItems = (el: HTMLElement | null): CustomFormItem[] => 
   }
 
   return customProps.customFormItems
+}
+
+export const updateHtmlElement = (el, data) => {
+  if (el.outerHTML !== data.outerHTML) {
+    el.outerHTML = data.outerHTML
+  } else if (el.innerHTML !== data.innerHTML) {
+    el.innerHTML = data.innerHTML
+  }
+  if (el.className !== data.className) {
+    el.className = data.className
+  }
+  const customProps = elementCustomPropsMap[el?.tagName.toLowerCase()]
+  if (customProps) {
+    customProps.updateElement(el, data)
+  }
 }

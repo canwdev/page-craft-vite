@@ -55,8 +55,14 @@ export default defineComponent({
     const {exportAll, handleImportAll, componentList, currentComponentName} = useCompImportExport()
     const importFileChooserRef = ref()
 
+    const componentListSorted = computed(() => {
+      return componentList.value.sort((a, b) => {
+        return b.data.timestamp - a.data.timestamp
+      })
+    })
+
     const componentListFormatted = computed(() => {
-      return [ActionBlockItems.ADD_COMPONENT, ...[...componentList.value].reverse()]
+      return [ActionBlockItems.ADD_COMPONENT, ...componentListSorted.value]
     })
 
     watch(

@@ -1,11 +1,9 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import ToolBar from '@/components/PageCraft/ToolBar/index.vue'
-import StyleEditor from '@/components/PageCraft/StyleEditor/index.vue'
 import MainCanvas from '@/components/PageCraft/MainCanvas/index.vue'
 import {useLocalStorageBoolean} from '@/hooks/use-local-storage'
 import {LsKeys} from '@/enum/page-craft'
-import StylusToolsDialog from '@/components/PageCraft/StyleEditor/StylusToolsDialog.vue'
 import {getUserTheme, themeOptions, useHandleThemeChange} from '@/hooks/use-global-theme'
 import {useMainStore} from '@/store/main-store'
 import {createOrFindStyleNode} from '@/utils/dom'
@@ -15,9 +13,11 @@ export default defineComponent({
   name: 'HomeView',
   components: {
     ToolBar,
-    StyleEditor,
+    StyleEditor: defineAsyncComponent(() => import('@/components/PageCraft/StyleEditor/index.vue')),
     MainCanvas,
-    StylusToolsDialog,
+    StylusToolsDialog: defineAsyncComponent(
+      () => import('@/components/PageCraft/StyleEditor/StylusToolsDialog.vue')
+    ),
     // BackgroundLayer,
   },
   setup() {

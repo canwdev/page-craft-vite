@@ -6,7 +6,10 @@ import {throttle} from 'throttle-debounce'
 import $ from 'jquery'
 import {useContextMenu} from '@/hooks/use-context-menu'
 import {copyToClipboard} from '@/utils'
-import {elementCustomPropsMap} from '@/components/PageCraft/MainCanvas/element-edit'
+import {
+  elementCustomPropsMap,
+  updateHtmlElement,
+} from '@/components/PageCraft/MainCanvas/element-edit'
 
 export const removeMouseOverDomElementEffect = () => {
   const $el = $(TOOL_CLASSES.DOT_CLASS_MOUSE_OVER)
@@ -167,20 +170,6 @@ export const useInteractionHooks = (options) => {
                   nodeAction(targetEl, () => {
                     isShowElementEdit.value = true
                   })
-                },
-              },
-            },
-            {
-              label: '🖍 Rename Class',
-              props: {
-                onClick: async () => {
-                  removeMouseOverDomElementEffect()
-                  const className = await prompt('Rename Class', targetEl.className)
-                  if (className) {
-                    recordUndo()
-                    targetEl.className = className
-                    saveData()
-                  }
                 },
               },
             },
@@ -396,16 +385,7 @@ export const useInteractionHooks = (options) => {
     }
     recordUndo()
     const data = formValueRef.value
-    if (el.className !== data.className) {
-      el.className = data.className
-    }
-    if (el.innerHTML !== data.innerHTML) {
-      el.innerHTML = data.innerHTML
-    }
-    const customProps = elementCustomPropsMap[el?.tagName.toLowerCase()]
-    if (customProps) {
-      customProps.updateElement(el, data)
-    }
+    updateHtmlElement(el, data)
     saveData()
   }
 

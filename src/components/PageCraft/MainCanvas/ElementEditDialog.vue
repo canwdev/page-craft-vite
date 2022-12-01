@@ -19,6 +19,7 @@ export default defineComponent({
   emits: ['onSave'],
   setup(props, {emit}) {
     const mVisible = useModelWrapper(props, emit, 'visible')
+    const isEditInnerHTML = ref(false)
 
     const formRef = ref<FormInst | null>(null)
     const formValueRef = ref(formatForm(null))
@@ -66,6 +67,7 @@ export default defineComponent({
       },
       customFormItems,
       CustomFormInputType,
+      isEditInnerHTML,
     }
   },
 })
@@ -88,10 +90,19 @@ export default defineComponent({
           @keyup.enter="handleValidateClick"
         />
       </n-form-item>
-      <n-form-item label="innerHTML" path="innerHTML">
+      <n-form-item v-if="isEditInnerHTML" label="innerHTML" path="innerHTML">
         <n-input
           v-model:value="formValueRef.innerHTML"
           placeholder="innerHTML"
+          type="textarea"
+          class="font-code"
+          rows="8"
+        />
+      </n-form-item>
+      <n-form-item v-else label="outerHTML" path="outerHTML">
+        <n-input
+          v-model:value="formValueRef.outerHTML"
+          placeholder="outerHTML"
           type="textarea"
           class="font-code"
           rows="8"
@@ -125,9 +136,14 @@ export default defineComponent({
         />
       </n-form-item>
 
-      <n-space justify="end">
-        <n-button attr-type="button" @click="handleCancel"> Cancel </n-button>
-        <n-button type="primary" attr-type="button" @click="handleValidateClick"> OK </n-button>
+      <n-space justify="space-between">
+        <n-space>
+          <n-switch v-model:value="isEditInnerHTML" title="Toggle innerHTML/outerHTML" />
+        </n-space>
+        <n-space>
+          <n-button attr-type="button" @click="handleCancel"> Cancel </n-button>
+          <n-button type="primary" attr-type="button" @click="handleValidateClick"> OK </n-button>
+        </n-space>
       </n-space>
     </n-form>
   </n-modal>

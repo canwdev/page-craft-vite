@@ -8,6 +8,7 @@ import {useIndicator} from '@/components/PageCraft/MainCanvas/indicator-hooks'
 import {useInteractionHooks} from '@/components/PageCraft/MainCanvas/interaction-hooks'
 import {useMcMain} from '@/components/PageCraft/MainCanvas/main-hooks'
 import ElementEditDialog from '@/components/PageCraft/MainCanvas/ElementEditDialog.vue'
+import {useRouter} from 'vue-router'
 
 export default defineComponent({
   name: 'MainCanvas',
@@ -75,6 +76,26 @@ export default defineComponent({
       }
     )
 
+    const router = useRouter()
+    const toolsMenuOptions = [
+      {
+        label: 'Stylus Format Tool',
+        props: {
+          onClick: async () => {
+            emit('openStylusTools')
+          },
+        },
+      },
+      {
+        label: 'Vue i18n Copy Tool',
+        props: {
+          onClick: async () => {
+            await router.push({name: 'VueI18nCopyTool'})
+          },
+        },
+      },
+    ]
+
     return {
       craftStore,
       mainCanvasRef,
@@ -92,6 +113,7 @@ export default defineComponent({
       isDarkMode,
       htmlMenuOptions,
       styleMenuOptions,
+      toolsMenuOptions,
       fileChooserRef,
       isShowImportDialog,
       setMainCanvasHtml,
@@ -238,16 +260,14 @@ export default defineComponent({
             <slot name="barExtra"></slot>
           </n-dropdown>
 
-          <n-popover :duration="100" trigger="hover">
-            <template #trigger>
-              <n-button size="tiny"> Tools </n-button>
-            </template>
-            <template #header>
-              <n-button size="tiny" @click="$router.push({name: 'VueI18nCopyTool'})">
-                VueI18nCopyTool
-              </n-button>
-            </template>
-          </n-popover>
+          <n-dropdown
+            :options="toolsMenuOptions"
+            key-field="label"
+            placement="bottom-start"
+            trigger="hover"
+          >
+            <n-button size="tiny"> Tools </n-button>
+          </n-dropdown>
         </n-space>
       </n-space>
     </div>
