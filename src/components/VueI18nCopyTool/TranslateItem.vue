@@ -5,6 +5,7 @@ import {copyToClipboard} from '@/utils'
 
 export default defineComponent({
   name: 'TranslateItem',
+  components: {},
   props: {
     item: {
       type: Object as PropType<ITranslateItem>,
@@ -15,7 +16,7 @@ export default defineComponent({
       default: null,
     },
   },
-  emits: ['onRemove'],
+  emits: ['onRemove', 'previewArray'],
   setup(props) {
     const {item, treeItem} = toRefs(props)
 
@@ -82,6 +83,7 @@ export default defineComponent({
           clearable
         />
         <n-input
+          v-if="!Array.isArray(item.value)"
           size="small"
           style="width: 350px"
           v-model:value="item.value"
@@ -89,6 +91,14 @@ export default defineComponent({
           clearable
           @blur="handleBlur"
         />
+        <n-button
+          v-else
+          :title="item.value"
+          size="small"
+          style="width: 350px"
+          @click="$emit('previewArray', item)"
+          >Array</n-button
+        >
 
         <n-space v-if="nameDisplay" size="small">
           <n-input

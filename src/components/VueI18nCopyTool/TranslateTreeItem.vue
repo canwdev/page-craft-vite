@@ -4,6 +4,7 @@ import {
   exportI18nTreeJsonObj,
   formatTranslateItem,
   formatTranslateTreeItem,
+  ITranslateItem,
   ITranslateTreeItem,
 } from '@/enum/vue-i18n-copy-tool'
 import TranslateItem from './TranslateItem.vue'
@@ -36,6 +37,17 @@ export default defineComponent({
       item.value.translates.push(formatTranslateItem())
     }
     const isExpand = ref(true)
+
+    const isShowPreviewArray = ref(false)
+    const currentPreviewItem = shallowRef<ITranslateItem | null>(null)
+    const currentArrayString = ref<string | null>(null)
+    watch(isShowPreviewArray, (val) => {
+      if (!val) {
+        currentPreviewItem.value = null
+        currentArrayString.value = null
+      }
+    })
+
     return {
       handleAddChildren,
       handleAddTranslate,
@@ -56,6 +68,20 @@ export default defineComponent({
         item.value.translates = list
       },
       isExpand,
+      isShowPreviewArray,
+      currentPreviewItem,
+      currentArrayString,
+      handlePreviewArray(item: ITranslateItem) {
+        currentPreviewItem.value = item
+        currentArrayString.value = JSON.stringify(item.value, null, 2)
+        isShowPreviewArray.value = true
+      },
+      handleSaveArray() {
+        if (currentPreviewItem.value) {
+          currentPreviewItem.value.value = JSON.parse(currentArrayString.value || '[]')
+          isShowPreviewArray.value = false
+        }
+      },
     }
   },
 })
@@ -97,6 +123,7 @@ export default defineComponent({
           :item="vi"
           :tree-item="item"
           :key="index"
+          @previewArray="handlePreviewArray"
           @onRemove="handleRemoveItem(index)"
         />
       </n-list>
@@ -114,10 +141,30 @@ export default defineComponent({
           :key="index"
           :is-root="false"
           @onRemove="handleRemoveTreeItem(index)"
+          @previewArray="handlePreviewArray"
         />
       </template>
       <n-button type="primary" @click="handleAddChildren">Add Children</n-button>
     </n-collapse-transition>
+
+    <n-modal
+      style="width: 80vw"
+      preset="dialog"
+      negative-text="Cancel"
+      positive-text="Save"
+      title="Array Detail"
+      @positive-click="handleSaveArray"
+      v-model:show="isShowPreviewArray"
+    >
+      <n-input
+        v-if="isShowPreviewArray && currentArrayString"
+        type="textarea"
+        v-model:value="currentArrayString"
+        class="font-code"
+        rows="30"
+        placeholder="Array JSON String"
+      ></n-input>
+    </n-modal>
   </n-card>
 </template>
 
