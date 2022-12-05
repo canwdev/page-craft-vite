@@ -388,7 +388,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <transition name="zoom">
+  <transition name="none">
     <div
       v-show="mVisible"
       class="style-editor-dialog page-craft-window _thin-window"

@@ -29,7 +29,7 @@ export default defineComponent({
     const {item} = toRefs(props)
     const handleAddChildren = () => {
       console.log('[handleAddChildren]')
-      item.value.children.push(formatTranslateTreeItem())
+      item.value.children.push(formatTranslateTreeItem({parent: item.value}))
     }
     const handleAddTranslate = () => {
       console.log('[handleAddTranslate]')
