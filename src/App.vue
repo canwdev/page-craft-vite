@@ -66,18 +66,6 @@ export default defineComponent({
     background-size: 100px;
     opacity: 0.4;
   }
-  &::after {
-    content: 'PageCraft';
-    font-family: 'Minecraft';
-    color: #5480d3;
-    opacity: 0.6;
-    position: absolute;
-    right: 25px;
-    bottom: 10px;
-    pointer-events: none;
-    z-index: 1;
-  }
-
   &._dark {
     background-color: #434343;
     background-image: linear-gradient(#434343, #282828);
