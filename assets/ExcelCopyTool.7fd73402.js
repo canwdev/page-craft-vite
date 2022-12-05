@@ -1,0 +1,1 @@
+import{d as o,_ as e,o as c,c as t}from"./index.1d0e8e49.js";const _=o({name:"ExcelCopyTool"});const s={class:"excel-copy-tool"};function n(l,p,a,d,r,f){return c(),t("div",s,"ExcelCopyTool")}const i=e(_,[["render",n],["__scopeId","data-v-24f38326"]]);export{i as default};
