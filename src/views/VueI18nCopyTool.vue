@@ -9,6 +9,7 @@ import {
 } from '@/enum/vue-i18n-copy-tool'
 import FileChooser from '@/components/FileChooser.vue'
 import {getFileName, handleExportFile, handleReadSelectedFile} from '@/utils/exporter'
+import iconTranslate from '../assets/textures/translate.svg?url'
 
 export default defineComponent({
   name: 'VueI18nCopyTool',
@@ -51,6 +52,7 @@ export default defineComponent({
           },
         })
       },
+      iconTranslate,
     }
   },
 })
@@ -59,26 +61,25 @@ export default defineComponent({
 <template>
   <div class="vue-i18n-copy-tool">
     <n-card size="small" style="position: sticky; top: 0; z-index: 100; margin-bottom: 10px">
-      <n-space align="center" justify="space-between">
-        <n-space>
-          <n-button @click="importFileChooserRef.chooseFile()" size="tiny">Import JSON</n-button>
-          <n-button @click="handleExport" size="tiny">Export JSON</n-button>
+      <n-page-header subtitle="" @back="$router.push({name: 'HomeView'})">
+        <template #title> VueI18nCopyTool </template>
+        <template #avatar> <n-avatar :src="iconTranslate" style="background: none" /> </template>
+        <template #extra>
+          <n-space>
+            <n-button type="primary" @click="importFileChooserRef.chooseFile()" size="small">
+              Import JSON
+            </n-button>
+            <n-button @click="handleExport" size="small">Export JSON</n-button>
 
-          <n-popconfirm @positive-click="loadDemo">
-            <template #trigger>
-              <n-button size="tiny">Demo</n-button>
-            </template>
-            Load Demo? This will override editing content.
-          </n-popconfirm>
-        </n-space>
-
-        <b>VueI18nCopyTool</b>
-        <n-space>
-          <n-button type="primary" @click="$router.push({name: 'HomeView'})" size="tiny"
-            >Home</n-button
-          >
-        </n-space>
-      </n-space>
+            <n-popconfirm @positive-click="loadDemo">
+              <template #trigger>
+                <n-button size="small">Demo</n-button>
+              </template>
+              Load Demo? This will override editing content.
+            </n-popconfirm>
+          </n-space>
+        </template>
+      </n-page-header>
     </n-card>
 
     <div class="_container">

@@ -12,6 +12,7 @@ declare global {
     Sass: any
     stylusSupermacyFormat: any
     $juice: any
+    XLSX: any
   }
 }
 

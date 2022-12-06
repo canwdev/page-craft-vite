@@ -34,7 +34,7 @@ export default defineComponent({
   >
     <n-loading-bar-provider>
       <n-notification-provider>
-        <n-message-provider placement="top-right">
+        <n-message-provider placement="top">
           <n-dialog-provider>
             <RouterView />
             <AppSub />

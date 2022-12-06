@@ -1,6 +1,7 @@
 <script lang="ts">
 import {defineComponent, ref} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
+import {copyToClipboard} from '@/utils'
 
 export default defineComponent({
   name: 'StylusToolsDialog',
@@ -12,20 +13,7 @@ export default defineComponent({
   },
   setup(props, {emit}) {
     const mVisible = useModelWrapper(props, emit, 'visible')
-    const styleInput = ref(`@require "./file.styl"
-/**
-multi-line comment
-*/
-.class1, .class2
-  padding 1px // comment
-  margin 0px 5px 0px 5px
-  color alpha(red, 0.5)
-  if (!condition)
-    @extend .class3
-  else
-    background blue
-  block =
-    display none`)
+    const styleInput = ref('')
     const styleOutput = ref('')
     const errorText = ref('')
 
@@ -53,6 +41,23 @@ multi-line comment
       errorText,
       doFormat,
       doClear,
+      showDemo() {
+        styleInput.value = `@require "./file.styl"
+/**
+multi-line comment
+*/
+.class1, .class2
+  padding 1px // comment
+  margin 0px 5px 0px 5px
+  color alpha(red, 0.5)
+  if (!condition)
+    @extend .class3
+  else
+    background blue
+  block =
+    display none`
+        doFormat()
+      },
     }
   },
 })
@@ -68,8 +73,9 @@ multi-line comment
     <div class="style-tools">
       <div class="common-card">
         <div class="action-row">
-          <n-button size="small" @click="doFormat">Format</n-button>
+          <n-button type="primary" size="small" @click="doFormat">Format</n-button>
           <n-button size="small" @click="doClear">Clear</n-button>
+          <n-button size="small" @click="showDemo">Demo</n-button>
           <n-a href="https://thisismanta.github.io/stylus-supremacy/#demo" target="_blank"
             >Stylus Supermacy</n-a
           >

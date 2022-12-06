@@ -87,6 +87,14 @@ export default defineComponent({
         },
       },
       {
+        label: 'Excel Copy Tool',
+        props: {
+          onClick: async () => {
+            await router.push({name: 'ExcelCopyTool'})
+          },
+        },
+      },
+      {
         label: 'Vue i18n Copy Tool',
         props: {
           onClick: async () => {
