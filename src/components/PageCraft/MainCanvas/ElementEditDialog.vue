@@ -19,7 +19,7 @@ export default defineComponent({
   emits: ['onSave'],
   setup(props, {emit}) {
     const mVisible = useModelWrapper(props, emit, 'visible')
-    const isEditInnerHTML = ref(false)
+    const isEditInnerHTML = ref(true)
 
     const formRef = ref<FormInst | null>(null)
     const formValueRef = ref(formatForm(null))
@@ -138,7 +138,10 @@ export default defineComponent({
 
       <n-space justify="space-between">
         <n-space>
-          <n-switch v-model:value="isEditInnerHTML" title="Toggle innerHTML/outerHTML" />
+          <n-switch v-model:value="isEditInnerHTML" title="Toggle innerHTML/outerHTML">
+            <template #checked> InnerHTML </template>
+            <template #unchecked> OuterHTML </template>
+          </n-switch>
         </n-space>
         <n-space>
           <n-button attr-type="button" @click="handleCancel"> Cancel </n-button>
