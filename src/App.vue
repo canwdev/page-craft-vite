@@ -9,8 +9,8 @@ export default defineComponent({
   setup() {
     const themeOverrides: GlobalThemeOverrides = {
       common: {
-        borderRadiusSmall: '0px',
-        borderRadius: '0px',
+        borderRadiusSmall: '4px',
+        borderRadius: '4px',
       },
     }
 

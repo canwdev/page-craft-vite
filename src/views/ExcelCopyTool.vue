@@ -5,7 +5,7 @@ import dynamicLoadScript from '@/utils/dynamic-load-script'
 import iconExcel from '../assets/textures/excel.svg?url'
 import {copyToClipboard} from '@/utils'
 import {getFileName, handleExportFile} from '@/utils/exporter'
-
+import CopyExampleDialog from '@/components/VueI18nCopyTool/CopyExampleDialog.vue'
 const formatMultipleLine = (str, mode) => {
   if (mode === CopyMode.text) {
     return str
@@ -40,6 +40,7 @@ export default defineComponent({
   name: 'ExcelCopyTool',
   components: {
     FileChooser,
+    CopyExampleDialog,
   },
   setup() {
     const importFileChooserRef = ref()
@@ -147,6 +148,7 @@ export default defineComponent({
       return window.XLSX.utils.sheet_to_json(getWorksheet(workbookRef.value))
     }
 
+    const isShowCopyExample = ref(false)
     return {
       iconExcel,
       sheetNames,
@@ -197,6 +199,8 @@ export default defineComponent({
           },
         },
       ],
+      isShowCopyExample,
+      formatMultipleLine,
     }
   },
 })
@@ -214,7 +218,7 @@ export default defineComponent({
           <template #extra>
             <n-space>
               <n-space size="small" align="center">
-                CopyMode:
+                <n-button text @click="isShowCopyExample = true">CopyMode:</n-button>
                 <n-select
                   size="small"
                   v-model:value="copyMode"
@@ -256,6 +260,12 @@ export default defineComponent({
       ref="importFileChooserRef"
       accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
       @selected="handleImport"
+    />
+
+    <CopyExampleDialog
+      v-model:visible="isShowCopyExample"
+      :title="'Copy Mode Example: ' + copyMode"
+      :format-text="(str) => formatMultipleLine(str, copyMode)"
     />
   </div>
 </template>

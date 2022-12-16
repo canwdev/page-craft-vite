@@ -167,6 +167,7 @@ export default defineComponent({
   border-bottom: 0;
   padding: 5px 10px 6px;
   overflow: hidden;
+
   * {
     box-sizing: border-box;
   }
