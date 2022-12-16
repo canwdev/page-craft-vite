@@ -1,6 +1,6 @@
 <script lang="ts">
 import {defineComponent, shallowRef} from 'vue'
-import {setDraggableMouse} from '@/utils/draggable-mouse'
+import {DraggableWindow} from '@/utils/draggable-window'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {debounce, throttle} from 'throttle-debounce'
 import {LsKeys} from '@/enum/page-craft'
@@ -74,7 +74,7 @@ export default defineComponent({
     // monaco.editor.IStandaloneCodeEditor
     const editorInstance = shallowRef<any>()
 
-    const clearDraggable = ref<any>(null)
+    const dWindow = shallowRef<any>(null)
     const styleEl = ref<HTMLElement | null>(null)
 
     const styleEditorOptions = reactive<StyleEditorOptions>(
@@ -124,7 +124,7 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      clearDraggable.value = setDraggableMouse({
+      dWindow.value = new DraggableWindow({
         dragHandleEl: titleBarRef.value,
         dragTargetEl: dialogRef.value,
         allowOut: true,
@@ -134,6 +134,7 @@ export default defineComponent({
           handleMoveDebounced(data)
         },
         autoPosOnResize: true,
+        isDebug: true,
       })
 
       styleEl.value = createOrFindStyleNode(LsKeys.MAIN_STYLE)
@@ -177,8 +178,8 @@ export default defineComponent({
     })
 
     onBeforeUnmount(() => {
-      if (clearDraggable.value) {
-        clearDraggable.value()
+      if (dWindow.value) {
+        dWindow.value.destroy()
       }
       editorInstance.value.dispose()
       globalEventBus.off(GlobalEvents.ON_NODE_SELECT, handleNodeSelect)

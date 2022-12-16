@@ -1,6 +1,6 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
-import {setDraggableMouse} from '@/utils/draggable-mouse'
+import {DraggableWindow} from '@/utils/draggable-window'
 import FileChooser from '@/components/FileChooser.vue'
 
 export default defineComponent({
@@ -9,7 +9,7 @@ export default defineComponent({
     FileChooser,
   },
   setup() {
-    const clearDraggable = ref<any>(null)
+    const dWindow = ref<any>(null)
     const imageRef = ref()
     const imageSrc = ref<string | undefined>(undefined)
     const imageChooserRef = ref()
@@ -17,7 +17,7 @@ export default defineComponent({
     const zoomPercent = ref(100)
 
     onMounted(() => {
-      clearDraggable.value = setDraggableMouse({
+      dWindow.value = new DraggableWindow({
         dragHandleEl: imageRef.value,
         dragTargetEl: imageRef.value,
         allowOut: true,
