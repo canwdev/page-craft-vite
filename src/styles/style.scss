@@ -109,22 +109,37 @@ Inspired by https://khang-nd.github.io/7.css/
   background: rgba(255, 255, 255, 0.8);
   //backdrop-filter: blur(4px);
 
-  .page-craft-title-bar {
-    margin-left: -6px;
-    margin-right: -6px;
-    padding: 0 6px 4px;
+  .page-craft-window-content {
+    height: 100%;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    text-shadow: 0 0 10px white;
+    flex-direction: column;
 
-    .page-craft-title-bar-text {
-      margin-top: 4px;
-      img {
-        margin-right: 5px;
+    .page-craft-title-bar {
+      margin-left: -6px;
+      margin-right: -6px;
+      padding: 0 6px 4px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      text-shadow: 0 0 10px white;
+
+      .page-craft-title-bar-text {
+        margin-top: 4px;
+        img {
+          margin-right: 5px;
+        }
+      }
+    }
+    .page-craft-window-body {
+      flex: 1;
+
+      border: 1px solid rgba(0, 0, 0, 0.6);
+      &._bg {
+        background-color: rgba(255, 255, 255, 1);
       }
     }
   }
+
   .page-craft-window-controls {
     border-radius: 0;
     display: flex;
@@ -160,13 +175,6 @@ Inspired by https://khang-nd.github.io/7.css/
     }
   }
 
-  .page-craft-window-body {
-
-    border: 1px solid rgba(0, 0, 0, 0.6);
-    &._bg {
-      background-color: rgba(255, 255, 255, 1);
-    }
-  }
   &._thin-window {
     padding: 0;
 

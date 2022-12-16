@@ -135,6 +135,7 @@ export default defineComponent({
         },
         autoPosOnResize: true,
         isDebug: true,
+        resizeable: true,
       })
 
       styleEl.value = createOrFindStyleNode(LsKeys.MAIN_STYLE)
@@ -167,7 +168,7 @@ export default defineComponent({
 
       new ResizeObserver(() => {
         handleResizeDebounced()
-      }).observe(editorContainerRef.value)
+      }).observe(dialogRef.value)
 
       handleUpdateStyle(style, false)
 
@@ -191,12 +192,12 @@ export default defineComponent({
       styleEditorOptions.wLeft = left
     })
 
-    const handleResizeDebounced = throttle(100, false, () => {
-      if (!mVisible.value || !editorContainerRef.value) {
+    const handleResizeDebounced = throttle(50, false, () => {
+      if (!mVisible.value || !dialogRef.value) {
         return
       }
-      const width = editorContainerRef.value.offsetWidth
-      const height = editorContainerRef.value.offsetHeight
+      const width = dialogRef.value.offsetWidth
+      const height = dialogRef.value.offsetHeight
 
       // update editor layout
       editorInstance.value.layout()
@@ -244,8 +245,8 @@ export default defineComponent({
       dialogRef.value.style.top = styleEditorOptions.wTop
       dialogRef.value.style.left = styleEditorOptions.wLeft
 
-      editorContainerRef.value.style.width = styleEditorOptions.wWidth
-      editorContainerRef.value.style.height = styleEditorOptions.wHeight
+      dialogRef.value.style.width = styleEditorOptions.wWidth
+      dialogRef.value.style.height = styleEditorOptions.wHeight
     }
 
     const message = useMessage()
@@ -454,6 +455,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .style-editor-dialog {
+  min-width: 400px;
+  min-height: 200px;
   position: fixed;
   z-index: 998;
   top: 30%;
@@ -474,14 +477,13 @@ export default defineComponent({
 
   .page-craft-window-body {
     position: relative;
+    height: calc(100% - 30px);
 
     .code-editor-placeholder {
-      min-width: 400px;
-      min-height: 200px;
       width: 100%;
       height: 100%;
-      resize: both;
-      overflow: hidden;
+      //resize: both;
+      //overflow: hidden;
     }
 
     .code-error-tip {
