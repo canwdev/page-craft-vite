@@ -12,8 +12,9 @@ declare module '@vue/runtime-core' {
     ComponentCard: typeof import('./src/components/PageCraft/InventoryModal/ComponentCard.vue')['default']
     CopyExampleDialog: typeof import('./src/components/VueI18nCopyTool/CopyExampleDialog.vue')['default']
     DomPreview: typeof import('./src/components/PageCraft/DomPreview/DomPreview.vue')['default']
+    DraggableWindow: typeof import('./src/components/CommonUI/DraggableWindow.vue')['default']
     ElementEditDialog: typeof import('./src/components/PageCraft/MainCanvas/ElementEditDialog.vue')['default']
-    FileChooser: typeof import('./src/components/FileChooser.vue')['default']
+    FileChooser: typeof import('./src/components/CommonUI/FileChooser.vue')['default']
     IndicatorInfo: typeof import('./src/components/PageCraft/MainCanvas/IndicatorInfo.vue')['default']
     InventoryList: typeof import('./src/components/PageCraft/InventoryModal/InventoryList.vue')['default']
     InventoryModal: typeof import('./src/components/PageCraft/InventoryModal/index.vue')['default']
@@ -55,6 +56,7 @@ declare module '@vue/runtime-core' {
     ToolItem: typeof import('./src/components/PageCraft/ToolBar/ToolItem.vue')['default']
     TranslateItem: typeof import('./src/components/VueI18nCopyTool/TranslateItem.vue')['default']
     TranslateTreeItem: typeof import('./src/components/VueI18nCopyTool/TranslateTreeItem.vue')['default']
+    ViewportWindow: typeof import('./src/components/CommonUI/ViewportWindow.vue')['default']
     VStyle: typeof import('./src/components/PageCraft/DomPreview/VStyle.vue')['default']
   }
 }

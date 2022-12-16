@@ -1,7 +1,7 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
-import {DraggableWindow} from '@/utils/draggable-window'
-import FileChooser from '@/components/FileChooser.vue'
+import {WindowController} from '@/utils/window-controller'
+import FileChooser from '@/components/CommonUI/FileChooser.vue'
 
 export default defineComponent({
   name: 'BackgroundLayer',
@@ -17,7 +17,7 @@ export default defineComponent({
     const zoomPercent = ref(100)
 
     onMounted(() => {
-      dWindow.value = new DraggableWindow({
+      dWindow.value = new WindowController({
         dragHandleEl: imageRef.value,
         dragTargetEl: imageRef.value,
         allowOut: true,

@@ -1,6 +1,6 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
-import FileChooser from '@/components/FileChooser.vue'
+import FileChooser from '@/components/CommonUI/FileChooser.vue'
 import dynamicLoadScript from '@/utils/dynamic-load-script'
 import iconExcel from '../assets/textures/excel.svg?url'
 import {copyToClipboard} from '@/utils'

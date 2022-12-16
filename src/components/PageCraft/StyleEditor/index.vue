@@ -1,8 +1,7 @@
 <script lang="ts">
 import {defineComponent, shallowRef} from 'vue'
-import {DraggableWindow} from '@/utils/draggable-window'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
-import {debounce, throttle} from 'throttle-debounce'
+import {debounce} from 'throttle-debounce'
 import {LsKeys} from '@/enum/page-craft'
 import {createOrFindStyleNode} from '@/utils/dom'
 import {sassToCSS, suggestElementClass} from '@/utils/css'
@@ -20,6 +19,7 @@ import {
 import {formatCss} from '@/utils/formater'
 import {useIsDarkMode} from '@/hooks/use-global-theme'
 import {useCompStorage} from '@/hooks/use-component-storage'
+import ViewportWindow from '@/components/CommonUI/ViewportWindow.vue'
 
 // import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
 import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
@@ -48,13 +48,6 @@ self.MonacoEnvironment = {
   },
 }
 
-type StyleEditorOptions = {
-  wTop: string
-  wLeft: string
-  wWidth: string
-  wHeight: string
-}
-
 export default defineComponent({
   name: 'StyleEditor',
   props: {
@@ -63,35 +56,18 @@ export default defineComponent({
       default: false,
     },
   },
+  components: {
+    ViewportWindow,
+  },
   emits: ['update:visible'],
   setup(props, {emit}) {
     const mVisible = useModelWrapper(props, emit, 'visible')
-    const dialogRef = ref()
-    const titleBarRef = ref()
-    const titleBarButtonsRef = ref()
     const editorContainerRef = ref()
     const craftStore = useCraftStore()
     // monaco.editor.IStandaloneCodeEditor
     const editorInstance = shallowRef<any>()
 
-    const dWindow = shallowRef<any>(null)
     const styleEl = ref<HTMLElement | null>(null)
-
-    const styleEditorOptions = reactive<StyleEditorOptions>(
-      JSON.parse(localStorage.getItem(LsKeys.STYLE_EDITOR_OPTIONS) || 'null') || {
-        wTop: '100px',
-        wLeft: '100px',
-        wWidth: '300px',
-        wHeight: '300px',
-      }
-    )
-    watch(
-      styleEditorOptions,
-      () => {
-        localStorage.setItem(LsKeys.STYLE_EDITOR_OPTIONS, JSON.stringify({...styleEditorOptions}))
-      },
-      {deep: true}
-    )
 
     watch(mVisible, () => {
       if (mVisible) {
@@ -124,20 +100,6 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      dWindow.value = new DraggableWindow({
-        dragHandleEl: titleBarRef.value,
-        dragTargetEl: dialogRef.value,
-        allowOut: true,
-        opacify: 0.8,
-        preventNode: titleBarButtonsRef.value,
-        onMove(data) {
-          handleMoveDebounced(data)
-        },
-        autoPosOnResize: true,
-        isDebug: true,
-        resizeable: true,
-      })
-
       styleEl.value = createOrFindStyleNode(LsKeys.MAIN_STYLE)
       const style = loadCurCompStyle()
 
@@ -166,44 +128,16 @@ export default defineComponent({
         handleEditorChangeDebounced()
       })
 
-      new ResizeObserver(() => {
-        handleResizeDebounced()
-      }).observe(dialogRef.value)
-
       handleUpdateStyle(style, false)
-
-      initDialogStyle()
 
       globalEventBus.on(GlobalEvents.ON_NODE_SELECT, handleNodeSelect)
       globalEventBus.on(GlobalEvents.IMPORT_SUCCESS, reloadStyle)
     })
 
     onBeforeUnmount(() => {
-      if (dWindow.value) {
-        dWindow.value.destroy()
-      }
       editorInstance.value.dispose()
       globalEventBus.off(GlobalEvents.ON_NODE_SELECT, handleNodeSelect)
       globalEventBus.off(GlobalEvents.IMPORT_SUCCESS, reloadStyle)
-    })
-
-    const handleMoveDebounced = throttle(500, false, ({top, left}) => {
-      styleEditorOptions.wTop = top
-      styleEditorOptions.wLeft = left
-    })
-
-    const handleResizeDebounced = throttle(50, false, () => {
-      if (!mVisible.value || !dialogRef.value) {
-        return
-      }
-      const width = dialogRef.value.offsetWidth
-      const height = dialogRef.value.offsetHeight
-
-      // update editor layout
-      editorInstance.value.layout()
-
-      styleEditorOptions.wWidth = width + 'px'
-      styleEditorOptions.wHeight = height + 'px'
     })
 
     const handleEditorChangeDebounced = debounce(500, false, () => {
@@ -239,14 +173,6 @@ export default defineComponent({
           errorTip.value = error
         }
       }
-    }
-
-    const initDialogStyle = () => {
-      dialogRef.value.style.top = styleEditorOptions.wTop
-      dialogRef.value.style.left = styleEditorOptions.wLeft
-
-      dialogRef.value.style.width = styleEditorOptions.wWidth
-      dialogRef.value.style.height = styleEditorOptions.wHeight
     }
 
     const message = useMessage()
@@ -369,9 +295,6 @@ export default defineComponent({
     ]
 
     return {
-      dialogRef,
-      titleBarRef,
-      titleBarButtonsRef,
       mVisible,
       handleUpdateStyle,
       editorContainerRef,
@@ -384,73 +307,59 @@ export default defineComponent({
       handleErrorTipClick,
       toolOptions,
       isDarkMode,
+      editorInstance,
     }
   },
 })
 </script>
 
 <template>
-  <transition name="none">
-    <div
-      v-show="mVisible"
-      class="style-editor-dialog page-craft-window _thin-window"
-      :class="{_dark: isDarkMode}"
-      ref="dialogRef"
-    >
-      <div class="page-craft-window-content">
-        <div ref="titleBarRef" class="page-craft-title-bar">
-          <div
-            class="page-craft-title-bar-text font-minecraft"
-            style="display: flex; align-items: center; height: 14px"
-          >
-            <img src="~@/assets/textures/redstone.png" alt="tools" />
-            &nbsp;Style Editor
-          </div>
-          <div ref="titleBarButtonsRef" class="page-craft-window-controls">
-            <button
-              title="Select an element in the page to generate its CSS Selector"
-              :class="{active: craftStore.isSelectMode}"
-              @click="enterSelectMode"
-            >
-              <img
-                src="~@/assets/textures/arrow.png"
-                alt="select"
-                style="transform: rotateY(180deg)"
-              />
-            </button>
+  <ViewportWindow
+    class="style-editor-dialog"
+    v-model:visible="mVisible"
+    @resize="editorInstance.layout()"
+  >
+    <template #titleBarLeft>
+      <img src="~@/assets/textures/redstone.png" alt="tools" />
+      &nbsp;Style Editor
+    </template>
+    <template #titleBarRight>
+      <button
+        title="Select an element in the page to generate its CSS Selector"
+        :class="{active: craftStore.isSelectMode}"
+        @click="enterSelectMode"
+      >
+        <img src="~@/assets/textures/arrow.png" alt="select" style="transform: rotateY(180deg)" />
+      </button>
+      <n-dropdown :options="toolOptions" key-field="label" size="large">
+        <button title="Tools">
+          <img src="~@/assets/textures/enchanted_book.png" alt="tools" />
+        </button>
+      </n-dropdown>
 
-            <n-dropdown :options="toolOptions" key-field="label" size="large">
-              <button title="Tools">
-                <img src="~@/assets/textures/enchanted_book.png" alt="tools" />
-              </button>
-            </n-dropdown>
+      <button title="Beautify code" @click="execBeautifyCssAction">
+        <img src="~@/assets/textures/iron_hoe.png" alt="beautify" />
+      </button>
 
-            <button title="Beautify code" @click="execBeautifyCssAction">
-              <img src="~@/assets/textures/iron_hoe.png" alt="beautify" />
-            </button>
+      <button title="Copy code" @click="copyStyle">
+        <img src="~@/assets/textures/map.png" alt="copy" />
+      </button>
 
-            <button title="Copy code" @click="copyStyle">
-              <img src="~@/assets/textures/map.png" alt="copy" />
-            </button>
+      <button title="Close" @click="mVisible = false">
+        <img src="~@/assets/textures/barrier.png" alt="close" />
+      </button>
+    </template>
 
-            <button title="Close" @click="mVisible = false">
-              <img src="~@/assets/textures/barrier.png" alt="close" />
-            </button>
-          </div>
+    <template #main>
+      <transition name="fade">
+        <div v-show="errorTip" class="code-error-tip font-code" @click="handleErrorTipClick">
+          {{ errorTip?.message }}
         </div>
+      </transition>
 
-        <div class="page-craft-window-body">
-          <transition name="fade">
-            <div v-show="errorTip" class="code-error-tip font-code" @click="handleErrorTipClick">
-              {{ errorTip?.message }}
-            </div>
-          </transition>
-
-          <div ref="editorContainerRef" class="code-editor-placeholder" />
-        </div>
-      </div>
-    </div>
-  </transition>
+      <div ref="editorContainerRef" class="code-editor-placeholder" />
+    </template>
+  </ViewportWindow>
 </template>
 
 <style lang="scss" scoped>
@@ -461,43 +370,23 @@ export default defineComponent({
   z-index: 998;
   top: 30%;
   left: 30%;
-  .page-craft-title-bar {
-    user-select: none;
 
-    img {
-      pointer-events: none;
-    }
+  .code-editor-placeholder {
+    width: 100%;
+    height: 100%;
   }
 
-  :deep([role='tabpanel']) {
-    margin-bottom: 0;
-    padding: 0px;
-    display: flex;
-  }
-
-  .page-craft-window-body {
-    position: relative;
-    height: calc(100% - 30px);
-
-    .code-editor-placeholder {
-      width: 100%;
-      height: 100%;
-      //resize: both;
-      //overflow: hidden;
-    }
-
-    .code-error-tip {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      font-size: 12px;
-      transform-origin: top right;
-      background-color: rgba(0, 0, 0, 0.6);
-      color: #ff8989;
-      z-index: 1;
-      padding: 5px 5px 5px 10px;
-    }
+  .code-error-tip {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    font-size: 12px;
+    transform-origin: top right;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: #ff8989;
+    z-index: 1;
+    padding: 5px 5px 5px 10px;
   }
 }
 </style>

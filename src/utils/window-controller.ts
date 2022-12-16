@@ -104,7 +104,7 @@ const createResizeBar = (parentEl: HTMLElement, direction: ResizeDirection) => {
   return resizeHandle
 }
 
-export class DraggableWindow {
+export class WindowController {
   private docEl: HTMLElement
   private deltaX: number
   private deltaY: number
