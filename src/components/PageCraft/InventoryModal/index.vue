@@ -310,7 +310,7 @@ export default defineComponent({
 
   <transition name="zoom">
     <div
-      class="inventory-modal page-craft-window _thin-window"
+      class="inventory-modal page-craft-window _thin-window _rounded"
       v-show="mVisible"
       :class="{_dark: isDarkMode}"
     >

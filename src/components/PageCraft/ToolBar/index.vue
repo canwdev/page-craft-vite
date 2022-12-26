@@ -167,6 +167,8 @@ export default defineComponent({
   border-bottom: 0;
   padding: 5px 10px 6px;
   overflow: hidden;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
 
   * {
     box-sizing: border-box;
@@ -188,16 +190,14 @@ export default defineComponent({
   }
 
   .page-craft-enhanced-toolbar-main {
-    width: 724px;
+    width: 900px;
     height: 44px;
     margin-left: auto;
     margin-right: auto;
     display: grid;
-    grid-template-columns: repeat(18, 1fr);
+    grid-gap: 1px;
+    grid-template-columns: repeat(19, 1fr);
     grid-template-rows: auto;
-    background-image: url('@/assets/gui/widgets-bar.png');
-    border-left: 2px solid black;
-    border-right: 2px solid black;
   }
 }
 </style>

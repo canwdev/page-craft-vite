@@ -25,7 +25,7 @@ export default defineComponent({
     })
 
     const color = computed(() => {
-      return item.value.title && colorHash.rgb(item.value.title).join(', ')
+      return item.value.title && colorHash.hex(item.value.title)
     })
 
     return {
@@ -38,14 +38,14 @@ export default defineComponent({
 </script>
 
 <template>
-  <div
-    :class="{active: isActive}"
-    class="tool-item font-code"
-    :title="item.title"
-    :style="{
-      '--block-color-rgb': color,
-    }"
-  >
+  <div :class="{active: isActive}" class="tool-item font-minecraft" :title="item.title">
+    <div
+      :style="{
+        backgroundColor: color,
+      }"
+      class="tool-item-bg"
+    ></div>
+
     <img v-if="item.icon" :src="item.icon" alt="icon" />
     <span v-else-if="item.title" class="item-text">{{ item.title }}</span>
   </div>
@@ -53,7 +53,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .tool-item {
-  --block-color-rgb: 204, 204, 204;
   width: 50px;
   height: 50px;
   cursor: pointer;
@@ -61,60 +60,36 @@ export default defineComponent({
   align-items: center;
   justify-content: center;
   font-size: 12px;
-  font-weight: 600;
   position: relative;
-  color: white;
-  transition: all 0.3s;
-  outline: 1px solid rgb(var(--block-color-rgb));
-  background-color: rgba(var(--block-color-rgb), 0.65);
-
-  &:hover {
-    background-color: rgb(var(--block-color-rgb));
-    box-shadow: 0 0 10px rgb(var(--block-color-rgb)) !important;
-    transform: scale(1.2);
-  }
-
-  &:active {
-    opacity: 0.7;
-    transform: scale(0.9);
-    transition: all 0.1s;
-  }
-
-  &::before {
-    width: 54px;
-    height: 54px;
-    background-image: url('@/assets/gui/widgets-item-selected.png');
-    background-size: contain;
-    position: absolute;
-    transform: translateX(1px) scale(0.9);
-    z-index: 0;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    content: '';
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s;
-  }
+  border: 3px solid rgba(128, 128, 128, 0.5);
+  border-radius: 4px;
 
   &.active {
-    &::before {
-      opacity: 1;
-      visibility: visible;
-      transform: translateX(1px) scale(1);
-    }
+    border-color: currentColor !important;
+  }
+
+  .tool-item-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 0;
+    opacity: 0.5;
   }
 
   img {
     width: 32px;
     height: 32px;
     image-rendering: pixelated;
+    position: relative;
+    z-index: 1;
   }
+
   $bracket_color: currentColor;
   .item-text {
     transform: rotate(-45deg);
-    text-shadow: 0 0 3px black, 0 0 2px black, 0 0 1px black;
+    text-shadow: 0px 0px 1px black;
     &::before {
       content: '<';
       color: $bracket_color;

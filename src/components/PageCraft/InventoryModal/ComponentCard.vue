@@ -123,9 +123,9 @@ export default defineComponent({
   font-weight: 600;
   position: relative;
   padding: 5px;
-  transition: all 0.3s;
   outline: 1px dashed rgb(var(--block-color-rgb));
   $bracket_color: rgb(var(--block-color-rgb));
+  border-radius: 4px;
 
   &:hover {
     background-color: rgba(var(--block-color-rgb), 0.08);

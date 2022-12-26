@@ -178,9 +178,7 @@ export default defineComponent({
     const message = useMessage()
     const execBeautifyCssAction = async () => {
       const textValue = editorInstance.value.getValue()
-      if (!textValue.trim()) {
-        message.info('Please type some code to be beautified')
-      } else {
+      if (textValue.trim()) {
         const beautifiedCSS = formatCss(textValue)
         if (textValue.trim() !== beautifiedCSS.trim()) {
           // Select all text
@@ -201,10 +199,6 @@ export default defineComponent({
 
           await handleUpdateStyle(beautifiedCSS)
           // await editor.reInitTextComponent({pleaseIgnoreCursorActivity: true})
-
-          message.success('Your code has been beautified :-)')
-        } else {
-          message.success('Your code already looks beautiful :-)')
         }
       }
       editorInstance.value.focus()

@@ -50,7 +50,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .tool-item {
-  width: 39px;
+  width: 44px;
   height: 44px;
   cursor: pointer;
   display: flex;
@@ -58,36 +58,19 @@ export default defineComponent({
   justify-content: center;
   font-size: 12px;
   position: relative;
-  color: white;
-
-  &::before {
-    width: 48px;
-    height: 48px;
-    background-image: url('@/assets/gui/widgets-item-selected.png');
-    background-size: contain;
-    position: absolute;
-    transform: translateX(1px) scale(0.9);
-    z-index: 0;
-    content: '';
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s;
-  }
+  border: 3px solid rgba(128, 128, 128, 0.5);
+  border-radius: 4px;
 
   &.active {
-    &::before {
-      opacity: 1;
-      visibility: visible;
-      transform: translateX(1px) scale(1);
-    }
+    border-color: currentColor !important;
   }
 
   .tool-item-bg {
     position: absolute;
-    top: 7px;
-    left: 5px;
-    right: 5px;
-    bottom: 8px;
+    top: 0;
+    left: 0;
+    right: -1px;
+    bottom: 0;
     z-index: 0;
     opacity: 0.5;
   }
@@ -103,7 +86,7 @@ export default defineComponent({
   $bracket_color: currentColor;
   .item-text {
     transform: rotate(-45deg);
-    text-shadow: 1px 1px 1px black;
+    text-shadow: 0px 0px 1px black;
     &::before {
       content: '<';
       color: $bracket_color;

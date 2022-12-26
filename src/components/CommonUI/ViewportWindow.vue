@@ -115,7 +115,7 @@ export default defineComponent({
   <transition name="none">
     <div
       v-show="mVisible"
-      class="page-craft-window _thin-window"
+      class="page-craft-window _thin-window _rounded"
       :class="{_dark: isDarkMode}"
       ref="dialogRef"
     >
@@ -292,8 +292,9 @@ export default defineComponent({
   }
 
   &._rounded {
-    $radius: 4px;
-    border-radius: $radius;
+    $radius: 5px;
+    border-top-left-radius: $radius;
+    border-top-right-radius: $radius;
     .page-craft-title-bar {
       overflow: hidden;
       border-top-left-radius: $radius;
@@ -304,8 +305,6 @@ export default defineComponent({
     }
     .page-craft-window-body,
     .code-editor-placeholder {
-      border-bottom-left-radius: $radius;
-      border-bottom-right-radius: $radius;
     }
   }
 }

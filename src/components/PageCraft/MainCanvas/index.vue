@@ -378,6 +378,8 @@ export default defineComponent({
   top: 0;
   border-top: 0;
   z-index: 997;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
 
   text-shadow: 0 0 10px white;
 }

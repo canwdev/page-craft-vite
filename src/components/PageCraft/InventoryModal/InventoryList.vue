@@ -89,6 +89,9 @@ export default defineComponent({
     height: 150px;
   }
   .filter-row {
+    .n-input {
+      border-radius: 0;
+    }
   }
 
   .inventory-list {
@@ -96,11 +99,11 @@ export default defineComponent({
     padding: 10px;
     display: grid;
     //grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
-    grid-template-columns: repeat(11, 1fr);
+    grid-template-columns: repeat(12, 1fr);
     grid-template-rows: auto;
     gap: 10px;
     &._big {
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 20px 10px;
     }
   }
