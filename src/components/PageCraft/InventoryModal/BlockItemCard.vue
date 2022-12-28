@@ -5,7 +5,7 @@ import {BlockItem} from '@/enum/page-craft/block'
 import {colorHash} from '@/utils'
 
 export default defineComponent({
-  name: 'BlockCard',
+  name: 'BlockItemCard',
   props: {
     item: {
       type: Object as PropType<BlockItem>,
@@ -52,54 +52,5 @@ export default defineComponent({
 </template>
 
 <style lang="scss" scoped>
-.tool-item {
-  width: 50px;
-  height: 50px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  position: relative;
-  border: 3px solid rgba(128, 128, 128, 0.5);
-  border-radius: 4px;
-
-  &.active {
-    border-color: currentColor !important;
-  }
-
-  .tool-item-bg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 0;
-    opacity: 0.5;
-  }
-
-  img {
-    width: 32px;
-    height: 32px;
-    image-rendering: pixelated;
-    position: relative;
-    z-index: 1;
-  }
-
-  $bracket_color: currentColor;
-  .item-text {
-    transform: rotate(-45deg);
-    text-shadow: 0px 0px 1px black;
-    &::before {
-      content: '<';
-      color: $bracket_color;
-      opacity: 0.5;
-    }
-    &::after {
-      content: '>';
-      color: $bracket_color;
-      opacity: 0.5;
-    }
-  }
-}
+@import '../ToolBar/tool-item.scss';
 </style>

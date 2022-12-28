@@ -157,7 +157,15 @@ export const useMcMain = (options) => {
           label: '📧 Export Email HTML',
           props: {
             onClick: async () => {
-              handleExportHtml(await getEntityData(), true)
+              handleExportHtml(await getEntityData(), {isInline: true})
+            },
+          },
+        },
+        {
+          label: '📧 Export Email HTML (With Style Tag)',
+          props: {
+            onClick: async () => {
+              handleExportHtml(await getEntityData(), {isInline: true, inlineWithStyleTag: true})
             },
           },
         },

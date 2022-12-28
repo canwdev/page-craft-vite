@@ -16,15 +16,28 @@ export const handleExportStyle = async (exportData: ExportItem, isCss = false) =
   handleExportFile(getFileName(exportData.name), style, isCss ? '.css' : '.scss')
 }
 
-export const handleExportHtml = async (exportData: ExportItem, isInline = false) => {
+export const handleExportHtml = async (exportData: ExportItem, options?) => {
   const {html, style} = exportData
-  let name = getFileName(exportData.name ? exportData.name + (isInline ? '-inline' : '') : '')
+  const {isInline = false, inlineWithStyleTag = false} = options || {}
+
+  let nameSuffix = ''
+  if (isInline) {
+    nameSuffix += '-inline'
+    if (inlineWithStyleTag) {
+      nameSuffix += '-with-style-tag'
+    }
+  }
+
+  let name = getFileName(exportData.name ? exportData.name + nameSuffix : '')
 
   const cssCode = style ? formatCss(await sassToCSS(style)) : ''
   let htmlStr
   if (isInline) {
     htmlStr = window.$juice(`<style>${cssCode}</style>
 ${html}`)
+    if (inlineWithStyleTag) {
+      htmlStr = `<style>${cssCode}</style>${htmlStr}`
+    }
     htmlStr = formatHtml(htmlStr)
   } else {
     htmlStr = `<!doctype html>

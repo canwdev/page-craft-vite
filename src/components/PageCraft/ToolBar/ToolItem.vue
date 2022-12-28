@@ -36,7 +36,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div :class="{active}" class="tool-item font-minecraft" :title="item.title">
+  <div :class="{active}" class="tool-item _mini font-minecraft" :title="item.title">
     <div
       :style="{
         backgroundColor: color,
@@ -49,54 +49,5 @@ export default defineComponent({
 </template>
 
 <style lang="scss" scoped>
-.tool-item {
-  width: 44px;
-  height: 44px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  position: relative;
-  border: 3px solid rgba(128, 128, 128, 0.5);
-  border-radius: 4px;
-
-  &.active {
-    border-color: currentColor !important;
-  }
-
-  .tool-item-bg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: -1px;
-    bottom: 0;
-    z-index: 0;
-    opacity: 0.5;
-  }
-
-  img {
-    width: 32px;
-    height: 32px;
-    image-rendering: pixelated;
-    position: relative;
-    z-index: 1;
-  }
-
-  $bracket_color: currentColor;
-  .item-text {
-    transform: rotate(-45deg);
-    text-shadow: 0px 0px 1px black;
-    &::before {
-      content: '<';
-      color: $bracket_color;
-      opacity: 0.5;
-    }
-    &::after {
-      content: '>';
-      color: $bracket_color;
-      opacity: 0.5;
-    }
-  }
-}
+@import './tool-item.scss';
 </style>

@@ -1,13 +1,13 @@
 <script lang="ts">
 import {defineComponent, PropType} from 'vue'
-import BlockCard from '@/components/PageCraft/InventoryModal/BlockCard.vue'
+import BlockItemCard from '@/components/PageCraft/InventoryModal/BlockItemCard.vue'
 import ComponentCard from '@/components/PageCraft/InventoryModal/ComponentCard.vue'
 import {BlockItem} from '@/enum/page-craft/block'
 
 export default defineComponent({
   name: 'InventoryList',
   components: {
-    BlockCard,
+    BlockItemCard,
     ComponentCard,
   },
   props: {
@@ -70,7 +70,7 @@ export default defineComponent({
             <slot name="actionMenu" :item="item"></slot>
           </template>
         </ComponentCard>
-        <BlockCard v-else class="list-item" :item="item" @click="$emit('onItemClick', item)" />
+        <BlockItemCard v-else class="list-item" :item="item" @click="$emit('onItemClick', item)" />
       </template>
     </div>
   </div>
