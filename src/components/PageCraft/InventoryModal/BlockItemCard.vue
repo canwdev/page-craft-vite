@@ -38,7 +38,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div :class="{active: isActive}" class="tool-item font-minecraft" :title="item.title">
+  <div :class="{active: isActive}" class="tool-item font-code" :title="item.title">
     <div
       :style="{
         backgroundColor: color,

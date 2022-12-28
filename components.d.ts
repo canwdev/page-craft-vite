@@ -8,13 +8,10 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     BackgroundLayer: typeof import('./src/components/PageCraft/BackgroundLayer/index.vue')['default']
-    BlockCard: typeof import('./src/components/PageCraft/InventoryModal/BlockCard.vue')['default']
-    BlockItem: typeof import('./src/components/PageCraft/InventoryModal/BlockItem.vue')['default']
     BlockItemCard: typeof import('./src/components/PageCraft/InventoryModal/BlockItemCard.vue')['default']
     ComponentCard: typeof import('./src/components/PageCraft/InventoryModal/ComponentCard.vue')['default']
     CopyExampleDialog: typeof import('./src/components/VueI18nCopyTool/CopyExampleDialog.vue')['default']
     DomPreview: typeof import('./src/components/PageCraft/DomPreview/DomPreview.vue')['default']
-    DraggableWindow: typeof import('./src/components/CommonUI/DraggableWindow.vue')['default']
     ElementEditDialog: typeof import('./src/components/PageCraft/MainCanvas/ElementEditDialog.vue')['default']
     FileChooser: typeof import('./src/components/CommonUI/FileChooser.vue')['default']
     IndicatorInfo: typeof import('./src/components/PageCraft/MainCanvas/IndicatorInfo.vue')['default']

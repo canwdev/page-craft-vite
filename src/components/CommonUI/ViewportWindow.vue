@@ -122,7 +122,7 @@ export default defineComponent({
       <div class="page-craft-window-content">
         <div ref="titleBarRef" class="page-craft-title-bar">
           <div
-            class="page-craft-title-bar-text font-minecraft"
+            class="page-craft-title-bar-text"
             style="display: flex; align-items: center; height: 14px"
           >
             <slot name="titleBarLeft"></slot>

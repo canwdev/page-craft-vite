@@ -317,7 +317,7 @@ export default defineComponent({
       <div class="page-craft-window-content">
         <div ref="titleBarRef" class="page-craft-title-bar">
           <div
-            class="page-craft-title-bar-text font-minecraft"
+            class="page-craft-title-bar-text"
             style="display: flex; align-items: center; height: 14px"
           >
             <img src="~@/assets/textures/crafting_table_top.png" alt="tools" />
@@ -333,7 +333,7 @@ export default defineComponent({
           </div>
         </div>
 
-        <div class="page-craft-window-body _bg font-minecraft">
+        <div class="page-craft-window-body _bg">
           <n-tabs v-model:value="currentTab" size="small" type="segment" animated>
             <n-tab-pane :name="BlockType.HTML_ELEMENT" tab="Blocks">
               <InventoryList
