@@ -66,6 +66,8 @@ export default defineComponent({
     }
 
     const handlePickDir = async () => {
+      // https://css-tricks.com/getting-started-with-the-file-system-access-api/
+      // https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryHandle
       // @ts-ignore
       const dirHandle = await window.showDirectoryPicker()
       // console.log('dirHandle', dirHandle)

@@ -80,15 +80,15 @@ export default defineComponent({
     }
   }
 
-  &._mc-bg {
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-    background-image: url('@/assets/bg/day.png');
-
-    &._dark {
-      background-image: url('@/assets/bg/twlight.png');
-    }
-  }
+  //&._mc-bg {
+  //  background-repeat: no-repeat;
+  //  background-size: cover;
+  //  background-position: center;
+  //  background-image: url('@/assets/bg/day.png');
+  //
+  //  &._dark {
+  //    background-image: url('@/assets/bg/twlight.png');
+  //  }
+  //}
 }
 </style>
