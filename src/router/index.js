@@ -23,6 +23,11 @@ let routes = [
         name: 'VueI18nCopyTool',
         component: () => import('@/views/VueI18nCopyTool.vue'),
       },
+      {
+        path: 'vue-i18n-dir',
+        name: 'VueI18nDirTool',
+        component: () => import('@/views/VueI18nDirTool.vue'),
+      },
     ],
   },
 ]

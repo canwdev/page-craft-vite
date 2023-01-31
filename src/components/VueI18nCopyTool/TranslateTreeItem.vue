@@ -171,7 +171,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .tree-item {
   &:hover {
-    outline: 1px solid green;
+    border: 1px solid darkseagreen;
   }
 
   margin-top: 10px;

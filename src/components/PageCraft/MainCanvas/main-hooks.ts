@@ -37,7 +37,7 @@ export const useMcMain = (options) => {
     removeMouseOverDomElementEffect()
     const html = el ? el.outerHTML : mainCanvasRef.value.innerHTML
     copyToClipboard(formatHtml(html))
-    window.$message.success('Copy Success!')
+    // window.$message.success('Copy Success!')
 
     saveData()
   }
@@ -45,7 +45,7 @@ export const useMcMain = (options) => {
     const style = loadCurCompStyle()
     const css = formatCss(await sassToCSS(style))
     copyToClipboard(css)
-    window.$message.success('Copy Success!')
+    // window.$message.success('Copy Success!')
 
     saveData()
   }

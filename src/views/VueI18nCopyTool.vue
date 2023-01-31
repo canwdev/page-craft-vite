@@ -18,29 +18,29 @@ export default defineComponent({
     FileChooser,
   },
   setup() {
-    const treeRootList = ref<ITranslateTreeItem[]>([formatTranslateTreeItem()])
+    const translateTreeRoot = ref<ITranslateTreeItem[]>([formatTranslateTreeItem()])
 
     const importFileChooserRef = ref()
     const handleImport = async (file) => {
       const str = await handleReadSelectedFile(file)
       const obj = JSON.parse(str as string)
       // console.log(obj)
-      treeRootList.value = parseI18nJsonObj(obj)
+      translateTreeRoot.value = parseI18nJsonObj(obj)
     }
 
     return {
-      treeRootList,
+      translateTreeRoot,
       handleImport,
       handleExport() {
         handleExportFile(
           getFileName(null, 'i18n_export'),
-          JSON.stringify(exportI18nTreeJsonObj(treeRootList.value), null, 2),
+          JSON.stringify(exportI18nTreeJsonObj(translateTreeRoot.value), null, 2),
           '.json'
         )
       },
       importFileChooserRef,
       loadDemo() {
-        treeRootList.value = parseI18nJsonObj({
+        translateTreeRoot.value = parseI18nJsonObj({
           hello_world: {
             section_a: {
               test_str: 'This is a test string',
@@ -62,7 +62,7 @@ export default defineComponent({
   <div class="vue-i18n-copy-tool">
     <n-card size="small" style="position: sticky; top: 0; z-index: 100; margin-bottom: 10px">
       <n-page-header subtitle="" @back="$router.push({name: 'HomeView'})">
-        <template #title> VueI18nCopyTool </template>
+        <template #title> Vue i18n Copy Tool </template>
         <template #avatar> <n-avatar :src="iconTranslate" style="background: none" /> </template>
         <template #extra>
           <n-space>
@@ -83,7 +83,7 @@ export default defineComponent({
     </n-card>
 
     <div class="_container">
-      <TranslateTreeItem v-for="(item, index) in treeRootList" :key="index" :item="item" />
+      <TranslateTreeItem v-for="(item, index) in translateTreeRoot" :key="index" :item="item" />
     </div>
 
     <FileChooser ref="importFileChooserRef" accept="application/JSON" @selected="handleImport" />

@@ -102,6 +102,14 @@ export default defineComponent({
           },
         },
       },
+      {
+        label: 'Vue i18n Dir Tool',
+        props: {
+          onClick: async () => {
+            await router.push({name: 'VueI18nDirTool'})
+          },
+        },
+      },
     ]
 
     return {

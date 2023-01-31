@@ -83,6 +83,8 @@ export default defineComponent({
           clearable
         />
         <n-input
+          type="textarea"
+          rows="1"
           v-if="!Array.isArray(item.value)"
           size="small"
           style="width: 350px"
