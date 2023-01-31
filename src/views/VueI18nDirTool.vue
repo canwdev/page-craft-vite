@@ -110,7 +110,7 @@ export default defineComponent({
 
     const translateTreeRoot = ref<ITranslateTreeItem[]>([formatTranslateTreeItem()])
     const updateGuiTranslateTree = () => {
-      if (editMode.value === 'gui') {
+      if (editMode.value !== 'text') {
         if (!currentEditText.value) {
           translateTreeRoot.value = []
           return
@@ -207,22 +207,31 @@ export default defineComponent({
               </div>
 
               <div class="edit-content-wrap">
-                <n-scrollbar style="height: 100%" v-if="editMode === 'gui'">
-                  <TranslateTreeItem
-                    v-for="(item, index) in translateTreeRoot"
-                    :key="index"
-                    :item="item"
-                  />
-                </n-scrollbar>
-
                 <n-input
-                  v-else-if="editMode === 'text'"
+                  v-if="editMode === 'text'"
                   type="textarea"
                   v-model:value="currentEditText"
                   class="font-code"
                   style="height: 100%"
                   placeholder="Edit Text"
                 ></n-input>
+
+                <template v-else>
+                  <n-scrollbar
+                    style="height: 100%"
+                    :style="{width: editMode === 'batch' ? '400px' : '100%'}"
+                  >
+                    <TranslateTreeItem
+                      v-for="(item, index) in translateTreeRoot"
+                      :key="index"
+                      :item="item"
+                      :is-lite="editMode === 'batch'"
+                    />
+                  </n-scrollbar>
+                  <n-scrollbar v-if="editMode === 'batch'" style="height: 100%">
+                    batch
+                  </n-scrollbar>
+                </template>
               </div>
             </template>
           </div>
@@ -261,6 +270,7 @@ export default defineComponent({
       overflow: hidden;
       padding: 10px;
       padding-top: 0;
+      display: flex;
     }
   }
 }

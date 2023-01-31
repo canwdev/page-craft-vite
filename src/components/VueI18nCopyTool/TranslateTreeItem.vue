@@ -24,6 +24,10 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    isLite: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: ['onRemove'],
   setup(props) {
@@ -97,17 +101,17 @@ export default defineComponent({
         clearable
         style="flex: 1"
       />
-      <n-space style="margin-left: 10px" align="center">
+      <n-space v-if="!isLite" style="margin-left: 10px" align="center">
         <n-button type="info" @click="handleGetJSON">Copy JSON</n-button>
         <n-popconfirm v-if="!isRoot" @positive-click="$emit('onRemove')">
           <template #trigger>
-            <n-button type="error">Remove</n-button>
+            <n-button type="error">❌</n-button>
           </template>
           Remove Group?
         </n-popconfirm>
         <n-switch v-model:value="isExpand">
-          <template #checked> Show </template>
-          <template #unchecked> Hide </template>
+          <template #checked> 👀 </template>
+          <template #unchecked> 🙈 </template>
         </n-switch>
       </n-space>
     </div>
@@ -123,13 +127,14 @@ export default defineComponent({
           :item="vi"
           :tree-item="item"
           :key="index"
+          :is-lite="isLite"
           @previewArray="handlePreviewArray"
           @onRemove="handleRemoveItem(index)"
         />
       </n-list>
 
       <n-space justify="space-between" align="center" style="margin-top: 5px">
-        <n-button type="primary" @click="handleAddTranslate">Add Translate</n-button>
+        <n-button type="info" @click="handleAddTranslate">➕ Translate</n-button>
       </n-space>
 
       <div style="border-top: 1px dashed darkseagreen; margin-top: 10px; margin-bottom: 10px" />
@@ -140,11 +145,12 @@ export default defineComponent({
           :item="vi"
           :key="index"
           :is-root="false"
+          :is-lite="isLite"
           @onRemove="handleRemoveTreeItem(index)"
           @previewArray="handlePreviewArray"
         />
       </template>
-      <n-button type="primary" @click="handleAddChildren">Add Children</n-button>
+      <n-button type="primary" @click="handleAddChildren">➕ Children</n-button>
     </n-collapse-transition>
 
     <n-modal

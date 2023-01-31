@@ -15,6 +15,10 @@ export default defineComponent({
       type: Object as PropType<ITranslateTreeItem>,
       default: null,
     },
+    isLite: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: ['onRemove', 'previewArray'],
   setup(props) {
@@ -82,27 +86,29 @@ export default defineComponent({
           placeholder="key"
           clearable
         />
-        <n-input
-          type="textarea"
-          rows="1"
-          v-if="!Array.isArray(item.value)"
-          size="small"
-          style="width: 350px"
-          v-model:value="item.value"
-          placeholder="value"
-          clearable
-          @blur="handleBlur"
-        />
-        <n-button
-          v-else
-          :title="item.value"
-          size="small"
-          style="width: 350px"
-          @click="$emit('previewArray', item)"
-          >Array</n-button
-        >
+        <template v-if="!isLite">
+          <n-input
+            type="textarea"
+            rows="1"
+            v-if="!Array.isArray(item.value)"
+            size="small"
+            style="width: 350px"
+            v-model:value="item.value"
+            placeholder="value"
+            clearable
+            @blur="handleBlur"
+          />
+          <n-button
+            v-else
+            :title="item.value"
+            size="small"
+            style="width: 350px"
+            @click="$emit('previewArray', item)"
+            >📝 Array</n-button
+          >
+        </template>
 
-        <n-space v-if="nameDisplay" size="small">
+        <n-space v-if="!isLite && nameDisplay" size="small">
           <n-input
             class="font-code"
             size="small"
@@ -122,10 +128,10 @@ export default defineComponent({
           </n-button>
         </n-space>
       </n-space>
-      <n-space>
+      <n-space v-if="!isLite">
         <n-popconfirm @positive-click="$emit('onRemove')">
           <template #trigger>
-            <n-button type="error">Remove</n-button>
+            <n-button type="error">❌</n-button>
           </template>
           Remove Item?
         </n-popconfirm>
