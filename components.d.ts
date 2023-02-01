@@ -8,6 +8,8 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     BackgroundLayer: typeof import('./src/components/PageCraft/BackgroundLayer/index.vue')['default']
+    BatchTranslate: typeof import('./src/components/VueI18nCopyTool/BatchTranslate.vue')['default']
+    BatchTranslateItem: typeof import('./src/components/VueI18nCopyTool/BatchTranslateItem.vue')['default']
     BlockItemCard: typeof import('./src/components/PageCraft/InventoryModal/BlockItemCard.vue')['default']
     ComponentCard: typeof import('./src/components/PageCraft/InventoryModal/ComponentCard.vue')['default']
     CopyExampleDialog: typeof import('./src/components/VueI18nCopyTool/CopyExampleDialog.vue')['default']

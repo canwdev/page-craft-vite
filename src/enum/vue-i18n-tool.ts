@@ -89,3 +89,12 @@ export const formatI18nKey = (str: string): string => {
   str = str.slice(0, 20)
   return str
 }
+
+export type DirTreeItem = {
+  key: string
+  kind: 'directory' | 'file'
+  label: string
+  entry: FileSystemDirectoryHandle | FileSystemFileHandle
+  parentDirs: string[]
+  children: DirTreeItem[] | null
+}

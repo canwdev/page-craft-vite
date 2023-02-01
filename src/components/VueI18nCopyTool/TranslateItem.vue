@@ -1,6 +1,6 @@
 <script lang="ts">
 import {defineComponent, PropType} from 'vue'
-import {formatI18nKey, ITranslateItem, ITranslateTreeItem} from '@/enum/vue-i18n-copy-tool'
+import {formatI18nKey, ITranslateItem, ITranslateTreeItem} from '@/enum/vue-i18n-tool'
 import {copyToClipboard} from '@/utils'
 
 export default defineComponent({
@@ -20,8 +20,8 @@ export default defineComponent({
       default: false,
     },
   },
-  emits: ['onRemove', 'previewArray'],
-  setup(props) {
+  emits: ['onRemove', 'previewArray', 'onKeyClick'],
+  setup(props, {emit}) {
     const {item, treeItem} = toRefs(props)
 
     const namespacePrefix = computed(() => {
@@ -38,7 +38,7 @@ export default defineComponent({
     })
 
     const nameDisplay = computed(() => {
-      if (!item.value || !item.value.value) {
+      if (!item.value || (!item.value.value && !item.value.key)) {
         return ''
       }
       let name = item.value.key
@@ -70,6 +70,9 @@ export default defineComponent({
           item.value.key = formatI18nKey(item.value.value)
         }
       },
+      handleInputKeyClick() {
+        emit('onKeyClick', nameDisplay.value)
+      },
     }
   },
 })
@@ -85,6 +88,7 @@ export default defineComponent({
           v-model:value="item.key"
           placeholder="key"
           clearable
+          @click="handleInputKeyClick"
         />
         <template v-if="!isLite">
           <n-input
@@ -104,8 +108,9 @@ export default defineComponent({
             size="small"
             style="width: 350px"
             @click="$emit('previewArray', item)"
-            >📝 Array</n-button
           >
+            📝 Array
+          </n-button>
         </template>
 
         <n-space v-if="!isLite && nameDisplay" size="small">
@@ -128,10 +133,10 @@ export default defineComponent({
           </n-button>
         </n-space>
       </n-space>
-      <n-space v-if="!isLite">
+      <n-space>
         <n-popconfirm @positive-click="$emit('onRemove')">
           <template #trigger>
-            <n-button type="error">❌</n-button>
+            <n-button size="small" type="error">❌</n-button>
           </template>
           Remove Item?
         </n-popconfirm>

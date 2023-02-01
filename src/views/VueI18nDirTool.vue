@@ -1,35 +1,31 @@
 <script lang="ts">
-import {TreeOption} from 'naive-ui'
 import {defineComponent} from 'vue'
 import iconTranslate from '../assets/textures/translate.svg?url'
 import {handleReadSelectedFile} from '@/utils/exporter'
 import {
+  DirTreeItem,
   exportI18nTreeJsonObj,
   formatTranslateTreeItem,
   ITranslateTreeItem,
   parseI18nJsonObj,
-} from '@/enum/vue-i18n-copy-tool'
-
-type DirTreeItem = {
-  key: string
-  kind: 'directory' | 'file'
-  label: string
-  entry: FileSystemDirectoryHandle | FileSystemFileHandle
-  children: DirTreeItem[] | null
-}
+} from '@/enum/vue-i18n-tool'
+import BatchTranslate from '@/components/VueI18nCopyTool/BatchTranslate.vue'
 
 let idSeed = 0
 
 export default defineComponent({
   name: 'VueI18nDirTool',
-  components: {},
+  components: {
+    BatchTranslate,
+  },
   setup() {
-    const dirTree = shallowRef<DirTreeItem[]>([])
+    const dirTree = ref<DirTreeItem[]>([])
 
     const recursiveReadDir = async (
       dirHandle,
       deep = 0,
-      tree: DirTreeItem[] = []
+      tree: DirTreeItem[] = [],
+      parentDirs: string[] = []
     ): Promise<DirTreeItem[]> => {
       idSeed++
       let idx = 0
@@ -48,9 +44,10 @@ export default defineComponent({
             kind: entry.kind,
             label: entry.name,
             entry,
+            parentDirs,
             children,
           })
-          await recursiveReadDir(entry, deep + 1, children)
+          await recursiveReadDir(entry, deep + 1, children, [...parentDirs, entry.name])
         } else {
           // console.log(`${space}[F] ${entry.name}`, {entry})
           tree.push({
@@ -58,6 +55,7 @@ export default defineComponent({
             kind: entry.kind,
             label: entry.name,
             entry,
+            parentDirs,
             children: null,
           })
         }
@@ -65,18 +63,23 @@ export default defineComponent({
       return tree
     }
 
+    const dirHandle = shallowRef()
     const handlePickDir = async () => {
       // https://css-tricks.com/getting-started-with-the-file-system-access-api/
       // https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryHandle
       // @ts-ignore
-      const dirHandle = await window.showDirectoryPicker()
+      dirHandle.value = await window.showDirectoryPicker()
       // console.log('dirHandle', dirHandle)
-      dirTree.value = await recursiveReadDir(dirHandle)
+      dirTree.value = await recursiveReadDir(dirHandle.value)
     }
 
     const isShowFileEdit = ref(false)
     const currentEditEntry = ref<FileSystemFileHandle | null>(null)
     const currentEditText = ref<string | null>(null)
+    const currentFilePathArr = ref<string[]>([])
+
+    const translatePath = ref('')
+
     const handleSaveFile = async () => {
       try {
         const fileHandle = currentEditEntry.value
@@ -87,7 +90,7 @@ export default defineComponent({
         // @ts-ignore
         const writable = await fileHandle.createWritable()
 
-        if (editMode.value === 'gui') {
+        if (editMode.value !== 'text') {
           currentEditText.value = JSON.stringify(
             exportI18nTreeJsonObj(translateTreeRoot.value),
             null,
@@ -98,6 +101,9 @@ export default defineComponent({
         await writable.write(currentEditText.value)
         await writable.close()
         window.$message.success('Saved!')
+
+        // reload
+        dirTree.value = await recursiveReadDir(dirHandle.value)
       } catch (error: any) {
         console.error(error)
         window.$message.error('Save Failed!' + error.message)
@@ -106,7 +112,7 @@ export default defineComponent({
 
     type EditModeType = 'text' | 'gui' | 'batch'
     const editModeList = ['text', 'gui', 'batch']
-    const editMode = ref<EditModeType>('gui')
+    const editMode = ref<EditModeType>('batch')
 
     const translateTreeRoot = ref<ITranslateTreeItem[]>([formatTranslateTreeItem()])
     const updateGuiTranslateTree = () => {
@@ -136,6 +142,7 @@ export default defineComponent({
               currentEditEntry.value = entry
               const str = await handleReadSelectedFile(await entry.getFile())
               currentEditText.value = str as string
+              currentFilePathArr.value = [...option.parentDirs, option.label]
               isShowFileEdit.value = true
               updateGuiTranslateTree()
             }
@@ -148,6 +155,12 @@ export default defineComponent({
       editMode,
       editModeList,
       translateTreeRoot,
+      currentFilePathArr,
+      translatePath,
+      handleKeyClick(str) {
+        console.log(str)
+        translatePath.value = str
+      },
     }
   },
 })
@@ -219,17 +232,22 @@ export default defineComponent({
                 <template v-else>
                   <n-scrollbar
                     style="height: 100%"
-                    :style="{width: editMode === 'batch' ? '400px' : '100%'}"
+                    :style="{width: editMode === 'batch' ? '500px' : '100%'}"
                   >
                     <TranslateTreeItem
                       v-for="(item, index) in translateTreeRoot"
                       :key="index"
                       :item="item"
                       :is-lite="editMode === 'batch'"
+                      @onKeyClick="handleKeyClick"
                     />
                   </n-scrollbar>
                   <n-scrollbar v-if="editMode === 'batch'" style="height: 100%">
-                    batch
+                    <BatchTranslate
+                      :dir-tree="dirTree"
+                      :file-path-arr="currentFilePathArr.slice(1)"
+                      :translate-path="translatePath"
+                    />
                   </n-scrollbar>
                 </template>
               </div>

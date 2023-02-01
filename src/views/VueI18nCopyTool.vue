@@ -6,7 +6,7 @@ import {
   formatTranslateTreeItem,
   ITranslateTreeItem,
   parseI18nJsonObj,
-} from '@/enum/vue-i18n-copy-tool'
+} from '@/enum/vue-i18n-tool'
 import FileChooser from '@/components/CommonUI/FileChooser.vue'
 import {getFileName, handleExportFile, handleReadSelectedFile} from '@/utils/exporter'
 import iconTranslate from '../assets/textures/translate.svg?url'

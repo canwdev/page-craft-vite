@@ -6,7 +6,7 @@ import {
   formatTranslateTreeItem,
   ITranslateItem,
   ITranslateTreeItem,
-} from '@/enum/vue-i18n-copy-tool'
+} from '@/enum/vue-i18n-tool'
 import TranslateItem from './TranslateItem.vue'
 import {copyToClipboard} from '@/utils'
 
@@ -29,7 +29,7 @@ export default defineComponent({
       default: false,
     },
   },
-  emits: ['onRemove'],
+  emits: ['onRemove', 'onKeyClick'],
   setup(props) {
     const {item} = toRefs(props)
     const handleAddChildren = () => {
@@ -94,6 +94,7 @@ export default defineComponent({
 <template>
   <n-card size="small" class="tree-item" v-if="item">
     <div style="display: flex">
+      §
       <n-input
         class="font-code"
         v-model:value="item.namespace"
@@ -101,15 +102,15 @@ export default defineComponent({
         clearable
         style="flex: 1"
       />
-      <n-space v-if="!isLite" style="margin-left: 10px" align="center">
-        <n-button type="info" @click="handleGetJSON">Copy JSON</n-button>
+      <n-space style="margin-left: 10px" align="center">
+        <n-button v-if="!isLite" type="info" @click="handleGetJSON">Copy JSON</n-button>
         <n-popconfirm v-if="!isRoot" @positive-click="$emit('onRemove')">
           <template #trigger>
             <n-button type="error">❌</n-button>
           </template>
           Remove Group?
         </n-popconfirm>
-        <n-switch v-model:value="isExpand">
+        <n-switch v-if="!isLite" v-model:value="isExpand">
           <template #checked> 👀 </template>
           <template #unchecked> 🙈 </template>
         </n-switch>
@@ -130,6 +131,7 @@ export default defineComponent({
           :is-lite="isLite"
           @previewArray="handlePreviewArray"
           @onRemove="handleRemoveItem(index)"
+          @onKeyClick="(e) => $emit('onKeyClick', e)"
         />
       </n-list>
 
@@ -148,6 +150,7 @@ export default defineComponent({
           :is-lite="isLite"
           @onRemove="handleRemoveTreeItem(index)"
           @previewArray="handlePreviewArray"
+          @onKeyClick="(e) => $emit('onKeyClick', e)"
         />
       </template>
       <n-button type="primary" @click="handleAddChildren">➕ Children</n-button>

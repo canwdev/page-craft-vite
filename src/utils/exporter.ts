@@ -124,7 +124,7 @@ export const handleExportFile = (filename, contentStr, ext) => {
 }
 
 export const handleReadSelectedFile = (file) => {
-  console.log(file)
+  // console.log(file)
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
     reader.onload = () => {
