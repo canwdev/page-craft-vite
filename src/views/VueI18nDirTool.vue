@@ -50,14 +50,17 @@ export default defineComponent({
           await recursiveReadDir(entry, deep + 1, children, [...parentDirs, entry.name])
         } else {
           // console.log(`${space}[F] ${entry.name}`, {entry})
-          tree.push({
-            key: `${idSeed}-F-${deep}-${idx}`,
-            kind: entry.kind,
-            label: entry.name,
-            entry,
-            parentDirs,
-            children: null,
-          })
+          const isValidFile = /\.json$/gi.test(entry.name)
+          if (isValidFile) {
+            tree.push({
+              key: `${idSeed}-F-${deep}-${idx}`,
+              kind: entry.kind,
+              label: entry.name,
+              entry,
+              parentDirs,
+              children: null,
+            })
+          }
         }
       }
       return tree
@@ -72,8 +75,10 @@ export default defineComponent({
       // console.log('dirHandle', dirHandle)
       dirTree.value = await recursiveReadDir(dirHandle.value)
     }
+    const reloadPickedDir = async () => {
+      dirTree.value = await recursiveReadDir(dirHandle.value)
+    }
 
-    const isShowFileEdit = ref(false)
     const currentEditEntry = ref<FileSystemFileHandle | null>(null)
     const currentEditText = ref<string | null>(null)
     const currentFilePathArr = ref<string[]>([])
@@ -100,10 +105,8 @@ export default defineComponent({
 
         await writable.write(currentEditText.value)
         await writable.close()
+        await reloadPickedDir()
         window.$message.success('Saved!')
-
-        // reload
-        dirTree.value = await recursiveReadDir(dirHandle.value)
       } catch (error: any) {
         console.error(error)
         window.$message.error('Save Failed!' + error.message)
@@ -134,6 +137,8 @@ export default defineComponent({
       iconTranslate,
       handlePickDir,
       dirTree,
+      dirHandle,
+      reloadPickedDir,
       nodeProps: ({option}: {option: DirTreeItem}) => {
         return {
           async onClick() {
@@ -143,14 +148,14 @@ export default defineComponent({
               const str = await handleReadSelectedFile(await entry.getFile())
               currentEditText.value = str as string
               currentFilePathArr.value = [...option.parentDirs, option.label]
-              isShowFileEdit.value = true
+              translatePath.value = ''
               updateGuiTranslateTree()
             }
           },
         }
       },
-      isShowFileEdit,
       currentEditText,
+      currentEditEntry,
       handleSaveFile,
       editMode,
       editModeList,
@@ -174,6 +179,10 @@ export default defineComponent({
         <template #avatar> <n-avatar :src="iconTranslate" style="background: none" /> </template>
         <template #extra>
           <n-space align="center">
+            <n-button v-if="currentEditEntry" type="primary" @click="handleSaveFile"
+              >Save Changes</n-button
+            >
+
             Edit Mode:<n-radio-group size="small" v-model:value="editMode">
               <n-radio-button
                 v-for="mode in editModeList"
@@ -186,6 +195,8 @@ export default defineComponent({
             <n-button type="primary" size="small" @click="handlePickDir">
               Pick i18n Directory
             </n-button>
+
+            <n-button v-if="dirHandle" size="small" @click="reloadPickedDir"> Refresh </n-button>
           </n-space>
         </template>
       </n-page-header>
@@ -214,12 +225,10 @@ export default defineComponent({
         </n-layout-sider>
         <n-layout-content>
           <div class="main-edit-wrap">
-            <template v-if="isShowFileEdit">
-              <div class="action-row">
-                <n-button type="primary" @click="handleSaveFile">Save File</n-button>
-              </div>
+            <template v-if="currentEditEntry">
+              <div v-if="false" class="action-row"></div>
 
-              <div class="edit-content-wrap">
+              <div class="edit-content-wrap" :class="{'batch-mode': editMode === 'batch'}">
                 <n-input
                   v-if="editMode === 'text'"
                   type="textarea"
@@ -289,6 +298,12 @@ export default defineComponent({
       padding: 10px;
       padding-top: 0;
       display: flex;
+
+      &.batch-mode {
+        :deep(.translate-item-input-key) {
+          box-shadow: 0 0 10px #18a058;
+        }
+      }
     }
   }
 }

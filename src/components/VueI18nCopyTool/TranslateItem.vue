@@ -84,10 +84,9 @@ export default defineComponent({
       <n-space size="small" align="center">
         <n-input
           size="small"
-          class="font-code"
+          class="font-code translate-item-input-key"
           v-model:value="item.key"
           placeholder="key"
-          clearable
           @click="handleInputKeyClick"
         />
         <template v-if="!isLite">
@@ -99,7 +98,6 @@ export default defineComponent({
             style="width: 350px"
             v-model:value="item.value"
             placeholder="value"
-            clearable
             @blur="handleBlur"
           />
           <n-button
@@ -136,7 +134,7 @@ export default defineComponent({
       <n-space>
         <n-popconfirm @positive-click="$emit('onRemove')">
           <template #trigger>
-            <n-button size="small" type="error">❌</n-button>
+            <n-button size="small" type="error">×</n-button>
           </template>
           Remove Item?
         </n-popconfirm>

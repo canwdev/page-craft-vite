@@ -11,34 +11,71 @@ import FileChooser from '@/components/CommonUI/FileChooser.vue'
 import {getFileName, handleExportFile, handleReadSelectedFile} from '@/utils/exporter'
 import iconTranslate from '../assets/textures/translate.svg?url'
 
+const filePickerOptions = {
+  types: [
+    {
+      description: 'JSON',
+      accept: {
+        'application/JSON': ['.json'],
+      },
+    },
+  ],
+}
+
 export default defineComponent({
   name: 'VueI18nCopyTool',
   components: {
     TranslateTreeItem,
-    FileChooser,
   },
   setup() {
     const translateTreeRoot = ref<ITranslateTreeItem[]>([formatTranslateTreeItem()])
 
-    const importFileChooserRef = ref()
+    const fileHandle = shallowRef<FileSystemFileHandle>()
     const handleImport = async (file) => {
-      const str = await handleReadSelectedFile(file)
+      // @ts-ignore
+      const [handle] = await window.showOpenFilePicker(filePickerOptions)
+      fileHandle.value = handle
+      const str = await handleReadSelectedFile(await handle.getFile())
       const obj = JSON.parse(str as string)
       // console.log(obj)
       translateTreeRoot.value = parseI18nJsonObj(obj)
     }
 
+    const handleSaveFile = async () => {
+      if (!fileHandle.value) {
+        return
+      }
+      // @ts-ignore
+      const writable = await fileHandle.value.createWritable()
+
+      const txt = JSON.stringify(exportI18nTreeJsonObj(translateTreeRoot.value), null, 2)
+
+      await writable.write(txt)
+      await writable.close()
+      window.$message.success('Saved!')
+    }
+    const handleExport = async () => {
+      const txt = JSON.stringify(exportI18nTreeJsonObj(translateTreeRoot.value), null, 2)
+
+      // @ts-ignore
+      const handle = await window.showSaveFilePicker({
+        suggestedName: fileHandle.value?.name,
+        ...filePickerOptions,
+      })
+      const writable = await handle.createWritable()
+
+      await writable.write(txt)
+      await writable.close()
+
+      window.$message.success('Saved!')
+    }
+
     return {
       translateTreeRoot,
+      fileHandle,
       handleImport,
-      handleExport() {
-        handleExportFile(
-          getFileName(null, 'i18n_export'),
-          JSON.stringify(exportI18nTreeJsonObj(translateTreeRoot.value), null, 2),
-          '.json'
-        )
-      },
-      importFileChooserRef,
+      handleSaveFile,
+      handleExport,
       loadDemo() {
         translateTreeRoot.value = parseI18nJsonObj({
           hello_world: {
@@ -66,10 +103,11 @@ export default defineComponent({
         <template #avatar> <n-avatar :src="iconTranslate" style="background: none" /> </template>
         <template #extra>
           <n-space>
-            <n-button type="primary" @click="importFileChooserRef.chooseFile()" size="small">
-              Import JSON
-            </n-button>
-            <n-button @click="handleExport" size="small">Export JSON</n-button>
+            <n-button type="primary" @click="handleImport" size="small"> Open JSON </n-button>
+            <n-button v-if="fileHandle" @click="handleSaveFile" size="small" type="info"
+              >Save</n-button
+            >
+            <n-button @click="handleExport" size="small">Save as...</n-button>
 
             <n-popconfirm @positive-click="loadDemo">
               <template #trigger>
@@ -85,8 +123,6 @@ export default defineComponent({
     <div class="_container">
       <TranslateTreeItem v-for="(item, index) in translateTreeRoot" :key="index" :item="item" />
     </div>
-
-    <FileChooser ref="importFileChooserRef" accept="application/JSON" @selected="handleImport" />
   </div>
 </template>
 

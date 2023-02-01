@@ -57,7 +57,7 @@ export const parseI18nJsonObj = (
       }
     }
   }
-  console.log(tree)
+  // console.log(tree)
   return tree
 }
 

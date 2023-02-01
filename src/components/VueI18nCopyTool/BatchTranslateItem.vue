@@ -167,29 +167,37 @@ export default defineComponent({
 </script>
 
 <template>
-  <n-card class="batch-translate-item" :title="dirItem.label + '/' + filePathArr.join('/')">
+  <n-card
+    size="small"
+    class="batch-translate-item"
+    :title="dirItem.label + '/' + filePathArr.join('/')"
+  >
     <template #header-extra>
       <span style="color: darkseagreen" class="font-code">{{ translatePath }}</span>
     </template>
-    <template v-if="translatePath">
+    <div style="color: red; margin-bottom: 10px" v-if="!currentItem">
+      File does not exist, please create it on your local file system
+    </div>
+    <template v-else-if="translatePath">
       <n-space v-if="translateText !== null" align="center">
         <n-input
           type="textarea"
+          size="small"
           v-model:value="translateText"
           :placeholder="isFieldArray ? 'Input array' : 'Input text'"
           :rows="isFieldArray ? 8 : 1"
-          style="min-width: 400px; width: 50vw"
+          style="width: 450px"
           :class="{'font-code': isFieldArray}"
         />
-        <n-button v-if="isChanged" type="primary" @click="saveChange">Save</n-button>
-        <n-button v-if="isChanged" @click="cancelChange">Cancel</n-button>
+        <n-button size="small" v-if="isChanged" type="primary" @click="saveChange">Save</n-button>
+        <n-button size="small" v-if="isChanged" @click="cancelChange">Cancel</n-button>
       </n-space>
       <n-space v-else>
-        <n-button @click="createField('')" type="primary">Create text</n-button>
-        <n-button @click="createField([])">Create Array</n-button>
+        <n-button size="small" @click="createField('')" type="primary">Create text</n-button>
+        <n-button size="small" @click="createField([])">Create Array</n-button>
       </n-space>
     </template>
-    <template v-else>Please select a translation field on the left</template>
+    <div style="color: darkgoldenrod" v-else>Please select a translation field on the left</div>
   </n-card>
 </template>
 
