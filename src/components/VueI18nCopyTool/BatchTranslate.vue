@@ -16,7 +16,7 @@ export default defineComponent({
       },
     },
     filePathArr: {
-      type: Array,
+      type: Array as PropType<string[]>,
       default() {
         return []
       },
