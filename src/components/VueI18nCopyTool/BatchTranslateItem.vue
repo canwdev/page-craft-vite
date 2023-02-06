@@ -4,6 +4,7 @@ import {DirTreeItem} from '@/enum/vue-i18n-tool'
 import _get from 'lodash/get'
 import _set from 'lodash/set'
 import {handleReadSelectedFile} from '@/utils/exporter'
+// import countryCodeEmoji from '@/utils/country-code-emoji'
 
 export default defineComponent({
   name: 'BatchTranslateItem',
@@ -137,6 +138,11 @@ export default defineComponent({
       }
     }
 
+    // const countryFlag = computed(() => {
+    //   const code = dirItem.value?.label.split('-').pop()
+    //   return countryCodeEmoji(code)
+    // })
+
     return {
       currentItem,
       translateObj,
@@ -161,6 +167,7 @@ export default defineComponent({
         isFieldArray.value = Array.isArray(val)
       },
       isFieldArray,
+      // countryFlag,
     }
   },
 })
