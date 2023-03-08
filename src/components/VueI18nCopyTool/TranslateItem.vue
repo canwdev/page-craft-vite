@@ -119,26 +119,31 @@ export default defineComponent({
             :value="`$t('${nameDisplay}')`"
             readonly
           />
-          <n-button size="small" type="info" @click="handleCopy" title="Original"> Copy: </n-button>
-          <n-button size="small" type="info" @click="handleCopy('html')" title="HTML template">
-            H
+          <n-button size="small" @click="handleCopy" title="Copy Original $('')"> $() </n-button>
+          <n-button size="small" type="info" @click="handleCopy('html')" title="Copy HTML template">
+            {{ `\{\{ \}\}` }}
           </n-button>
-          <n-button size="small" type="info" @click="handleCopy('v-html')" title="v-html template">
-            VH
+          <n-button
+            size="small"
+            type="success"
+            @click="handleCopy('v-html')"
+            title="Copy v-html template"
+          >
+            v-html
           </n-button>
-          <n-button size="small" type="info" @click="handleCopy('js')" title="JS Script">
-            JS
+          <n-button size="small" type="warning" @click="handleCopy('js')" title="Copy JavaScript">
+            this.$t
           </n-button>
         </n-space>
-      </n-space>
-      <n-space>
+
         <n-popconfirm @positive-click="$emit('onRemove')">
           <template #trigger>
-            <n-button size="small" type="error">×</n-button>
+            <n-button style="margin-left: 15px" size="small" type="error">× Del</n-button>
           </template>
           Remove Item?
         </n-popconfirm>
       </n-space>
+      <n-space> </n-space>
     </n-space>
   </n-list-item>
 </template>
