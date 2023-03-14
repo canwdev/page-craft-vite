@@ -94,11 +94,20 @@ export default defineComponent({
       },
       iconTranslate,
       ...useFileDrop({
-        cbFiles: (files) => {
-          if (!files.length) {
-            return
+        cb: async (e) => {
+          // Process all the items.
+          for (const item of e.dataTransfer.items) {
+            // Careful: `kind` will be 'file' for both file
+            // _and_ directory entries.
+            if (item.kind === 'file') {
+              const entry = await item.getAsFileSystemHandle()
+              if (entry.kind !== 'directory') {
+                fileHandle.value = entry
+                const file = await entry.getFile()
+                await handleImport(file)
+              }
+            }
           }
-          handleImport(files[0])
         },
       }),
     }
