@@ -4,6 +4,7 @@ import {
   exportI18nTreeJsonObj,
   formatTranslateItem,
   formatTranslateTreeItem,
+  I18nJsonObjUtils,
   ITranslateItem,
   ITranslateTreeItem,
 } from '@/enum/vue-i18n-tool'
@@ -95,6 +96,7 @@ export default defineComponent({
   <n-card size="small" class="tree-item" v-if="item">
     <div style="display: flex">
       <n-input
+        :disabled="isRoot"
         class="font-code"
         v-model:value="item.namespace"
         placeholder="namespace"

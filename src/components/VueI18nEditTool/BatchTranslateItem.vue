@@ -127,6 +127,8 @@ export default defineComponent({
         // @ts-ignore
         const writable = await fileHandle.createWritable()
 
+        // console.log('[translateObj.value]', translateObj.value)
+
         const txt = JSON.stringify(translateObj.value, null, 2)
 
         await writable.write(txt)

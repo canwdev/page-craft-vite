@@ -1,12 +1,7 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import TranslateTreeItem from '@/components/VueI18nEditTool/TranslateTreeItem.vue'
-import {
-  exportI18nTreeJsonObj,
-  formatTranslateTreeItem,
-  ITranslateTreeItem,
-  parseI18nJsonObj,
-} from '@/enum/vue-i18n-tool'
+import {exportI18nTreeJsonObj, I18nJsonObjUtils, ITranslateTreeItem} from '@/enum/vue-i18n-tool'
 import {handleReadSelectedFile} from '@/utils/exporter'
 import iconTranslate from '../assets/textures/translate.svg?url'
 import DropZone from '@/components/CommonUI/DropZone.vue'
@@ -30,14 +25,14 @@ export default defineComponent({
     DropZone,
   },
   setup() {
-    const translateTreeRoot = ref<ITranslateTreeItem[]>([formatTranslateTreeItem()])
+    const translateTreeRoot = ref<ITranslateTreeItem[]>(I18nJsonObjUtils.parseWithRoot())
 
     const fileHandle = shallowRef<FileSystemFileHandle>()
     const handleImport = async (file) => {
       const str = await handleReadSelectedFile(file)
       const obj = JSON.parse(str as string)
       // console.log(obj)
-      translateTreeRoot.value = parseI18nJsonObj(obj)
+      translateTreeRoot.value = I18nJsonObjUtils.parseWithRoot(obj)
     }
 
     const handleSelectFile = async () => {
@@ -61,6 +56,7 @@ export default defineComponent({
       window.$message.success('Saved!')
     }
     const handleExport = async () => {
+      console.log(translateTreeRoot.value)
       const txt = JSON.stringify(exportI18nTreeJsonObj(translateTreeRoot.value), null, 2)
 
       // @ts-ignore
@@ -84,7 +80,7 @@ export default defineComponent({
       handleSaveFile,
       handleExport,
       loadDemo() {
-        translateTreeRoot.value = parseI18nJsonObj({
+        translateTreeRoot.value = I18nJsonObjUtils.parseWithRoot({
           hello_world: {
             section_a: {
               test_str: 'This is a test string',

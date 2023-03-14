@@ -6,8 +6,8 @@ import {
   DirTreeItem,
   exportI18nTreeJsonObj,
   formatTranslateTreeItem,
+  I18nJsonObjUtils,
   ITranslateTreeItem,
-  parseI18nJsonObj,
 } from '@/enum/vue-i18n-tool'
 import BatchTranslate from '@/components/VueI18nEditTool/BatchTranslate.vue'
 import DropZone from '@/components/CommonUI/DropZone.vue'
@@ -128,7 +128,7 @@ export default defineComponent({
           return
         }
         const obj = JSON.parse(currentEditText.value as string)
-        translateTreeRoot.value = parseI18nJsonObj(obj)
+        translateTreeRoot.value = I18nJsonObjUtils.parseWithRoot(obj)
       }
     }
 

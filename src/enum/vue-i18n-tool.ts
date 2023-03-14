@@ -10,7 +10,7 @@ export const formatTranslateItem = (data: any = {}): ITranslateItem => {
 }
 
 export interface ITranslateTreeItem {
-  namespace: ''
+  namespace: string
   children: ITranslateTreeItem[]
   translates: ITranslateItem[]
   parent?: ITranslateTreeItem | null
@@ -61,7 +61,34 @@ export const parseI18nJsonObj = (
   return tree
 }
 
+export const I18N_JSON_OBJ_ROOT_KEY_NAME = '__root__'
+export const I18nJsonObjUtils = {
+  // add a root node for editing
+  parseWithRoot: (obj = {}) => {
+    return parseI18nJsonObj({
+      [I18N_JSON_OBJ_ROOT_KEY_NAME]: obj,
+    })
+  },
+  isRoot(obj: ITranslateTreeItem) {
+    if (!obj) {
+      return false
+    }
+    return obj.namespace === I18N_JSON_OBJ_ROOT_KEY_NAME
+  },
+}
+
 export const exportI18nTreeJsonObj = (tree: ITranslateTreeItem[], obj: any = {}) => {
+  if (typeof tree === 'object' && !Array.isArray(tree)) {
+    tree = [tree]
+  }
+  // unwrap root item
+  if (I18nJsonObjUtils.isRoot(tree[0])) {
+    const root = tree[0]
+    root.translates.forEach((t) => {
+      obj[t.key] = t.value
+    })
+    tree = root.children
+  }
   tree.forEach((item) => {
     const o = {}
 

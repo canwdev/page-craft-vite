@@ -1,6 +1,11 @@
 <script lang="ts">
 import {defineComponent, PropType} from 'vue'
-import {formatI18nKey, ITranslateItem, ITranslateTreeItem} from '@/enum/vue-i18n-tool'
+import {
+  formatI18nKey,
+  I18N_JSON_OBJ_ROOT_KEY_NAME,
+  ITranslateItem,
+  ITranslateTreeItem,
+} from '@/enum/vue-i18n-tool'
 import {copyToClipboard} from '@/utils'
 
 export default defineComponent({
@@ -45,6 +50,8 @@ export default defineComponent({
       if (namespacePrefix.value) {
         name = namespacePrefix.value + '.' + name
       }
+      const regex = new RegExp(I18N_JSON_OBJ_ROOT_KEY_NAME + '.', 'g')
+      name = name.replace(regex, '')
       return name
     })
 
