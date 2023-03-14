@@ -19,9 +19,9 @@ let routes = [
         component: () => import('@/views/ExcelCopyTool.vue'),
       },
       {
-        path: 'vue-i18n-cp',
-        name: 'VueI18nCopyTool',
-        component: () => import('@/views/VueI18nCopyTool.vue'),
+        path: 'vue-i18n-edit',
+        name: 'VueI18nEditTool',
+        component: () => import('@/views/VueI18nEditTool.vue'),
       },
       {
         path: 'vue-i18n-dir',

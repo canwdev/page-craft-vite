@@ -9,7 +9,9 @@ import {
   ITranslateTreeItem,
   parseI18nJsonObj,
 } from '@/enum/vue-i18n-tool'
-import BatchTranslate from '@/components/VueI18nCopyTool/BatchTranslate.vue'
+import BatchTranslate from '@/components/VueI18nEditTool/BatchTranslate.vue'
+import DropZone from '@/components/CommonUI/DropZone.vue'
+import {useFileDrop} from '@/hooks/use-file-drop'
 
 let idSeed = 0
 
@@ -17,6 +19,7 @@ export default defineComponent({
   name: 'VueI18nDirTool',
   components: {
     BatchTranslate,
+    DropZone,
   },
   setup() {
     const dirTree = ref<DirTreeItem[]>([])
@@ -166,13 +169,38 @@ export default defineComponent({
         console.log(str)
         translatePath.value = str
       },
+      ...useFileDrop({
+        cb: async (e) => {
+          // Process all the items.
+          for (const item of e.dataTransfer.items) {
+            // Careful: `kind` will be 'file' for both file
+            // _and_ directory entries.
+            if (item.kind === 'file') {
+              const entry = await item.getAsFileSystemHandle()
+              if (entry.kind === 'directory') {
+                dirHandle.value = entry
+                dirTree.value = await recursiveReadDir(dirHandle.value)
+              }
+            }
+          }
+        },
+      }),
     }
   },
 })
 </script>
 
 <template>
-  <div class="vue-i18n-copy-tool">
+  <div
+    class="vue-i18n-copy-tool"
+    @dragover.prevent.stop="fileDragover"
+    @dragleave.prevent.stop="showDropzone = false"
+    @drop.prevent.stop="fileDrop"
+  >
+    <transition name="fade">
+      <DropZone v-show="showDropzone" text="Drop locale folder here" />
+    </transition>
+
     <n-card size="small">
       <n-page-header subtitle="" @back="$router.push({name: 'HomeView'})">
         <template #title> Vue i18n Dir Tool </template>

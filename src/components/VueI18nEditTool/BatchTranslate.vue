@@ -1,7 +1,7 @@
 <script lang="ts">
 import {defineComponent, PropType} from 'vue'
 import {DirTreeItem} from '@/enum/vue-i18n-tool'
-import BatchTranslateItem from '@/components/VueI18nCopyTool/BatchTranslateItem.vue'
+import BatchTranslateItem from '@/components/VueI18nEditTool/BatchTranslateItem.vue'
 
 export default defineComponent({
   name: 'BatchTranslate',

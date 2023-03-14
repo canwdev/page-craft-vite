@@ -95,10 +95,10 @@ export default defineComponent({
         },
       },
       {
-        label: 'Vue i18n Copy Tool',
+        label: 'Vue i18n Edit',
         props: {
           onClick: async () => {
-            await router.push({name: 'VueI18nCopyTool'})
+            await router.push({name: 'VueI18nEditTool'})
           },
         },
       },

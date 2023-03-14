@@ -1,15 +1,16 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
-import TranslateTreeItem from '@/components/VueI18nCopyTool/TranslateTreeItem.vue'
+import TranslateTreeItem from '@/components/VueI18nEditTool/TranslateTreeItem.vue'
 import {
   exportI18nTreeJsonObj,
   formatTranslateTreeItem,
   ITranslateTreeItem,
   parseI18nJsonObj,
 } from '@/enum/vue-i18n-tool'
-import FileChooser from '@/components/CommonUI/FileChooser.vue'
-import {getFileName, handleExportFile, handleReadSelectedFile} from '@/utils/exporter'
+import {handleReadSelectedFile} from '@/utils/exporter'
 import iconTranslate from '../assets/textures/translate.svg?url'
+import DropZone from '@/components/CommonUI/DropZone.vue'
+import {useFileDrop} from '@/hooks/use-file-drop'
 
 const filePickerOptions = {
   types: [
@@ -23,24 +24,29 @@ const filePickerOptions = {
 }
 
 export default defineComponent({
-  name: 'VueI18nCopyTool',
+  name: 'VueI18nEditTool',
   components: {
     TranslateTreeItem,
+    DropZone,
   },
   setup() {
     const translateTreeRoot = ref<ITranslateTreeItem[]>([formatTranslateTreeItem()])
 
     const fileHandle = shallowRef<FileSystemFileHandle>()
     const handleImport = async (file) => {
-      // @ts-ignore
-      const [handle] = await window.showOpenFilePicker(filePickerOptions)
-      fileHandle.value = handle
-      const str = await handleReadSelectedFile(await handle.getFile())
+      const str = await handleReadSelectedFile(file)
       const obj = JSON.parse(str as string)
       // console.log(obj)
       translateTreeRoot.value = parseI18nJsonObj(obj)
     }
 
+    const handleSelectFile = async () => {
+      // @ts-ignore
+      const [handle] = await window.showOpenFilePicker(filePickerOptions)
+      fileHandle.value = handle
+      const file = await handle.getFile()
+      handleImport(file)
+    }
     const handleSaveFile = async () => {
       if (!fileHandle.value) {
         return
@@ -74,6 +80,7 @@ export default defineComponent({
       translateTreeRoot,
       fileHandle,
       handleImport,
+      handleSelectFile,
       handleSaveFile,
       handleExport,
       loadDemo() {
@@ -90,20 +97,37 @@ export default defineComponent({
         })
       },
       iconTranslate,
+      ...useFileDrop({
+        cbFiles: (files) => {
+          if (!files.length) {
+            return
+          }
+          handleImport(files[0])
+        },
+      }),
     }
   },
 })
 </script>
 
 <template>
-  <div class="vue-i18n-copy-tool">
+  <div
+    class="vue-i18n-copy-tool"
+    @dragover.prevent.stop="fileDragover"
+    @dragleave.prevent.stop="showDropzone = false"
+    @drop.prevent.stop="fileDrop"
+  >
+    <transition name="fade">
+      <DropZone v-show="showDropzone" text="Drop json file here" />
+    </transition>
+
     <n-card size="small" style="position: sticky; top: 0; z-index: 100; margin-bottom: 10px">
       <n-page-header subtitle="" @back="$router.push({name: 'HomeView'})">
-        <template #title> Vue i18n Copy Tool </template>
+        <template #title> Vue i18n Edit </template>
         <template #avatar> <n-avatar :src="iconTranslate" style="background: none" /> </template>
         <template #extra>
           <n-space>
-            <n-button type="primary" @click="handleImport" size="small"> Open JSON </n-button>
+            <n-button type="primary" @click="handleSelectFile" size="small"> Open JSON </n-button>
             <n-button v-if="fileHandle" @click="handleSaveFile" size="small" type="info"
               >Save</n-button
             >

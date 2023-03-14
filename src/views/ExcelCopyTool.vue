@@ -5,7 +5,10 @@ import dynamicLoadScript from '@/utils/dynamic-load-script'
 import iconExcel from '../assets/textures/excel.svg?url'
 import {copyToClipboard} from '@/utils'
 import {getFileName, handleExportFile} from '@/utils/exporter'
-import CopyExampleDialog from '@/components/VueI18nCopyTool/CopyExampleDialog.vue'
+import CopyExampleDialog from '@/components/VueI18nEditTool/CopyExampleDialog.vue'
+import DropZone from '@/components/CommonUI/DropZone.vue'
+import {useFileDrop} from '@/hooks/use-file-drop'
+
 const formatMultipleLine = (str, mode) => {
   if (mode === CopyMode.text) {
     return str
@@ -41,6 +44,7 @@ export default defineComponent({
   components: {
     FileChooser,
     CopyExampleDialog,
+    DropZone,
   },
   setup() {
     const importFileChooserRef = ref()
@@ -81,7 +85,7 @@ export default defineComponent({
     const handleImport = async (file) => {
       checkPlugin()
       if (!/\.xlsx$/g.test(file.name)) {
-        console.error('Only supports reading xlsx format!')
+        alert('Only supports reading xlsx format!')
         return
       }
       const reader = new FileReader()
@@ -201,13 +205,30 @@ export default defineComponent({
       ],
       isShowCopyExample,
       formatMultipleLine,
+      ...useFileDrop({
+        cbFiles: (files) => {
+          if (!files.length) {
+            return
+          }
+          handleImport(files[0])
+        },
+      }),
     }
   },
 })
 </script>
 
 <template>
-  <div class="excel-copy-tool">
+  <div
+    class="excel-copy-tool"
+    @dragover.prevent.stop="fileDragover"
+    @dragleave.prevent.stop="showDropzone = false"
+    @drop.prevent.stop="fileDrop"
+  >
+    <transition name="fade">
+      <DropZone v-show="showDropzone" text="Drop Excel file here" />
+    </transition>
+
     <div>
       <n-card size="small">
         <n-page-header subtitle="" @back="$router.push({name: 'HomeView'})">
@@ -277,6 +298,7 @@ export default defineComponent({
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  position: relative;
 
   .excel-table-container {
     flex: 1;
