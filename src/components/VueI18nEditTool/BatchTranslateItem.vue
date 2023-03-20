@@ -24,6 +24,7 @@ export default defineComponent({
       default: '',
     },
   },
+  emits: ['saveChanged'],
   setup(props, {emit}) {
     const {dirItem, filePathArr, translatePath} = toRefs(props)
 
@@ -145,17 +146,25 @@ export default defineComponent({
     //   return countryCodeEmoji(code)
     // })
 
+    const inputRef = ref()
+
     return {
       currentItem,
       translateObj,
       translateText,
       isChanged,
-      async saveChange() {
+      async saveChange({isEmit = false} = {}) {
+        if (!isChanged.value) {
+          return
+        }
         setText()
         await handleSaveFile()
         nextTick(() => {
           isChanged.value = false
         })
+        if (isEmit) {
+          emit('saveChanged')
+        }
       },
       cancelChange() {
         translateText.value = getText()
@@ -167,8 +176,13 @@ export default defineComponent({
         setText(val)
         translateText.value = val
         isFieldArray.value = Array.isArray(val)
+
+        nextTick(() => {
+          inputRef.value.focus()
+        })
       },
       isFieldArray,
+      inputRef,
       // countryFlag,
     }
   },
@@ -182,14 +196,15 @@ export default defineComponent({
     :title="dirItem.label + '/' + filePathArr.join('/')"
   >
     <template #header-extra>
-      <span style="color: darkseagreen" class="font-code">{{ translatePath }}</span>
+      <span class="translate-path font-code">{{ translatePath }}</span>
     </template>
-    <div style="color: red; margin-bottom: 10px" v-if="!currentItem">
+    <div style="color: hotpink; margin-bottom: 10px" v-if="!currentItem">
       File does not exist, please create it on your local file system
     </div>
     <template v-else-if="translatePath">
       <n-space v-if="translateText !== null" align="center">
         <n-input
+          ref="inputRef"
           type="textarea"
           size="small"
           v-model:value="translateText"
@@ -198,7 +213,9 @@ export default defineComponent({
           style="width: 450px"
           :class="{'font-code': isFieldArray}"
         />
-        <n-button size="small" v-if="isChanged" type="primary" @click="saveChange">Save</n-button>
+        <n-button size="small" v-if="isChanged" type="primary" @click="saveChange({isEmit: true})"
+          >Save</n-button
+        >
         <n-button size="small" v-if="isChanged" @click="cancelChange">Cancel</n-button>
       </n-space>
       <n-space v-else>
@@ -213,5 +230,10 @@ export default defineComponent({
 <style lang="scss" scoped>
 .batch-translate-item {
   margin-bottom: 10px;
+
+  .translate-path {
+    font-size: 12px;
+    opacity: 0.3;
+  }
 }
 </style>

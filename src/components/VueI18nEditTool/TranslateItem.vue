@@ -157,6 +157,14 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .translate-item {
+  margin-left: -15px;
+  padding-left: 15px;
+  margin-right: -15px;
+  padding-right: 15px;
+  &:hover {
+    transition: none;
+    background-color: rgba(147, 147, 147, 0.3);
+  }
   .i18n-badge {
     //user-select: all;
   }

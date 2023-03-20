@@ -182,6 +182,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .tree-item {
   &:hover {
+    transition: none;
     border: 1px solid darkseagreen;
   }
 

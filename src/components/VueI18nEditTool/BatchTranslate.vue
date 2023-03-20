@@ -28,8 +28,22 @@ export default defineComponent({
   },
   setup(props, {emit}) {
     const {dirTree} = toRefs(props)
+    const itemsRef = ref()
 
-    return {}
+    const handleSaveChanged = async () => {
+      // save other texts in the same level if not save
+      // console.log('itemsRef', itemsRef.value)
+
+      for (let i = 0; i < itemsRef.value.length; i++) {
+        const item = itemsRef.value[i]
+        await item.saveChange()
+      }
+    }
+
+    return {
+      handleSaveChanged,
+      itemsRef,
+    }
   },
 })
 </script>
@@ -37,11 +51,13 @@ export default defineComponent({
 <template>
   <div class="batch-translate">
     <BatchTranslateItem
+      ref="itemsRef"
       v-for="item in dirTree.filter((i) => i.kind === 'directory')"
       :key="item.key"
       :dir-item="item"
       :file-path-arr="filePathArr"
       :translate-path="translatePath"
+      @saveChanged="handleSaveChanged"
     />
   </div>
 </template>
