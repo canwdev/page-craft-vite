@@ -17,6 +17,7 @@ export default defineComponent({
     IndicatorInfo,
     ElementEditDialog,
   },
+  emits: ['openStylusTools'],
   setup(props, {emit}) {
     const mainCanvasRef = ref()
     const {isDarkMode} = useIsDarkMode()
@@ -95,7 +96,7 @@ export default defineComponent({
         },
       },
       {
-        label: 'Vue i18n Edit',
+        label: 'I18n Edit Tool',
         props: {
           onClick: async () => {
             await router.push({name: 'VueI18nEditTool'})
@@ -103,10 +104,10 @@ export default defineComponent({
         },
       },
       {
-        label: 'Vue i18n Dir Tool',
+        label: 'I18n Batch Tool',
         props: {
           onClick: async () => {
-            await router.push({name: 'VueI18nDirTool'})
+            await router.push({name: 'VueI18nBatchTool'})
           },
         },
       },

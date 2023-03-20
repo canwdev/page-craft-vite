@@ -6,6 +6,7 @@ import {handleReadSelectedFile} from '@/utils/exporter'
 import iconTranslate from '../assets/textures/translate.svg?url'
 import DropZone from '@/components/CommonUI/DropZone.vue'
 import {useFileDrop} from '@/hooks/use-file-drop'
+import {useMetaTitle} from '@/hooks/use-meta'
 
 const filePickerOptions = {
   types: [
@@ -72,7 +73,9 @@ export default defineComponent({
       window.$message.success('Saved!')
     }
 
+    const {metaTitle} = useMetaTitle()
     return {
+      metaTitle,
       translateTreeRoot,
       fileHandle,
       handleImport,
@@ -128,7 +131,7 @@ export default defineComponent({
 
     <n-card size="small" style="position: sticky; top: 0; z-index: 100; margin-bottom: 10px">
       <n-page-header subtitle="" @back="$router.push({name: 'HomeView'})">
-        <template #title> Vue i18n Edit </template>
+        <template #title>{{ metaTitle }}</template>
         <template #avatar> <n-avatar :src="iconTranslate" style="background: none" /> </template>
         <template #extra>
           <n-space>

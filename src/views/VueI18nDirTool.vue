@@ -12,11 +12,12 @@ import {
 import BatchTranslate from '@/components/VueI18nEditTool/BatchTranslate.vue'
 import DropZone from '@/components/CommonUI/DropZone.vue'
 import {useFileDrop} from '@/hooks/use-file-drop'
+import {useMetaTitle} from '@/hooks/use-meta'
 
 let idSeed = 0
 
 export default defineComponent({
-  name: 'VueI18nDirTool',
+  name: 'VueI18nBatchTool',
   components: {
     BatchTranslate,
     DropZone,
@@ -136,7 +137,10 @@ export default defineComponent({
       updateGuiTranslateTree()
     })
 
+    const {metaTitle} = useMetaTitle()
+
     return {
+      metaTitle,
       iconTranslate,
       handlePickDir,
       dirTree,
@@ -203,7 +207,7 @@ export default defineComponent({
 
     <n-card size="small">
       <n-page-header subtitle="" @back="$router.push({name: 'HomeView'})">
-        <template #title> Vue i18n Dir Tool </template>
+        <template #title>{{ metaTitle }}</template>
         <template #avatar> <n-avatar :src="iconTranslate" style="background: none" /> </template>
         <template #extra>
           <n-space align="center">

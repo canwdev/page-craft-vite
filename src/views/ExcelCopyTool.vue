@@ -8,6 +8,9 @@ import {getFileName, handleExportFile} from '@/utils/exporter'
 import CopyExampleDialog from '@/components/VueI18nEditTool/CopyExampleDialog.vue'
 import DropZone from '@/components/CommonUI/DropZone.vue'
 import {useFileDrop} from '@/hooks/use-file-drop'
+import {useHead} from '@vueuse/head'
+import {useRoute} from 'vue-router'
+import {useMetaTitle} from '@/hooks/use-meta'
 
 const formatMultipleLine = (str, mode) => {
   if (mode === CopyMode.text) {
@@ -54,6 +57,8 @@ export default defineComponent({
     const workbookRef = shallowRef()
     const sheetNames = ref<string[]>([])
     const sheetNameIndex = ref(0)
+
+    const {metaTitle} = useMetaTitle()
 
     watch(sheetNameIndex, () => {
       renderWorkbook()
@@ -154,6 +159,7 @@ export default defineComponent({
 
     const isShowCopyExample = ref(false)
     return {
+      metaTitle,
       iconExcel,
       sheetNames,
       sheetNameIndex,
@@ -232,7 +238,7 @@ export default defineComponent({
     <div>
       <n-card size="small">
         <n-page-header subtitle="" @back="$router.push({name: 'HomeView'})">
-          <template #title> ExcelCopyTool </template>
+          <template #title> {{ metaTitle }} </template>
           <template #avatar>
             <n-avatar :src="iconExcel" style="background: none" />
           </template>
