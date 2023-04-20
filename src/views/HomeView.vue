@@ -7,6 +7,7 @@ import {LsKeys} from '@/enum/page-craft'
 import {getUserTheme, themeOptions, useHandleThemeChange} from '@/hooks/use-global-theme'
 import {useMainStore} from '@/store/main-store'
 import {createOrFindStyleNode} from '@/utils/dom'
+import {useMetaTitle} from '@/hooks/use-meta'
 // import BackgroundLayer from '@/components/BackgroundLayer/index.vue'
 
 export default defineComponent({
@@ -22,6 +23,7 @@ export default defineComponent({
   },
   setup() {
     const mainStore = useMainStore()
+    const {metaTitle} = useMetaTitle()
 
     const isEnableGlobalStyle = useLocalStorageBoolean(LsKeys.IS_ENABLE_GLOBAL_STYLE, true)
 

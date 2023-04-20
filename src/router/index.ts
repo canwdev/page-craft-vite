@@ -1,5 +1,6 @@
 import {createRouter, createWebHashHistory} from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
+import pkg from '../../package.json'
 
 let history = createWebHashHistory()
 let routes = [
@@ -7,6 +8,9 @@ let routes = [
     path: '/',
     name: 'HomeView',
     component: HomeView,
+    meta: {
+      title: `Page Craft v${pkg.version}`,
+    },
   },
   {
     path: '/tools',

@@ -245,6 +245,7 @@ export default defineComponent({
             selection?.endColumn || 0
           ),
           text: code,
+          forceMoveMarkers: true,
         },
       ])
       setTimeout(() => {
