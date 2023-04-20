@@ -8,6 +8,13 @@ import {getUserTheme, themeOptions, useHandleThemeChange} from '@/hooks/use-glob
 import {useMainStore} from '@/store/main-store'
 import {createOrFindStyleNode} from '@/utils/dom'
 import {useMetaTitle} from '@/hooks/use-meta'
+import {handleExportStyle} from '@/utils/exporter'
+import {formatCss, formatHtml} from '@/utils/formater'
+import {sassToCSS} from '@/utils/css'
+import {copyToClipboard} from '@/utils'
+import {useCompStorage} from '@/hooks/use-component-storage'
+import {ExportItem} from '@/enum/page-craft/block'
+import {useCraftStore} from '@/store/craft'
 // import BackgroundLayer from '@/components/BackgroundLayer/index.vue'
 
 export default defineComponent({
@@ -26,6 +33,7 @@ export default defineComponent({
     const {metaTitle} = useMetaTitle()
 
     const isEnableGlobalStyle = useLocalStorageBoolean(LsKeys.IS_ENABLE_GLOBAL_STYLE, true)
+    const isEnableTopLayout = useLocalStorageBoolean(LsKeys.IS_ENABLE_TOP_LAYOUT, true)
 
     const isShowSettings = ref(false)
     const themeValue = ref(getUserTheme())
@@ -51,6 +59,16 @@ export default defineComponent({
       applyGlobalStyle()
     })
 
+    watch(
+      isEnableTopLayout,
+      (val) => {
+        mainStore.isTopLayout = val
+      },
+      {
+        immediate: true,
+      }
+    )
+
     onMounted(() => {
       styleEl.value = createOrFindStyleNode(LsKeys.GLOBAL_STYLE)
       globalStyleText.value = localStorage.getItem(LsKeys.GLOBAL_STYLE) || ''
@@ -60,6 +78,55 @@ export default defineComponent({
 
     const isShowStyleEditorStyleEditor = useLocalStorageBoolean(LsKeys.IS_SHOW_STYLE_EDITOR)
     const isShowStylusTools = ref(false)
+
+    const {loadCurCompStyle} = useCompStorage()
+    const craftStore = useCraftStore()
+    const styleMenuOptions = [
+      {
+        label: '📄 Copy Compiled CSS',
+        props: {
+          onClick: async () => {
+            const style = loadCurCompStyle()
+            const css = formatCss(await sassToCSS(style))
+            copyToClipboard(css)
+          },
+        },
+      },
+      {
+        label: '📤 Export',
+        children: [
+          {
+            label: '📃 Export CSS File',
+            props: {
+              onClick: async () => {
+                await handleExportStyle(
+                  new ExportItem({
+                    name: craftStore.currentComponentName,
+                    html: '',
+                    style: formatCss(loadCurCompStyle()),
+                  }),
+                  true
+                )
+              },
+            },
+          },
+          {
+            label: '📃 Export SCSS File',
+            props: {
+              onClick: async () => {
+                await handleExportStyle(
+                  new ExportItem({
+                    name: craftStore.currentComponentName,
+                    html: '',
+                    style: formatCss(loadCurCompStyle()),
+                  })
+                )
+              },
+            },
+          },
+        ],
+      },
+    ]
 
     return {
       isShowSettings,
@@ -71,34 +138,44 @@ export default defineComponent({
       handleThemeChange,
       mainStore,
       isEnableGlobalStyle,
+      isEnableTopLayout,
       isShowStyleEditorStyleEditor,
       isShowStylusTools,
+      styleMenuOptions,
     }
   },
 })
 </script>
 
 <template>
-  <div class="page-craft-home-view">
+  <div class="page-craft-home-view" :class="{_topLayout: mainStore.isTopLayout}">
     <!--    <BackgroundLayer />-->
-    <MainCanvas @openStylusTools="isShowStylusTools = true">
+
+    <MainCanvas>
       <template #settingsButtons>
         <n-space align="center" size="small">
           <n-button size="small" @click="isShowSettings = true">Settings</n-button>
           <n-a href="https://github.com/canwdev/page-craft-vite" target="_blank">Github...</n-a>
         </n-space>
       </template>
-      <template #barExtra>
+    </MainCanvas>
+
+    <ToolBar @openStylusTools="isShowStylusTools = true">
+      <n-dropdown
+        :options="styleMenuOptions"
+        key-field="label"
+        placement="bottom-start"
+        trigger="hover"
+      >
         <n-button
           size="tiny"
-          style="min-width: 120px"
+          style="min-width: 90px"
           @click="isShowStyleEditorStyleEditor = !isShowStyleEditorStyleEditor"
         >
           {{ isShowStyleEditorStyleEditor ? '✔' : '' }} Style Editor
         </n-button>
-      </template>
-    </MainCanvas>
-    <ToolBar />
+      </n-dropdown>
+    </ToolBar>
     <StyleEditor v-model:visible="isShowStyleEditorStyleEditor" />
     <StylusToolsDialog v-model:visible="isShowStylusTools" />
 
@@ -133,6 +210,12 @@ export default defineComponent({
           </template>
         </n-list-item>
         <n-list-item>
+          <n-thing title="Top Layout" />
+          <template #suffix>
+            <n-switch v-model:value="isEnableTopLayout" style="margin-right: 20px" />
+          </template>
+        </n-list-item>
+        <n-list-item>
           <n-thing title="Global Style" />
           <template #suffix>
             <div style="display: flex; align-items: center">
@@ -155,5 +238,10 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   position: relative;
+
+  &._topLayout {
+    padding-top: 88px;
+    flex-direction: column-reverse;
+  }
 }
 </style>

@@ -32,8 +32,11 @@ export const tagsHasSrcAttr = [
 ]
 
 // block.blockType === BlockType.HTML_ELEMENT
-export const createBlockElement = (block: BlockItem, craftStore?) => {
-  const text = craftStore?.innerText || ''
+export const createBlockElement = (block: BlockItem, addOptions?) => {
+  const {innerText = '', className = ''} = addOptions || {}
+
+  const text = innerText || ''
+
   const tag = block.data.tag
   const addEl: any = document.createElement(tag)
   if (tagsHasSrcAttr.includes(tag)) {
@@ -42,23 +45,18 @@ export const createBlockElement = (block: BlockItem, craftStore?) => {
     }
     addEl.src = text
   } else if (tag === 'input') {
-    addEl.value = text
+    addEl.setAttribute('placeholder', text)
   } else if (!['br', 'hr'].includes(tag)) {
     addEl.innerHTML = text
   }
-  if (craftStore?.className) {
-    addEl.className = craftStore.className
+  if (className) {
+    addEl.className = className
   }
   return addEl
 }
 
-export const appendCustomBlock = async (block: BlockItem, event, craftStore, mainCanvasRef) => {
-  let targetEl
-  if (event.target) {
-    targetEl = event.target
-  } else {
-    targetEl = mainCanvasRef.value
-  }
+export const appendCustomBlock = async (block: BlockItem, event, addOptions, mainCanvasRef) => {
+  let targetEl = event.target || mainCanvasRef.value
 
   if (block.blockType === BlockType.ACTIONS) {
     if (block.actionType === ActionType.PASTE_REPLACE) {
@@ -81,7 +79,7 @@ export const appendCustomBlock = async (block: BlockItem, event, craftStore, mai
       return
     }
   } else if (block.blockType === BlockType.HTML_ELEMENT) {
-    const addEl = createBlockElement(block, craftStore)
+    const addEl = createBlockElement(block, addOptions)
     // console.log('[addEl]', addEl)
     targetEl.appendChild(addEl)
   }

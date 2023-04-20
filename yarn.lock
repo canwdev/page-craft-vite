@@ -3390,6 +3390,11 @@ pkg-types@^0.3.3:
     mlly "^0.5.3"
     pathe "^0.3.0"
 
+portal-vue@^3.0.0-beta.0:
+  version "3.0.0-beta.0"
+  resolved "https://registry.npmmirror.com/portal-vue/-/portal-vue-3.0.0-beta.0.tgz#ada907776fdabad3f9ec609f7f00e5648480b533"
+  integrity sha512-ktV+Q0fwlsjeF+2xGebMxrN6xH8yMdmbLzYbd2OfcgU4OmzSmkj6iP3kBQRGa+7A5WZlqCHWaFfecNs9Igsv9w==
+
 postcss-selector-parser@^6.0.9:
   version "6.0.10"
   resolved "https://registry.npmmirror.com/postcss-selector-parser/-/postcss-selector-parser-6.0.10.tgz#79b61e2c0d1bfc2602d549e11d0876256f8df88d"

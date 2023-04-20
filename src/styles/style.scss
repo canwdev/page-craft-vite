@@ -26,6 +26,7 @@ Inspired by https://khang-nd.github.io/7.css/
   border: 1px solid rgba(0, 0, 0, .4);
   border-radius: 0;
   box-shadow: 0 1px 10px rgba(0, 0, 0, 0.27), inset 0 0 0.5px #fff;
+
   .n-button {
     background-color: rgba(255, 255, 255, 0.71) !important;
   }
@@ -33,9 +34,11 @@ Inspired by https://khang-nd.github.io/7.css/
   &._dark {
     background-color: rgba(43, 43, 43, 0.85);
     color: white;
+
     .n-button {
       background-color: transparent !important;
     }
+
     .n-input {
       background-color: rgba(0, 0, 0, 0.5);
     }
@@ -67,6 +70,32 @@ Inspired by https://khang-nd.github.io/7.css/
   &:disabled {
     cursor: not-allowed;
     opacity: 0.5;
+  }
+}
+
+._scrollbar_mini {
+  $radius: 8px;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    overflow: overlay;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: $radius;
+    border: 2px solid transparent;
+    background-clip: content-box;
+    background-color: rgba(192, 192, 192, 0.63);
+
+    &:hover {
+      background-color: #bebebe;
+    }
+  }
+
+  &::-webkit-scrollbar-track {
+    border-radius: $radius/2;
+    background: transparent;
   }
 }
 

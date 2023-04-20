@@ -41,14 +41,6 @@ export const useMcMain = (options) => {
 
     saveData()
   }
-  const copyCss = async () => {
-    const style = loadCurCompStyle()
-    const css = formatCss(await sassToCSS(style))
-    copyToClipboard(css)
-    // window.$message.success('Copy Success!')
-
-    saveData()
-  }
 
   const handleImportJson = (data) => {
     const {html = '', style = ''} = new ExportItem(data)
@@ -216,38 +208,6 @@ export const useMcMain = (options) => {
     },
   ]
 
-  const styleMenuOptions = [
-    {
-      label: '📄 Copy Compiled CSS',
-      props: {
-        onClick: async () => {
-          await copyCss()
-        },
-      },
-    },
-    {
-      label: '📤 Export',
-      children: [
-        {
-          label: '📃 Export CSS File',
-          props: {
-            onClick: async () => {
-              await handleExportStyle(await getEntityData(), true)
-            },
-          },
-        },
-        {
-          label: '📃 Export SCSS File',
-          props: {
-            onClick: async () => {
-              await handleExportStyle(await getEntityData())
-            },
-          },
-        },
-      ],
-    },
-  ]
-
   // record html before action
   const recordUndo = () => {
     const innerHTML = mainCanvasRef.value.innerHTML
@@ -270,7 +230,6 @@ export const useMcMain = (options) => {
 
   return {
     htmlMenuOptions,
-    styleMenuOptions,
     fileChooserRef,
     isShowImportDialog,
     setMainCanvasHtml,

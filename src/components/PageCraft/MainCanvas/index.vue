@@ -25,7 +25,6 @@ export default defineComponent({
 
     const {
       htmlMenuOptions,
-      styleMenuOptions,
       fileChooserRef,
       isShowImportDialog,
       setMainCanvasHtml,
@@ -50,6 +49,9 @@ export default defineComponent({
       handleBlockClick,
       handleMouseDown,
       handleMouseUp,
+      handleDragOver,
+      handleDragLeave,
+      handleDrop,
       waitingProgress,
       cursorX,
       cursorY,
@@ -77,42 +79,6 @@ export default defineComponent({
       }
     )
 
-    const router = useRouter()
-    const toolsMenuOptions = [
-      {
-        label: 'Stylus Format Tool',
-        props: {
-          onClick: async () => {
-            emit('openStylusTools')
-          },
-        },
-      },
-      {
-        label: 'Excel Copy Tool',
-        props: {
-          onClick: async () => {
-            await router.push({name: 'ExcelCopyTool'})
-          },
-        },
-      },
-      {
-        label: 'I18n Edit Tool',
-        props: {
-          onClick: async () => {
-            await router.push({name: 'VueI18nEditTool'})
-          },
-        },
-      },
-      {
-        label: 'I18n Batch Tool',
-        props: {
-          onClick: async () => {
-            await router.push({name: 'VueI18nBatchTool'})
-          },
-        },
-      },
-    ]
-
     return {
       craftStore,
       mainCanvasRef,
@@ -123,14 +89,15 @@ export default defineComponent({
       toggleList,
       handleMouseDown,
       handleMouseUp,
+      handleDragOver,
+      handleDragLeave,
+      handleDrop,
       waitingProgress,
       cursorX,
       cursorY,
       mainCanvasClass,
       isDarkMode,
       htmlMenuOptions,
-      styleMenuOptions,
-      toolsMenuOptions,
       fileChooserRef,
       isShowImportDialog,
       setMainCanvasHtml,
@@ -217,74 +184,59 @@ export default defineComponent({
       @selected="handleImportJsonSelected"
     />
 
-    <div :class="{_dark: isDarkMode}" class="page-craft-mc-indicator page-craft-aero-panel">
-      <n-space align="center">
-        <n-space align="center" size="small">
-          <n-dropdown
-            :options="htmlMenuOptions"
-            key-field="label"
-            placement="bottom-start"
-            trigger="hover"
-          >
-            <n-button size="tiny">{{ craftStore.currentComponentName || '🎨HTML' }}</n-button>
-          </n-dropdown>
+    <portal to="indicatorBarTeleportDest">
+      <div :class="{_dark: isDarkMode}" class="page-craft-mc-indicator">
+        <n-space align="center">
+          <n-space align="center" size="small">
+            <n-dropdown
+              :options="htmlMenuOptions"
+              key-field="label"
+              placement="bottom-start"
+              trigger="hover"
+            >
+              <n-button size="tiny">{{ craftStore.currentComponentName || '🎨HTML' }}</n-button>
+            </n-dropdown>
 
-          <n-popover :duration="100" :show-arrow="false" trigger="hover">
-            <template #trigger>
-              <n-button size="tiny">Options</n-button>
-            </template>
-            <template #header></template>
-            <div v-for="item in toggleList" :key="item.flag" class="toggle-list">
-              <n-checkbox
-                v-model:checked="indicatorOptions[item.flag]"
-                :label="item.title"
-                :title="item.desc"
-                size="small"
-              />
-            </div>
-            <n-slider v-model:value="indicatorOptions.bgTransparentPercent" :step="1" />
-            <template #footer>
-              <slot name="settingsButtons"></slot>
-            </template>
-          </n-popover>
+            <n-popover :duration="100" :show-arrow="false" trigger="hover">
+              <template #trigger>
+                <n-button size="tiny">Options</n-button>
+              </template>
+              <template #header></template>
+              <div v-for="item in toggleList" :key="item.flag" class="toggle-list">
+                <n-checkbox
+                  v-model:checked="indicatorOptions[item.flag]"
+                  :label="item.title"
+                  :title="item.desc"
+                  size="small"
+                />
+              </div>
+              <n-slider v-model:value="indicatorOptions.bgTransparentPercent" :step="1" />
+              <template #footer>
+                <slot name="settingsButtons"></slot>
+              </template>
+            </n-popover>
 
-          <span>|</span>
-          <n-button
-            size="tiny"
-            title="Undo"
-            :disabled="!undoRedo.undoStack.length"
-            @click="handleUndo"
-            >↩</n-button
-          >
-          <n-button
-            size="tiny"
-            title="Redo"
-            :disabled="!undoRedo.redoStack.length"
-            @click="handleRedo"
-            >↪</n-button
-          >
-          <span>|</span>
-
-          <n-dropdown
-            :options="styleMenuOptions"
-            key-field="label"
-            placement="bottom-start"
-            trigger="hover"
-          >
-            <slot name="barExtra"></slot>
-          </n-dropdown>
-
-          <n-dropdown
-            :options="toolsMenuOptions"
-            key-field="label"
-            placement="bottom-start"
-            trigger="hover"
-          >
-            <n-button size="tiny"> Tools </n-button>
-          </n-dropdown>
+            <span>|</span>
+            <n-button
+              size="tiny"
+              title="Undo"
+              :disabled="!undoRedo.undoStack.length"
+              @click="handleUndo"
+              >↩</n-button
+            >
+            <n-button
+              size="tiny"
+              title="Redo"
+              :disabled="!undoRedo.redoStack.length"
+              @click="handleRedo"
+              >↪</n-button
+            >
+            <span>|</span>
+          </n-space>
         </n-space>
-      </n-space>
-    </div>
+      </div>
+    </portal>
+    <!-- Main Canvas !!! -->
     <div
       ref="mainCanvasRef"
       :class="mainCanvasClass"
@@ -293,6 +245,9 @@ export default defineComponent({
       @mousedown="handleMouseDown"
       @mouseleave="handleMouseUp"
       @mouseup="handleMouseUp"
+      @dragover.prevent.stop="handleDragOver"
+      @dragleave.prevent.stop="handleDragLeave"
+      @drop.prevent.stop="handleDrop"
       :style="backgroundStyle"
     ></div>
 
@@ -373,17 +328,16 @@ export default defineComponent({
 }
 
 .page-craft-mc-indicator {
-  //width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 5px 10px;
+  //margin-left: auto;
+  //margin-right: auto;
+  //padding: 5px 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: sticky;
-  top: 0;
-  border-top: 0;
-  z-index: 997;
+  //position: sticky;
+  //top: 0;
+  //border-top: 0;
+  //z-index: 997;
 
   text-shadow: 0 0 10px white;
 }

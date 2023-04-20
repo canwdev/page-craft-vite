@@ -3,6 +3,7 @@ import {defineComponent, PropType} from 'vue'
 import {useCraftStore} from '@/store/craft'
 import {BlockItem} from '@/enum/page-craft/block'
 import {colorHash} from '@/utils'
+import {useFileDrop} from '@/hooks/use-file-drop'
 
 export default defineComponent({
   name: 'ToolItem',
@@ -16,13 +17,15 @@ export default defineComponent({
       default: false,
     },
   },
-  setup(props) {
+  emits: ['onDrop', 'onDragStart'],
+  setup(props, {emit}) {
     const {item} = toRefs(props)
     const craftStore = useCraftStore()
 
     // const isActive = computed(() => {
     //   return item.value.id === craftStore.currentBlock.id
     // })
+    const showDropzone = ref(false)
 
     const color = computed(() => {
       return item.value.title && colorHash.hex(item.value.title)
@@ -30,13 +33,30 @@ export default defineComponent({
     return {
       craftStore,
       color,
+      showDropzone,
+      onDragover(e) {
+        showDropzone.value = true
+      },
+      async onDrop(e) {
+        showDropzone.value = false
+        emit('onDrop', e)
+      },
     }
   },
 })
 </script>
 
 <template>
-  <div :class="{active}" class="tool-item _mini font-code" :title="item.title">
+  <div
+    :class="{active, blink: showDropzone}"
+    class="tool-item _mini font-code"
+    :title="item.title"
+    draggable="true"
+    @dragstart="$emit('onDragStart', $event)"
+    @dragover.prevent.stop="onDragover"
+    @dragleave.prevent.stop="showDropzone = false"
+    @drop.prevent.stop="onDrop"
+  >
     <div
       :style="{
         backgroundColor: color,
@@ -50,4 +70,15 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import './tool-item.scss';
+
+.tool-item {
+  cursor: grab;
+  &:active {
+    cursor: grabbing;
+  }
+
+  &.showDropzone {
+    filter: contrast(200%) brightness(5);
+  }
+}
 </style>

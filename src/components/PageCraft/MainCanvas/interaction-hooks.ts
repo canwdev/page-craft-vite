@@ -1,4 +1,4 @@
-import {ActionType, BlockType} from '@/enum/page-craft/block'
+import {ActionType, BlockItem, BlockType} from '@/enum/page-craft/block'
 import {useCraftStore} from '@/store/craft'
 import {appendCustomBlock, createBlockElement} from '@/utils/dom'
 import {TOOL_CLASSES} from '@/enum/page-craft'
@@ -329,10 +329,16 @@ export const useInteractionHooks = (options) => {
     }
   })
 
-  const handleBlockClick = async (event: Event) => {
+  const handleBlockClick = async (event: Event, newBlock?: BlockItem, addOptions?) => {
     recordUndo()
-    const {currentBlock} = craftStore
-    await appendCustomBlock(currentBlock, event, craftStore, mainCanvasRef)
+
+    if (!newBlock) {
+      newBlock = craftStore.currentBlock
+    }
+
+    addOptions = addOptions || craftStore
+
+    await appendCustomBlock(newBlock, event, addOptions, mainCanvasRef)
     saveData()
   }
 
@@ -379,6 +385,33 @@ export const useInteractionHooks = (options) => {
     }
   }
 
+  const handleDragOver = (event) => {
+    // console.log('handleDragOver')
+  }
+  const handleDragLeave = (event) => {
+    // console.log('handleDragLeave')
+  }
+  const handleDrop = async (event) => {
+    const block = JSON.parse(event.dataTransfer.getData('data-block'))
+    console.log(block)
+    if (block.blockType !== BlockType.HTML_ELEMENT) {
+      return
+    }
+    recordUndo()
+
+    let targetEl = event.target || mainCanvasRef.value
+
+    const addEl = createBlockElement(block, craftStore)
+    targetEl.appendChild(addEl)
+
+    nextTick(() => {
+      editingNode.value = addEl
+      isShowElementEdit.value = true
+    })
+
+    saveData()
+  }
+
   const updateEditingElement = ({el, formValueRef}) => {
     if (!el) {
       return
@@ -394,6 +427,9 @@ export const useInteractionHooks = (options) => {
     handleBlockClick,
     handleMouseDown,
     handleMouseUp,
+    handleDragOver,
+    handleDragLeave,
+    handleDrop,
     waitingProgress,
     cursorX,
     cursorY,

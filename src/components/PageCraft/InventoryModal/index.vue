@@ -21,6 +21,7 @@ import {colorHash} from '@/utils'
 import PopWindow from '@/components/PageCraft/DomPreview/PopWindow.vue'
 import {useContextMenu} from '@/hooks/use-context-menu'
 import {useInitComponents} from '@/hooks/use-init'
+import {useMainStore} from '@/store/main-store'
 
 let idx = 1
 
@@ -265,7 +266,9 @@ export default defineComponent({
     const {editingNode, nodeAction, handleContextmenu, ...contextMenuEtc} =
       useContextMenu(getMenuOptions)
 
+    const mainStore = useMainStore()
     return {
+      mainStore,
       mVisible,
       isDarkMode,
       BlockType,
@@ -310,9 +313,9 @@ export default defineComponent({
 
   <transition name="zoom">
     <div
-      class="inventory-modal page-craft-window _thin-window _rounded"
+      class="inventory-modal page-craft-window _blur"
       v-show="mVisible"
-      :class="{_dark: isDarkMode}"
+      :class="{_dark: isDarkMode, _topLayout: mainStore.isTopLayout}"
     >
       <div class="page-craft-window-content">
         <div ref="titleBarRef" class="page-craft-title-bar">
@@ -381,6 +384,11 @@ export default defineComponent({
   bottom: 88px;
   left: 0;
   right: 0;
+
+  &._topLayout {
+    top: 88px;
+    bottom: unset;
+  }
   :deep(.n-tab-pane) {
     padding-top: 0;
   }

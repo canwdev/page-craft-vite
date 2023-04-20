@@ -58,7 +58,7 @@ export default defineComponent({
     <div v-if="!itemListFiltered.length" style="padding: 40px; text-align: center; font-size: 20px">
       No Items.
     </div>
-    <div v-else class="inventory-list" :class="{_big: isComponentBlock}">
+    <div v-else class="inventory-list _scrollbar_mini" :class="{_big: isComponentBlock}">
       <template v-for="(item, index) in itemListFiltered" :key="item.id">
         <ComponentCard
           v-if="isComponentBlock"

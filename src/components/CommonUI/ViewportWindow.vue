@@ -115,7 +115,7 @@ export default defineComponent({
   <transition name="none">
     <div
       v-show="mVisible"
-      class="page-craft-window _thin-window _rounded"
+      class="page-craft-window _thin-window _blur"
       :class="{_dark: isDarkMode}"
       ref="dialogRef"
     >
@@ -150,7 +150,10 @@ export default defineComponent({
   border: 1px solid rgba(0, 0, 0, 0.5);
   padding: 0 6px 6px;
   background: rgba(255, 255, 255, 0.8);
-  //backdrop-filter: blur(4px);
+
+  &._blur {
+    backdrop-filter: blur(4px);
+  }
 
   .page-craft-window-content {
     height: 100%;
@@ -258,7 +261,7 @@ export default defineComponent({
   }
 
   &._dark {
-    background: rgba(117, 117, 117, 0.8);
+    background: rgba(0, 0, 0, 0.6);
     .page-craft-title-bar {
       color: white;
       text-shadow: 0 0 10px black;
@@ -292,7 +295,7 @@ export default defineComponent({
   }
 
   &._rounded {
-    $radius: 5px;
+    $radius: 8px;
     border-top-left-radius: $radius;
     border-top-right-radius: $radius;
     .page-craft-title-bar {

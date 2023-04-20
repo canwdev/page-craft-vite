@@ -362,7 +362,7 @@ export default defineComponent({
   min-width: 400px;
   min-height: 200px;
   position: fixed;
-  z-index: 998;
+  z-index: 1000;
   top: 30%;
   left: 30%;
 
