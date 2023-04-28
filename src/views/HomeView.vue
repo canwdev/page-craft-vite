@@ -4,7 +4,8 @@ import ToolBar from '@/components/PageCraft/ToolBar/index.vue'
 import MainCanvas from '@/components/PageCraft/MainCanvas/index.vue'
 import {useLocalStorageBoolean} from '@/hooks/use-local-storage'
 import {LsKeys} from '@/enum/page-craft'
-import {getUserTheme, themeOptions, useHandleThemeChange} from '@/hooks/use-global-theme'
+import {useHandleThemeChange} from '@/hooks/use-global-theme'
+import {themeOptions, useSettingsStore} from '@/store/settings'
 import {useMainStore} from '@/store/main-store'
 import {createOrFindStyleNode} from '@/utils/dom'
 import {useMetaTitle} from '@/hooks/use-meta'
@@ -30,13 +31,10 @@ export default defineComponent({
   },
   setup() {
     const mainStore = useMainStore()
+    const settingsStore = useSettingsStore()
     const {metaTitle} = useMetaTitle()
 
-    const isEnableGlobalStyle = useLocalStorageBoolean(LsKeys.IS_ENABLE_GLOBAL_STYLE, true)
-    const isEnableTopLayout = useLocalStorageBoolean(LsKeys.IS_ENABLE_TOP_LAYOUT, true)
-
     const isShowSettings = ref(false)
-    const themeValue = ref(getUserTheme())
 
     const {handleThemeChange} = useHandleThemeChange()
 
@@ -46,7 +44,7 @@ export default defineComponent({
 
     const applyGlobalStyle = () => {
       if (styleEl.value) {
-        if (isEnableGlobalStyle.value) {
+        if (settingsStore.enableGlobalCss) {
           styleEl.value.innerHTML = globalStyleText.value
           localStorage.setItem(LsKeys.GLOBAL_STYLE, globalStyleText.value)
         } else {
@@ -55,12 +53,15 @@ export default defineComponent({
       }
     }
 
-    watch(isEnableGlobalStyle, (val) => {
-      applyGlobalStyle()
-    })
+    watch(
+      () => settingsStore.enableGlobalCss,
+      (val) => {
+        applyGlobalStyle()
+      }
+    )
 
     watch(
-      isEnableTopLayout,
+      () => settingsStore.enableTopLayout,
       (val) => {
         mainStore.isTopLayout = val
       },
@@ -76,7 +77,6 @@ export default defineComponent({
       applyGlobalStyle()
     })
 
-    const isShowStyleEditorStyleEditor = useLocalStorageBoolean(LsKeys.IS_SHOW_STYLE_EDITOR)
     const isShowStylusTools = ref(false)
 
     const {loadCurCompStyle} = useCompStorage()
@@ -101,7 +101,7 @@ export default defineComponent({
               onClick: async () => {
                 await handleExportStyle(
                   new ExportItem({
-                    name: craftStore.currentComponentName,
+                    name: settingsStore.curCompoName,
                     html: '',
                     style: formatCss(loadCurCompStyle()),
                   }),
@@ -116,7 +116,7 @@ export default defineComponent({
               onClick: async () => {
                 await handleExportStyle(
                   new ExportItem({
-                    name: craftStore.currentComponentName,
+                    name: settingsStore.curCompoName,
                     html: '',
                     style: formatCss(loadCurCompStyle()),
                   })
@@ -133,13 +133,10 @@ export default defineComponent({
       isShowGlobalStyleDialog,
       applyGlobalStyle,
       globalStyleText,
-      themeValue,
+      settingsStore,
       themeOptions,
       handleThemeChange,
       mainStore,
-      isEnableGlobalStyle,
-      isEnableTopLayout,
-      isShowStyleEditorStyleEditor,
       isShowStylusTools,
       styleMenuOptions,
     }
@@ -170,13 +167,13 @@ export default defineComponent({
         <n-button
           size="tiny"
           style="min-width: 90px"
-          @click="isShowStyleEditorStyleEditor = !isShowStyleEditorStyleEditor"
+          @click="settingsStore.showStyleEditor = !settingsStore.showStyleEditor"
         >
-          {{ isShowStyleEditorStyleEditor ? '✔' : '' }} Style Editor
+          {{ settingsStore.showStyleEditor ? '✔' : '' }} Style Editor
         </n-button>
       </n-dropdown>
     </ToolBar>
-    <StyleEditor v-model:visible="isShowStyleEditorStyleEditor" />
+    <StyleEditor v-model:visible="settingsStore.showStyleEditor" />
     <StylusToolsDialog v-model:visible="isShowStylusTools" />
 
     <n-modal
@@ -202,7 +199,7 @@ export default defineComponent({
           <n-thing title="Toggle Theme" />
           <template #suffix>
             <n-select
-              v-model:value="themeValue"
+              v-model:value="settingsStore.theme"
               :options="themeOptions"
               style="width: 150px"
               @update:value="handleThemeChange"
@@ -212,14 +209,14 @@ export default defineComponent({
         <n-list-item>
           <n-thing title="Top Layout" />
           <template #suffix>
-            <n-switch v-model:value="isEnableTopLayout" style="margin-right: 20px" />
+            <n-switch v-model:value="settingsStore.enableTopLayout" style="margin-right: 20px" />
           </template>
         </n-list-item>
         <n-list-item>
           <n-thing title="Global Style" />
           <template #suffix>
             <div style="display: flex; align-items: center">
-              <n-switch v-model:value="isEnableGlobalStyle" style="margin-right: 20px" />
+              <n-switch v-model:value="settingsStore.enableGlobalCss" style="margin-right: 20px" />
               <n-button @click="isShowGlobalStyleDialog = true"> Edit </n-button>
             </div>
           </template>

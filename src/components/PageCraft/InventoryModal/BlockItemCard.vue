@@ -3,6 +3,7 @@ import {defineComponent, PropType} from 'vue'
 import {useCraftStore} from '@/store/craft'
 import {BlockItem} from '@/enum/page-craft/block'
 import {colorHash} from '@/utils'
+import {useSettingsStore} from '@/store/settings'
 
 export default defineComponent({
   name: 'BlockItemCard',

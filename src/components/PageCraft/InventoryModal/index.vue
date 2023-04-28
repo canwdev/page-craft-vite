@@ -22,6 +22,7 @@ import PopWindow from '@/components/PageCraft/DomPreview/PopWindow.vue'
 import {useContextMenu} from '@/hooks/use-context-menu'
 import {useInitComponents} from '@/hooks/use-init'
 import {useMainStore} from '@/store/main-store'
+import {useSettingsStore} from '@/store/settings'
 
 let idx = 1
 
@@ -43,17 +44,17 @@ export default defineComponent({
     const mVisible = useModelWrapper(props, emit, 'visible')
     const {isDarkMode} = useIsDarkMode()
     const craftStore = useCraftStore()
+    const settingsStore = useSettingsStore()
 
     const {clearCompStorage, renameCompStorage, copyCompStorage} = useCompStorage()
 
-    const currentTab = useLocalStorageString(LsKeys.INVENTORY_TAB, BlockType.COMPONENT)
     const isMinHeight = ref(false)
 
     const handleItemClick = (item: BlockItem) => {
       craftStore.setCurrentBlock(item)
     }
 
-    const {exportAll, handleImportAll, componentList, currentComponentName} = useCompImportExport()
+    const {exportAll, handleImportAll, componentList} = useCompImportExport()
     const importFileChooserRef = ref()
 
     const componentListSorted = computed(() => {
@@ -66,24 +67,16 @@ export default defineComponent({
       return [ActionBlockItems.ADD_COMPONENT, ...componentListSorted.value]
     })
 
-    watch(
-      currentComponentName,
-      (val) => {
-        craftStore.currentComponentName = val
-      },
-      {immediate: true}
-    )
-
     const handleComponentItemClick = (item: BlockItem) => {
       if (item.actionType === ActionType.ADD_COMPONENT) {
         handleCreateComponent()
         return
       }
-      currentComponentName.value = item.title
+      settingsStore.curCompoName = item.title
     }
 
     const cancelSelectComponent = () => {
-      currentComponentName.value = ''
+      settingsStore.curCompoName = ''
     }
 
     const getNamePrompt = (message = '', name = '') => {
@@ -103,7 +96,6 @@ export default defineComponent({
     onMounted(() => {
       useInitComponents({
         componentListRef: componentList,
-        currentComponentNameRef: currentComponentName,
       })
     })
 
@@ -111,7 +103,7 @@ export default defineComponent({
       let name = getNamePrompt('Please enter the component name', `Component${idx}`)
 
       componentList.value = [...componentList.value, createComponentBlockItem(name)]
-      currentComponentName.value = name
+      settingsStore.curCompoName = name
       idx++
     }
 
@@ -132,8 +124,8 @@ export default defineComponent({
           clearCompStorage(item.title)
 
           // reset current component name
-          if (currentComponentName.value === item.title) {
-            currentComponentName.value = ''
+          if (settingsStore.curCompoName === item.title) {
+            settingsStore.curCompoName = ''
           }
         },
         onNegativeClick: () => {},
@@ -147,7 +139,7 @@ export default defineComponent({
         positiveText: 'OK',
         negativeText: 'Cancel',
         onPositiveClick: () => {
-          currentComponentName.value = ''
+          settingsStore.curCompoName = ''
           componentList.value.forEach((item) => {
             clearCompStorage(item.title)
           })
@@ -166,8 +158,8 @@ export default defineComponent({
       list.splice(index, 1, item)
       componentList.value = list
 
-      if (item.title === currentComponentName.value) {
-        currentComponentName.value = name
+      if (item.title === settingsStore.curCompoName) {
+        settingsStore.curCompoName = name
       }
 
       // rename local storage
@@ -182,7 +174,7 @@ export default defineComponent({
       copyCompStorage(item.title, name)
 
       componentList.value = [...componentList.value, createComponentBlockItem(name)]
-      currentComponentName.value = name
+      settingsStore.curCompoName = name
       idx++
     }
 
@@ -269,13 +261,13 @@ export default defineComponent({
     const mainStore = useMainStore()
     return {
       mainStore,
+      settingsStore,
       mVisible,
       isDarkMode,
       BlockType,
       actionBlockItemList,
       htmlBlockItemList,
       handleItemClick,
-      currentTab,
       isMinHeight,
       componentListFormatted,
       handleComponentItemClick,
@@ -337,7 +329,7 @@ export default defineComponent({
         </div>
 
         <div class="page-craft-window-body _bg">
-          <n-tabs v-model:value="currentTab" size="small" type="segment" animated>
+          <n-tabs v-model:value="settingsStore.inventoryTab" size="small" type="segment" animated>
             <n-tab-pane :name="BlockType.HTML_ELEMENT" tab="Blocks">
               <InventoryList
                 :item-list="[...actionBlockItemList, ...htmlBlockItemList]"

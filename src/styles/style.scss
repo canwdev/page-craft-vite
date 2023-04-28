@@ -74,7 +74,6 @@ Inspired by https://khang-nd.github.io/7.css/
 }
 
 ._scrollbar_mini {
-  $radius: 8px;
 
   &::-webkit-scrollbar {
     width: 8px;
@@ -83,7 +82,7 @@ Inspired by https://khang-nd.github.io/7.css/
   }
 
   &::-webkit-scrollbar-thumb {
-    border-radius: $radius;
+    border-radius: 8px;
     border: 2px solid transparent;
     background-clip: content-box;
     background-color: rgba(192, 192, 192, 0.63);
@@ -94,7 +93,7 @@ Inspired by https://khang-nd.github.io/7.css/
   }
 
   &::-webkit-scrollbar-track {
-    border-radius: $radius/2;
+    border-radius: 4px;
     background: transparent;
   }
 }

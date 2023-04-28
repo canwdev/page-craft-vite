@@ -4,6 +4,7 @@ import {useLocalStorageObject, useLocalStorageString} from '@/hooks/use-local-st
 import {BlockItem, createComponentBlockItem, ExportItem} from '@/enum/page-craft/block'
 import {syncStorageData} from '@/utils/global-event-bus'
 import {getFileName, handleExportFile, handleReadSelectedFile} from '@/utils/exporter'
+import {useSettingsStore} from '@/store/settings'
 
 const splitter = '__'
 
@@ -33,8 +34,9 @@ export const saveComponentStyle = (name, style = '') => {
 
 export const useCompStorage = () => {
   const craftStore = useCraftStore()
+  const settingsStore = useSettingsStore()
 
-  const getKeyWithSuffix = (key: string, suffix = craftStore.currentComponentName) => {
+  const getKeyWithSuffix = (key: string, suffix = settingsStore.curCompoName) => {
     if (suffix) {
       return key + splitter + suffix
     } else {
@@ -96,7 +98,6 @@ export const useCompStorage = () => {
 
 export const useCompImportExport = () => {
   const componentList = useLocalStorageObject(LsKeys.COMPONENT_LIST, [])
-  const currentComponentName = useLocalStorageString(LsKeys.CURRENT_COMPONENT_NAME, '')
 
   const handleImportAll = async (file) => {
     const str = await handleReadSelectedFile(file)
@@ -144,7 +145,6 @@ export const useCompImportExport = () => {
     window.$message.success('Exported success!')
   }
   return {
-    currentComponentName,
     componentList,
     exportAll,
     handleImportAll,

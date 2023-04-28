@@ -3,12 +3,13 @@ import {LsKeys} from '@/enum/page-craft'
 import {createComponentBlockItem} from '@/enum/page-craft/block'
 import ExampleComponent from '@/enum/page-craft/example-component.json'
 import {saveComponentHtml, saveComponentStyle} from '@/hooks/use-component-storage'
+import {useSettingsStore} from '@/store/settings'
 
 export const useInitComponents = (options) => {
-  const {componentListRef, currentComponentNameRef} = options
-  const isInitialized = useLocalStorageBoolean(LsKeys.IS_INITIALIZED, false)
+  const {componentListRef} = options
+  const settingsStore = useSettingsStore()
 
-  if (!isInitialized.value) {
+  if (!settingsStore.isInitialized) {
     // create example component if not initialized
     if (!componentListRef.value.length) {
       const item: any = {...ExampleComponent}
@@ -17,9 +18,9 @@ export const useInitComponents = (options) => {
       delete item.html
       delete item.style
       componentListRef.value = [createComponentBlockItem(item.name, item)]
-      currentComponentNameRef.value = item.name
+      settingsStore.curCompoName = item.name
     }
     window.$message.success('Welcome to PageCraft!')
-    isInitialized.value = true
+    settingsStore.isInitialized = true
   }
 }

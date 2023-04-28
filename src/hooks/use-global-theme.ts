@@ -1,29 +1,5 @@
-import {LsKeys} from '@/enum/page-craft'
 import {useMainStore} from '@/store/main-store'
-
-export enum ThemeType {
-  SYSTEM = 0,
-  LIGHT = 1,
-  DARK = 2,
-}
-
-export const themeOptions = [
-  {
-    label: 'Follow System',
-    value: ThemeType.SYSTEM,
-  },
-  {
-    label: 'Light Theme',
-    value: ThemeType.LIGHT,
-  },
-  {
-    label: 'Dark Theme',
-    value: ThemeType.DARK,
-  },
-]
-
-export const getUserTheme = () =>
-  Number(localStorage.getItem(LsKeys.LS_KEY_THEME)) || ThemeType.SYSTEM
+import {ThemeType, useSettingsStore} from '@/store/settings'
 
 const getSystemIsDarkMode = () =>
   window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
@@ -40,6 +16,7 @@ export const useIsDarkMode = () => {
 
 export const useHandleThemeChange = () => {
   const mainStore = useMainStore()
+  const settingsStore = useSettingsStore()
 
   const handleThemeChange = (val: ThemeType) => {
     if (val === ThemeType.SYSTEM) {
@@ -49,7 +26,7 @@ export const useHandleThemeChange = () => {
     } else if (val === ThemeType.DARK) {
       mainStore.isAppDarkMode = true
     }
-    localStorage.setItem(LsKeys.LS_KEY_THEME, String(val))
+    settingsStore.theme = val
   }
 
   return {
@@ -60,10 +37,11 @@ export const useHandleThemeChange = () => {
 export const useGlobalTheme = () => {
   const mainStore = useMainStore()
   const {handleThemeChange} = useHandleThemeChange()
-  handleThemeChange(getUserTheme())
+  const settingsStore = useSettingsStore()
+  handleThemeChange(settingsStore.theme)
 
   const handleSystemThemeChange = (event: any) => {
-    if (getUserTheme() === ThemeType.SYSTEM) {
+    if (settingsStore.theme === ThemeType.SYSTEM) {
       mainStore.isAppDarkMode = Boolean(event.matches)
     }
   }

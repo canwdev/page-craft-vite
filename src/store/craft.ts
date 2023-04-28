@@ -7,7 +7,6 @@ type CraftStore = {
   className: string
   innerText: string
   isSelectMode: boolean
-  currentComponentName: string
 }
 
 export const useCraftStore = defineStore('craft', {
@@ -18,7 +17,6 @@ export const useCraftStore = defineStore('craft', {
       className: '',
       innerText: '',
       isSelectMode: false,
-      currentComponentName: '',
     }
   },
   // could also be defined as

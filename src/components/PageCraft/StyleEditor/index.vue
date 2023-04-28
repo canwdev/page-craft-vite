@@ -28,6 +28,7 @@ import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
 // import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
 import * as monaco from 'monaco-editor'
 import {emmetCSS} from 'emmet-monaco-es'
+import {useSettingsStore} from '@/store/settings'
 
 self.MonacoEnvironment = {
   // @ts-ignore
@@ -64,6 +65,7 @@ export default defineComponent({
     const mVisible = useModelWrapper(props, emit, 'visible')
     const editorContainerRef = ref()
     const craftStore = useCraftStore()
+    const settingsStore = useSettingsStore()
     // monaco.editor.IStandaloneCodeEditor
     const editorInstance = shallowRef<any>()
 
@@ -86,7 +88,7 @@ export default defineComponent({
     const {loadCurCompStyle, saveCurCompStyle} = useCompStorage()
 
     watch(
-      () => craftStore.currentComponentName,
+      () => settingsStore.curCompoName,
       () => {
         reloadStyle()
       }

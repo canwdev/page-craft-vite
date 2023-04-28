@@ -14,10 +14,12 @@ import {useCompStorage} from '@/hooks/use-component-storage'
 import {useCraftStore} from '@/store/craft'
 import {UndoRedo} from '@/utils/undo-redo'
 import {sassToCSS} from '@/utils/css'
+import {useSettingsStore} from '@/store/settings'
 
 export const useMcMain = (options) => {
   const {mainCanvasRef, emit} = options
   const craftStore = useCraftStore()
+  const settingsStore = useSettingsStore()
   const fileChooserRef = ref()
   const isShowImportDialog = ref(false)
   const {loadCurCompHtml, saveCurCompHtml, saveCurCompStyle, loadCurCompStyle} = useCompStorage()
@@ -65,7 +67,7 @@ export const useMcMain = (options) => {
   }
 
   watch(
-    () => craftStore.currentComponentName,
+    () => settingsStore.curCompoName,
     () => {
       reloadHtml()
     }
@@ -89,7 +91,7 @@ export const useMcMain = (options) => {
     const style = loadCurCompStyle()
 
     return new ExportItem({
-      name: craftStore.currentComponentName,
+      name: settingsStore.curCompoName,
       html: formatHtml(html),
       style: formatCss(style),
     })

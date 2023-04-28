@@ -12,6 +12,7 @@ import {
 } from '@/hooks/use-local-storage'
 import {useMainStore} from '@/store/main-store'
 import {useRouter} from 'vue-router'
+import {useSettingsStore} from '@/store/settings'
 
 export default defineComponent({
   name: 'BottomToolBar',
@@ -21,20 +22,19 @@ export default defineComponent({
   },
   setup(props, {emit}) {
     const craftStore = useCraftStore()
-    const isShowInventoryModal = useLocalStorageBoolean(LsKeys.IS_SHOW_INVENTORY, false)
+    const settingsStore = useSettingsStore()
 
-    const currentIndex = useLocalStorageNumber(LsKeys.TOOL_BAR_INDEX, 0)
     const toolBarList = useLocalStorageObject(LsKeys.TOOL_BAR_LIST, [...initToolbarList])
 
     const blinkAnimIndex = ref(-1)
     const setCurrentToolItem = (item: BlockItem) => {
       const list = [...toolBarList.value]
-      list.splice(currentIndex.value, 1, item)
+      list.splice(settingsStore.toolbarIndex, 1, item)
       toolBarList.value = list
       updateCurrentBlock(item)
 
       // add blink animation
-      blinkAnimIndex.value = currentIndex.value
+      blinkAnimIndex.value = settingsStore.toolbarIndex
       setTimeout(() => {
         blinkAnimIndex.value = -1
       }, 200)
@@ -45,34 +45,37 @@ export default defineComponent({
     }
 
     const handleToolItemClick = (item: BlockItem, index) => {
-      currentIndex.value = index
+      settingsStore.toolbarIndex = index
     }
 
-    watch(currentIndex, (newIndex) => {
-      updateCurrentBlock(toolBarList.value[newIndex])
-    })
+    watch(
+      () => settingsStore.toolbarIndex,
+      (newIndex) => {
+        updateCurrentBlock(toolBarList.value[newIndex])
+      }
+    )
 
     const handleScroll = (event) => {
       event.preventDefault()
       if (event.deltaY > 0) {
-        if (currentIndex.value === toolBarList.value.length - 1) {
-          currentIndex.value = 0
+        if (settingsStore.toolbarIndex === toolBarList.value.length - 1) {
+          settingsStore.toolbarIndex = 0
           return
         }
-        currentIndex.value += 1
+        settingsStore.toolbarIndex += 1
       } else {
-        if (currentIndex.value <= 0) {
-          currentIndex.value = toolBarList.value.length - 1
+        if (settingsStore.toolbarIndex <= 0) {
+          settingsStore.toolbarIndex = toolBarList.value.length - 1
           return
         }
-        currentIndex.value -= 1
+        settingsStore.toolbarIndex -= 1
       }
     }
 
     const toolbarRef = ref()
 
     onBeforeUnmount(() => {
-      updateCurrentBlock(toolBarList.value[currentIndex.value])
+      updateCurrentBlock(toolBarList.value[settingsStore.toolbarIndex])
     })
 
     onMounted(() => {
@@ -88,12 +91,13 @@ export default defineComponent({
       event.dataTransfer.setData('data-block', JSON.stringify(item))
     }
     const switchItemsPosition = (event, newIndex) => {
-      const oldIndex = Number(event.dataTransfer.getData('data-index')) || currentIndex.value
+      const oldIndex =
+        Number(event.dataTransfer.getData('data-index')) || settingsStore.toolbarIndex
       const arr = [...toolBarList.value]
       ;[arr[newIndex], arr[oldIndex]] = [arr[oldIndex], arr[newIndex]]
       toolBarList.value = arr
-      if (oldIndex === currentIndex.value) {
-        currentIndex.value = newIndex
+      if (oldIndex === settingsStore.toolbarIndex) {
+        settingsStore.toolbarIndex = newIndex
       }
     }
 
@@ -137,17 +141,16 @@ export default defineComponent({
 
     return {
       mainStore,
+      settingsStore,
       toolbarRef,
       toolBarList,
       craftStore,
       ...useIsDarkMode(),
-      isShowInventoryModal,
       setCurrentToolItem,
-      currentIndex,
       handleToolItemClick,
       resetToolbar() {
         toolBarList.value = [...initToolbarList]
-        updateCurrentBlock(toolBarList.value[currentIndex.value])
+        updateCurrentBlock(toolBarList.value[settingsStore.toolbarIndex])
         window.$message.success('Toolbar reset success!')
       },
       handleDragStart,
@@ -161,7 +164,10 @@ export default defineComponent({
 
 <template>
   <div class="page-craft-enhanced-toolbar-wrapper" :class="{_topLayout: mainStore.isTopLayout}">
-    <InventoryModal v-model:visible="isShowInventoryModal" @onItemClick="setCurrentToolItem" />
+    <InventoryModal
+      v-model:visible="settingsStore.showInventory"
+      @onItemClick="setCurrentToolItem"
+    />
     <div
       ref="toolbarRef"
       class="page-craft-enhanced-toolbar page-craft-aero-panel"
@@ -210,9 +216,9 @@ export default defineComponent({
           <n-button
             style="min-width: 80px"
             size="tiny"
-            @click="isShowInventoryModal = !isShowInventoryModal"
+            @click="settingsStore.showInventory = !settingsStore.showInventory"
           >
-            {{ isShowInventoryModal ? '✔' : '' }} Inventory
+            {{ settingsStore.showInventory ? '✔' : '' }} Inventory
           </n-button>
 
           <n-dropdown
@@ -232,7 +238,7 @@ export default defineComponent({
           :item="item"
           :class="{blinkFast: blinkAnimIndex === index}"
           @click="handleToolItemClick(item, index)"
-          :active="currentIndex === index"
+          :active="settingsStore.toolbarIndex === index"
           @onDragStart="(e) => handleDragStart(e, index, item)"
           @onDrop="(e) => switchItemsPosition(e, index)"
         />

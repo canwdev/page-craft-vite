@@ -9,6 +9,7 @@ import {useInteractionHooks} from '@/components/PageCraft/MainCanvas/interaction
 import {useMcMain} from '@/components/PageCraft/MainCanvas/main-hooks'
 import ElementEditDialog from '@/components/PageCraft/MainCanvas/ElementEditDialog.vue'
 import {useRouter} from 'vue-router'
+import {useSettingsStore} from '@/store/settings'
 
 export default defineComponent({
   name: 'MainCanvas',
@@ -22,6 +23,7 @@ export default defineComponent({
     const mainCanvasRef = ref()
     const {isDarkMode} = useIsDarkMode()
     const craftStore = useCraftStore()
+    const settingsStore = useSettingsStore()
 
     const {
       htmlMenuOptions,
@@ -81,6 +83,7 @@ export default defineComponent({
 
     return {
       craftStore,
+      settingsStore,
       mainCanvasRef,
       handleBlockClick,
       indicatorOptions,
@@ -194,7 +197,7 @@ export default defineComponent({
               placement="bottom-start"
               trigger="hover"
             >
-              <n-button size="tiny">{{ craftStore.currentComponentName || '🎨HTML' }}</n-button>
+              <n-button size="tiny">{{ settingsStore.curCompoName || '🎨HTML' }}</n-button>
             </n-dropdown>
 
             <n-popover :duration="100" :show-arrow="false" trigger="hover">

@@ -391,6 +391,7 @@ export const useInteractionHooks = (options) => {
   const handleDragLeave = (event) => {
     // console.log('handleDragLeave')
   }
+  const afterUpdateCallback = ref<any>(null)
   const handleDrop = async (event) => {
     const block = JSON.parse(event.dataTransfer.getData('data-block'))
     console.log(block)
@@ -402,12 +403,16 @@ export const useInteractionHooks = (options) => {
     let targetEl = event.target || mainCanvasRef.value
 
     const addEl = createBlockElement(block, craftStore)
-    targetEl.appendChild(addEl)
 
-    nextTick(() => {
-      editingNode.value = addEl
-      isShowElementEdit.value = true
-    })
+    targetEl.appendChild(addEl)
+    // afterUpdateCallback.value = () => {
+    //   targetEl.appendChild(addEl)
+    // }
+    //
+    // nextTick(() => {
+    //   editingNode.value = addEl
+    //   isShowElementEdit.value = true
+    // })
 
     saveData()
   }
@@ -419,6 +424,11 @@ export const useInteractionHooks = (options) => {
     recordUndo()
     const data = formValueRef.value
     updateHtmlElement(el, data)
+
+    const cb = afterUpdateCallback.value
+    if (typeof cb === 'function') {
+      ;(cb as Function)()
+    }
     saveData()
   }
 

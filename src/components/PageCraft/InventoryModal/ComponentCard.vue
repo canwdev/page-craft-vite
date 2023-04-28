@@ -4,6 +4,7 @@ import {useCraftStore} from '@/store/craft'
 import {ActionType, BlockItem} from '@/enum/page-craft/block'
 import {colorHash, formatDate} from '@/utils'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
+import {useSettingsStore} from '@/store/settings'
 
 let currentEvent: any
 
@@ -19,13 +20,14 @@ export default defineComponent({
   setup(props) {
     const {item} = toRefs(props)
     const craftStore = useCraftStore()
+    const settingsStore = useSettingsStore()
 
     const color = computed(() => {
       return item.value.title && colorHash.rgb(item.value.title).join(', ')
     })
 
     const isActive = computed(() => {
-      return item.value.title === craftStore.currentComponentName
+      return item.value.title === settingsStore.curCompoName
     })
 
     const isCrate = computed(() => {
