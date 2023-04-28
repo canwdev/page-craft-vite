@@ -71,6 +71,7 @@
   .item-text {
     transform: rotate(-45deg);
     text-shadow: 0px 0px 1px black;
+    font-weight: 500;
     &::before {
       content: '<';
       color: $bracket_color;

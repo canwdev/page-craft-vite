@@ -23,6 +23,8 @@ export const themeOptions = [
 
 interface IPageCraftSettings {
   theme: ThemeType
+  enableAeroTheme: boolean // transparent blur effect
+  enableRoundedTheme: boolean
   enableGlobalCss: boolean
   enableTopLayout: boolean
   isInitialized: boolean
@@ -31,13 +33,15 @@ interface IPageCraftSettings {
   showStyleEditor: boolean
   toolbarIndex: number
   toolbarList: BlockItem[]
-  curCompoName: string
+  curCompoName: string // selected component name
 }
 
 export const useSettingsStore = defineStore('settingsStore', {
   state: (): IPageCraftSettings => {
     return {
       theme: ThemeType.SYSTEM,
+      enableAeroTheme: true,
+      enableRoundedTheme: true,
       enableGlobalCss: true,
       enableTopLayout: false,
       isInitialized: false,

@@ -15,6 +15,7 @@ import {useCompStorage} from '@/hooks/use-component-storage'
 import {ExportItem} from '@/enum/page-craft/block'
 import {useCraftStore} from '@/store/craft'
 // import BackgroundLayer from '@/components/BackgroundLayer/index.vue'
+import {PaintBrush16Regular} from '@vicons/fluent'
 
 export default defineComponent({
   name: 'HomeView',
@@ -26,6 +27,7 @@ export default defineComponent({
       () => import('@/components/PageCraft/StyleEditor/StylusToolsDialog.vue')
     ),
     // BackgroundLayer,
+    PaintBrush16Regular,
   },
   setup() {
     const settingsStore = useSettingsStore()
@@ -155,7 +157,8 @@ export default defineComponent({
           style="min-width: 90px"
           @click="settingsStore.showStyleEditor = !settingsStore.showStyleEditor"
         >
-          {{ settingsStore.showStyleEditor ? '✔' : '' }} Style Editor
+          <n-icon v-if="settingsStore.showStyleEditor" size="18"><PaintBrush16Regular /></n-icon
+          >&nbsp;Style Editor
         </n-button>
       </n-dropdown>
     </ToolBar>
@@ -195,16 +198,35 @@ export default defineComponent({
         <n-list-item>
           <n-thing title="Top Layout" />
           <template #suffix>
-            <n-switch v-model:value="settingsStore.enableTopLayout" style="margin-right: 20px" />
+            <n-switch v-model:value="settingsStore.enableTopLayout" />
+          </template>
+        </n-list-item>
+        <n-list-item>
+          <n-thing title="Theme" />
+          <template #suffix>
+            <n-space align="center" justify="end" size="small" style="width: 280px">
+              <n-switch size="small" v-model:value="settingsStore.enableAeroTheme">
+                <template #checked>Aero</template>
+                <template #unchecked>Aero</template>
+              </n-switch>
+              <n-switch
+                size="small"
+                v-model:value="settingsStore.enableRoundedTheme"
+                :round="settingsStore.enableRoundedTheme"
+              >
+                <template #checked>Rounded</template>
+                <template #unchecked>Rounded</template>
+              </n-switch>
+            </n-space>
           </template>
         </n-list-item>
         <n-list-item>
           <n-thing title="Global Style" />
           <template #suffix>
-            <div style="display: flex; align-items: center">
-              <n-switch v-model:value="settingsStore.enableGlobalCss" style="margin-right: 20px" />
-              <n-button @click="isShowGlobalStyleDialog = true"> Edit </n-button>
-            </div>
+            <n-space align="center" justify="end" size="small" style="width: 200px">
+              <n-switch v-model:value="settingsStore.enableGlobalCss" />
+              <n-button size="small" @click="isShowGlobalStyleDialog = true"> Edit </n-button>
+            </n-space>
           </template>
         </n-list-item>
       </n-list>

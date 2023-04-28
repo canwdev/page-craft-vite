@@ -1,15 +1,14 @@
 <script lang="ts">
 import {useCraftStore} from '@/store/craft'
 import {ActionType} from '@/enum/page-craft/block'
-import {useIsDarkMode} from '@/hooks/use-global-theme'
 import FileChooser from '@/components/CommonUI/FileChooser.vue'
 import IndicatorInfo from '@/components/PageCraft/MainCanvas/IndicatorInfo.vue'
 import {useIndicator} from '@/components/PageCraft/MainCanvas/indicator-hooks'
 import {useInteractionHooks} from '@/components/PageCraft/MainCanvas/interaction-hooks'
 import {useMcMain} from '@/components/PageCraft/MainCanvas/main-hooks'
 import ElementEditDialog from '@/components/PageCraft/MainCanvas/ElementEditDialog.vue'
-import {useRouter} from 'vue-router'
 import {useSettingsStore} from '@/store/settings'
+import {ArrowUndo20Filled, ArrowRedo20Filled} from '@vicons/fluent'
 
 export default defineComponent({
   name: 'MainCanvas',
@@ -17,6 +16,8 @@ export default defineComponent({
     FileChooser,
     IndicatorInfo,
     ElementEditDialog,
+    ArrowUndo20Filled,
+    ArrowRedo20Filled,
   },
   emits: ['openStylusTools'],
   setup(props, {emit}) {
@@ -223,15 +224,25 @@ export default defineComponent({
               title="Undo"
               :disabled="!undoRedo.undoStack.length"
               @click="handleUndo"
-              >↩</n-button
             >
+              <template #icon>
+                <n-icon size="18">
+                  <ArrowUndo20Filled />
+                </n-icon>
+              </template>
+            </n-button>
             <n-button
               size="tiny"
               title="Redo"
               :disabled="!undoRedo.redoStack.length"
               @click="handleRedo"
-              >↪</n-button
             >
+              <template #icon>
+                <n-icon size="18">
+                  <ArrowRedo20Filled />
+                </n-icon>
+              </template>
+            </n-button>
             <span>|</span>
           </n-space>
         </n-space>

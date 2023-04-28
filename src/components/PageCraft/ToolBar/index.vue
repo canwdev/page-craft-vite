@@ -2,18 +2,20 @@
 import {useCraftStore} from '@/store/craft'
 import {BlockItem, initToolbarList} from '@/enum/page-craft/block'
 import ToolItem from '@/components/PageCraft/ToolBar/ToolItem.vue'
-import {useIsDarkMode} from '@/hooks/use-global-theme'
 import InventoryModal from '@/components/PageCraft/InventoryModal/index.vue'
 import {LsKeys} from '@/enum/page-craft'
 import {useLocalStorageObject} from '@/hooks/use-local-storage'
 import {useRouter} from 'vue-router'
 import {useSettingsStore} from '@/store/settings'
+import {ArrowReset20Regular, Diversity20Regular} from '@vicons/fluent'
 
 export default defineComponent({
   name: 'BottomToolBar',
   components: {
     ToolItem,
     InventoryModal,
+    ArrowReset20Regular,
+    Diversity20Regular,
   },
   setup(props, {emit}) {
     const craftStore = useCraftStore()
@@ -156,7 +158,9 @@ export default defineComponent({
 <template>
   <div
     class="page-craft-enhanced-toolbar-wrapper"
-    :class="{_topLayout: settingsStore.enableTopLayout}"
+    :class="{
+      _topLayout: settingsStore.enableTopLayout,
+    }"
   >
     <InventoryModal
       v-model:visible="settingsStore.showInventory"
@@ -165,7 +169,11 @@ export default defineComponent({
     <div
       ref="toolbarRef"
       class="page-craft-enhanced-toolbar page-craft-aero-panel"
-      :class="{_dark: craftStore.isAppDarkMode}"
+      :class="{
+        _dark: craftStore.isAppDarkMode,
+        _blur: settingsStore.enableAeroTheme,
+        _rounded: settingsStore.enableRoundedTheme,
+      }"
     >
       <div class="page-craft-enhanced-toolbar-above">
         <n-space size="small">
@@ -200,7 +208,11 @@ export default defineComponent({
         <n-space size="small">
           <n-popconfirm @positive-click="resetToolbar">
             <template #trigger>
-              <n-button size="tiny"> R </n-button>
+              <n-button secondary size="tiny">
+                <template #icon>
+                  <n-icon size="18"><ArrowReset20Regular /></n-icon>
+                </template>
+              </n-button>
             </template>
             Confirm reset toolbar?
           </n-popconfirm>
@@ -212,7 +224,8 @@ export default defineComponent({
             size="tiny"
             @click="settingsStore.showInventory = !settingsStore.showInventory"
           >
-            {{ settingsStore.showInventory ? '✔' : '' }} Inventory
+            <n-icon v-if="settingsStore.showInventory" size="18"><Diversity20Regular /></n-icon
+            >&nbsp;Inventory
           </n-button>
 
           <n-dropdown
@@ -282,7 +295,6 @@ export default defineComponent({
       align-items: center;
       .n-input {
         width: 160px;
-        margin-left: 5px;
       }
     }
   }

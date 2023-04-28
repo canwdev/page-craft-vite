@@ -17,7 +17,6 @@ import {
   vue2TransitionsList,
 } from '@/enum/page-craft/styles'
 import {formatCss} from '@/utils/formater'
-import {useIsDarkMode} from '@/hooks/use-global-theme'
 import {useCompStorage} from '@/hooks/use-component-storage'
 import ViewportWindow from '@/components/CommonUI/ViewportWindow.vue'
 
@@ -29,6 +28,15 @@ import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
 import * as monaco from 'monaco-editor'
 import {emmetCSS} from 'emmet-monaco-es'
 import {useSettingsStore} from '@/store/settings'
+import {
+  CursorHover20Regular,
+  CursorClick20Regular,
+  Dismiss20Regular,
+  PaintBucket20Filled,
+  Copy20Regular,
+  Wand20Regular,
+  PaintBrush20Regular,
+} from '@vicons/fluent'
 
 self.MonacoEnvironment = {
   // @ts-ignore
@@ -59,6 +67,13 @@ export default defineComponent({
   },
   components: {
     ViewportWindow,
+    CursorHover20Regular,
+    CursorClick20Regular,
+    Dismiss20Regular,
+    PaintBucket20Filled,
+    Copy20Regular,
+    Wand20Regular,
+    PaintBrush20Regular,
   },
   emits: ['update:visible'],
   setup(props, {emit}) {
@@ -294,6 +309,7 @@ export default defineComponent({
     ]
 
     return {
+      settingsStore,
       mVisible,
       handleUpdateStyle,
       editorContainerRef,
@@ -316,10 +332,11 @@ export default defineComponent({
     class="style-editor-dialog"
     v-model:visible="mVisible"
     @resize="editorInstance.layout()"
+    :class="{_aero: settingsStore.enableAeroTheme}"
   >
     <template #titleBarLeft>
-      <img src="~@/assets/textures/redstone.png" alt="tools" />
-      &nbsp;Style Editor
+      <n-icon v-if="settingsStore.showStyleEditor" size="20"><PaintBrush20Regular /></n-icon
+      >&nbsp;Style Editor
     </template>
     <template #titleBarRight>
       <button
@@ -327,24 +344,27 @@ export default defineComponent({
         :class="{active: craftStore.isSelectMode}"
         @click="enterSelectMode"
       >
-        <img src="~@/assets/textures/arrow.png" alt="select" style="transform: rotateY(180deg)" />
+        <n-icon size="20">
+          <CursorHover20Regular v-if="!craftStore.isSelectMode" />
+          <CursorClick20Regular v-else />
+        </n-icon>
       </button>
       <n-dropdown :options="toolOptions" key-field="label" size="large">
-        <button title="Tools">
-          <img src="~@/assets/textures/enchanted_book.png" alt="tools" />
+        <button title="Add tool codes">
+          <n-icon size="20"><PaintBucket20Filled /></n-icon>
         </button>
       </n-dropdown>
 
       <button title="Beautify code" @click="execBeautifyCssAction">
-        <img src="~@/assets/textures/iron_hoe.png" alt="beautify" />
+        <n-icon size="20"><Wand20Regular /></n-icon>
       </button>
 
       <button title="Copy code" @click="copyStyle">
-        <img src="~@/assets/textures/map.png" alt="copy" />
+        <n-icon size="20"><Copy20Regular /></n-icon>
       </button>
 
       <button title="Close" @click="mVisible = false">
-        <img src="~@/assets/textures/barrier.png" alt="close" />
+        <n-icon size="20"><Dismiss20Regular /></n-icon>
       </button>
     </template>
 
@@ -368,6 +388,18 @@ export default defineComponent({
   z-index: 1000;
   top: 30%;
   left: 30%;
+
+  &._aero {
+    :deep(.monaco-editor) {
+      background-color: transparent;
+      .margin {
+        background-color: transparent;
+      }
+    }
+    :deep(.monaco-editor-background) {
+      background-color: transparent;
+    }
+  }
 
   .code-editor-placeholder {
     width: 100%;

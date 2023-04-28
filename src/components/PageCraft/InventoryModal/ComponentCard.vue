@@ -93,7 +93,7 @@ export default defineComponent({
 <template>
   <div
     :class="{active: isActive}"
-    class="tool-item font-code"
+    class="tool-item"
     :style="{
       '--block-color-rgb': color,
     }"
@@ -168,6 +168,7 @@ export default defineComponent({
   $bracket_color: currentColor;
   .item-text {
     color: inherit;
+    font-weight: 500;
     &::before {
       content: '<';
       color: $bracket_color;

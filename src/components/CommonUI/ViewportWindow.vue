@@ -4,8 +4,8 @@ import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {WindowController} from '@/utils/window-controller'
 import {throttle} from 'throttle-debounce'
 import {LsKeys} from '@/enum/page-craft'
-import {useIsDarkMode} from '@/hooks/use-global-theme'
 import {useCraftStore} from '@/store/craft'
+import {useSettingsStore} from '@/store/settings'
 
 type StyleEditorOptions = {
   wTop: string
@@ -30,6 +30,7 @@ export default defineComponent({
     const titleBarButtonsRef = ref()
     const dWindow = shallowRef<any>(null)
     const craftStore = useCraftStore()
+    const settingsStore = useSettingsStore()
 
     const styleEditorOptions = reactive<StyleEditorOptions>(
       JSON.parse(localStorage.getItem(LsKeys.STYLE_EDITOR_OPTIONS) || 'null') || {
@@ -107,6 +108,7 @@ export default defineComponent({
       titleBarRef,
       titleBarButtonsRef,
       craftStore,
+      settingsStore,
     }
   },
 })
@@ -116,8 +118,13 @@ export default defineComponent({
   <transition name="none">
     <div
       v-show="mVisible"
-      class="page-craft-window _thin-window _blur"
-      :class="{_dark: craftStore.isAppDarkMode}"
+      class="page-craft-window"
+      :class="{
+        _dark: craftStore.isAppDarkMode,
+        _blur: settingsStore.enableAeroTheme,
+        _rounded: settingsStore.enableRoundedTheme,
+        _thin: !settingsStore.enableRoundedTheme,
+      }"
       ref="dialogRef"
     >
       <div class="page-craft-window-content">
@@ -137,7 +144,7 @@ export default defineComponent({
           </div>
         </div>
 
-        <div class="page-craft-window-body">
+        <div class="page-craft-window-body _bg">
           <slot name="main"></slot>
         </div>
       </div>
@@ -147,14 +154,10 @@ export default defineComponent({
 
 <style lang="scss">
 .page-craft-window {
-  box-shadow: 0 1px 10px rgba(0, 0, 0, 0.27), inset 0 0 0.5px #fff;
+  box-shadow: 0 1px 10px rgba(0, 0, 0, 0.27), inset 0 0 1px 1px rgba(255, 255, 255, 0.2);
   border: 1px solid rgba(0, 0, 0, 0.5);
-  padding: 0 6px 6px;
+  padding: 0 6px 5px;
   background: rgba(255, 255, 255, 0.8);
-
-  &._blur {
-    backdrop-filter: blur(4px);
-  }
 
   .page-craft-window-content {
     height: 100%;
@@ -183,7 +186,8 @@ export default defineComponent({
       }
     }
     .page-craft-window-body {
-      flex: 1;
+      //flex: 1;
+      height: calc(100% - 30px);
 
       border: 1px solid rgba(0, 0, 0, 0.6);
       &._bg {
@@ -207,10 +211,9 @@ export default defineComponent({
       align-items: center;
       justify-content: center;
       transition: all 0.3s;
-      cursor: pointer;
 
       & + button {
-        border-left: 0;
+        border-left: 0 !important;
       }
 
       &:hover {
@@ -227,7 +230,7 @@ export default defineComponent({
     }
   }
 
-  &._thin-window {
+  &._thin {
     padding: 0;
 
     .page-craft-title-bar {
@@ -238,7 +241,7 @@ export default defineComponent({
 
     .page-craft-window-controls {
       button {
-        border: 0;
+        border: 0 !important;
         background: none;
         margin-top: 0;
         min-width: 40px;
@@ -267,6 +270,12 @@ export default defineComponent({
       color: white;
       text-shadow: 0 0 10px black;
     }
+
+    .page-craft-window-controls {
+      button {
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+    }
     .page-craft-window-body {
       &._bg {
         background-color: rgba(30, 30, 30, 1);
@@ -294,21 +303,53 @@ export default defineComponent({
       }
     }
   }
+  $radius: 8px;
 
   &._rounded {
-    $radius: 8px;
-    border-top-left-radius: $radius;
-    border-top-right-radius: $radius;
+    box-shadow: 0 1px 10px rgba(0, 0, 0, 0.27), inset 0 0 1px 1px rgba(255, 255, 255, 0.2);
+    border-radius: $radius;
+
     .page-craft-title-bar {
       overflow: hidden;
-      border-top-left-radius: $radius;
-      border-top-right-radius: $radius;
+      border-radius: $radius;
     }
     .page-craft-window-controls {
       padding-right: 1px;
+      button {
+        &:first-child {
+          border-bottom-left-radius: 5px;
+        }
+        &:last-child {
+          border-bottom-right-radius: 5px;
+        }
+      }
     }
     .page-craft-window-body,
     .code-editor-placeholder {
+    }
+  }
+
+  &._blur {
+    backdrop-filter: blur(4px);
+    box-shadow: 0px 8.5px 10px rgba(0, 0, 0, 0.115), 0px 68px 80px rgba(0, 0, 0, 0.23),
+      inset 0 0 1px 1px rgba(255, 255, 255, 0.2);
+    .page-craft-window-body {
+      &._bg {
+        background-color: rgba(255, 255, 255, 0.5);
+      }
+    }
+    &._dark {
+      .page-craft-window-body {
+        &._bg {
+          background-color: rgba(30, 30, 30, 0.7);
+        }
+      }
+    }
+    &._rounded {
+      .page-craft-window-body {
+        border-bottom-left-radius: $radius;
+        border-bottom-right-radius: $radius;
+      }
     }
   }
 }

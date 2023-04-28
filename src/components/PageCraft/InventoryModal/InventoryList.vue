@@ -3,12 +3,14 @@ import {defineComponent, PropType} from 'vue'
 import BlockItemCard from '@/components/PageCraft/InventoryModal/BlockItemCard.vue'
 import ComponentCard from '@/components/PageCraft/InventoryModal/ComponentCard.vue'
 import {BlockItem} from '@/enum/page-craft/block'
+import {Search20Regular} from '@vicons/fluent'
 
 export default defineComponent({
   name: 'InventoryList',
   components: {
     BlockItemCard,
     ComponentCard,
+    Search20Regular,
   },
   props: {
     itemList: {
@@ -53,7 +55,13 @@ export default defineComponent({
 <template>
   <div class="inventory-list-wrap" :class="{'_min-height': isMinHeight}">
     <div class="filter-row" v-if="showFilter">
-      <n-input v-model:value="filterText" clearable placeholder="🔎 Filter Items" size="tiny" />
+      <n-input v-model:value="filterText" clearable placeholder="Filter Items" size="tiny">
+        <template #prefix>
+          <n-icon size="20">
+            <Search20Regular />
+          </n-icon>
+        </template>
+      </n-input>
     </div>
     <div v-if="!itemListFiltered.length" style="padding: 40px; text-align: center; font-size: 20px">
       No Items.

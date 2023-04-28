@@ -22,10 +22,18 @@ Inspired by https://khang-nd.github.io/7.css/
  */
 .page-craft-aero-panel {
   background-color: rgba(255, 255, 255, 0.6);
-  //backdrop-filter: blur(2px);
   border: 1px solid rgba(0, 0, 0, .4);
   border-radius: 0;
   box-shadow: 0 1px 10px rgba(0, 0, 0, 0.27), inset 0 0 0.5px #fff;
+
+  &._blur {
+    backdrop-filter: blur(4px);
+  }
+  &._rounded {
+    $radius: 8px;
+    box-shadow: 0 1px 10px rgba(0, 0, 0, 0.27), inset 0 0 1px 1px rgba(255, 255, 255, 0.2);
+    border-radius: $radius;
+  }
 
   .n-button {
     background-color: rgba(255, 255, 255, 0.71) !important;
@@ -40,7 +48,7 @@ Inspired by https://khang-nd.github.io/7.css/
     }
 
     .n-input {
-      background-color: rgba(0, 0, 0, 0.5);
+      background-color: rgba(0, 0, 0, 0.3);
     }
   }
 

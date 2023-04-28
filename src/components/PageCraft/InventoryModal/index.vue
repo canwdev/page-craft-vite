@@ -1,7 +1,6 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
-import {useIsDarkMode} from '@/hooks/use-global-theme'
 import {
   BlockType,
   actionBlockItemList,
@@ -13,8 +12,6 @@ import {htmlBlockItemList} from '@/enum/page-craft/inventory'
 import {ActionBlockItems} from '@/enum/page-craft/block'
 import InventoryList from '@/components/PageCraft/InventoryModal/InventoryList.vue'
 import {useCraftStore} from '@/store/craft'
-import {useLocalStorageString} from '@/hooks/use-local-storage'
-import {LsKeys} from '@/enum/page-craft'
 import {useCompImportExport, useCompStorage} from '@/hooks/use-component-storage'
 import FileChooser from '@/components/CommonUI/FileChooser.vue'
 import {colorHash} from '@/utils'
@@ -22,6 +19,12 @@ import PopWindow from '@/components/PageCraft/DomPreview/PopWindow.vue'
 import {useContextMenu} from '@/hooks/use-context-menu'
 import {useInitComponents} from '@/hooks/use-init'
 import {useSettingsStore} from '@/store/settings'
+import {
+  Dismiss20Regular,
+  ArrowMaximize16Regular,
+  ArrowMinimize16Regular,
+  Diversity20Regular,
+} from '@vicons/fluent'
 
 let idx = 1
 
@@ -31,6 +34,10 @@ export default defineComponent({
     InventoryList,
     FileChooser,
     PopWindow,
+    Dismiss20Regular,
+    ArrowMaximize16Regular,
+    ArrowMinimize16Regular,
+    Diversity20Regular,
   },
   props: {
     visible: {
@@ -301,9 +308,15 @@ export default defineComponent({
 
   <transition name="zoom">
     <div
-      class="inventory-modal page-craft-window _blur"
+      class="inventory-modal page-craft-window"
       v-show="mVisible"
-      :class="{_dark: craftStore.isAppDarkMode, _topLayout: settingsStore.enableTopLayout}"
+      :class="{
+        _dark: craftStore.isAppDarkMode,
+        _topLayout: settingsStore.enableTopLayout,
+        _blur: settingsStore.enableAeroTheme,
+        _rounded: settingsStore.enableRoundedTheme,
+        _thin: !settingsStore.enableRoundedTheme,
+      }"
     >
       <div class="page-craft-window-content">
         <div ref="titleBarRef" class="page-craft-title-bar">
@@ -311,16 +324,21 @@ export default defineComponent({
             class="page-craft-title-bar-text"
             style="display: flex; align-items: center; height: 14px"
           >
-            <img src="~@/assets/textures/crafting_table_top.png" alt="tools" />
-            &nbsp;Inventory List
+            <n-icon v-if="settingsStore.showInventory" size="20"><Diversity20Regular /></n-icon
+            >&nbsp;Inventory List
           </div>
 
           <div ref="titleBarButtonsRef" class="page-craft-window-controls">
             <button @click="isMinHeight = !isMinHeight">
-              {{ isMinHeight ? '🔼' : '🔽' }}
+              <n-icon size="16">
+                <ArrowMaximize16Regular v-if="isMinHeight" />
+                <ArrowMinimize16Regular v-else />
+              </n-icon>
             </button>
 
-            <button title="Close" @click="mVisible = false">❌</button>
+            <button title="Close" @click="mVisible = false">
+              <n-icon size="20"><Dismiss20Regular /></n-icon>
+            </button>
           </div>
         </div>
 
