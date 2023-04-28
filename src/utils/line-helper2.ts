@@ -4,10 +4,6 @@
  */
 import {TOOL_CLASSES} from '@/enum/page-craft'
 
-const TOP = 1,
-  MIDDLE = 2,
-  BOTTOM = 3
-
 /**
  * 判断上还是下
  * @param {*} e
@@ -28,7 +24,7 @@ function judgeTopOrBottom(e, x, y) {
 }
 
 export class LineHelper2 {
-  private currentPosition: null | number
+  private currentPosition: null | 'top' | 'middle' | 'bottom'
   private currentTarget: HTMLElement | null
   private preSelectTarget: HTMLElement | null
   private targetElement: HTMLElement
@@ -47,12 +43,12 @@ export class LineHelper2 {
   }
 
   hideLine() {
-    this.crossX.style.display = 'none'
+    this.crossX.classList.remove('visible')
   }
 
   clearTargetOutline() {
     if (this.preSelectTarget) {
-      this.preSelectTarget.classList.remove(TOOL_CLASSES.CLASS_MOUSE_OVER)
+      // this.preSelectTarget.classList.remove(TOOL_CLASSES.CLASS_MOUSE_OVER)
     }
   }
 
@@ -72,43 +68,49 @@ export class LineHelper2 {
 
     // 如果鼠标点在目标的上部分则绘制上部分辅助线
     if (directionObj.top && targetElement !== realTarget) {
-      if (this.currentPosition === TOP && this.currentTarget === realTarget) {
+      if (this.currentPosition === 'top' && this.currentTarget === realTarget) {
         return
       }
-      this.currentPosition = TOP
+      this.currentPosition = 'top'
       this.currentTarget = realTarget as HTMLElement
 
       this.clearTargetOutline()
 
       crossX.style.top = position.top + 'px'
-      crossX.style.width = position.width + 'px'
       crossX.style.left = position.left + 'px'
-      crossX.style.display = 'block'
+      crossX.style.width = position.width + 'px'
+      crossX.style.height = '3px'
+      crossX.classList.add('visible')
 
       // currentPointer(realTarget.parentElement, findElementIndex(realTarget))
     } else if (directionObj.bottom && targetElement !== realTarget) {
       // 如果鼠标点在目标的下部分，则绘制下部分辅助线
-      if (this.currentPosition === BOTTOM && this.currentTarget === realTarget) {
+      if (this.currentPosition === 'bottom' && this.currentTarget === realTarget) {
         return
       }
-      this.currentPosition = BOTTOM
+      this.currentPosition = 'bottom'
       this.currentTarget = realTarget as HTMLElement
 
       this.clearTargetOutline()
 
       crossX.style.top = position.bottom + 'px'
-      crossX.style.width = position.width + 'px'
       crossX.style.left = position.left + 'px'
-      crossX.style.display = 'block'
+      crossX.style.width = position.width + 'px'
+      crossX.style.height = '3px'
+      crossX.classList.add('visible')
 
       // currentPointer(realTarget.parentElement, findElementIndex(realTarget) + 1)
     } else {
-      this.currentPosition = MIDDLE
+      this.currentPosition = 'middle'
       this.currentTarget = realTarget as HTMLElement
-      ;(realTarget as HTMLElement).classList.add(TOOL_CLASSES.CLASS_MOUSE_OVER)
+      // ;(realTarget as HTMLElement).classList.add(TOOL_CLASSES.CLASS_MOUSE_OVER)
       this.preSelectTarget = realTarget as HTMLElement
 
-      this.hideLine()
+      crossX.style.top = position.top + 'px'
+      crossX.style.left = position.left + 'px'
+      crossX.style.width = position.width + 'px'
+      crossX.style.height = position.height + 'px'
+      crossX.classList.add('visible')
 
       // currentPointer(realTarget, -1)
     }

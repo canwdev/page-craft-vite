@@ -9,9 +9,9 @@ export const LsKeys = {
   COMPONENT_LIST: 'page_craft_component_list',
 }
 
-const CLASS_MOUSE_OVER = 'page-craft-mouse-over-dom-element'
+const CLASS_MOUSE_OVER = 'cls_mouse_over'
 const DOT_CLASS_MOUSE_OVER = '.' + CLASS_MOUSE_OVER
-const CLASS_MOUSE_OVER_PARENT = 'page-craft-mouse-over-dom-element-parent'
+const CLASS_MOUSE_OVER_PARENT = 'cls_mouse_over_parent'
 const DOT_CLASS_MOUSE_OVER_PARENT = '.' + CLASS_MOUSE_OVER_PARENT
 const CLASS_MAIN_CANVAS_ROOT = 'page-craft-mc'
 

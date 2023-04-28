@@ -279,9 +279,7 @@ export default defineComponent({
     ></div>
 
     <!-- 辅助定位线 -->
-    <div class="line-helper">
-      <div class="line-helper-x"></div>
-    </div>
+    <div class="line-helper-x"></div>
 
     <div
       v-if="cursorX"
@@ -430,10 +428,10 @@ export default defineComponent({
   }
 
   &--cursor-arrow {
-    cursor: url('@/assets/textures/arrow--cursor.png') 2 4, default;
+    cursor: url('@/assets/textures/arrow--cursor.png') 6 2, default;
 
     * {
-      cursor: url('@/assets/textures/arrow--cursor.png') 2 4, default;
+      cursor: url('@/assets/textures/arrow--cursor.png') 6 2, default;
     }
   }
 
@@ -457,8 +455,8 @@ export default defineComponent({
       outline: 1px dashed red;
     }
 
-    .page-craft-mouse-over-dom-element-parent,
-    .page-craft-mouse-over-dom-element {
+    .cls_mouse_over_parent,
+    .cls_mouse_over {
     }
   }
 
@@ -487,8 +485,8 @@ export default defineComponent({
     justify-content: center;
   }
 
-  &.page-craft-mouse-over-dom-element,
-  .page-craft-mouse-over-dom-element {
+  &.cls_mouse_over,
+  .cls_mouse_over {
     outline: 1px solid deeppink !important;
     border-color: deeppink !important;
     background-color: rgba(255, 192, 203, 0.5) !important;
@@ -498,45 +496,46 @@ export default defineComponent({
   }
 }
 
-.line-helper {
+.line-helper-x {
+  width: 20px;
+  height: 3px;
   position: fixed;
-  right: 0;
-  top: 0;
-  .line-helper-x {
-    width: 20px;
-    height: 3px;
-    position: fixed;
-    background-color: red;
-    top: 0;
-    display: none;
-    right: 0;
-    //pointer-events: none;
-    &:before,
-    &:after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      width: 0;
-      height: 0;
-    }
+  background-color: rgba(244, 67, 54, 0.5);
+  pointer-events: none;
+  transition: all 0.3s;
+  visibility: hidden;
+  opacity: 0;
 
-    $arrow_size: 10px;
+  &.visible {
+    visibility: visible;
+    opacity: 1;
+  }
 
-    &:before {
-      left: -$arrow_size;
-      top: 50%;
-      transform: translateY(-50%);
-      border: $arrow_size solid transparent;
-      border-left-color: red;
-    }
+  &:before,
+  &:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    width: 0;
+    height: 0;
+  }
 
-    &:after {
-      right: -$arrow_size;
-      top: 50%;
-      transform: translateY(-50%);
-      border: $arrow_size solid transparent;
-      border-right-color: blue;
-    }
+  $arrow_size: 10px;
+
+  &:before {
+    left: -$arrow_size;
+    top: 50%;
+    transform: translateY(-50%);
+    border: $arrow_size solid transparent;
+    border-left-color: #f44336;
+  }
+
+  &:after {
+    right: -$arrow_size;
+    top: 50%;
+    transform: translateY(-50%);
+    border: $arrow_size solid transparent;
+    border-right-color: #2196f3;
   }
 }
 </style>

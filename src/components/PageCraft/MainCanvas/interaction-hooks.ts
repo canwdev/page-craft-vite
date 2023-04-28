@@ -400,6 +400,8 @@ export const useInteractionHooks = (options) => {
   }
   const afterUpdateCallback = ref<any>(null)
   const handleDrop = async (event) => {
+    lineHelper.value.hideLine()
+
     const block = JSON.parse(event.dataTransfer.getData('data-block'))
     console.log(block)
     if (block.blockType !== BlockType.HTML_ELEMENT) {
@@ -411,11 +413,10 @@ export const useInteractionHooks = (options) => {
 
     const addEl = createBlockElement(block, craftStore)
 
-    // TODO: refactor currentPosition
     const currentPosition = lineHelper.value.currentPosition
-    if (currentPosition === 1) {
+    if (currentPosition === 'top') {
       targetEl.before(addEl)
-    } else if (currentPosition === 3) {
+    } else if (currentPosition === 'bottom') {
       targetEl.after(addEl)
     } else {
       targetEl.appendChild(addEl)
@@ -431,8 +432,6 @@ export const useInteractionHooks = (options) => {
     // })
 
     saveData()
-
-    lineHelper.value.hideLine()
   }
 
   const updateEditingElement = ({el, formValueRef}) => {
