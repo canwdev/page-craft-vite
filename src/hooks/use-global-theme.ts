@@ -1,30 +1,20 @@
-import {useMainStore} from '@/store/main-store'
 import {ThemeType, useSettingsStore} from '@/store/settings'
+import {useCraftStore} from '@/store/craft'
 
 const getSystemIsDarkMode = () =>
   window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
 
-export const useIsDarkMode = () => {
-  const mainStore = useMainStore()
-
-  const isDarkMode = computed(() => mainStore.isAppDarkMode)
-
-  return {
-    isDarkMode,
-  }
-}
-
 export const useHandleThemeChange = () => {
-  const mainStore = useMainStore()
+  const craftStore = useCraftStore()
   const settingsStore = useSettingsStore()
 
   const handleThemeChange = (val: ThemeType) => {
     if (val === ThemeType.SYSTEM) {
-      mainStore.isAppDarkMode = getSystemIsDarkMode()
+      craftStore.isAppDarkMode = getSystemIsDarkMode()
     } else if (val === ThemeType.LIGHT) {
-      mainStore.isAppDarkMode = false
+      craftStore.isAppDarkMode = false
     } else if (val === ThemeType.DARK) {
-      mainStore.isAppDarkMode = true
+      craftStore.isAppDarkMode = true
     }
     settingsStore.theme = val
   }
@@ -35,14 +25,14 @@ export const useHandleThemeChange = () => {
 }
 
 export const useGlobalTheme = () => {
-  const mainStore = useMainStore()
+  const craftStore = useCraftStore()
   const {handleThemeChange} = useHandleThemeChange()
   const settingsStore = useSettingsStore()
   handleThemeChange(settingsStore.theme)
 
   const handleSystemThemeChange = (event: any) => {
     if (settingsStore.theme === ThemeType.SYSTEM) {
-      mainStore.isAppDarkMode = Boolean(event.matches)
+      craftStore.isAppDarkMode = Boolean(event.matches)
     }
   }
 
@@ -58,7 +48,7 @@ export const useGlobalTheme = () => {
       .removeEventListener('change', handleSystemThemeChange)
   })
 
-  const isAppDarkMode = computed(() => mainStore.isAppDarkMode)
+  const isAppDarkMode = computed(() => craftStore.isAppDarkMode)
 
   return {
     isAppDarkMode,

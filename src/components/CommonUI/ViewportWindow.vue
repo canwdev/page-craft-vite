@@ -5,6 +5,7 @@ import {WindowController} from '@/utils/window-controller'
 import {throttle} from 'throttle-debounce'
 import {LsKeys} from '@/enum/page-craft'
 import {useIsDarkMode} from '@/hooks/use-global-theme'
+import {useCraftStore} from '@/store/craft'
 
 type StyleEditorOptions = {
   wTop: string
@@ -28,7 +29,7 @@ export default defineComponent({
     const titleBarRef = ref()
     const titleBarButtonsRef = ref()
     const dWindow = shallowRef<any>(null)
-    const {isDarkMode} = useIsDarkMode()
+    const craftStore = useCraftStore()
 
     const styleEditorOptions = reactive<StyleEditorOptions>(
       JSON.parse(localStorage.getItem(LsKeys.STYLE_EDITOR_OPTIONS) || 'null') || {
@@ -105,7 +106,7 @@ export default defineComponent({
       dialogRef,
       titleBarRef,
       titleBarButtonsRef,
-      isDarkMode,
+      craftStore,
     }
   },
 })
@@ -116,7 +117,7 @@ export default defineComponent({
     <div
       v-show="mVisible"
       class="page-craft-window _thin-window _blur"
-      :class="{_dark: isDarkMode}"
+      :class="{_dark: craftStore.isAppDarkMode}"
       ref="dialogRef"
     >
       <div class="page-craft-window-content">

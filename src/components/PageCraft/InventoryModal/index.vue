@@ -21,7 +21,6 @@ import {colorHash} from '@/utils'
 import PopWindow from '@/components/PageCraft/DomPreview/PopWindow.vue'
 import {useContextMenu} from '@/hooks/use-context-menu'
 import {useInitComponents} from '@/hooks/use-init'
-import {useMainStore} from '@/store/main-store'
 import {useSettingsStore} from '@/store/settings'
 
 let idx = 1
@@ -42,7 +41,6 @@ export default defineComponent({
   emits: ['onItemClick'],
   setup(props, {emit}) {
     const mVisible = useModelWrapper(props, emit, 'visible')
-    const {isDarkMode} = useIsDarkMode()
     const craftStore = useCraftStore()
     const settingsStore = useSettingsStore()
 
@@ -258,12 +256,10 @@ export default defineComponent({
     const {editingNode, nodeAction, handleContextmenu, ...contextMenuEtc} =
       useContextMenu(getMenuOptions)
 
-    const mainStore = useMainStore()
     return {
-      mainStore,
+      craftStore,
       settingsStore,
       mVisible,
-      isDarkMode,
       BlockType,
       actionBlockItemList,
       htmlBlockItemList,
@@ -307,7 +303,7 @@ export default defineComponent({
     <div
       class="inventory-modal page-craft-window _blur"
       v-show="mVisible"
-      :class="{_dark: isDarkMode, _topLayout: mainStore.isTopLayout}"
+      :class="{_dark: craftStore.isAppDarkMode, _topLayout: settingsStore.enableTopLayout}"
     >
       <div class="page-craft-window-content">
         <div ref="titleBarRef" class="page-craft-title-bar">

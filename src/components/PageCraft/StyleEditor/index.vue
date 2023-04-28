@@ -76,14 +76,16 @@ export default defineComponent({
         editorInstance.value.layout()
       }
     })
-    const {isDarkMode} = useIsDarkMode()
 
     const getThemeName = () => {
-      return isDarkMode.value ? 'vs-dark' : 'vs'
+      return craftStore.isAppDarkMode ? 'vs-dark' : 'vs'
     }
-    watch(isDarkMode, (val) => {
-      editorInstance.value.updateOptions({theme: getThemeName()})
-    })
+    watch(
+      () => craftStore.isAppDarkMode,
+      (val) => {
+        editorInstance.value.updateOptions({theme: getThemeName()})
+      }
+    )
 
     const {loadCurCompStyle, saveCurCompStyle} = useCompStorage()
 
@@ -303,7 +305,6 @@ export default defineComponent({
       errorTip,
       handleErrorTipClick,
       toolOptions,
-      isDarkMode,
       editorInstance,
     }
   },

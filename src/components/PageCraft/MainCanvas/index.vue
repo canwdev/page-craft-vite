@@ -21,7 +21,6 @@ export default defineComponent({
   emits: ['openStylusTools'],
   setup(props, {emit}) {
     const mainCanvasRef = ref()
-    const {isDarkMode} = useIsDarkMode()
     const craftStore = useCraftStore()
     const settingsStore = useSettingsStore()
 
@@ -99,7 +98,6 @@ export default defineComponent({
       cursorX,
       cursorY,
       mainCanvasClass,
-      isDarkMode,
       htmlMenuOptions,
       fileChooserRef,
       isShowImportDialog,
@@ -188,7 +186,7 @@ export default defineComponent({
     />
 
     <portal to="indicatorBarTeleportDest">
-      <div :class="{_dark: isDarkMode}" class="page-craft-mc-indicator">
+      <div :class="{_dark: craftStore.isAppDarkMode}" class="page-craft-mc-indicator">
         <n-space align="center">
           <n-space align="center" size="small">
             <n-dropdown

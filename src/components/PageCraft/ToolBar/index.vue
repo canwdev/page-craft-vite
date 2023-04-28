@@ -5,12 +5,7 @@ import ToolItem from '@/components/PageCraft/ToolBar/ToolItem.vue'
 import {useIsDarkMode} from '@/hooks/use-global-theme'
 import InventoryModal from '@/components/PageCraft/InventoryModal/index.vue'
 import {LsKeys} from '@/enum/page-craft'
-import {
-  useLocalStorageBoolean,
-  useLocalStorageNumber,
-  useLocalStorageObject,
-} from '@/hooks/use-local-storage'
-import {useMainStore} from '@/store/main-store'
+import {useLocalStorageObject} from '@/hooks/use-local-storage'
 import {useRouter} from 'vue-router'
 import {useSettingsStore} from '@/store/settings'
 
@@ -101,8 +96,6 @@ export default defineComponent({
       }
     }
 
-    const mainStore = useMainStore()
-
     const router = useRouter()
     const toolsMenuOptions = [
       {
@@ -140,12 +133,10 @@ export default defineComponent({
     ]
 
     return {
-      mainStore,
       settingsStore,
       toolbarRef,
       toolBarList,
       craftStore,
-      ...useIsDarkMode(),
       setCurrentToolItem,
       handleToolItemClick,
       resetToolbar() {
@@ -163,7 +154,10 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="page-craft-enhanced-toolbar-wrapper" :class="{_topLayout: mainStore.isTopLayout}">
+  <div
+    class="page-craft-enhanced-toolbar-wrapper"
+    :class="{_topLayout: settingsStore.enableTopLayout}"
+  >
     <InventoryModal
       v-model:visible="settingsStore.showInventory"
       @onItemClick="setCurrentToolItem"
@@ -171,7 +165,7 @@ export default defineComponent({
     <div
       ref="toolbarRef"
       class="page-craft-enhanced-toolbar page-craft-aero-panel"
-      :class="{_dark: isDarkMode}"
+      :class="{_dark: craftStore.isAppDarkMode}"
     >
       <div class="page-craft-enhanced-toolbar-above">
         <n-space size="small">
@@ -206,7 +200,7 @@ export default defineComponent({
         <n-space size="small">
           <n-popconfirm @positive-click="resetToolbar">
             <template #trigger>
-              <n-button v-show="false" size="tiny"> Reset </n-button>
+              <n-button size="tiny"> R </n-button>
             </template>
             Confirm reset toolbar?
           </n-popconfirm>

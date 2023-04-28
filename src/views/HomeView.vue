@@ -2,11 +2,9 @@
 import {defineComponent} from 'vue'
 import ToolBar from '@/components/PageCraft/ToolBar/index.vue'
 import MainCanvas from '@/components/PageCraft/MainCanvas/index.vue'
-import {useLocalStorageBoolean} from '@/hooks/use-local-storage'
 import {LsKeys} from '@/enum/page-craft'
 import {useHandleThemeChange} from '@/hooks/use-global-theme'
 import {themeOptions, useSettingsStore} from '@/store/settings'
-import {useMainStore} from '@/store/main-store'
 import {createOrFindStyleNode} from '@/utils/dom'
 import {useMetaTitle} from '@/hooks/use-meta'
 import {handleExportStyle} from '@/utils/exporter'
@@ -30,7 +28,6 @@ export default defineComponent({
     // BackgroundLayer,
   },
   setup() {
-    const mainStore = useMainStore()
     const settingsStore = useSettingsStore()
     const {metaTitle} = useMetaTitle()
 
@@ -57,16 +54,6 @@ export default defineComponent({
       () => settingsStore.enableGlobalCss,
       (val) => {
         applyGlobalStyle()
-      }
-    )
-
-    watch(
-      () => settingsStore.enableTopLayout,
-      (val) => {
-        mainStore.isTopLayout = val
-      },
-      {
-        immediate: true,
       }
     )
 
@@ -136,7 +123,6 @@ export default defineComponent({
       settingsStore,
       themeOptions,
       handleThemeChange,
-      mainStore,
       isShowStylusTools,
       styleMenuOptions,
     }
@@ -145,7 +131,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="page-craft-home-view" :class="{_topLayout: mainStore.isTopLayout}">
+  <div class="page-craft-home-view" :class="{_topLayout: settingsStore.enableTopLayout}">
     <!--    <BackgroundLayer />-->
 
     <MainCanvas>
