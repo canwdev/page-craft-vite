@@ -363,7 +363,7 @@ export default defineComponent({
         <n-icon size="20"><Copy20Regular /></n-icon>
       </button>
 
-      <button title="Close" @click="mVisible = false">
+      <button title="Close" @click="mVisible = false" class="_danger">
         <n-icon size="20"><Dismiss20Regular /></n-icon>
       </button>
     </template>

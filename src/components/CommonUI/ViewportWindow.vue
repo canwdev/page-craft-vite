@@ -211,6 +211,7 @@ export default defineComponent({
       align-items: center;
       justify-content: center;
       transition: all 0.3s;
+      color: inherit;
 
       & + button {
         border-left: 0 !important;
@@ -218,10 +219,17 @@ export default defineComponent({
 
       &:hover {
         background: rgb(233, 233, 233);
+        transition: all 0.1s;
+        &._danger {
+          background: #ffa5aa !important;
+        }
       }
 
       &:active {
         background: rgba(181, 181, 181, 0.46);
+        &._danger {
+          background: #ff6a72 !important;
+        }
       }
 
       &.active {
@@ -266,14 +274,29 @@ export default defineComponent({
 
   &._dark {
     background: rgba(0, 0, 0, 0.6);
-    .page-craft-title-bar {
-      color: white;
-      text-shadow: 0 0 10px black;
-    }
 
-    .page-craft-window-controls {
-      button {
-        border: 1px solid rgba(255, 255, 255, 0.2);
+    .page-craft-window-content {
+      .page-craft-title-bar {
+        color: white;
+        text-shadow: 0 0 10px black;
+      }
+      .page-craft-window-controls {
+        button {
+          border: 1px solid rgba(255, 255, 255, 0.2);
+
+          &:hover {
+            background: rgba(255, 255, 255, 0.2);
+            &._danger {
+              background: rgba(232, 17, 35, 0.7) !important;
+            }
+          }
+          &:active {
+            background: rgba(255, 255, 255, 0.1);
+            &._danger {
+              background: rgba(151, 23, 34, 0.7) !important;
+            }
+          }
+        }
       }
     }
     .page-craft-window-body {

@@ -8,7 +8,7 @@ import {useInteractionHooks} from '@/components/PageCraft/MainCanvas/interaction
 import {useMcMain} from '@/components/PageCraft/MainCanvas/main-hooks'
 import ElementEditDialog from '@/components/PageCraft/MainCanvas/ElementEditDialog.vue'
 import {useSettingsStore} from '@/store/settings'
-import {ArrowUndo20Filled, ArrowRedo20Filled} from '@vicons/fluent'
+import {ArrowUndo20Filled, ArrowRedo20Filled, Settings20Regular, Code20Filled} from '@vicons/fluent'
 
 export default defineComponent({
   name: 'MainCanvas',
@@ -18,6 +18,8 @@ export default defineComponent({
     ElementEditDialog,
     ArrowUndo20Filled,
     ArrowRedo20Filled,
+    Settings20Regular,
+    Code20Filled,
   },
   emits: ['openStylusTools'],
   setup(props, {emit}) {
@@ -188,37 +190,50 @@ export default defineComponent({
 
     <portal to="indicatorBarTeleportDest">
       <div :class="{_dark: craftStore.isAppDarkMode}" class="page-craft-mc-indicator">
-        <n-space align="center">
-          <n-space align="center" size="small">
-            <n-dropdown
-              :options="htmlMenuOptions"
-              key-field="label"
-              placement="bottom-start"
-              trigger="hover"
+        <n-space align="center" size="small">
+          <n-dropdown
+            :options="htmlMenuOptions"
+            key-field="label"
+            placement="bottom-start"
+            trigger="hover"
+          >
+            <n-button size="tiny" :title="settingsStore.curCompoName">
+              <template #icon>
+                <n-icon size="18">
+                  <Code20Filled />
+                </n-icon>
+              </template>
+              {{ settingsStore.curCompoName.slice(0, 10) || 'Default' }}</n-button
             >
-              <n-button size="tiny">{{ settingsStore.curCompoName || '🎨HTML' }}</n-button>
-            </n-dropdown>
+          </n-dropdown>
 
-            <n-popover :duration="100" :show-arrow="false" trigger="hover">
-              <template #trigger>
-                <n-button size="tiny">Options</n-button>
-              </template>
-              <template #header></template>
-              <div v-for="item in toggleList" :key="item.flag" class="toggle-list">
-                <n-checkbox
-                  v-model:checked="indicatorOptions[item.flag]"
-                  :label="item.title"
-                  :title="item.desc"
-                  size="small"
-                />
-              </div>
-              <n-slider v-model:value="indicatorOptions.bgTransparentPercent" :step="1" />
-              <template #footer>
-                <slot name="settingsButtons"></slot>
-              </template>
-            </n-popover>
+          <n-popover :duration="100" :show-arrow="false" trigger="hover">
+            <template #trigger>
+              <n-button size="tiny">
+                <template #icon>
+                  <n-icon size="18">
+                    <Settings20Regular />
+                  </n-icon>
+                </template>
+                Options</n-button
+              >
+            </template>
+            <template #header></template>
+            <div v-for="item in toggleList" :key="item.flag" class="toggle-list">
+              <n-checkbox
+                v-model:checked="indicatorOptions[item.flag]"
+                :label="item.title"
+                :title="item.desc"
+                size="small"
+              />
+            </div>
+            <n-slider v-model:value="indicatorOptions.bgTransparentPercent" :step="1" />
+            <template #footer>
+              <slot name="settingsButtons"></slot>
+            </template>
+          </n-popover>
 
-            <span>|</span>
+          <n-button-group>
             <n-button
               size="tiny"
               title="Undo"
@@ -243,8 +258,8 @@ export default defineComponent({
                 </n-icon>
               </template>
             </n-button>
-            <span>|</span>
-          </n-space>
+          </n-button-group>
+          <span>|</span>
         </n-space>
       </div>
     </portal>

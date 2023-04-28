@@ -157,8 +157,11 @@ export default defineComponent({
           style="min-width: 90px"
           @click="settingsStore.showStyleEditor = !settingsStore.showStyleEditor"
         >
-          <n-icon v-if="settingsStore.showStyleEditor" size="18"><PaintBrush16Regular /></n-icon
-          >&nbsp;Style Editor
+          <template #icon>
+            <n-icon v-if="settingsStore.showStyleEditor" size="18"
+              ><PaintBrush16Regular
+            /></n-icon> </template
+          >Style Editor
         </n-button>
       </n-dropdown>
     </ToolBar>

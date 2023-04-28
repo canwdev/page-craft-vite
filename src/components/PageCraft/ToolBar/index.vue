@@ -7,7 +7,7 @@ import {LsKeys} from '@/enum/page-craft'
 import {useLocalStorageObject} from '@/hooks/use-local-storage'
 import {useRouter} from 'vue-router'
 import {useSettingsStore} from '@/store/settings'
-import {ArrowReset20Regular, Diversity20Regular} from '@vicons/fluent'
+import {ArrowReset20Regular, Diversity20Regular, Toolbox20Regular} from '@vicons/fluent'
 
 export default defineComponent({
   name: 'BottomToolBar',
@@ -16,6 +16,7 @@ export default defineComponent({
     InventoryModal,
     ArrowReset20Regular,
     Diversity20Regular,
+    Toolbox20Regular,
   },
   setup(props, {emit}) {
     const craftStore = useCraftStore()
@@ -224,8 +225,10 @@ export default defineComponent({
             size="tiny"
             @click="settingsStore.showInventory = !settingsStore.showInventory"
           >
-            <n-icon v-if="settingsStore.showInventory" size="18"><Diversity20Regular /></n-icon
-            >&nbsp;Inventory
+            <template #icon>
+              <n-icon v-if="settingsStore.showInventory" size="18"><Diversity20Regular /></n-icon>
+            </template>
+            Inventory
           </n-button>
 
           <n-dropdown
@@ -234,7 +237,12 @@ export default defineComponent({
             placement="bottom-start"
             trigger="hover"
           >
-            <n-button size="tiny"> Tools </n-button>
+            <n-button size="tiny">
+              <template #icon>
+                <n-icon size="18"><Toolbox20Regular /></n-icon>
+              </template>
+              Tools
+            </n-button>
           </n-dropdown>
         </n-space>
       </div>
