@@ -25,17 +25,20 @@ export default defineComponent({
     const toolBarList = useLocalStorageObject(LsKeys.TOOL_BAR_LIST, [...initToolbarList])
 
     const blinkAnimIndex = ref(-1)
+    // add blink animation
+    const playBlinkAnim = (index: number) => {
+      blinkAnimIndex.value = index
+      setTimeout(() => {
+        blinkAnimIndex.value = -1
+      }, 200)
+    }
+
     const setCurrentToolItem = (item: BlockItem) => {
       const list = [...toolBarList.value]
       list.splice(settingsStore.toolbarIndex, 1, item)
       toolBarList.value = list
       updateCurrentBlock(item)
-
-      // add blink animation
-      blinkAnimIndex.value = settingsStore.toolbarIndex
-      setTimeout(() => {
-        blinkAnimIndex.value = -1
-      }, 200)
+      playBlinkAnim(settingsStore.toolbarIndex)
     }
 
     const updateCurrentBlock = (item: BlockItem) => {
@@ -97,6 +100,7 @@ export default defineComponent({
       if (oldIndex === settingsStore.toolbarIndex) {
         settingsStore.toolbarIndex = newIndex
       }
+      playBlinkAnim(newIndex)
     }
 
     const router = useRouter()
@@ -292,7 +296,7 @@ export default defineComponent({
   }
 
   .page-craft-enhanced-toolbar-above {
-    padding: 2px 0 8px;
+    padding: 2px 0 6px;
     display: flex;
     justify-content: space-between;
     label {

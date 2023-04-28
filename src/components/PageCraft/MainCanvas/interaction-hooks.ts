@@ -10,6 +10,7 @@ import {
   elementCustomPropsMap,
   updateHtmlElement,
 } from '@/components/PageCraft/MainCanvas/element-edit'
+import {LineHelper2} from '@/utils/line-helper2'
 
 export const removeMouseOverDomElementEffect = () => {
   const $el = $(TOOL_CLASSES.DOT_CLASS_MOUSE_OVER)
@@ -35,11 +36,15 @@ export const useInteractionHooks = (options) => {
   const currentHoveredEl = ref<any>(null)
   const isShowElementEdit = ref(false)
 
+  const lineHelper = shallowRef()
+
   onMounted(() => {
     mainCanvasRef.value.addEventListener('mousemove', handleMouseMove)
     mainCanvasRef.value.addEventListener('contextmenu', handleContextMenu)
     mainCanvasRef.value.addEventListener('pointerdown', handlePointerDown)
     mainCanvasRef.value.addEventListener('pointerup', handlePointerUp)
+
+    lineHelper.value = new LineHelper2(mainCanvasRef.value)
   })
   onBeforeUnmount(() => {
     mainCanvasRef.value.removeEventListener('mousemove', handleMouseMove)
@@ -387,9 +392,11 @@ export const useInteractionHooks = (options) => {
 
   const handleDragOver = (event) => {
     // console.log('handleDragOver')
+    lineHelper.value.drawLine(event)
   }
   const handleDragLeave = (event) => {
     // console.log('handleDragLeave')
+    lineHelper.value.hideLine()
   }
   const afterUpdateCallback = ref<any>(null)
   const handleDrop = async (event) => {
@@ -404,7 +411,16 @@ export const useInteractionHooks = (options) => {
 
     const addEl = createBlockElement(block, craftStore)
 
-    targetEl.appendChild(addEl)
+    // TODO: refactor currentPosition
+    const currentPosition = lineHelper.value.currentPosition
+    if (currentPosition === 1) {
+      targetEl.before(addEl)
+    } else if (currentPosition === 3) {
+      targetEl.after(addEl)
+    } else {
+      targetEl.appendChild(addEl)
+    }
+
     // afterUpdateCallback.value = () => {
     //   targetEl.appendChild(addEl)
     // }
@@ -415,6 +431,8 @@ export const useInteractionHooks = (options) => {
     // })
 
     saveData()
+
+    lineHelper.value.hideLine()
   }
 
   const updateEditingElement = ({el, formValueRef}) => {

@@ -65,6 +65,21 @@ export const appendCustomBlock = async (block: BlockItem, event, addOptions, mai
     }
     if (block.actionType === ActionType.DEBUG) {
       console.log('[event]', event)
+
+      const target = event.target
+      var sibling1 = target.previousSibling // 获取前一个兄弟元素
+      while (sibling1 && sibling1.nodeType !== 1) {
+        // 确保是元素节点
+        sibling1 = sibling1.previousSibling
+      }
+      var sibling2 = target.nextSibling // 获取后一个兄弟元素
+      while (sibling2 && sibling2.nodeType !== 1) {
+        // 确保是元素节点
+        sibling2 = sibling2.nextSibling
+      }
+
+      console.log({sibling1, sibling2}) // 上一个元素
+
       console.log('[targetEl]', targetEl)
 
       return

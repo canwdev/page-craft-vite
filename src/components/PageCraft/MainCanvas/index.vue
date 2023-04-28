@@ -278,6 +278,11 @@ export default defineComponent({
       :style="backgroundStyle"
     ></div>
 
+    <!-- 辅助定位线 -->
+    <div class="line-helper">
+      <div class="line-helper-x"></div>
+    </div>
+
     <div
       v-if="cursorX"
       class="mc-digging-wrap"
@@ -490,6 +495,48 @@ export default defineComponent({
     //color: #111 !important;
     opacity: 0.85 !important;
     fill: deeppink !important; /* Helps in highlighting SVG elements */
+  }
+}
+
+.line-helper {
+  position: fixed;
+  right: 0;
+  top: 0;
+  .line-helper-x {
+    width: 20px;
+    height: 3px;
+    position: fixed;
+    background-color: red;
+    top: 0;
+    display: none;
+    right: 0;
+    //pointer-events: none;
+    &:before,
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      width: 0;
+      height: 0;
+    }
+
+    $arrow_size: 10px;
+
+    &:before {
+      left: -$arrow_size;
+      top: 50%;
+      transform: translateY(-50%);
+      border: $arrow_size solid transparent;
+      border-left-color: red;
+    }
+
+    &:after {
+      right: -$arrow_size;
+      top: 50%;
+      transform: translateY(-50%);
+      border: $arrow_size solid transparent;
+      border-right-color: blue;
+    }
   }
 }
 </style>

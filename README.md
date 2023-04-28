@@ -4,7 +4,7 @@ Web page rapid generation tool, through this tool you can quickly create the DOM
 
 网页快速生成工具，通过这个工具你可以快速创建页面的DOM结构，支持直接在页面上修改样式，配合 Chrome DevTools 可以快速实现静态内容。
 
-![img](./screenshot.png)
+![img](./screenshot.jpg)
 
 ## Tips
 
