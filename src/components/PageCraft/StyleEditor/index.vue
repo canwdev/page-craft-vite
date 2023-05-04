@@ -149,12 +149,14 @@ export default defineComponent({
 
       handleUpdateStyle(style, false)
 
+      // @ts-ignore
       globalEventBus.on(GlobalEvents.ON_ADD_STYLE, handleAddStyle)
       globalEventBus.on(GlobalEvents.IMPORT_SUCCESS, reloadStyle)
     })
 
     onBeforeUnmount(() => {
       editorInstance.value.dispose()
+      // @ts-ignore
       globalEventBus.off(GlobalEvents.ON_ADD_STYLE, handleAddStyle)
       globalEventBus.off(GlobalEvents.IMPORT_SUCCESS, reloadStyle)
     })
