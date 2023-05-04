@@ -269,6 +269,8 @@ export default defineComponent({
         />
       </div>
     </div>
+
+    <slot name="end"></slot>
   </div>
 </template>
 

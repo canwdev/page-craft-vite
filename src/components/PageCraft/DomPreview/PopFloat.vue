@@ -113,7 +113,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <transition name="fade">
+  <transition name="mc-fade">
     <div ref="popWindowRef" v-show="mVisible" class="pop-window" :style="posStyle">
       <div class="pop-window-content" v-if="currentItem">
         <DomPreview :id="currentItem.id" :css="css" @styleCompiled="handleStyleCompiled">

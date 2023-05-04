@@ -164,8 +164,10 @@ export default defineComponent({
           >Style Editor
         </n-button>
       </n-dropdown>
+      <template #end>
+        <StyleEditor v-model:visible="settingsStore.showStyleEditor" />
+      </template>
     </ToolBar>
-    <StyleEditor v-model:visible="settingsStore.showStyleEditor" />
     <StylusToolsDialog v-model:visible="isShowStylusTools" />
 
     <n-modal
@@ -248,7 +250,7 @@ export default defineComponent({
   position: relative;
 
   &._topLayout {
-    padding-top: 88px;
+    padding-top: 86px;
     flex-direction: column-reverse;
   }
 }

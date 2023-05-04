@@ -2,7 +2,6 @@
  * 参考：
  * https://github.com/sahadev/vue-component-creater-ui/blob/vue3/src/utils/lineHelper.js
  */
-import {TOOL_CLASSES} from '@/enum/page-craft'
 
 /**
  * 判断上还是下
@@ -23,7 +22,7 @@ function judgeTopOrBottom(e, x, y) {
   }
 }
 
-export class LineHelper2 {
+export class LineHelper {
   private currentPosition: null | 'top' | 'middle' | 'bottom'
   private currentTarget: HTMLElement | null
   private preSelectTarget: HTMLElement | null
@@ -62,7 +61,7 @@ export class LineHelper2 {
     const targetElement = this.targetElement
     const crossX = this.crossX
 
-    // 2021年03月26日15:56:35 新的逻辑是：只有上下定位辅助线，不再计算左右辅助线
+    // 只有上下定位辅助线，不再计算左右辅助线
     const directionObj = judgeTopOrBottom(realTarget, event.clientX, event.clientY)
     const position = (realTarget as HTMLElement).getBoundingClientRect()
 

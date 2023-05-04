@@ -33,7 +33,7 @@ export default defineComponent({
     },
     transitionName: {
       type: String,
-      default: 'zoom',
+      default: 'mc-fade-scale',
     },
   },
   emits: ['update:visible', 'resize'],
@@ -66,6 +66,15 @@ export default defineComponent({
 
     watch(allowMove, (val) => {
       dWindow.value.allowMove = val
+      if (val) {
+        dWindow.value.updateZIndex()
+      }
+    })
+
+    watch(mVisible, (val) => {
+      if (val) {
+        dWindow.value.updateZIndex()
+      }
     })
 
     onMounted(() => {
@@ -181,7 +190,7 @@ export default defineComponent({
   box-shadow: 0 1px 10px rgba(0, 0, 0, 0.27), inset 0 0 1px 1px rgba(255, 255, 255, 0.2);
   border: 1px solid rgba(0, 0, 0, 0.5);
   padding: 0 6px 5px;
-  background: rgba(255, 255, 255, 0.8);
+  background-color: rgba(229, 229, 229, 0.8);
   &._allowMove {
     position: fixed;
     z-index: 100;
@@ -236,7 +245,7 @@ export default defineComponent({
       height: 24px;
       min-width: 30px;
       border: 1px solid rgba(0, 0, 0, 0.5);
-      background: rgba(255, 255, 255, 0.9);
+      background-color: transparent;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -248,22 +257,22 @@ export default defineComponent({
       }
 
       &:hover {
-        background: rgb(233, 233, 233);
+        background-color: rgb(233, 233, 233);
         transition: all 0.1s;
         &._danger {
-          background: #ffa5aa !important;
+          background-color: #ffa5aa !important;
         }
       }
 
       &:active {
-        background: rgba(181, 181, 181, 0.46);
+        background-color: rgba(181, 181, 181, 0.46);
         &._danger {
-          background: #ff6a72 !important;
+          background-color: #ff6a72 !important;
         }
       }
 
       &.active {
-        background: rgba(255, 105, 180, 0.8) !important;
+        background-color: rgba(255, 105, 180, 0.8) !important;
       }
     }
   }
@@ -280,18 +289,18 @@ export default defineComponent({
     .vp-window-controls {
       button {
         border: 0 !important;
-        background: none;
+        background-color: none;
         margin-top: 0;
         min-width: 40px;
         height: 30px;
         margin-bottom: -4px;
 
         &:hover {
-          background: rgba(222, 222, 222, 1);
+          background-color: rgba(222, 222, 222, 1);
         }
 
         &:active {
-          background: rgba(116, 116, 116, 0.46);
+          background-color: rgba(116, 116, 116, 0.46);
         }
       }
     }
@@ -303,7 +312,7 @@ export default defineComponent({
   }
 
   &._dark {
-    background: rgba(0, 0, 0, 0.6);
+    background-color: rgba(56, 56, 56, 0.6);
 
     .vp-window-content {
       .page-craft-title-bar {
@@ -315,20 +324,21 @@ export default defineComponent({
           border: 1px solid rgba(255, 255, 255, 0.2);
 
           &:hover {
-            background: rgba(255, 255, 255, 0.2);
+            background-color: rgba(255, 255, 255, 0.2);
             &._danger {
-              background: rgba(232, 17, 35, 0.7) !important;
+              background-color: rgba(232, 17, 35, 0.7) !important;
             }
           }
           &:active {
-            background: rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 255, 255, 0.1);
             &._danger {
-              background: rgba(151, 23, 34, 0.7) !important;
+              background-color: rgba(151, 23, 34, 0.7) !important;
             }
           }
         }
       }
     }
+
     .vp-window-body {
       &._bg {
         background-color: rgba(30, 30, 30, 1);
@@ -341,21 +351,29 @@ export default defineComponent({
       align-items: flex-start;
 
       button {
-        background: transparent;
+        background-color: transparent;
         img {
           filter: drop-shadow(0 0 2px #fff);
         }
 
         &:hover {
-          background: rgba(227, 227, 227, 1);
+          background-color: rgba(227, 227, 227, 1);
         }
 
         &:active {
-          background: rgba(109, 109, 109, 1);
+          background-color: rgba(109, 109, 109, 1);
         }
       }
     }
   }
+
+  &._active {
+    background-color: rgba(255, 255, 255, 0.8);
+    &._dark {
+      background-color: rgba(0, 0, 0, 0.6);
+    }
+  }
+
   $radius: 8px;
 
   &._rounded {

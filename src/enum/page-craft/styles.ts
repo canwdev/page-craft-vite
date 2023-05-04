@@ -279,7 +279,7 @@ export const cssKeyFramesList = [
 export const vue2TransitionsList = [
   {
     name: 'fade',
-    code: `// <transition name="fade">
+    code: `// <transition name="mc-fade">
 .fade-enter-active, .fade-leave-active {
   transition: opacity 0.3s;
 }

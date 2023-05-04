@@ -351,8 +351,7 @@ export default defineComponent({
     wid="style_editor"
   >
     <template #titleBarLeft>
-      <n-icon v-if="settingsStore.showStyleEditor" size="20"><PaintBrush20Regular /></n-icon
-      >&nbsp;Style Editor
+      <n-icon size="20"><PaintBrush20Regular /></n-icon>&nbsp;Style Editor
     </template>
     <template #titleBarRightControls>
       <button
@@ -380,7 +379,7 @@ export default defineComponent({
       </button>
     </template>
 
-    <transition name="fade">
+    <transition name="mc-fade">
       <div v-show="errorTip" class="code-error-tip font-code" @click="handleErrorTipClick">
         {{ errorTip?.message }}
       </div>

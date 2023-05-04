@@ -10,7 +10,7 @@ import {
   elementCustomPropsMap,
   updateHtmlElement,
 } from '@/components/PageCraft/MainCanvas/element-edit'
-import {LineHelper2} from '@/utils/line-helper2'
+import {LineHelper} from '@/utils/line-helper'
 import {loadComponentHtml, loadComponentStyle} from '@/hooks/use-component-storage'
 import {NButton} from 'naive-ui'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
@@ -47,7 +47,7 @@ export const useInteractionHooks = (options) => {
     mainCanvasRef.value.addEventListener('pointerdown', handlePointerDown)
     mainCanvasRef.value.addEventListener('pointerup', handlePointerUp)
 
-    lineHelper.value = new LineHelper2(mainCanvasRef.value)
+    lineHelper.value = new LineHelper(mainCanvasRef.value)
   })
   onBeforeUnmount(() => {
     mainCanvasRef.value.removeEventListener('mousemove', handleMouseMove)

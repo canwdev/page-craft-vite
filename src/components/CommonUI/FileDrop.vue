@@ -28,7 +28,7 @@ export default defineComponent({
     @dragleave.prevent.stop="showDropzone = false"
     @drop.prevent.stop="fileDrop"
   >
-    <transition name="fade">
+    <transition name="mc-fade">
       <DropZone v-show="showDropzone" />
     </transition>
   </div>

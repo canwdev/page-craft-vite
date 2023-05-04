@@ -150,7 +150,8 @@ export class WindowController {
 
     dragHandleEl.addEventListener('mousedown', this.handleDragStart)
     this.updateZIndex = this.updateZIndex.bind(this)
-    dragTargetEl.addEventListener('click', this.updateZIndex)
+    dragTargetEl.addEventListener('mousedown', this.updateZIndex)
+    this.updateZIndex()
 
     this.handleResizeStart = this.handleResizeStart.bind(this)
     this.handleResizeMove = this.handleResizeMove.bind(this)
@@ -169,7 +170,7 @@ export class WindowController {
   destroy() {
     const {dragTargetEl, dragHandleEl, autoPosOnResize, resizeable} = this.options
     dragHandleEl.removeEventListener('mousedown', this.handleDragStart)
-    dragTargetEl.removeEventListener('click', this.updateZIndex)
+    dragTargetEl.removeEventListener('mousedown', this.updateZIndex)
 
     if (autoPosOnResize) {
       window.addEventListener('resize', this.handleResizeDebounced)
@@ -369,20 +370,32 @@ export class WindowController {
   }
 
   updateZIndex() {
+    if (!this.allowMove) {
+      return
+    }
     const {dragTargetEl} = this.options
-    const fixedElements = document.querySelectorAll('.vp-window._allowMove')
+    const fixedElements = document.querySelectorAll('.vp-window')
     // 获取当前元素的 z-index
     const maxZIndex = Math.max(
       ...Array.from(fixedElements).map((elem) => {
+        const val = getComputedStyle(elem)['z-index']
         // @ts-ignore
-        return parseInt(getComputedStyle(elem)['z-index'])
+        return parseInt(val) || 0
       })
     )
-
-    console.log('fixedElements', fixedElements)
-    console.log('maxZIndex', maxZIndex)
+    // console.log('maxZIndex', maxZIndex)
 
     // 将当前元素的 z-index 设置为最大值
-    dragTargetEl.style.zIndex = String(maxZIndex + 1)
+    dragTargetEl.style.zIndex = String(maxZIndex)
+    dragTargetEl.classList.add('_active')
+
+    // 将其它 fixed-element 元素的 z-index 设置为比它小的值
+    Array.from(fixedElements).forEach((elem) => {
+      if (elem !== dragTargetEl) {
+        // @ts-ignore
+        elem.style.zIndex = parseInt(getComputedStyle(elem)['z-index']) - 1
+        elem.classList.remove('_active')
+      }
+    })
   }
 }

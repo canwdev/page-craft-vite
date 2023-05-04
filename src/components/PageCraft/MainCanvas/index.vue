@@ -128,7 +128,7 @@ export default defineComponent({
   <div class="page-craft-mc-wrap">
     <IndicatorInfo :current-el="currentHoveredEl" v-if="currentHoveredEl !== mainCanvasRef" />
 
-    <transition name="fade">
+    <transition name="mc-fade">
       <div
         class="selection-action"
         v-if="isShowSelectionAction"

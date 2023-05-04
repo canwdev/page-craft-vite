@@ -387,10 +387,10 @@ export default defineComponent({
     left: 0 !important;
     right: 0 !important;
     top: unset !important;
-    bottom: 88px !important;
+    bottom: 86px !important;
     width: auto !important;
     &._topLayout {
-      top: 88px !important;
+      top: 86px !important;
       bottom: unset !important;
     }
     transition: all 0.3s;
