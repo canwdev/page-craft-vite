@@ -90,7 +90,7 @@ export const appendCustomBlock = async (block: BlockItem, event, addOptions, mai
       }
       targetEl.parentNode.removeChild(targetEl)
     } else if (block.actionType === ActionType.SELECTION) {
-      globalEventBus.emit(GlobalEvents.ON_NODE_SELECT, targetEl)
+      globalEventBus.emit(GlobalEvents.ON_ADD_STYLE, {el: targetEl})
       return
     }
   } else if (block.blockType === BlockType.HTML_ELEMENT) {

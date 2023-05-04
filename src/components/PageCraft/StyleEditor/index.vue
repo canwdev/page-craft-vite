@@ -149,13 +149,13 @@ export default defineComponent({
 
       handleUpdateStyle(style, false)
 
-      globalEventBus.on(GlobalEvents.ON_NODE_SELECT, handleNodeSelect)
+      globalEventBus.on(GlobalEvents.ON_ADD_STYLE, handleAddStyle)
       globalEventBus.on(GlobalEvents.IMPORT_SUCCESS, reloadStyle)
     })
 
     onBeforeUnmount(() => {
       editorInstance.value.dispose()
-      globalEventBus.off(GlobalEvents.ON_NODE_SELECT, handleNodeSelect)
+      globalEventBus.off(GlobalEvents.ON_ADD_STYLE, handleAddStyle)
       globalEventBus.off(GlobalEvents.IMPORT_SUCCESS, reloadStyle)
     })
 
@@ -244,16 +244,32 @@ export default defineComponent({
       craftStore.isSelectMode = false
       backupBlock.value = null
     }
-    const handleNodeSelect = (el) => {
+    const handleAddStyle = ({el, code, isAppend = false}) => {
       nextTick(() => {
-        let className = suggestElementClass(el)
-        // console.log('[handleNodeSelect]', className)
-        insertStyleCode(`\n${className} {\n\n}\n`)
+        if (el) {
+          let className = suggestElementClass(el)
+          code = `\n${className} {\n\n}\n`
+        }
+        // console.log('[handleAddStyle]', className)
+        insertStyleCode(code, isAppend)
       })
       exitSelectMode()
     }
 
-    const insertStyleCode = (code) => {
+    const insertStyleCode = (code, isAppend = false) => {
+      if (isAppend) {
+        let currentPosition = editorInstance.value.getModel().getLineCount()
+        currentPosition += 1
+        editorInstance.value.executeEdits('', [
+          {
+            range: new monaco.Range(currentPosition, 1, currentPosition, 1),
+            text: code,
+            forceMoveMarkers: false,
+          },
+        ])
+        return
+      }
+
       const selection = editorInstance.value.getSelection()
       editorInstance.value.executeEdits('', [
         {

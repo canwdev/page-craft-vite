@@ -291,7 +291,8 @@ export default defineComponent({
 </script>
 
 <template>
-  <PopWindow v-if="mVisible" />
+  <!-- TODO: 改为弹窗预览 -->
+  <!--  <PopWindow v-if="mVisible" />-->
 
   <n-dropdown
     v-if="mVisible"

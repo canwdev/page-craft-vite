@@ -6,7 +6,7 @@ const globalEventBus = mitt()
 export default globalEventBus
 
 export const GlobalEvents = {
-  ON_NODE_SELECT: 'ON_NODE_SELECT',
+  ON_ADD_STYLE: 'ON_ADD_STYLE',
   IMPORT_SUCCESS: 'IMPORT_SUCCESS',
   SYNC_STORAGE_DATA: 'SYNC_STORAGE_DATA',
   ON_COMP_HOVER: 'ON_COMP_HOVER',

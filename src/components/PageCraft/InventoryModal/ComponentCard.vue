@@ -85,6 +85,9 @@ export default defineComponent({
       isCrate,
       handleMouseMove,
       handleMouseLeave,
+      handleDragStart(event) {
+        event.dataTransfer.setData('data-block', JSON.stringify(item.value))
+      },
     }
   },
 })
@@ -100,6 +103,8 @@ export default defineComponent({
     @contextmenu="$emit('contextmenu', $event, item)"
     @mousemove="handleMouseMove"
     @mouseleave="handleMouseLeave"
+    draggable="true"
+    @dragstart="handleDragStart"
   >
     <div class="action-menu">
       <slot name="actionMenu" :item="item"></slot>

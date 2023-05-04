@@ -33,13 +33,22 @@ export default defineComponent({
       craftStore,
       isActive,
       color,
+      handleDragStart(event) {
+        event.dataTransfer.setData('data-block', JSON.stringify(item.value))
+      },
     }
   },
 })
 </script>
 
 <template>
-  <div :class="{active: isActive}" class="tool-item font-code" :title="item.title">
+  <div
+    :class="{active: isActive}"
+    class="tool-item font-code"
+    :title="item.title"
+    draggable="true"
+    @dragstart="handleDragStart"
+  >
     <div
       :style="{
         backgroundColor: color,

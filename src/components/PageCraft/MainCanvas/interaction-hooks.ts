@@ -11,6 +11,9 @@ import {
   updateHtmlElement,
 } from '@/components/PageCraft/MainCanvas/element-edit'
 import {LineHelper2} from '@/utils/line-helper2'
+import {loadComponentHtml, loadComponentStyle} from '@/hooks/use-component-storage'
+import {NButton} from 'naive-ui'
+import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 
 export const removeMouseOverDomElementEffect = () => {
   const $el = $(TOOL_CLASSES.DOT_CLASS_MOUSE_OVER)
@@ -131,9 +134,12 @@ export const useInteractionHooks = (options) => {
     })),
   ]
 
-  const pasteHtml = async (targetEl, position = 'beforeend') => {
+  const pasteHtml = async (targetEl, position = 'beforeend', text?) => {
     recordUndo()
-    const text = await navigator.clipboard.readText()
+
+    if (!text) {
+      text = await navigator.clipboard.readText()
+    }
     targetEl.insertAdjacentHTML(
       <'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend'>position,
       text
@@ -147,9 +153,12 @@ export const useInteractionHooks = (options) => {
     saveData()
   }
 
-  const insertCurrentBlock = (targetEl, position = 'append') => {
+  const insertCurrentBlock = (targetEl, position = 'append', el?) => {
     recordUndo()
-    targetEl[<any>position](createBlockElement(craftStore.currentBlock, craftStore))
+    if (!el) {
+      el = createBlockElement(craftStore.currentBlock, craftStore)
+    }
+    targetEl[<any>position](el)
     saveData()
   }
 
@@ -402,36 +411,73 @@ export const useInteractionHooks = (options) => {
   const handleDrop = async (event) => {
     lineHelper.value.hideLine()
 
-    const block = JSON.parse(event.dataTransfer.getData('data-block'))
-    console.log(block)
-    if (block.blockType !== BlockType.HTML_ELEMENT) {
+    const transferData = event.dataTransfer.getData('data-block')
+
+    if (!transferData) {
+      console.warn('drag item must be a block', event)
       return
     }
-    recordUndo()
 
+    const block = JSON.parse(transferData)
     let targetEl = event.target || mainCanvasRef.value
-
-    const addEl = createBlockElement(block, craftStore)
-
     const currentPosition = lineHelper.value.currentPosition
-    if (currentPosition === 'top') {
-      targetEl.before(addEl)
-    } else if (currentPosition === 'bottom') {
-      targetEl.after(addEl)
+
+    if (block.blockType === BlockType.COMPONENT) {
+      // console.log(block)
+      recordUndo()
+      const html = loadComponentHtml(block.title)
+      if (currentPosition === 'top') {
+        await pasteHtml(targetEl, 'beforebegin', html)
+      } else if (currentPosition === 'bottom') {
+        await pasteHtml(targetEl, 'afterend', html)
+      } else {
+        await pasteHtml(targetEl, 'beforeend', html)
+      }
+      saveData()
+
+      const n = window.$notification.create({
+        title: `Insert at ${currentPosition}`,
+        content: `Component insert complete`,
+        meta: block.title,
+        duration: 4000,
+        action: () =>
+          h(
+            NButton,
+            {
+              text: true,
+              type: 'primary',
+              onClick: () => {
+                const code = loadComponentStyle(block.title)
+                globalEventBus.emit(GlobalEvents.ON_ADD_STYLE, {code, isAppend: true})
+                n.destroy()
+              },
+            },
+            {
+              default: () => 'Append Style',
+            }
+          ),
+      })
+    } else if (block.blockType === BlockType.HTML_ELEMENT) {
+      const addEl = createBlockElement(block, craftStore)
+      if (currentPosition === 'top') {
+        insertCurrentBlock(targetEl, 'before', addEl)
+      } else if (currentPosition === 'bottom') {
+        insertCurrentBlock(targetEl, 'after', addEl)
+      } else {
+        insertCurrentBlock(targetEl, 'appendChild', addEl)
+      }
+      // afterUpdateCallback.value = () => {
+      //   targetEl.appendChild(addEl)
+      // }
+      //
+      // nextTick(() => {
+      //   editingNode.value = addEl
+      //   isShowElementEdit.value = true
+      // })
     } else {
-      targetEl.appendChild(addEl)
+      console.warn('block is unable to insert', block)
+      return
     }
-
-    // afterUpdateCallback.value = () => {
-    //   targetEl.appendChild(addEl)
-    // }
-    //
-    // nextTick(() => {
-    //   editingNode.value = addEl
-    //   isShowElementEdit.value = true
-    // })
-
-    saveData()
   }
 
   const updateEditingElement = ({el, formValueRef}) => {
