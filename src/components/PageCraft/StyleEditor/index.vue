@@ -18,7 +18,7 @@ import {
 } from '@/enum/page-craft/styles'
 import {formatCss} from '@/utils/formater'
 import {useCompStorage} from '@/hooks/use-component-storage'
-import ViewportWindow from '@/components/CommonUI/ViewportWindow.vue'
+import VpWindow from '@/components/CommonUI/VpWindow.vue'
 
 // import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
 import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
@@ -66,7 +66,7 @@ export default defineComponent({
     },
   },
   components: {
-    ViewportWindow,
+    VpWindow,
     CursorHover20Regular,
     CursorClick20Regular,
     Dismiss20Regular,
@@ -344,17 +344,17 @@ export default defineComponent({
 </script>
 
 <template>
-  <ViewportWindow
+  <VpWindow
     class="style-editor-dialog"
     v-model:visible="mVisible"
     @resize="editorInstance.layout()"
-    :class="{_aero: settingsStore.enableAeroTheme}"
+    wid="style_editor"
   >
     <template #titleBarLeft>
       <n-icon v-if="settingsStore.showStyleEditor" size="20"><PaintBrush20Regular /></n-icon
       >&nbsp;Style Editor
     </template>
-    <template #titleBarRight>
+    <template #titleBarRightControls>
       <button
         title="Select an element in the page to generate its CSS Selector"
         :class="{active: craftStore.isSelectMode}"
@@ -378,29 +378,22 @@ export default defineComponent({
       <button title="Copy code" @click="copyStyle">
         <n-icon size="20"><Copy20Regular /></n-icon>
       </button>
-
-      <button title="Close" @click="mVisible = false" class="_danger">
-        <n-icon size="20"><Dismiss20Regular /></n-icon>
-      </button>
     </template>
 
-    <template #main>
-      <transition name="fade">
-        <div v-show="errorTip" class="code-error-tip font-code" @click="handleErrorTipClick">
-          {{ errorTip?.message }}
-        </div>
-      </transition>
+    <transition name="fade">
+      <div v-show="errorTip" class="code-error-tip font-code" @click="handleErrorTipClick">
+        {{ errorTip?.message }}
+      </div>
+    </transition>
 
-      <div ref="editorContainerRef" class="code-editor-placeholder" />
-    </template>
-  </ViewportWindow>
+    <div ref="editorContainerRef" class="code-editor-placeholder" />
+  </VpWindow>
 </template>
 
 <style lang="scss" scoped>
 .style-editor-dialog {
   min-width: 400px;
   min-height: 200px;
-  position: fixed;
   z-index: 1000;
   top: 30%;
   left: 30%;

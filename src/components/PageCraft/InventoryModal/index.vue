@@ -15,29 +15,32 @@ import {useCraftStore} from '@/store/craft'
 import {useCompImportExport, useCompStorage} from '@/hooks/use-component-storage'
 import FileChooser from '@/components/CommonUI/FileChooser.vue'
 import {colorHash} from '@/utils'
-import PopWindow from '@/components/PageCraft/DomPreview/PopWindow.vue'
 import {useContextMenu} from '@/hooks/use-context-menu'
 import {useInitComponents} from '@/hooks/use-init'
 import {useSettingsStore} from '@/store/settings'
 import {
   Dismiss20Regular,
-  ArrowMaximize16Regular,
-  ArrowMinimize16Regular,
+  Window16Regular,
+  WindowArrowUp16Regular,
   Diversity20Regular,
+  MoreHorizontal20Regular,
 } from '@vicons/fluent'
+import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
+import VpWindow from '@/components/CommonUI/VpWindow.vue'
 
 let idx = 1
 
 export default defineComponent({
   name: 'InventoryModal',
   components: {
+    VpWindow,
     InventoryList,
     FileChooser,
-    PopWindow,
     Dismiss20Regular,
-    ArrowMaximize16Regular,
-    ArrowMinimize16Regular,
+    Window16Regular,
+    WindowArrowUp16Regular,
     Diversity20Regular,
+    MoreHorizontal20Regular,
   },
   props: {
     visible: {
@@ -52,8 +55,6 @@ export default defineComponent({
     const settingsStore = useSettingsStore()
 
     const {clearCompStorage, renameCompStorage, copyCompStorage} = useCompStorage()
-
-    const isMinHeight = ref(false)
 
     const handleItemClick = (item: BlockItem) => {
       craftStore.setCurrentBlock(item)
@@ -205,6 +206,16 @@ export default defineComponent({
         },
       },
       {
+        label: '👀 Preview',
+        props: {
+          onClick: async () => {
+            nodeAction(item, () => {
+              globalEventBus.emit(GlobalEvents.ON_COMP_PREVIEW, {item})
+            })
+          },
+        },
+      },
+      {
         label: '❌ Delete',
         props: {
           onClick: async () => {
@@ -271,7 +282,6 @@ export default defineComponent({
       actionBlockItemList,
       htmlBlockItemList,
       handleItemClick,
-      isMinHeight,
       componentListFormatted,
       handleComponentItemClick,
       componentList,
@@ -292,7 +302,7 @@ export default defineComponent({
 
 <template>
   <!-- TODO: 改为弹窗预览 -->
-  <!--  <PopWindow v-if="mVisible" />-->
+  <!--  <PopFloat v-if="mVisible" />-->
 
   <n-dropdown
     v-if="mVisible"
@@ -306,98 +316,91 @@ export default defineComponent({
     key-field="label"
     :on-clickoutside="handleClickOutside"
   />
+  <VpWindow
+    class="inventory-modal"
+    v-model:visible="mVisible"
+    wid="inv"
+    :class="{
+      _topLayout: settingsStore.enableTopLayout,
+      _isAttached: settingsStore.isInvAttached,
+    }"
+    :allow-move="!settingsStore.isInvAttached"
+  >
+    <template #titleBarLeft>
+      <n-icon size="20"><Diversity20Regular /></n-icon>&nbsp;Inventory List
+    </template>
+    <template #titleBarRightControls>
+      <button @click="settingsStore.isInvAttached = !settingsStore.isInvAttached">
+        <n-icon size="16">
+          <Window16Regular v-if="settingsStore.isInvAttached" />
+          <WindowArrowUp16Regular v-else />
+        </n-icon>
+      </button>
+    </template>
 
-  <transition name="zoom">
-    <div
-      class="inventory-modal page-craft-window"
-      v-show="mVisible"
-      :class="{
-        _dark: craftStore.isAppDarkMode,
-        _topLayout: settingsStore.enableTopLayout,
-        _blur: settingsStore.enableAeroTheme,
-        _rounded: settingsStore.enableRoundedTheme,
-        _thin: !settingsStore.enableRoundedTheme,
-      }"
+    <n-tabs
+      v-model:value="settingsStore.inventoryTab"
+      size="small"
+      type="segment"
+      animated
+      style="height: 100%"
     >
-      <div class="page-craft-window-content">
-        <div ref="titleBarRef" class="page-craft-title-bar">
-          <div
-            class="page-craft-title-bar-text"
-            style="display: flex; align-items: center; height: 14px"
-          >
-            <n-icon v-if="settingsStore.showInventory" size="20"><Diversity20Regular /></n-icon
-            >&nbsp;Inventory List
-          </div>
+      <n-tab-pane :name="BlockType.HTML_ELEMENT" tab="Blocks">
+        <InventoryList
+          :item-list="[...actionBlockItemList, ...htmlBlockItemList]"
+          @onItemClick="(v) => $emit('onItemClick', v)"
+        />
+      </n-tab-pane>
+      <n-tab-pane :name="BlockType.COMPONENT" tab="Components">
+        <InventoryList
+          :item-list="componentListFormatted"
+          is-component-block
+          @onItemClick="handleComponentItemClick"
+          @contextmenu="handleContextmenu"
+        >
+          <template #actionMenu="{item}">
+            <n-dropdown
+              :options="getMenuOptions(item)"
+              key-field="label"
+              placement="bottom-start"
+              trigger="click"
+            >
+              <n-button quaternary size="tiny" style="min-width: 10px" @click.stop>
+                <n-icon size="20"> <MoreHorizontal20Regular /></n-icon>
+              </n-button>
+            </n-dropdown>
+          </template>
+        </InventoryList>
+      </n-tab-pane>
+    </n-tabs>
 
-          <div ref="titleBarButtonsRef" class="page-craft-window-controls">
-            <button @click="isMinHeight = !isMinHeight">
-              <n-icon size="16">
-                <ArrowMaximize16Regular v-if="isMinHeight" />
-                <ArrowMinimize16Regular v-else />
-              </n-icon>
-            </button>
-
-            <button title="Close" @click="mVisible = false" class="_danger">
-              <n-icon size="20"><Dismiss20Regular /></n-icon>
-            </button>
-          </div>
-        </div>
-
-        <div class="page-craft-window-body _bg">
-          <n-tabs v-model:value="settingsStore.inventoryTab" size="small" type="segment" animated>
-            <n-tab-pane :name="BlockType.HTML_ELEMENT" tab="Blocks">
-              <InventoryList
-                :item-list="[...actionBlockItemList, ...htmlBlockItemList]"
-                @onItemClick="(v) => $emit('onItemClick', v)"
-                :is-min-height="isMinHeight"
-              />
-            </n-tab-pane>
-            <n-tab-pane :name="BlockType.COMPONENT" tab="Components">
-              <InventoryList
-                :item-list="componentListFormatted"
-                is-component-block
-                :is-min-height="isMinHeight"
-                @onItemClick="handleComponentItemClick"
-                @contextmenu="handleContextmenu"
-              >
-                <template #actionMenu="{item}">
-                  <n-dropdown
-                    :options="getMenuOptions(item)"
-                    key-field="label"
-                    placement="bottom-start"
-                    trigger="click"
-                  >
-                    <n-button size="tiny" style="min-width: 10px" @click.stop>...</n-button>
-                  </n-dropdown>
-                </template>
-              </InventoryList>
-            </n-tab-pane>
-          </n-tabs>
-        </div>
-      </div>
-
-      <FileChooser
-        ref="importFileChooserRef"
-        accept="application/JSON"
-        @selected="handleImportAll"
-      />
-    </div>
-  </transition>
+    <FileChooser ref="importFileChooserRef" accept="application/JSON" @selected="handleImportAll" />
+  </VpWindow>
 </template>
 
 <style lang="scss" scoped>
 .inventory-modal {
-  position: absolute;
-  bottom: 88px;
-  left: 0;
-  right: 0;
-
-  &._topLayout {
-    top: 88px;
-    bottom: unset;
+  height: 40vh;
+  min-height: 200px;
+  &._isAttached {
+    position: absolute !important;
+    left: 0 !important;
+    right: 0 !important;
+    top: unset !important;
+    bottom: 88px !important;
+    width: auto !important;
+    &._topLayout {
+      top: 88px !important;
+      bottom: unset !important;
+    }
+    transition: all 0.3s;
   }
   :deep(.n-tab-pane) {
     padding-top: 0;
+    height: 100%;
+  }
+  :deep(.n-tabs-pane-wrapper) {
+    flex: 1;
   }
 }
 </style>

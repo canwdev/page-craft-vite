@@ -112,6 +112,7 @@ export class WindowController {
   private readonly handleResizeDebounced: any
   private prevRect: DOMRect
   private currentResizeDirection: string | null
+  private allowMove: boolean
 
   constructor(options: DraggableOptions) {
     const {dragHandleEl, dragTargetEl, onMove, autoPosOnResize} = options
@@ -121,6 +122,7 @@ export class WindowController {
     this.docEl = document.documentElement
     this.deltaX = 0
     this.deltaY = 0
+    this.allowMove = true
 
     this.handleDragStart = this.handleDragStart.bind(this)
     this.handleDragMove = this.handleDragMove.bind(this)
@@ -147,6 +149,8 @@ export class WindowController {
     }
 
     dragHandleEl.addEventListener('mousedown', this.handleDragStart)
+    this.updateZIndex = this.updateZIndex.bind(this)
+    dragTargetEl.addEventListener('click', this.updateZIndex)
 
     this.handleResizeStart = this.handleResizeStart.bind(this)
     this.handleResizeMove = this.handleResizeMove.bind(this)
@@ -162,7 +166,28 @@ export class WindowController {
     this.debugLog('initialized', this)
   }
 
+  destroy() {
+    const {dragTargetEl, dragHandleEl, autoPosOnResize, resizeable} = this.options
+    dragHandleEl.removeEventListener('mousedown', this.handleDragStart)
+    dragTargetEl.removeEventListener('click', this.updateZIndex)
+
+    if (autoPosOnResize) {
+      window.addEventListener('resize', this.handleResizeDebounced)
+    }
+    if (resizeable) {
+      const node = dragTargetEl.querySelector(ClassNames.RESIZE_HANDLE)
+      if (node) {
+        dragTargetEl.removeChild(node)
+      }
+    }
+
+    this.debugLog('destroyed')
+  }
+
   handleDragStart(event: MouseEvent) {
+    if (!this.allowMove) {
+      return
+    }
     const {docEl} = this
 
     const {preventNode, dragTargetEl} = this.options
@@ -337,25 +362,27 @@ export class WindowController {
     return {left, top}
   }
 
-  destroy() {
-    const {dragTargetEl, dragHandleEl, autoPosOnResize, resizeable} = this.options
-    dragHandleEl.removeEventListener('mousedown', this.handleDragStart)
-    if (autoPosOnResize) {
-      window.addEventListener('resize', this.handleResizeDebounced)
-    }
-    if (resizeable) {
-      const node = dragTargetEl.querySelector(ClassNames.RESIZE_HANDLE)
-      if (node) {
-        dragTargetEl.removeChild(node)
-      }
-    }
-
-    this.debugLog('destroyed')
-  }
-
   debugLog(message, ...args) {
     if (this.options.isDebug) {
       console.log(`[draggableWindow] ${message}`, ...args)
     }
+  }
+
+  updateZIndex() {
+    const {dragTargetEl} = this.options
+    const fixedElements = document.querySelectorAll('.vp-window._allowMove')
+    // 获取当前元素的 z-index
+    const maxZIndex = Math.max(
+      ...Array.from(fixedElements).map((elem) => {
+        // @ts-ignore
+        return parseInt(getComputedStyle(elem)['z-index'])
+      })
+    )
+
+    console.log('fixedElements', fixedElements)
+    console.log('maxZIndex', maxZIndex)
+
+    // 将当前元素的 z-index 设置为最大值
+    dragTargetEl.style.zIndex = String(maxZIndex + 1)
   }
 }

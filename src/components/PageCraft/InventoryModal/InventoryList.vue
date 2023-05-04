@@ -23,10 +23,6 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
-    isMinHeight: {
-      type: Boolean,
-      default: false,
-    },
     isComponentBlock: {
       type: Boolean,
       default: false,
@@ -53,7 +49,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="inventory-list-wrap" :class="{'_min-height': isMinHeight}">
+  <div class="inventory-list-wrap">
     <div class="filter-row" v-if="showFilter">
       <n-input v-model:value="filterText" clearable placeholder="Filter Items" size="tiny">
         <template #prefix>
@@ -86,16 +82,13 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .inventory-list-wrap {
-  height: 40vh;
+  height: 100%;
   min-height: 100px;
   transition: height 0.3s;
   display: flex;
   flex-direction: column;
   overflow: hidden;
 
-  &._min-height {
-    height: 150px;
-  }
   .filter-row {
     .n-input {
       border-radius: 0;
@@ -106,12 +99,13 @@ export default defineComponent({
     overflow: auto;
     padding: 10px;
     display: grid;
-    //grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
-    grid-template-columns: repeat(12, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+    //grid-template-columns: repeat(12, 1fr);
     grid-template-rows: auto;
     gap: 10px;
     &._big {
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      //grid-template-columns: repeat(4, 1fr);
       gap: 20px 10px;
     }
   }

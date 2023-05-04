@@ -3,9 +3,9 @@ import {defineComponent, shallowRef} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {WindowController} from '@/utils/window-controller'
 import {throttle} from 'throttle-debounce'
-import {LsKeys} from '@/enum/page-craft'
 import {useCraftStore} from '@/store/craft'
 import {useSettingsStore} from '@/store/settings'
+import {Dismiss20Regular} from '@vicons/fluent'
 
 type StyleEditorOptions = {
   wTop: string
@@ -13,17 +13,33 @@ type StyleEditorOptions = {
   wWidth: string
   wHeight: string
 }
+const LS_KEY_VP_WINDOW_OPTION = 'page_craft_vp_window'
 
 export default defineComponent({
   name: 'ViewportWindow',
+  components: {Dismiss20Regular},
   props: {
     visible: {
       type: Boolean,
       default: false,
     },
+    allowMove: {
+      type: Boolean,
+      default: true,
+    },
+    wid: {
+      type: [Number, String],
+      default: 0,
+    },
+    transitionName: {
+      type: String,
+      default: 'zoom',
+    },
   },
   emits: ['update:visible', 'resize'],
   setup(props, {emit}) {
+    const {allowMove} = toRefs(props)
+    const storageKey = LS_KEY_VP_WINDOW_OPTION + '_' + props.wid
     const mVisible = useModelWrapper(props, emit, 'visible')
     const dialogRef = ref()
     const titleBarRef = ref()
@@ -32,8 +48,8 @@ export default defineComponent({
     const craftStore = useCraftStore()
     const settingsStore = useSettingsStore()
 
-    const styleEditorOptions = reactive<StyleEditorOptions>(
-      JSON.parse(localStorage.getItem(LsKeys.STYLE_EDITOR_OPTIONS) || 'null') || {
+    const winOptions = reactive<StyleEditorOptions>(
+      JSON.parse(localStorage.getItem(storageKey) || 'null') || {
         wTop: '100px',
         wLeft: '100px',
         wWidth: '300px',
@@ -41,12 +57,16 @@ export default defineComponent({
       }
     )
     watch(
-      styleEditorOptions,
+      winOptions,
       () => {
-        localStorage.setItem(LsKeys.STYLE_EDITOR_OPTIONS, JSON.stringify({...styleEditorOptions}))
+        localStorage.setItem(storageKey, JSON.stringify({...winOptions}))
       },
       {deep: true}
     )
+
+    watch(allowMove, (val) => {
+      dWindow.value.allowMove = val
+    })
 
     onMounted(() => {
       dWindow.value = new WindowController({
@@ -62,6 +82,7 @@ export default defineComponent({
         isDebug: true,
         resizeable: true,
       })
+      dWindow.value.allowMove = allowMove.value
 
       new ResizeObserver(() => {
         handleResizeDebounced()
@@ -71,16 +92,16 @@ export default defineComponent({
     })
 
     const initDialogStyle = () => {
-      dialogRef.value.style.top = styleEditorOptions.wTop
-      dialogRef.value.style.left = styleEditorOptions.wLeft
+      dialogRef.value.style.top = winOptions.wTop
+      dialogRef.value.style.left = winOptions.wLeft
 
-      dialogRef.value.style.width = styleEditorOptions.wWidth
-      dialogRef.value.style.height = styleEditorOptions.wHeight
+      dialogRef.value.style.width = winOptions.wWidth
+      dialogRef.value.style.height = winOptions.wHeight
     }
 
     const handleMoveDebounced = throttle(500, false, ({top, left}) => {
-      styleEditorOptions.wTop = top
-      styleEditorOptions.wLeft = left
+      winOptions.wTop = top
+      winOptions.wLeft = left
     })
 
     const handleResizeDebounced = throttle(50, false, () => {
@@ -92,8 +113,8 @@ export default defineComponent({
 
       emit('resize')
 
-      styleEditorOptions.wWidth = width + 'px'
-      styleEditorOptions.wHeight = height + 'px'
+      winOptions.wWidth = width + 'px'
+      winOptions.wHeight = height + 'px'
     })
 
     onBeforeUnmount(() => {
@@ -115,19 +136,21 @@ export default defineComponent({
 </script>
 
 <template>
-  <transition name="none">
+  <transition :name="transitionName">
     <div
       v-show="mVisible"
-      class="page-craft-window"
+      class="vp-window"
       :class="{
+        _allowMove: allowMove,
         _dark: craftStore.isAppDarkMode,
         _blur: settingsStore.enableAeroTheme,
         _rounded: settingsStore.enableRoundedTheme,
         _thin: !settingsStore.enableRoundedTheme,
+        _aero: settingsStore.enableAeroTheme,
       }"
       ref="dialogRef"
     >
-      <div class="page-craft-window-content">
+      <div class="vp-window-content">
         <div ref="titleBarRef" class="page-craft-title-bar">
           <div
             class="page-craft-title-bar-text"
@@ -135,17 +158,18 @@ export default defineComponent({
           >
             <slot name="titleBarLeft"></slot>
           </div>
-          <div ref="titleBarButtonsRef" class="page-craft-window-controls">
+          <div ref="titleBarButtonsRef" class="vp-window-controls">
+            <slot name="titleBarRightControls"> </slot>
             <slot name="titleBarRight">
-              <button title="Close" @click="mVisible = false">
-                <img src="~@/assets/textures/barrier.png" alt="close" />
+              <button title="Close" @click="mVisible = false" class="_danger">
+                <n-icon size="20"><Dismiss20Regular /></n-icon>
               </button>
             </slot>
           </div>
         </div>
 
-        <div class="page-craft-window-body _bg">
-          <slot name="main"></slot>
+        <div class="vp-window-body _bg _scrollbar_mini">
+          <slot></slot>
         </div>
       </div>
     </div>
@@ -153,13 +177,19 @@ export default defineComponent({
 </template>
 
 <style lang="scss">
-.page-craft-window {
+.vp-window {
   box-shadow: 0 1px 10px rgba(0, 0, 0, 0.27), inset 0 0 1px 1px rgba(255, 255, 255, 0.2);
   border: 1px solid rgba(0, 0, 0, 0.5);
   padding: 0 6px 5px;
   background: rgba(255, 255, 255, 0.8);
+  &._allowMove {
+    position: fixed;
+    z-index: 100;
+    top: 100px;
+    left: 100px;
+  }
 
-  .page-craft-window-content {
+  .vp-window-content {
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -185,7 +215,7 @@ export default defineComponent({
         }
       }
     }
-    .page-craft-window-body {
+    .vp-window-body {
       //flex: 1;
       height: calc(100% - 30px);
 
@@ -196,7 +226,7 @@ export default defineComponent({
     }
   }
 
-  .page-craft-window-controls {
+  .vp-window-controls {
     border-radius: 0;
     display: flex;
     align-items: flex-start;
@@ -247,7 +277,7 @@ export default defineComponent({
       padding-right: 0;
     }
 
-    .page-craft-window-controls {
+    .vp-window-controls {
       button {
         border: 0 !important;
         background: none;
@@ -266,7 +296,7 @@ export default defineComponent({
       }
     }
 
-    .page-craft-window-body {
+    .vp-window-body {
       border: 0;
       height: calc(100% - 30px);
     }
@@ -275,12 +305,12 @@ export default defineComponent({
   &._dark {
     background: rgba(0, 0, 0, 0.6);
 
-    .page-craft-window-content {
+    .vp-window-content {
       .page-craft-title-bar {
         color: white;
         text-shadow: 0 0 10px black;
       }
-      .page-craft-window-controls {
+      .vp-window-controls {
         button {
           border: 1px solid rgba(255, 255, 255, 0.2);
 
@@ -299,13 +329,13 @@ export default defineComponent({
         }
       }
     }
-    .page-craft-window-body {
+    .vp-window-body {
       &._bg {
         background-color: rgba(30, 30, 30, 1);
       }
     }
 
-    .page-craft-window-controls {
+    .vp-window-controls {
       border-radius: 0;
       display: flex;
       align-items: flex-start;
@@ -336,7 +366,7 @@ export default defineComponent({
       overflow: hidden;
       border-radius: $radius;
     }
-    .page-craft-window-controls {
+    .vp-window-controls {
       padding-right: 1px;
       button {
         &:first-child {
@@ -347,7 +377,7 @@ export default defineComponent({
         }
       }
     }
-    .page-craft-window-body,
+    .vp-window-body,
     .code-editor-placeholder {
     }
   }
@@ -356,20 +386,20 @@ export default defineComponent({
     backdrop-filter: blur(4px);
     box-shadow: 0px 8.5px 10px rgba(0, 0, 0, 0.115), 0px 68px 80px rgba(0, 0, 0, 0.23),
       inset 0 0 1px 1px rgba(255, 255, 255, 0.2);
-    .page-craft-window-body {
+    .vp-window-body {
       &._bg {
         background-color: rgba(255, 255, 255, 0.5);
       }
     }
     &._dark {
-      .page-craft-window-body {
+      .vp-window-body {
         &._bg {
           background-color: rgba(30, 30, 30, 0.7);
         }
       }
     }
     &._rounded {
-      .page-craft-window-body {
+      .vp-window-body {
         border-bottom-left-radius: $radius;
         border-bottom-right-radius: $radius;
       }

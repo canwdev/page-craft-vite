@@ -8,10 +8,12 @@ import {useLocalStorageObject} from '@/hooks/use-local-storage'
 import {useRouter} from 'vue-router'
 import {useSettingsStore} from '@/store/settings'
 import {ArrowReset20Regular, Diversity20Regular, Toolbox20Regular} from '@vicons/fluent'
+import PreviewWindow from '@/components/PageCraft/DomPreview/PreviewWindow.vue'
 
 export default defineComponent({
   name: 'BottomToolBar',
   components: {
+    PreviewWindow,
     ToolItem,
     InventoryModal,
     ArrowReset20Regular,
@@ -139,6 +141,8 @@ export default defineComponent({
       },
     ]
 
+    const isShowPreviewDialog = ref(true)
+
     return {
       settingsStore,
       toolbarRef,
@@ -155,6 +159,7 @@ export default defineComponent({
       switchItemsPosition,
       blinkAnimIndex,
       toolsMenuOptions,
+      isShowPreviewDialog,
     }
   },
 })
@@ -171,6 +176,7 @@ export default defineComponent({
       v-model:visible="settingsStore.showInventory"
       @onItemClick="setCurrentToolItem"
     />
+    <PreviewWindow />
     <div
       ref="toolbarRef"
       class="page-craft-enhanced-toolbar page-craft-aero-panel"

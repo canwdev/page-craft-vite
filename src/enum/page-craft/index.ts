@@ -4,7 +4,6 @@ export const LsKeys = {
   MAIN_HTML: 'page_craft_main_html',
   MAIN_STYLE: 'page_craft_main_style',
   INDICATOR_OPTIONS: 'page_craft_indicator_options',
-  STYLE_EDITOR_OPTIONS: 'page_craft_style_editor_options',
   TOOL_BAR_LIST: 'page_craft_tool_bar_list',
   COMPONENT_LIST: 'page_craft_component_list',
 }

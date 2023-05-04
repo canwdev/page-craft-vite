@@ -50,7 +50,9 @@ declare module '@vue/runtime-core' {
     NTabPane: typeof import('naive-ui')['NTabPane']
     NTabs: typeof import('naive-ui')['NTabs']
     NThing: typeof import('naive-ui')['NThing']
+    PopFloat: typeof import('./src/components/PageCraft/DomPreview/PopFloat.vue')['default']
     PopWindow: typeof import('./src/components/PageCraft/DomPreview/PopWindow.vue')['default']
+    PreviewWindow: typeof import('./src/components/PageCraft/DomPreview/PreviewWindow.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     StyleEditor: typeof import('./src/components/PageCraft/StyleEditor/index.vue')['default']
@@ -60,6 +62,7 @@ declare module '@vue/runtime-core' {
     TranslateItem: typeof import('./src/components/VueI18nEditTool/TranslateItem.vue')['default']
     TranslateTreeItem: typeof import('./src/components/VueI18nEditTool/TranslateTreeItem.vue')['default']
     ViewportWindow: typeof import('./src/components/CommonUI/ViewportWindow.vue')['default']
+    VpWindow: typeof import('./src/components/CommonUI/VpWindow.vue')['default']
     VStyle: typeof import('./src/components/PageCraft/DomPreview/VStyle.vue')['default']
   }
 }

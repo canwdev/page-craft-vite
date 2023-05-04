@@ -30,6 +30,7 @@ interface IPageCraftSettings {
   isInitialized: boolean
   showInventory: boolean
   inventoryTab: BlockType
+  isInvAttached: boolean // inventory window attached to tool bar
   showStyleEditor: boolean
   toolbarIndex: number
   toolbarList: BlockItem[]
@@ -47,6 +48,7 @@ export const useSettingsStore = defineStore('settingsStore', {
       isInitialized: false,
       showInventory: false,
       inventoryTab: BlockType.COMPONENT,
+      isInvAttached: true,
       showStyleEditor: false,
       toolbarIndex: 0,
       toolbarList: [],
