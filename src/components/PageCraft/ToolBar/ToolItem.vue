@@ -4,6 +4,7 @@ import {useCraftStore} from '@/store/craft'
 import {BlockItem} from '@/enum/page-craft/block'
 import {colorHash} from '@/utils'
 import {useFileDrop} from '@/hooks/use-file-drop'
+import {useSettingsStore} from '@/store/settings'
 
 export default defineComponent({
   name: 'ToolItem',
@@ -21,6 +22,7 @@ export default defineComponent({
   setup(props, {emit}) {
     const {item} = toRefs(props)
     const craftStore = useCraftStore()
+    const settingsStore = useSettingsStore()
 
     // const isActive = computed(() => {
     //   return item.value.id === craftStore.currentBlock.id
@@ -32,6 +34,7 @@ export default defineComponent({
     })
     return {
       craftStore,
+      settingsStore,
       color,
       showDropzone,
       onDragover(e) {
@@ -48,7 +51,7 @@ export default defineComponent({
 
 <template>
   <div
-    :class="{active, blink: showDropzone}"
+    :class="{active, blink: showDropzone, _rounded: settingsStore.enableRoundedTheme}"
     class="tool-item _mini font-code"
     :title="item.title"
     draggable="true"

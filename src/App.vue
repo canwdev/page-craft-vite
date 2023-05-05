@@ -2,17 +2,28 @@
 import {darkTheme, GlobalThemeOverrides} from 'naive-ui'
 import {useGlobalTheme} from '@/hooks/use-global-theme'
 import AppSub from '@/AppSub.vue'
+import {useSettingsStore} from '@/store/settings'
 export default defineComponent({
   components: {
     AppSub,
   },
   setup() {
-    const themeOverrides: GlobalThemeOverrides = {
-      common: {
-        borderRadiusSmall: '2px',
-        borderRadius: '4px',
-      },
-    }
+    const settingsStore = useSettingsStore()
+
+    // GlobalThemeOverrides
+    const themeOverrides = computed<GlobalThemeOverrides>(() => {
+      return {
+        common: settingsStore.enableRoundedTheme
+          ? {
+              borderRadiusSmall: '2px',
+              borderRadius: '4px',
+            }
+          : {
+              borderRadiusSmall: 0,
+              borderRadius: 0,
+            },
+      } as GlobalThemeOverrides
+    })
 
     const {isAppDarkMode} = useGlobalTheme()
 
@@ -53,27 +64,28 @@ export default defineComponent({
   height: 100%;
   width: 100%;
   overflow: hidden;
+  background-color: #f8f8f8;
 
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    pointer-events: none;
-    background-image: url('@/assets/bg/grid-light.png');
-    background-size: 100px;
-    opacity: 0.4;
-  }
+  //&::before {
+  //  content: '';
+  //  position: absolute;
+  //  top: 0;
+  //  left: 0;
+  //  right: 0;
+  //  bottom: 0;
+  //  pointer-events: none;
+  //  background-image: url('@/assets/bg/grid-light.png');
+  //  background-size: 100px;
+  //  opacity: 0.4;
+  //}
   &._dark {
-    background-color: #434343;
+    background-color: #181818;
     background-image: linear-gradient(#434343, #282828);
     //background-color: #5480d3;
     //background-image: linear-gradient(#5480d3, #3256a7);
-    &::before {
-      background-image: url('@/assets/bg/grid.png');
-    }
+    //&::before {
+    //  background-image: url('@/assets/bg/grid.png');
+    //}
     &::after {
       color: white;
       text-shadow: 0 0 2px #000;

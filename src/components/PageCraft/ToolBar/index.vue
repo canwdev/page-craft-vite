@@ -108,7 +108,7 @@ export default defineComponent({
     const router = useRouter()
     const toolsMenuOptions = [
       {
-        label: 'Stylus Format Tool',
+        label: '⚜ Stylus Format Tool',
         props: {
           onClick: async () => {
             emit('openStylusTools')
@@ -116,7 +116,7 @@ export default defineComponent({
         },
       },
       {
-        label: 'Excel Copy Tool',
+        label: '📊 Excel Copy Tool',
         props: {
           onClick: async () => {
             await router.push({name: 'ExcelCopyTool'})
@@ -124,7 +124,7 @@ export default defineComponent({
         },
       },
       {
-        label: 'I18n Edit Tool',
+        label: '🌐 I18n Edit Tool',
         props: {
           onClick: async () => {
             await router.push({name: 'VueI18nEditTool'})
@@ -132,7 +132,7 @@ export default defineComponent({
         },
       },
       {
-        label: 'I18n Batch Tool',
+        label: '🌎 I18n Batch Tool',
         props: {
           onClick: async () => {
             await router.push({name: 'VueI18nBatchTool'})
@@ -228,8 +228,6 @@ export default defineComponent({
             Confirm reset toolbar?
           </n-popconfirm>
 
-          <slot></slot>
-
           <n-button
             style="min-width: 80px"
             size="tiny"
@@ -241,7 +239,10 @@ export default defineComponent({
             Inventory
           </n-button>
 
+          <slot></slot>
+
           <n-dropdown
+            class="font-emoji"
             :options="toolsMenuOptions"
             key-field="label"
             placement="bottom-start"

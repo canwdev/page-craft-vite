@@ -77,6 +77,8 @@ export default defineComponent({
         <BlockItemCard v-else class="list-item" :item="item" @click="$emit('onItemClick', item)" />
       </template>
     </div>
+
+    <slot name="end"></slot>
   </div>
 </template>
 
@@ -88,6 +90,7 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  position: relative;
 
   .filter-row {
     .n-input {

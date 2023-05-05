@@ -8,7 +8,6 @@ export enum ActionType {
   CURSOR = 'CURSOR',
   SELECTION = 'SELECTION',
   DELETE = 'DELETE',
-  ADD_COMPONENT = 'ADD_COMPONENT',
   DEBUG = 'DEBUG',
   PASTE_REPLACE = 'PASTE_REPLACE',
 }
@@ -114,13 +113,6 @@ export const ActionBlockItems = {
     blockType: BlockType.ACTIONS,
     title: '',
     actionType: ActionType.CURSOR,
-  }),
-  ADD_COMPONENT: new BlockItem({
-    blockType: BlockType.ACTIONS,
-    title: 'AddComponent',
-    icon: iconOakSign,
-    actionType: ActionType.ADD_COMPONENT,
-    hidden: true,
   }),
 }
 

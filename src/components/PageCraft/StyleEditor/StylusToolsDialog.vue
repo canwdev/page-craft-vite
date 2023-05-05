@@ -73,7 +73,7 @@ multi-line comment
     <div class="style-tools">
       <div class="common-card">
         <div class="action-row">
-          <n-button type="primary" size="small" @click="doFormat">Format</n-button>
+          <!--          <n-button type="primary" size="small" @click="doFormat">Format</n-button>-->
           <n-button size="small" @click="doClear">Clear</n-button>
           <n-button size="small" @click="showDemo">Demo</n-button>
           <n-a href="https://thisismanta.github.io/stylus-supremacy/#demo" target="_blank"
@@ -85,6 +85,7 @@ multi-line comment
             class="input-text"
             type="textarea"
             v-model:value="styleInput"
+            @input="doFormat"
             placeholder="Input Stylus Code"
           ></n-input>
           <n-input

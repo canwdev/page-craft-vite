@@ -20,6 +20,7 @@ export default defineComponent({
   setup(props) {
     const {item} = toRefs(props)
     const craftStore = useCraftStore()
+    const settingsStore = useSettingsStore()
 
     const isActive = computed(() => {
       return item.value.id === craftStore.currentBlock.id
@@ -31,6 +32,7 @@ export default defineComponent({
 
     return {
       craftStore,
+      settingsStore,
       isActive,
       color,
       handleDragStart(event) {
@@ -43,7 +45,7 @@ export default defineComponent({
 
 <template>
   <div
-    :class="{active: isActive}"
+    :class="{active: isActive, _rounded: settingsStore.enableRoundedTheme}"
     class="tool-item font-code"
     :title="item.title"
     draggable="true"

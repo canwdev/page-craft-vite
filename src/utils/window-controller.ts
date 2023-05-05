@@ -29,7 +29,7 @@ type DraggableOptions = {
   resizeable?: boolean
 }
 
-const RESIZE_BAR_WITH = 5
+const RESIZE_BAR_WITH = 8
 const RESIZE_BAR_HALF_WITH = 2
 
 /**

@@ -37,6 +37,7 @@ import {
   Wand20Regular,
   PaintBrush20Regular,
 } from '@vicons/fluent'
+emmetCSS(monaco, ['css', 'scss'])
 
 self.MonacoEnvironment = {
   // @ts-ignore
@@ -122,7 +123,6 @@ export default defineComponent({
       styleEl.value = createOrFindStyleNode(LsKeys.MAIN_STYLE)
       const style = loadCurCompStyle()
 
-      emmetCSS(monaco, ['css', 'scss'])
       editorInstance.value = monaco.editor.create(editorContainerRef.value, {
         value: style,
         language: 'scss',
@@ -260,15 +260,8 @@ export default defineComponent({
 
     const insertStyleCode = (code, isAppend = false) => {
       if (isAppend) {
-        let currentPosition = editorInstance.value.getModel().getLineCount()
-        currentPosition += 1
-        editorInstance.value.executeEdits('', [
-          {
-            range: new monaco.Range(currentPosition, 1, currentPosition, 1),
-            text: code,
-            forceMoveMarkers: false,
-          },
-        ])
+        const style = loadCurCompStyle()
+        editorInstance.value.setValue(style + '\n' + code)
         return
       }
 
@@ -353,7 +346,7 @@ export default defineComponent({
     wid="style_editor"
   >
     <template #titleBarLeft>
-      <n-icon size="20"><PaintBrush20Regular /></n-icon>&nbsp;Style Editor
+      <n-icon size="20"><PaintBrush20Regular /></n-icon>&nbsp;Style Editor (scss)
     </template>
     <template #titleBarRightControls>
       <button

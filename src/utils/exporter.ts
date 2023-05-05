@@ -115,7 +115,7 @@ export const getFileName = (name?, fallbackPrefix = 'PageCraft') => {
 
 export const handleExportFile = (filename, contentStr, ext) => {
   if (!filename) {
-    return
+    throw new Error('filename is required')
   }
   const blob = new Blob([contentStr], {
     type: 'text/plain;charset=utf-8',

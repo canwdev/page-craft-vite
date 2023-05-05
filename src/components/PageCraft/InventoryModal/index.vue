@@ -24,6 +24,7 @@ import {
   WindowArrowUp16Regular,
   Diversity20Regular,
   MoreHorizontal20Regular,
+  Add24Regular,
 } from '@vicons/fluent'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import VpWindow from '@/components/CommonUI/VpWindow.vue'
@@ -41,6 +42,7 @@ export default defineComponent({
     WindowArrowUp16Regular,
     Diversity20Regular,
     MoreHorizontal20Regular,
+    Add24Regular,
   },
   props: {
     visible: {
@@ -69,15 +71,7 @@ export default defineComponent({
       })
     })
 
-    const componentListFormatted = computed(() => {
-      return [ActionBlockItems.ADD_COMPONENT, ...componentListSorted.value]
-    })
-
     const handleComponentItemClick = (item: BlockItem) => {
-      if (item.actionType === ActionType.ADD_COMPONENT) {
-        handleCreateComponent()
-        return
-      }
       settingsStore.curCompoName = item.title
     }
 
@@ -186,6 +180,16 @@ export default defineComponent({
 
     const getCompMenuOptions = (item) => [
       {
+        label: '👀 Preview',
+        props: {
+          onClick: async () => {
+            nodeAction(item, () => {
+              globalEventBus.emit(GlobalEvents.ON_COMP_PREVIEW, {item})
+            })
+          },
+        },
+      },
+      {
         label: '✏️ Rename',
         props: {
           onClick: async () => {
@@ -206,16 +210,6 @@ export default defineComponent({
         },
       },
       {
-        label: '👀 Preview',
-        props: {
-          onClick: async () => {
-            nodeAction(item, () => {
-              globalEventBus.emit(GlobalEvents.ON_COMP_PREVIEW, {item})
-            })
-          },
-        },
-      },
-      {
         label: '❌ Delete',
         props: {
           onClick: async () => {
@@ -227,13 +221,10 @@ export default defineComponent({
       },
     ]
 
-    const getMenuOptions = (item: BlockItem) => {
-      if (item.blockType === BlockType.COMPONENT) {
-        return getCompMenuOptions(item)
-      }
+    const getAddMenuOptions = () => {
       return [
         {
-          label: '🧹 Cancel Select',
+          label: '🔰 Default Board',
           props: {
             onClick: async () => {
               cancelSelectComponent()
@@ -268,11 +259,23 @@ export default defineComponent({
             },
           },
         },
+        {
+          type: 'divider',
+          label: 'd1',
+        },
+        {
+          label: '➕ Add Component',
+          props: {
+            onClick: async () => {
+              handleCreateComponent()
+            },
+          },
+        },
       ]
     }
 
     const {editingNode, nodeAction, handleContextmenu, ...contextMenuEtc} =
-      useContextMenu(getMenuOptions)
+      useContextMenu(getCompMenuOptions)
 
     return {
       craftStore,
@@ -282,14 +285,16 @@ export default defineComponent({
       actionBlockItemList,
       htmlBlockItemList,
       handleItemClick,
-      componentListFormatted,
       handleComponentItemClick,
       componentList,
       handleComponentDelete,
       handleComponentRename,
       handleDeleteAll,
       cancelSelectComponent,
-      getMenuOptions,
+      getCompMenuOptions,
+      getAddMenuOptions,
+      componentListSorted,
+      handleCreateComponent,
       importFileChooserRef,
       handleImportAll,
       colorHash,
@@ -353,21 +358,33 @@ export default defineComponent({
       </n-tab-pane>
       <n-tab-pane :name="BlockType.COMPONENT" tab="Components">
         <InventoryList
-          :item-list="componentListFormatted"
+          :item-list="componentListSorted"
           is-component-block
           @onItemClick="handleComponentItemClick"
           @contextmenu="handleContextmenu"
         >
           <template #actionMenu="{item}">
             <n-dropdown
-              :options="getMenuOptions(item)"
+              :options="getCompMenuOptions(item)"
               key-field="label"
               placement="bottom-start"
-              trigger="click"
+              trigger="hover"
             >
               <n-button quaternary size="tiny" style="min-width: 10px" @click.stop>
                 <n-icon size="20"> <MoreHorizontal20Regular /></n-icon>
               </n-button>
+            </n-dropdown>
+          </template>
+          <template #end>
+            <n-dropdown
+              :options="getAddMenuOptions()"
+              key-field="label"
+              placement="top-end"
+              trigger="hover"
+            >
+              <button @click="handleCreateComponent" class="mc-btn-add">
+                <n-icon size="24"> <Add24Regular /></n-icon>
+              </button>
             </n-dropdown>
           </template>
         </InventoryList>
@@ -389,6 +406,7 @@ export default defineComponent({
     top: unset !important;
     bottom: 86px !important;
     width: auto !important;
+    box-shadow: none !important;
     &._topLayout {
       top: 86px !important;
       bottom: unset !important;
@@ -401,6 +419,28 @@ export default defineComponent({
   }
   :deep(.n-tabs-pane-wrapper) {
     flex: 1;
+  }
+}
+.mc-btn-add {
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  border-radius: 50%;
+  background-color: #e91e63;
+  color: white;
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  border: none;
+  outline: none;
+
+  &:hover {
+    filter: contrast(200%) brightness(1.5);
   }
 }
 </style>

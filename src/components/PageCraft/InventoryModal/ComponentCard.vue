@@ -30,61 +30,51 @@ export default defineComponent({
       return item.value.title === settingsStore.curCompoName
     })
 
-    const isCrate = computed(() => {
-      return item.value.actionType === ActionType.ADD_COMPONENT
-    })
-
-    const isHover = ref(false)
-    const hoverTimer = ref<any>(null)
-
-    // mouse hover delay
-    const startHoverTimer = (cb) => {
-      if (hoverTimer.value) {
-        return
-      }
-      hoverTimer.value = setTimeout(() => {
-        isHover.value = true
-        clearTimeout(hoverTimer.value)
-        hoverTimer.value = null
-        cb()
-      }, 800)
-    }
-
-    const emitMouseMove = () => {
-      globalEventBus.emit(GlobalEvents.ON_COMP_HOVER, {event: currentEvent, item: item.value})
-    }
-
-    const handleMouseMove = (event) => {
-      if (isCrate.value) {
-        return
-      }
-      currentEvent = event
-      if (!isHover.value) {
-        startHoverTimer(() => {
-          emitMouseMove()
-        })
-        return
-      }
-      emitMouseMove()
-    }
-    const handleMouseLeave = () => {
-      if (isCrate.value) {
-        return
-      }
-      isHover.value = false
-      globalEventBus.emit(GlobalEvents.ON_COMP_HOVER_OUT)
-      clearTimeout(hoverTimer.value)
-      hoverTimer.value = null
-    }
+    // const isHover = ref(false)
+    // const hoverTimer = ref<any>(null)
+    //
+    // // mouse hover delay
+    // const startHoverTimer = (cb) => {
+    //   if (hoverTimer.value) {
+    //     return
+    //   }
+    //   hoverTimer.value = setTimeout(() => {
+    //     isHover.value = true
+    //     clearTimeout(hoverTimer.value)
+    //     hoverTimer.value = null
+    //     cb()
+    //   }, 800)
+    // }
+    //
+    // const emitMouseMove = () => {
+    //   globalEventBus.emit(GlobalEvents.ON_COMP_HOVER, {event: currentEvent, item: item.value})
+    // }
+    //
+    // const handleMouseMove = (event) => {
+    //   currentEvent = event
+    //   if (!isHover.value) {
+    //     startHoverTimer(() => {
+    //       emitMouseMove()
+    //     })
+    //     return
+    //   }
+    //   emitMouseMove()
+    // }
+    // const handleMouseLeave = () => {
+    //   isHover.value = false
+    //   globalEventBus.emit(GlobalEvents.ON_COMP_HOVER_OUT)
+    //   clearTimeout(hoverTimer.value)
+    //   hoverTimer.value = null
+    // }
 
     return {
       craftStore,
+      settingsStore,
       color,
       isActive,
       formatDate,
-      isCrate,
-      handleMouseMove,
-      handleMouseLeave,
+      // handleMouseMove,
+      // handleMouseLeave,
       handleDragStart(event) {
         event.dataTransfer.setData('data-block', JSON.stringify(item.value))
       },
@@ -94,15 +84,19 @@ export default defineComponent({
 </script>
 
 <template>
+  <!--
+
+  @mousemove="handleMouseMove"
+  @mouseleave="handleMouseLeave"
+-->
   <div
     :class="{active: isActive}"
     class="tool-item"
     :style="{
       '--block-color-rgb': color,
+      _rounded: settingsStore.enableRoundedTheme,
     }"
     @contextmenu="$emit('contextmenu', $event, item)"
-    @mousemove="handleMouseMove"
-    @mouseleave="handleMouseLeave"
     draggable="true"
     @dragstart="handleDragStart"
   >
@@ -121,22 +115,24 @@ export default defineComponent({
 .tool-item {
   --block-color-rgb: 204, 204, 204;
   width: 200px;
-  height: 100px;
+  height: 60px;
   cursor: pointer;
   display: flex;
-  align-items: center;
-  justify-content: center;
   font-size: 14px;
   font-weight: 600;
   position: relative;
-  padding: 5px;
-  outline: 1px dashed rgb(var(--block-color-rgb));
+  padding: 5px 8px;
+  padding-right: 20px;
+  outline: 1px solid rgb(var(--block-color-rgb));
   $bracket_color: rgb(var(--block-color-rgb));
-  border-radius: 4px;
+
+  &._rounded {
+    border-radius: 4px;
+  }
 
   &:hover {
     background-color: rgba(var(--block-color-rgb), 0.08);
-    box-shadow: 0 0 10px rgb(var(--block-color-rgb)) !important;
+    box-shadow: 0 0 0px 2px rgb(var(--block-color-rgb)) !important;
   }
 
   &:active {
@@ -146,7 +142,7 @@ export default defineComponent({
 
   &.active {
     background-color: rgba(var(--block-color-rgb), 0.29);
-    outline: 3px solid rgb(var(--block-color-rgb));
+    outline: 4px solid rgb(var(--block-color-rgb));
   }
 
   img {
@@ -161,19 +157,14 @@ export default defineComponent({
     right: 0;
   }
 
+  $bracket_color: currentColor;
   .timestamp {
     position: absolute;
     bottom: 2px;
-    right: 2px;
-    font-size: 10px;
+    right: 4px;
+    font-size: 12px;
     font-weight: 100;
-    opacity: 0.6;
-  }
-
-  $bracket_color: currentColor;
-  .item-text {
-    color: inherit;
-    font-weight: 500;
+    opacity: 0.5;
     &::before {
       content: '<';
       color: $bracket_color;
@@ -184,6 +175,10 @@ export default defineComponent({
       color: $bracket_color;
       opacity: 0.5;
     }
+  }
+  .item-text {
+    color: inherit;
+    font-weight: 500;
   }
 }
 </style>
