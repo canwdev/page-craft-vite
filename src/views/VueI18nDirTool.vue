@@ -169,9 +169,16 @@ export default defineComponent({
       translateTreeRoot,
       currentFilePathArr,
       translatePath,
-      handleKeyClick(str) {
-        console.log(str)
+      handleKeyClick(str, event) {
+        // console.log(str, event)
+        const selector = '.translate-item'
         translatePath.value = str
+
+        const els = Array.from(document.querySelectorAll(selector))
+        els.forEach((el) => {
+          el.classList.remove('active')
+        })
+        event.target.closest(selector).classList.add('active')
       },
       ...useFileDrop({
         cb: async (e) => {
@@ -211,7 +218,11 @@ export default defineComponent({
         <template #avatar> <n-avatar :src="iconTranslate" style="background: none" /> </template>
         <template #extra>
           <n-space align="center">
-            <n-button v-if="currentEditEntry" type="primary" @click="handleSaveFile"
+            <n-button
+              secondary
+              v-if="currentEditEntry && editMode !== 'batch'"
+              type="primary"
+              @click="handleSaveFile"
               >Save Changes</n-button
             >
 
@@ -228,7 +239,9 @@ export default defineComponent({
               Pick i18n Directory
             </n-button>
 
-            <n-button v-if="dirHandle" size="small" @click="reloadPickedDir"> Refresh </n-button>
+            <n-button secondary v-if="dirHandle" size="small" @click="reloadPickedDir">
+              Refresh
+            </n-button>
           </n-space>
         </template>
       </n-page-header>
@@ -328,12 +341,19 @@ export default defineComponent({
       flex: 1;
       overflow: hidden;
       padding: 10px;
+      padding-right: 0;
       padding-top: 0;
       display: flex;
 
       &.batch-mode {
-        :deep(.translate-item-input-key) {
-          box-shadow: 0 0 10px #18a058;
+        :deep(.translate-item.active) {
+          .n-input--focus {
+            background-color: rgba(244, 67, 54, 0.13);
+          }
+          .n-input__state-border {
+            border-color: #f44336 !important;
+            box-shadow: 0 0 10px rgba(244, 67, 54, 0.13) !important;
+          }
         }
       }
     }

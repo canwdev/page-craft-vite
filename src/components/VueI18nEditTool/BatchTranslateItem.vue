@@ -4,10 +4,13 @@ import {DirTreeItem} from '@/enum/vue-i18n-tool'
 import _get from 'lodash/get'
 import _set from 'lodash/set'
 import {handleReadSelectedFile} from '@/utils/exporter'
+import {DocumentEdit20Regular, SaveMultiple20Regular} from '@vicons/fluent'
+import DialogTextEdit from '@/components/CommonUI/DialogTextEdit.vue'
 // import countryCodeEmoji from '@/utils/country-code-emoji'
 
 export default defineComponent({
   name: 'BatchTranslateItem',
+  components: {DialogTextEdit, DocumentEdit20Regular, SaveMultiple20Regular},
   props: {
     dirItem: {
       type: Object as PropType<DirTreeItem>,
@@ -77,10 +80,16 @@ export default defineComponent({
       return res
     }
     const setText = (text = translateText.value) => {
-      if (isFieldArray.value && text) {
-        text = JSON.parse(text)
+      try {
+        if (isFieldArray.value && text) {
+          text = JSON.parse(text)
+        }
+        _set(translateObj.value, translatePath.value, text)
+      } catch (e) {
+        console.error(e)
+        window.$message.error(e.message)
+        throw e
       }
-      _set(translateObj.value, translatePath.value, text)
     }
 
     watch(
@@ -137,7 +146,8 @@ export default defineComponent({
         window.$message.success('Saved!')
       } catch (error: any) {
         console.error(error)
-        window.$message.error('Save Failed!' + error.message)
+        window.$message.error('Error!' + error.message)
+        throw error
       }
     }
 
@@ -147,6 +157,7 @@ export default defineComponent({
     // })
 
     const inputRef = ref()
+    const isShowArrayEdit = ref(false)
 
     return {
       currentItem,
@@ -183,6 +194,17 @@ export default defineComponent({
       },
       isFieldArray,
       inputRef,
+      isShowArrayEdit,
+      handleSaveArray(val) {
+        try {
+          JSON.parse(val) // validate only
+          translateText.value = val
+          isShowArrayEdit.value = false
+        } catch (e) {
+          console.error(e)
+          window.$message.error(e.message)
+        }
+      },
       // countryFlag,
     }
   },
@@ -190,14 +212,17 @@ export default defineComponent({
 </script>
 
 <template>
-  <n-card
-    size="small"
-    class="batch-translate-item"
-    :title="dirItem.label + '/' + filePathArr.join('/')"
-  >
-    <template #header-extra>
-      <span class="translate-path font-code">{{ translatePath }}</span>
-    </template>
+  <n-card size="small" class="batch-translate-item">
+    <div class="card-header">
+      <span class="card-title">
+        <span class="text-red">{{ dirItem.label }}</span
+        >{{ '/' + filePathArr.join('/') }}</span
+      >
+      <span class="translate-path">
+        {{ translatePath }}
+      </span>
+    </div>
+
     <div style="color: hotpink; margin-bottom: 10px" v-if="!currentItem">
       File does not exist, please create it on your local file system
     </div>
@@ -209,14 +234,24 @@ export default defineComponent({
           size="small"
           v-model:value="translateText"
           :placeholder="isFieldArray ? 'Input array' : 'Input text'"
-          :rows="isFieldArray ? 8 : 1"
+          :rows="isFieldArray ? 2 : 1"
           style="width: 450px"
           :class="{'font-code': isFieldArray}"
         />
-        <n-button size="small" v-if="isChanged" type="primary" @click="saveChange({isEmit: true})"
-          >Save</n-button
+        <n-button
+          secondary
+          v-if="isFieldArray"
+          @click="isShowArrayEdit = true"
+          size="small"
+          title="Edit"
         >
-        <n-button size="small" v-if="isChanged" @click="cancelChange">Cancel</n-button>
+          <template #icon><DocumentEdit20Regular /></template>
+        </n-button>
+
+        <n-button size="small" v-if="isChanged" type="primary" @click="saveChange({isEmit: true})">
+          <template #icon><SaveMultiple20Regular /></template>
+        </n-button>
+        <n-button secondary size="small" v-if="isChanged" @click="cancelChange"> Cancel </n-button>
       </n-space>
       <n-space v-else>
         <n-button size="small" @click="createField('')" type="primary">Create text</n-button>
@@ -224,6 +259,15 @@ export default defineComponent({
       </n-space>
     </template>
     <div style="color: darkgoldenrod" v-else>Please select a translation field on the left</div>
+
+    <DialogTextEdit
+      is-textarea
+      title="Array Detail"
+      placeholder="Array JSON String"
+      v-model:visible="isShowArrayEdit"
+      :text="translateText"
+      @onSave="handleSaveArray"
+    />
   </n-card>
 </template>
 
@@ -231,9 +275,28 @@ export default defineComponent({
 .batch-translate-item {
   margin-bottom: 10px;
 
+  :deep(.n-card__content) {
+    padding: 10px;
+  }
+
+  .card-header {
+    font-size: 12px;
+    margin-bottom: 5px;
+    .card-title {
+      font-size: 14px;
+      font-weight: 400;
+    }
+    .text-red {
+      color: #f44336;
+      font-weight: 500;
+    }
+  }
+
   .translate-path {
+    max-width: 200px;
     font-size: 12px;
     opacity: 0.3;
+    margin-left: 10px;
   }
 }
 </style>

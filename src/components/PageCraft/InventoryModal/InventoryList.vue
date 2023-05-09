@@ -106,6 +106,10 @@ export default defineComponent({
     //grid-template-columns: repeat(12, 1fr);
     grid-template-rows: auto;
     gap: 10px;
+
+    * {
+      box-sizing: border-box;
+    }
     &._big {
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       //grid-template-columns: repeat(4, 1fr);

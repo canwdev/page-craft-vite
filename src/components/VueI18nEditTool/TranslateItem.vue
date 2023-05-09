@@ -7,10 +7,13 @@ import {
   ITranslateTreeItem,
 } from '@/enum/vue-i18n-tool'
 import {copyToClipboard} from '@/utils'
+import {Delete20Regular} from '@vicons/fluent'
 
 export default defineComponent({
   name: 'TranslateItem',
-  components: {},
+  components: {
+    Delete20Regular,
+  },
   props: {
     item: {
       type: Object as PropType<ITranslateItem>,
@@ -77,8 +80,8 @@ export default defineComponent({
           item.value.key = formatI18nKey(item.value.value)
         }
       },
-      handleInputKeyClick() {
-        emit('onKeyClick', nameDisplay.value)
+      handleInputKeyClick(event) {
+        emit('onKeyClick', nameDisplay.value, event)
       },
     }
   },
@@ -86,12 +89,12 @@ export default defineComponent({
 </script>
 
 <template>
-  <n-list-item size="small" v-if="item" class="translate-item">
+  <n-list-item size="small" v-if="item" class="translate-item" :class="{isLite}">
     <n-space size="small" justify="space-between">
       <n-space size="small" align="center">
         <n-input
           size="small"
-          class="font-code translate-item-input-key"
+          class="font-code translate-item-input"
           v-model:value="item.key"
           placeholder="key"
           @click="handleInputKeyClick"
@@ -143,9 +146,14 @@ export default defineComponent({
           </n-button>
         </n-space>
 
-        <n-popconfirm @positive-click="$emit('onRemove')">
+        <n-popconfirm v-if="!isLite" @positive-click="$emit('onRemove')">
           <template #trigger>
-            <n-button style="margin-left: 15px" size="small" type="error">× Del</n-button>
+            <n-button tertiary style="margin-left: 15px" size="small" type="error">
+              <template #icon>
+                <Delete20Regular />
+              </template>
+            </n-button>
+            <!--× Del-->
           </template>
           Remove Item?
         </n-popconfirm>
@@ -157,10 +165,16 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .translate-item {
-  margin-left: -15px;
-  padding-left: 15px;
-  margin-right: -15px;
-  padding-right: 15px;
+  margin-left: -10px;
+  padding-left: 10px;
+  margin-right: -10px;
+  padding-right: 10px;
+
+  &.isLite {
+    padding-top: 4px;
+    padding-bottom: 0;
+  }
+
   &:hover {
     transition: none;
     background-color: rgba(147, 147, 147, 0.3);

@@ -7,6 +7,7 @@ import iconTranslate from '../assets/textures/translate.svg?url'
 import DropZone from '@/components/CommonUI/DropZone.vue'
 import {useFileDrop} from '@/hooks/use-file-drop'
 import {useMetaTitle} from '@/hooks/use-meta'
+import {Save20Regular} from '@vicons/fluent'
 
 const filePickerOptions = {
   types: [
@@ -24,6 +25,7 @@ export default defineComponent({
   components: {
     TranslateTreeItem,
     DropZone,
+    Save20Regular,
   },
   setup() {
     const translateTreeRoot = ref<ITranslateTreeItem[]>(I18nJsonObjUtils.parseWithRoot())
@@ -136,14 +138,17 @@ export default defineComponent({
         <template #extra>
           <n-space>
             <n-button type="primary" @click="handleSelectFile" size="small"> Open JSON </n-button>
-            <n-button v-if="fileHandle" @click="handleSaveFile" size="small" type="info"
-              >Save</n-button
+            <n-button v-if="fileHandle" @click="handleSaveFile" size="small" type="info">
+              <template #icon>
+                <Save20Regular />
+              </template>
+              Save</n-button
             >
-            <n-button @click="handleExport" size="small">Save as...</n-button>
+            <n-button secondary @click="handleExport" size="small">Save as...</n-button>
 
             <n-popconfirm @positive-click="loadDemo">
               <template #trigger>
-                <n-button size="small">Demo</n-button>
+                <n-button tertiary size="small">Demo</n-button>
               </template>
               Load Demo? This will override editing content.
             </n-popconfirm>

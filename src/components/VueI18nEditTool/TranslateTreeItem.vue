@@ -10,11 +10,25 @@ import {
 } from '@/enum/vue-i18n-tool'
 import TranslateItem from './TranslateItem.vue'
 import {copyToClipboard} from '@/utils'
+import DialogTextEdit from '@/components/CommonUI/DialogTextEdit.vue'
+import {
+  Delete20Regular,
+  AddSquare20Regular,
+  Add20Regular,
+  Copy20Regular,
+  Globe16Regular,
+} from '@vicons/fluent'
 
 export default defineComponent({
   name: 'TranslateTreeItem',
   components: {
+    Delete20Regular,
     TranslateItem,
+    DialogTextEdit,
+    AddSquare20Regular,
+    Add20Regular,
+    Copy20Regular,
+    Globe16Regular,
   },
   props: {
     item: {
@@ -43,10 +57,10 @@ export default defineComponent({
     }
     const isExpand = ref(true)
 
-    const isShowPreviewArray = ref(false)
+    const isShowArrayEdit = ref(false)
     const currentPreviewItem = shallowRef<ITranslateItem | null>(null)
     const currentArrayString = ref<string | null>(null)
-    watch(isShowPreviewArray, (val) => {
+    watch(isShowArrayEdit, (val) => {
       if (!val) {
         currentPreviewItem.value = null
         currentArrayString.value = null
@@ -73,18 +87,23 @@ export default defineComponent({
         item.value.translates = list
       },
       isExpand,
-      isShowPreviewArray,
+      isShowArrayEdit,
       currentPreviewItem,
       currentArrayString,
       handlePreviewArray(item: ITranslateItem) {
         currentPreviewItem.value = item
         currentArrayString.value = JSON.stringify(item.value, null, 2)
-        isShowPreviewArray.value = true
+        isShowArrayEdit.value = true
       },
-      handleSaveArray() {
+      handleSaveArray(val) {
         if (currentPreviewItem.value) {
-          currentPreviewItem.value.value = JSON.parse(currentArrayString.value || '[]')
-          isShowPreviewArray.value = false
+          try {
+            currentPreviewItem.value.value = JSON.parse(val || '[]')
+            isShowArrayEdit.value = false
+          } catch (e) {
+            console.error(e)
+            window.$message.error(e.message)
+          }
         }
       },
     }
@@ -101,18 +120,28 @@ export default defineComponent({
         v-model:value="item.namespace"
         placeholder="namespace"
         style="flex: 1"
-      >
-        <template #prefix> <span style="color: darkseagreen">§</span> </template>
+        ><!--§-->
+        <template #prefix>
+          <n-icon color="darkseagreen" size="16">
+            <Globe16Regular />
+          </n-icon>
+        </template>
       </n-input>
-      <n-space style="margin-left: 10px" align="center">
-        <n-button v-if="!isLite" type="info" @click="handleGetJSON">Copy JSON</n-button>
+      <n-space v-if="!isLite" style="margin-left: 10px" align="center">
+        <n-button secondary type="info" @click="handleGetJSON" title="Copy JSON">
+          <template #icon><Copy20Regular /></template>
+        </n-button>
         <n-popconfirm v-if="!isRoot" @positive-click="$emit('onRemove')">
           <template #trigger>
-            <n-button type="error">×</n-button>
+            <n-button secondary type="error" size="small">
+              <template #icon>
+                <Delete20Regular />
+              </template>
+            </n-button>
           </template>
           Remove Group?
         </n-popconfirm>
-        <n-switch v-if="!isLite" v-model:value="isExpand">
+        <n-switch v-model:value="isExpand">
           <template #checked> 👀 </template>
           <template #unchecked> 🙈 </template>
         </n-switch>
@@ -133,12 +162,17 @@ export default defineComponent({
           :is-lite="isLite"
           @previewArray="handlePreviewArray"
           @onRemove="handleRemoveItem(index)"
-          @onKeyClick="(e) => $emit('onKeyClick', e)"
+          @onKeyClick="(...args) => $emit('onKeyClick', ...args)"
         />
       </n-list>
 
-      <n-space justify="space-between" align="center" style="margin-top: 5px">
-        <n-button type="info" @click="handleAddTranslate">+ Translate</n-button>
+      <n-space v-if="!isLite" justify="space-between" align="center" style="margin-top: 5px">
+        <n-button title="Add translate item" type="info" @click="handleAddTranslate">
+          <template #icon>
+            <Add20Regular />
+          </template>
+          Translate</n-button
+        >
       </n-space>
 
       <div style="border-top: 1px dashed darkseagreen; margin-top: 10px; margin-bottom: 10px" />
@@ -152,30 +186,30 @@ export default defineComponent({
           :is-lite="isLite"
           @onRemove="handleRemoveTreeItem(index)"
           @previewArray="handlePreviewArray"
-          @onKeyClick="(e) => $emit('onKeyClick', e)"
+          @onKeyClick="(...args) => $emit('onKeyClick', ...args)"
         />
       </template>
-      <n-button type="primary" @click="handleAddChildren">+ Children</n-button>
+      <n-button
+        v-if="!isLite"
+        type="primary"
+        @click="handleAddChildren"
+        title="Add translate children group"
+      >
+        <template #icon>
+          <AddSquare20Regular />
+        </template>
+        Group</n-button
+      >
     </n-collapse-transition>
 
-    <n-modal
-      style="width: 80vw"
-      preset="dialog"
-      negative-text="Cancel"
-      positive-text="Save"
+    <DialogTextEdit
+      is-textarea
       title="Array Detail"
-      @positive-click="handleSaveArray"
-      v-model:show="isShowPreviewArray"
-    >
-      <n-input
-        v-if="isShowPreviewArray && currentArrayString"
-        type="textarea"
-        v-model:value="currentArrayString"
-        class="font-code"
-        rows="30"
-        placeholder="Array JSON String"
-      ></n-input>
-    </n-modal>
+      placeholder="Array JSON String"
+      v-model:visible="isShowArrayEdit"
+      :text="currentArrayString"
+      @onSave="handleSaveArray"
+    />
   </n-card>
 </template>
 

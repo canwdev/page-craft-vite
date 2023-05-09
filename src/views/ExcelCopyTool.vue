@@ -5,11 +5,9 @@ import dynamicLoadScript from '@/utils/dynamic-load-script'
 import iconExcel from '../assets/textures/excel.svg?url'
 import {copyToClipboard} from '@/utils'
 import {getFileName, handleExportFile} from '@/utils/exporter'
-import CopyExampleDialog from '@/components/VueI18nEditTool/CopyExampleDialog.vue'
+import DialogCopyFormat from '@/components/VueI18nEditTool/DialogCopyFormat.vue'
 import DropZone from '@/components/CommonUI/DropZone.vue'
 import {useFileDrop} from '@/hooks/use-file-drop'
-import {useHead} from '@vueuse/head'
-import {useRoute} from 'vue-router'
 import {useMetaTitle} from '@/hooks/use-meta'
 
 const formatMultipleLine = (str, mode) => {
@@ -46,7 +44,7 @@ export default defineComponent({
   name: 'ExcelCopyTool',
   components: {
     FileChooser,
-    CopyExampleDialog,
+    DialogCopyFormat,
     DropZone,
   },
   setup() {
@@ -289,7 +287,7 @@ export default defineComponent({
       @selected="handleImport"
     />
 
-    <CopyExampleDialog
+    <DialogCopyFormat
       v-model:visible="isShowCopyExample"
       :title="'Copy Mode Example: ' + copyMode"
       :format-text="(str) => formatMultipleLine(str, copyMode)"

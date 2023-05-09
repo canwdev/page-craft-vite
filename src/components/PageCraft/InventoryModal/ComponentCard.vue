@@ -90,11 +90,10 @@ export default defineComponent({
   @mouseleave="handleMouseLeave"
 -->
   <div
-    :class="{active: isActive}"
+    :class="{active: isActive, _rounded: settingsStore.enableRoundedTheme}"
     class="tool-item"
     :style="{
       '--block-color-rgb': color,
-      _rounded: settingsStore.enableRoundedTheme,
     }"
     @contextmenu="$emit('contextmenu', $event, item)"
     draggable="true"

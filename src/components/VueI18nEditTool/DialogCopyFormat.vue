@@ -4,7 +4,7 @@ import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {copyToClipboard} from '@/utils'
 
 export default defineComponent({
-  name: 'CopyExampleDialog',
+  name: 'DialogCopyFormat',
   props: {
     visible: {
       type: Boolean,
