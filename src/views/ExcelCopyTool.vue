@@ -1,5 +1,5 @@
 <script lang="ts">
-import {defineComponent} from 'vue'
+import {defineComponent, ref} from 'vue'
 import FileChooser from '@/components/CommonUI/FileChooser.vue'
 import dynamicLoadScript from '@/utils/dynamic-load-script'
 import iconExcel from '../assets/textures/excel.svg?url'
@@ -9,36 +9,11 @@ import DialogCopyFormat from '@/components/VueI18nEditTool/DialogCopyFormat.vue'
 import DropZone from '@/components/CommonUI/DropZone.vue'
 import {useFileDrop} from '@/hooks/use-file-drop'
 import {useMetaTitle} from '@/hooks/use-meta'
-
-const formatMultipleLine = (str, mode) => {
-  if (mode === CopyMode.text) {
-    return str
-  }
-  let arr = str.split('\n')
-  arr = arr.map((i) => i.trim())
-  if (mode === CopyMode.json) {
-    if (arr.length === 1) {
-      return JSON.stringify(arr[0])
-    }
-    return JSON.stringify(arr, null, 2)
-  }
-  if (mode === CopyMode.html) {
-    return arr.join('<br>')
-  }
-}
+import {CopyMode, CopyModeOptions, formatMultipleLine} from '@/components/VueI18nEditTool/copy-enum'
 
 const isAllowedElement = (el) => {
   return el.tagName.toLowerCase() === 'td'
 }
-const CopyMode = {
-  none: 'none',
-  text: 'text',
-  html: 'html',
-  json: 'json',
-}
-const CopyModeOptions = Object.values(CopyMode).map((i) => {
-  return {label: i, value: i}
-})
 
 export default defineComponent({
   name: 'ExcelCopyTool',
@@ -102,8 +77,15 @@ export default defineComponent({
       reader.readAsBinaryString(file)
     }
 
+    const isTrimEmptyLines = ref(true)
+
     onMounted(() => {
-      dynamicLoadScript('//unpkg.com/xlsx@0.16.9/xlsx.mini.js', () => {
+      dynamicLoadScript('//unpkg.com/xlsx@0.16.9/xlsx.mini.js', (err) => {
+        if (err) {
+          window.$message.error(err.message)
+          console.error(err)
+          return
+        }
         window.$message.success('XLSX Ready!')
         console.log('XLSX ready', window.XLSX)
         isReady.value = true
@@ -120,7 +102,7 @@ export default defineComponent({
       if (!el.innerText) {
         return
       }
-      let text = el.innerText.trim().replace(/ /gi, ' ') // replace [NBSP]
+      let text = el.innerText
 
       console.log(copyMode.value)
 
@@ -155,7 +137,7 @@ export default defineComponent({
       return window.XLSX.utils.sheet_to_json(getWorksheet(workbookRef.value))
     }
 
-    const isShowCopyExample = ref(false)
+    const isShowCopyDialog = ref(false)
     return {
       metaTitle,
       iconExcel,
@@ -166,9 +148,9 @@ export default defineComponent({
       loadDemo() {
         checkPlugin()
         const aoa = [
-          ['姓名', '性别', '年龄', '注册时间'],
-          ['张三', '男', 18, new Date()],
-          ['李四', '女', 22, new Date()],
+          ['Name', 'Value', 'Num', 'Time'],
+          ['test001', 'line1\nline2', 123, new Date()],
+          ['test001', 'line1\n\nline3', -1, new Date()],
         ]
         const sheet = window.XLSX.utils.aoa_to_sheet(aoa)
         const wb = window.XLSX.utils.book_new()
@@ -207,7 +189,7 @@ export default defineComponent({
           },
         },
       ],
-      isShowCopyExample,
+      isShowCopyDialog,
       formatMultipleLine,
       ...useFileDrop({
         cbFiles: (files) => {
@@ -217,6 +199,7 @@ export default defineComponent({
           handleImport(files[0])
         },
       }),
+      isTrimEmptyLines,
     }
   },
 })
@@ -243,7 +226,10 @@ export default defineComponent({
           <template #extra>
             <n-space>
               <n-space size="small" align="center">
-                <n-button text @click="isShowCopyExample = true">CopyMode:</n-button>
+                <n-checkbox size="small" v-model:checked="isTrimEmptyLines"
+                  >Trim empty lines</n-checkbox
+                >
+                <n-button text @click="isShowCopyDialog = true">CopyMode:</n-button>
                 <n-select
                   size="small"
                   v-model:value="copyMode"
@@ -287,11 +273,7 @@ export default defineComponent({
       @selected="handleImport"
     />
 
-    <DialogCopyFormat
-      v-model:visible="isShowCopyExample"
-      :title="'Copy Mode Example: ' + copyMode"
-      :format-text="(str) => formatMultipleLine(str, copyMode)"
-    />
+    <DialogCopyFormat v-model:visible="isShowCopyDialog" />
   </div>
 </template>
 

@@ -2,6 +2,7 @@
 import {defineComponent, ref} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {copyToClipboard} from '@/utils'
+import {CopyMode, CopyModeOptions, formatMultipleLine} from '@/components/VueI18nEditTool/copy-enum'
 
 export default defineComponent({
   name: 'DialogCopyFormat',
@@ -10,36 +11,60 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
-    title: {
-      type: String,
-      default: '',
-    },
-    formatText: {
-      type: Function,
-      default: null,
-    },
   },
   setup(props, {emit}) {
-    const {formatText} = toRefs(props)
     const mVisible = useModelWrapper(props, emit, 'visible')
     const textInput = ref('')
     const textOutput = ref('')
+    const mMode = ref(CopyMode.json)
+    const isTrimEmptyLines = ref(true)
 
     watch(textInput, () => {
-      textOutput.value = formatText ? formatText.value(textInput.value) : textInput.value
+      updateFormat()
     })
+
+    watch(mMode, () => {
+      updateFormat()
+    })
+
+    watch(isTrimEmptyLines, () => {
+      updateFormat()
+    })
+
+    const updateFormat = () => {
+      textOutput.value = formatMultipleLine(textInput.value, mMode.value, isTrimEmptyLines.value)
+    }
 
     return {
       mVisible,
       textInput,
       textOutput,
+      CopyModeOptions,
+      mMode,
+      isTrimEmptyLines,
     }
   },
 })
 </script>
 
 <template>
-  <n-modal v-model:show="mVisible" preset="dialog" :title="title" style="min-width: 800px">
+  <n-modal
+    v-model:show="mVisible"
+    preset="dialog"
+    title="Text transformer"
+    style="min-width: 800px"
+  >
+    <n-space align="center" style="margin-bottom: 10px">
+      Mode:
+      <n-select
+        size="small"
+        v-model:value="mMode"
+        :options="CopyModeOptions"
+        style="width: 100px"
+      />
+
+      <n-checkbox size="small" v-model:checked="isTrimEmptyLines">Trim empty lines</n-checkbox>
+    </n-space>
     <div class="style-tools">
       <div class="common-card">
         <div class="main-box font-code">

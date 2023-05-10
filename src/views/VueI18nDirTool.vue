@@ -1,5 +1,5 @@
 <script lang="ts">
-import {defineComponent} from 'vue'
+import {defineComponent, ref} from 'vue'
 import iconTranslate from '../assets/textures/translate.svg?url'
 import {handleReadSelectedFile} from '@/utils/exporter'
 import {
@@ -13,6 +13,7 @@ import BatchTranslate from '@/components/VueI18nEditTool/BatchTranslate.vue'
 import DropZone from '@/components/CommonUI/DropZone.vue'
 import {useFileDrop} from '@/hooks/use-file-drop'
 import {useMetaTitle} from '@/hooks/use-meta'
+import DialogCopyFormat from '@/components/VueI18nEditTool/DialogCopyFormat.vue'
 
 let idSeed = 0
 
@@ -21,6 +22,7 @@ export default defineComponent({
   components: {
     BatchTranslate,
     DropZone,
+    DialogCopyFormat,
   },
   setup() {
     const dirTree = ref<DirTreeItem[]>([])
@@ -138,6 +140,7 @@ export default defineComponent({
     })
 
     const {metaTitle} = useMetaTitle()
+    const isShowCopyDialog = ref(false)
 
     return {
       metaTitle,
@@ -196,6 +199,7 @@ export default defineComponent({
           }
         },
       }),
+      isShowCopyDialog,
     }
   },
 })
@@ -242,9 +246,12 @@ export default defineComponent({
             <n-button secondary v-if="dirHandle" size="small" @click="reloadPickedDir">
               Refresh
             </n-button>
+            <n-button secondary size="small" @click="isShowCopyDialog = true"> Tool </n-button>
           </n-space>
         </template>
       </n-page-header>
+
+      <DialogCopyFormat v-model:visible="isShowCopyDialog" />
     </n-card>
 
     <div class="_container">

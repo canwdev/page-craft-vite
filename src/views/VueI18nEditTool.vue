@@ -1,5 +1,5 @@
 <script lang="ts">
-import {defineComponent} from 'vue'
+import {defineComponent, ref} from 'vue'
 import TranslateTreeItem from '@/components/VueI18nEditTool/TranslateTreeItem.vue'
 import {exportI18nTreeJsonObj, I18nJsonObjUtils, ITranslateTreeItem} from '@/enum/vue-i18n-tool'
 import {handleReadSelectedFile} from '@/utils/exporter'
@@ -8,6 +8,7 @@ import DropZone from '@/components/CommonUI/DropZone.vue'
 import {useFileDrop} from '@/hooks/use-file-drop'
 import {useMetaTitle} from '@/hooks/use-meta'
 import {Save20Regular} from '@vicons/fluent'
+import DialogCopyFormat from '@/components/VueI18nEditTool/DialogCopyFormat.vue'
 
 const filePickerOptions = {
   types: [
@@ -23,6 +24,7 @@ const filePickerOptions = {
 export default defineComponent({
   name: 'VueI18nEditTool',
   components: {
+    DialogCopyFormat,
     TranslateTreeItem,
     DropZone,
     Save20Regular,
@@ -76,6 +78,7 @@ export default defineComponent({
     }
 
     const {metaTitle} = useMetaTitle()
+    const isShowCopyDialog = ref(false)
     return {
       metaTitle,
       translateTreeRoot,
@@ -115,6 +118,7 @@ export default defineComponent({
           }
         },
       }),
+      isShowCopyDialog,
     }
   },
 })
@@ -152,9 +156,12 @@ export default defineComponent({
               </template>
               Load Demo? This will override editing content.
             </n-popconfirm>
+
+            <n-button secondary size="small" @click="isShowCopyDialog = true"> Tool </n-button>
           </n-space>
         </template>
       </n-page-header>
+      <DialogCopyFormat v-model:visible="isShowCopyDialog" />
     </n-card>
 
     <div class="_container">
