@@ -141,6 +141,8 @@ export default defineComponent({
         <template #avatar> <n-avatar :src="iconTranslate" style="background: none" /> </template>
         <template #extra>
           <n-space>
+            <n-button secondary size="small" @click="isShowCopyDialog = true"> Tool </n-button>
+
             <n-button type="primary" @click="handleSelectFile" size="small"> Open JSON </n-button>
             <n-button v-if="fileHandle" @click="handleSaveFile" size="small" type="info">
               <template #icon>
@@ -156,8 +158,6 @@ export default defineComponent({
               </template>
               Load Demo? This will override editing content.
             </n-popconfirm>
-
-            <n-button secondary size="small" @click="isShowCopyDialog = true"> Tool </n-button>
           </n-space>
         </template>
       </n-page-header>

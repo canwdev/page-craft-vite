@@ -85,7 +85,7 @@ export default defineComponent({
           text = JSON.parse(text)
         }
         _set(translateObj.value, translatePath.value, text)
-      } catch (e) {
+      } catch (e: any) {
         console.error(e)
         window.$message.error(e.message)
         throw e
@@ -200,7 +200,7 @@ export default defineComponent({
           JSON.parse(val) // validate only
           translateText.value = val
           isShowArrayEdit.value = false
-        } catch (e) {
+        } catch (e: any) {
           console.error(e)
           window.$message.error(e.message)
         }
@@ -258,7 +258,7 @@ export default defineComponent({
         <n-button size="small" @click="createField([])">Create Array</n-button>
       </n-space>
     </template>
-    <div style="color: darkgoldenrod" v-else>Please select a translation field on the left</div>
+    <div style="color: gray" v-else>Please select a translation field on the left</div>
 
     <DialogTextEdit
       is-textarea

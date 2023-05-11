@@ -100,7 +100,7 @@ export default defineComponent({
           try {
             currentPreviewItem.value.value = JSON.parse(val || '[]')
             isShowArrayEdit.value = false
-          } catch (e) {
+          } catch (e: any) {
             console.error(e)
             window.$message.error(e.message)
           }

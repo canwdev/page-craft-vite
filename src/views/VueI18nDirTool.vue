@@ -222,6 +222,8 @@ export default defineComponent({
         <template #avatar> <n-avatar :src="iconTranslate" style="background: none" /> </template>
         <template #extra>
           <n-space align="center">
+            <n-button secondary size="small" @click="isShowCopyDialog = true"> Tool </n-button>
+
             <n-button
               secondary
               v-if="currentEditEntry && editMode !== 'batch'"
@@ -246,7 +248,6 @@ export default defineComponent({
             <n-button secondary v-if="dirHandle" size="small" @click="reloadPickedDir">
               Refresh
             </n-button>
-            <n-button secondary size="small" @click="isShowCopyDialog = true"> Tool </n-button>
           </n-space>
         </template>
       </n-page-header>
