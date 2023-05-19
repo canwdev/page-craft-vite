@@ -115,6 +115,7 @@ export default defineComponent({
   <n-card size="small" class="tree-item" v-if="item">
     <div style="display: flex">
       <n-input
+        size="small"
         :disabled="isRoot"
         class="font-code"
         v-model:value="item.namespace"
@@ -128,7 +129,7 @@ export default defineComponent({
         </template>
       </n-input>
       <n-space v-if="!isLite" style="margin-left: 10px" align="center">
-        <n-button secondary type="info" @click="handleGetJSON" title="Copy JSON">
+        <n-button size="small" secondary type="info" @click="handleGetJSON" title="Copy JSON">
           <template #icon><Copy20Regular /></template>
         </n-button>
         <n-popconfirm v-if="!isRoot" @positive-click="$emit('onRemove')">
@@ -141,7 +142,7 @@ export default defineComponent({
           </template>
           Remove Group?
         </n-popconfirm>
-        <n-switch v-model:value="isExpand">
+        <n-switch size="small" v-model:value="isExpand">
           <template #checked> 👀 </template>
           <template #unchecked> 🙈 </template>
         </n-switch>

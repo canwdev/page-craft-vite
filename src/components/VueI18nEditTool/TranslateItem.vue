@@ -172,12 +172,12 @@ export default defineComponent({
 
   &.isLite {
     padding-top: 4px;
-    padding-bottom: 0;
+    padding-bottom: 4px;
   }
 
   &:hover {
     transition: none;
-    background-color: rgba(147, 147, 147, 0.3);
+    background-color: rgba(147, 147, 147, 0.2);
   }
   .i18n-badge {
     //user-select: all;
