@@ -22,7 +22,7 @@ let routes = [
         name: 'ExcelCopyTool',
         component: () => import('@/views/ExcelCopyTool.vue'),
         meta: {
-          title: 'Excel Copy Tool',
+          title: 'Excel copy tool',
         },
       },
       {
@@ -30,7 +30,7 @@ let routes = [
         name: 'VueI18nEditTool',
         component: () => import('@/views/VueI18nEditTool.vue'),
         meta: {
-          title: 'I18n Edit Tool',
+          title: 'I18n(json) editing tool',
         },
       },
       {
@@ -38,7 +38,7 @@ let routes = [
         name: 'VueI18nBatchTool',
         component: () => import('@/views/VueI18nDirTool.vue'),
         meta: {
-          title: 'I18n Batch Tool',
+          title: 'I18n(json) batch tool',
         },
       },
     ],

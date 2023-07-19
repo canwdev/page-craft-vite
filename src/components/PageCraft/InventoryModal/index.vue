@@ -332,7 +332,7 @@ export default defineComponent({
     :allow-move="!settingsStore.isInvAttached"
   >
     <template #titleBarLeft>
-      <n-icon size="20"><Diversity20Regular /></n-icon>&nbsp;Inventory List
+      <n-icon size="20"><Diversity20Regular /></n-icon>&nbsp;Inventory list
     </template>
     <template #titleBarRightControls>
       <button @click="settingsStore.isInvAttached = !settingsStore.isInvAttached">

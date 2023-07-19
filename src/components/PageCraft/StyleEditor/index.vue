@@ -346,7 +346,7 @@ export default defineComponent({
     wid="style_editor"
   >
     <template #titleBarLeft>
-      <n-icon size="20"><PaintBrush20Regular /></n-icon>&nbsp;Style Editor (scss)
+      <n-icon size="20"><PaintBrush20Regular /></n-icon>&nbsp;Style editor (scss)
     </template>
     <template #titleBarRightControls>
       <button

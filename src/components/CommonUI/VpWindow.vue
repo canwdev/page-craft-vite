@@ -33,7 +33,7 @@ export default defineComponent({
     },
     transitionName: {
       type: String,
-      default: null, //'mc-fade-scale',
+      default: 'mc-fade-scale',
     },
   },
   emits: ['update:visible', 'resize'],

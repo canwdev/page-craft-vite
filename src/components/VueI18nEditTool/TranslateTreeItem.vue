@@ -67,6 +67,22 @@ export default defineComponent({
       }
     })
 
+    const namespacePrefix = computed(() => {
+      if (!item.value) {
+        return ''
+      }
+      const list: string[] = []
+      let i: any = item.value
+      while (i) {
+        list.push(i.namespace)
+        i = i.parent || null
+      }
+      // remove prefix and tail
+      list.pop()
+      list.shift()
+      return list.reverse().join('.')
+    })
+
     return {
       handleAddChildren,
       handleAddTranslate,
@@ -106,6 +122,7 @@ export default defineComponent({
           }
         }
       },
+      namespacePrefix,
     }
   },
 })
@@ -123,9 +140,10 @@ export default defineComponent({
         style="flex: 1"
         ><!--§-->
         <template #prefix>
-          <n-icon color="darkseagreen" size="16">
-            <Globe16Regular />
-          </n-icon>
+          <n-icon color="darkseagreen" size="16"> <Globe16Regular /> </n-icon>
+          <span style="color: darkseagreen">
+            {{ namespacePrefix + (namespacePrefix ? '.' : '') }}
+          </span>
         </template>
       </n-input>
       <n-space v-if="!isLite" style="margin-left: 10px" align="center">

@@ -7,11 +7,12 @@ import {
   ITranslateTreeItem,
 } from '@/enum/vue-i18n-tool'
 import {copyToClipboard} from '@/utils'
-import {Delete20Regular} from '@vicons/fluent'
+import {Delete20Regular, Globe16Regular} from '@vicons/fluent'
 
 export default defineComponent({
   name: 'TranslateItem',
   components: {
+    Globe16Regular,
     Delete20Regular,
   },
   props: {
@@ -58,6 +59,19 @@ export default defineComponent({
       return name
     })
 
+    const valType = ref<string | null>(null)
+    watch(
+      item,
+      (val) => {
+        if (!val) {
+          valType.value = null
+          return
+        }
+        valType.value = typeof val.value
+      },
+      {immediate: true}
+    )
+
     return {
       namespacePrefix,
       nameDisplay,
@@ -83,6 +97,7 @@ export default defineComponent({
       handleInputKeyClick(event) {
         emit('onKeyClick', nameDisplay.value, event)
       },
+      valType,
     }
   },
 })
@@ -100,21 +115,29 @@ export default defineComponent({
           @click="handleInputKeyClick"
         />
         <template v-if="!isLite">
+          <n-input-number
+            v-if="valType === 'number'"
+            v-model:value="item.value"
+            placeholder="number value"
+            size="small"
+            class="item-value-edit"
+            @blur="handleBlur"
+          />
           <n-input
+            v-else-if="!Array.isArray(item.value)"
             type="textarea"
             rows="1"
-            v-if="!Array.isArray(item.value)"
             size="small"
-            style="width: 350px"
+            class="item-value-edit"
             v-model:value="item.value"
-            placeholder="value"
+            placeholder="text value"
             @blur="handleBlur"
           />
           <n-button
             v-else
             :title="item.value"
             size="small"
-            style="width: 350px"
+            class="item-value-edit"
             @click="$emit('previewArray', item)"
           >
             📝 Array
@@ -181,6 +204,9 @@ export default defineComponent({
   }
   .i18n-badge {
     //user-select: all;
+  }
+  .item-value-edit {
+    width: 350px;
   }
 }
 </style>

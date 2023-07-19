@@ -154,14 +154,16 @@ export default defineComponent({
       >
         <n-button
           size="tiny"
-          style="min-width: 90px"
+          style="min-width: 70px"
+          type="primary"
+          :secondary="!settingsStore.showStyleEditor"
           @click="settingsStore.showStyleEditor = !settingsStore.showStyleEditor"
         >
           <template #icon>
             <n-icon v-if="settingsStore.showStyleEditor" size="18"
               ><PaintBrush16Regular
             /></n-icon> </template
-          >Style Editor
+          >Style
         </n-button>
       </n-dropdown>
       <template #end>

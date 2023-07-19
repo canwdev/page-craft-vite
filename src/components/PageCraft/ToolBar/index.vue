@@ -108,7 +108,7 @@ export default defineComponent({
     const router = useRouter()
     const toolsMenuOptions = [
       {
-        label: '⚜ Stylus Format Tool',
+        label: '⚜ Stylus formatting tool',
         props: {
           onClick: async () => {
             emit('openStylusTools')
@@ -116,7 +116,7 @@ export default defineComponent({
         },
       },
       {
-        label: '📊 Excel Copy Tool',
+        label: '📊 Excel copy tool',
         props: {
           onClick: async () => {
             await router.push({name: 'ExcelCopyTool'})
@@ -124,7 +124,7 @@ export default defineComponent({
         },
       },
       {
-        label: '🌐 I18n Edit Tool',
+        label: '🌐 I18n(json) editing tool',
         props: {
           onClick: async () => {
             await router.push({name: 'VueI18nEditTool'})
@@ -132,7 +132,7 @@ export default defineComponent({
         },
       },
       {
-        label: '🌎 I18n Batch Tool',
+        label: '🌎 I18n(json) batch tool',
         props: {
           onClick: async () => {
             await router.push({name: 'VueI18nBatchTool'})
@@ -231,6 +231,8 @@ export default defineComponent({
           <n-button
             style="min-width: 80px"
             size="tiny"
+            type="primary"
+            :secondary="!settingsStore.showInventory"
             @click="settingsStore.showInventory = !settingsStore.showInventory"
           >
             <template #icon>
@@ -248,7 +250,7 @@ export default defineComponent({
             placement="bottom-start"
             trigger="hover"
           >
-            <n-button size="tiny">
+            <n-button size="tiny" type="info">
               <template #icon>
                 <n-icon size="18"><Toolbox20Regular /></n-icon>
               </template>

@@ -67,7 +67,7 @@ multi-line comment
   <n-modal
     v-model:show="mVisible"
     preset="dialog"
-    title="Stylus Format Tool"
+    title="Stylus formatting tool"
     style="min-width: 800px"
   >
     <div class="style-tools">
