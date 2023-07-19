@@ -109,6 +109,9 @@ export default defineComponent({
           )
         }
 
+        if (!currentEditText.value) {
+          throw new Error('currentEditText is empty!')
+        }
         await writable.write(currentEditText.value)
         await writable.close()
         await reloadPickedDir()
