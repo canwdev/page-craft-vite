@@ -140,8 +140,10 @@ export default defineComponent({
         style="flex: 1"
         ><!--§-->
         <template #prefix>
-          <n-icon color="darkseagreen" size="16"> <Globe16Regular /> </n-icon>
-          <span style="color: darkseagreen">
+          <n-icon color="darkseagreen" size="16" :title="namespacePrefix">
+            <Globe16Regular />
+          </n-icon>
+          <span v-if="!isLite" style="color: darkseagreen">
             {{ namespacePrefix + (namespacePrefix ? '.' : '') }}
           </span>
         </template>

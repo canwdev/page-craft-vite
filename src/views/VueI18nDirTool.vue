@@ -359,11 +359,11 @@ export default defineComponent({
       &.batch-mode {
         :deep(.translate-item.active) {
           .n-input--focus {
-            background-color: rgba(244, 67, 54, 0.13);
+            //background-color: rgba(98, 83, 82, 0.13);
           }
           .n-input__state-border {
-            border-color: #f44336 !important;
-            box-shadow: 0 0 10px rgba(244, 67, 54, 0.13) !important;
+            border-color: #f4ce36 !important;
+            box-shadow: 0 0 10px rgba(244, 177, 54, 0.13) !important;
           }
         }
       }
