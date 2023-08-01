@@ -18,6 +18,8 @@ export default defineComponent({
     const textOutput = ref('')
     const mMode = ref(CopyMode.json)
     const isTrimEmptyLines = ref(true)
+    const htmlTagName = ref('')
+    const htmlAttrs = ref('')
 
     watch(textInput, () => {
       updateFormat()
@@ -30,18 +32,31 @@ export default defineComponent({
     watch(isTrimEmptyLines, () => {
       updateFormat()
     })
+    watch(htmlTagName, () => {
+      updateFormat()
+    })
+    watch(htmlAttrs, () => {
+      updateFormat()
+    })
 
     const updateFormat = () => {
-      textOutput.value = formatMultipleLine(textInput.value, mMode.value, isTrimEmptyLines.value)
+      textOutput.value = formatMultipleLine(textInput.value, mMode.value, {
+        isTrimEmptyLines: isTrimEmptyLines.value,
+        htmlTagName: htmlTagName.value,
+        htmlAttrs: htmlAttrs.value,
+      })
     }
 
     return {
       mVisible,
       textInput,
       textOutput,
+      CopyMode,
       CopyModeOptions,
       mMode,
       isTrimEmptyLines,
+      htmlTagName,
+      htmlAttrs,
     }
   },
 })
@@ -64,6 +79,17 @@ export default defineComponent({
       />
 
       <n-checkbox size="small" v-model:checked="isTrimEmptyLines">Trim empty lines</n-checkbox>
+
+      <template v-if="mMode === CopyMode.html">
+        <n-input v-model:value="htmlTagName" clearable placeholder="HTML Tag Name" size="small" />
+        <n-input
+          v-if="htmlTagName"
+          v-model:value="htmlAttrs"
+          clearable
+          placeholder="HTML Attrs"
+          size="small"
+        />
+      </template>
     </n-space>
     <div class="style-tools">
       <div class="common-card">

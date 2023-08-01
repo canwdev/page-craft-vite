@@ -8,7 +8,8 @@ export const CopyModeOptions = Object.values(CopyMode).map((i) => {
   return {label: i, value: i}
 })
 
-export const formatMultipleLine = (str, mode = 'text', isTrimEmptyLines = false) => {
+export const formatMultipleLine = (str, mode = 'text', options: any = {}) => {
+  const {isTrimEmptyLines = false, htmlTagName = '', htmlAttrs = ''} = options
   str = str.trim().replace(/ /gi, ' ') // replace [NBSP]
 
   if (isTrimEmptyLines) {
@@ -26,6 +27,13 @@ export const formatMultipleLine = (str, mode = 'text', isTrimEmptyLines = false)
     return JSON.stringify(arr, null, 2)
   }
   if (mode === CopyMode.html) {
+    if (htmlTagName) {
+      return arr
+        .map((item) => {
+          return `<${htmlTagName}${htmlAttrs ? ` ${htmlAttrs}` : ''}>${item}</${htmlTagName}>`
+        })
+        .join('\n')
+    }
     return arr.join('<br>')
   }
 }
