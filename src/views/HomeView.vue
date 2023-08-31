@@ -159,8 +159,6 @@ export default defineComponent({
         <n-button
           size="tiny"
           style="min-width: 70px"
-          type="primary"
-          :secondary="!settingsStore.showStyleEditor"
           @click="settingsStore.showStyleEditor = !settingsStore.showStyleEditor"
         >
           <template #icon>

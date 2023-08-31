@@ -233,8 +233,6 @@ export default defineComponent({
           <n-button
             style="min-width: 80px"
             size="tiny"
-            type="primary"
-            :secondary="!settingsStore.showInventory"
             @click="settingsStore.showInventory = !settingsStore.showInventory"
           >
             <template #icon>
@@ -252,7 +250,7 @@ export default defineComponent({
             placement="bottom-start"
             trigger="hover"
           >
-            <n-button size="tiny" type="info">
+            <n-button size="tiny">
               <template #icon>
                 <n-icon size="18"><Toolbox20Regular /></n-icon>
               </template>
