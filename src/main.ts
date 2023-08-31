@@ -15,10 +15,12 @@ const naive = create({
 import {createHead} from '@vueuse/head'
 import PortalVue from 'portal-vue'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+import i18n from '@/i18n/index'
 
 const app = createApp(App)
 const head = createHead()
 app.use(head)
+app.use(i18n)
 app.use(naive)
 app.use(router)
 const pinia = createPinia()

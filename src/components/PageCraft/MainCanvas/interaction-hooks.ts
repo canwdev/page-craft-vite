@@ -14,6 +14,7 @@ import {LineHelper} from '@/utils/line-helper'
 import {loadComponentHtml, loadComponentStyle} from '@/hooks/use-component-storage'
 import {NButton} from 'naive-ui'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
+import {useI18n} from 'vue-i18n'
 
 export const removeMouseOverDomElementEffect = () => {
   const $el = $(TOOL_CLASSES.DOT_CLASS_MOUSE_OVER)
@@ -30,6 +31,7 @@ export const removeMouseOverDomElementEffect = () => {
 const MAX_WAIT_TIME = 0.8 * 1000
 
 export const useInteractionHooks = (options) => {
+  const {t: $t} = useI18n()
   const {mainCanvasRef, saveData, indicatorOptions, copyHtml, recordUndo} = options
   const craftStore = useCraftStore()
   const waitingTime = ref(0)
@@ -178,7 +180,7 @@ export const useInteractionHooks = (options) => {
         ? []
         : [
             {
-              label: '✏️ Edit Element',
+              label: '✏️ ' + $t('actions.edit_element'),
               props: {
                 onClick: async () => {
                   nodeAction(targetEl, () => {
@@ -188,7 +190,7 @@ export const useInteractionHooks = (options) => {
               },
             },
             {
-              label: '📄 Copy HTML',
+              label: `📄 ${$t('actions.copy')} HTML`,
               props: {
                 onClick: async () => {
                   copyHtml(targetEl)
@@ -196,7 +198,7 @@ export const useInteractionHooks = (options) => {
               },
             },
             {
-              label: '✂️ Cut',
+              label: '✂️ ' + $t('actions.cut'),
               props: {
                 onClick: async () => {
                   removeMouseOverDomElementEffect()
@@ -208,7 +210,7 @@ export const useInteractionHooks = (options) => {
               },
             },
             {
-              label: '❌ Remove Element',
+              label: '❌ ' + $t('actions.remove_element'),
               props: {
                 onClick: async () => {
                   recordUndo()
@@ -220,9 +222,9 @@ export const useInteractionHooks = (options) => {
           ]
     return [
       craftStore.currentBlock.blockType === BlockType.HTML_ELEMENT && {
-        label: `➕ Insert ${craftStore.currentBlock.title}`,
+        label: `➕ ${$t('actions.insert')} ${craftStore.currentBlock.title}`,
         children: ['before', 'prepend', 'append', 'after'].map((position) => ({
-          label: `Insert ${position}`,
+          label: `${$t('actions.insert')} ${position}`,
           props: {
             onClick: async () => {
               insertCurrentBlock(targetEl, position)
@@ -238,9 +240,9 @@ export const useInteractionHooks = (options) => {
       },
       ...blockMenu,
       {
-        label: '📃 Paste outerHTML',
+        label: `📃 ${$t('actions.paste')} outerHTML`,
         children: ['beforebegin', 'afterbegin', 'beforeend', 'afterend'].map((position) => ({
-          label: `Paste at ${position}`,
+          label: `${$t('actions.paste_at')} ${position}`,
           props: {
             onClick: async () => {
               await pasteHtml(targetEl, position)
@@ -255,7 +257,7 @@ export const useInteractionHooks = (options) => {
         },
       },
       {
-        label: '🎈 Paste & Replace innerHTML',
+        label: '🎈 ' + $t('actions.paste__replace_inner'),
         props: {
           onClick: async () => {
             await pasteReplaceInnerHtml(targetEl)
@@ -268,7 +270,7 @@ export const useInteractionHooks = (options) => {
         label: 'd10',
       },
       {
-        label: '💻 Print to Console',
+        label: '💻 ' + $t('actions.print_to_console'),
         props: {
           onClick: async () => {
             console.log(e.target)
@@ -436,8 +438,8 @@ export const useInteractionHooks = (options) => {
       saveData()
 
       const n = window.$notification.create({
-        title: `Insert at ${currentPosition}`,
-        content: `Component insert complete`,
+        title: `${$t('actions.insert_at')} ${currentPosition}`,
+        content: $t('msgs.component_insert_com'),
         meta: block.title,
         duration: 4000,
         action: () =>
@@ -453,7 +455,7 @@ export const useInteractionHooks = (options) => {
               },
             },
             {
-              default: () => 'Append Style',
+              default: () => $t('actions.append_style'),
             }
           ),
       })

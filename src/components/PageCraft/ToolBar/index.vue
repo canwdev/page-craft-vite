@@ -9,6 +9,7 @@ import {useRouter} from 'vue-router'
 import {useSettingsStore} from '@/store/settings'
 import {ArrowReset20Regular, Diversity20Regular, Toolbox20Regular} from '@vicons/fluent'
 import PreviewWindow from '@/components/PageCraft/DomPreview/PreviewWindow.vue'
+import {useI18n} from 'vue-i18n'
 
 export default defineComponent({
   name: 'BottomToolBar',
@@ -21,6 +22,7 @@ export default defineComponent({
     Toolbox20Regular,
   },
   setup(props, {emit}) {
+    const {t: $t} = useI18n()
     const craftStore = useCraftStore()
     const settingsStore = useSettingsStore()
 
@@ -108,7 +110,7 @@ export default defineComponent({
     const router = useRouter()
     const toolsMenuOptions = [
       {
-        label: '⚜ Stylus formatting tool',
+        label: '⚜ Stylus ' + $t('common.formatting_tool'),
         props: {
           onClick: async () => {
             emit('openStylusTools')
@@ -116,7 +118,7 @@ export default defineComponent({
         },
       },
       {
-        label: '📊 Excel copy tool',
+        label: '📊 ' + $t('common.excel_copy_tool'),
         props: {
           onClick: async () => {
             await router.push({name: 'ExcelCopyTool'})
@@ -124,7 +126,7 @@ export default defineComponent({
         },
       },
       {
-        label: '🌐 I18n(json) editing tool',
+        label: '🌐 ' + $t('common.i18njson_editing_too'),
         props: {
           onClick: async () => {
             await router.push({name: 'VueI18nEditTool'})
@@ -132,7 +134,7 @@ export default defineComponent({
         },
       },
       {
-        label: '🌎 I18n(json) batch tool',
+        label: '🌎 ' + $t('common.i18njson_batch_tool'),
         props: {
           onClick: async () => {
             await router.push({name: 'VueI18nBatchTool'})
@@ -200,7 +202,7 @@ export default defineComponent({
               size="tiny"
               type="text"
               v-model:value="craftStore.className"
-              placeholder="CSS Class"
+              placeholder="CSS class"
               style="font-family: monospace"
               clearable
             />
@@ -225,7 +227,7 @@ export default defineComponent({
                 </template>
               </n-button>
             </template>
-            Confirm reset toolbar?
+            {{ $t('msgs.confirm_reset_toolba') }}
           </n-popconfirm>
 
           <n-button
@@ -238,7 +240,7 @@ export default defineComponent({
             <template #icon>
               <n-icon v-if="settingsStore.showInventory" size="18"><Diversity20Regular /></n-icon>
             </template>
-            Inventory
+            {{ $t('common.inventory') }}
           </n-button>
 
           <slot></slot>
@@ -254,7 +256,7 @@ export default defineComponent({
               <template #icon>
                 <n-icon size="18"><Toolbox20Regular /></n-icon>
               </template>
-              Tools
+              {{ $t('common.tools') }}
             </n-button>
           </n-dropdown>
         </n-space>

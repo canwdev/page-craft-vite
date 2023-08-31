@@ -15,8 +15,10 @@ import {useCraftStore} from '@/store/craft'
 import {UndoRedo} from '@/utils/undo-redo'
 import {sassToCSS} from '@/utils/css'
 import {useSettingsStore} from '@/store/settings'
+import {useI18n} from 'vue-i18n'
 
 export const useMcMain = (options) => {
+  const {t: $t} = useI18n()
   const {mainCanvasRef, emit} = options
   const craftStore = useCraftStore()
   const settingsStore = useSettingsStore()
@@ -39,7 +41,7 @@ export const useMcMain = (options) => {
     removeMouseOverDomElementEffect()
     const html = el ? el.outerHTML : mainCanvasRef.value.innerHTML
     copyToClipboard(formatHtml(html))
-    // window.$message.success('Copy Success!')
+    window.$message.success($t('msgs.copy_success'))
 
     saveData()
   }
@@ -49,7 +51,7 @@ export const useMcMain = (options) => {
     saveCurCompHtml(html)
     saveCurCompStyle(style)
     globalEventBus.emit(GlobalEvents.IMPORT_SUCCESS, style)
-    window.$message.success('Import Success!')
+    window.$message.success($t('msgs.import_success'))
   }
   const handleImportJsonSelected = async (file) => {
     const str = await handleReadSelectedFile(file)
@@ -105,7 +107,7 @@ export const useMcMain = (options) => {
 
   const htmlMenuOptions = [
     {
-      label: '📥 Import JSON',
+      label: `📥 ${$t('actions.import')} JSON`,
       props: {
         onClick: async () => {
           fileChooserRef.value.chooseFile()
@@ -113,7 +115,7 @@ export const useMcMain = (options) => {
       },
     },
     {
-      label: '📃 Export JSON',
+      label: `📃 ${$t('actions.export')} JSON`,
       props: {
         onClick: async () => {
           handleExportJson(await getEntityData())
@@ -121,10 +123,10 @@ export const useMcMain = (options) => {
       },
     },
     {
-      label: '📤 Export',
+      label: `📤 ${$t('actions.export')}`,
       children: [
         {
-          label: '💚 Export Vue 2 SFC',
+          label: `💚 ${$t('actions.export')} Vue 2 SFC`,
           props: {
             onClick: async () => {
               handleExportVue(await getEntityData())
@@ -132,7 +134,7 @@ export const useMcMain = (options) => {
           },
         },
         {
-          label: '💚 Export Vue 3 SFC',
+          label: `💚 ${$t('actions.export')} Vue 3 SFC`,
           props: {
             onClick: async () => {
               handleExportVue(await getEntityData(), 3)
@@ -140,7 +142,7 @@ export const useMcMain = (options) => {
           },
         },
         {
-          label: '📑 Export HTML',
+          label: `📑 ${$t('actions.export')} HTML`,
           props: {
             onClick: async () => {
               handleExportHtml(await getEntityData())
@@ -148,7 +150,7 @@ export const useMcMain = (options) => {
           },
         },
         {
-          label: '📧 Export Email HTML',
+          label: `📧 ${$t('actions.export')} Email HTML`,
           props: {
             onClick: async () => {
               handleExportHtml(await getEntityData(), {isInline: true})
@@ -156,7 +158,7 @@ export const useMcMain = (options) => {
           },
         },
         {
-          label: '📧 Export Email HTML (With Style Tag)',
+          label: `📧 ${$t('actions.export')} Email HTML (With Style Tag)`,
           props: {
             onClick: async () => {
               handleExportHtml(await getEntityData(), {isInline: true, inlineWithStyleTag: true})
@@ -170,7 +172,7 @@ export const useMcMain = (options) => {
       label: 'd0',
     },
     {
-      label: '📄 Paste HTML...',
+      label: `📄 ${$t('actions.paste')} HTML...`,
       props: {
         onClick: async () => {
           isShowImportDialog.value = true
@@ -178,7 +180,7 @@ export const useMcMain = (options) => {
       },
     },
     {
-      label: '📄 Copy HTML',
+      label: `📄 ${$t('actions.copy')} HTML`,
       props: {
         onClick: async () => {
           copyHtml()
@@ -190,18 +192,18 @@ export const useMcMain = (options) => {
       label: 'd1',
     },
     {
-      label: '❌ Clear All Code',
+      label: '❌ ' + $t('actions.clear_all_code'),
       props: {
         onClick: async () => {
           window.$dialog.warning({
-            title: 'Confirm',
-            content: `Confirm clear current HTML + Style code? This can not be undo!`,
-            positiveText: 'OK',
-            negativeText: 'Cancel',
+            title: $t('actions.confirm'),
+            content: $t('msgs.confirm_clear_curren'),
+            positiveText: $t('actions.ok'),
+            negativeText: $t('actions.cancel'),
             onPositiveClick: () => {
               handleImportHtml('')
               globalEventBus.emit(GlobalEvents.IMPORT_SUCCESS, '')
-              window.$message.success('Clear!')
+              window.$message.success($t('actions.done') + '!')
             },
             onNegativeClick: () => {},
           })

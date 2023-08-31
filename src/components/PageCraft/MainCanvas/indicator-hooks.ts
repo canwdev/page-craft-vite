@@ -1,6 +1,7 @@
 import {LsKeys} from '@/enum/page-craft'
 import {ActionType, BlockType} from '@/enum/page-craft/block'
 import {useCraftStore} from '@/store/craft'
+import {useI18n} from 'vue-i18n'
 
 export type IndicatorOptions = {
   enableDevHelpClass: boolean
@@ -17,6 +18,7 @@ export type IndicatorOptions = {
 }
 
 export const useIndicator = () => {
+  const {t: $t} = useI18n()
   const craftStore = useCraftStore()
 
   const indicatorOptions = reactive<IndicatorOptions>(
@@ -62,25 +64,25 @@ export const useIndicator = () => {
   const toggleList = [
     {
       flag: 'enableDevHelpClass',
-      title: 'Outline',
-      desc: 'Add 1px outline per element for better distinction',
+      title: $t('common.outline'),
+      desc: $t('msgs.add_1px_outline_per'),
     },
-    {flag: 'enableExpand', title: 'Padding', desc: 'Pad each element with 10px for selection'},
+    {flag: 'enableExpand', title: $t('common.padding'), desc: $t('msgs.pad_each_element_wit')},
     {
       flag: 'contentEditable',
-      title: 'Content Editable',
-      desc: 'Enable HTML contenteditable feature!',
+      title: $t('msgs.content_editable'),
+      desc: $t('msgs.enable_html_contente'),
     },
     {
       flag: 'enableSelection',
-      title: 'Enable Hover',
-      desc: 'Add cursor hover locate effect',
+      title: $t('msgs.enable_hover'),
+      desc: $t('msgs.add_cursor_hover_loc'),
     },
-    {flag: 'enableRightClick', title: 'Enable Right Click', desc: ''},
-    {flag: 'centeredElementsY', title: 'Centered Y', desc: ''},
-    {flag: 'centeredElementsX', title: 'Centered X', desc: ''},
-    {flag: 'fullWidth', title: 'Full Width', desc: ''},
-    {flag: 'bgDark', title: 'Dark BG', desc: ''},
+    {flag: 'enableRightClick', title: $t('msgs.enable_right_click'), desc: ''},
+    {flag: 'centeredElementsY', title: $t('msgs.centered') + ' Y', desc: ''},
+    {flag: 'centeredElementsX', title: $t('msgs.centered') + ' X', desc: ''},
+    {flag: 'fullWidth', title: $t('msgs.full_width'), desc: ''},
+    {flag: 'bgDark', title: $t('msgs.dark_bg'), desc: ''},
   ]
 
   const backgroundStyle = computed(() => {

@@ -8,6 +8,7 @@ import {
 } from '@/enum/vue-i18n-tool'
 import {copyToClipboard} from '@/utils'
 import {Delete20Regular, Globe16Regular} from '@vicons/fluent'
+import {useI18n} from 'vue-i18n'
 
 export default defineComponent({
   name: 'TranslateItem',
@@ -31,6 +32,7 @@ export default defineComponent({
   },
   emits: ['onRemove', 'previewArray', 'onKeyClick'],
   setup(props, {emit}) {
+    const {t: $t} = useI18n()
     const {item, treeItem} = toRefs(props)
 
     const namespacePrefix = computed(() => {
@@ -87,7 +89,7 @@ export default defineComponent({
         }
 
         copyToClipboard(text)
-        window.$message.success('Text Copied')
+        window.$message.success($t('msgs.copy_success'))
       },
       handleBlur() {
         if (!item.value.key) {
@@ -140,7 +142,7 @@ export default defineComponent({
             class="item-value-edit"
             @click="$emit('previewArray', item)"
           >
-            📝 Array
+            📝 {{ $t('common.array') }}
           </n-button>
         </template>
 
@@ -178,7 +180,7 @@ export default defineComponent({
             </n-button>
             <!--× Del-->
           </template>
-          Remove Item?
+          {{ $t('msgs.remove_item') }}
         </n-popconfirm>
       </n-space>
       <n-space> </n-space>

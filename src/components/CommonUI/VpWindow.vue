@@ -170,7 +170,7 @@ export default defineComponent({
           <div ref="titleBarButtonsRef" class="vp-window-controls">
             <slot name="titleBarRightControls"> </slot>
             <slot name="titleBarRight">
-              <button title="Close" @click="mVisible = false" class="_danger">
+              <button :title="$t('actions.close')" @click="mVisible = false" class="_danger">
                 <n-icon size="20"><Dismiss20Regular /></n-icon>
               </button>
             </slot>

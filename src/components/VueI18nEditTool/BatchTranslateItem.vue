@@ -6,6 +6,7 @@ import _set from 'lodash/set'
 import {handleReadSelectedFile} from '@/utils/exporter'
 import {DocumentEdit20Regular, SaveMultiple20Regular} from '@vicons/fluent'
 import DialogTextEdit from '@/components/CommonUI/DialogTextEdit.vue'
+import {useI18n} from 'vue-i18n'
 // import countryCodeEmoji from '@/utils/country-code-emoji'
 
 export default defineComponent({
@@ -29,6 +30,7 @@ export default defineComponent({
   },
   emits: ['saveChanged'],
   setup(props, {emit}) {
+    const {t: $t} = useI18n()
     const {dirItem, filePathArr, translatePath} = toRefs(props)
 
     const findNode = (): DirTreeItem | null => {
@@ -143,10 +145,10 @@ export default defineComponent({
 
         await writable.write(txt)
         await writable.close()
-        window.$message.success('Saved!')
+        window.$message.success($t('msgs.saved'))
       } catch (error: any) {
         console.error(error)
-        window.$message.error('Error!' + error.message)
+        window.$message.error($t('msgs.error') + error.message)
         throw error
       }
     }
@@ -233,7 +235,7 @@ export default defineComponent({
           type="textarea"
           size="small"
           v-model:value="translateText"
-          :placeholder="isFieldArray ? 'Input array' : 'Input text'"
+          :placeholder="isFieldArray ? $t('msgs.input_array') : $t('msgs.input_text')"
           :rows="isFieldArray ? 2 : 1"
           style="width: 450px"
           :class="{'font-code': isFieldArray}"
@@ -243,7 +245,7 @@ export default defineComponent({
           v-if="isFieldArray"
           @click="isShowArrayEdit = true"
           size="small"
-          title="Edit"
+          :title="$t('actions.edit')"
         >
           <template #icon><DocumentEdit20Regular /></template>
         </n-button>
@@ -251,19 +253,23 @@ export default defineComponent({
         <n-button size="small" v-if="isChanged" type="primary" @click="saveChange({isEmit: true})">
           <template #icon><SaveMultiple20Regular /></template>
         </n-button>
-        <n-button secondary size="small" v-if="isChanged" @click="cancelChange"> Cancel </n-button>
+        <n-button secondary size="small" v-if="isChanged" @click="cancelChange">
+          {{ $t('actions.cancel') }}
+        </n-button>
       </n-space>
       <n-space v-else>
-        <n-button size="small" @click="createField('')" type="primary">Create text</n-button>
-        <n-button size="small" @click="createField([])">Create Array</n-button>
+        <n-button size="small" @click="createField('')" type="primary">{{
+          $t('actions.create_text')
+        }}</n-button>
+        <n-button size="small" @click="createField([])">{{ $t('actions.create_array') }}</n-button>
       </n-space>
     </template>
-    <div style="color: gray" v-else>Please select a translation field on the left</div>
+    <div style="color: gray" v-else>{{ $t('msgs.please_select_a_tran') }}</div>
 
     <DialogTextEdit
       is-textarea
-      title="Array Detail"
-      placeholder="Array JSON String"
+      :title="$t('common.array_detail')"
+      :placeholder="$t('common.array_json_string')"
       v-model:visible="isShowArrayEdit"
       :text="translateText"
       @onSave="handleSaveArray"

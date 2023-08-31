@@ -16,6 +16,7 @@ import {ExportItem} from '@/enum/page-craft/block'
 import {useCraftStore} from '@/store/craft'
 // import BackgroundLayer from '@/components/BackgroundLayer/index.vue'
 import {PaintBrush16Regular} from '@vicons/fluent'
+import {useI18n} from 'vue-i18n'
 
 export default defineComponent({
   name: 'HomeView',
@@ -30,6 +31,7 @@ export default defineComponent({
     PaintBrush16Regular,
   },
   setup() {
+    const {t: $t} = useI18n()
     const settingsStore = useSettingsStore()
     const {metaTitle} = useMetaTitle()
 
@@ -72,7 +74,7 @@ export default defineComponent({
     const craftStore = useCraftStore()
     const styleMenuOptions = [
       {
-        label: '📄 Copy Compiled CSS',
+        label: '📄 ' + $t('actions.copy_compiled_css'),
         props: {
           onClick: async () => {
             const style = loadCurCompStyle()
@@ -82,10 +84,10 @@ export default defineComponent({
         },
       },
       {
-        label: '📤 Export',
+        label: '📤 ' + $t('actions.export'),
         children: [
           {
-            label: '📃 Export CSS File',
+            label: `📃 ${$t('actions.export')} css`,
             props: {
               onClick: async () => {
                 await handleExportStyle(
@@ -100,7 +102,7 @@ export default defineComponent({
             },
           },
           {
-            label: '📃 Export SCSS File',
+            label: `📃 ${$t('actions.export')} scss`,
             props: {
               onClick: async () => {
                 await handleExportStyle(
@@ -139,7 +141,9 @@ export default defineComponent({
     <MainCanvas>
       <template #settingsButtons>
         <n-space align="center" size="small">
-          <n-button size="small" @click="isShowSettings = true">Settings</n-button>
+          <n-button size="small" @click="isShowSettings = true">{{
+            $t('common.settings')
+          }}</n-button>
           <n-a href="https://github.com/canwdev/page-craft-vite" target="_blank">Github...</n-a>
         </n-space>
       </template>
@@ -163,7 +167,7 @@ export default defineComponent({
             <n-icon v-if="settingsStore.showStyleEditor" size="18"
               ><PaintBrush16Regular
             /></n-icon> </template
-          >Style
+          >{{ $t('common.style') }}
         </n-button>
       </n-dropdown>
       <template #end>
@@ -174,25 +178,25 @@ export default defineComponent({
 
     <n-modal
       v-model:show="isShowGlobalStyleDialog"
-      negative-text="Cancel"
-      positive-text="Save"
+      :negative-text="$t('actions.cancel')"
+      :positive-text="$t('actions.save')"
       preset="dialog"
-      title="Global Style"
+      :title="$t('common.global_style')"
       @positive-click="applyGlobalStyle"
     >
       <n-input
         v-model:value="globalStyleText"
-        placeholder="CSS Code Only"
+        :placeholder="$t('msgs.css_code_only')"
         rows="20"
         style="font-family: monospace"
         type="textarea"
       />
     </n-modal>
 
-    <n-modal v-model:show="isShowSettings" preset="dialog" title="PageCraft Settings">
+    <n-modal v-model:show="isShowSettings" preset="dialog" :title="$t('common.settings')">
       <n-list>
         <n-list-item>
-          <n-thing title="Toggle Theme" />
+          <n-thing :title="$t('actions.toggle_theme')" />
           <template #suffix>
             <n-select
               v-model:value="settingsStore.theme"
@@ -203,13 +207,13 @@ export default defineComponent({
           </template>
         </n-list-item>
         <n-list-item>
-          <n-thing title="Top Layout" />
+          <n-thing :title="$t('common.top_layout')" />
           <template #suffix>
             <n-switch v-model:value="settingsStore.enableTopLayout" />
           </template>
         </n-list-item>
         <n-list-item>
-          <n-thing title="Theme" />
+          <n-thing :title="$t('common.theme')" />
           <template #suffix>
             <n-space align="center" justify="end" size="small" style="width: 280px">
               <n-switch size="small" v-model:value="settingsStore.enableAeroTheme">
@@ -228,11 +232,13 @@ export default defineComponent({
           </template>
         </n-list-item>
         <n-list-item>
-          <n-thing title="Global Style" />
+          <n-thing :title="$t('common.global_style')" />
           <template #suffix>
             <n-space align="center" justify="end" size="small" style="width: 200px">
               <n-switch v-model:value="settingsStore.enableGlobalCss" />
-              <n-button size="small" @click="isShowGlobalStyleDialog = true"> Edit </n-button>
+              <n-button size="small" @click="isShowGlobalStyleDialog = true">{{
+                $t('actions.edit')
+              }}</n-button>
             </n-space>
           </template>
         </n-list-item>

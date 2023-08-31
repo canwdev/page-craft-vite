@@ -6,7 +6,7 @@ export default defineComponent({
   props: {
     text: {
       type: String,
-      default: 'Drop files here',
+      default: '',
     },
   },
 })
@@ -14,7 +14,7 @@ export default defineComponent({
 
 <template>
   <div class="file-dropzone">
-    <div class="border-dashed">{{ text }}</div>
+    <div class="border-dashed">{{ text || $t('msgs.drop_files_here') }}</div>
   </div>
 </template>
 

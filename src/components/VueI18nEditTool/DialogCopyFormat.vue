@@ -66,11 +66,11 @@ export default defineComponent({
   <n-modal
     v-model:show="mVisible"
     preset="dialog"
-    title="Text transformer"
+    :title="$t('common.text_transformer')"
     style="min-width: 800px"
   >
     <n-space align="center" style="margin-bottom: 10px">
-      Mode:
+      {{ $t('common.mode') }}:
       <n-select
         size="small"
         v-model:value="mMode"
@@ -78,7 +78,9 @@ export default defineComponent({
         style="width: 100px"
       />
 
-      <n-checkbox size="small" v-model:checked="isTrimEmptyLines">Trim empty lines</n-checkbox>
+      <n-checkbox size="small" v-model:checked="isTrimEmptyLines">{{
+        $t('msgs.trim_empty_lines')
+      }}</n-checkbox>
 
       <template v-if="mMode === CopyMode.html">
         <n-input v-model:value="htmlTagName" clearable placeholder="HTML Tag Name" size="small" />

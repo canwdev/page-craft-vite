@@ -44,5 +44,9 @@ let routes = [
     ],
   },
 ]
+const router = createRouter({history, routes})
 
-export default createRouter({history, routes})
+router.afterEach((to, _, failure) => {
+  document.title = (to?.meta?.title as string) || document.title
+})
+export default router

@@ -77,11 +77,11 @@ export default defineComponent({
   <n-modal
     v-model:show="mVisible"
     preset="dialog"
-    :title="`Edit Element: ${formValueRef.tagName}`"
+    :title="`${$t('msgs.edit_element')}: ${formValueRef.tagName}`"
     label-placement="top"
   >
     <n-form ref="formRef" :label-width="80" :model="formValueRef" :rules="formRules" size="small">
-      <n-form-item label="Class" path="className">
+      <n-form-item label="class" path="className">
         <n-input
           v-model:value="formValueRef.className"
           placeholder="class"
@@ -138,14 +138,19 @@ export default defineComponent({
 
       <n-space justify="space-between">
         <n-space>
-          <n-switch v-model:value="isEditInnerHTML" title="Toggle innerHTML/outerHTML">
-            <template #checked> InnerHTML </template>
-            <template #unchecked> OuterHTML </template>
+          <n-switch
+            v-model:value="isEditInnerHTML"
+            :title="`${$t('actions.toggle')} innerHTML/outerHTML`"
+          >
+            <template #checked> innerHTML </template>
+            <template #unchecked> outerHTML </template>
           </n-switch>
         </n-space>
         <n-space>
-          <n-button attr-type="button" @click="handleCancel"> Cancel </n-button>
-          <n-button type="primary" attr-type="button" @click="handleValidateClick"> OK </n-button>
+          <n-button attr-type="button" @click="handleCancel"> {{ $t('actions.cancel') }} </n-button>
+          <n-button type="primary" attr-type="button" @click="handleValidateClick">
+            {{ $t('actions.ok') }}
+          </n-button>
         </n-space>
       </n-space>
     </n-form>

@@ -62,6 +62,7 @@ declare module '@vue/runtime-core' {
     NTabPane: typeof import('naive-ui')['NTabPane']
     NTabs: typeof import('naive-ui')['NTabs']
     NThing: typeof import('naive-ui')['NThing']
+    NTooltip: typeof import('naive-ui')['NTooltip']
     NTree: typeof import('naive-ui')['NTree']
     PopFloat: typeof import('./src/components/PageCraft/DomPreview/PopFloat.vue')['default']
     PreviewWindow: typeof import('./src/components/PageCraft/DomPreview/PreviewWindow.vue')['default']

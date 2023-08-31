@@ -51,7 +51,12 @@ export default defineComponent({
 <template>
   <div class="inventory-list-wrap">
     <div class="filter-row" v-if="showFilter">
-      <n-input v-model:value="filterText" clearable placeholder="Filter Items" size="tiny">
+      <n-input
+        v-model:value="filterText"
+        clearable
+        :placeholder="$t('msgs.filter_items')"
+        size="tiny"
+      >
         <template #prefix>
           <n-icon size="20">
             <Search20Regular />
@@ -60,7 +65,7 @@ export default defineComponent({
       </n-input>
     </div>
     <div v-if="!itemListFiltered.length" style="padding: 40px; text-align: center; font-size: 20px">
-      No Items.
+      {{ $t('msgs.no_items') }}
     </div>
     <div v-else class="inventory-list _scrollbar_mini" :class="{_big: isComponentBlock}">
       <template v-for="(item, index) in itemListFiltered" :key="item.id">

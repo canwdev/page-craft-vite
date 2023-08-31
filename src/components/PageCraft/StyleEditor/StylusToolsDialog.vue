@@ -67,15 +67,15 @@ multi-line comment
   <n-modal
     v-model:show="mVisible"
     preset="dialog"
-    title="Stylus formatting tool"
+    :title="`Stylus ${$t('common.formatting_tool')}`"
     style="min-width: 800px"
   >
     <div class="style-tools">
       <div class="common-card">
         <div class="action-row">
-          <!--          <n-button type="primary" size="small" @click="doFormat">Format</n-button>-->
-          <n-button size="small" @click="doClear">Clear</n-button>
-          <n-button size="small" @click="showDemo">Demo</n-button>
+          <!--          <n-button type="primary" size="small" @click="doFormat">{{ $t('common.format') }}</n-button>-->
+          <n-button size="small" @click="doClear">{{ $t('actions.clear') }}</n-button>
+          <n-button size="small" @click="showDemo">{{ $t('common.demo') }}</n-button>
           <n-a href="https://thisismanta.github.io/stylus-supremacy/#demo" target="_blank"
             >Stylus Supermacy</n-a
           >

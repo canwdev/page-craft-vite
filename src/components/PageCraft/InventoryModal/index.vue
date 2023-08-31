@@ -28,6 +28,7 @@ import {
 } from '@vicons/fluent'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import VpWindow from '@/components/CommonUI/VpWindow.vue'
+import {useI18n} from 'vue-i18n'
 
 let idx = 1
 
@@ -52,6 +53,7 @@ export default defineComponent({
   },
   emits: ['onItemClick'],
   setup(props, {emit}) {
+    const {t: $t} = useI18n()
     const mVisible = useModelWrapper(props, emit, 'visible')
     const craftStore = useCraftStore()
     const settingsStore = useSettingsStore()
@@ -82,11 +84,11 @@ export default defineComponent({
     const getNamePrompt = (message = '', name = '') => {
       name = prompt(message, name) || ''
       if (!name) {
-        const message = 'The component name cannot be empty'
+        const message = $t('msgs.the_component_name_c')
         throw new Error(message)
       }
       if (componentList.value.find((item) => item.title === name)) {
-        const message = 'The component name already exists'
+        const message = $t('msgs.name_already_exists')
         window.$message.error(message)
         throw new Error(message)
       }
@@ -100,7 +102,7 @@ export default defineComponent({
     })
 
     const handleCreateComponent = () => {
-      let name = getNamePrompt('Please enter the component name', `Component${idx}`)
+      let name = getNamePrompt($t('msgs.please_enter_the_nam'), `Component${idx}`)
 
       componentList.value = [...componentList.value, createComponentBlockItem(name)]
       settingsStore.curCompoName = name
@@ -110,10 +112,10 @@ export default defineComponent({
     const handleComponentDelete = () => {
       const item = editingNode.value
       window.$dialog.warning({
-        title: 'Confirm',
-        content: `Are you sure to delete ${item.title}?`,
-        positiveText: 'OK',
-        negativeText: 'Cancel',
+        title: $t('actions.confirm'),
+        content: $t('msgs.are_you_sure_to_dele') + ` ${item.title}?`,
+        positiveText: $t('actions.ok'),
+        negativeText: $t('actions.cancel'),
         onPositiveClick: () => {
           const index = componentList.value.findIndex((i) => i.id === item.id)
           const list = [...componentList.value]
@@ -134,10 +136,10 @@ export default defineComponent({
 
     const handleDeleteAll = () => {
       window.$dialog.warning({
-        title: 'Confirm',
-        content: `Are you sure to delete all components?`,
-        positiveText: 'OK',
-        negativeText: 'Cancel',
+        title: $t('actions.confirm'),
+        content: $t('msgs.sure_to_del_all'),
+        positiveText: $t('actions.ok'),
+        negativeText: $t('actions.cancel'),
         onPositiveClick: () => {
           settingsStore.curCompoName = ''
           componentList.value.forEach((item) => {
@@ -151,7 +153,7 @@ export default defineComponent({
 
     const handleComponentRename = () => {
       const item = editingNode.value
-      const name = getNamePrompt('Please input component name', item.title)
+      const name = getNamePrompt($t('msgs.please_enter_the_nam'), item.title)
 
       const index = componentList.value.findIndex((i) => i.id === item.id)
       const list = [...componentList.value]
@@ -169,7 +171,7 @@ export default defineComponent({
 
     const handleComponentDuplicate = () => {
       const item = editingNode.value
-      const name = getNamePrompt('Please input new component name', item.title + '-1')
+      const name = getNamePrompt($t('msgs.please_input_new_name'), item.title + '-1')
 
       copyCompStorage(item.title, name)
 
@@ -180,7 +182,7 @@ export default defineComponent({
 
     const getCompMenuOptions = (item) => [
       {
-        label: '👀 Preview',
+        label: '👀 ' + $t('actions.preview'),
         props: {
           onClick: async () => {
             nodeAction(item, () => {
@@ -190,7 +192,7 @@ export default defineComponent({
         },
       },
       {
-        label: '✏️ Rename',
+        label: '✏️ ' + $t('actions.rename'),
         props: {
           onClick: async () => {
             nodeAction(item, () => {
@@ -200,7 +202,7 @@ export default defineComponent({
         },
       },
       {
-        label: '📄 Duplicate',
+        label: '📄 ' + $t('actions.duplicate'),
         props: {
           onClick: async () => {
             nodeAction(item, () => {
@@ -210,7 +212,7 @@ export default defineComponent({
         },
       },
       {
-        label: '❌ Delete',
+        label: '❌ ' + $t('actions.delete'),
         props: {
           onClick: async () => {
             nodeAction(item, () => {
@@ -224,7 +226,7 @@ export default defineComponent({
     const getAddMenuOptions = () => {
       return [
         {
-          label: '🔰 Default Board',
+          label: '🔰 ' + $t('common.default_board'),
           props: {
             onClick: async () => {
               cancelSelectComponent()
@@ -232,7 +234,7 @@ export default defineComponent({
           },
         },
         {
-          label: '❌ Delete All',
+          label: '❌ ' + $t('actions.delete_all'),
           props: {
             onClick: async () => {
               handleDeleteAll()
@@ -244,7 +246,7 @@ export default defineComponent({
           label: 'd0',
         },
         {
-          label: '📥 Import All (JSON)',
+          label: `📥 ${$t('actions.import')} ${$t('common.all_components')} (JSON)`,
           props: {
             onClick: async () => {
               importFileChooserRef.value.chooseFile()
@@ -252,7 +254,7 @@ export default defineComponent({
           },
         },
         {
-          label: '📃 Export All (JSON)',
+          label: `📃 ${$t('actions.export')} ${$t('common.all_components')} (JSON)`,
           props: {
             onClick: async () => {
               await exportAll()
@@ -264,7 +266,7 @@ export default defineComponent({
           label: 'd1',
         },
         {
-          label: '➕ Add Component',
+          label: '➕ ' + $t('actions.add_component'),
           props: {
             onClick: async () => {
               handleCreateComponent()
@@ -306,9 +308,6 @@ export default defineComponent({
 </script>
 
 <template>
-  <!-- TODO: 改为弹窗预览 -->
-  <!--  <PopFloat v-if="mVisible" />-->
-
   <n-dropdown
     v-if="mVisible"
     trigger="manual"
@@ -332,7 +331,7 @@ export default defineComponent({
     :allow-move="!settingsStore.isInvAttached"
   >
     <template #titleBarLeft>
-      <n-icon size="20"><Diversity20Regular /></n-icon>&nbsp;Inventory list
+      <n-icon size="20"><Diversity20Regular /></n-icon>&nbsp;{{ $t('common.inventory_list') }}
     </template>
     <template #titleBarRightControls>
       <button @click="settingsStore.isInvAttached = !settingsStore.isInvAttached">
@@ -350,13 +349,13 @@ export default defineComponent({
       animated
       style="height: 100%"
     >
-      <n-tab-pane :name="BlockType.HTML_ELEMENT" tab="Blocks">
+      <n-tab-pane :name="BlockType.HTML_ELEMENT" :tab="$t('common.blocks')">
         <InventoryList
           :item-list="[...actionBlockItemList, ...htmlBlockItemList]"
           @onItemClick="(v) => $emit('onItemClick', v)"
         />
       </n-tab-pane>
-      <n-tab-pane :name="BlockType.COMPONENT" tab="Components">
+      <n-tab-pane :name="BlockType.COMPONENT" :tab="$t('common.components')">
         <InventoryList
           :item-list="componentListSorted"
           is-component-block

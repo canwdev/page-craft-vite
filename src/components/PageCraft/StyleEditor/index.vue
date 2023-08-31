@@ -37,6 +37,7 @@ import {
   Wand20Regular,
   PaintBrush20Regular,
 } from '@vicons/fluent'
+import {useI18n} from 'vue-i18n'
 emmetCSS(monaco, ['css', 'scss'])
 
 self.MonacoEnvironment = {
@@ -78,6 +79,7 @@ export default defineComponent({
   },
   emits: ['update:visible'],
   setup(props, {emit}) {
+    const {t: $t} = useI18n()
     const mVisible = useModelWrapper(props, emit, 'visible')
     const editorContainerRef = ref()
     const craftStore = useCraftStore()
@@ -227,7 +229,7 @@ export default defineComponent({
 
     const copyStyle = () => {
       copyToClipboard(editorInstance.value.getValue())
-      message.success('Copy Success!')
+      message.success($t('msgs.copy_success'))
     }
 
     const backupBlock = ref<BlockItem | null>(null)
@@ -298,11 +300,11 @@ export default defineComponent({
 
     const toolOptions = [
       {
-        label: 'CSS Snippets',
+        label: 'CSS ' + $t('common.snippets'),
         children: getToolChildren(cssSnippetList),
       },
       {
-        label: 'CSS Helper Classes',
+        label: 'CSS ' + $t('common.helper_classes'),
         children: getToolChildren(cssHelperClassList),
       },
       {
@@ -310,11 +312,11 @@ export default defineComponent({
         children: getToolChildren(cssKeyFramesList),
       },
       {
-        label: 'Vue 2 Transitions',
+        label: 'Vue 2 ' + $t('common.transitions'),
         children: getToolChildren(vue2TransitionsList),
       },
       {
-        label: 'Sass Variables',
+        label: 'Sass ' + $t('common.variables'),
         children: getToolChildren(sassVariablesList),
       },
     ]
@@ -346,11 +348,11 @@ export default defineComponent({
     wid="style_editor"
   >
     <template #titleBarLeft>
-      <n-icon size="20"><PaintBrush20Regular /></n-icon>&nbsp;Style editor (scss)
+      <n-icon size="20"><PaintBrush20Regular /></n-icon>&nbsp;{{ $t('common.style_editor') }} (scss)
     </template>
     <template #titleBarRightControls>
       <button
-        title="Select an element in the page to generate its CSS Selector"
+        :title="$t('msgs.select_an_element_in')"
         :class="{active: craftStore.isSelectMode}"
         @click="enterSelectMode"
       >
@@ -360,16 +362,16 @@ export default defineComponent({
         </n-icon>
       </button>
       <n-dropdown :options="toolOptions" key-field="label" size="large">
-        <button title="Add tool codes">
+        <button :title="$t('actions.add_tool_codes')">
           <n-icon size="20"><PaintBucket20Filled /></n-icon>
         </button>
       </n-dropdown>
 
-      <button title="Beautify code" @click="execBeautifyCssAction">
+      <button :title="$t('actions.beautify_code')" @click="execBeautifyCssAction">
         <n-icon size="20"><Wand20Regular /></n-icon>
       </button>
 
-      <button title="Copy code" @click="copyStyle">
+      <button :title="$t('actions.copy_code')" @click="copyStyle">
         <n-icon size="20"><Copy20Regular /></n-icon>
       </button>
     </template>

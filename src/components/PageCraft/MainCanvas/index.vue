@@ -8,7 +8,13 @@ import {useInteractionHooks} from '@/components/PageCraft/MainCanvas/interaction
 import {useMcMain} from '@/components/PageCraft/MainCanvas/main-hooks'
 import ElementEditDialog from '@/components/PageCraft/MainCanvas/ElementEditDialog.vue'
 import {useSettingsStore} from '@/store/settings'
-import {ArrowUndo20Filled, ArrowRedo20Filled, Settings20Regular, Code20Filled} from '@vicons/fluent'
+import {
+  ArrowUndo20Filled,
+  ArrowRedo20Filled,
+  Settings20Regular,
+  Code20Filled,
+  QuestionCircle20Regular,
+} from '@vicons/fluent'
 
 export default defineComponent({
   name: 'MainCanvas',
@@ -20,6 +26,7 @@ export default defineComponent({
     ArrowRedo20Filled,
     Settings20Regular,
     Code20Filled,
+    QuestionCircle20Regular,
   },
   emits: ['openStylusTools'],
   setup(props, {emit}) {
@@ -161,15 +168,15 @@ export default defineComponent({
 
     <n-modal
       v-model:show="isShowImportDialog"
-      negative-text="Cancel"
-      positive-text="Import"
+      :negative-text="$t('actions.cancel')"
+      :positive-text="$t('actions.import')"
       preset="dialog"
-      title="Paste HTML"
+      :title="`${$t('actions.paste')} HTML`"
       @positive-click="handleImportHtml(pasteHtmlText)"
     >
       <n-input
         v-model:value="pasteHtmlText"
-        placeholder="Basic HTML"
+        placeholder="HTML Code"
         rows="20"
         style="font-family: monospace"
         type="textarea"
@@ -215,17 +222,29 @@ export default defineComponent({
                     <Settings20Regular />
                   </n-icon>
                 </template>
-                Options</n-button
+                {{ $t('common.options') }}</n-button
               >
             </template>
             <template #header></template>
             <div v-for="item in toggleList" :key="item.flag" class="toggle-list">
-              <n-checkbox
-                v-model:checked="indicatorOptions[item.flag]"
-                :label="item.title"
-                :title="item.desc"
-                size="small"
-              />
+              <div style="display: flex; align-items: center">
+                <n-checkbox
+                  v-model:checked="indicatorOptions[item.flag]"
+                  :label="item.title"
+                  size="small"
+                />
+
+                <template v-if="item.desc">
+                  <n-popover style="padding: 0; min-width: 200px" trigger="hover">
+                    <template #trigger>
+                      <n-icon size="16">
+                        <QuestionCircle20Regular />
+                      </n-icon>
+                    </template>
+                    <span style="font-size: 14px">{{ item.desc }}</span>
+                  </n-popover>
+                </template>
+              </div>
             </div>
             <n-slider v-model:value="indicatorOptions.bgTransparentPercent" :step="1" />
             <template #footer>

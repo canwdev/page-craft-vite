@@ -51,8 +51,8 @@ export default defineComponent({
   <n-modal
     style="width: 700px"
     preset="dialog"
-    negative-text="Cancel"
-    positive-text="Done"
+    :negative-text="$t('actions.cancel')"
+    :positive-text="$t('actions.done')"
     :title="title"
     @positive-click="handleSave"
     @negative-click="mVisible = false"

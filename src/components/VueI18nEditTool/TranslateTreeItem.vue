@@ -149,7 +149,13 @@ export default defineComponent({
         </template>
       </n-input>
       <n-space v-if="!isLite" style="margin-left: 10px" align="center">
-        <n-button size="small" secondary type="info" @click="handleGetJSON" title="Copy JSON">
+        <n-button
+          size="small"
+          secondary
+          type="info"
+          @click="handleGetJSON"
+          :title="`${$t('actions.copy')} JSON`"
+        >
           <template #icon><Copy20Regular /></template>
         </n-button>
         <n-popconfirm v-if="!isRoot" @positive-click="$emit('onRemove')">
@@ -160,7 +166,7 @@ export default defineComponent({
               </template>
             </n-button>
           </template>
-          Remove Group?
+          {{ $t('msgs.remove_group') }}
         </n-popconfirm>
         <n-switch size="small" v-model:value="isExpand">
           <template #checked> 👀 </template>
@@ -192,7 +198,7 @@ export default defineComponent({
           <template #icon>
             <Add20Regular />
           </template>
-          Translate</n-button
+          {{ $t('common.translate') }}</n-button
         >
       </n-space>
 
@@ -219,13 +225,13 @@ export default defineComponent({
         <template #icon>
           <AddSquare20Regular />
         </template>
-        Group</n-button
+        {{ $t('common.group') }}</n-button
       >
     </n-collapse-transition>
 
     <DialogTextEdit
       is-textarea
-      title="Array Detail"
+      :title="$t('common.array_detail')"
       placeholder="Array JSON String"
       v-model:visible="isShowArrayEdit"
       :text="currentArrayString"

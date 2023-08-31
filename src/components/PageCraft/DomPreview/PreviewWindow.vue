@@ -55,7 +55,7 @@ export default defineComponent({
 
 <template>
   <VpWindow class="preview-dialog" v-model:visible="mVisible" wid="preview">
-    <template #titleBarLeft> Preview: {{ currentItem?.title }} </template>
+    <template #titleBarLeft> {{ $t('actions.preview') }}: {{ currentItem?.title }} </template>
     <template v-if="currentItem">
       <DomPreview :id="currentItem.id" :css="css">
         <div v-html="html"></div>
