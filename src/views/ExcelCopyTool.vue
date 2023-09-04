@@ -128,13 +128,23 @@ export default defineComponent({
       }
     }
 
-    const getSheetJson = () => {
+    const getSheetsJson = () => {
       if (!workbookRef.value) {
         const str = 'Please open Excel file first!'
         window.$message.error(str)
         throw new Error(str)
       }
-      return window.XLSX.utils.sheet_to_json(getWorksheet(workbookRef.value))
+
+      // return window.XLSX.utils.sheet_to_json(getWorksheet(workbookRef.value))
+      const workbook = workbookRef.value
+      const result = {}
+      workbook.SheetNames.forEach(function (sheetName) {
+        const roa = window.XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName])
+        if (roa.length > 0) {
+          result[sheetName] = roa
+        }
+      })
+      return result
     }
 
     const isShowCopyDialog = ref(false)
@@ -166,20 +176,20 @@ export default defineComponent({
       CopyModeOptions,
       dropdownMenuOptions: [
         {
-          label: 'Copy Sheet JSON',
+          label: 'Copy Sheets JSON',
           props: {
             onClick: async () => {
-              const json = getSheetJson()
+              const json = getSheetsJson()
               copyToClipboard(JSON.stringify(json, null, 2))
               window.$message.success('Sheet JSON Copied!')
             },
           },
         },
         {
-          label: 'Export Sheet JSON',
+          label: 'Export Sheets JSON',
           props: {
             onClick: async () => {
-              const json = getSheetJson()
+              const json = getSheetsJson()
               handleExportFile(
                 getFileName(null, 'excel_sheet_export'),
                 JSON.stringify(json, null, 2),
