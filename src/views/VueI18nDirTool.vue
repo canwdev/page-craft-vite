@@ -14,6 +14,8 @@ import DropZone from '@/components/CommonUI/DropZone.vue'
 import {useFileDrop} from '@/hooks/use-file-drop'
 import {useMetaTitle} from '@/hooks/use-meta'
 import DialogCopyFormat from '@/components/VueI18nEditTool/DialogCopyFormat.vue'
+import {useSaveShortcut} from '@/hooks/use-beforeunload'
+import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 
 let idSeed = 0
 
@@ -144,6 +146,14 @@ export default defineComponent({
 
     const {metaTitle} = useMetaTitle()
     const isShowCopyDialog = ref(false)
+
+    useSaveShortcut(() => {
+      if (currentEditEntry.value && editMode.value !== 'batch') {
+        handleSaveFile()
+        return
+      }
+      globalEventBus.emit(GlobalEvents.ON_I18N_SAVE_ALL_CHANGES)
+    })
 
     return {
       metaTitle,

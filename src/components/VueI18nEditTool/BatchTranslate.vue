@@ -2,6 +2,7 @@
 import {defineComponent, PropType} from 'vue'
 import {DirTreeItem} from '@/enum/vue-i18n-tool'
 import BatchTranslateItem from '@/components/VueI18nEditTool/BatchTranslateItem.vue'
+import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 
 export default defineComponent({
   name: 'BatchTranslate',
@@ -39,6 +40,12 @@ export default defineComponent({
         await item.saveChange()
       }
     }
+    onMounted(() => {
+      globalEventBus.on(GlobalEvents.ON_I18N_SAVE_ALL_CHANGES, handleSaveChanged)
+    })
+    onBeforeUnmount(() => {
+      globalEventBus.off(GlobalEvents.ON_I18N_SAVE_ALL_CHANGES, handleSaveChanged)
+    })
 
     return {
       handleSaveChanged,

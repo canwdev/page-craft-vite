@@ -38,6 +38,7 @@ import {
   PaintBrush20Regular,
 } from '@vicons/fluent'
 import {useI18n} from 'vue-i18n'
+import {useBeforeUnload} from '@/hooks/use-beforeunload'
 emmetCSS(monaco, ['css', 'scss'])
 
 self.MonacoEnvironment = {
@@ -87,6 +88,11 @@ export default defineComponent({
     // monaco.editor.IStandaloneCodeEditor
     const editorInstance = shallowRef<any>()
 
+    const isEditorContentChanged = ref(false)
+    useBeforeUnload(() => {
+      return isEditorContentChanged.value
+    })
+
     const styleEl = ref<HTMLElement | null>(null)
 
     watch(mVisible, () => {
@@ -119,6 +125,10 @@ export default defineComponent({
       editorInstance.value.setValue(style)
       // call instantly
       handleUpdateStyle(style, false)
+
+      setTimeout(() => {
+        isEditorContentChanged.value = false
+      }, 500)
     }
 
     onMounted(() => {
@@ -164,6 +174,7 @@ export default defineComponent({
     })
 
     const handleEditorChangeDebounced = debounce(500, false, () => {
+      isEditorContentChanged.value = true
       handleUpdateStyle(editorInstance.value.getValue())
     })
 

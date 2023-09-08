@@ -250,7 +250,13 @@ export default defineComponent({
           <template #icon><DocumentEdit20Regular /></template>
         </n-button>
 
-        <n-button size="small" v-if="isChanged" type="primary" @click="saveChange({isEmit: true})">
+        <n-button
+          size="small"
+          v-if="isChanged"
+          type="primary"
+          @click="saveChange({isEmit: true})"
+          title="Batch save"
+        >
           <template #icon><SaveMultiple20Regular /></template>
         </n-button>
         <n-button secondary size="small" v-if="isChanged" @click="cancelChange">

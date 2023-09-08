@@ -12,6 +12,7 @@ export const GlobalEvents = {
   ON_COMP_PREVIEW: 'ON_COMP_PREVIEW',
   ON_COMP_HOVER: 'ON_COMP_HOVER',
   ON_COMP_HOVER_OUT: 'ON_COMP_HOVER_OUT',
+  ON_I18N_SAVE_ALL_CHANGES: 'ON_I18N_SAVE_ALL_CHANGES',
 }
 
 export const syncStorageData = () => {

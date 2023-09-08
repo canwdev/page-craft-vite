@@ -16,6 +16,7 @@ import {UndoRedo} from '@/utils/undo-redo'
 import {sassToCSS} from '@/utils/css'
 import {useSettingsStore} from '@/store/settings'
 import {useI18n} from 'vue-i18n'
+import {useBeforeUnload, useSaveShortcut} from '@/hooks/use-beforeunload'
 
 export const useMcMain = (options) => {
   const {t: $t} = useI18n()
@@ -26,6 +27,10 @@ export const useMcMain = (options) => {
   const isShowImportDialog = ref(false)
   const {loadCurCompHtml, saveCurCompHtml, saveCurCompStyle, loadCurCompStyle} = useCompStorage()
   const undoRedo = ref(new UndoRedo(10))
+
+  useBeforeUnload(() => {
+    return undoRedo.value.getCount() > 0
+  })
 
   onMounted(() => {
     reloadHtml()
@@ -211,6 +216,10 @@ export const useMcMain = (options) => {
       },
     },
   ]
+
+  useSaveShortcut(async () => {
+    handleExportHtml(await getEntityData())
+  })
 
   // record html before action
   const recordUndo = () => {

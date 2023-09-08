@@ -9,6 +9,7 @@ import {useFileDrop} from '@/hooks/use-file-drop'
 import {useMetaTitle} from '@/hooks/use-meta'
 import {Save20Regular} from '@vicons/fluent'
 import DialogCopyFormat from '@/components/VueI18nEditTool/DialogCopyFormat.vue'
+import {useSaveShortcut} from '@/hooks/use-beforeunload'
 
 const filePickerOptions = {
   types: [
@@ -79,6 +80,15 @@ export default defineComponent({
 
     const {metaTitle} = useMetaTitle()
     const isShowCopyDialog = ref(false)
+
+    useSaveShortcut(() => {
+      if (fileHandle.value) {
+        handleSaveFile()
+        return
+      }
+      handleExport()
+    })
+
     return {
       metaTitle,
       translateTreeRoot,

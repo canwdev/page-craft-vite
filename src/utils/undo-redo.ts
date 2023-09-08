@@ -46,4 +46,8 @@ export class UndoRedo {
     this.undoStack = []
     this.redoStack = []
   }
+
+  public getCount() {
+    return this.undoStack.length + this.redoStack.length
+  }
 }

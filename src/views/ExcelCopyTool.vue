@@ -10,6 +10,7 @@ import DropZone from '@/components/CommonUI/DropZone.vue'
 import {useFileDrop} from '@/hooks/use-file-drop'
 import {useMetaTitle} from '@/hooks/use-meta'
 import {CopyMode, CopyModeOptions, formatMultipleLine} from '@/components/VueI18nEditTool/copy-enum'
+import {useSaveShortcut} from '@/hooks/use-beforeunload'
 
 const isAllowedElement = (el) => {
   return el.tagName.toLowerCase() === 'td'
@@ -148,6 +149,19 @@ export default defineComponent({
     }
 
     const isShowCopyDialog = ref(false)
+
+    const handleExport = () => {
+      const json = getSheetsJson()
+      handleExportFile(
+        getFileName(null, 'excel_sheet_export'),
+        JSON.stringify(json, null, 2),
+        '.json'
+      )
+    }
+    useSaveShortcut(() => {
+      handleExport()
+    })
+
     return {
       metaTitle,
       iconExcel,
@@ -189,12 +203,7 @@ export default defineComponent({
           label: 'Export Sheets JSON',
           props: {
             onClick: async () => {
-              const json = getSheetsJson()
-              handleExportFile(
-                getFileName(null, 'excel_sheet_export'),
-                JSON.stringify(json, null, 2),
-                '.json'
-              )
+              handleExport()
             },
           },
         },
