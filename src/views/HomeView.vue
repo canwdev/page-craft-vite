@@ -12,7 +12,7 @@ import {formatCss, formatHtml} from '@/utils/formater'
 import {sassToCSS} from '@/utils/css'
 import {copyToClipboard} from '@/utils'
 import {useCompStorage} from '@/hooks/use-component-storage'
-import {ExportItem} from '@/enum/page-craft/block'
+import {ComponentData} from '@/enum/page-craft/block'
 import {useCraftStore} from '@/store/craft'
 // import BackgroundLayer from '@/components/BackgroundLayer/index.vue'
 import {PaintBrush16Regular} from '@vicons/fluent'
@@ -91,7 +91,7 @@ export default defineComponent({
             props: {
               onClick: async () => {
                 await handleExportStyle(
-                  new ExportItem({
+                  new ComponentData({
                     name: settingsStore.curCompoName,
                     html: '',
                     style: formatCss(loadCurCompStyle()),
@@ -106,7 +106,7 @@ export default defineComponent({
             props: {
               onClick: async () => {
                 await handleExportStyle(
-                  new ExportItem({
+                  new ComponentData({
                     name: settingsStore.curCompoName,
                     html: '',
                     style: formatCss(loadCurCompStyle()),
@@ -186,7 +186,7 @@ export default defineComponent({
         v-model:value="globalStyleText"
         :placeholder="$t('msgs.css_code_only')"
         rows="20"
-        style="font-family: monospace"
+        class="font-code"
         type="textarea"
       />
     </n-modal>

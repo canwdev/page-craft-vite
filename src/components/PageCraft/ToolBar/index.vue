@@ -7,18 +7,20 @@ import {LsKeys} from '@/enum/page-craft'
 import {useLocalStorageObject} from '@/hooks/use-local-storage'
 import {useRouter} from 'vue-router'
 import {useSettingsStore} from '@/store/settings'
-import {ArrowReset20Regular, Diversity20Regular, Toolbox20Regular} from '@vicons/fluent'
+import {ArrowReset20Regular, Box20Regular, Toolbox20Regular} from '@vicons/fluent'
 import PreviewWindow from '@/components/PageCraft/DomPreview/PreviewWindow.vue'
 import {useI18n} from 'vue-i18n'
+import VpWindow from '@/components/CommonUI/VpWindow.vue'
 
 export default defineComponent({
   name: 'BottomToolBar',
   components: {
+    VpWindow,
     PreviewWindow,
     ToolItem,
     InventoryModal,
     ArrowReset20Regular,
-    Diversity20Regular,
+    Box20Regular,
     Toolbox20Regular,
   },
   setup(props, {emit}) {
@@ -203,8 +205,8 @@ export default defineComponent({
               type="text"
               v-model:value="craftStore.className"
               placeholder="CSS class"
-              style="font-family: monospace"
               clearable
+              class="font-code"
             />
           </div>
 
@@ -236,7 +238,7 @@ export default defineComponent({
             @click="settingsStore.showInventory = !settingsStore.showInventory"
           >
             <template #icon>
-              <n-icon v-if="settingsStore.showInventory" size="18"><Diversity20Regular /></n-icon>
+              <n-icon v-if="settingsStore.showInventory" size="18"><Box20Regular /></n-icon>
             </template>
             {{ $t('common.inventory') }}
           </n-button>

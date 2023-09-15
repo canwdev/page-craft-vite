@@ -22,13 +22,18 @@ import {
   Dismiss20Regular,
   Window16Regular,
   WindowArrowUp16Regular,
-  Diversity20Regular,
+  Box20Regular,
   MoreHorizontal20Regular,
   Add24Regular,
+  BookStar24Filled,
+  BookStar20Regular,
+  TextSortAscending20Regular,
+  Timeline20Regular,
 } from '@vicons/fluent'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import VpWindow from '@/components/CommonUI/VpWindow.vue'
 import {useI18n} from 'vue-i18n'
+import {fileToBase64} from '@/utils/exporter'
 
 let idx = 1
 
@@ -41,9 +46,13 @@ export default defineComponent({
     Dismiss20Regular,
     Window16Regular,
     WindowArrowUp16Regular,
-    Diversity20Regular,
+    Box20Regular,
     MoreHorizontal20Regular,
     Add24Regular,
+    BookStar24Filled,
+    BookStar20Regular,
+    TextSortAscending20Regular,
+    Timeline20Regular,
   },
   props: {
     visible: {
@@ -64,11 +73,23 @@ export default defineComponent({
       craftStore.setCurrentBlock(item)
     }
 
-    const {exportAll, handleImportAll, componentList} = useCompImportExport()
+    const {exportAll, handleImportAll, componentList, forceSaveComponentList} =
+      useCompImportExport()
     const importFileChooserRef = ref()
 
+    const isStarred = ref(false)
+    const isSortByName = ref(false)
     const componentListSorted = computed(() => {
-      return componentList.value.sort((a, b) => {
+      let list = componentList.value
+      if (isStarred.value) {
+        list = list.filter((item: BlockItem) => {
+          return item.data.stared
+        })
+      }
+      if (isSortByName.value) {
+        return list.sort((a, b) => a.title.localeCompare(b.title))
+      }
+      return list.sort((a, b) => {
         return b.data.timestamp - a.data.timestamp
       })
     })
@@ -180,13 +201,48 @@ export default defineComponent({
       idx++
     }
 
-    const getCompMenuOptions = (item) => [
+    const getCompMenuOptions = (item: BlockItem) => [
       {
         label: '👀 ' + $t('actions.preview'),
         props: {
           onClick: async () => {
             nodeAction(item, () => {
               globalEventBus.emit(GlobalEvents.ON_COMP_PREVIEW, {item})
+            })
+          },
+        },
+      },
+      {
+        label: '⭐ Toggle Star',
+        props: {
+          onClick: async () => {
+            nodeAction(item, () => {
+              item.data.stared = !item.data.stared
+              forceSaveComponentList()
+            })
+          },
+        },
+      },
+      {
+        label: '🖼️ Set Cover',
+        props: {
+          onClick: async () => {
+            nodeAction(item, async () => {
+              // @ts-ignore
+              const [handle] = await window.showOpenFilePicker({
+                types: [
+                  {
+                    description: 'Cover Image',
+                    accept: {
+                      'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp'],
+                    },
+                  },
+                ],
+              })
+              const file = await handle.getFile()
+              const base64 = await fileToBase64(file)
+              item.data.cover = base64
+              forceSaveComponentList()
             })
           },
         },
@@ -257,7 +313,7 @@ export default defineComponent({
           label: `📃 ${$t('actions.export')} ${$t('common.all_components')} (JSON)`,
           props: {
             onClick: async () => {
-              await exportAll()
+              await exportAll({list: componentListSorted.value})
             },
           },
         },
@@ -301,6 +357,8 @@ export default defineComponent({
       handleImportAll,
       colorHash,
       handleContextmenu,
+      isStarred,
+      isSortByName,
       ...contextMenuEtc,
     }
   },
@@ -331,12 +389,12 @@ export default defineComponent({
     :allow-move="!settingsStore.isInvAttached"
   >
     <template #titleBarLeft>
-      <n-icon size="20"><Diversity20Regular /></n-icon>&nbsp;{{ $t('common.inventory_list') }}
+      <n-icon size="20"><Box20Regular /></n-icon>&nbsp;{{ $t('common.inventory_list') }}
     </template>
     <template #titleBarRightControls>
       <button @click="settingsStore.isInvAttached = !settingsStore.isInvAttached">
         <n-icon size="16">
-          <Window16Regular v-if="settingsStore.isInvAttached" />
+          <Window16Regular v-if="!settingsStore.isInvAttached" />
           <WindowArrowUp16Regular v-else />
         </n-icon>
       </button>
@@ -361,7 +419,27 @@ export default defineComponent({
           is-component-block
           @onItemClick="handleComponentItemClick"
           @contextmenu="handleContextmenu"
+          :large-card="isStarred"
         >
+          <template #customFilter>
+            <n-button
+              quaternary
+              @click="isSortByName = !isSortByName"
+              title="Change sort method"
+              size="small"
+            >
+              <n-icon size="20">
+                <TextSortAscending20Regular v-if="isSortByName" />
+                <Timeline20Regular v-else />
+              </n-icon>
+            </n-button>
+            <n-button quaternary @click="isStarred = !isStarred" title="Toggle stared" size="small">
+              <n-icon size="20">
+                <BookStar24Filled v-if="isStarred" />
+                <BookStar20Regular v-else />
+              </n-icon>
+            </n-button>
+          </template>
           <template #actionMenu="{item}">
             <n-dropdown
               :options="getCompMenuOptions(item)"

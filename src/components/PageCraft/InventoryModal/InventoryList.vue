@@ -3,14 +3,14 @@ import {defineComponent, PropType} from 'vue'
 import BlockItemCard from '@/components/PageCraft/InventoryModal/BlockItemCard.vue'
 import ComponentCard from '@/components/PageCraft/InventoryModal/ComponentCard.vue'
 import {BlockItem} from '@/enum/page-craft/block'
-import {Search20Regular} from '@vicons/fluent'
+import {BoxMultipleSearch20Regular} from '@vicons/fluent'
 
 export default defineComponent({
   name: 'InventoryList',
   components: {
     BlockItemCard,
     ComponentCard,
-    Search20Regular,
+    BoxMultipleSearch20Regular,
   },
   props: {
     itemList: {
@@ -24,6 +24,10 @@ export default defineComponent({
       default: true,
     },
     isComponentBlock: {
+      type: Boolean,
+      default: false,
+    },
+    largeCard: {
       type: Boolean,
       default: false,
     },
@@ -55,14 +59,16 @@ export default defineComponent({
         v-model:value="filterText"
         clearable
         :placeholder="$t('msgs.filter_items')"
-        size="tiny"
+        size="small"
       >
         <template #prefix>
           <n-icon size="20">
-            <Search20Regular />
+            <BoxMultipleSearch20Regular />
           </n-icon>
         </template>
       </n-input>
+
+      <slot name="customFilter"></slot>
     </div>
     <div v-if="!itemListFiltered.length" style="padding: 40px; text-align: center; font-size: 20px">
       {{ $t('msgs.no_items') }}
@@ -70,6 +76,7 @@ export default defineComponent({
     <div v-else class="inventory-list _scrollbar_mini" :class="{_big: isComponentBlock}">
       <template v-for="(item, index) in itemListFiltered" :key="item.id">
         <ComponentCard
+          :large-card="largeCard"
           v-if="isComponentBlock"
           :item="item"
           @click="$emit('onItemClick', item, index)"
@@ -98,6 +105,7 @@ export default defineComponent({
   position: relative;
 
   .filter-row {
+    display: flex;
     .n-input {
       border-radius: 0;
     }

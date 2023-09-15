@@ -1,7 +1,7 @@
 import {useCraftStore} from '@/store/craft'
 import {LsKeys} from '@/enum/page-craft'
 import {useLocalStorageObject, useLocalStorageString} from '@/hooks/use-local-storage'
-import {BlockItem, createComponentBlockItem, ExportItem} from '@/enum/page-craft/block'
+import {BlockItem, createComponentBlockItem, ComponentData} from '@/enum/page-craft/block'
 import {syncStorageData} from '@/utils/global-event-bus'
 import {getFileName, handleExportFile, handleReadSelectedFile} from '@/utils/exporter'
 import {useSettingsStore} from '@/store/settings'
@@ -99,9 +99,13 @@ export const useCompStorage = () => {
 export const useCompImportExport = () => {
   const componentList = useLocalStorageObject(LsKeys.COMPONENT_LIST, [])
 
+  const forceSaveComponentList = () => {
+    localStorage.setItem(LsKeys.COMPONENT_LIST, JSON.stringify(componentList.value))
+  }
+
   const handleImportAll = async (file) => {
     const str = await handleReadSelectedFile(file)
-    const importList: ExportItem[] = JSON.parse(str as string).map((i) => new ExportItem(i))
+    const importList: ComponentData[] = JSON.parse(str as string).map((i) => new ComponentData(i))
 
     const newList: BlockItem[] = []
     importList.forEach((item) => {
@@ -126,19 +130,23 @@ export const useCompImportExport = () => {
     window.$message.success('Import success!')
   }
 
-  const exportAll = async () => {
+  const exportAll = async ({list}) => {
     await syncStorageData()
-    const exportList: ExportItem[] = []
-    componentList.value.forEach((item) => {
-      exportList.push(
-        new ExportItem({
-          name: item.title,
-          html: loadComponentHtml(item.title),
-          style: loadComponentStyle(item.title),
-          timestamp: item.data.timestamp,
-        })
-      )
-    })
+    let exportList: ComponentData[] = []
+    if (list) {
+      exportList = list
+    } else {
+      componentList.value.forEach((item) => {
+        exportList.push(
+          new ComponentData({
+            name: item.title,
+            html: loadComponentHtml(item.title),
+            style: loadComponentStyle(item.title),
+            timestamp: item.data.timestamp,
+          })
+        )
+      })
+    }
 
     // console.log(exportList)
     handleExportFile(getFileName('', 'PageCraftAllComponents'), JSON.stringify(exportList), '.json')
@@ -148,5 +156,6 @@ export const useCompImportExport = () => {
     componentList,
     exportAll,
     handleImportAll,
+    forceSaveComponentList,
   }
 }

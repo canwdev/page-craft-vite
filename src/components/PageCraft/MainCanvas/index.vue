@@ -178,7 +178,7 @@ export default defineComponent({
         v-model:value="pasteHtmlText"
         placeholder="HTML Code"
         rows="20"
-        style="font-family: monospace"
+        class="font-code"
         type="textarea"
       />
     </n-modal>

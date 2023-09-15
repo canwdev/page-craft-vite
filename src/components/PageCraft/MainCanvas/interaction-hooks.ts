@@ -437,28 +437,35 @@ export const useInteractionHooks = (options) => {
       }
       saveData()
 
-      const n = window.$notification.create({
-        title: `${$t('actions.insert_at')} ${currentPosition}`,
-        content: $t('msgs.component_insert_com'),
-        meta: block.title,
-        duration: 4000,
-        action: () =>
-          h(
-            NButton,
-            {
-              text: true,
-              type: 'primary',
-              onClick: () => {
-                const code = loadComponentStyle(block.title)
-                globalEventBus.emit(GlobalEvents.ON_ADD_STYLE, {code, isAppend: true})
-                n.destroy()
+      const appendStyle = () => {
+        const code = loadComponentStyle(block.title)
+        globalEventBus.emit(GlobalEvents.ON_ADD_STYLE, {code, isAppend: true})
+      }
+      if (block.data.stared) {
+        appendStyle()
+      } else {
+        const n = window.$notification.create({
+          title: `${$t('actions.insert_at')} ${currentPosition}`,
+          content: $t('msgs.component_insert_com'),
+          meta: block.title,
+          duration: 4000,
+          action: () =>
+            h(
+              NButton,
+              {
+                text: true,
+                type: 'primary',
+                onClick: () => {
+                  appendStyle()
+                  n.destroy()
+                },
               },
-            },
-            {
-              default: () => $t('actions.append_style'),
-            }
-          ),
-      })
+              {
+                default: () => $t('actions.append_style'),
+              }
+            ),
+        })
+      }
     } else if (block.blockType === BlockType.HTML_ELEMENT) {
       const addEl = createBlockElement(block, craftStore)
       if (currentPosition === 'top') {

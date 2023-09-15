@@ -1,14 +1,14 @@
 import moment from 'moment/moment'
 import FileSaver from 'file-saver'
-import {ExportItem} from '@/enum/page-craft/block'
+import {ComponentData} from '@/enum/page-craft/block'
 import {sassToCSS} from '@/utils/css'
 import {formatCss, formatHtml} from '@/utils/formater'
 
-export const handleExportJson = (exportData: ExportItem) => {
+export const handleExportJson = (exportData: ComponentData) => {
   handleExportFile(getFileName(exportData.name), JSON.stringify(exportData, null, 2), '.json')
 }
 
-export const handleExportStyle = async (exportData: ExportItem, isCss = false) => {
+export const handleExportStyle = async (exportData: ComponentData, isCss = false) => {
   let style = exportData.style
   if (isCss) {
     style = formatCss(await sassToCSS(style))
@@ -16,7 +16,7 @@ export const handleExportStyle = async (exportData: ExportItem, isCss = false) =
   handleExportFile(getFileName(exportData.name), style, isCss ? '.css' : '.scss')
 }
 
-export const handleExportHtml = async (exportData: ExportItem, options?) => {
+export const handleExportHtml = async (exportData: ComponentData, options?) => {
   const {html, style} = exportData
   const {isInline = false, inlineWithStyleTag = false} = options || {}
 
@@ -61,7 +61,7 @@ ${html}
 
   handleExportFile(name, htmlStr, '.html')
 }
-export const handleExportVue = (exportData: ExportItem, version = 2) => {
+export const handleExportVue = (exportData: ComponentData, version = 2) => {
   const {html, style, styleLang} = exportData
   const name = getFileName(exportData.name)
 
@@ -136,5 +136,21 @@ export const handleReadSelectedFile = (file) => {
       }
     }
     reader.readAsText(file)
+  })
+}
+
+export const fileToBase64 = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+
+    reader.onload = () => {
+      resolve(reader.result)
+    }
+
+    reader.onerror = (error) => {
+      reject(error)
+    }
+
+    reader.readAsDataURL(file)
   })
 }

@@ -17,13 +17,13 @@ export enum BlockType {
   COMPONENT = 'COMPONENT',
 }
 
-export interface HtmlBlockItem {
+export interface HtmlBlockData {
   tag: string
   // className?: string
   // innerText?: string
 }
 
-export class HtmlBlockItem {
+export class HtmlBlockData {
   constructor(prop: any = {}) {
     if (!prop.tag) {
       throw new Error('tag is required')
@@ -34,21 +34,25 @@ export class HtmlBlockItem {
   }
 }
 
-export interface ExportItem {
+export interface ComponentData {
   name: string
   html: string
   style: string
   styleLang: string
   timestamp: number
+  stared: boolean // 是否为星标组件
+  cover: string // base64编码的封面
 }
 
-export class ExportItem {
+export class ComponentData {
   constructor(prop: any = {}) {
     this.name = prop.name || ''
     this.html = prop.html || ''
     this.style = prop.style || ''
     this.styleLang = prop.styleLang || 'scss'
     this.timestamp = prop.timestamp || Date.now()
+    this.stared = prop.stared || false
+    this.cover = prop.cover || null
   }
 }
 
@@ -57,7 +61,7 @@ export interface BlockItem {
   blockType: BlockType
   title: string
   icon?: string
-  data: HtmlBlockItem | ExportItem | any
+  data: HtmlBlockData | ComponentData | any
   actionType?: ActionType
   hidden: boolean
 }
@@ -119,7 +123,7 @@ export const ActionBlockItems = {
 export const createHtmlBlockItem = (tag: string) =>
   new BlockItem({
     blockType: BlockType.HTML_ELEMENT,
-    data: new HtmlBlockItem({tag}),
+    data: new HtmlBlockData({tag}),
   })
 
 export const actionBlockItemList = Object.values(ActionBlockItems).filter((item) => !item.hidden)
@@ -138,5 +142,5 @@ export const createComponentBlockItem = (name: string, data = {}) =>
   new BlockItem({
     blockType: BlockType.COMPONENT,
     title: name,
-    data: new ExportItem(data),
+    data: new ComponentData(data),
   })

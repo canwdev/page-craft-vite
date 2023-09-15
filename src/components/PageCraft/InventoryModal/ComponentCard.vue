@@ -5,15 +5,23 @@ import {ActionType, BlockItem} from '@/enum/page-craft/block'
 import {colorHash, formatDate} from '@/utils'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {useSettingsStore} from '@/store/settings'
+import {Star12Filled} from '@vicons/fluent'
 
 let currentEvent: any
 
 export default defineComponent({
   name: 'ComponentCard',
+  components: {
+    Star12Filled,
+  },
   props: {
     item: {
       type: Object as PropType<BlockItem>,
       required: true,
+    },
+    largeCard: {
+      type: Boolean,
+      default: false,
     },
   },
   emits: ['contextmenu'],
@@ -85,12 +93,15 @@ export default defineComponent({
 
 <template>
   <!--
-
   @mousemove="handleMouseMove"
   @mouseleave="handleMouseLeave"
 -->
   <div
-    :class="{active: isActive, _rounded: settingsStore.enableRoundedTheme}"
+    :class="{
+      active: isActive,
+      _rounded: settingsStore.enableRoundedTheme,
+      '_large-card': largeCard,
+    }"
     class="tool-item"
     :style="{
       '--block-color-rgb': color,
@@ -102,11 +113,22 @@ export default defineComponent({
     <div class="action-menu">
       <slot name="actionMenu" :item="item"></slot>
     </div>
-    <img v-if="item.icon" :src="item.icon" alt="icon" style="margin-right: 5px" />
-    <span v-if="item.title" class="item-text">{{ item.title }}</span>
-    <span class="timestamp" v-if="item.data.timestamp">{{
-      formatDate(new Date(item.data.timestamp))
-    }}</span>
+    <div class="title-wrap">
+      <img v-if="item.icon" :src="item.icon" alt="icon" style="margin-right: 5px" />
+      <span v-if="item.title" class="item-text"> {{ item.title }}</span>
+    </div>
+
+    <div class="component-cover" :style="{backgroundImage: `url(${item.data.cover})`}"></div>
+    <div class="meta-info">
+      <span class="timestamp" v-if="item.data.timestamp">{{
+        formatDate(new Date(item.data.timestamp))
+      }}</span>
+      <span v-if="item.data.stared">
+        <n-icon size="12">
+          <Star12Filled />
+        </n-icon>
+      </span>
+    </div>
   </div>
 </template>
 
@@ -116,17 +138,19 @@ export default defineComponent({
   width: 200px;
   height: 60px;
   cursor: pointer;
-  display: flex;
+  display: block;
   font-size: 14px;
   font-weight: 600;
   position: relative;
-  padding: 5px 8px;
-  padding-right: 20px;
   outline: 1px solid rgb(var(--block-color-rgb));
   $bracket_color: rgb(var(--block-color-rgb));
 
   &._rounded {
     border-radius: 4px;
+
+    .component-cover {
+      border-radius: 4px;
+    }
   }
 
   &:hover {
@@ -144,10 +168,45 @@ export default defineComponent({
     outline: 4px solid rgb(var(--block-color-rgb));
   }
 
-  img {
-    width: 32px;
-    height: 32px;
-    image-rendering: pixelated;
+  .component-cover {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 0;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    pointer-events: none;
+    opacity: 0.5;
+  }
+  &._large-card {
+    height: auto;
+
+    .component-cover {
+      position: unset;
+      width: 100%;
+      height: 100px;
+      outline: 1px dashed;
+      margin-top: 5px;
+      margin-bottom: 25px;
+      opacity: 1;
+    }
+  }
+
+  .title-wrap {
+    padding-left: 5px;
+    padding-right: 25px;
+    img {
+      width: 32px;
+      height: 32px;
+      image-rendering: pixelated;
+    }
+    .item-text {
+      color: inherit;
+      font-weight: 500;
+    }
   }
 
   .action-menu {
@@ -157,27 +216,29 @@ export default defineComponent({
   }
 
   $bracket_color: currentColor;
-  .timestamp {
+  .meta-info {
     position: absolute;
     bottom: 2px;
+    left: 4px;
     right: 4px;
     font-size: 12px;
     font-weight: 100;
-    opacity: 0.5;
-    &::before {
-      content: '<';
-      color: $bracket_color;
-      opacity: 0.5;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    .timestamp {
+      opacity: 0.8;
+      //&::before {
+      //  content: '<';
+      //  color: $bracket_color;
+      //  opacity: 0.5;
+      //}
+      //&::after {
+      //  content: '/>';
+      //  color: $bracket_color;
+      //  opacity: 0.5;
+      //}
     }
-    &::after {
-      content: '/>';
-      color: $bracket_color;
-      opacity: 0.5;
-    }
-  }
-  .item-text {
-    color: inherit;
-    font-weight: 500;
   }
 }
 </style>
