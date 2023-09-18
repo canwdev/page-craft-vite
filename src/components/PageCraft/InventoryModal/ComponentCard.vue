@@ -192,12 +192,15 @@ export default defineComponent({
       margin-top: 5px;
       margin-bottom: 25px;
       opacity: 1;
+      border-radius: 0;
     }
   }
 
   .title-wrap {
     padding-left: 5px;
     padding-right: 25px;
+    position: relative;
+    z-index: 2;
     img {
       width: 32px;
       height: 32px;
@@ -213,6 +216,7 @@ export default defineComponent({
     position: absolute;
     top: 0;
     right: 0;
+    z-index: 3;
   }
 
   $bracket_color: currentColor;
