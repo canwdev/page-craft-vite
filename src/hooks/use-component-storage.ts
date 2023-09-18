@@ -109,7 +109,15 @@ export const useCompImportExport = () => {
 
     const newList: BlockItem[] = []
     importList.forEach((item) => {
-      newList.push(createComponentBlockItem(item.name, {timestamp: item.timestamp}))
+      newList.push(
+        createComponentBlockItem(item.name, {
+          name: item.name,
+          timestamp: item.timestamp,
+          styleLang: item.styleLang,
+          stared: item.stared,
+          cover: item.cover,
+        })
+      )
       saveComponentHtml(item.name, item.html)
       saveComponentStyle(item.name, item.style)
     })
@@ -133,20 +141,21 @@ export const useCompImportExport = () => {
   const exportAll = async ({list}) => {
     await syncStorageData()
     let exportList: ComponentData[] = []
-    if (list) {
-      exportList = list
-    } else {
-      componentList.value.forEach((item) => {
-        exportList.push(
-          new ComponentData({
-            name: item.title,
-            html: loadComponentHtml(item.title),
-            style: loadComponentStyle(item.title),
-            timestamp: item.data.timestamp,
-          })
-        )
-      })
-    }
+    list = list || componentList.value
+
+    list.forEach((item) => {
+      exportList.push(
+        new ComponentData({
+          name: item.title,
+          html: loadComponentHtml(item.title),
+          style: loadComponentStyle(item.title),
+          timestamp: item.data.timestamp,
+          styleLang: item.data.styleLang,
+          stared: item.data.stared,
+          cover: item.data.cover,
+        })
+      )
+    })
 
     // console.log(exportList)
     handleExportFile(getFileName('', 'PageCraftAllComponents'), JSON.stringify(exportList), '.json')
