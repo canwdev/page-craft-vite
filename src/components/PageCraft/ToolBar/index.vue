@@ -11,6 +11,7 @@ import {ArrowReset20Regular, Box20Regular, Toolbox20Regular} from '@vicons/fluen
 import PreviewWindow from '@/components/PageCraft/DomPreview/PreviewWindow.vue'
 import {useI18n} from 'vue-i18n'
 import VpWindow from '@/components/CommonUI/VpWindow.vue'
+import {useOpenCloseSound, useSfxSelect} from '@/hooks/use-sfx'
 
 export default defineComponent({
   name: 'BottomToolBar',
@@ -49,16 +50,21 @@ export default defineComponent({
 
     const updateCurrentBlock = (item: BlockItem) => {
       craftStore.setCurrentBlock(item)
+      playSfxSelect()
     }
 
     const handleToolItemClick = (item: BlockItem, index) => {
       settingsStore.toolbarIndex = index
+      playSfxSelect()
     }
 
+    const {play: playSfxSelect, stop: stopSfxSelect} = useSfxSelect()
     watch(
       () => settingsStore.toolbarIndex,
       (newIndex) => {
         updateCurrentBlock(toolBarList.value[newIndex])
+        stopSfxSelect()
+        playSfxSelect()
       }
     )
 
@@ -164,6 +170,8 @@ export default defineComponent({
     ]
 
     const isShowPreviewDialog = ref(true)
+
+    useOpenCloseSound(() => settingsStore.showInventory)
 
     return {
       settingsStore,

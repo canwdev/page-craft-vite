@@ -54,6 +54,7 @@ interface IPageCraftSettings {
   enableRoundedTheme: boolean
   enableGlobalCss: boolean
   enableTopLayout: boolean
+  enableSoundFx: boolean
   isInitialized: boolean
   showInventory: boolean
   inventoryTab: BlockType
@@ -73,6 +74,7 @@ export const useSettingsStore = defineStore('settingsStore', {
       enableRoundedTheme: true,
       enableGlobalCss: true,
       enableTopLayout: false,
+      enableSoundFx: true,
       isInitialized: false,
       showInventory: false,
       inventoryTab: BlockType.COMPONENT,

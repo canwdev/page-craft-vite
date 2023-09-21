@@ -17,6 +17,7 @@ import {sassToCSS} from '@/utils/css'
 import {useSettingsStore} from '@/store/settings'
 import {useI18n} from 'vue-i18n'
 import {useBeforeUnload, useSaveShortcut} from '@/hooks/use-beforeunload'
+import {useSfxBass, useSfxBell, useSfxFill, useSfxGuitar} from '@/hooks/use-sfx'
 
 export const useMcMain = (options) => {
   const {t: $t} = useI18n()
@@ -31,6 +32,8 @@ export const useMcMain = (options) => {
   useBeforeUnload(() => {
     return undoRedo.value.getCount() > 0
   })
+  const {play: playSfxBell} = useSfxBell()
+  const {play: sfxFill} = useSfxFill()
 
   onMounted(() => {
     reloadHtml()
@@ -49,6 +52,7 @@ export const useMcMain = (options) => {
     window.$message.success($t('msgs.copy_success'))
 
     saveData()
+    playSfxBell()
   }
 
   const handleImportJson = (data) => {
@@ -83,6 +87,7 @@ export const useMcMain = (options) => {
   const setMainCanvasHtml = (html: string = '') => {
     if (mainCanvasRef.value) {
       mainCanvasRef.value.innerHTML = html
+      sfxFill()
     }
   }
 
@@ -226,12 +231,13 @@ export const useMcMain = (options) => {
     const innerHTML = mainCanvasRef.value.innerHTML
     undoRedo.value.recordUndo(innerHTML)
   }
-
+  const {play: playSfxGuitar} = useSfxGuitar()
+  const {play: playSfxBass} = useSfxBass()
   const handleUndo = () => {
     if (!undoRedo.value.undoStack.length) {
       return
     }
-
+    playSfxGuitar()
     const innerHTML = mainCanvasRef.value.innerHTML
     const html = undoRedo.value.undo(innerHTML)
     setMainCanvasHtml(html)
@@ -242,6 +248,7 @@ export const useMcMain = (options) => {
     if (!undoRedo.value.redoStack.length) {
       return
     }
+    playSfxBass()
     const innerHTML = mainCanvasRef.value.innerHTML
     const html = undoRedo.value.redo(innerHTML)
     setMainCanvasHtml(html)

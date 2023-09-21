@@ -34,6 +34,7 @@ import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import VpWindow from '@/components/CommonUI/VpWindow.vue'
 import {useI18n} from 'vue-i18n'
 import {fileToBase64} from '@/utils/exporter'
+import {useSfxPop} from '@/hooks/use-sfx'
 
 let idx = 1
 
@@ -66,6 +67,14 @@ export default defineComponent({
     const mVisible = useModelWrapper(props, emit, 'visible')
     const craftStore = useCraftStore()
     const settingsStore = useSettingsStore()
+    const {play: playSfxPop} = useSfxPop()
+
+    watch(
+      () => settingsStore.inventoryTab,
+      () => {
+        playSfxPop()
+      }
+    )
 
     const {clearCompStorage, renameCompStorage, copyCompStorage} = useCompStorage()
 
@@ -408,19 +417,25 @@ export default defineComponent({
       animated
       style="height: 100%"
     >
-      <n-tab-pane :name="BlockType.ACTIONS" tab="Tools">
+      <n-tab-pane :name="BlockType.ACTIONS" :tab="'Tools' + ` (${actionBlockItemList.length})`">
         <InventoryList
           :item-list="actionBlockItemList"
           @onItemClick="(v) => $emit('onItemClick', v)"
         />
       </n-tab-pane>
-      <n-tab-pane :name="BlockType.HTML_ELEMENT" :tab="'HTML ' + $t('common.blocks')">
+      <n-tab-pane
+        :name="BlockType.HTML_ELEMENT"
+        :tab="'HTML ' + $t('common.blocks') + ` (${htmlBlockItemList.length})`"
+      >
         <InventoryList
           :item-list="htmlBlockItemList"
           @onItemClick="(v) => $emit('onItemClick', v)"
         />
       </n-tab-pane>
-      <n-tab-pane :name="BlockType.COMPONENT" :tab="$t('common.components')">
+      <n-tab-pane
+        :name="BlockType.COMPONENT"
+        :tab="$t('common.components') + ` (${componentListSorted.length})`"
+      >
         <InventoryList
           :item-list="componentListSorted"
           is-component-block

@@ -6,15 +6,13 @@ import {throttle} from 'throttle-debounce'
 import $ from 'jquery'
 import {useContextMenu} from '@/hooks/use-context-menu'
 import {copyToClipboard} from '@/utils'
-import {
-  elementCustomPropsMap,
-  updateHtmlElement,
-} from '@/components/PageCraft/MainCanvas/element-edit'
+import {updateHtmlElement} from '@/components/PageCraft/MainCanvas/element-edit'
 import {LineHelper} from '@/utils/line-helper'
 import {loadComponentHtml, loadComponentStyle} from '@/hooks/use-component-storage'
 import {NButton} from 'naive-ui'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {useI18n} from 'vue-i18n'
+import {useOpenCloseSound, useSfxBell, useSfxDestroy, useSfxPlace} from '@/hooks/use-sfx'
 
 export const removeMouseOverDomElementEffect = () => {
   const $el = $(TOOL_CLASSES.DOT_CLASS_MOUSE_OVER)
@@ -40,6 +38,8 @@ export const useInteractionHooks = (options) => {
   const cursorY = ref(0)
   const currentHoveredEl = ref<any>(null)
   const isShowElementEdit = ref(false)
+
+  useOpenCloseSound(() => isShowElementEdit.value)
 
   const lineHelper = shallowRef()
 
@@ -132,6 +132,7 @@ export const useInteractionHooks = (options) => {
         recordUndo()
         surroundSelection(document.createElement(tag))
         saveData()
+        playSfxPlace()
       },
     })),
   ]
@@ -147,12 +148,14 @@ export const useInteractionHooks = (options) => {
       text
     )
     saveData()
+    playSfxPlace()
   }
 
   const pasteReplaceInnerHtml = async (targetEl) => {
     recordUndo()
     targetEl.innerHTML = await navigator.clipboard.readText()
     saveData()
+    playSfxPlace()
   }
 
   const insertCurrentBlock = (targetEl, position = 'append', el?) => {
@@ -162,6 +165,7 @@ export const useInteractionHooks = (options) => {
     }
     targetEl[<any>position](el)
     saveData()
+    playSfxPlace()
   }
 
   const {
@@ -206,6 +210,7 @@ export const useInteractionHooks = (options) => {
                   recordUndo()
                   targetEl.parentNode?.removeChild(targetEl)
                   saveData()
+                  playSfxDestroy()
                 },
               },
             },
@@ -216,6 +221,7 @@ export const useInteractionHooks = (options) => {
                   recordUndo()
                   targetEl.parentNode?.removeChild(targetEl)
                   saveData()
+                  playSfxDestroy()
                 },
               },
             },
@@ -345,6 +351,8 @@ export const useInteractionHooks = (options) => {
     }
   })
 
+  const {play: playSfxPlace} = useSfxPlace()
+  const {play: playSfxDestroy} = useSfxDestroy()
   const handleBlockClick = async (event: Event, newBlock?: BlockItem, addOptions?) => {
     if (!newBlock) {
       newBlock = craftStore.currentBlock
@@ -361,6 +369,11 @@ export const useInteractionHooks = (options) => {
     addOptions = addOptions || craftStore
 
     await appendCustomBlock(newBlock, event, addOptions, mainCanvasRef)
+    if (newBlock.actionType === ActionType.DELETE) {
+      playSfxDestroy()
+    } else {
+      playSfxPlace()
+    }
     saveData()
   }
 
@@ -450,10 +463,14 @@ export const useInteractionHooks = (options) => {
         await pasteHtml(targetEl, 'beforeend', html)
       }
       saveData()
+      playSfxPlace()
     }
 
     if (draggingEl.value) {
+      draggingEl.value.draggable = false
+      draggingEl.value.removeAttribute('draggable')
       await dropHTML(draggingEl.value.outerHTML)
+      draggingEl.value = null
       return
     }
 

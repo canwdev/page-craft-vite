@@ -22,6 +22,7 @@ import {useCraftStore} from '@/store/craft'
 // import BackgroundLayer from '@/components/BackgroundLayer/index.vue'
 import {PaintBrush16Regular} from '@vicons/fluent'
 import {useI18n} from 'vue-i18n'
+import {useOpenCloseSound, useSfxBell} from '@/hooks/use-sfx'
 
 export default defineComponent({
   name: 'HomeView',
@@ -77,6 +78,20 @@ export default defineComponent({
       }
     }
 
+    const {play: playSfxBell} = useSfxBell()
+    useOpenCloseSound(() => settingsStore.showStyleEditor)
+
+    watch(
+      () => settingsStore.enableSoundFx,
+      () => {
+        setTimeout(() => {
+          if (confirm('Refresh page?')) {
+            location.reload()
+          }
+        }, 500)
+      }
+    )
+
     onMounted(() => {
       styleEl.value = createOrFindStyleNode(LsKeys.GLOBAL_STYLE)
       globalStyleText.value = localStorage.getItem(LsKeys.GLOBAL_STYLE) || ''
@@ -100,6 +115,7 @@ export default defineComponent({
             const style = loadCurCompStyle()
             const css = formatCss(await sassToCSS(style))
             copyToClipboard(css)
+            playSfxBell()
           },
         },
       },
@@ -138,6 +154,8 @@ export default defineComponent({
         ],
       },
     ]
+
+    useOpenCloseSound(() => isShowSettings.value)
 
     return {
       isShowSettings,
@@ -263,6 +281,13 @@ export default defineComponent({
           <n-thing :title="$t('common.top_layout')" />
           <template #suffix>
             <n-switch v-model:value="settingsStore.enableTopLayout" />
+          </template>
+        </n-list-item>
+
+        <n-list-item>
+          <n-thing :title="`Sound Fx`" />
+          <template #suffix>
+            <n-switch v-model:value="settingsStore.enableSoundFx" />
           </template>
         </n-list-item>
 

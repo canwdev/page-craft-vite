@@ -2,6 +2,7 @@ import {LsKeys} from '@/enum/page-craft'
 import {ActionType, BlockType} from '@/enum/page-craft/block'
 import {useCraftStore} from '@/store/craft'
 import {useI18n} from 'vue-i18n'
+import {useSfxBass, useSfxPop} from '@/hooks/use-sfx'
 
 export type IndicatorOptions = {
   enableDevHelpClass: boolean
@@ -20,6 +21,7 @@ export type IndicatorOptions = {
 export const useIndicator = () => {
   const {t: $t} = useI18n()
   const craftStore = useCraftStore()
+  const {play: playSfxPop} = useSfxPop()
 
   const indicatorOptions = reactive<IndicatorOptions>(
     JSON.parse(localStorage.getItem(LsKeys.INDICATOR_OPTIONS) || 'null') || {
@@ -40,6 +42,7 @@ export const useIndicator = () => {
     indicatorOptions,
     () => {
       localStorage.setItem(LsKeys.INDICATOR_OPTIONS, JSON.stringify({...indicatorOptions}))
+      playSfxPop()
     },
     {deep: true}
   )

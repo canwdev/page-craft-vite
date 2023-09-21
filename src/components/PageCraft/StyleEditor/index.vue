@@ -39,6 +39,13 @@ import {
 } from '@vicons/fluent'
 import {useI18n} from 'vue-i18n'
 import {useBeforeUnload} from '@/hooks/use-beforeunload'
+import {
+  useOpenCloseSelect,
+  useOpenCloseSound,
+  useSfxBell,
+  useSfxBrush,
+  useSfxFill,
+} from '@/hooks/use-sfx'
 emmetCSS(monaco, ['css', 'scss'])
 
 self.MonacoEnvironment = {
@@ -210,6 +217,8 @@ export default defineComponent({
     }
 
     const message = useMessage()
+
+    const {play: playSfxBrush} = useSfxBrush()
     const execBeautifyCssAction = async () => {
       const textValue = editorInstance.value.getValue()
       if (textValue.trim()) {
@@ -236,11 +245,15 @@ export default defineComponent({
         }
       }
       editorInstance.value.focus()
+      playSfxBrush()
     }
 
+    const {play: playSfxBell} = useSfxBell()
+    const {play: sfxFill} = useSfxFill()
     const copyStyle = () => {
       copyToClipboard(editorInstance.value.getValue())
       message.success($t('msgs.copy_success'))
+      playSfxBell()
     }
 
     const backupBlock = ref<BlockItem | null>(null)
@@ -272,6 +285,7 @@ export default defineComponent({
     }
 
     const insertStyleCode = (code, isAppend = false) => {
+      sfxFill()
       if (isAppend) {
         const style = loadCurCompStyle()
         editorInstance.value.setValue(style + '\n' + code)
@@ -331,6 +345,8 @@ export default defineComponent({
         children: getToolChildren(sassVariablesList),
       },
     ]
+
+    useOpenCloseSelect(() => craftStore.isSelectMode)
 
     return {
       settingsStore,
