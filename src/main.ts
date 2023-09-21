@@ -7,6 +7,7 @@ import {
   NButton,
 } from 'naive-ui'
 import './styles/style.scss'
+import './styles/theme.scss'
 import router from './router'
 import {createPinia} from 'pinia'
 const naive = create({

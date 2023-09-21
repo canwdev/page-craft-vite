@@ -17,42 +17,7 @@ html, body, #app {
   height: 100%;
 }
 
-/**
-Inspired by https://khang-nd.github.io/7.css/
- */
-.page-craft-aero-panel {
-  background-color: rgba(255, 255, 255, 0.6);
-  border: 1px solid rgba(0, 0, 0, .4);
-  border-radius: 0;
-  box-shadow: 0 1px 10px rgba(0, 0, 0, 0.27), inset 0 0 0.5px #fff;
 
-  &._blur {
-    backdrop-filter: blur(4px);
-  }
-  &._rounded {
-    $radius: 8px;
-    box-shadow: 0 1px 10px rgba(0, 0, 0, 0.27), inset 0 0 1px 1px rgba(255, 255, 255, 0.2);
-    border-radius: $radius;
-  }
-
-  //.n-button {
-  //  background-color: rgba(255, 255, 255, 0.71) !important;
-  //}
-
-  &._dark {
-    background-color: rgba(43, 43, 43, 0.85);
-    color: white;
-
-    .n-button {
-      background-color: transparent !important;
-    }
-
-    .n-input {
-      background-color: rgba(0, 0, 0, 0.3);
-    }
-  }
-
-}
 
 .font-code {
   font-family: 'Operator Mono', 'Source Code Pro', Menlo, Monaco, Consolas, 'Courier New', monospace;

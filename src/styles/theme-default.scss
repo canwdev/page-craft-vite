@@ -1,0 +1,245 @@
+.theme-default {
+  $theme_color: #F0C869;
+  $border_width: 6px;
+  $radius: 8px;
+
+  .vp-window {
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    padding: 0 6px 5px;
+    background-color: rgba(229, 229, 229, 0.8);
+    box-shadow: 0 1px 10px rgba(0, 0, 0, 0.27), inset 0 0 1px 1px rgba(255, 255, 255, 0.2);
+    border-radius: $radius;
+
+    .vp-window-content {
+
+      .page-craft-title-bar {
+        margin-left: -$border_width;
+        margin-right: -$border_width;
+        overflow: hidden;
+        border-radius: $radius;
+        padding: 0 6px 4px;
+        text-shadow: 0 0 10px white;
+
+        .page-craft-title-bar-text {
+          margin-top: 4px;
+        }
+      }
+    }
+
+    .vp-window-controls {
+      padding-right: 1px;
+
+      button {
+        margin-top: -1px;
+        min-width: 30px;
+        border: 1px solid rgba(0, 0, 0, 0.5);
+        & + button {
+          border-left: 0 !important;
+        }
+
+        &:hover {
+          background-color: rgb(233, 233, 233);
+          transition: all 0.1s;
+          &._danger {
+            background-color: #ffa5aa !important;
+          }
+        }
+
+        &:active {
+          background-color: rgba(181, 181, 181, 0.46);
+          &._danger {
+            background-color: #ff6a72 !important;
+          }
+        }
+
+
+
+        &:first-child {
+          border-bottom-left-radius: 5px;
+        }
+
+        &:last-child {
+          border-bottom-right-radius: 5px;
+        }
+      }
+    }
+
+    &._active {
+      background-color: rgba(255, 255, 255, 0.8);
+
+      &._dark {
+        background-color: rgba(0, 0, 0, 0.6);
+      }
+    }
+
+    &._active {
+      background-color: rgba(255, 255, 255, 0.8);
+
+      &._dark {
+        background-color: rgba(0, 0, 0, 0.6);
+      }
+    }
+
+
+    &._aero {
+      backdrop-filter: blur(4px);
+      box-shadow: 0px 8.5px 10px rgba(0, 0, 0, 0.115), 0px 68px 80px rgba(0, 0, 0, 0.23),
+      inset 0 0 1px 1px rgba(255, 255, 255, 0.2);
+
+      .vp-window-body {
+        &._bg {
+          background-color: rgba(255, 255, 255, 0.5);
+        }
+      }
+    }
+
+  }
+
+  .page-craft-panel {
+    background-color: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(0, 0, 0, .4);
+    box-shadow: 0 1px 10px rgba(0, 0, 0, 0.27), inset 0 0 1px 1px rgba(255, 255, 255, 0.2);
+    border-radius: $radius;
+
+    //.n-button {
+    //  background-color: rgba(255, 255, 255, 0.71) !important;
+    //}
+  }
+
+  &._aero {
+    .vp-window {
+      backdrop-filter: blur(4px);
+      box-shadow: 0px 8.5px 10px rgba(0, 0, 0, 0.115), 0px 68px 80px rgba(0, 0, 0, 0.23),
+      inset 0 0 1px 1px rgba(255, 255, 255, 0.2);
+
+      .vp-window-body {
+        &._bg {
+          background-color: rgba(255, 255, 255, 0.5);
+        }
+      }
+
+    }
+    .page-craft-panel {
+      backdrop-filter: blur(4px);
+    }
+  }
+  &._rect {
+    .vp-window {
+      padding: 0;
+      border-radius: 0;
+      .vp-window-content {
+
+        .page-craft-title-bar {
+          margin-left: 0;
+          margin-right: 0;
+          padding-right: 0;
+          border-radius:0;
+        }
+      }
+
+      .vp-window-controls {
+        button {
+          border: 0 !important;
+          background-color: none;
+          margin-top: 0;
+          min-width: 40px;
+          height: 30px;
+          margin-bottom: -4px;
+          border-radius:0;
+
+          &:hover {
+            background-color: rgba(222, 222, 222, 1);
+          }
+
+          &:active {
+            background-color: rgba(116, 116, 116, 0.46);
+          }
+        }
+      }
+
+      .vp-window-body {
+        border: 0;
+        height: calc(100% - 30px);
+      }
+    }
+    .page-craft-panel {
+      border-radius: 0;
+    }
+  }
+  &._rounded {
+    .tool-item {
+      border-radius: $radius/2;
+    }
+  }
+  &._dark {
+    .vp-window {
+      background-color: rgba(56, 56, 56, 0.6);
+
+      .vp-window-content {
+        .page-craft-title-bar {
+          color: white;
+          text-shadow: 0 0 10px black;
+        }
+        .vp-window-controls {
+          button {
+            border: 1px solid rgba(255, 255, 255, 0.2);
+
+            &:hover {
+              background-color: rgba(255, 255, 255, 0.2);
+              &._danger {
+                background-color: rgba(232, 17, 35, 0.7) !important;
+              }
+            }
+            &:active {
+              background-color: rgba(255, 255, 255, 0.1);
+              &._danger {
+                background-color: rgba(151, 23, 34, 0.7) !important;
+              }
+            }
+          }
+        }
+      }
+
+      .vp-window-body {
+        &._bg {
+          background-color: rgba(30, 30, 30, 1);
+        }
+      }
+
+      .vp-window-controls {
+        border-radius: 0;
+        display: flex;
+        align-items: flex-start;
+
+        button {
+          background-color: transparent;
+          img {
+            filter: drop-shadow(0 0 2px #fff);
+          }
+
+          &:hover {
+            background-color: rgba(227, 227, 227, 1);
+          }
+
+          &:active {
+            background-color: rgba(109, 109, 109, 1);
+          }
+        }
+      }
+
+    }
+
+    .page-craft-panel {
+      background-color: rgba(43, 43, 43, 0.85);
+      color: white;
+
+      .n-button {
+        background-color: transparent !important;
+      }
+
+      .n-input {
+        background-color: rgba(0, 0, 0, 0.3);
+      }
+    }
+  }
+}

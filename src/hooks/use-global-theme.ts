@@ -1,4 +1,4 @@
-import {ThemeType, useSettingsStore} from '@/store/settings'
+import {LdThemeType, useSettingsStore} from '@/store/settings'
 import {useCraftStore} from '@/store/craft'
 
 const getSystemIsDarkMode = () =>
@@ -8,15 +8,15 @@ export const useHandleThemeChange = () => {
   const craftStore = useCraftStore()
   const settingsStore = useSettingsStore()
 
-  const handleThemeChange = (val: ThemeType) => {
-    if (val === ThemeType.SYSTEM) {
+  const handleThemeChange = (val: LdThemeType) => {
+    if (val === LdThemeType.SYSTEM) {
       craftStore.isAppDarkMode = getSystemIsDarkMode()
-    } else if (val === ThemeType.LIGHT) {
+    } else if (val === LdThemeType.LIGHT) {
       craftStore.isAppDarkMode = false
-    } else if (val === ThemeType.DARK) {
+    } else if (val === LdThemeType.DARK) {
       craftStore.isAppDarkMode = true
     }
-    settingsStore.theme = val
+    settingsStore.ldTheme = val
   }
 
   return {
@@ -28,10 +28,10 @@ export const useGlobalTheme = () => {
   const craftStore = useCraftStore()
   const {handleThemeChange} = useHandleThemeChange()
   const settingsStore = useSettingsStore()
-  handleThemeChange(settingsStore.theme)
+  handleThemeChange(settingsStore.ldTheme)
 
   const handleSystemThemeChange = (event: any) => {
-    if (settingsStore.theme === ThemeType.SYSTEM) {
+    if (settingsStore.ldTheme === LdThemeType.SYSTEM) {
       craftStore.isAppDarkMode = Boolean(event.matches)
     }
   }

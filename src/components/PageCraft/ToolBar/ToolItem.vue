@@ -51,7 +51,7 @@ export default defineComponent({
 
 <template>
   <div
-    :class="{active, blink: showDropzone, _rounded: settingsStore.enableRoundedTheme}"
+    :class="{active, blink: showDropzone}"
     class="tool-item _mini font-code"
     :title="item.title"
     draggable="true"

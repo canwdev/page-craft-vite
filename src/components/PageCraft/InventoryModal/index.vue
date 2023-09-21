@@ -389,7 +389,8 @@ export default defineComponent({
     :allow-move="!settingsStore.isInvAttached"
   >
     <template #titleBarLeft>
-      <n-icon size="20"><Box20Regular /></n-icon>&nbsp;{{ $t('common.inventory_list') }}
+      <n-icon class="window-icon" size="20"><Box20Regular /></n-icon
+      >{{ $t('common.inventory_list') }}
     </template>
     <template #titleBarRightControls>
       <button @click="settingsStore.isInvAttached = !settingsStore.isInvAttached">
@@ -483,7 +484,7 @@ export default defineComponent({
     top: unset !important;
     bottom: 86px !important;
     width: auto !important;
-    box-shadow: none !important;
+    box-shadow: none;
     &._topLayout {
       top: 86px !important;
       bottom: unset !important;
@@ -507,7 +508,7 @@ export default defineComponent({
   border-radius: 50%;
   background-color: #e91e63;
   color: white;
-  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   cursor: pointer;
   display: flex;
   align-items: center;

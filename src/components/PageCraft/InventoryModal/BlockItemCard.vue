@@ -45,7 +45,7 @@ export default defineComponent({
 
 <template>
   <div
-    :class="{active: isActive, _rounded: settingsStore.enableRoundedTheme}"
+    :class="{active: isActive}"
     class="tool-item font-code"
     :title="item.title"
     draggable="true"

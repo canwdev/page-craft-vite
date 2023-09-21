@@ -37,7 +37,7 @@
   "actions": {
     "cancel": "取消",
     "save": "保存",
-    "toggle_theme": "切换主题",
+    "toggle_ld_theme": "明暗主题",
     "edit": "编辑",
     "done": "完成",
     "close": "关闭",

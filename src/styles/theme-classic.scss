@@ -1,0 +1,134 @@
+.theme-classic {
+  $theme_color_inactive: #D4D0C8;
+  $theme_color: #0A246A;
+  $border_width: 2px;
+  $border: 1px solid rgba(96, 96, 96, 0.5);
+  $box-shadow: inset -1px -1px #808080, inset 1px 1px #fff, inset -2px -2px grey, inset 2px 2px #dfdfdf;
+
+  @mixin normal() {
+    box-shadow: $box-shadow;
+    //text-shadow: 1px 1px #222;
+    //color: transparent;
+  }
+  @mixin active() {
+    box-shadow: inset -1px -1px #fff, inset 1px 1px #0a0a0a, inset -2px -2px #dfdfdf, inset 2px 2px grey !important;
+    //text-shadow: 1px 1px #222;
+    //color: transparent;
+  }
+  @mixin disabled() {
+    text-shadow: 1px 1px 0 #fff;
+  }
+  @mixin focused() {
+    outline: 1px dotted #000000;
+    outline-offset: -4px;
+  }
+  @mixin field() {
+    box-shadow: inset -1px -1px #dfdfdf, inset 1px 1px grey;
+  }
+
+  .vp-window {
+    padding: $border_width;
+    padding-right: 4px;
+    background: $theme_color_inactive;
+    border: $border;
+    box-shadow: $box-shadow !important;
+
+    .vp-window-content {
+      .page-craft-title-bar {
+        background: linear-gradient(45deg, #808080, #C0C0C0);
+        color: #D4D0C8;
+        padding: 2px 2px;
+        .page-craft-title-bar-text {
+          font-size: 13px;
+        }
+      }
+    }
+
+    .vp-window-controls {
+      button {
+        @include normal();
+        background-color: $theme_color_inactive;
+        color: black;
+        padding: 0 3px;
+        transition: none;
+        border: none;
+        height: 20px;
+        min-width: 25px;
+
+        &:hover {
+        }
+        &:active {
+          @include active();
+        }
+        &._danger {
+          margin-left: 3px;
+        }
+      }
+    }
+
+    .vp-window-body {
+      height: calc(100% - 28px) !important;
+      box-shadow: inset -1px -1px #dfdfdf, inset 1px 1px grey;
+    }
+
+    &._active {
+      .vp-window-content {
+        .page-craft-title-bar {
+          color: white;
+          background: linear-gradient(45deg, #0A246A, #A6CAF0);
+        }
+      }
+    }
+  }
+
+  .page-craft-panel {
+    background-color: $theme_color_inactive;
+    @include normal();
+    border: $border;
+    .n-button {
+      @include normal();
+      &:active {
+        @include active();
+      }
+    }
+    .n-input {
+      background: #fff;
+      box-shadow: inset -1px -1px #fff, inset 1px 1px grey, inset -2px -2px #dfdfdf, inset 2px 2px #0a0a0a;
+    }
+  }
+
+  .tool-item, {
+    @include normal();
+    &:active {
+      @include active();
+    }
+  }
+  .n-tabs-tab {
+    @include normal();
+    &:active {
+      @include active();
+    }
+    &.n-tabs-tab--active {
+      @include active();
+    }
+  }
+
+
+  &._dark {
+    .vp-window {
+      .vp-window-body {
+        &._bg {
+          background-color: rgba(30, 30, 30, 1);
+        }
+      }
+    }
+    .page-craft-panel {
+      background-color: black;
+      color: white;
+      .n-input {
+        background: black;
+      }
+    }
+  }
+
+}

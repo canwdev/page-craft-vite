@@ -2,7 +2,7 @@
 import {darkTheme, GlobalThemeOverrides} from 'naive-ui'
 import {useGlobalTheme} from '@/hooks/use-global-theme'
 import AppSub from '@/AppSub.vue'
-import {useSettingsStore} from '@/store/settings'
+import {CustomThemeType, useSettingsStore} from '@/store/settings'
 export default defineComponent({
   components: {
     AppSub,
@@ -10,18 +10,37 @@ export default defineComponent({
   setup() {
     const settingsStore = useSettingsStore()
 
+    const isRect = computed(() => {
+      return (
+        !settingsStore.enableRoundedTheme ||
+        settingsStore.customTheme === CustomThemeType.MINIMALISM ||
+        settingsStore.customTheme === CustomThemeType.WIN8 ||
+        settingsStore.customTheme === CustomThemeType.CLASSIC
+      )
+    })
+    const isAero = computed(() => {
+      return settingsStore.enableAeroTheme && settingsStore.customTheme === CustomThemeType.DEFAULT
+    })
+
     // GlobalThemeOverrides
     const themeOverrides = computed<GlobalThemeOverrides>(() => {
+      let primaryColor
+
+      if (settingsStore.customTheme === CustomThemeType.WIN8) {
+        primaryColor = '#F0C869'
+      } else if (settingsStore.customTheme === CustomThemeType.CLASSIC) {
+        primaryColor = '#3A6EA5'
+      }
+
       return {
-        common: settingsStore.enableRoundedTheme
-          ? {
-              borderRadiusSmall: '2px',
-              borderRadius: '4px',
-            }
-          : {
-              borderRadiusSmall: 0,
-              borderRadius: 0,
-            },
+        common: {
+          borderRadiusSmall: isRect.value ? 0 : '2px',
+          borderRadius: isRect.value ? 0 : '4px',
+          primaryColor,
+          primaryColorHover: primaryColor,
+          primaryColorPressed: primaryColor,
+          primaryColorSuppl: primaryColor,
+        },
       } as GlobalThemeOverrides
     })
 
@@ -31,6 +50,9 @@ export default defineComponent({
       isAppDarkMode,
       themeOverrides,
       darkTheme,
+      settingsStore,
+      isAero,
+      isRect,
     }
   },
 })
@@ -38,7 +60,16 @@ export default defineComponent({
 
 <template>
   <n-config-provider
-    :class="{_dark: isAppDarkMode, '_mc-bg': false}"
+    :class="[
+      {
+        _dark: isAppDarkMode,
+        _aero: isAero,
+        _rect: isRect,
+        _rounded: !isRect,
+        '_mc-bg': false,
+      },
+      settingsStore.customTheme,
+    ]"
     :theme="isAppDarkMode ? darkTheme : null"
     :theme-overrides="themeOverrides"
     class="page-craft-root _line-grid"

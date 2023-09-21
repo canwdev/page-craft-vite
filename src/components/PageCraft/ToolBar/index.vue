@@ -181,15 +181,7 @@ export default defineComponent({
       @onItemClick="setCurrentToolItem"
     />
     <PreviewWindow />
-    <div
-      ref="toolbarRef"
-      class="page-craft-enhanced-toolbar page-craft-aero-panel"
-      :class="{
-        _dark: craftStore.isAppDarkMode,
-        _blur: settingsStore.enableAeroTheme,
-        _rounded: settingsStore.enableRoundedTheme,
-      }"
-    >
+    <div ref="toolbarRef" class="page-craft-enhanced-toolbar page-craft-panel">
       <div class="page-craft-enhanced-toolbar-above">
         <n-space size="small">
           <portal-target name="indicatorBarTeleportDest">
@@ -299,9 +291,7 @@ export default defineComponent({
   }
 }
 .page-craft-enhanced-toolbar {
-  border-bottom: 0;
-  border-bottom: 0;
-  padding: 5px 6px 6px;
+  padding: 5px 6px 5px;
   overflow: hidden;
 
   * {

@@ -4,7 +4,12 @@ import ToolBar from '@/components/PageCraft/ToolBar/index.vue'
 import MainCanvas from '@/components/PageCraft/MainCanvas/index.vue'
 import {LsKeys} from '@/enum/page-craft'
 import {useHandleThemeChange} from '@/hooks/use-global-theme'
-import {themeOptions, useSettingsStore} from '@/store/settings'
+import {
+  customThemeOptions,
+  CustomThemeType,
+  ldThemeOptions,
+  useSettingsStore,
+} from '@/store/settings'
 import {createOrFindStyleNode} from '@/utils/dom'
 import {useMetaTitle} from '@/hooks/use-meta'
 import {handleExportStyle} from '@/utils/exporter'
@@ -125,10 +130,12 @@ export default defineComponent({
       applyGlobalStyle,
       globalStyleText,
       settingsStore,
-      themeOptions,
+      ldThemeOptions,
       handleThemeChange,
       isShowStylusTools,
       styleMenuOptions,
+      customThemeOptions,
+      CustomThemeType,
     }
   },
 })
@@ -194,24 +201,30 @@ export default defineComponent({
     <n-modal v-model:show="isShowSettings" preset="dialog" :title="$t('common.settings')">
       <n-list>
         <n-list-item>
-          <n-thing :title="$t('actions.toggle_theme')" />
+          <n-thing :title="$t('actions.toggle_ld_theme')" />
           <template #suffix>
             <n-select
-              v-model:value="settingsStore.theme"
-              :options="themeOptions"
+              v-model:value="settingsStore.ldTheme"
+              :options="ldThemeOptions"
               style="width: 150px"
               @update:value="handleThemeChange"
             />
           </template>
         </n-list-item>
-        <n-list-item>
-          <n-thing :title="$t('common.top_layout')" />
-          <template #suffix>
-            <n-switch v-model:value="settingsStore.enableTopLayout" />
-          </template>
-        </n-list-item>
+
         <n-list-item>
           <n-thing :title="$t('common.theme')" />
+          <template #suffix>
+            <n-select
+              v-model:value="settingsStore.customTheme"
+              :options="customThemeOptions"
+              style="width: 150px"
+            />
+          </template>
+        </n-list-item>
+
+        <n-list-item v-if="settingsStore.customTheme === CustomThemeType.DEFAULT">
+          <n-thing :title="$t('common.theme') + ' Config'" />
           <template #suffix>
             <n-space align="center" justify="end" size="small" style="width: 280px">
               <n-switch size="small" v-model:value="settingsStore.enableAeroTheme">
@@ -229,6 +242,14 @@ export default defineComponent({
             </n-space>
           </template>
         </n-list-item>
+
+        <n-list-item>
+          <n-thing :title="$t('common.top_layout')" />
+          <template #suffix>
+            <n-switch v-model:value="settingsStore.enableTopLayout" />
+          </template>
+        </n-list-item>
+
         <n-list-item>
           <n-thing :title="$t('common.global_style')" />
           <template #suffix>

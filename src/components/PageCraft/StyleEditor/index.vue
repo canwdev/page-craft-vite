@@ -359,7 +359,9 @@ export default defineComponent({
     wid="style_editor"
   >
     <template #titleBarLeft>
-      <n-icon size="20"><PaintBrush20Regular /></n-icon>&nbsp;{{ $t('common.style_editor') }} (scss)
+      <n-icon class="window-icon" size="20"><PaintBrush20Regular /></n-icon
+      >{{ $t('common.style_editor') }}
+      (scss)
     </template>
     <template #titleBarRightControls>
       <button

@@ -37,7 +37,7 @@
   "actions": {
     "cancel": "Cancel",
     "save": "Save",
-    "toggle_theme": "Toggle Theme",
+    "toggle_ld_theme": "Light/Dark Theme",
     "edit": "Edit",
     "done": "Done",
     "close": "Close",

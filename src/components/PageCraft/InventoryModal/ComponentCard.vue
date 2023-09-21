@@ -145,14 +145,6 @@ export default defineComponent({
   outline: 1px solid rgb(var(--block-color-rgb));
   $bracket_color: rgb(var(--block-color-rgb));
 
-  &._rounded {
-    border-radius: 4px;
-
-    .component-cover {
-      border-radius: 4px;
-    }
-  }
-
   &:hover {
     background-color: rgba(var(--block-color-rgb), 0.08);
     box-shadow: 0 0 0px 2px rgb(var(--block-color-rgb)) !important;
@@ -165,7 +157,7 @@ export default defineComponent({
 
   &.active {
     background-color: rgba(var(--block-color-rgb), 0.29);
-    outline: 4px solid rgb(var(--block-color-rgb));
+    outline: 3px solid rgb(var(--block-color-rgb));
   }
 
   .component-cover {

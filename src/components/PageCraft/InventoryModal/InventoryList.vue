@@ -115,7 +115,7 @@ export default defineComponent({
     overflow: auto;
     padding: 10px;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
     //grid-template-columns: repeat(12, 1fr);
     grid-template-rows: auto;
     gap: 10px;
@@ -124,9 +124,8 @@ export default defineComponent({
       box-sizing: border-box;
     }
     &._big {
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      //grid-template-columns: repeat(4, 1fr);
-      gap: 20px 10px;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px 10px;
     }
   }
 }
