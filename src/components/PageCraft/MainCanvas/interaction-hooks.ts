@@ -349,7 +349,13 @@ export const useInteractionHooks = (options) => {
     if (!newBlock) {
       newBlock = craftStore.currentBlock
     }
-    if (newBlock.actionType !== ActionType.CURSOR && newBlock.actionType !== ActionType.DEBUG) {
+
+    // 以下情况不记录
+    if (
+      newBlock.actionType !== ActionType.CURSOR &&
+      newBlock.actionType !== ActionType.DEBUG &&
+      newBlock.actionType !== ActionType.DRAG
+    ) {
       recordUndo()
     }
     addOptions = addOptions || craftStore
@@ -368,6 +374,10 @@ export const useInteractionHooks = (options) => {
   const waitingProgress = computed(() => {
     return ((waitingTime.value / MAX_WAIT_TIME) * 100).toFixed(2)
   })
+
+  // 临时拖拽HTML元素
+  const draggingEl = shallowRef<HTMLElement | null>(null)
+
   const handleMouseDown = (event: MouseEvent) => {
     if (event.button !== 0) {
       return
@@ -392,12 +402,24 @@ export const useInteractionHooks = (options) => {
       event.preventDefault()
       return
     }
+    draggingEl.value = null
+    if (craftStore.currentBlock.actionType === ActionType.DRAG) {
+      if (event.target) {
+        draggingEl.value = event.target as HTMLElement
+        draggingEl.value.draggable = true
+      }
+      return
+    }
     handleBlockClick(event)
   }
   const handleMouseUp = (event: MouseEvent) => {
     // console.log('[handleMouseUp]', event)
     if (craftStore.currentBlock.actionType === ActionType.DELETE) {
       clearWait()
+    }
+    if (draggingEl.value) {
+      draggingEl.value.draggable = false
+      draggingEl.value.removeAttribute('draggable')
     }
   }
 
@@ -410,24 +432,16 @@ export const useInteractionHooks = (options) => {
     lineHelper.value.hideLine()
   }
   const afterUpdateCallback = ref<any>(null)
+
   const handleDrop = async (event) => {
     lineHelper.value.hideLine()
 
-    const transferData = event.dataTransfer.getData('data-block')
-
-    if (!transferData) {
-      console.warn('drag item must be a block', event)
-      return
-    }
-
-    const block = JSON.parse(transferData)
     let targetEl = event.target || mainCanvasRef.value
     const currentPosition = lineHelper.value.currentPosition
 
-    if (block.blockType === BlockType.COMPONENT) {
-      // console.log(block)
+    // 放置HTML代码
+    const dropHTML = async (html) => {
       recordUndo()
-      const html = loadComponentHtml(block.title)
       if (currentPosition === 'top') {
         await pasteHtml(targetEl, 'beforebegin', html)
       } else if (currentPosition === 'bottom') {
@@ -436,6 +450,26 @@ export const useInteractionHooks = (options) => {
         await pasteHtml(targetEl, 'beforeend', html)
       }
       saveData()
+    }
+
+    if (draggingEl.value) {
+      await dropHTML(draggingEl.value.outerHTML)
+      return
+    }
+
+    const transferData = event.dataTransfer.getData('data-block')
+
+    if (!transferData) {
+      console.warn('drag item must be a BlockItem', event)
+      return
+    }
+
+    const block = JSON.parse(transferData)
+
+    if (block.blockType === BlockType.COMPONENT) {
+      // console.log(block)
+      const html = loadComponentHtml(block.title)
+      await dropHTML(html)
 
       const appendStyle = () => {
         const code = loadComponentStyle(block.title)

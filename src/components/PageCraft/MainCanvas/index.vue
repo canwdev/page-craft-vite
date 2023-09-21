@@ -104,13 +104,6 @@ export default defineComponent({
       }
     }
 
-    // onMounted(() => {
-    //   document.addEventListener('keydown', listenShortcuts)
-    // })
-    // onBeforeUnmount(() => {
-    //   document.removeEventListener('keydown', listenShortcuts)
-    // })
-
     return {
       craftStore,
       settingsStore,
@@ -492,6 +485,19 @@ export default defineComponent({
     }
   }
 
+  &--cursor-drag {
+    cursor: grab;
+    &:active {
+      cursor: grabbing;
+    }
+
+    * {
+      cursor: grab;
+      &:active {
+        cursor: grabbing;
+      }
+    }
+  }
   &--dev {
     * {
       outline: 1px dashed red;

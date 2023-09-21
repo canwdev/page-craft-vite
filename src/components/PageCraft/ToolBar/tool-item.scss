@@ -82,4 +82,18 @@
       opacity: 0.5;
     }
   }
+
+  .item-subtext {
+    font-size: 12px;
+    position: absolute;
+    bottom: 0;
+    z-index: 10;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    left: 0;
+    width: 100%;
+    line-height: 1;
+    text-align: center;
+  }
 }

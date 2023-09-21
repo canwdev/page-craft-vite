@@ -246,6 +246,7 @@ export default defineComponent({
             style="min-width: 80px"
             size="tiny"
             @click="settingsStore.showInventory = !settingsStore.showInventory"
+            title="(alt+a)"
           >
             <template #icon>
               <n-icon v-if="settingsStore.showInventory" size="18"><Box20Regular /></n-icon>

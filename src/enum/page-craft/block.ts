@@ -2,6 +2,7 @@ import iconArrow from '../../assets/textures/arrow.png?url'
 import iconIronPickaxe from '../../assets/textures/iron_pickaxe.png?url'
 import iconIronSword from '../../assets/textures/iron_sword.png?url'
 import iconOakSign from '../../assets/textures/oak_sign.png?url'
+import iconFishingRod from '../../assets/textures/fishing_rod.png?url'
 import iconRedStone from '../../assets/textures/redstone.png?url'
 
 export enum ActionType {
@@ -10,6 +11,7 @@ export enum ActionType {
   DELETE = 'DELETE',
   DEBUG = 'DEBUG',
   PASTE_REPLACE = 'PASTE_REPLACE',
+  DRAG = 'DRAG',
 }
 export enum BlockType {
   HTML_ELEMENT = 'HTML_ELEMENT',
@@ -109,9 +111,15 @@ export const ActionBlockItems = {
   }),
   PASTE_REPLACE: new BlockItem({
     blockType: BlockType.ACTIONS,
-    title: '🎈 Paste & Replace innerHTML',
+    title: 'Paste & Replace innerHTML 🎈',
     icon: iconOakSign,
     actionType: ActionType.PASTE_REPLACE,
+  }),
+  DRAG: new BlockItem({
+    blockType: BlockType.ACTIONS,
+    title: 'Drag',
+    icon: iconFishingRod,
+    actionType: ActionType.DRAG,
   }),
   EMPTY: new BlockItem({
     blockType: BlockType.ACTIONS,
@@ -130,11 +138,11 @@ export const actionBlockItemList = Object.values(ActionBlockItems).filter((item)
 
 const presetHtmlTags = 'div,span,br,button,input,img,a,p,h1,h2,h3,ul,ol,li'.split(',')
 export const initToolbarList: BlockItem[] = [
-  ActionBlockItems.DEBUG,
   ActionBlockItems.DELETE,
+  ActionBlockItems.PASTE_REPLACE,
+  ActionBlockItems.DRAG,
   ActionBlockItems.EMPTY,
   ...presetHtmlTags.map((tag) => createHtmlBlockItem(tag)),
-  ActionBlockItems.EMPTY,
   ActionBlockItems.EMPTY,
 ]
 

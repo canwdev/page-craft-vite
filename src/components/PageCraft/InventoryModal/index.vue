@@ -408,9 +408,15 @@ export default defineComponent({
       animated
       style="height: 100%"
     >
-      <n-tab-pane :name="BlockType.HTML_ELEMENT" :tab="$t('common.blocks')">
+      <n-tab-pane :name="BlockType.ACTIONS" tab="Tools">
         <InventoryList
-          :item-list="[...actionBlockItemList, ...htmlBlockItemList]"
+          :item-list="actionBlockItemList"
+          @onItemClick="(v) => $emit('onItemClick', v)"
+        />
+      </n-tab-pane>
+      <n-tab-pane :name="BlockType.HTML_ELEMENT" :tab="'HTML ' + $t('common.blocks')">
+        <InventoryList
+          :item-list="htmlBlockItemList"
           @onItemClick="(v) => $emit('onItemClick', v)"
         />
       </n-tab-pane>

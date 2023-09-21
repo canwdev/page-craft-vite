@@ -60,6 +60,7 @@ export default defineComponent({
 
     <img v-if="item.icon" :src="item.icon" alt="icon" />
     <span v-else-if="item.title" class="item-text">{{ item.title }}</span>
+    <span v-if="item.icon && item.title" class="item-subtext">{{ item.title }}</span>
   </div>
 </template>
 

@@ -66,11 +66,26 @@ export default defineComponent({
       }
     )
 
+    const listenShortcuts = (event) => {
+      const key = event.key.toLowerCase()
+      if (event.altKey && key === 'a') {
+        settingsStore.showInventory = !settingsStore.showInventory
+      } else if (event.altKey && key === 's') {
+        settingsStore.showStyleEditor = !settingsStore.showStyleEditor
+      } else if (event.altKey && key === 'w') {
+        isShowSettings.value = !isShowSettings.value
+      }
+    }
+
     onMounted(() => {
       styleEl.value = createOrFindStyleNode(LsKeys.GLOBAL_STYLE)
       globalStyleText.value = localStorage.getItem(LsKeys.GLOBAL_STYLE) || ''
 
       applyGlobalStyle()
+      document.addEventListener('keydown', listenShortcuts)
+    })
+    onBeforeUnmount(() => {
+      document.removeEventListener('keydown', listenShortcuts)
     })
 
     const isShowStylusTools = ref(false)
@@ -148,7 +163,7 @@ export default defineComponent({
     <MainCanvas>
       <template #settingsButtons>
         <n-space align="center" size="small">
-          <n-button size="small" @click="isShowSettings = true">{{
+          <n-button title="(alt+w)" size="small" @click="isShowSettings = true">{{
             $t('common.settings')
           }}</n-button>
           <n-a href="https://github.com/canwdev/page-craft-vite" target="_blank">Github...</n-a>
@@ -167,6 +182,7 @@ export default defineComponent({
           size="tiny"
           style="min-width: 70px"
           @click="settingsStore.showStyleEditor = !settingsStore.showStyleEditor"
+          title="(alt+s)"
         >
           <template #icon>
             <n-icon v-if="settingsStore.showStyleEditor" size="18"
