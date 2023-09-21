@@ -90,6 +90,27 @@ export default defineComponent({
       }
     )
 
+    const listenShortcuts = (event) => {
+      // console.log(event)
+      const key = event.key.toLowerCase()
+      if (event.altKey && key === 'p') {
+        indicatorOptions.enableExpand = !indicatorOptions.enableExpand
+      } else if (event.altKey && key === 'o') {
+        indicatorOptions.enableDevHelpClass = !indicatorOptions.enableDevHelpClass
+      } else if (event.ctrlKey && event.shiftKey && key === 'z') {
+        handleRedo()
+      } else if (event.ctrlKey && key === 'z') {
+        handleUndo()
+      }
+    }
+
+    // onMounted(() => {
+    //   document.addEventListener('keydown', listenShortcuts)
+    // })
+    // onBeforeUnmount(() => {
+    //   document.removeEventListener('keydown', listenShortcuts)
+    // })
+
     return {
       craftStore,
       settingsStore,
@@ -126,13 +147,14 @@ export default defineComponent({
       editingNode,
       updateEditingElement,
       backgroundStyle,
+      listenShortcuts,
     }
   },
 })
 </script>
 
 <template>
-  <div class="page-craft-mc-wrap">
+  <div tabindex="0" @keyup="listenShortcuts" class="page-craft-mc-wrap">
     <IndicatorInfo :current-el="currentHoveredEl" v-if="currentHoveredEl !== mainCanvasRef" />
 
     <transition name="mc-fade">
@@ -255,7 +277,7 @@ export default defineComponent({
           <n-button-group>
             <n-button
               size="tiny"
-              title="Undo"
+              title="Undo (ctrl+z)"
               :disabled="!undoRedo.undoStack.length"
               @click="handleUndo"
             >
@@ -267,7 +289,7 @@ export default defineComponent({
             </n-button>
             <n-button
               size="tiny"
-              title="Redo"
+              title="Redo (ctrl+shift+z)"
               :disabled="!undoRedo.redoStack.length"
               @click="handleRedo"
             >
@@ -322,6 +344,7 @@ export default defineComponent({
   flex: 1;
   flex-direction: column;
   z-index: 1;
+  outline: none;
 }
 
 .selection-action {

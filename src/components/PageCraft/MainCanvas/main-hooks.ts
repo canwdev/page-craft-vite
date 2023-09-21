@@ -228,6 +228,10 @@ export const useMcMain = (options) => {
   }
 
   const handleUndo = () => {
+    if (!undoRedo.value.undoStack.length) {
+      return
+    }
+
     const innerHTML = mainCanvasRef.value.innerHTML
     const html = undoRedo.value.undo(innerHTML)
     setMainCanvasHtml(html)
@@ -235,6 +239,9 @@ export const useMcMain = (options) => {
   }
 
   const handleRedo = () => {
+    if (!undoRedo.value.redoStack.length) {
+      return
+    }
     const innerHTML = mainCanvasRef.value.innerHTML
     const html = undoRedo.value.redo(innerHTML)
     setMainCanvasHtml(html)

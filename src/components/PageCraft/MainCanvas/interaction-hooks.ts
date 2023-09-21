@@ -28,7 +28,7 @@ export const removeMouseOverDomElementEffect = () => {
   $('*[class=""]').removeAttr('class')
 }
 
-const MAX_WAIT_TIME = 0.8 * 1000
+const MAX_WAIT_TIME = 0.3 * 1000
 
 export const useInteractionHooks = (options) => {
   const {t: $t} = useI18n()
@@ -346,12 +346,12 @@ export const useInteractionHooks = (options) => {
   })
 
   const handleBlockClick = async (event: Event, newBlock?: BlockItem, addOptions?) => {
-    recordUndo()
-
     if (!newBlock) {
       newBlock = craftStore.currentBlock
     }
-
+    if (newBlock.actionType !== ActionType.CURSOR && newBlock.actionType !== ActionType.DEBUG) {
+      recordUndo()
+    }
     addOptions = addOptions || craftStore
 
     await appendCustomBlock(newBlock, event, addOptions, mainCanvasRef)

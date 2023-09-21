@@ -25,7 +25,7 @@ export const useIndicator = () => {
     JSON.parse(localStorage.getItem(LsKeys.INDICATOR_OPTIONS) || 'null') || {
       enableDevHelpClass: true,
       enableExpand: true,
-      enableSelection: false,
+      enableSelection: true,
       fullWidth: false,
       bgDark: false,
       bgTransparentPercent: 100,
@@ -65,9 +65,13 @@ export const useIndicator = () => {
     {
       flag: 'enableDevHelpClass',
       title: $t('common.outline'),
-      desc: $t('msgs.add_1px_outline_per'),
+      desc: $t('msgs.add_1px_outline_per') + ' (alt+o)',
     },
-    {flag: 'enableExpand', title: $t('common.padding'), desc: $t('msgs.pad_each_element_wit')},
+    {
+      flag: 'enableExpand',
+      title: $t('common.padding'),
+      desc: $t('msgs.pad_each_element_wit') + ' (alt+p)',
+    },
     {
       flag: 'contentEditable',
       title: $t('msgs.content_editable'),

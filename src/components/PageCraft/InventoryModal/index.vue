@@ -476,7 +476,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .inventory-modal {
   height: 40vh;
-  min-height: 200px;
+  min-height: 120px;
   &._isAttached {
     position: absolute !important;
     left: 0 !important;
@@ -489,7 +489,6 @@ export default defineComponent({
       top: 86px !important;
       bottom: unset !important;
     }
-    transition: all 0.3s;
   }
   :deep(.n-tab-pane) {
     padding-top: 0;

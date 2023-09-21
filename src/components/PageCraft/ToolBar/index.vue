@@ -62,20 +62,36 @@ export default defineComponent({
       }
     )
 
+    const selectNext = () => {
+      if (settingsStore.toolbarIndex === toolBarList.value.length - 1) {
+        settingsStore.toolbarIndex = 0
+        return
+      }
+      settingsStore.toolbarIndex += 1
+    }
+    const selectPrev = () => {
+      if (settingsStore.toolbarIndex <= 0) {
+        settingsStore.toolbarIndex = toolBarList.value.length - 1
+        return
+      }
+      settingsStore.toolbarIndex -= 1
+    }
     const handleScroll = (event) => {
       event.preventDefault()
       if (event.deltaY > 0) {
-        if (settingsStore.toolbarIndex === toolBarList.value.length - 1) {
-          settingsStore.toolbarIndex = 0
-          return
-        }
-        settingsStore.toolbarIndex += 1
+        selectNext()
       } else {
-        if (settingsStore.toolbarIndex <= 0) {
-          settingsStore.toolbarIndex = toolBarList.value.length - 1
-          return
+        selectPrev()
+      }
+    }
+
+    const handleGlobalScroll = (event) => {
+      if (event.shiftKey) {
+        if (event.deltaY > 0) {
+          selectNext()
+        } else {
+          selectPrev()
         }
-        settingsStore.toolbarIndex -= 1
       }
     }
 
@@ -86,9 +102,11 @@ export default defineComponent({
     })
 
     onMounted(() => {
+      document.addEventListener('wheel', handleGlobalScroll)
       toolbarRef.value.addEventListener('wheel', handleScroll, {passive: false})
     })
     onBeforeUnmount(() => {
+      document.removeEventListener('wheel', handleGlobalScroll)
       toolbarRef.value.removeEventListener('wheel', handleScroll)
     })
 
