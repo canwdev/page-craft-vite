@@ -70,6 +70,7 @@ export const useSfxSelect = () => {
   })
 
   const play = () => {
+    // @ts-ignore
     playSfx({id: `id_${Math.floor(Math.random() * 5)}`})
   }
   return {play, stop}
@@ -88,6 +89,7 @@ export const useSfxPlace = () => {
     },
   })
 
+  // @ts-ignore
   const play = () => playSfx({id: `id_${Math.floor(Math.random() * 4)}`})
   return {play}
 }
@@ -105,6 +107,7 @@ export const useSfxDestroy = () => {
     },
   })
 
+  // @ts-ignore
   const play = () => playSfx({id: `id_${Math.floor(Math.random() * 4)}`})
   return {play}
 }
