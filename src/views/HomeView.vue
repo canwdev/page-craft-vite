@@ -76,9 +76,11 @@ export default defineComponent({
       } else if (event.altKey && key === 'w') {
         isShowSettings.value = !isShowSettings.value
       } else if (event.altKey && key === '1') {
-        document.querySelector('.sl-css-class-input input')?.focus()
+        const el = document.querySelector('.sl-css-class-input input') as HTMLInputElement | null
+        el && el.focus()
       } else if (event.altKey && key === '2') {
-        document.querySelector('.sl-inner-html-input input')?.focus()
+        const el = document.querySelector('.sl-inner-html-input input') as HTMLInputElement | null
+        el && el.focus()
       }
     }
 

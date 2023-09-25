@@ -168,7 +168,7 @@
   }
   &._rounded {
     .tool-item {
-      border-radius: $radius/2;
+      border-radius: calc($radius / 2);
     }
   }
   &._dark {

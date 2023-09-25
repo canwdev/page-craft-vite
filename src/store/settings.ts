@@ -64,7 +64,6 @@ interface IPageCraftSettings {
   isInitialized: boolean
   showInventory: boolean
   inventoryTab: BlockType
-  inventorySortType: FilterType
   inventoryFilterType: FilterType
   inventoryIsLargeCard: boolean
   isInvAttached: boolean // inventory window attached to tool bar
