@@ -12,6 +12,8 @@ import PreviewWindow from '@/components/PageCraft/DomPreview/PreviewWindow.vue'
 import {useI18n} from 'vue-i18n'
 import VpWindow from '@/components/CommonUI/VpWindow.vue'
 import {useOpenCloseSound, useSfxSelect} from '@/hooks/use-sfx'
+import {loadComponentStyle} from '@/hooks/use-component-storage'
+import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 
 export default defineComponent({
   name: 'BottomToolBar',
@@ -173,6 +175,11 @@ export default defineComponent({
 
     useOpenCloseSound(() => settingsStore.showInventory)
 
+    const handleAddClassName = () => {
+      const code = `\n.${craftStore.className} {\n}\n`
+      globalEventBus.emit(GlobalEvents.ON_ADD_STYLE, {code, isAppend: false})
+    }
+
     return {
       settingsStore,
       toolbarRef,
@@ -190,6 +197,7 @@ export default defineComponent({
       blinkAnimIndex,
       toolsMenuOptions,
       isShowPreviewDialog,
+      handleAddClassName,
     }
   },
 })
@@ -224,7 +232,9 @@ export default defineComponent({
               v-model:value="craftStore.className"
               placeholder="CSS class"
               clearable
-              class="font-code"
+              class="font-code sl-css-class-input"
+              title="focus shortcut: alt+1, press enter to insert css class"
+              @keyup.enter="handleAddClassName"
             />
           </div>
 
@@ -234,6 +244,8 @@ export default defineComponent({
               type="text"
               v-model:value="craftStore.innerText"
               placeholder="innerHTML | src | value"
+              title="focus shortcut: alt+2"
+              class="sl-inner-html-input"
               clearable
             />
           </div>

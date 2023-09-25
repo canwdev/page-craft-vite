@@ -101,9 +101,16 @@ export default defineComponent({
     })
 
     const initDialogStyle = () => {
+      const lsState = JSON.parse(localStorage.getItem(storageKey) || 'null')
+      if (lsState) {
+        winOptions.wTop = lsState.wTop
+        winOptions.wLeft = lsState.wLeft
+        winOptions.wWidth = lsState.wWidth
+        winOptions.wHeight = lsState.wHeight
+      }
+
       dialogRef.value.style.top = winOptions.wTop
       dialogRef.value.style.left = winOptions.wLeft
-
       dialogRef.value.style.width = winOptions.wWidth
       dialogRef.value.style.height = winOptions.wHeight
     }
@@ -117,13 +124,10 @@ export default defineComponent({
       if (!mVisible.value || !dialogRef.value) {
         return
       }
-      const width = dialogRef.value.offsetWidth
-      const height = dialogRef.value.offsetHeight
-
       emit('resize')
 
-      winOptions.wWidth = width + 'px'
-      winOptions.wHeight = height + 'px'
+      winOptions.wWidth = getComputedStyle(dialogRef.value).width
+      winOptions.wHeight = getComputedStyle(dialogRef.value).height
     })
 
     onBeforeUnmount(() => {

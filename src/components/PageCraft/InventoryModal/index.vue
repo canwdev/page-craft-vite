@@ -2,14 +2,12 @@
 import {defineComponent} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {
-  BlockType,
   actionBlockItemList,
   BlockItem,
-  ActionType,
+  BlockType,
   createComponentBlockItem,
 } from '@/enum/page-craft/block'
 import {htmlBlockItemList} from '@/enum/page-craft/inventory'
-import {ActionBlockItems} from '@/enum/page-craft/block'
 import InventoryList from '@/components/PageCraft/InventoryModal/InventoryList.vue'
 import {useCraftStore} from '@/store/craft'
 import {useCompImportExport, useCompStorage} from '@/hooks/use-component-storage'
@@ -17,18 +15,20 @@ import FileChooser from '@/components/CommonUI/FileChooser.vue'
 import {colorHash} from '@/utils'
 import {useContextMenu} from '@/hooks/use-context-menu'
 import {useInitComponents} from '@/hooks/use-init'
-import {useSettingsStore} from '@/store/settings'
+import {FilterType, useSettingsStore} from '@/store/settings'
 import {
-  Dismiss20Regular,
-  Window16Regular,
-  WindowArrowUp16Regular,
-  Box20Regular,
-  MoreHorizontal20Regular,
   Add24Regular,
-  BookStar24Filled,
-  BookStar20Regular,
+  Star20Regular,
+  Star20Filled,
+  Box20Regular,
+  BoxMultiple20Regular,
+  Image20Filled,
+  Image20Regular,
+  MoreHorizontal20Regular,
   TextSortAscending20Regular,
   Timeline20Regular,
+  Window16Regular,
+  WindowArrowUp16Regular,
 } from '@vicons/fluent'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import VpWindow from '@/components/CommonUI/VpWindow.vue'
@@ -44,16 +44,18 @@ export default defineComponent({
     VpWindow,
     InventoryList,
     FileChooser,
-    Dismiss20Regular,
     Window16Regular,
     WindowArrowUp16Regular,
     Box20Regular,
     MoreHorizontal20Regular,
     Add24Regular,
-    BookStar24Filled,
-    BookStar20Regular,
+    Star20Filled,
+    Star20Regular,
     TextSortAscending20Regular,
     Timeline20Regular,
+    BoxMultiple20Regular,
+    Image20Filled,
+    Image20Regular,
   },
   props: {
     visible: {
@@ -86,15 +88,21 @@ export default defineComponent({
       useCompImportExport()
     const importFileChooserRef = ref()
 
-    const isStarred = ref(false)
     const isSortByName = ref(false)
     const componentListSorted = computed(() => {
-      let list = componentList.value
-      if (isStarred.value) {
-        list = list.filter((item: BlockItem) => {
-          return item.data.stared
-        })
+      if (settingsStore.inventoryFilterType === FilterType.ALL) {
+        return componentList.value
       }
+      let list = componentList.value
+      const isStared = settingsStore.inventoryFilterType === FilterType.STARED
+      list = list.filter((item: BlockItem) => {
+        if (isStared) {
+          return item.data.stared
+        } else {
+          return !item.data.stared
+        }
+      })
+
       if (isSortByName.value) {
         return list.sort((a, b) => a.title.localeCompare(b.title))
       }
@@ -366,8 +374,16 @@ export default defineComponent({
       handleImportAll,
       colorHash,
       handleContextmenu,
-      isStarred,
       isSortByName,
+      FilterType,
+      changeFilterType() {
+        const filterValues = Object.values(FilterType)
+        const currentIndex = filterValues.indexOf(settingsStore.inventoryFilterType)
+        const nextIndex = (currentIndex + 1) % filterValues.length
+        settingsStore.inventoryFilterType = filterValues[nextIndex]
+        playSfxPop()
+      },
+      playSfxPop,
       ...contextMenuEtc,
     }
   },
@@ -441,12 +457,12 @@ export default defineComponent({
           is-component-block
           @onItemClick="handleComponentItemClick"
           @contextmenu="handleContextmenu"
-          :large-card="isStarred"
+          :large-card="settingsStore.inventoryIsLargeCard"
         >
           <template #customFilter>
             <n-button
               quaternary
-              @click="isSortByName = !isSortByName"
+              @click="playSfxPop(), (isSortByName = !isSortByName)"
               title="Change sort method"
               size="small"
             >
@@ -455,10 +471,25 @@ export default defineComponent({
                 <Timeline20Regular v-else />
               </n-icon>
             </n-button>
-            <n-button quaternary @click="isStarred = !isStarred" title="Toggle stared" size="small">
+            <n-button quaternary @click="changeFilterType" title="Toggle stared" size="small">
               <n-icon size="20">
-                <BookStar24Filled v-if="isStarred" />
-                <BookStar20Regular v-else />
+                <BoxMultiple20Regular v-if="settingsStore.inventoryFilterType === FilterType.ALL" />
+                <Star20Filled v-if="settingsStore.inventoryFilterType === FilterType.STARED" />
+                <Star20Regular v-if="settingsStore.inventoryFilterType === FilterType.NOT_STARED" />
+              </n-icon>
+            </n-button>
+            <n-button
+              quaternary
+              @click="
+                playSfxPop(),
+                  (settingsStore.inventoryIsLargeCard = !settingsStore.inventoryIsLargeCard)
+              "
+              title="Toggle stared"
+              size="small"
+            >
+              <n-icon size="20">
+                <Image20Filled v-if="settingsStore.inventoryIsLargeCard" />
+                <Image20Regular v-else />
               </n-icon>
             </n-button>
           </template>

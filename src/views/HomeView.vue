@@ -75,6 +75,10 @@ export default defineComponent({
         settingsStore.showStyleEditor = !settingsStore.showStyleEditor
       } else if (event.altKey && key === 'w') {
         isShowSettings.value = !isShowSettings.value
+      } else if (event.altKey && key === '1') {
+        document.querySelector('.sl-css-class-input input')?.focus()
+      } else if (event.altKey && key === '2') {
+        document.querySelector('.sl-inner-html-input input')?.focus()
       }
     }
 

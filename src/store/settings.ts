@@ -47,6 +47,12 @@ export const customThemeOptions = [
   },
 ]
 
+export enum FilterType {
+  ALL = 'all',
+  STARED = 'stared',
+  NOT_STARED = 'not_starred',
+}
+
 interface IPageCraftSettings {
   ldTheme: LdThemeType
   customTheme: string
@@ -58,6 +64,9 @@ interface IPageCraftSettings {
   isInitialized: boolean
   showInventory: boolean
   inventoryTab: BlockType
+  inventorySortType: FilterType
+  inventoryFilterType: FilterType
+  inventoryIsLargeCard: boolean
   isInvAttached: boolean // inventory window attached to tool bar
   showStyleEditor: boolean
   toolbarIndex: number
@@ -78,6 +87,8 @@ export const useSettingsStore = defineStore('settingsStore', {
       isInitialized: false,
       showInventory: false,
       inventoryTab: BlockType.COMPONENT,
+      inventoryFilterType: FilterType.ALL,
+      inventoryIsLargeCard: false,
       isInvAttached: true,
       showStyleEditor: false,
       toolbarIndex: 0,

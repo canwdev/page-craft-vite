@@ -87,7 +87,6 @@ export const useMcMain = (options) => {
   const setMainCanvasHtml = (html: string = '') => {
     if (mainCanvasRef.value) {
       mainCanvasRef.value.innerHTML = html
-      sfxFill()
     }
   }
 
@@ -95,6 +94,7 @@ export const useMcMain = (options) => {
     const html = loadCurCompHtml()
     setMainCanvasHtml(html)
     undoRedo.value.clear()
+    sfxFill()
   }
 
   const getEntityData = async (): Promise<ComponentData> => {
@@ -113,6 +113,7 @@ export const useMcMain = (options) => {
     recordUndo()
     setMainCanvasHtml(html)
     saveData()
+    sfxFill()
   }
 
   const htmlMenuOptions = [
