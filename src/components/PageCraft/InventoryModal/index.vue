@@ -90,18 +90,18 @@ export default defineComponent({
 
     const isSortByName = ref(false)
     const componentListSorted = computed(() => {
-      if (settingsStore.inventoryFilterType === FilterType.ALL) {
-        return componentList.value
-      }
       let list = componentList.value
       const isStared = settingsStore.inventoryFilterType === FilterType.STARED
-      list = list.filter((item: BlockItem) => {
-        if (isStared) {
-          return item.data.stared
-        } else {
-          return !item.data.stared
-        }
-      })
+
+      if (settingsStore.inventoryFilterType !== FilterType.ALL) {
+        list = list.filter((item: BlockItem) => {
+          if (isStared) {
+            return item.data.stared
+          } else {
+            return !item.data.stared
+          }
+        })
+      }
 
       if (isSortByName.value) {
         return list.sort((a, b) => a.title.localeCompare(b.title))
@@ -529,6 +529,7 @@ export default defineComponent({
 .inventory-modal {
   height: 40vh;
   min-height: 120px;
+
   &._isAttached {
     position: absolute !important;
     left: 0 !important;

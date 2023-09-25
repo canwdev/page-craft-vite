@@ -14,7 +14,7 @@ import sfxBass from '@/assets/sound/bass.ogg'
 import sfxPop from '@/assets/sound/pop-down.mp3'
 import {useSettingsStore} from '@/store/settings'
 
-export const SFX_VOLUME = 0.3
+export const SFX_VOLUME = 1
 
 export const useOpenCloseSound = (watchFn) => {
   const settingsStore = useSettingsStore()
@@ -79,7 +79,7 @@ export const useSfxSelect = () => {
 export const useSfxPlace = () => {
   const settingsStore = useSettingsStore()
   const {play: playSfx} = useSound(sfxWood, {
-    volume: SFX_VOLUME + 0.1,
+    volume: SFX_VOLUME,
     soundEnabled: settingsStore.enableSoundFx,
     sprite: {
       id_0: [0, 300],
@@ -97,7 +97,7 @@ export const useSfxPlace = () => {
 export const useSfxDestroy = () => {
   const settingsStore = useSettingsStore()
   const {play: playSfx} = useSound(sfxGrass, {
-    volume: SFX_VOLUME + 0.1,
+    volume: SFX_VOLUME,
     soundEnabled: settingsStore.enableSoundFx,
     sprite: {
       id_0: [0, 400],
@@ -115,14 +115,14 @@ export const useSfxDestroy = () => {
 export const useSfxBrush = () => {
   const settingsStore = useSettingsStore()
   return useSound(sfxBrush, {
-    volume: SFX_VOLUME + 0.1,
+    volume: SFX_VOLUME,
     soundEnabled: settingsStore.enableSoundFx,
   })
 }
 export const useSfxBell = () => {
   const settingsStore = useSettingsStore()
   return useSound(sfxBell, {
-    volume: SFX_VOLUME + 0.1,
+    volume: SFX_VOLUME,
     soundEnabled: settingsStore.enableSoundFx,
   })
 }
@@ -130,21 +130,21 @@ export const useSfxBell = () => {
 export const useSfxFill = () => {
   const settingsStore = useSettingsStore()
   return useSound(sfxFill, {
-    volume: SFX_VOLUME + 0.1,
+    volume: SFX_VOLUME,
     soundEnabled: settingsStore.enableSoundFx,
   })
 }
 export const useSfxGuitar = () => {
   const settingsStore = useSettingsStore()
   return useSound(sfxGuitar, {
-    volume: SFX_VOLUME + 0.1,
+    volume: SFX_VOLUME,
     soundEnabled: settingsStore.enableSoundFx,
   })
 }
 export const useSfxBass = () => {
   const settingsStore = useSettingsStore()
   return useSound(sfxBass, {
-    volume: SFX_VOLUME + 0.1,
+    volume: SFX_VOLUME,
     soundEnabled: settingsStore.enableSoundFx,
   })
 }
@@ -152,7 +152,7 @@ export const useSfxBass = () => {
 export const useSfxPop = () => {
   const settingsStore = useSettingsStore()
   return useSound(sfxPop, {
-    volume: SFX_VOLUME + 0.1,
+    volume: SFX_VOLUME,
     soundEnabled: settingsStore.enableSoundFx,
   })
 }

@@ -26,6 +26,7 @@ declare module '@vue/runtime-core' {
     InventoryModal: typeof import('./src/components/PageCraft/InventoryModal/index.vue')['default']
     MainCanvas: typeof import('./src/components/PageCraft/MainCanvas/index.vue')['default']
     NA: typeof import('naive-ui')['NA']
+    NAutoComplete: typeof import('naive-ui')['NAutoComplete']
     NAvatar: typeof import('naive-ui')['NAvatar']
     NButton: typeof import('naive-ui')['NButton']
     NButtonGroup: typeof import('naive-ui')['NButtonGroup']

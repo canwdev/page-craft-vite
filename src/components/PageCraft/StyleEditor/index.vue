@@ -13,8 +13,10 @@ import {
   cssHelperClassList,
   cssKeyFramesList,
   cssSnippetList,
+  mediaQueryList,
   sassVariablesList,
   vue2TransitionsList,
+  vue3TransitionsList,
 } from '@/enum/page-craft/styles'
 import {formatCss} from '@/utils/formater'
 import {useCompStorage} from '@/hooks/use-component-storage'
@@ -333,12 +335,25 @@ export default defineComponent({
         children: getToolChildren(cssHelperClassList),
       },
       {
-        label: '@keyframes',
-        children: getToolChildren(cssKeyFramesList),
+        label: 'Animation',
+        children: [
+          {
+            label: '@keyframes',
+            children: getToolChildren(cssKeyFramesList),
+          },
+          {
+            label: 'Vue 2 ' + $t('common.transitions'),
+            children: getToolChildren(vue2TransitionsList),
+          },
+          {
+            label: 'Vue 3 ' + $t('common.transitions'),
+            children: getToolChildren(vue3TransitionsList),
+          },
+        ],
       },
       {
-        label: 'Vue 2 ' + $t('common.transitions'),
-        children: getToolChildren(vue2TransitionsList),
+        label: 'Media Query',
+        children: getToolChildren(mediaQueryList),
       },
       {
         label: 'Sass ' + $t('common.variables'),

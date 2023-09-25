@@ -17,6 +17,34 @@ enum ResizeDirection {
 
 const ResizeDirectionList = Object.values(ResizeDirection)
 
+// 兼容触屏和鼠标
+const getPointerXy = (e: any) => {
+  let x = 0
+  let y = 0
+  if (
+    e.type == 'touchstart' ||
+    e.type == 'touchmove' ||
+    e.type == 'touchend' ||
+    e.type == 'touchcancel'
+  ) {
+    const touch = e.touches[0] || e.changedTouches[0]
+    x = touch.pageX
+    y = touch.pageY
+  } else if (
+    e.type == 'mousedown' ||
+    e.type == 'mouseup' ||
+    e.type == 'mousemove' ||
+    e.type == 'mouseover' ||
+    e.type == 'mouseout' ||
+    e.type == 'mouseenter' ||
+    e.type == 'mouseleave'
+  ) {
+    x = e.clientX
+    y = e.clientY
+  }
+  return {x, y}
+}
+
 type DraggableOptions = {
   dragHandleEl: HTMLElement // 被鼠标按下的 handle 元素
   dragTargetEl: HTMLElement // 窗体元素
@@ -148,9 +176,12 @@ export class WindowController {
       this.handleResizeDebounced()
     }
 
-    dragHandleEl.addEventListener('mousedown', this.handleDragStart)
     this.updateZIndex = this.updateZIndex.bind(this)
-    dragTargetEl.addEventListener('mousedown', this.updateZIndex)
+    ;['mousedown', 'touchstart'].forEach((eventName) => {
+      dragHandleEl.addEventListener(eventName, this.handleDragStart)
+      dragTargetEl.addEventListener(eventName, this.updateZIndex)
+    })
+
     this.updateZIndex()
 
     this.handleResizeStart = this.handleResizeStart.bind(this)
@@ -160,7 +191,9 @@ export class WindowController {
     if (this.options.resizeable) {
       ResizeDirectionList.forEach((i) => {
         const resizeHandle = createResizeBar(dragTargetEl, i)
-        resizeHandle.addEventListener('mousedown', this.handleResizeStart)
+        ;['mousedown', 'touchstart'].forEach((eventName) => {
+          resizeHandle.addEventListener(eventName, this.handleResizeStart)
+        })
       })
     }
 
@@ -169,8 +202,10 @@ export class WindowController {
 
   destroy() {
     const {dragTargetEl, dragHandleEl, autoPosOnResize, resizeable} = this.options
-    dragHandleEl.removeEventListener('mousedown', this.handleDragStart)
-    dragTargetEl.removeEventListener('mousedown', this.updateZIndex)
+    ;['mousedown', 'touchstart'].forEach((eventName) => {
+      dragHandleEl.removeEventListener(eventName, this.handleDragStart)
+      dragTargetEl.removeEventListener(eventName, this.updateZIndex)
+    })
 
     if (autoPosOnResize) {
       window.addEventListener('resize', this.handleResizeDebounced)
@@ -185,7 +220,7 @@ export class WindowController {
     this.debugLog('destroyed')
   }
 
-  handleDragStart(event: MouseEvent) {
+  handleDragStart(event) {
     if (!this.allowMove) {
       return
     }
@@ -200,22 +235,28 @@ export class WindowController {
       }
     }
 
-    this.deltaX = event.clientX - dragTargetEl.getBoundingClientRect().left
-    this.deltaY = event.clientY - dragTargetEl.getBoundingClientRect().top
+    const xy = getPointerXy(event)
 
-    docEl.addEventListener('mousemove', this.handleDragMove)
-    docEl.addEventListener('mouseup', this.handleDragStop)
+    this.deltaX = xy.x - dragTargetEl.getBoundingClientRect().left
+    this.deltaY = xy.y - dragTargetEl.getBoundingClientRect().top
+    ;['mousemove', 'touchmove'].forEach((eventName) => {
+      docEl.addEventListener(eventName, this.handleDragMove)
+    })
+    ;['mouseup', 'touchend'].forEach((eventName) => {
+      docEl.addEventListener(eventName, this.handleDragStop)
+    })
 
     // 防止拖动图片
     return false
   }
 
-  handleDragMove(event: MouseEvent) {
+  handleDragMove(event) {
     const {deltaX, deltaY} = this
     const {dragTargetEl, onMove, opacify} = this.options
 
-    const x = event.clientX - deltaX
-    const y = event.clientY - deltaY
+    const xy = getPointerXy(event)
+    const x = xy.x - deltaX
+    const y = xy.y - deltaY
 
     let left, top
     if (!this.options.allowOut) {
@@ -239,23 +280,30 @@ export class WindowController {
     // return false;
   }
 
-  handleDragStop(event: MouseEvent) {
+  handleDragStop(event) {
     const {docEl} = this
     const {dragTargetEl, opacify} = this.options
 
-    docEl.removeEventListener('mousemove', this.handleDragMove)
-    docEl.removeEventListener('mouseup', this.handleDragStop)
+    ;['mousemove', 'touchmove'].forEach((eventName) => {
+      docEl.removeEventListener(eventName, this.handleDragMove)
+    })
+    ;['mouseup', 'touchend'].forEach((eventName) => {
+      docEl.removeEventListener(eventName, this.handleDragStop)
+    })
 
     if (opacify) {
       dragTargetEl.style.opacity = '1'
     }
   }
 
-  handleResizeStart(event: MouseEvent) {
+  handleResizeStart(event) {
     const {docEl} = this
     const {dragTargetEl} = this.options
-    this.deltaX = event.clientX
-    this.deltaY = event.clientY
+
+    const xy = getPointerXy(event)
+
+    this.deltaX = xy.x
+    this.deltaY = xy.y
 
     this.prevRect = dragTargetEl.getBoundingClientRect()
 
@@ -264,16 +312,21 @@ export class WindowController {
       this.currentResizeDirection =
         (event.target as HTMLElement).getAttribute('data-direction') || null
     }
-
-    docEl.addEventListener('mousemove', this.handleResizeMove)
-    docEl.addEventListener('mouseup', this.handleResizeStop)
+    ;['mousemove', 'touchmove'].forEach((eventName) => {
+      docEl.addEventListener(eventName, this.handleResizeMove)
+    })
+    ;['mouseup', 'touchend'].forEach((eventName) => {
+      docEl.addEventListener(eventName, this.handleResizeStop)
+    })
   }
 
-  handleResizeMove(event: MouseEvent) {
+  handleResizeMove(event) {
     const {deltaX, deltaY} = this
     const {dragTargetEl} = this.options
-    const x = event.clientX - deltaX
-    const y = event.clientY - deltaY
+
+    const xy = getPointerXy(event)
+    const x = xy.x - deltaX
+    const y = xy.y - deltaY
 
     const rect = this.prevRect
 
@@ -327,10 +380,14 @@ export class WindowController {
 
     // this.debugLog('xy', {x, y}, rect)
   }
-  handleResizeStop(event: MouseEvent) {
+  handleResizeStop(event) {
     const {docEl} = this
-    docEl.removeEventListener('mousemove', this.handleResizeMove)
-    docEl.removeEventListener('mouseup', this.handleResizeStop)
+    ;['mousemove', 'touchmove'].forEach((eventName) => {
+      docEl.removeEventListener(eventName, this.handleResizeMove)
+    })
+    ;['mouseup', 'touchend'].forEach((eventName) => {
+      docEl.removeEventListener(eventName, this.handleResizeStop)
+    })
   }
 
   isHidden() {

@@ -12,8 +12,8 @@ import PreviewWindow from '@/components/PageCraft/DomPreview/PreviewWindow.vue'
 import {useI18n} from 'vue-i18n'
 import VpWindow from '@/components/CommonUI/VpWindow.vue'
 import {useOpenCloseSound, useSfxSelect} from '@/hooks/use-sfx'
-import {loadComponentStyle} from '@/hooks/use-component-storage'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
+import {useInputAutocomplete} from '@/components/PageCraft/ToolBar/toolbar-hooks'
 
 export default defineComponent({
   name: 'BottomToolBar',
@@ -176,8 +176,14 @@ export default defineComponent({
     useOpenCloseSound(() => settingsStore.showInventory)
 
     const handleAddClassName = () => {
-      const code = `\n.${craftStore.className} {\n}\n`
+      let sl = ''
+      craftStore.className.split(' ').forEach((c) => {
+        sl += '.' + c
+      })
+      const code = `\n${sl} {\n}\n`
       globalEventBus.emit(GlobalEvents.ON_ADD_STYLE, {code, isAppend: false})
+
+      craftStore.className = ''
     }
 
     return {
@@ -198,6 +204,8 @@ export default defineComponent({
       toolsMenuOptions,
       isShowPreviewDialog,
       handleAddClassName,
+      // TODO
+      ...useInputAutocomplete(),
     }
   },
 })
@@ -226,16 +234,23 @@ export default defineComponent({
           </portal-target>
 
           <div class="field-row">
-            <n-input
-              size="tiny"
-              type="text"
-              v-model:value="craftStore.className"
-              placeholder="CSS class"
-              clearable
-              class="font-code sl-css-class-input"
-              title="focus shortcut: alt+1, press enter to insert css class"
-              @keyup.enter="handleAddClassName"
-            />
+            <n-auto-complete v-model:value="craftStore.className" :options="autocompleteOptions">
+              <template #default="{handleInput, handleBlur, handleFocus, value: slotValue}">
+                <n-input
+                  size="tiny"
+                  type="text"
+                  placeholder="CSS class"
+                  clearable
+                  class="font-code sl-css-class-input"
+                  title="focus shortcut: alt+1; press enter to insert css class; input without dot(.)"
+                  @keyup.enter="handleAddClassName"
+                  :value="slotValue"
+                  @input="handleInput"
+                  @focus="handleFocus"
+                  @blur="handleBlur"
+                />
+              </template>
+            </n-auto-complete>
           </div>
 
           <div class="field-row">
@@ -250,7 +265,7 @@ export default defineComponent({
             />
           </div>
         </n-space>
-        <n-space size="small">
+        <n-space size="small" justify="end">
           <n-popconfirm @positive-click="resetToolbar">
             <template #trigger>
               <n-button secondary size="tiny">
@@ -292,7 +307,7 @@ export default defineComponent({
           </n-dropdown>
         </n-space>
       </div>
-      <div class="page-craft-enhanced-toolbar-main">
+      <div class="page-craft-enhanced-toolbar-main _scrollbar_mini">
         <ToolItem
           v-for="(item, index) in toolBarList"
           :key="index"
@@ -333,6 +348,12 @@ export default defineComponent({
   padding: 5px 6px 5px;
   overflow: hidden;
 
+  $barWidth: 900px;
+
+  @media screen and (max-width: $barWidth) {
+    width: 100%;
+  }
+
   * {
     box-sizing: border-box;
   }
@@ -354,7 +375,7 @@ export default defineComponent({
   }
 
   .page-craft-enhanced-toolbar-main {
-    width: 900px;
+    width: $barWidth;
     height: 44px;
     margin-left: auto;
     margin-right: auto;
@@ -362,6 +383,13 @@ export default defineComponent({
     grid-gap: 1px;
     grid-template-columns: repeat(19, 1fr);
     grid-template-rows: auto;
+
+    @media screen and (max-width: $barWidth) {
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      overflow: auto;
+    }
   }
 }
 </style>

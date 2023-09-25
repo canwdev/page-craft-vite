@@ -49,13 +49,19 @@ export const cssSnippetList = [
     code: ['position: absolute;', 'top: 0;', 'left: 0;', 'right: 0;', 'bottom: 0;'].join('\n'),
   },
   {
-    name: 'Width Center',
+    name: 'Margin Center',
     code: ['max-width: 1200px', 'margin-left: auto;', 'margin-right: auto;'].join('\n'),
   },
-  // {
-  //   name: '',
-  //   code: '',
-  // },
+  {
+    name: 'Blur Card',
+    code: [
+      'background-color: rgba(255, 255, 255, 0.6);',
+      'box-shadow: 0 1px 10px rgba(0, 0, 0, 0.27), inset 0 0 0.5px #fff;',
+      'border: 1px solid rgba(0, 0, 0, .4);',
+      'border-radius: 4px;',
+      'backdrop-filter: blur(4px);',
+    ].join('\n'),
+  },
 ]
 
 export const cssHelperClassList = [
@@ -177,6 +183,70 @@ export const cssHelperClassList = [
   }
 }`,
   },
+  {
+    name: '.font-code',
+    code: `.font-code {
+  font-family: 'Operator Mono', 'Source Code Pro', Menlo, Monaco, Consolas, 'Courier New', monospace;
+}`,
+  },
+  {
+    name: '.font-emoji',
+    code: `.font-emoji {
+  font-family: "Segoe UI Emoji", "SF Pro SC", "SF Pro Text", "SF Pro Icons", "PingFang SC", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+}`,
+  },
+  {
+    name: 'win2k',
+    code: `.win2k-frame {
+  background-color: silver;
+  box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #fff, inset -2px -2px grey, inset 2px 2px #dfdfdf;
+
+  @mixin active() {
+    box-shadow: inset -1px -1px #fff, inset 1px 1px #0a0a0a, inset -2px -2px #dfdfdf, inset 2px 2px grey;
+    //text-shadow: 1px 1px #222;
+    //color: transparent;
+  }
+
+  @mixin disabled() {
+    text-shadow: 1px 1px 0 #fff;
+  }
+
+  @mixin focused() {
+    outline: 1px dotted #000000;
+    outline-offset: -4px;
+  }
+
+  &.active {
+    @include active();
+  }
+
+  &.disabled {
+    @include disabled();
+  }
+
+  &.focused {
+    @include focused();
+  }
+
+  &.btn-no-style {
+    &:active {
+      @include active();
+    }
+
+    &:disabled {
+      @include disabled();
+    }
+
+    &:focus {
+      @include focused();
+    }
+  }
+}
+
+.win2k-field {
+  box-shadow: inset -1px -1px #dfdfdf, inset 1px 1px grey;
+}`,
+  },
 ]
 
 export const cssKeyFramesList = [
@@ -279,7 +349,7 @@ export const cssKeyFramesList = [
 export const vue2TransitionsList = [
   {
     name: 'fade',
-    code: `// <transition name="mc-fade">
+    code: `// <transition name="fade">
 .fade-enter-active, .fade-leave-active {
   transition: opacity 0.3s;
 }
@@ -310,6 +380,36 @@ export const vue2TransitionsList = [
   opacity: 0;
 }
 `,
+  },
+]
+
+export const vue3TransitionsList = [
+  {
+    name: 'fade',
+    code: `.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}`,
+  },
+  {
+    name: 'scale',
+    code: `.fade-scale-enter-active,
+.fade-scale-leave-active {
+  transform: scale(1);
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.fade-scale-enter-from,
+.fade-scale-leave-to {
+  opacity: 0;
+  transform: scale(0.92);
+  transition: opacity 0.3s, transform 0.3s;
+}`,
   },
 ]
 
@@ -395,6 +495,9 @@ $color-dark-red: #ff453a;
 $color-dark-teal: #64d2ff;
 $color-dark-yellow: #ffd60a;`,
   },
+]
+
+export const mediaQueryList = [
   {
     name: 'Media Query Variables',
     code: `$mq_mobile_min_width: 330px; // 618px // 426px
@@ -405,5 +508,17 @@ $mq_pc_min_width: 1450px; // 1440px
 $mq_pc_min_height: 768px; // 768px
 $mq_pc_2k_width: 2300px; // 2560px
 $mq_pc_2k_height: 1250px; // 1328px`,
+  },
+  {
+    name: 'max-width',
+    code: `@media screen and (max-width: $mq_mobile_width) {}`,
+  },
+  {
+    name: 'min-width',
+    code: `@media screen and (min-width: $mq_mobile_width) {}`,
+  },
+  {
+    name: 'min-width and max-width and max-height',
+    code: `@media screen and (min-width: $mq_mobile_width) and (max-width: $mq_tablet_width) and (max-height: $mq_mobile_height_land) {}`,
   },
 ]

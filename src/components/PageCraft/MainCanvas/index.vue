@@ -332,6 +332,7 @@ export default defineComponent({
 </template>
 
 <style lang="scss">
+$debugColor: #f92250;
 .page-craft-mc-wrap {
   display: flex;
   flex: 1;
@@ -354,7 +355,7 @@ export default defineComponent({
   justify-content: center;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
   outline: 1px solid #41484e;
-  border-top: 2px solid rgb(225, 101, 101);
+  border-top: 2px solid $debugColor;
   max-width: 220px;
 
   button {
@@ -500,7 +501,7 @@ export default defineComponent({
   }
   &--dev {
     * {
-      outline: 1px dashed red;
+      outline: 1px dashed $debugColor;
     }
 
     .cls_mouse_over_parent,
@@ -535,12 +536,12 @@ export default defineComponent({
 
   &.cls_mouse_over,
   .cls_mouse_over {
-    outline: 1px solid deeppink !important;
-    border-color: deeppink !important;
-    background-color: rgba(255, 192, 203, 0.5) !important;
+    outline: 1px solid $debugColor !important;
+    border-color: $debugColor !important;
+    background-color: rgba($debugColor, 0.2) !important;
     //color: #111 !important;
     opacity: 0.85 !important;
-    fill: deeppink !important; /* Helps in highlighting SVG elements */
+    fill: $debugColor !important; /* Helps in highlighting SVG elements */
   }
 }
 
@@ -548,7 +549,7 @@ export default defineComponent({
   width: 20px;
   height: 3px;
   position: fixed;
-  background-color: rgba(244, 67, 54, 0.5);
+  background-color: rgba($debugColor, 0.2);
   pointer-events: none;
   transition: all 0.3s;
   visibility: hidden;

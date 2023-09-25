@@ -136,7 +136,7 @@ export default defineComponent({
 .tool-item {
   --block-color-rgb: 204, 204, 204;
   width: 200px;
-  height: 60px;
+  height: 50px;
   cursor: pointer;
   display: block;
   font-size: 14px;
@@ -158,6 +158,13 @@ export default defineComponent({
   &.active {
     background-color: rgba(var(--block-color-rgb), 0.29);
     outline: 3px solid rgb(var(--block-color-rgb));
+
+    .title-wrap {
+      .item-text {
+        font-weight: bold;
+        text-decoration: underline;
+      }
+    }
   }
 
   .component-cover {
@@ -171,7 +178,7 @@ export default defineComponent({
     background-repeat: no-repeat;
     background-position: center;
     pointer-events: none;
-    opacity: 0.5;
+    opacity: 0.4;
   }
   &._large-card {
     height: auto;
@@ -189,8 +196,7 @@ export default defineComponent({
   }
 
   .title-wrap {
-    padding-left: 5px;
-    padding-right: 25px;
+    padding: 2px 25px 2px 5px;
     position: relative;
     z-index: 2;
     img {
@@ -201,6 +207,7 @@ export default defineComponent({
     .item-text {
       color: inherit;
       font-weight: 500;
+      font-size: 17px;
     }
   }
 

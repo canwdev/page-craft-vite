@@ -167,7 +167,7 @@
     }
   }
   &._rounded {
-    .tool-item {
+    .tool-item, .component-cover, .tool-item-bg {
       border-radius: calc($radius / 2);
     }
   }

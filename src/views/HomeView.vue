@@ -266,20 +266,20 @@ export default defineComponent({
         <n-list-item v-if="settingsStore.customTheme === CustomThemeType.DEFAULT">
           <n-thing :title="$t('common.theme') + ' Config'" />
           <template #suffix>
-            <n-space align="center" justify="end" size="small" style="width: 280px">
-              <n-switch size="small" v-model:value="settingsStore.enableAeroTheme">
-                <template #checked>Aero</template>
-                <template #unchecked>Aero</template>
-              </n-switch>
-              <n-switch
-                size="small"
-                v-model:value="settingsStore.enableRoundedTheme"
-                :round="settingsStore.enableRoundedTheme"
-              >
-                <template #checked>Rounded</template>
-                <template #unchecked>Rounded</template>
-              </n-switch>
-            </n-space>
+            <div style="min-width: 100px">
+              <n-space size="small" justify="end">
+                Aero
+                <n-switch size="small" v-model:value="settingsStore.enableAeroTheme" />
+              </n-space>
+              <n-space size="small" justify="end">
+                Rounded
+                <n-switch
+                  size="small"
+                  v-model:value="settingsStore.enableRoundedTheme"
+                  :round="settingsStore.enableRoundedTheme"
+                />
+              </n-space>
+            </div>
           </template>
         </n-list-item>
 

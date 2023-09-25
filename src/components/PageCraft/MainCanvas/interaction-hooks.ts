@@ -371,7 +371,10 @@ export const useInteractionHooks = (options) => {
     await appendCustomBlock(newBlock, event, addOptions, mainCanvasRef)
     if (newBlock.actionType === ActionType.DELETE) {
       playSfxDestroy()
-    } else {
+    } else if (
+      newBlock.actionType !== ActionType.DEBUG &&
+      newBlock.actionType !== ActionType.CURSOR
+    ) {
       playSfxPlace()
     }
     saveData()
