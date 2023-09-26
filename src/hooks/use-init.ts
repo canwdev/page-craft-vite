@@ -1,5 +1,3 @@
-import {useLocalStorageBoolean} from '@/hooks/use-local-storage'
-import {LsKeys} from '@/enum/page-craft'
 import {createComponentBlockItem} from '@/enum/page-craft/block'
 import ExampleComponent from '@/enum/page-craft/example-component.json'
 import {saveComponentHtml, saveComponentStyle} from '@/hooks/use-component-storage'

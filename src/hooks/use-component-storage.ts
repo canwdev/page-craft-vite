@@ -1,88 +1,79 @@
-import {useCraftStore} from '@/store/craft'
 import {LsKeys} from '@/enum/page-craft'
 import {useLocalStorageObject, useLocalStorageString} from '@/hooks/use-local-storage'
-import {BlockItem, createComponentBlockItem, ComponentData} from '@/enum/page-craft/block'
+import {
+  BlockItem,
+  createComponentBlockItem,
+  ComponentData,
+  BlockType,
+} from '@/enum/page-craft/block'
 import {syncStorageData} from '@/utils/global-event-bus'
 import {getFileName, handleExportFile, handleReadSelectedFile} from '@/utils/exporter'
 import {useSettingsStore} from '@/store/settings'
+import {
+  autoCreateParentFolderSync,
+  copyFolderSync,
+  deleteFolderRecursiveSync,
+  fs,
+} from '@/utils/bfs'
 
-const splitter = '__'
-
-const renameLocalStorageKey = (key: string, newKey: string) => {
-  const value = localStorage.getItem(key) || ''
-  localStorage.setItem(newKey, value)
-  localStorage.removeItem(key)
-}
-
-const copyLocalStorageKey = (key: string, newKey: string) => {
-  const value = localStorage.getItem(key) || ''
-  localStorage.setItem(newKey, value)
+export const folderPrefix = '/pagecraft'
+if (!fs.existsSync(folderPrefix)) {
+  fs.mkdirSync(folderPrefix)
 }
 
 export const loadComponentHtml = (name) => {
-  return localStorage.getItem(LsKeys.MAIN_HTML + splitter + name) || ''
+  if (!name) {
+    return ''
+  }
+  const content = fs.readFileSync(`${folderPrefix}/${name}/template.html`)
+  return content.toString()
 }
 export const saveComponentHtml = (name, html = '') => {
-  return localStorage.setItem(LsKeys.MAIN_HTML + splitter + name, html)
+  const filepath = `${folderPrefix}/${name}/template.html`
+  autoCreateParentFolderSync(filepath)
+  fs.writeFile(filepath, html)
 }
 export const loadComponentStyle = (name) => {
-  return localStorage.getItem(LsKeys.MAIN_STYLE + splitter + name) || ''
+  if (!name) {
+    return ''
+  }
+  const content = fs.readFileSync(`${folderPrefix}/${name}/style.scss`)
+  return content.toString()
 }
 export const saveComponentStyle = (name, style = '') => {
-  return localStorage.setItem(LsKeys.MAIN_STYLE + splitter + name, style)
+  const filepath = `${folderPrefix}/${name}/style.scss`
+  autoCreateParentFolderSync(filepath)
+  fs.writeFile(filepath, style)
 }
 
 export const useCompStorage = () => {
-  const craftStore = useCraftStore()
   const settingsStore = useSettingsStore()
 
-  const getKeyWithSuffix = (key: string, suffix = settingsStore.curCompoName) => {
-    if (suffix) {
-      return key + splitter + suffix
-    } else {
-      return key
-    }
-  }
-
   const loadCurCompHtml = () => {
-    return localStorage.getItem(getKeyWithSuffix(LsKeys.MAIN_HTML)) || ''
+    return loadComponentHtml(settingsStore.curCompoName)
   }
-  const saveCurCompHtml = (text: string) => {
-    localStorage.setItem(getKeyWithSuffix(LsKeys.MAIN_HTML), text)
+  const saveCurCompHtml = (html: string) => {
+    saveComponentHtml(settingsStore.curCompoName, html)
   }
 
   const loadCurCompStyle = () => {
-    return localStorage.getItem(getKeyWithSuffix(LsKeys.MAIN_STYLE)) || ''
+    return loadComponentStyle(settingsStore.curCompoName)
   }
-  const saveCurCompStyle = (text: string) => {
-    localStorage.setItem(getKeyWithSuffix(LsKeys.MAIN_STYLE), text)
+  const saveCurCompStyle = (style: string) => {
+    saveComponentStyle(settingsStore.curCompoName, style)
   }
 
   const clearCompStorage = (name) => {
-    localStorage.removeItem(getKeyWithSuffix(LsKeys.MAIN_HTML, name))
-    localStorage.removeItem(getKeyWithSuffix(LsKeys.MAIN_STYLE, name))
+    deleteFolderRecursiveSync(`${folderPrefix}/${name}`)
   }
 
   const renameCompStorage = (name, newName: string) => {
-    renameLocalStorageKey(
-      getKeyWithSuffix(LsKeys.MAIN_HTML, name),
-      getKeyWithSuffix(LsKeys.MAIN_HTML, newName)
-    )
-    renameLocalStorageKey(
-      getKeyWithSuffix(LsKeys.MAIN_STYLE, name),
-      getKeyWithSuffix(LsKeys.MAIN_STYLE, newName)
-    )
+    fs.renameSync(`${folderPrefix}/${name}`, `${folderPrefix}/${newName}`)
   }
 
   const copyCompStorage = (name, newName: string) => {
-    copyLocalStorageKey(
-      getKeyWithSuffix(LsKeys.MAIN_HTML, name),
-      getKeyWithSuffix(LsKeys.MAIN_HTML, newName)
-    )
-    copyLocalStorageKey(
-      getKeyWithSuffix(LsKeys.MAIN_STYLE, name),
-      getKeyWithSuffix(LsKeys.MAIN_STYLE, newName)
-    )
+    copyFolderSync(`${folderPrefix}/${name}`, `${folderPrefix}/${newName}`)
+    // 更新时间
   }
 
   return {
@@ -96,27 +87,55 @@ export const useCompStorage = () => {
   }
 }
 
-export const useCompImportExport = () => {
-  const componentList = useLocalStorageObject(LsKeys.COMPONENT_LIST, [])
+// 从文件系统读取所有组件
+const loadAllComponents = () => {
+  const list: BlockItem[] = []
+  const files = fs.readdirSync(folderPrefix)
+  files.forEach((filename) => {
+    const isDirectory = fs.lstatSync(`${folderPrefix}/${filename}`).isDirectory()
+    if (isDirectory) {
+      let data = {}
+      // 组件元数据
+      const dataPath = `${folderPrefix}/${filename}/index.json`
+      if (fs.existsSync(dataPath)) {
+        const res = fs.readFileSync(dataPath)
+        data = JSON.parse(res.toString())
+      }
+      list.push(createComponentBlockItem(filename, data))
+    }
+  })
+  return list
+}
 
-  const forceSaveComponentList = () => {
-    localStorage.setItem(LsKeys.COMPONENT_LIST, JSON.stringify(componentList.value))
+export const useCompImportExport = () => {
+  const componentList = ref(loadAllComponents())
+
+  const updateCompMeta = (name: string, data: ComponentData) => {
+    const filepath = `${folderPrefix}/${name}/index.json`
+    autoCreateParentFolderSync(filepath)
+    fs.writeFile(filepath, JSON.stringify(data))
   }
 
-  const handleImportAll = async (file) => {
+  const handleImportAllJson = async (file) => {
     const str = await handleReadSelectedFile(file)
     const importList: ComponentData[] = JSON.parse(str as string).map((i) => new ComponentData(i))
 
     const newList: BlockItem[] = []
     importList.forEach((item) => {
-      newList.push(
-        createComponentBlockItem(item.name, {
-          name: item.name,
-          timestamp: item.timestamp,
-          styleLang: item.styleLang,
-          stared: item.stared,
-          cover: item.cover,
-        })
+      newList.push(createComponentBlockItem(item.name, item))
+
+      const metaPath = `${folderPrefix}/${item.name}/index.json`
+      autoCreateParentFolderSync(metaPath)
+      // 组件元数据
+      fs.writeFile(
+        metaPath,
+        JSON.stringify(
+          new ComponentData({
+            timestamp: item.cover,
+            stared: item.cover,
+            cover: item.cover,
+          })
+        )
       )
       saveComponentHtml(item.name, item.html)
       saveComponentStyle(item.name, item.style)
@@ -138,7 +157,7 @@ export const useCompImportExport = () => {
     window.$message.success('Import success!')
   }
 
-  const exportAll = async ({list}) => {
+  const handleExportAllJson = async ({list}) => {
     await syncStorageData()
     let exportList: ComponentData[] = []
     list = list || componentList.value
@@ -150,7 +169,6 @@ export const useCompImportExport = () => {
           html: loadComponentHtml(item.title),
           style: loadComponentStyle(item.title),
           timestamp: item.data.timestamp,
-          styleLang: item.data.styleLang,
           stared: item.data.stared,
           cover: item.data.cover,
         })
@@ -163,8 +181,8 @@ export const useCompImportExport = () => {
   }
   return {
     componentList,
-    exportAll,
-    handleImportAll,
-    forceSaveComponentList,
+    handleExportAllJson,
+    handleImportAllJson,
+    updateCompMeta,
   }
 }

@@ -7,7 +7,7 @@ import {
   BlockType,
   createComponentBlockItem,
 } from '@/enum/page-craft/block'
-import {htmlBlockItemList} from '@/enum/page-craft/inventory'
+import {htmlBlockItemList, TabType} from '@/enum/page-craft/inventory'
 import InventoryList from '@/components/PageCraft/InventoryModal/InventoryList.vue'
 import {useCraftStore} from '@/store/craft'
 import {useCompImportExport, useCompStorage} from '@/hooks/use-component-storage'
@@ -35,12 +35,14 @@ import VpWindow from '@/components/CommonUI/VpWindow.vue'
 import {useI18n} from 'vue-i18n'
 import {fileToBase64} from '@/utils/exporter'
 import {useSfxPop} from '@/hooks/use-sfx'
+import FileManager from '@/components/FileManager/FileManager.vue'
 
 let idx = 1
 
 export default defineComponent({
   name: 'InventoryModal',
   components: {
+    FileManager,
     VpWindow,
     InventoryList,
     FileChooser,
@@ -84,7 +86,7 @@ export default defineComponent({
       craftStore.setCurrentBlock(item)
     }
 
-    const {exportAll, handleImportAll, componentList, forceSaveComponentList} =
+    const {handleExportAllJson, handleImportAllJson, componentList, updateCompMeta} =
       useCompImportExport()
     const importFileChooserRef = ref()
 
@@ -209,12 +211,15 @@ export default defineComponent({
 
     const handleComponentDuplicate = () => {
       const item = editingNode.value
-      const name = getNamePrompt($t('msgs.please_input_new_name'), item.title + '-1')
+      const newName = getNamePrompt($t('msgs.please_input_new_name'), item.title + '-1')
 
-      copyCompStorage(item.title, name)
+      copyCompStorage(item.title, newName)
 
-      componentList.value = [...componentList.value, createComponentBlockItem(name)]
-      settingsStore.curCompoName = name
+      const newItem = createComponentBlockItem(newName)
+      componentList.value = [newItem, ...componentList.value]
+
+      updateCompMeta(newItem.title, newItem.data)
+      settingsStore.curCompoName = newName
       idx++
     }
 
@@ -235,7 +240,7 @@ export default defineComponent({
           onClick: async () => {
             nodeAction(item, () => {
               item.data.stared = !item.data.stared
-              forceSaveComponentList()
+              updateCompMeta(item.title, item.data)
             })
           },
         },
@@ -259,7 +264,7 @@ export default defineComponent({
               const file = await handle.getFile()
               const base64 = await fileToBase64(file)
               item.data.cover = base64
-              forceSaveComponentList()
+              updateCompMeta(item.title, item.data)
             })
           },
         },
@@ -330,7 +335,7 @@ export default defineComponent({
           label: `📃 ${$t('actions.export')} ${$t('common.all_components')} (JSON)`,
           props: {
             onClick: async () => {
-              await exportAll({list: componentListSorted.value})
+              await handleExportAllJson({list: componentListSorted.value})
             },
           },
         },
@@ -357,6 +362,7 @@ export default defineComponent({
       settingsStore,
       mVisible,
       BlockType,
+      TabType,
       actionBlockItemList,
       htmlBlockItemList,
       handleItemClick,
@@ -371,7 +377,7 @@ export default defineComponent({
       componentListSorted,
       handleCreateComponent,
       importFileChooserRef,
-      handleImportAll,
+      handleImportAllJson,
       colorHash,
       handleContextmenu,
       isSortByName,
@@ -433,14 +439,14 @@ export default defineComponent({
       animated
       style="height: 100%"
     >
-      <n-tab-pane :name="BlockType.ACTIONS" :tab="'Tools' + ` (${actionBlockItemList.length})`">
+      <n-tab-pane :name="TabType.TOOLS" :tab="'Tools' + ` (${actionBlockItemList.length})`">
         <InventoryList
           :item-list="actionBlockItemList"
           @onItemClick="(v) => $emit('onItemClick', v)"
         />
       </n-tab-pane>
       <n-tab-pane
-        :name="BlockType.HTML_ELEMENT"
+        :name="TabType.HTML_ELEMENTS"
         :tab="'HTML ' + $t('common.blocks') + ` (${htmlBlockItemList.length})`"
       >
         <InventoryList
@@ -449,7 +455,7 @@ export default defineComponent({
         />
       </n-tab-pane>
       <n-tab-pane
-        :name="BlockType.COMPONENT"
+        :name="TabType.COMPONENTS"
         :tab="$t('common.components') + ` (${componentListSorted.length})`"
       >
         <InventoryList
@@ -519,9 +525,16 @@ export default defineComponent({
           </template>
         </InventoryList>
       </n-tab-pane>
+      <n-tab-pane :name="TabType.FILE_MANAGER" :tab="`File Manager`">
+        <FileManager />
+      </n-tab-pane>
     </n-tabs>
 
-    <FileChooser ref="importFileChooserRef" accept="application/JSON" @selected="handleImportAll" />
+    <FileChooser
+      ref="importFileChooserRef"
+      accept="application/JSON"
+      @selected="handleImportAllJson"
+    />
   </VpWindow>
 </template>
 

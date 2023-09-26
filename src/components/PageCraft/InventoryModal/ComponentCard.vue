@@ -196,7 +196,7 @@ export default defineComponent({
   }
 
   .title-wrap {
-    padding: 2px 25px 2px 5px;
+    padding: 2px 20px 2px 5px;
     position: relative;
     z-index: 2;
     img {
@@ -207,7 +207,11 @@ export default defineComponent({
     .item-text {
       color: inherit;
       font-weight: 500;
-      font-size: 17px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: inline-block;
+      width: 100%;
     }
   }
 

@@ -37,24 +37,22 @@ export class HtmlBlockData {
 }
 
 export interface ComponentData {
-  name: string
-  html: string
-  style: string
-  styleLang: string
   timestamp: number
   stared: boolean // 是否为星标组件
-  cover: string // base64编码的封面
+  name?: string // 此参数即将废弃，请勿使用
+  html?: string // 此参数即将废弃，请勿使用
+  style?: string // 此参数即将废弃，请勿使用
+  cover?: string // base64编码的封面
 }
 
 export class ComponentData {
   constructor(prop: any = {}) {
-    this.name = prop.name || ''
-    this.html = prop.html || ''
-    this.style = prop.style || ''
-    this.styleLang = prop.styleLang || 'scss'
     this.timestamp = prop.timestamp || Date.now()
     this.stared = prop.stared || false
-    this.cover = prop.cover || null
+    this.name = prop.name
+    this.html = prop.html
+    this.style = prop.style
+    this.cover = prop.cover
   }
 }
 

@@ -1,4 +1,5 @@
 import {BlockItem, BlockType} from '@/enum/page-craft/block'
+import {TabType} from '@/enum/page-craft/inventory'
 
 export enum LdThemeType {
   SYSTEM = 0,
@@ -85,7 +86,7 @@ export const useSettingsStore = defineStore('settingsStore', {
       enableSoundFx: true,
       isInitialized: false,
       showInventory: false,
-      inventoryTab: BlockType.COMPONENT,
+      inventoryTab: TabType.COMPONENTS,
       inventoryFilterType: FilterType.ALL,
       inventoryIsLargeCard: false,
       isInvAttached: true,

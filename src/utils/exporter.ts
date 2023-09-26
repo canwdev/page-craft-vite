@@ -62,11 +62,11 @@ ${html}
   handleExportFile(name, htmlStr, '.html')
 }
 export const handleExportVue = (exportData: ComponentData, version = 2) => {
-  const {html, style, styleLang} = exportData
+  const {html, style} = exportData
   const name = getFileName(exportData.name)
 
   const styleStr = `
-<style lang="${styleLang}" scoped>
+<style lang="scss" scoped>
 ${style}
 </style>
 `

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@vueuse/sound": "^2.0.1",
+    "browserfs": "^1.4.3",
     "color-hash": "^2.0.2",
     "emmet-monaco-es": "^5.3.0",
     "file-saver": "^2.0.5",
