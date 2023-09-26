@@ -29,6 +29,7 @@ import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
 // import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
 import * as monaco from 'monaco-editor'
 import {emmetCSS} from 'emmet-monaco-es'
+emmetCSS(monaco, ['css', 'scss'])
 import {useSettingsStore} from '@/store/settings'
 import {
   CursorHover20Regular,
@@ -48,7 +49,6 @@ import {
   useSfxBrush,
   useSfxFill,
 } from '@/hooks/use-sfx'
-emmetCSS(monaco, ['css', 'scss'])
 
 self.MonacoEnvironment = {
   // @ts-ignore
