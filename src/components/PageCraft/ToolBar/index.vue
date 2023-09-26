@@ -13,7 +13,6 @@ import {useI18n} from 'vue-i18n'
 import VpWindow from '@/components/CommonUI/VpWindow.vue'
 import {useOpenCloseSound, useSfxSelect} from '@/hooks/use-sfx'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
-import {useInputAutocomplete} from '@/components/PageCraft/ToolBar/toolbar-hooks'
 
 export default defineComponent({
   name: 'BottomToolBar',
@@ -175,16 +174,48 @@ export default defineComponent({
 
     useOpenCloseSound(() => settingsStore.showInventory)
 
+    // classname autocomplete start
+    const autocompleteKeywordMap = ref({})
+    const autocompleteOptions = computed(() => {
+      const value = craftStore.className
+      const list = Object.keys(autocompleteKeywordMap.value).map((key) => {
+        return {
+          label: key,
+          value: key,
+        }
+      })
+
+      if (!autocompleteKeywordMap.value[value]) {
+        list.unshift({
+          label: value,
+          value: value,
+        })
+      }
+      return list.filter((item) => {
+        return item.value.includes(value)
+      })
+    })
+    const handleInputClassNameBlur = () => {
+      if (!craftStore.className) {
+        return
+      }
+      autocompleteKeywordMap.value[craftStore.className] = true
+    }
     const handleAddClassName = () => {
+      const value = craftStore.className
+      console.log(value)
       let sl = ''
-      craftStore.className.split(' ').forEach((c) => {
+      value.split(' ').forEach((c) => {
         sl += '.' + c
       })
       const code = `\n${sl} {\n}\n`
       globalEventBus.emit(GlobalEvents.ON_ADD_STYLE, {code, isAppend: false})
 
+      autocompleteKeywordMap.value[value] = true
+
       craftStore.className = ''
     }
+    // classname autocomplete end
 
     return {
       settingsStore,
@@ -204,8 +235,8 @@ export default defineComponent({
       toolsMenuOptions,
       isShowPreviewDialog,
       handleAddClassName,
-      // TODO
-      ...useInputAutocomplete(),
+      handleInputClassNameBlur,
+      autocompleteOptions,
     }
   },
 })
@@ -234,23 +265,18 @@ export default defineComponent({
           </portal-target>
 
           <div class="field-row">
-            <n-auto-complete v-model:value="craftStore.className" :options="autocompleteOptions">
-              <template #default="{handleInput, handleBlur, handleFocus, value: slotValue}">
-                <n-input
-                  size="tiny"
-                  type="text"
-                  placeholder="CSS class"
-                  clearable
-                  class="font-code sl-css-class-input"
-                  title="focus shortcut: alt+1; press enter to insert css class; input without dot(.)"
-                  @keyup.enter="handleAddClassName"
-                  :value="slotValue"
-                  @input="handleInput"
-                  @focus="handleFocus"
-                  @blur="handleBlur"
-                />
-              </template>
-            </n-auto-complete>
+            <n-auto-complete
+              v-model:value="craftStore.className"
+              :options="autocompleteOptions"
+              size="tiny"
+              type="text"
+              placeholder="CSS class"
+              clearable
+              class="font-code sl-css-class-input"
+              title="focus shortcut: alt+1; press enter to insert css class; input without dot(.)"
+              @blur="handleInputClassNameBlur"
+              @keyup.enter="handleAddClassName()"
+            />
           </div>
 
           <div class="field-row">
