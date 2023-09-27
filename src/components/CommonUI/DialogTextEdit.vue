@@ -1,9 +1,11 @@
 <script lang="ts">
 import {defineComponent, ref} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
+import VueMonaco from '@/components/CommonUI/VueMonaco.vue'
 
 export default defineComponent({
   name: 'DialogTextEdit',
+  components: {VueMonaco},
   props: {
     visible: {
       type: Boolean,
@@ -59,14 +61,17 @@ export default defineComponent({
     @close="mVisible = false"
     :show="mVisible"
   >
-    <n-input
-      v-if="mVisible && editingText"
-      :type="isTextarea ? 'textarea' : 'text'"
-      v-model:value="editingText"
-      class="font-code"
-      :rows="isTextarea ? 25 : null"
-      :placeholder="placeholder"
-      autofocus
-    ></n-input>
+    <template v-if="mVisible">
+      <VueMonaco v-if="isTextarea" v-model="editingText" language="json" style="height: 500px" />
+      <n-input
+        v-else
+        :type="isTextarea ? 'textarea' : 'text'"
+        v-model:value="editingText"
+        class="font-code"
+        :rows="isTextarea ? 25 : null"
+        :placeholder="placeholder"
+        autofocus
+      ></n-input>
+    </template>
   </n-modal>
 </template>

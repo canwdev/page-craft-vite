@@ -102,10 +102,11 @@ export default defineComponent({
           hello_world: {
             section_a: {
               test_str: 'This is a test string',
-              '': "It's fast and cool",
+              test_arr: ['line 1', 'line 2', 'line 3'],
+              test_number: 114514,
             },
             section_b: {
-              '': "Blur this input and it'll fill left blank automatically!",
+              '': "Blur this input and it'll generate the key automatically!",
             },
           },
         })

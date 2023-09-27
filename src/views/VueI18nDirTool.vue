@@ -16,12 +16,14 @@ import {useMetaTitle} from '@/hooks/use-meta'
 import DialogCopyFormat from '@/components/VueI18nEditTool/DialogCopyFormat.vue'
 import {useSaveShortcut} from '@/hooks/use-beforeunload'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
+import VueMonaco from '@/components/CommonUI/VueMonaco.vue'
 
 let idSeed = 0
 
 export default defineComponent({
   name: 'VueI18nBatchTool',
   components: {
+    VueMonaco,
     BatchTranslate,
     DropZone,
     DialogCopyFormat,
@@ -155,6 +157,8 @@ export default defineComponent({
       globalEventBus.emit(GlobalEvents.ON_I18N_SAVE_ALL_CHANGES)
     })
 
+    const vueMonacoRef = ref()
+
     return {
       metaTitle,
       iconTranslate,
@@ -162,6 +166,7 @@ export default defineComponent({
       dirTree,
       dirHandle,
       reloadPickedDir,
+      vueMonacoRef,
       nodeProps: ({option}: {option: DirTreeItem}) => {
         return {
           async onClick() {
@@ -170,6 +175,7 @@ export default defineComponent({
               currentEditEntry.value = entry
               const str = await handleReadSelectedFile(await entry.getFile())
               currentEditText.value = str as string
+              vueMonacoRef.value && vueMonacoRef.value.updateValue(str)
               currentFilePathArr.value = [...option.parentDirs, option.label]
               translatePath.value = ''
               updateGuiTranslateTree()
@@ -295,14 +301,13 @@ export default defineComponent({
               <div v-if="false" class="action-row"></div>
 
               <div class="edit-content-wrap" :class="{'batch-mode': editMode === 'batch'}">
-                <n-input
+                <VueMonaco
+                  ref="vueMonacoRef"
                   v-if="editMode === 'text'"
-                  type="textarea"
-                  v-model:value="currentEditText"
-                  class="font-code"
-                  style="height: 100%"
-                  placeholder="Edit Text"
-                ></n-input>
+                  v-model="currentEditText"
+                  language="json"
+                  show-line-numbers
+                />
 
                 <template v-else>
                   <n-scrollbar
@@ -361,9 +366,7 @@ export default defineComponent({
     .edit-content-wrap {
       flex: 1;
       overflow: hidden;
-      padding: 10px;
-      padding-right: 0;
-      padding-top: 0;
+      padding: 0 0 0 10px;
       display: flex;
 
       &.batch-mode {

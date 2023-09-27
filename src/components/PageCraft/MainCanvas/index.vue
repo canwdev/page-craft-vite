@@ -15,10 +15,12 @@ import {
   Code20Filled,
   QuestionCircle20Regular,
 } from '@vicons/fluent'
+import VueMonaco from '@/components/CommonUI/VueMonaco.vue'
 
 export default defineComponent({
   name: 'MainCanvas',
   components: {
+    VueMonaco,
     FileChooser,
     IndicatorInfo,
     ElementEditDialog,
@@ -201,13 +203,7 @@ export default defineComponent({
       :title="`${$t('actions.paste')} HTML`"
       @positive-click="handleImportHtml(pasteHtmlText)"
     >
-      <n-input
-        v-model:value="pasteHtmlText"
-        placeholder="HTML Code"
-        rows="20"
-        class="font-code"
-        type="textarea"
-      />
+      <VueMonaco v-if="isShowImportDialog" v-model="pasteHtmlText" style="height: 500px" />
     </n-modal>
 
     <ElementEditDialog
