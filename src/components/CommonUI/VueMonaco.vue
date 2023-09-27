@@ -57,7 +57,7 @@ export default defineComponent({
         suggest: {
           snippetsPreventQuickSuggestions: false,
         },
-        cursorSmoothCaretAnimation: true, // 是否启用光标平滑插入动画
+        cursorSmoothCaretAnimation: 'on', // 是否启用光标平滑插入动画
         tabSize: 2,
       })
 

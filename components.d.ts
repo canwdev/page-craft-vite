@@ -77,6 +77,5 @@ declare module '@vue/runtime-core' {
     VpWindow: typeof import('./src/components/CommonUI/VpWindow.vue')['default']
     VStyle: typeof import('./src/components/PageCraft/DomPreview/VStyle.vue')['default']
     VueMonaco: typeof import('./src/components/CommonUI/VueMonaco.vue')['default']
-    VueMonacoEditor: typeof import('./src/components/CommonUI/VueMonacoEditor.vue')['default']
   }
 }
