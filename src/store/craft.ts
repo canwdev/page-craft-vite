@@ -14,7 +14,7 @@ export const useCraftStore = defineStore('craft', {
   state: (): CraftStore => {
     return {
       currentBlock:
-        JSON.parse(localStorage.getItem(LsKeys.CURRENT_BLOCK) || 'null') || ActionBlockItems.DEBUG,
+        JSON.parse(localStorage.getItem(LsKeys.CURRENT_BLOCK) || 'null') || ActionBlockItems.EMPTY,
       className: '',
       innerText: '',
       isSelectMode: false,

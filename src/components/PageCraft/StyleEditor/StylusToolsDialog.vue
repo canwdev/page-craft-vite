@@ -2,9 +2,11 @@
 import {defineComponent, ref} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {copyToClipboard} from '@/utils'
+import VueMonaco from '@/components/CommonUI/VueMonaco.vue'
 
 export default defineComponent({
   name: 'StylusToolsDialog',
+  components: {VueMonaco},
   props: {
     visible: {
       type: Boolean,

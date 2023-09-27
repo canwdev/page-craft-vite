@@ -110,6 +110,24 @@ export const useInteractionHooks = (options) => {
       console.error(e)
     }
   }
+  const collapseSelection = (element: Element) => {
+    try {
+      if (window.getSelection) {
+        const sel = window.getSelection()
+        if (sel) {
+          // 获取用户当前选中的 Range（范围）
+          const selectionRange = sel.getRangeAt(0)
+
+          // 在 Range 的末尾插入 <br> 标签
+          selectionRange.collapse(false) // 将光标移到范围的末尾
+          selectionRange.insertNode(element)
+        }
+      }
+    } catch (e: any) {
+      window.$message.error(e.message)
+      console.error(e)
+    }
+  }
   const selectionPopupOptions = [
     ...[
       'b',
@@ -126,11 +144,17 @@ export const useInteractionHooks = (options) => {
       'big',
       'span',
       'div',
+      'br',
     ].map((tag) => ({
       label: tag,
       onClick: () => {
         recordUndo()
-        surroundSelection(document.createElement(tag))
+        const el = document.createElement(tag)
+        if (tag === 'br') {
+          collapseSelection(el)
+        } else {
+          surroundSelection(el)
+        }
         saveData()
         playSfxPlace()
       },

@@ -22,11 +22,6 @@ import {formatCss} from '@/utils/formater'
 import {useCompStorage} from '@/hooks/use-component-storage'
 import VpWindow from '@/components/CommonUI/VpWindow.vue'
 
-// import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
-import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
-// import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
-// import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
-// import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
 import * as monaco from 'monaco-editor'
 import {emmetCSS} from 'emmet-monaco-es'
 emmetCSS(monaco, ['css', 'scss'])
@@ -49,25 +44,6 @@ import {
   useSfxBrush,
   useSfxFill,
 } from '@/hooks/use-sfx'
-
-self.MonacoEnvironment = {
-  // @ts-ignore
-  getWorker(_: string, label: string) {
-    // if (label === 'json') {
-    //   return new jsonWorker()
-    // }
-    if (label === 'css' || label === 'scss' || label === 'less') {
-      return new cssWorker()
-    }
-    // if (label === 'html' || label === 'handlebars' || label === 'razor') {
-    //   return new htmlWorker()
-    // }
-    // if (['typescript', 'javascript'].includes(label)) {
-    //   return new tsWorker()
-    // }
-    // return new EditorWorker()
-  },
-}
 
 export default defineComponent({
   name: 'StyleEditor',
@@ -363,6 +339,29 @@ export default defineComponent({
 
     useOpenCloseSelect(() => craftStore.isSelectMode)
 
+    const listenShortcuts = (event) => {
+      // console.log(event)
+      const key = event.key.toLowerCase()
+      if (event.ctrlKey && event.shiftKey && key === 'f') {
+        execBeautifyCssAction()
+      }
+    }
+
+    const listenGlobalShortcuts = (event) => {
+      // console.log(event)
+      const key = event.key.toLowerCase()
+      if (event.ctrlKey && event.shiftKey && key === 'x') {
+        enterSelectMode()
+      }
+    }
+
+    onMounted(() => {
+      document.addEventListener('keydown', listenGlobalShortcuts)
+    })
+    onBeforeUnmount(() => {
+      document.removeEventListener('keydown', listenGlobalShortcuts)
+    })
+
     return {
       settingsStore,
       mVisible,
@@ -377,6 +376,7 @@ export default defineComponent({
       handleErrorTipClick,
       toolOptions,
       editorInstance,
+      listenShortcuts,
     }
   },
 })
@@ -388,6 +388,7 @@ export default defineComponent({
     v-model:visible="mVisible"
     @resize="editorInstance.layout()"
     wid="style_editor"
+    @keyup="listenShortcuts"
   >
     <template #titleBarLeft>
       <n-icon class="window-icon" size="20"><PaintBrush20Regular /></n-icon
@@ -396,7 +397,7 @@ export default defineComponent({
     </template>
     <template #titleBarRightControls>
       <button
-        :title="$t('msgs.select_an_element_in')"
+        :title="$t('msgs.select_an_element_in') + ' (ctrl+shift+x)'"
         :class="{active: craftStore.isSelectMode}"
         @click="enterSelectMode"
       >
@@ -411,11 +412,14 @@ export default defineComponent({
         </button>
       </n-dropdown>
 
-      <button :title="$t('actions.beautify_code')" @click="execBeautifyCssAction">
+      <button
+        :title="$t('actions.beautify_code') + ' (ctrl+shift+f)'"
+        @click="execBeautifyCssAction"
+      >
         <n-icon size="20"><Wand20Regular /></n-icon>
       </button>
 
-      <button :title="$t('actions.copy_code')" @click="copyStyle">
+      <button :title="$t('actions.copy_code') + ' (ctrl+a ctrl+c)'" @click="copyStyle">
         <n-icon size="20"><Copy20Regular /></n-icon>
       </button>
     </template>

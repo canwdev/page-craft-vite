@@ -15,10 +15,12 @@ import {
   Code20Filled,
   QuestionCircle20Regular,
 } from '@vicons/fluent'
+import VueMonaco from '@/components/CommonUI/VueMonaco.vue'
 
 export default defineComponent({
   name: 'MainCanvas',
   components: {
+    VueMonaco,
     FileChooser,
     IndicatorInfo,
     ElementEditDialog,
@@ -93,16 +95,28 @@ export default defineComponent({
     const listenShortcuts = (event) => {
       // console.log(event)
       const key = event.key.toLowerCase()
-      if (event.altKey && key === 'p') {
-        indicatorOptions.enableExpand = !indicatorOptions.enableExpand
-      } else if (event.altKey && key === 'o') {
-        indicatorOptions.enableDevHelpClass = !indicatorOptions.enableDevHelpClass
-      } else if (event.ctrlKey && event.shiftKey && key === 'z') {
+      if (event.ctrlKey && event.shiftKey && key === 'z') {
         handleRedo()
       } else if (event.ctrlKey && key === 'z') {
         handleUndo()
       }
     }
+    const listenGlobalShortcuts = (event) => {
+      // console.log(event)
+      const key = event.key.toLowerCase()
+      if (event.altKey && key === 'x') {
+        indicatorOptions.enableExpand = !indicatorOptions.enableExpand
+      } else if (event.altKey && key === 'z') {
+        indicatorOptions.enableDevHelpClass = !indicatorOptions.enableDevHelpClass
+      }
+    }
+
+    onMounted(() => {
+      document.addEventListener('keydown', listenGlobalShortcuts)
+    })
+    onBeforeUnmount(() => {
+      document.removeEventListener('keydown', listenGlobalShortcuts)
+    })
 
     return {
       craftStore,
@@ -189,13 +203,7 @@ export default defineComponent({
       :title="`${$t('actions.paste')} HTML`"
       @positive-click="handleImportHtml(pasteHtmlText)"
     >
-      <n-input
-        v-model:value="pasteHtmlText"
-        placeholder="HTML Code"
-        rows="20"
-        class="font-code"
-        type="textarea"
-      />
+      <VueMonaco v-if="isShowImportDialog" v-model="pasteHtmlText" style="height: 500px" />
     </n-modal>
 
     <ElementEditDialog
@@ -333,6 +341,7 @@ export default defineComponent({
 
 <style lang="scss">
 $debugColor: #f92250;
+$debugColor2: #2e92fc;
 .page-craft-mc-wrap {
   display: flex;
   flex: 1;
@@ -356,7 +365,7 @@ $debugColor: #f92250;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
   outline: 1px solid #41484e;
   border-top: 2px solid $debugColor;
-  max-width: 220px;
+  max-width: 240px;
 
   button {
     padding: 2px 5px;
@@ -368,28 +377,6 @@ $debugColor: #f92250;
     &:active {
       background: rgba(255, 255, 255, 0.1);
     }
-  }
-
-  &:before {
-    bottom: -20px;
-    border-color: #41484e transparent transparent transparent;
-  }
-
-  &.reverse {
-    flex-direction: column-reverse;
-  }
-
-  &.reverse:before,
-  &.reverse:after {
-    bottom: 0;
-    top: -19px;
-    border-color: transparent transparent #13181e transparent;
-  }
-
-  &.reverse:before {
-    bottom: 0;
-    top: -20px;
-    border-color: transparent transparent #41484e transparent;
   }
 }
 
@@ -538,7 +525,7 @@ $debugColor: #f92250;
   .cls_mouse_over {
     outline: 1px solid $debugColor !important;
     border-color: $debugColor !important;
-    background-color: rgba($debugColor, 0.2) !important;
+    background-color: rgba($debugColor, 0.3) !important;
     //color: #111 !important;
     opacity: 0.85 !important;
     fill: $debugColor !important; /* Helps in highlighting SVG elements */
@@ -549,7 +536,9 @@ $debugColor: #f92250;
   width: 20px;
   height: 3px;
   position: fixed;
-  background-color: rgba($debugColor, 0.2);
+  //background-color: rgba($debugColor, 0.8);
+  background: linear-gradient(to right, rgba($debugColor, 0.8), rgba($debugColor2, 0.8));
+  border-radius: 4px;
   pointer-events: none;
   transition: all 0.3s;
   visibility: hidden;
@@ -569,14 +558,14 @@ $debugColor: #f92250;
     height: 0;
   }
 
-  $arrow_size: 10px;
+  $arrow_size: 8px;
 
   &:before {
     left: -$arrow_size;
     top: 50%;
     transform: translateY(-50%);
     border: $arrow_size solid transparent;
-    border-left-color: #f44336;
+    border-left-color: $debugColor;
   }
 
   &:after {
@@ -584,7 +573,7 @@ $debugColor: #f92250;
     top: 50%;
     transform: translateY(-50%);
     border: $arrow_size solid transparent;
-    border-right-color: #2196f3;
+    border-right-color: $debugColor2;
   }
 }
 </style>

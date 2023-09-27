@@ -23,10 +23,12 @@ import {useCraftStore} from '@/store/craft'
 import {PaintBrush16Regular} from '@vicons/fluent'
 import {useI18n} from 'vue-i18n'
 import {useOpenCloseSound, useSfxBell} from '@/hooks/use-sfx'
+import VueMonaco from '@/components/CommonUI/VueMonaco.vue'
 
 export default defineComponent({
   name: 'HomeView',
   components: {
+    VueMonaco,
     ToolBar,
     StyleEditor: defineAsyncComponent(() => import('@/components/PageCraft/StyleEditor/index.vue')),
     MainCanvas,
@@ -226,15 +228,14 @@ export default defineComponent({
       :negative-text="$t('actions.cancel')"
       :positive-text="$t('actions.save')"
       preset="dialog"
-      :title="$t('common.global_style')"
+      :title="$t('common.global_style') + ' ' + $t('msgs.css_code_only')"
       @positive-click="applyGlobalStyle"
     >
-      <n-input
-        v-model:value="globalStyleText"
-        :placeholder="$t('msgs.css_code_only')"
-        rows="20"
-        class="font-code"
-        type="textarea"
+      <VueMonaco
+        v-if="isShowGlobalStyleDialog"
+        v-model="globalStyleText"
+        style="height: 500px"
+        language="css"
       />
     </n-modal>
 

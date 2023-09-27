@@ -3,9 +3,11 @@ import {defineComponent, PropType, ref} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {FormInst} from 'naive-ui'
 import {CustomFormInputType, CustomFormItem, formatForm, getCustomFormItems} from './element-edit'
+import VueMonaco from '@/components/CommonUI/VueMonaco.vue'
 
 export default defineComponent({
   name: 'ElementEditDialog',
+  components: {VueMonaco},
   props: {
     editingNode: {
       type: Object as PropType<HTMLElement | null>,
@@ -77,7 +79,7 @@ export default defineComponent({
   <n-modal
     v-model:show="mVisible"
     preset="dialog"
-    :title="`${$t('msgs.edit_element')}: ${formValueRef.tagName}`"
+    :title="`${$t('actions.edit_element')}: ${formValueRef.tagName}`"
     label-placement="top"
   >
     <n-form ref="formRef" :label-width="80" :model="formValueRef" :rules="formRules" size="small">
@@ -91,22 +93,10 @@ export default defineComponent({
         />
       </n-form-item>
       <n-form-item v-if="isEditInnerHTML" label="innerHTML" path="innerHTML">
-        <n-input
-          v-model:value="formValueRef.innerHTML"
-          placeholder="innerHTML"
-          type="textarea"
-          class="font-code"
-          rows="8"
-        />
+        <VueMonaco v-model="formValueRef.innerHTML" />
       </n-form-item>
       <n-form-item v-else label="outerHTML" path="outerHTML">
-        <n-input
-          v-model:value="formValueRef.outerHTML"
-          placeholder="outerHTML"
-          type="textarea"
-          class="font-code"
-          rows="8"
-        />
+        <VueMonaco v-model="formValueRef.outerHTML" />
       </n-form-item>
 
       <n-form-item

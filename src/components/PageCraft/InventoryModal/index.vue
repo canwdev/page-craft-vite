@@ -36,6 +36,7 @@ import {useI18n} from 'vue-i18n'
 import {fileToBase64} from '@/utils/exporter'
 import {useSfxPop} from '@/hooks/use-sfx'
 import FileManager from '@/components/FileManager/FileManager.vue'
+import PopFloat from '@/components/PageCraft/DomPreview/PopFloat.vue'
 
 let idx = 1
 
@@ -43,6 +44,7 @@ export default defineComponent({
   name: 'InventoryModal',
   components: {
     FileManager,
+    PopFloat,
     VpWindow,
     InventoryList,
     FileChooser,
@@ -530,6 +532,7 @@ export default defineComponent({
       </n-tab-pane>
     </n-tabs>
 
+    <PopFloat />
     <FileChooser
       ref="importFileChooserRef"
       accept="application/JSON"

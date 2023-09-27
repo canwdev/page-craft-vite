@@ -7,7 +7,7 @@ import {loadComponentHtml, loadComponentStyle} from '@/hooks/use-component-stora
 import {throttle} from 'throttle-debounce'
 
 export default defineComponent({
-  name: 'PopWindow',
+  name: 'PopFloat',
   components: {
     DomPreview,
   },
