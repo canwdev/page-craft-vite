@@ -69,12 +69,12 @@ export const useIndicator = () => {
     {
       flag: 'enableDevHelpClass',
       title: $t('common.outline'),
-      desc: $t('msgs.add_1px_outline_per') + ' (alt+o)',
+      desc: $t('msgs.add_1px_outline_per') + ' (alt+z)',
     },
     {
       flag: 'enableExpand',
       title: $t('common.padding'),
-      desc: $t('msgs.pad_each_element_wit') + ' (alt+p)',
+      desc: $t('msgs.pad_each_element_wit') + ' (alt+x)',
     },
     {
       flag: 'contentEditable',

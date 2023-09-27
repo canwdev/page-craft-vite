@@ -38,42 +38,46 @@ export default defineComponent({
       return item.value.title === settingsStore.curCompoName
     })
 
-    // const isHover = ref(false)
-    // const hoverTimer = ref<any>(null)
-    //
-    // // mouse hover delay
-    // const startHoverTimer = (cb) => {
-    //   if (hoverTimer.value) {
-    //     return
-    //   }
-    //   hoverTimer.value = setTimeout(() => {
-    //     isHover.value = true
-    //     clearTimeout(hoverTimer.value)
-    //     hoverTimer.value = null
-    //     cb()
-    //   }, 800)
-    // }
-    //
-    // const emitMouseMove = () => {
-    //   globalEventBus.emit(GlobalEvents.ON_COMP_HOVER, {event: currentEvent, item: item.value})
-    // }
-    //
-    // const handleMouseMove = (event) => {
-    //   currentEvent = event
-    //   if (!isHover.value) {
-    //     startHoverTimer(() => {
-    //       emitMouseMove()
-    //     })
-    //     return
-    //   }
-    //   emitMouseMove()
-    // }
-    // const handleMouseLeave = () => {
-    //   isHover.value = false
-    //   globalEventBus.emit(GlobalEvents.ON_COMP_HOVER_OUT)
-    //   clearTimeout(hoverTimer.value)
-    //   hoverTimer.value = null
-    // }
+    const isHover = ref(false)
+    const hoverTimer = ref<any>(null)
+
+    // mouse hover delay
+    const startHoverTimer = (cb) => {
+      if (hoverTimer.value) {
+        return
+      }
+      hoverTimer.value = setTimeout(() => {
+        isHover.value = true
+        clearTimeout(hoverTimer.value)
+        hoverTimer.value = null
+        cb()
+      }, 800)
+    }
+
+    const emitMouseMove = () => {
+      globalEventBus.emit(GlobalEvents.ON_COMP_HOVER, {event: currentEvent, item: item.value})
+    }
+
+    const handleMouseMove = (event) => {
+      if (!item.value.data.cover) {
+        // todo cover preview
+        return
+      }
+      currentEvent = event
+      if (!isHover.value) {
+        startHoverTimer(() => {
+          emitMouseMove()
+        })
+        return
+      }
+      emitMouseMove()
+    }
+    const handleMouseLeave = () => {
+      isHover.value = false
+      globalEventBus.emit(GlobalEvents.ON_COMP_HOVER_OUT)
+      clearTimeout(hoverTimer.value)
+      hoverTimer.value = null
+    }
 
     return {
       craftStore,
@@ -81,8 +85,8 @@ export default defineComponent({
       color,
       isActive,
       formatDate,
-      // handleMouseMove,
-      // handleMouseLeave,
+      handleMouseMove,
+      handleMouseLeave,
       handleDragStart(event) {
         event.dataTransfer.setData('data-block', JSON.stringify(item.value))
       },
@@ -92,16 +96,14 @@ export default defineComponent({
 </script>
 
 <template>
-  <!--
-  @mousemove="handleMouseMove"
-  @mouseleave="handleMouseLeave"
--->
   <div
     :class="{
       active: isActive,
       _rounded: settingsStore.enableRoundedTheme,
       '_large-card': largeCard,
     }"
+    @mousemove="handleMouseMove"
+    @mouseleave="handleMouseLeave"
     class="tool-item"
     :style="{
       '--block-color-rgb': color,

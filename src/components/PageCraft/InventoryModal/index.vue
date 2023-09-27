@@ -35,12 +35,14 @@ import VpWindow from '@/components/CommonUI/VpWindow.vue'
 import {useI18n} from 'vue-i18n'
 import {fileToBase64} from '@/utils/exporter'
 import {useSfxPop} from '@/hooks/use-sfx'
+import PopFloat from '@/components/PageCraft/DomPreview/PopFloat.vue'
 
 let idx = 1
 
 export default defineComponent({
   name: 'InventoryModal',
   components: {
+    PopFloat,
     VpWindow,
     InventoryList,
     FileChooser,
@@ -521,6 +523,7 @@ export default defineComponent({
       </n-tab-pane>
     </n-tabs>
 
+    <PopFloat />
     <FileChooser ref="importFileChooserRef" accept="application/JSON" @selected="handleImportAll" />
   </VpWindow>
 </template>

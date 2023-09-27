@@ -77,7 +77,6 @@
     "drop_files_here": "将文件拖放到此处",
     "filter_items": "过滤项目",
     "no_items": "没有相关物品。",
-    "edit_element": "编辑元素",
     "add_1px_outline_per": "每个元素添加 1px 外边线以更好区分",
     "pad_each_element_wit": "每个元素填充 10px 以供选择",
     "content_editable": "内容可编辑",

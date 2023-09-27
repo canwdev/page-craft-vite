@@ -174,18 +174,22 @@ export default defineComponent({
 
     useOpenCloseSound(() => settingsStore.showInventory)
 
-    // classname autocomplete start
+    /*classname autocomplete start*/
     const autocompleteKeywordMap = ref({})
     const autocompleteOptions = computed(() => {
       const value = craftStore.className
-      const list = Object.keys(autocompleteKeywordMap.value).map((key) => {
-        return {
-          label: key,
-          value: key,
-        }
-      })
+      const list = Object.keys(autocompleteKeywordMap.value)
+        .map((key) => {
+          return {
+            label: key,
+            value: key,
+          }
+        })
+        .filter((item) => {
+          return item.value.includes(value)
+        })
 
-      if (!autocompleteKeywordMap.value[value]) {
+      if (!autocompleteKeywordMap.value[value] && list.length) {
         list.unshift({
           label: value,
           value: value,
@@ -215,7 +219,7 @@ export default defineComponent({
 
       craftStore.className = ''
     }
-    // classname autocomplete end
+    /*classname autocomplete end*/
 
     return {
       settingsStore,
@@ -274,6 +278,7 @@ export default defineComponent({
               clearable
               class="font-code sl-css-class-input"
               title="focus shortcut: alt+1; press enter to insert css class; input without dot(.)"
+              :placement="settingsStore.enableTopLayout ? 'bottom' : 'top'"
               @blur="handleInputClassNameBlur"
               @keyup.enter="handleAddClassName()"
             />
