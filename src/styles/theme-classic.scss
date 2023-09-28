@@ -1,8 +1,8 @@
 .theme-classic {
   $theme_color_inactive: #D4D0C8;
   $theme_color: #0A246A;
-  $border_width: 2px;
-  $border: 1px solid rgba(96, 96, 96, 0.5);
+  $border_width: 1px;
+  $border: 1px solid rgba(45, 45, 45, 0.3);
   $box-shadow: inset -1px -1px #808080, inset 1px 1px #fff, inset -2px -2px grey, inset 2px 2px #dfdfdf;
 
   @mixin normal() {
@@ -28,7 +28,7 @@
 
   .vp-window {
     padding: $border_width;
-    padding-right: 4px;
+    padding-right: 3px;
     background: $theme_color_inactive;
     border: $border;
     box-shadow: $box-shadow !important;
@@ -37,9 +37,9 @@
       .page-craft-title-bar {
         background: linear-gradient(45deg, #808080, #C0C0C0);
         color: #D4D0C8;
-        padding: 2px 2px;
+        padding: 1px 1px 1px 2px;
         .page-craft-title-bar-text {
-          font-size: 13px;
+          font-size: 12px;
         }
       }
     }
@@ -49,11 +49,15 @@
         @include normal();
         background-color: $theme_color_inactive;
         color: black;
-        padding: 0 3px;
+        padding: 0 2px;
         transition: none;
         border: none;
-        height: 20px;
+        height: 18px;
         min-width: 25px;
+
+        i {
+          transform: scale(0.8);
+        }
 
         &:hover {
         }
@@ -61,13 +65,13 @@
           @include active();
         }
         &._danger {
-          margin-left: 3px;
+          margin-left: 2px;
         }
       }
     }
 
     .vp-window-body {
-      height: calc(100% - 28px) !important;
+      height: calc(100% - 23px) !important;
       box-shadow: inset -1px -1px #dfdfdf, inset 1px 1px grey;
     }
 
@@ -102,7 +106,13 @@
     &:active {
       @include active();
     }
+
+    .tool-item-bg {
+      opacity: 0 !important;
+    }
   }
+
+
   .n-tabs-tab {
     @include normal();
     &:active {

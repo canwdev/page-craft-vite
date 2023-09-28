@@ -96,7 +96,7 @@
   }
 
   .page-craft-panel {
-    background-color: rgba(255, 255, 255, 0.6);
+    background-color: rgba(255, 255, 255, 0.9);
     border: 1px solid rgba(0, 0, 0, .4);
     box-shadow: 0 1px 10px rgba(0, 0, 0, 0.27), inset 0 0 1px 1px rgba(255, 255, 255, 0.2);
     border-radius: $radius;
@@ -167,8 +167,11 @@
     }
   }
   &._rounded {
-    .tool-item, .component-cover, .tool-item-bg {
+    .tool-item, .component-cover {
       border-radius: calc($radius / 2);
+    }
+    .tool-item-bg {
+      border-radius: calc($radius / 4);
     }
   }
   &._dark {

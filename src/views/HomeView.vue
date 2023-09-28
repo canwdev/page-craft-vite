@@ -267,7 +267,7 @@ export default defineComponent({
         <n-list-item v-if="settingsStore.customTheme === CustomThemeType.DEFAULT">
           <n-thing :title="$t('common.theme') + ' Config'" />
           <template #suffix>
-            <div style="min-width: 100px">
+            <div style="min-width: 150px">
               <n-space size="small" justify="end">
                 Aero
                 <n-switch size="small" v-model:value="settingsStore.enableAeroTheme" />

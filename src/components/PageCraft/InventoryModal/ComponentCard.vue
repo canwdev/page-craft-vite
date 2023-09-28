@@ -59,7 +59,7 @@ export default defineComponent({
     }
 
     const handleMouseMove = (event) => {
-      if (!item.value.data.cover) {
+      if (!item.value.data.cover && !item.value.data.stared) {
         // todo cover preview
         return
       }
@@ -180,7 +180,7 @@ export default defineComponent({
     background-repeat: no-repeat;
     background-position: center;
     pointer-events: none;
-    opacity: 0.4;
+    opacity: 0.3;
   }
   &._large-card {
     height: auto;

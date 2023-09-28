@@ -301,7 +301,7 @@ export default defineComponent({
               </template>
             </n-button>
           </n-button-group>
-          <span>|</span>
+          <span style="border-right: 1px solid; opacity: 0.3"></span>
         </n-space>
       </div>
     </portal>
@@ -340,6 +340,8 @@ export default defineComponent({
 </template>
 
 <style lang="scss">
+//$debugColor2: #ff00cc;
+//$debugColor: #00ccff;
 $debugColor: #f92250;
 $debugColor2: #2e92fc;
 .page-craft-mc-wrap {

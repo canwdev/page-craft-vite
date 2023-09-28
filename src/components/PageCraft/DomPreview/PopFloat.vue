@@ -21,8 +21,9 @@ export default defineComponent({
     const cardWidth = ref(0)
     const cardHeight = ref(0)
 
-    const html = ref('')
-    const css = ref('')
+    const previewHtml = ref('')
+    const previewCss = ref('')
+    const previewCover = ref('')
 
     onMounted(() => {
       globalEventBus.on(GlobalEvents.ON_COMP_HOVER, handleMousemoveDebounced)
@@ -43,13 +44,18 @@ export default defineComponent({
     }
 
     watch(currentItem, (val) => {
+      previewHtml.value = ''
+      previewCss.value = ''
+      previewCover.value = ''
       if (!val) {
-        html.value = ''
-        css.value = ''
         return
       }
-      html.value = loadComponentHtml(val.title)
-      css.value = loadComponentStyle(val.title)
+      if (val.data.cover) {
+        previewCover.value = val.data.cover
+      } else {
+        previewHtml.value = loadComponentHtml(val.title)
+        previewCss.value = loadComponentStyle(val.title)
+      }
     })
 
     const handleMousemoveDebounced = throttle(50, true, (options) => {
@@ -102,8 +108,9 @@ export default defineComponent({
       mVisible,
       posStyle,
       currentItem,
-      html,
-      css,
+      previewHtml,
+      previewCss,
+      previewCover,
       cardWidth,
       cardHeight,
       handleStyleCompiled,
@@ -113,11 +120,17 @@ export default defineComponent({
 </script>
 
 <template>
-  <transition name="mc-fade">
-    <div ref="popWindowRef" v-show="mVisible" class="pop-window" :style="posStyle">
+  <transition name="mc-fade-scale">
+    <div ref="popWindowRef" v-show="mVisible" class="pop-window vp-window" :style="posStyle">
       <div class="pop-window-content" v-if="currentItem">
-        <DomPreview :id="currentItem.id" :css="css" @styleCompiled="handleStyleCompiled">
-          <div v-html="html"></div>
+        <img v-if="previewCover" :src="previewCover" alt="cover" class="preview-cover" />
+        <DomPreview
+          v-else
+          :id="currentItem.id"
+          :css="previewCss"
+          @styleCompiled="handleStyleCompiled"
+        >
+          <div v-html="previewHtml"></div>
         </DomPreview>
       </div>
     </div>
@@ -128,21 +141,28 @@ export default defineComponent({
 .pop-window {
   background-color: white;
   color: black;
-  border: 1px solid currentColor;
+  //border: 1px solid currentColor;
   position: fixed;
   top: 0;
   left: 0;
   z-index: 200;
-  box-sizing: border-box;
+  //box-sizing: border-box;
   pointer-events: none;
-  padding: 5px;
+  //padding: 5px;
   overflow: hidden;
-  transition: all 0.1s;
+  transition: all 0.3s;
   .pop-window-content {
     min-width: 50px;
     min-height: 50px;
     max-width: 400px;
     max-height: 400px;
+
+    .preview-cover {
+      display: inline-block;
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+    }
   }
 }
 </style>

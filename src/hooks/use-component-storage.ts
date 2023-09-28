@@ -6,7 +6,7 @@ import {syncStorageData} from '@/utils/global-event-bus'
 import {getFileName, handleExportFile, handleReadSelectedFile} from '@/utils/exporter'
 import {useSettingsStore} from '@/store/settings'
 
-const splitter = '__'
+const SPLIT_SIGN = '__'
 
 const renameLsKey = (key: string, newKey: string) => {
   const value = localStorage.getItem(key) || ''
@@ -20,16 +20,16 @@ const copyLsKey = (key: string, newKey: string) => {
 }
 
 export const loadComponentHtml = (name) => {
-  return localStorage.getItem(LsKeys.MAIN_HTML + splitter + name) || ''
+  return localStorage.getItem(LsKeys.MAIN_HTML + SPLIT_SIGN + name) || ''
 }
 export const saveComponentHtml = (name, html = '') => {
-  return localStorage.setItem(LsKeys.MAIN_HTML + splitter + name, html)
+  return localStorage.setItem(LsKeys.MAIN_HTML + SPLIT_SIGN + name, html)
 }
 export const loadComponentStyle = (name) => {
-  return localStorage.getItem(LsKeys.MAIN_STYLE + splitter + name) || ''
+  return localStorage.getItem(LsKeys.MAIN_STYLE + SPLIT_SIGN + name) || ''
 }
 export const saveComponentStyle = (name, style = '') => {
-  return localStorage.setItem(LsKeys.MAIN_STYLE + splitter + name, style)
+  return localStorage.setItem(LsKeys.MAIN_STYLE + SPLIT_SIGN + name, style)
 }
 
 export const useCompStorage = () => {
@@ -38,7 +38,7 @@ export const useCompStorage = () => {
 
   const getKeyWithSuffix = (key: string, suffix = settingsStore.curCompoName) => {
     if (suffix) {
-      return key + splitter + suffix
+      return key + SPLIT_SIGN + suffix
     } else {
       return key
     }
@@ -96,7 +96,7 @@ export const useCompStorage = () => {
 export const useCompImportExport = () => {
   const componentList = useLocalStorageObject(LsKeys.COMPONENT_LIST, [])
 
-  const updateCompMeta = () => {
+  const updateCompMeta = (title?, meta?) => {
     localStorage.setItem(LsKeys.COMPONENT_LIST, JSON.stringify(componentList.value))
   }
 
