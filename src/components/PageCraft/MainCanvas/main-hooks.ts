@@ -9,7 +9,7 @@ import globalEventBus, {GlobalEvents, syncStorageData} from '@/utils/global-even
 import {removeMouseOverDomElementEffect} from '@/components/PageCraft/MainCanvas/interaction-hooks'
 import {copyToClipboard} from '@/utils'
 import {formatCss, formatHtml} from '@/utils/formater'
-import {ComponentData} from '@/enum/page-craft/block'
+import {ComponentData, ComponentExportData} from '@/enum/page-craft/block'
 import {useCompStorage} from '@/hooks/use-component-storage'
 import {useCraftStore} from '@/store/craft'
 import {UndoRedo} from '@/utils/undo-redo'
@@ -56,7 +56,7 @@ export const useMcMain = (options) => {
   }
 
   const handleImportJson = (data) => {
-    const {html = '', style = ''} = new ComponentData(data)
+    const {html = '', style = ''} = new ComponentExportData(data)
     saveCurCompHtml(html)
     saveCurCompStyle(style)
     globalEventBus.emit(GlobalEvents.IMPORT_SUCCESS, style)
@@ -97,12 +97,12 @@ export const useMcMain = (options) => {
     sfxFill()
   }
 
-  const getEntityData = async (): Promise<ComponentData> => {
+  const getEntityData = async (): Promise<ComponentExportData> => {
     await syncStorageData()
     const html = loadCurCompHtml() || ''
     const style = loadCurCompStyle()
 
-    return new ComponentData({
+    return new ComponentExportData({
       name: settingsStore.curCompoName,
       html: formatHtml(html),
       style: formatCss(style),
