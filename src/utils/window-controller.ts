@@ -427,10 +427,8 @@ export class WindowController {
   }
 
   updateZIndex() {
-    if (!this.allowMove) {
-      return
-    }
     const {dragTargetEl} = this.options
+    // this.debugLog('[updateZIndex]', dragTargetEl)
     const fixedElements = document.querySelectorAll('.vp-window')
     // 获取当前元素的 z-index
     const maxZIndex = Math.max(

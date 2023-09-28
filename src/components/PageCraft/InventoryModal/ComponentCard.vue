@@ -46,12 +46,15 @@ export default defineComponent({
       if (hoverTimer.value) {
         return
       }
-      hoverTimer.value = setTimeout(() => {
-        isHover.value = true
-        clearTimeout(hoverTimer.value)
-        hoverTimer.value = null
-        cb()
-      }, 800)
+      hoverTimer.value = setTimeout(
+        () => {
+          isHover.value = true
+          clearTimeout(hoverTimer.value)
+          hoverTimer.value = null
+          cb()
+        },
+        item.value.data.cover ? 100 : 500
+      )
     }
 
     const emitMouseMove = () => {
@@ -176,7 +179,7 @@ export default defineComponent({
     top: 0;
     bottom: 0;
     z-index: 0;
-    background-size: cover;
+    background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
     pointer-events: none;

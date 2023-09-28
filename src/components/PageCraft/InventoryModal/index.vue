@@ -12,7 +12,7 @@ import InventoryList from '@/components/PageCraft/InventoryModal/InventoryList.v
 import {useCraftStore} from '@/store/craft'
 import {useCompImportExport, useCompStorage} from '@/hooks/use-component-storage'
 import FileChooser from '@/components/CommonUI/FileChooser.vue'
-import {colorHash} from '@/utils'
+import {colorHash, sleep} from '@/utils'
 import {useContextMenu} from '@/hooks/use-context-menu'
 import {useInitComponents} from '@/hooks/use-init'
 import {FilterType, useSettingsStore} from '@/store/settings'
@@ -36,12 +36,15 @@ import {useI18n} from 'vue-i18n'
 import {fileToBase64} from '@/utils/exporter'
 import {useSfxPop} from '@/hooks/use-sfx'
 import PopFloat from '@/components/PageCraft/DomPreview/PopFloat.vue'
+import {takeScreenshot} from '@/utils/screenshot'
+import DialogImageCropper from '@/components/CommonUI/DialogImageCropper.vue'
 
 let idx = 1
 
 export default defineComponent({
   name: 'InventoryModal',
   components: {
+    DialogImageCropper,
     PopFloat,
     VpWindow,
     InventoryList,
@@ -223,14 +226,45 @@ export default defineComponent({
       idx++
     }
 
+    /*image cropper start*/
+    const isShowImageCropper = ref(false)
+    const cropperEditingSrc = ref('')
+    const cropperCompleteCb = ref<any>(null) // 裁剪完成回调函数
+    const cropperCancelCb = ref<any>(null) // 裁剪完成回调函数
+    const startCropImage = (options) => {
+      const {src = '', onComplete, onCancel} = options
+
+      cropperEditingSrc.value = src
+      cropperCompleteCb.value = onComplete
+      cropperCancelCb.value = onCancel
+      isShowImageCropper.value = true
+    }
+    const handleCropperSave = (base64url: string) => {
+      if (typeof cropperCompleteCb.value === 'function') {
+        cropperCompleteCb.value(base64url)
+      }
+      cropperCleanup()
+    }
+    const handleCropperCancel = () => {
+      if (typeof cropperCancelCb.value === 'function') {
+        cropperCompleteCb.value()
+      }
+      cropperCleanup()
+    }
+    const cropperCleanup = () => {
+      isShowImageCropper.value = false
+      cropperEditingSrc.value = ''
+      cropperCancelCb.value = null
+      cropperCompleteCb.value = null
+    }
+    /*image cropper end*/
+
     const getCompMenuOptions = (item: BlockItem) => [
       {
         label: '👀 ' + $t('actions.preview'),
         props: {
           onClick: async () => {
-            nodeAction(item, () => {
-              globalEventBus.emit(GlobalEvents.ON_COMP_PREVIEW, {item})
-            })
+            globalEventBus.emit(GlobalEvents.ON_COMP_PREVIEW, {item})
           },
         },
       },
@@ -246,28 +280,88 @@ export default defineComponent({
         },
       },
       {
-        label: '🖼️ Set Cover',
-        props: {
-          onClick: async () => {
-            nodeAction(item, async () => {
-              // @ts-ignore
-              const [handle] = await window.showOpenFilePicker({
-                types: [
-                  {
-                    description: 'Cover Image',
-                    accept: {
-                      'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp'],
-                    },
-                  },
-                ],
-              })
-              const file = await handle.getFile()
-              const base64 = await fileToBase64(file)
-              item.data.cover = base64
-              updateCompMeta(item.title, item.data)
-            })
+        label: '🖼️ Cover',
+        children: [
+          {
+            label: '🖼️ Capture cover...',
+            props: {
+              onClick: async () => {
+                nodeAction(item, async () => {
+                  try {
+                    const base64url = await takeScreenshot({
+                      async onCaptureStart() {
+                        globalEventBus.emit(GlobalEvents.ON_COMP_PREVIEW, {item, maximum: true})
+                        await sleep(500)
+                      },
+                      quality: 0.7,
+                    })
+                    startCropImage({
+                      src: base64url,
+                      onComplete(newSrc) {
+                        item.data.cover = newSrc
+                        updateCompMeta(item.title, item.data)
+                      },
+                    })
+
+                    globalEventBus.emit(GlobalEvents.ON_COMP_PREVIEW_CLOSE, {maximum: false})
+                  } catch (e) {
+                    console.error(e)
+                    globalEventBus.emit(GlobalEvents.ON_COMP_PREVIEW_CLOSE, {maximum: false})
+                  }
+                })
+              },
+            },
           },
-        },
+          {
+            label: '🖼️ Upload cover',
+            props: {
+              onClick: async () => {
+                nodeAction(item, async () => {
+                  // @ts-ignore
+                  const [handle] = await window.showOpenFilePicker({
+                    types: [
+                      {
+                        description: '🖼️ Cover Image',
+                        accept: {
+                          'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp'],
+                        },
+                      },
+                    ],
+                  })
+                  const file = await handle.getFile()
+                  const base64url = await fileToBase64(file)
+                  item.data.cover = base64url
+                  updateCompMeta(item.title, item.data)
+                })
+              },
+            },
+          },
+          item.data.cover && {
+            label: '✏️ Edit cover',
+            props: {
+              onClick: async () => {
+                startCropImage({
+                  src: item.data.cover,
+                  onComplete(newSrc) {
+                    item.data.cover = newSrc
+                    updateCompMeta(item.title, item.data)
+                  },
+                })
+              },
+            },
+          },
+          item.data.cover && {
+            label: '❌ Remove cover',
+            props: {
+              onClick: async () => {
+                nodeAction(item, async () => {
+                  item.data.cover = undefined
+                  updateCompMeta(item.title, item.data)
+                })
+              },
+            },
+          },
+        ].filter(Boolean),
       },
       {
         label: '✏️ ' + $t('actions.rename'),
@@ -390,6 +484,10 @@ export default defineComponent({
         playSfxPop()
       },
       playSfxPop,
+      isShowImageCropper,
+      editingImageSrc: cropperEditingSrc,
+      handleCropperSave,
+      handleCropperCancel,
       ...contextMenuEtc,
     }
   },
@@ -532,6 +630,12 @@ export default defineComponent({
       ref="importFileChooserRef"
       accept="application/JSON"
       @selected="handleImportAllJson"
+    />
+    <DialogImageCropper
+      v-model:visible="isShowImageCropper"
+      :src="editingImageSrc"
+      @onSave="handleCropperSave"
+      @onCancel="handleCropperCancel"
     />
   </VpWindow>
 </template>

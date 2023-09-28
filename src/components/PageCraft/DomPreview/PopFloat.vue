@@ -28,10 +28,12 @@ export default defineComponent({
     onMounted(() => {
       globalEventBus.on(GlobalEvents.ON_COMP_HOVER, handleMousemoveDebounced)
       globalEventBus.on(GlobalEvents.ON_COMP_HOVER_OUT, handleCompHoverOut)
+      globalEventBus.on(GlobalEvents.ON_COMP_HOVER_CLEAR, clearCurrentItem)
     })
     onBeforeUnmount(() => {
       globalEventBus.off(GlobalEvents.ON_COMP_HOVER, handleMousemoveDebounced)
       globalEventBus.off(GlobalEvents.ON_COMP_HOVER_OUT, handleCompHoverOut)
+      globalEventBus.off(GlobalEvents.ON_COMP_HOVER_CLEAR, clearCurrentItem)
     })
 
     const handleStyleCompiled = () => {
@@ -72,6 +74,9 @@ export default defineComponent({
     const handleCompHoverOut = () => {
       // currentItem.value = null
       mVisible.value = false
+    }
+    const clearCurrentItem = () => {
+      currentItem.value = null
     }
 
     const posStyle = computed(() => {
@@ -123,7 +128,13 @@ export default defineComponent({
   <transition name="mc-fade-scale">
     <div ref="popWindowRef" v-show="mVisible" class="pop-window vp-window" :style="posStyle">
       <div class="pop-window-content" v-if="currentItem">
-        <img v-if="previewCover" :src="previewCover" alt="cover" class="preview-cover" />
+        <img
+          v-if="previewCover"
+          :src="previewCover"
+          alt="cover"
+          class="preview-cover"
+          @load="handleStyleCompiled"
+        />
         <DomPreview
           v-else
           :id="currentItem.id"
@@ -148,7 +159,7 @@ export default defineComponent({
   z-index: 200;
   //box-sizing: border-box;
   pointer-events: none;
-  //padding: 5px;
+  padding: 5px !important;
   overflow: hidden;
   transition: all 0.3s;
   .pop-window-content {

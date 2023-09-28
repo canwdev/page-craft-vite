@@ -23,6 +23,10 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    maximum: {
+      type: Boolean,
+      default: false,
+    },
     allowMove: {
       type: Boolean,
       default: true,
@@ -38,7 +42,7 @@ export default defineComponent({
   },
   emits: ['update:visible', 'resize'],
   setup(props, {emit}) {
-    const {allowMove} = toRefs(props)
+    const {allowMove, maximum} = toRefs(props)
     const storageKey = LS_KEY_VP_WINDOW_OPTION + '_' + props.wid
     const mVisible = useModelWrapper(props, emit, 'visible')
     const dialogRef = ref()
@@ -69,6 +73,12 @@ export default defineComponent({
       if (val) {
         dWindow.value.updateZIndex()
       }
+    })
+    watch(maximum, (val) => {
+      dWindow.value.allowMove = !val
+      setTimeout(() => {
+        dWindow.value.updateZIndex()
+      }, 100)
     })
 
     watch(mVisible, (val) => {
@@ -155,6 +165,7 @@ export default defineComponent({
       class="vp-window"
       :class="{
         _allowMove: allowMove,
+        _full: maximum,
       }"
       ref="dialogRef"
     >
@@ -191,6 +202,26 @@ export default defineComponent({
     z-index: 100;
     top: 100px;
     left: 100px;
+  }
+
+  &._full {
+    position: fixed;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    padding: 0;
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+    .vp-window-content {
+      .page-craft-title-bar {
+        margin-left: unset;
+        margin-right: unset;
+      }
+    }
   }
 
   .vp-window-content {

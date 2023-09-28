@@ -15,6 +15,7 @@ declare module '@vue/runtime-core' {
     BlockItemCard: typeof import('./src/components/PageCraft/InventoryModal/BlockItemCard.vue')['default']
     ComponentCard: typeof import('./src/components/PageCraft/InventoryModal/ComponentCard.vue')['default']
     DialogCopyFormat: typeof import('./src/components/VueI18nEditTool/DialogCopyFormat.vue')['default']
+    DialogImageCropper: typeof import('./src/components/CommonUI/DialogImageCropper.vue')['default']
     DialogTextEdit: typeof import('./src/components/CommonUI/DialogTextEdit.vue')['default']
     DomPreview: typeof import('./src/components/PageCraft/DomPreview/DomPreview.vue')['default']
     DropZone: typeof import('./src/components/CommonUI/DropZone.vue')['default']

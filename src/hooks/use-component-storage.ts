@@ -2,7 +2,7 @@ import {useCraftStore} from '@/store/craft'
 import {LsKeys} from '@/enum/page-craft'
 import {useLocalStorageObject, useLocalStorageString} from '@/hooks/use-local-storage'
 import {BlockItem, createComponentBlockItem, ComponentData} from '@/enum/page-craft/block'
-import {syncStorageData} from '@/utils/global-event-bus'
+import globalEventBus, {GlobalEvents, syncStorageData} from '@/utils/global-event-bus'
 import {getFileName, handleExportFile, handleReadSelectedFile} from '@/utils/exporter'
 import {useSettingsStore} from '@/store/settings'
 
@@ -97,6 +97,7 @@ export const useCompImportExport = () => {
   const componentList = useLocalStorageObject(LsKeys.COMPONENT_LIST, [])
 
   const updateCompMeta = (title?, meta?) => {
+    globalEventBus.emit(GlobalEvents.ON_COMP_HOVER_CLEAR)
     localStorage.setItem(LsKeys.COMPONENT_LIST, JSON.stringify(componentList.value))
   }
 

@@ -73,3 +73,8 @@ export const formatSelectOptions = (list: string[]) => {
     }
   })
 }
+
+export const sleep = (timeoutInMs: number) =>
+  new Promise((r) => {
+    setTimeout(r, timeoutInMs)
+  })
