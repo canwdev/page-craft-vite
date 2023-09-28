@@ -39,9 +39,9 @@ export class HtmlBlockData {
 export interface ComponentData {
   timestamp: number
   stared: boolean // 是否为星标组件
-  name?: string // 此参数即将废弃，请勿使用
-  html?: string // 此参数即将废弃，请勿使用
-  style?: string // 此参数即将废弃，请勿使用
+  name?: string // 导出专用参数，其他情况内请勿使用
+  html?: string // 导出专用参数，其他情况内请勿使用
+  style?: string // 导出专用参数，其他情况内请勿使用
   cover?: string // base64编码的封面
 }
 

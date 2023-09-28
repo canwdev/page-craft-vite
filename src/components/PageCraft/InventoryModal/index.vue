@@ -35,7 +35,6 @@ import VpWindow from '@/components/CommonUI/VpWindow.vue'
 import {useI18n} from 'vue-i18n'
 import {fileToBase64} from '@/utils/exporter'
 import {useSfxPop} from '@/hooks/use-sfx'
-import FileManager from '@/components/FileManager/FileManager.vue'
 import PopFloat from '@/components/PageCraft/DomPreview/PopFloat.vue'
 
 let idx = 1
@@ -43,7 +42,6 @@ let idx = 1
 export default defineComponent({
   name: 'InventoryModal',
   components: {
-    FileManager,
     PopFloat,
     VpWindow,
     InventoryList,
@@ -526,9 +524,6 @@ export default defineComponent({
             </n-dropdown>
           </template>
         </InventoryList>
-      </n-tab-pane>
-      <n-tab-pane :name="TabType.FILE_MANAGER" :tab="`File Manager`">
-        <FileManager />
       </n-tab-pane>
     </n-tabs>
 

@@ -1,17 +1,14 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
-import FileManager from '@/components/FileManager/FileManager.vue'
 
 export default defineComponent({
   name: 'DevPage',
-  components: {FileManager},
+  components: {},
 })
 </script>
 
 <template>
-  <div class="dev-page">
-    <FileManager />
-  </div>
+  <div class="dev-page">dev</div>
 </template>
 
 <style lang="scss" scoped>
