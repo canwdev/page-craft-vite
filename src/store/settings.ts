@@ -64,7 +64,7 @@ interface IPageCraftSettings {
   enableSoundFx: boolean
   isInitialized: boolean
   showInventory: boolean
-  inventoryTab: BlockType
+  inventoryTab: TabType
   inventoryFilterType: FilterType
   inventoryIsLargeCard: boolean
   isInvAttached: boolean // inventory window attached to tool bar
