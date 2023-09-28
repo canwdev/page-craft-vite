@@ -117,7 +117,7 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      styleEl.value = createOrFindStyleNode(LsKeys.MAIN_STYLE)
+      styleEl.value = createOrFindStyleNode(LsKeys.COMP_STYLE)
       const style = loadCurCompStyle()
 
       editorInstance.value = monaco.editor.create(editorContainerRef.value, {

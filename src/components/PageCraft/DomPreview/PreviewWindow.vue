@@ -3,9 +3,10 @@ import {defineComponent} from 'vue'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {BlockItem} from '@/enum/page-craft/block'
 import DomPreview from '@/components/PageCraft/DomPreview/DomPreview.vue'
-import {loadComponentHtml, loadComponentStyle} from '@/hooks/use-component-storage'
+import {loadCompStorage} from '@/hooks/use-component-storage'
 import VpWindow from '@/components/CommonUI/VpWindow.vue'
 import {ArrowMaximize20Regular, ArrowMinimize20Regular} from '@vicons/fluent'
+import {LsKeys} from '@/enum/page-craft'
 
 export default defineComponent({
   name: 'PopWindow',
@@ -39,8 +40,8 @@ export default defineComponent({
         previewCss.value = ''
         return
       }
-      previewHtml.value = loadComponentHtml(val.title)
-      previewCss.value = loadComponentStyle(val.title)
+      previewHtml.value = loadCompStorage(LsKeys.COMP_HTML, val.title)
+      previewCss.value = loadCompStorage(LsKeys.COMP_STYLE, val.title)
     })
 
     const handleCompPreview = (options) => {

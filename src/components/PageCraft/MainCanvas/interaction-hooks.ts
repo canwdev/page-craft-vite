@@ -1,18 +1,18 @@
 import {ActionType, BlockItem, BlockType} from '@/enum/page-craft/block'
 import {useCraftStore} from '@/store/craft'
 import {appendCustomBlock, createBlockElement} from '@/utils/dom'
-import {TOOL_CLASSES} from '@/enum/page-craft'
+import {LsKeys, TOOL_CLASSES} from '@/enum/page-craft'
 import {throttle} from 'throttle-debounce'
 import $ from 'jquery'
 import {useContextMenu} from '@/hooks/use-context-menu'
 import {copyToClipboard} from '@/utils'
 import {updateHtmlElement} from '@/components/PageCraft/MainCanvas/element-edit'
 import {LineHelper} from '@/utils/line-helper'
-import {loadComponentHtml, loadComponentStyle} from '@/hooks/use-component-storage'
+import {loadCompStorage} from '@/hooks/use-component-storage'
 import {NButton} from 'naive-ui'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {useI18n} from 'vue-i18n'
-import {useOpenCloseSound, useSfxBell, useSfxDestroy, useSfxPlace} from '@/hooks/use-sfx'
+import {useOpenCloseSound, useSfxDestroy, useSfxPlace} from '@/hooks/use-sfx'
 
 export const removeMouseOverDomElementEffect = () => {
   const $el = $(TOOL_CLASSES.DOT_CLASS_MOUSE_OVER)
@@ -512,11 +512,12 @@ export const useInteractionHooks = (options) => {
 
     if (block.blockType === BlockType.COMPONENT) {
       // console.log(block)
-      const html = loadComponentHtml(block.title)
+      const html = loadCompStorage(LsKeys.COMP_HTML, block.title)
+
       await dropHTML(html)
 
       const appendStyle = () => {
-        const code = loadComponentStyle(block.title)
+        const code = loadCompStorage(LsKeys.COMP_STYLE, block.title)
         globalEventBus.emit(GlobalEvents.ON_ADD_STYLE, {code, isAppend: true})
       }
       if (block.data.stared) {

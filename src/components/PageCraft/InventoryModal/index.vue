@@ -147,7 +147,9 @@ export default defineComponent({
     const handleCreateComponent = () => {
       let name = getNamePrompt($t('msgs.please_enter_the_nam'), `Component${idx}`)
 
-      componentList.value = [...componentList.value, createComponentBlockItem(name)]
+      const newItem = createComponentBlockItem(name)
+      componentList.value = [newItem, ...componentList.value]
+      updateCompMeta(newItem.title, newItem.data)
       settingsStore.curCompoName = name
       idx++
     }
@@ -218,7 +220,10 @@ export default defineComponent({
 
       copyCompStorage(item.title, newName)
 
-      const newItem = createComponentBlockItem(newName)
+      const newItem = createComponentBlockItem(newName, {
+        ...item.data,
+        timestamp: Date.now(),
+      })
       componentList.value = [newItem, ...componentList.value]
 
       updateCompMeta(newItem.title, newItem.data)

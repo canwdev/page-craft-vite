@@ -36,16 +36,36 @@ export class HtmlBlockData {
   }
 }
 
+/**
+ * 组件元数据
+ */
 export interface ComponentData {
   timestamp: number
   stared: boolean // 是否为星标组件
-  name?: string // 导出专用参数，其他情况内请勿使用
-  html?: string // 导出专用参数，其他情况内请勿使用
-  style?: string // 导出专用参数，其他情况内请勿使用
-  cover?: string // base64编码的封面
+  cover: string // base64编码的封面
+  name?: string // 仅用于兼容旧数据（已弃用）
 }
 
 export class ComponentData {
+  constructor(prop: any = {}) {
+    this.timestamp = prop.timestamp || Date.now()
+    this.stared = prop.stared || false
+    this.name = prop.name
+    this.cover = prop.cover
+  }
+}
+
+// 导出专用类型
+export interface ComponentExportData {
+  name: string
+  timestamp: number
+  stared: boolean // 是否为星标组件
+  html: string
+  style: string
+  cover: string // base64编码的封面
+}
+
+export class ComponentExportData {
   constructor(prop: any = {}) {
     this.timestamp = prop.timestamp || Date.now()
     this.stared = prop.stared || false
@@ -144,9 +164,11 @@ export const initToolbarList: BlockItem[] = [
   ActionBlockItems.EMPTY,
 ]
 
-export const createComponentBlockItem = (name: string, data = {}) =>
-  new BlockItem({
+export const createComponentBlockItem = (name: string, data = {}) => {
+  // console.log('[createComponentBlockItem]', name, data)
+  return new BlockItem({
     blockType: BlockType.COMPONENT,
     title: name,
     data: new ComponentData(data),
   })
+}

@@ -1,7 +1,8 @@
-import {createComponentBlockItem} from '@/enum/page-craft/block'
+import {ComponentData, ComponentExportData, createComponentBlockItem} from '@/enum/page-craft/block'
 import ExampleComponent from '@/enum/page-craft/example-component.json'
-import {saveComponentHtml, saveComponentStyle} from '@/hooks/use-component-storage'
+import {saveCompStorage} from '@/hooks/use-component-storage'
 import {useSettingsStore} from '@/store/settings'
+import {LsKeys} from '@/enum/page-craft'
 
 export const useInitComponents = (options) => {
   const {componentListRef} = options
@@ -10,11 +11,11 @@ export const useInitComponents = (options) => {
   if (!settingsStore.isInitialized) {
     // create example component if not initialized
     if (!componentListRef.value.length) {
-      const item: any = {...ExampleComponent}
-      saveComponentHtml(item.name, item.html)
-      saveComponentStyle(item.name, item.style)
-      delete item.html
-      delete item.style
+      const item: ComponentExportData = {...ExampleComponent}
+      saveCompStorage(LsKeys.COMP_HTML, item.name, item.html)
+      saveCompStorage(LsKeys.COMP_STYLE, item.name, item.style)
+      saveCompStorage(LsKeys.COMP_META, item.name, JSON.stringify(new ComponentData(item)))
+
       componentListRef.value = [createComponentBlockItem(item.name, item)]
       settingsStore.curCompoName = item.name
     }

@@ -1,11 +1,15 @@
-export const LsKeys = {
-  GLOBAL_STYLE: 'page_craft_global_style',
-  CURRENT_BLOCK: 'page_craft_current_block',
-  MAIN_HTML: 'page_craft_main_html',
-  MAIN_STYLE: 'page_craft_main_style',
-  INDICATOR_OPTIONS: 'page_craft_indicator_options',
-  TOOL_BAR_LIST: 'page_craft_tool_bar_list',
-  COMPONENT_LIST: 'page_craft_component_list',
+export enum LsKeys {
+  GLOBAL_STYLE = 'page_craft_global_style',
+  CURRENT_BLOCK = 'page_craft_current_block',
+  /*组件专用 start*/
+  COMP_HTML = 'page_craft_main_html',
+  COMP_STYLE = 'page_craft_main_style',
+  COMP_META = 'page_craft_comp_meta',
+  COMPONENT_LIST = 'page_craft_component_list', // 已废弃，将自动升级到 COMP_INDEX_LIST
+  COMP_INDEX_LIST = 'page_craft_component_index', // 新版本
+  /*组件专用 end*/
+  INDICATOR_OPTIONS = 'page_craft_indicator_options',
+  TOOL_BAR_LIST = 'page_craft_tool_bar_list',
 }
 
 const CLASS_MOUSE_OVER = 'cls_mouse_over'
