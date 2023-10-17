@@ -202,6 +202,7 @@ export default defineComponent({
       preset="dialog"
       :title="`${$t('actions.paste')} HTML`"
       @positive-click="handleImportHtml(pasteHtmlText)"
+      style="width: 600px"
     >
       <VueMonaco v-if="isShowImportDialog" v-model="pasteHtmlText" style="height: 500px" />
     </n-modal>

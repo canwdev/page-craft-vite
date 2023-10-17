@@ -493,10 +493,15 @@ export const useInteractionHooks = (options) => {
       playSfxPlace()
     }
 
+    // 处理DOM元素放置
     if (draggingEl.value) {
       draggingEl.value.draggable = false
       draggingEl.value.removeAttribute('draggable')
       await dropHTML(draggingEl.value.outerHTML)
+      if (!event.ctrlKey) {
+        // 移除原始DOM
+        draggingEl.value.parentNode?.removeChild(draggingEl.value)
+      }
       draggingEl.value = null
       return
     }

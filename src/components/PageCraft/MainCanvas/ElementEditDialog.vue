@@ -81,6 +81,7 @@ export default defineComponent({
     preset="dialog"
     :title="`${$t('actions.edit_element')}: ${formValueRef.tagName}`"
     label-placement="top"
+    style="width: 600px"
   >
     <n-form ref="formRef" :label-width="80" :model="formValueRef" :rules="formRules" size="small">
       <n-form-item label="class" path="className">
@@ -146,5 +147,3 @@ export default defineComponent({
     </n-form>
   </n-modal>
 </template>
-
-<style lang="scss" scoped></style>

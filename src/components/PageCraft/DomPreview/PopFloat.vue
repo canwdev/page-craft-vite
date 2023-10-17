@@ -157,7 +157,7 @@ export default defineComponent({
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 200;
+  z-index: 9999;
   //box-sizing: border-box;
   pointer-events: none;
   padding: 5px !important;
