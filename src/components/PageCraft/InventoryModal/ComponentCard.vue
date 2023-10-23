@@ -153,6 +153,16 @@ export default defineComponent({
   &:hover {
     background-color: rgba(var(--block-color-rgb), 0.08);
     box-shadow: 0 0 0px 2px rgb(var(--block-color-rgb)) !important;
+
+    .action-menu {
+      visibility: visible;
+      opacity: 1;
+    }
+    .meta-info {
+      .timestamp {
+        opacity: 1;
+      }
+    }
   }
 
   &:active {
@@ -225,6 +235,9 @@ export default defineComponent({
     top: 0;
     right: 0;
     z-index: 3;
+    visibility: hidden;
+    opacity: 0;
+    transition: all 0.5s;
   }
 
   $bracket_color: currentColor;
@@ -239,7 +252,8 @@ export default defineComponent({
     align-items: flex-end;
     justify-content: space-between;
     .timestamp {
-      opacity: 0.8;
+      opacity: 0.3;
+      transition: all 0.5s;
       //&::before {
       //  content: '<';
       //  color: $bracket_color;
