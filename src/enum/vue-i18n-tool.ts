@@ -110,6 +110,11 @@ export const formatI18nKey = (str: string): string => {
   if (!str) {
     return ''
   }
+  const {pinyinUtil} = window
+  if (pinyinUtil) {
+    str = pinyinUtil.getPinyin(str)
+  }
+
   str = str.toLowerCase()
   str = str.replace(/[^a-zA-Z0-9\s]+/g, '')
   str = str.replace(/\s/gi, '_')

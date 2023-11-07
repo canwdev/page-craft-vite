@@ -108,6 +108,9 @@ export default defineComponent({
             section_b: {
               '': "Blur this input and it'll generate the key automatically!",
             },
+            section_c: {
+              '': '中文 is Supported',
+            },
           },
         })
       },

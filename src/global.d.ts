@@ -13,6 +13,7 @@ declare global {
     stylusSupermacyFormat: any
     $juice: any
     XLSX: any
+    pinyinUtil: any // https://github.com/sxei/pinyinjs/
   }
 }
 
