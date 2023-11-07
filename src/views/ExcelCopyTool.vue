@@ -80,17 +80,16 @@ export default defineComponent({
 
     const isTrimEmptyLines = ref(true)
 
-    onMounted(() => {
-      dynamicLoadScript('//unpkg.com/xlsx@0.16.9/xlsx.mini.js', (err) => {
-        if (err) {
-          window.$message.error(err.message)
-          console.error(err)
-          return
-        }
-        window.$message.success('XLSX Ready!')
-        console.log('XLSX ready', window.XLSX)
-        isReady.value = true
-      })
+    onMounted(async () => {
+      try {
+        await dynamicLoadScript('//unpkg.com/xlsx@0.16.9/xlsx.mini.js')
+      } catch (err: any) {
+        window.$message.error(err.message)
+        console.error(err)
+      }
+      window.$message.success('XLSX Ready!')
+      console.log('XLSX ready', window.XLSX)
+      isReady.value = true
     })
 
     const copyMode = ref(CopyMode.json)

@@ -17,6 +17,7 @@ import DialogCopyFormat from '@/components/VueI18nEditTool/DialogCopyFormat.vue'
 import {useSaveShortcut} from '@/hooks/use-beforeunload'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import VueMonaco from '@/components/CommonUI/VueMonaco.vue'
+import dynamicLoadScript from '@/utils/dynamic-load-script'
 
 let idSeed = 0
 
@@ -158,6 +159,11 @@ export default defineComponent({
     })
 
     const vueMonacoRef = ref()
+
+    onMounted(async () => {
+      await dynamicLoadScript(import.meta.env.BASE_URL + 'lib/pinyinjs/pinyin_dict_notone.min.js')
+      await dynamicLoadScript(import.meta.env.BASE_URL + 'lib/pinyinjs/pinyinUtil.js')
+    })
 
     return {
       metaTitle,

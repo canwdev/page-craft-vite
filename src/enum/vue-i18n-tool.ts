@@ -106,12 +106,17 @@ export const exportI18nTreeJsonObj = (tree: ITranslateTreeItem[], obj: any = {})
   return obj
 }
 
+function containsChinese(text: string) {
+  const pattern = /[\u4e00-\u9fa5]/
+  return pattern.test(text)
+}
+
 export const formatI18nKey = (str: string): string => {
   if (!str) {
     return ''
   }
   const {pinyinUtil} = window
-  if (pinyinUtil) {
+  if (pinyinUtil && containsChinese(str)) {
     str = pinyinUtil.getPinyin(str)
   }
 

@@ -10,6 +10,7 @@ import {useMetaTitle} from '@/hooks/use-meta'
 import {Save20Regular} from '@vicons/fluent'
 import DialogCopyFormat from '@/components/VueI18nEditTool/DialogCopyFormat.vue'
 import {useSaveShortcut} from '@/hooks/use-beforeunload'
+import dynamicLoadScript from '@/utils/dynamic-load-script'
 
 const filePickerOptions = {
   types: [
@@ -87,6 +88,12 @@ export default defineComponent({
         return
       }
       handleExport()
+    })
+
+    onMounted(async () => {
+      console.log(import.meta)
+      await dynamicLoadScript('./lib/pinyinjs/pinyin_dict_notone.min.js')
+      await dynamicLoadScript('./lib/pinyinjs/pinyinUtil.js')
     })
 
     return {
