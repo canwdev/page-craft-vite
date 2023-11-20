@@ -18,12 +18,14 @@ import {useSaveShortcut} from '@/hooks/use-beforeunload'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import VueMonaco from '@/components/CommonUI/VueMonaco.vue'
 import dynamicLoadScript from '@/utils/dynamic-load-script'
+import TranslateTreeItem from '@/components/VueI18nEditTool/TranslateTreeItem.vue'
 
 let idSeed = 0
 
 export default defineComponent({
   name: 'VueI18nBatchTool',
   components: {
+    TranslateTreeItem,
     VueMonaco,
     BatchTranslate,
     DropZone,
@@ -323,6 +325,7 @@ export default defineComponent({
                     <TranslateTreeItem
                       v-for="(item, index) in translateTreeRoot"
                       :key="index"
+                      :index="index"
                       :item="item"
                       :is-lite="editMode === 'batch'"
                       @onKeyClick="handleKeyClick"

@@ -43,10 +43,14 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    index: {
+      type: Number,
+      required: true,
+    },
   },
   emits: ['onRemove', 'onKeyClick'],
   setup(props) {
-    const {item} = toRefs(props)
+    const {item, index} = toRefs(props)
     const handleAddChildren = () => {
       console.log('[handleAddChildren]')
       item.value.children.push(formatTranslateTreeItem({parent: item.value}))
@@ -82,6 +86,20 @@ export default defineComponent({
       list.shift()
       return list.reverse().join('.')
     })
+
+    // 检查重复键
+    const isKeyDuplicated = ref(false)
+    const checkDuplicatedGroupKey = () => {
+      isKeyDuplicated.value = false
+      const list = item.value?.parent?.children || []
+      for (let i = 0; i < list.length; i++) {
+        const _item = list[i]
+        if (index.value !== i && _item.namespace === item.value.namespace) {
+          isKeyDuplicated.value = true
+          break
+        }
+      }
+    }
 
     return {
       handleAddChildren,
@@ -122,6 +140,8 @@ export default defineComponent({
           }
         }
       },
+      isKeyDuplicated,
+      checkDuplicatedGroupKey,
       namespacePrefix,
     }
   },
@@ -129,8 +149,16 @@ export default defineComponent({
 </script>
 
 <template>
-  <n-card size="small" class="tree-item" v-if="item">
-    <div style="display: flex">
+  <n-card size="small" class="tree-item" v-if="item" :class="{isKeyDuplicated}">
+    <div class="group-header">
+      <template v-if="isKeyDuplicated">
+        <n-tooltip trigger="hover">
+          <template #trigger>
+            <div class="error-tip-button">!</div>
+          </template>
+          Group namespace duplicated, may cause bug!
+        </n-tooltip>
+      </template>
       <n-input
         size="small"
         :disabled="isRoot"
@@ -138,6 +166,7 @@ export default defineComponent({
         v-model:value="item.namespace"
         placeholder="namespace"
         style="flex: 1"
+        @blur="checkDuplicatedGroupKey"
         ><!--§-->
         <template #prefix>
           <n-icon color="darkseagreen" size="16" :title="namespacePrefix">
@@ -182,13 +211,14 @@ export default defineComponent({
         v-if="item.translates && item.translates.length"
       >
         <TranslateItem
-          v-for="(vi, index) in item.translates"
+          v-for="(vi, vIndex) in item.translates"
           :item="vi"
           :tree-item="item"
-          :key="index"
+          :key="vIndex"
+          :index="vIndex"
           :is-lite="isLite"
           @previewArray="handlePreviewArray"
-          @onRemove="handleRemoveItem(index)"
+          @onRemove="handleRemoveItem(vIndex)"
           @onKeyClick="(...args) => $emit('onKeyClick', ...args)"
         />
       </n-list>
@@ -202,13 +232,14 @@ export default defineComponent({
         >
       </n-space>
 
-      <div style="border-top: 1px dashed darkseagreen; margin-top: 10px; margin-bottom: 10px" />
+      <div class="split-line" />
 
       <template v-if="item.children && item.children.length">
         <TranslateTreeItem
           v-for="(vi, index) in item.children"
           :item="vi"
           :key="index"
+          :index="index"
           :is-root="false"
           :is-lite="isLite"
           @onRemove="handleRemoveTreeItem(index)"
@@ -242,12 +273,31 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .tree-item {
+  margin-top: 10px;
+  margin-bottom: 10px;
+
   &:hover {
     transition: none;
     border: 1px solid darkseagreen;
   }
+  &.isKeyDuplicated {
+    background-color: rgba(244, 67, 54, 0.1) !important;
+  }
 
-  margin-top: 10px;
-  margin-bottom: 10px;
+  .group-header {
+    display: flex;
+    align-items: center;
+
+    .error-tip-button {
+      margin-right: 8px;
+    }
+  }
+
+  .split-line {
+    opacity: 0.5;
+    border-top: 1px dashed darkseagreen;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
 }
 </style>

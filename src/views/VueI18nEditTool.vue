@@ -186,7 +186,12 @@ export default defineComponent({
     </n-card>
 
     <div class="_container">
-      <TranslateTreeItem v-for="(item, index) in translateTreeRoot" :key="index" :item="item" />
+      <TranslateTreeItem
+        v-for="(item, index) in translateTreeRoot"
+        :key="index"
+        :item="item"
+        :index="index"
+      />
     </div>
     <div style="height: 500px"></div>
   </div>

@@ -29,11 +29,15 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    index: {
+      type: Number,
+      required: true,
+    },
   },
   emits: ['onRemove', 'previewArray', 'onKeyClick'],
   setup(props, {emit}) {
     const {t: $t} = useI18n()
-    const {item, treeItem} = toRefs(props)
+    const {item, treeItem, index} = toRefs(props)
 
     const namespacePrefix = computed(() => {
       if (!treeItem.value) {
@@ -74,6 +78,20 @@ export default defineComponent({
       {immediate: true}
     )
 
+    // 检查重复键
+    const isKeyDuplicated = ref(false)
+    const checkDuplicatedKey = () => {
+      isKeyDuplicated.value = false
+      const list = treeItem.value?.translates || []
+      for (let i = 0; i < list.length; i++) {
+        const _item = list[i]
+        if (index.value !== i && _item.key === item.value.key) {
+          isKeyDuplicated.value = true
+          break
+        }
+      }
+    }
+
     return {
       namespacePrefix,
       nameDisplay,
@@ -91,30 +109,44 @@ export default defineComponent({
         copyToClipboard(text)
         window.$message.success($t('msgs.copy_success'))
       },
-      handleBlur() {
+      handleValueBlur() {
         if (!item.value.key) {
           item.value.key = formatI18nKey(item.value.value)
+          checkDuplicatedKey()
         }
+      },
+      handleKeyBlur() {
+        checkDuplicatedKey()
       },
       handleInputKeyClick(event) {
         emit('onKeyClick', nameDisplay.value, event)
       },
       valType,
+      isKeyDuplicated,
     }
   },
 })
 </script>
 
 <template>
-  <n-list-item size="small" v-if="item" class="translate-item" :class="{isLite}">
+  <n-list-item size="small" v-if="item" class="translate-item" :class="{isLite, isKeyDuplicated}">
     <n-space size="small" justify="space-between">
       <n-space size="small" align="center">
+        <template v-if="isKeyDuplicated">
+          <n-tooltip trigger="hover">
+            <template #trigger>
+              <div class="error-tip-button">!</div>
+            </template>
+            Key duplicated, may cause bug!
+          </n-tooltip>
+        </template>
         <n-input
           size="small"
           class="font-code translate-item-input"
           v-model:value="item.key"
           placeholder="key"
           @click="handleInputKeyClick"
+          @blur="handleKeyBlur"
         />
         <template v-if="!isLite">
           <n-input-number
@@ -123,7 +155,7 @@ export default defineComponent({
             placeholder="number value"
             size="small"
             class="item-value-edit"
-            @blur="handleBlur"
+            @blur="handleValueBlur"
           />
           <n-input
             v-else-if="!Array.isArray(item.value)"
@@ -133,7 +165,7 @@ export default defineComponent({
             class="item-value-edit"
             v-model:value="item.value"
             placeholder="text value"
-            @blur="handleBlur"
+            @blur="handleValueBlur"
           />
           <n-button
             v-else
@@ -198,6 +230,10 @@ export default defineComponent({
   &.isLite {
     padding-top: 4px;
     padding-bottom: 4px;
+  }
+
+  &.isKeyDuplicated {
+    background-color: rgba(255, 235, 59, 0.1) !important;
   }
 
   &:hover {

@@ -69,6 +69,18 @@ html, body, #app {
   }
 }
 
+.error-tip-button {
+  background-color: #f44336;
+  cursor: pointer;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+}
 
 /* Vue transitions */
 .mc-fade-enter-active,
