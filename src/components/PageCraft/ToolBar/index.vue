@@ -13,10 +13,12 @@ import {useI18n} from 'vue-i18n'
 import VpWindow from '@/components/CommonUI/VpWindow.vue'
 import {useOpenCloseSound, useSfxSelect} from '@/hooks/use-sfx'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
+import DialogTextTransformer from '@/components/VueI18nEditTool/DialogTextTransformer.vue'
 
 export default defineComponent({
   name: 'BottomToolBar',
   components: {
+    DialogTextTransformer,
     VpWindow,
     PreviewWindow,
     ToolItem,
@@ -153,6 +155,14 @@ export default defineComponent({
         },
       },
       {
+        label: '🧬 ' + $t('common.text_transformer'),
+        props: {
+          onClick: async () => {
+            isShowTextTransformer.value = true
+          },
+        },
+      },
+      {
         label: '🌐 ' + $t('common.i18njson_editing_too'),
         props: {
           onClick: async () => {
@@ -221,6 +231,8 @@ export default defineComponent({
     }
     /*classname autocomplete end*/
 
+    const isShowTextTransformer = ref(false)
+
     return {
       settingsStore,
       toolbarRef,
@@ -241,6 +253,7 @@ export default defineComponent({
       handleAddClassName,
       handleInputClassNameBlur,
       autocompleteOptions,
+      isShowTextTransformer,
     }
   },
 })
@@ -258,6 +271,8 @@ export default defineComponent({
       @onItemClick="setCurrentToolItem"
     />
     <PreviewWindow />
+
+    <DialogTextTransformer v-model:visible="isShowTextTransformer" />
     <div ref="toolbarRef" class="page-craft-enhanced-toolbar page-craft-panel">
       <div class="page-craft-enhanced-toolbar-above">
         <n-space size="small">

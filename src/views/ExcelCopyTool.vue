@@ -5,7 +5,7 @@ import dynamicLoadScript from '@/utils/dynamic-load-script'
 import iconExcel from '../assets/textures/excel.svg?url'
 import {copyToClipboard} from '@/utils'
 import {getFileName, handleExportFile} from '@/utils/exporter'
-import DialogCopyFormat from '@/components/VueI18nEditTool/DialogCopyFormat.vue'
+import DialogTextTransformer from '@/components/VueI18nEditTool/DialogTextTransformer.vue'
 import DropZone from '@/components/CommonUI/DropZone.vue'
 import {useFileDrop} from '@/hooks/use-file-drop'
 import {useMetaTitle} from '@/hooks/use-meta'
@@ -20,7 +20,7 @@ export default defineComponent({
   name: 'ExcelCopyTool',
   components: {
     FileChooser,
-    DialogCopyFormat,
+    DialogTextTransformer,
     DropZone,
   },
   setup() {
@@ -291,7 +291,7 @@ export default defineComponent({
       @selected="handleImport"
     />
 
-    <DialogCopyFormat v-model:visible="isShowCopyDialog" />
+    <DialogTextTransformer v-model:visible="isShowCopyDialog" />
   </div>
 </template>
 

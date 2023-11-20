@@ -5,7 +5,7 @@ import {copyToClipboard} from '@/utils'
 import {CopyMode, CopyModeOptions, formatMultipleLine} from '@/components/VueI18nEditTool/copy-enum'
 
 export default defineComponent({
-  name: 'DialogCopyFormat',
+  name: 'DialogTextTransformer',
   props: {
     visible: {
       type: Boolean,

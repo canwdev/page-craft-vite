@@ -8,7 +8,7 @@ import DropZone from '@/components/CommonUI/DropZone.vue'
 import {useFileDrop} from '@/hooks/use-file-drop'
 import {useMetaTitle} from '@/hooks/use-meta'
 import {Save20Regular} from '@vicons/fluent'
-import DialogCopyFormat from '@/components/VueI18nEditTool/DialogCopyFormat.vue'
+import DialogTextTransformer from '@/components/VueI18nEditTool/DialogTextTransformer.vue'
 import {useSaveShortcut} from '@/hooks/use-beforeunload'
 import dynamicLoadScript from '@/utils/dynamic-load-script'
 
@@ -26,7 +26,7 @@ const filePickerOptions = {
 export default defineComponent({
   name: 'VueI18nEditTool',
   components: {
-    DialogCopyFormat,
+    DialogTextTransformer,
     TranslateTreeItem,
     DropZone,
     Save20Regular,
@@ -162,7 +162,9 @@ export default defineComponent({
         <template #avatar> <n-avatar :src="iconTranslate" style="background: none" /> </template>
         <template #extra>
           <n-space>
-            <n-button secondary size="small" @click="isShowCopyDialog = true"> Tool </n-button>
+            <n-button secondary size="small" @click="isShowCopyDialog = true">
+              {{ $t('common.text_transformer') }}
+            </n-button>
 
             <n-button type="primary" @click="handleSelectFile" size="small"> Open JSON </n-button>
             <n-button v-if="fileHandle" @click="handleSaveFile" size="small" type="info">
@@ -182,7 +184,7 @@ export default defineComponent({
           </n-space>
         </template>
       </n-page-header>
-      <DialogCopyFormat v-model:visible="isShowCopyDialog" />
+      <DialogTextTransformer v-model:visible="isShowCopyDialog" />
     </n-card>
 
     <div class="_container">

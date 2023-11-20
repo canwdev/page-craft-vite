@@ -13,7 +13,7 @@ import BatchTranslate from '@/components/VueI18nEditTool/BatchTranslate.vue'
 import DropZone from '@/components/CommonUI/DropZone.vue'
 import {useFileDrop} from '@/hooks/use-file-drop'
 import {useMetaTitle} from '@/hooks/use-meta'
-import DialogCopyFormat from '@/components/VueI18nEditTool/DialogCopyFormat.vue'
+import DialogTextTransformer from '@/components/VueI18nEditTool/DialogTextTransformer.vue'
 import {useSaveShortcut} from '@/hooks/use-beforeunload'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import VueMonaco from '@/components/CommonUI/VueMonaco.vue'
@@ -29,7 +29,7 @@ export default defineComponent({
     VueMonaco,
     BatchTranslate,
     DropZone,
-    DialogCopyFormat,
+    DialogTextTransformer,
   },
   setup() {
     const dirTree = ref<DirTreeItem[]>([])
@@ -249,7 +249,9 @@ export default defineComponent({
         <template #avatar> <n-avatar :src="iconTranslate" style="background: none" /> </template>
         <template #extra>
           <n-space align="center">
-            <n-button secondary size="small" @click="isShowCopyDialog = true"> Tool </n-button>
+            <n-button secondary size="small" @click="isShowCopyDialog = true">
+              {{ $t('common.text_transformer') }}
+            </n-button>
 
             <n-button
               secondary
@@ -279,7 +281,7 @@ export default defineComponent({
         </template>
       </n-page-header>
 
-      <DialogCopyFormat v-model:visible="isShowCopyDialog" />
+      <DialogTextTransformer v-model:visible="isShowCopyDialog" />
     </n-card>
 
     <div class="_container">
