@@ -27,6 +27,7 @@ export default defineComponent({
     Box20Regular,
     Toolbox20Regular,
   },
+  emits: ['openIframeBrowser', 'openStylusTools'],
   setup(props, {emit}) {
     const {t: $t} = useI18n()
     const craftStore = useCraftStore()
@@ -138,6 +139,14 @@ export default defineComponent({
 
     const router = useRouter()
     const toolsMenuOptions = [
+      {
+        label: '🌎 Iframe Browser (alt+i)',
+        props: {
+          onClick: async () => {
+            emit('openIframeBrowser')
+          },
+        },
+      },
       {
         label: '⚜ Stylus ' + $t('common.formatting_tool'),
         props: {

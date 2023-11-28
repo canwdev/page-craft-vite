@@ -24,10 +24,12 @@ import {PaintBrush16Regular} from '@vicons/fluent'
 import {useI18n} from 'vue-i18n'
 import {useOpenCloseSound, useSfxBell} from '@/hooks/use-sfx'
 import VueMonaco from '@/components/CommonUI/VueMonaco.vue'
+import IframeBrowser from '@/components/IframeBrowser/index.vue'
 
 export default defineComponent({
   name: 'HomeView',
   components: {
+    IframeBrowser,
     VueMonaco,
     ToolBar,
     StyleEditor: defineAsyncComponent(() => import('@/components/PageCraft/StyleEditor/index.vue')),
@@ -77,6 +79,8 @@ export default defineComponent({
         settingsStore.showStyleEditor = !settingsStore.showStyleEditor
       } else if (event.altKey && key === 'w') {
         isShowSettings.value = !isShowSettings.value
+      } else if (event.altKey && key === 'i') {
+        isShowIframeBrowser.value = !isShowIframeBrowser.value
       } else if (event.altKey && key === '1') {
         const el = document.querySelector('.sl-css-class-input input') as HTMLInputElement | null
         el && el.focus()
@@ -112,6 +116,7 @@ export default defineComponent({
     })
 
     const isShowStylusTools = ref(false)
+    const isShowIframeBrowser = ref(false)
 
     const {loadCurCompStyle} = useCompStorage()
     const craftStore = useCraftStore()
@@ -174,6 +179,7 @@ export default defineComponent({
       ldThemeOptions,
       handleThemeChange,
       isShowStylusTools,
+      isShowIframeBrowser,
       styleMenuOptions,
       customThemeOptions,
       CustomThemeType,
@@ -197,7 +203,10 @@ export default defineComponent({
       </template>
     </MainCanvas>
 
-    <ToolBar @openStylusTools="isShowStylusTools = true">
+    <ToolBar
+      @openStylusTools="isShowStylusTools = true"
+      @openIframeBrowser="isShowIframeBrowser = !isShowIframeBrowser"
+    >
       <n-dropdown
         :options="styleMenuOptions"
         key-field="label"
@@ -218,6 +227,7 @@ export default defineComponent({
         </n-button>
       </n-dropdown>
       <template #end>
+        <IframeBrowser v-model:visible="isShowIframeBrowser" />
         <StyleEditor v-model:visible="settingsStore.showStyleEditor" />
       </template>
     </ToolBar>

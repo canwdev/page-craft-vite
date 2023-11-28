@@ -16,7 +16,7 @@ type StyleEditorOptions = {
 const LS_KEY_VP_WINDOW_OPTION = 'page_craft_vp_window'
 
 export default defineComponent({
-  name: 'ViewportWindow',
+  name: 'VpWindow',
   components: {Dismiss20Regular},
   props: {
     visible: {

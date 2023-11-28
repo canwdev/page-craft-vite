@@ -1,0 +1,149 @@
+<script lang="ts">
+import {defineComponent} from 'vue'
+import VpWindow from '@/components/CommonUI/VpWindow.vue'
+import {useModelWrapper} from '@/hooks/use-model-wrapper'
+import {ArrowMaximize20Regular, ArrowMinimize20Regular, PaintBucket20Filled} from '@vicons/fluent'
+
+export default defineComponent({
+  name: 'IframeBrowser',
+  props: {
+    visible: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  components: {PaintBucket20Filled, ArrowMaximize20Regular, ArrowMinimize20Regular, VpWindow},
+  setup(props, {emit}) {
+    const mVisible = useModelWrapper(props, emit, 'visible')
+    const isMaximum = ref(false)
+    const isLoading = ref(false)
+
+    const iframeRef = ref()
+    const iframeSrc = ref('')
+    const addressBarUrl = ref('https://www.bing.com')
+
+    const titleText = computed(() => {
+      if (isLoading.value) {
+        return '(Loading...)'
+      }
+      return ''
+    })
+
+    const handleGo = () => {
+      iframeSrc.value = ''
+      iframeSrc.value = addressBarUrl.value
+      isLoading.value = true
+    }
+    const handleIframeLoad = () => {
+      isLoading.value = false
+    }
+    const handleIframeError = (e) => {
+      isLoading.value = false
+      console.error('[handleIframeError]', e)
+    }
+
+    const shortcutList = computed(() => {
+      return [
+        'https://www.google.com/webhp?igu=1',
+        'https://www.bing.com',
+        'https://win11.blueedge.me/',
+      ].map((key) => {
+        return {
+          label: key,
+          value: key,
+        }
+      })
+    })
+    const handleSelectShortcut = (url) => {
+      addressBarUrl.value = url
+      handleGo()
+    }
+
+    return {
+      mVisible,
+      iframeRef,
+      iframeSrc,
+      addressBarUrl,
+      isMaximum,
+      handleGo,
+      handleIframeLoad,
+      handleIframeError,
+      titleText,
+      shortcutList,
+      handleSelectShortcut,
+    }
+  },
+})
+</script>
+
+<template>
+  <VpWindow
+    class="iframe-browser-vp-window"
+    v-model:visible="mVisible"
+    wid="iframe_browser"
+    :maximum="isMaximum"
+    :allow-move="!isMaximum"
+  >
+    <template #titleBarLeft>Iframe Browser {{ titleText }}</template>
+    <template #titleBarRightControls>
+      <button @click="isMaximum = !isMaximum">
+        <n-icon size="20">
+          <ArrowMinimize20Regular v-if="isMaximum" />
+          <ArrowMaximize20Regular v-else />
+        </n-icon>
+      </button>
+    </template>
+
+    <div class="iframe-browser-inner-wrap">
+      <div class="iframe-browser-address-bar-wrap">
+        <n-dropdown
+          :options="shortcutList"
+          key-field="value"
+          size="small"
+          placement="bottom-start"
+          @select="handleSelectShortcut"
+        >
+          <n-button size="tiny">@</n-button>
+        </n-dropdown>
+
+        <n-input
+          class="iframe-browser-input font-code"
+          size="tiny"
+          v-model:value="addressBarUrl"
+          placeholder="input url (https://)"
+          type="text"
+          @keyup.enter="handleGo()"
+        />
+        <n-button size="tiny" @click="handleGo()">Go</n-button>
+      </div>
+      <iframe
+        ref="iframeRef"
+        @load="handleIframeLoad"
+        @error="handleIframeError"
+        class="iframe-browser-inner-iframe"
+        :src="iframeSrc"
+        frameborder="0"
+      ></iframe>
+    </div>
+  </VpWindow>
+</template>
+
+<style lang="scss" scoped>
+.iframe-browser-inner-wrap {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .iframe-browser-address-bar-wrap {
+    display: flex;
+    .iframe-browser-input {
+      flex: 1;
+    }
+  }
+
+  .iframe-browser-inner-iframe {
+    flex: 1;
+  }
+}
+</style>
