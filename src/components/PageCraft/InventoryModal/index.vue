@@ -31,7 +31,7 @@ import {
   WindowArrowUp16Regular,
 } from '@vicons/fluent'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
-import VpWindow from '@/components/CommonUI/VpWindow.vue'
+import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
 import {useI18n} from 'vue-i18n'
 import {fileToBase64} from '@/utils/exporter'
 import {useSfxPop} from '@/hooks/use-sfx'
@@ -46,7 +46,7 @@ export default defineComponent({
   components: {
     DialogImageCropper,
     PopFloat,
-    VpWindow,
+    ViewPortWindow,
     InventoryList,
     FileChooser,
     Window16Regular,
@@ -512,7 +512,7 @@ export default defineComponent({
     key-field="label"
     :on-clickoutside="handleClickOutside"
   />
-  <VpWindow
+  <ViewPortWindow
     class="inventory-modal"
     v-model:visible="mVisible"
     wid="inv"
@@ -642,7 +642,7 @@ export default defineComponent({
       @onSave="handleCropperSave"
       @onCancel="handleCropperCancel"
     />
-  </VpWindow>
+  </ViewPortWindow>
 </template>
 
 <style lang="scss" scoped>

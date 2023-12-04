@@ -10,7 +10,7 @@ import {useSettingsStore} from '@/store/settings'
 import {ArrowReset20Regular, Box20Regular, Toolbox20Regular} from '@vicons/fluent'
 import PreviewWindow from '@/components/PageCraft/DomPreview/PreviewWindow.vue'
 import {useI18n} from 'vue-i18n'
-import VpWindow from '@/components/CommonUI/VpWindow.vue'
+import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
 import {useOpenCloseSound, useSfxSelect} from '@/hooks/use-sfx'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import DialogTextTransformer from '@/components/VueI18nEditTool/DialogTextTransformer.vue'
@@ -19,7 +19,7 @@ export default defineComponent({
   name: 'BottomToolBar',
   components: {
     DialogTextTransformer,
-    VpWindow,
+    ViewPortWindow,
     PreviewWindow,
     ToolItem,
     InventoryModal,
@@ -282,7 +282,7 @@ export default defineComponent({
     <PreviewWindow />
 
     <DialogTextTransformer v-model:visible="isShowTextTransformer" />
-    <div ref="toolbarRef" class="page-craft-enhanced-toolbar page-craft-panel">
+    <div ref="toolbarRef" class="page-craft-enhanced-toolbar vp-panel">
       <div class="page-craft-enhanced-toolbar-above">
         <n-space size="small">
           <portal-target name="indicatorBarTeleportDest">

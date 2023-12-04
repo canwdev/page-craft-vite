@@ -20,7 +20,7 @@ import {
 } from '@/enum/page-craft/styles'
 import {formatCss} from '@/utils/formater'
 import {useCompStorage} from '@/hooks/use-component-storage'
-import VpWindow from '@/components/CommonUI/VpWindow.vue'
+import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
 
 import * as monaco from 'monaco-editor'
 import {emmetCSS} from 'emmet-monaco-es'
@@ -54,7 +54,7 @@ export default defineComponent({
     },
   },
   components: {
-    VpWindow,
+    ViewPortWindow,
     CursorHover20Regular,
     CursorClick20Regular,
     Dismiss20Regular,
@@ -383,7 +383,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <VpWindow
+  <ViewPortWindow
     class="style-editor-dialog"
     v-model:visible="mVisible"
     @resize="editorInstance.layout()"
@@ -431,7 +431,7 @@ export default defineComponent({
     </transition>
 
     <div ref="editorContainerRef" class="code-editor-placeholder" />
-  </VpWindow>
+  </ViewPortWindow>
 </template>
 
 <style lang="scss" scoped>

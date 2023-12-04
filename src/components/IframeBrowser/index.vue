@@ -1,6 +1,6 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
-import VpWindow from '@/components/CommonUI/VpWindow.vue'
+import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {ArrowMaximize20Regular, ArrowMinimize20Regular, PaintBucket20Filled} from '@vicons/fluent'
 
@@ -12,7 +12,7 @@ export default defineComponent({
       default: false,
     },
   },
-  components: {PaintBucket20Filled, ArrowMaximize20Regular, ArrowMinimize20Regular, VpWindow},
+  components: {PaintBucket20Filled, ArrowMaximize20Regular, ArrowMinimize20Regular, ViewPortWindow},
   setup(props, {emit}) {
     const mVisible = useModelWrapper(props, emit, 'visible')
     const isMaximum = ref(false)
@@ -84,7 +84,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <VpWindow
+  <ViewPortWindow
     class="iframe-browser-vp-window"
     v-model:visible="mVisible"
     wid="iframe_browser"
@@ -132,7 +132,7 @@ export default defineComponent({
         frameborder="0"
       ></iframe>
     </div>
-  </VpWindow>
+  </ViewPortWindow>
 </template>
 
 <style lang="scss" scoped>

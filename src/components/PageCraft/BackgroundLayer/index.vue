@@ -77,7 +77,7 @@ export default defineComponent({
         transform: `scale(${zoomPercent / 100})`,
       }"
     />
-    <div class="operation-panel page-craft-panel font-emoji">
+    <div class="operation-panel vp-panel font-emoji">
       <n-tooltip>
         <template #trigger>
           <n-button v-if="imageSrc" size="tiny" @click="onRemoveImage">🗑</n-button>

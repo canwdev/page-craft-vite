@@ -4,7 +4,7 @@ import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {BlockItem} from '@/enum/page-craft/block'
 import DomPreview from '@/components/PageCraft/DomPreview/DomPreview.vue'
 import {loadCompStorage} from '@/hooks/use-component-storage'
-import VpWindow from '@/components/CommonUI/VpWindow.vue'
+import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
 import {ArrowMaximize20Regular, ArrowMinimize20Regular} from '@vicons/fluent'
 import {LsKeys} from '@/enum/page-craft'
 
@@ -13,7 +13,7 @@ export default defineComponent({
   components: {
     ArrowMaximize20Regular,
     ArrowMinimize20Regular,
-    VpWindow,
+    ViewPortWindow,
     DomPreview,
   },
   emits: ['update:visible'],
@@ -69,7 +69,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <VpWindow
+  <ViewPortWindow
     class="preview-dialog"
     v-model:visible="mVisible"
     wid="preview"
@@ -90,7 +90,7 @@ export default defineComponent({
         <div v-html="previewHtml"></div>
       </DomPreview>
     </template>
-  </VpWindow>
+  </ViewPortWindow>
 </template>
 
 <style lang="scss" scoped>

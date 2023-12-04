@@ -77,7 +77,7 @@ declare module '@vue/runtime-core' {
     ToolItem: typeof import('./src/components/PageCraft/ToolBar/ToolItem.vue')['default']
     TranslateItem: typeof import('./src/components/VueI18nEditTool/TranslateItem.vue')['default']
     TranslateTreeItem: typeof import('./src/components/VueI18nEditTool/TranslateTreeItem.vue')['default']
-    VpWindow: typeof import('./src/components/CommonUI/VpWindow.vue')['default']
+    ViewPortWindow: typeof import('./src/components/CommonUI/ViewPortWindow/index.vue')['default']
     VStyle: typeof import('./src/components/PageCraft/DomPreview/VStyle.vue')['default']
     VueMonaco: typeof import('./src/components/CommonUI/VueMonaco.vue')['default']
   }

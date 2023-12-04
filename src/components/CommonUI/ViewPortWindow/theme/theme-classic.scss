@@ -85,7 +85,7 @@
     }
   }
 
-  .page-craft-panel {
+  .vp-panel {
     background-color: $theme_color_inactive;
     @include normal();
     border: $border;
@@ -132,7 +132,7 @@
         }
       }
     }
-    .page-craft-panel {
+    .vp-panel {
       background-color: black;
       color: white;
       .n-input {

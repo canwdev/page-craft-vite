@@ -1,10 +1,8 @@
 <script lang="ts">
 import {defineComponent, shallowRef} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
-import {WindowController} from '@/utils/window-controller'
+import {WindowController} from './window-controller'
 import {throttle} from 'throttle-debounce'
-import {useCraftStore} from '@/store/craft'
-import {useSettingsStore} from '@/store/settings'
 import {Dismiss20Regular} from '@vicons/fluent'
 
 type StyleEditorOptions = {
@@ -16,7 +14,7 @@ type StyleEditorOptions = {
 const LS_KEY_VP_WINDOW_OPTION = 'page_craft_vp_window'
 
 export default defineComponent({
-  name: 'VpWindow',
+  name: 'ViewPortWindow',
   components: {Dismiss20Regular},
   props: {
     visible: {
@@ -49,8 +47,6 @@ export default defineComponent({
     const titleBarRef = ref()
     const titleBarButtonsRef = ref()
     const dWindow = shallowRef<any>(null)
-    const craftStore = useCraftStore()
-    const settingsStore = useSettingsStore()
 
     const winOptions = reactive<StyleEditorOptions>(
       JSON.parse(localStorage.getItem(storageKey) || 'null') || {
@@ -151,8 +147,6 @@ export default defineComponent({
       dialogRef,
       titleBarRef,
       titleBarButtonsRef,
-      craftStore,
-      settingsStore,
     }
   },
 })
