@@ -2,7 +2,8 @@
 import {darkTheme, GlobalThemeOverrides} from 'naive-ui'
 import {useGlobalTheme} from '@/hooks/use-global-theme'
 import AppSub from '@/AppSub.vue'
-import {CustomThemeType, useSettingsStore} from '@/store/settings'
+import {CustomThemeType} from '@/enum/settings'
+import {useSettingsStore} from '@/store/settings'
 export default defineComponent({
   components: {
     AppSub,

@@ -1,6 +1,6 @@
 <script lang="ts">
 import {defineComponent, PropType} from 'vue'
-import {useCraftStore} from '@/store/craft'
+import {useMainStore} from '@/store/main'
 import {ActionType, BlockItem} from '@/enum/page-craft/block'
 import {colorHash, formatDate} from '@/utils'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
@@ -27,7 +27,7 @@ export default defineComponent({
   emits: ['contextmenu'],
   setup(props) {
     const {item} = toRefs(props)
-    const craftStore = useCraftStore()
+    const mainStore = useMainStore()
     const settingsStore = useSettingsStore()
 
     const color = computed(() => {
@@ -83,7 +83,7 @@ export default defineComponent({
     }
 
     return {
-      craftStore,
+      mainStore,
       settingsStore,
       color,
       isActive,

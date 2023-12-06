@@ -3,7 +3,7 @@ import * as monaco from 'monaco-editor'
 import {defineComponent, shallowRef} from 'vue'
 import {debounce} from 'throttle-debounce'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
-import {useCraftStore} from '@/store/craft'
+import {useMainStore} from '@/store/main'
 
 export default defineComponent({
   name: 'VueMonaco',
@@ -26,12 +26,12 @@ export default defineComponent({
     const editorContainerRef = ref()
     const editorInstance = shallowRef<any>()
 
-    const craftStore = useCraftStore()
+    const mainStore = useMainStore()
     const getThemeName = () => {
-      return craftStore.isAppDarkMode ? 'vs-dark' : 'vs'
+      return mainStore.isAppDarkMode ? 'vs-dark' : 'vs'
     }
     watch(
-      () => craftStore.isAppDarkMode,
+      () => mainStore.isAppDarkMode,
       () => {
         editorInstance.value.updateOptions({theme: getThemeName()})
       }

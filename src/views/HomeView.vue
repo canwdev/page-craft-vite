@@ -4,12 +4,8 @@ import ToolBar from '@/components/PageCraft/ToolBar/index.vue'
 import MainCanvas from '@/components/PageCraft/MainCanvas/index.vue'
 import {LsKeys} from '@/enum/page-craft'
 import {useHandleThemeChange} from '@/hooks/use-global-theme'
-import {
-  customThemeOptions,
-  CustomThemeType,
-  ldThemeOptions,
-  useSettingsStore,
-} from '@/store/settings'
+import {useSettingsStore} from '@/store/settings'
+import {customThemeOptions, CustomThemeType, ldThemeOptions} from '@/enum/settings'
 import {createOrFindStyleNode} from '@/utils/dom'
 import {useMetaTitle} from '@/hooks/use-meta'
 import {handleExportStyle} from '@/utils/exporter'
@@ -18,7 +14,7 @@ import {sassToCSS} from '@/utils/css'
 import {copyToClipboard} from '@/utils'
 import {useCompStorage} from '@/hooks/use-component-storage'
 import {ComponentData, ComponentExportData} from '@/enum/page-craft/block'
-import {useCraftStore} from '@/store/craft'
+import {useMainStore} from '@/store/main'
 // import BackgroundLayer from '@/components/BackgroundLayer/index.vue'
 import {PaintBrush16Regular} from '@vicons/fluent'
 import {useI18n} from 'vue-i18n'
@@ -119,7 +115,7 @@ export default defineComponent({
     const isShowIframeBrowser = ref(false)
 
     const {loadCurCompStyle} = useCompStorage()
-    const craftStore = useCraftStore()
+    const mainStore = useMainStore()
     const styleMenuOptions = [
       {
         label: '📄 ' + $t('actions.copy_compiled_css'),

@@ -1,5 +1,5 @@
 <script lang="ts">
-import {useCraftStore} from '@/store/craft'
+import {useMainStore} from '@/store/main'
 import {ActionType} from '@/enum/page-craft/block'
 import FileChooser from '@/components/CommonUI/FileChooser.vue'
 import IndicatorInfo from '@/components/PageCraft/MainCanvas/IndicatorInfo.vue'
@@ -33,7 +33,7 @@ export default defineComponent({
   emits: ['openStylusTools'],
   setup(props, {emit}) {
     const mainCanvasRef = ref()
-    const craftStore = useCraftStore()
+    const mainStore = useMainStore()
     const settingsStore = useSettingsStore()
 
     const {
@@ -119,7 +119,7 @@ export default defineComponent({
     })
 
     return {
-      craftStore,
+      mainStore,
       settingsStore,
       mainCanvasRef,
       handleBlockClick,
@@ -220,7 +220,7 @@ export default defineComponent({
     />
 
     <portal to="indicatorBarTeleportDest">
-      <div :class="{_dark: craftStore.isAppDarkMode}" class="page-craft-mc-indicator">
+      <div :class="{_dark: mainStore.isAppDarkMode}" class="page-craft-mc-indicator">
         <n-space align="center" size="small">
           <n-dropdown
             :options="htmlMenuOptions"

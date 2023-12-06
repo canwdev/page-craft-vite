@@ -1,5 +1,5 @@
 <script lang="ts">
-import {useCraftStore} from '@/store/craft'
+import {useMainStore} from '@/store/main'
 import {BlockItem, initToolbarList} from '@/enum/page-craft/block'
 import ToolItem from '@/components/PageCraft/ToolBar/ToolItem.vue'
 import InventoryModal from '@/components/PageCraft/InventoryModal/index.vue'
@@ -30,7 +30,7 @@ export default defineComponent({
   emits: ['openIframeBrowser', 'openStylusTools'],
   setup(props, {emit}) {
     const {t: $t} = useI18n()
-    const craftStore = useCraftStore()
+    const mainStore = useMainStore()
     const settingsStore = useSettingsStore()
 
     const toolBarList = useLocalStorageObject(LsKeys.TOOL_BAR_LIST, [...initToolbarList])
@@ -53,7 +53,7 @@ export default defineComponent({
     }
 
     const updateCurrentBlock = (item: BlockItem) => {
-      craftStore.setCurrentBlock(item)
+      mainStore.setCurrentBlock(item)
       playSfxSelect()
     }
 
@@ -196,7 +196,7 @@ export default defineComponent({
     /*classname autocomplete start*/
     const autocompleteKeywordMap = ref({})
     const autocompleteOptions = computed(() => {
-      const value = craftStore.className
+      const value = mainStore.className
       const list = Object.keys(autocompleteKeywordMap.value)
         .map((key) => {
           return {
@@ -219,13 +219,13 @@ export default defineComponent({
       })
     })
     const handleInputClassNameBlur = () => {
-      if (!craftStore.className) {
+      if (!mainStore.className) {
         return
       }
-      autocompleteKeywordMap.value[craftStore.className] = true
+      autocompleteKeywordMap.value[mainStore.className] = true
     }
     const handleAddClassName = () => {
-      const value = craftStore.className
+      const value = mainStore.className
       console.log(value)
       let sl = ''
       value.split(' ').forEach((c) => {
@@ -236,7 +236,7 @@ export default defineComponent({
 
       autocompleteKeywordMap.value[value] = true
 
-      craftStore.className = ''
+      mainStore.className = ''
     }
     /*classname autocomplete end*/
 
@@ -246,7 +246,7 @@ export default defineComponent({
       settingsStore,
       toolbarRef,
       toolBarList,
-      craftStore,
+      mainStore,
       setCurrentToolItem,
       handleToolItemClick,
       resetToolbar() {
@@ -294,7 +294,7 @@ export default defineComponent({
 
           <div class="field-row">
             <n-auto-complete
-              v-model:value="craftStore.className"
+              v-model:value="mainStore.className"
               :options="autocompleteOptions"
               size="tiny"
               type="text"
@@ -312,7 +312,7 @@ export default defineComponent({
             <n-input
               size="tiny"
               type="text"
-              v-model:value="craftStore.innerText"
+              v-model:value="mainStore.innerText"
               placeholder="innerHTML | src | value"
               title="focus shortcut: alt+2"
               class="sl-inner-html-input"

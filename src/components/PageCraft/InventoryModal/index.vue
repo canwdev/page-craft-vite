@@ -9,13 +9,14 @@ import {
 } from '@/enum/page-craft/block'
 import {htmlBlockItemList, TabType} from '@/enum/page-craft/inventory'
 import InventoryList from '@/components/PageCraft/InventoryModal/InventoryList.vue'
-import {useCraftStore} from '@/store/craft'
+import {useMainStore} from '@/store/main'
 import {useCompImportExport, useCompStorage} from '@/hooks/use-component-storage'
 import FileChooser from '@/components/CommonUI/FileChooser.vue'
 import {colorHash, sleep} from '@/utils'
 import {useContextMenu} from '@/hooks/use-context-menu'
 import {useInitComponents} from '@/hooks/use-init'
-import {FilterType, useSettingsStore} from '@/store/settings'
+import {FilterType} from '@/enum/settings'
+import {useSettingsStore} from '@/store/settings'
 import {
   Add24Regular,
   Star20Regular,
@@ -72,7 +73,7 @@ export default defineComponent({
   setup(props, {emit}) {
     const {t: $t} = useI18n()
     const mVisible = useModelWrapper(props, emit, 'visible')
-    const craftStore = useCraftStore()
+    const mainStore = useMainStore()
     const settingsStore = useSettingsStore()
     const {play: playSfxPop} = useSfxPop()
 
@@ -86,7 +87,7 @@ export default defineComponent({
     const {clearCompStorage, renameCompStorage, copyCompStorage} = useCompStorage()
 
     const handleItemClick = (item: BlockItem) => {
-      craftStore.setCurrentBlock(item)
+      mainStore.setCurrentBlock(item)
     }
 
     const {handleExportAllJson, handleImportAllJson, componentList, updateCompMeta} =
@@ -457,7 +458,7 @@ export default defineComponent({
       useContextMenu(getCompMenuOptions)
 
     return {
-      craftStore,
+      mainStore,
       settingsStore,
       mVisible,
       BlockType,

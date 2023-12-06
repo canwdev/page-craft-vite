@@ -1,6 +1,6 @@
 import {LsKeys} from '@/enum/page-craft'
 import {ActionType, BlockType} from '@/enum/page-craft/block'
-import {useCraftStore} from '@/store/craft'
+import {useMainStore} from '@/store/main'
 import {useI18n} from 'vue-i18n'
 import {useSfxBass, useSfxPop} from '@/hooks/use-sfx'
 
@@ -20,7 +20,7 @@ export type IndicatorOptions = {
 
 export const useIndicator = () => {
   const {t: $t} = useI18n()
-  const craftStore = useCraftStore()
+  const mainStore = useMainStore()
   const {play: playSfxPop} = useSfxPop()
 
   const indicatorOptions = reactive<IndicatorOptions>(
@@ -48,7 +48,7 @@ export const useIndicator = () => {
   )
 
   const mainCanvasClass = computed(() => {
-    const currentBlock = craftStore.currentBlock
+    const currentBlock = mainStore.currentBlock
     return {
       'page-craft-mc--dev': indicatorOptions.enableDevHelpClass,
       'page-craft-mc--cursor-insert': currentBlock.blockType !== BlockType.ACTIONS,

@@ -1,5 +1,5 @@
 import {ActionType, BlockItem, BlockType} from '@/enum/page-craft/block'
-import {useCraftStore} from '@/store/craft'
+import {useMainStore} from '@/store/main'
 import {appendCustomBlock, createBlockElement} from '@/utils/dom'
 import {LsKeys, TOOL_CLASSES} from '@/enum/page-craft'
 import {throttle} from 'throttle-debounce'
@@ -31,7 +31,7 @@ const MAX_WAIT_TIME = 0.3 * 1000
 export const useInteractionHooks = (options) => {
   const {t: $t} = useI18n()
   const {mainCanvasRef, saveData, indicatorOptions, copyHtml, recordUndo} = options
-  const craftStore = useCraftStore()
+  const mainStore = useMainStore()
   const waitingTime = ref(0)
   const waitTimer = ref<any>(null)
   const cursorX = ref(0)
@@ -185,7 +185,7 @@ export const useInteractionHooks = (options) => {
   const insertCurrentBlock = (targetEl, position = 'append', el?) => {
     recordUndo()
     if (!el) {
-      el = createBlockElement(craftStore.currentBlock, craftStore)
+      el = createBlockElement(mainStore.currentBlock, mainStore)
     }
     targetEl[<any>position](el)
     saveData()
@@ -251,8 +251,8 @@ export const useInteractionHooks = (options) => {
             },
           ]
     return [
-      craftStore.currentBlock.blockType === BlockType.HTML_ELEMENT && {
-        label: `➕ ${$t('actions.insert')} ${craftStore.currentBlock.title}`,
+      mainStore.currentBlock.blockType === BlockType.HTML_ELEMENT && {
+        label: `➕ ${$t('actions.insert')} ${mainStore.currentBlock.title}`,
         children: ['before', 'prepend', 'append', 'after'].map((position) => ({
           label: `${$t('actions.insert')} ${position}`,
           props: {
@@ -322,7 +322,7 @@ export const useInteractionHooks = (options) => {
       return
     }
     e.preventDefault()
-    if (craftStore.currentBlock.actionType === ActionType.DEBUG) {
+    if (mainStore.currentBlock.actionType === ActionType.DEBUG) {
       console.log('[handleContextMenu]', e)
     }
     removeMouseOverDomElementEffect()
@@ -332,10 +332,10 @@ export const useInteractionHooks = (options) => {
 
   const isSelectMode = computed(() => {
     return (
-      craftStore.isSelectMode ||
+      mainStore.isSelectMode ||
       indicatorOptions.enableSelection ||
-      craftStore.currentBlock.actionType === ActionType.DEBUG ||
-      craftStore.currentBlock.actionType === ActionType.PASTE_REPLACE
+      mainStore.currentBlock.actionType === ActionType.DEBUG ||
+      mainStore.currentBlock.actionType === ActionType.PASTE_REPLACE
     )
   })
 
@@ -379,7 +379,7 @@ export const useInteractionHooks = (options) => {
   const {play: playSfxDestroy} = useSfxDestroy()
   const handleBlockClick = async (event: Event, newBlock?: BlockItem, addOptions?) => {
     if (!newBlock) {
-      newBlock = craftStore.currentBlock
+      newBlock = mainStore.currentBlock
     }
 
     // 以下情况不记录
@@ -390,7 +390,7 @@ export const useInteractionHooks = (options) => {
     ) {
       recordUndo()
     }
-    addOptions = addOptions || craftStore
+    addOptions = addOptions || mainStore
 
     await appendCustomBlock(newBlock, event, addOptions, mainCanvasRef)
     if (newBlock.actionType === ActionType.DELETE) {
@@ -422,7 +422,7 @@ export const useInteractionHooks = (options) => {
     if (event.button !== 0) {
       return
     }
-    if (craftStore.currentBlock.actionType === ActionType.DELETE) {
+    if (mainStore.currentBlock.actionType === ActionType.DELETE) {
       // 仿 Minecraft 挖掘等待时间效果
       // console.log('[handleMouseDown]', event.x, event.y)
       clearWait()
@@ -443,7 +443,7 @@ export const useInteractionHooks = (options) => {
       return
     }
     draggingEl.value = null
-    if (craftStore.currentBlock.actionType === ActionType.DRAG) {
+    if (mainStore.currentBlock.actionType === ActionType.DRAG) {
       if (event.target) {
         draggingEl.value = event.target as HTMLElement
         draggingEl.value.draggable = true
@@ -454,7 +454,7 @@ export const useInteractionHooks = (options) => {
   }
   const handleMouseUp = (event: MouseEvent) => {
     // console.log('[handleMouseUp]', event)
-    if (craftStore.currentBlock.actionType === ActionType.DELETE) {
+    if (mainStore.currentBlock.actionType === ActionType.DELETE) {
       clearWait()
     }
     if (draggingEl.value) {
@@ -551,7 +551,7 @@ export const useInteractionHooks = (options) => {
         })
       }
     } else if (block.blockType === BlockType.HTML_ELEMENT) {
-      const addEl = createBlockElement(block, craftStore)
+      const addEl = createBlockElement(block, mainStore)
       if (currentPosition === 'top') {
         insertCurrentBlock(targetEl, 'before', addEl)
       } else if (currentPosition === 'bottom') {

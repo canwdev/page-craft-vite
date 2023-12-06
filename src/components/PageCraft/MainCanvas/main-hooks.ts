@@ -11,7 +11,7 @@ import {copyToClipboard} from '@/utils'
 import {formatCss, formatHtml} from '@/utils/formater'
 import {ComponentData, ComponentExportData} from '@/enum/page-craft/block'
 import {useCompStorage} from '@/hooks/use-component-storage'
-import {useCraftStore} from '@/store/craft'
+import {useMainStore} from '@/store/main'
 import {UndoRedo} from '@/utils/undo-redo'
 import {sassToCSS} from '@/utils/css'
 import {useSettingsStore} from '@/store/settings'
@@ -22,7 +22,7 @@ import {useSfxBass, useSfxBell, useSfxFill, useSfxGuitar} from '@/hooks/use-sfx'
 export const useMcMain = (options) => {
   const {t: $t} = useI18n()
   const {mainCanvasRef, emit} = options
-  const craftStore = useCraftStore()
+  const mainStore = useMainStore()
   const settingsStore = useSettingsStore()
   const fileChooserRef = ref()
   const isShowImportDialog = ref(false)

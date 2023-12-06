@@ -1,6 +1,6 @@
 <script lang="ts">
 import {defineComponent, PropType} from 'vue'
-import {useCraftStore} from '@/store/craft'
+import {useMainStore} from '@/store/main'
 import {BlockItem} from '@/enum/page-craft/block'
 import {colorHash} from '@/utils'
 import {useFileDrop} from '@/hooks/use-file-drop'
@@ -21,11 +21,11 @@ export default defineComponent({
   emits: ['onDrop', 'onDragStart'],
   setup(props, {emit}) {
     const {item} = toRefs(props)
-    const craftStore = useCraftStore()
+    const mainStore = useMainStore()
     const settingsStore = useSettingsStore()
 
     // const isActive = computed(() => {
-    //   return item.value.id === craftStore.currentBlock.id
+    //   return item.value.id === mainStore.currentBlock.id
     // })
     const showDropzone = ref(false)
 
@@ -33,7 +33,7 @@ export default defineComponent({
       return item.value.title && colorHash.hex(item.value.title)
     })
     return {
-      craftStore,
+      mainStore,
       settingsStore,
       color,
       showDropzone,

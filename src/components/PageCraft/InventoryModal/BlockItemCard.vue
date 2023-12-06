@@ -1,6 +1,6 @@
 <script lang="ts">
 import {defineComponent, PropType} from 'vue'
-import {useCraftStore} from '@/store/craft'
+import {useMainStore} from '@/store/main'
 import {BlockItem} from '@/enum/page-craft/block'
 import {colorHash} from '@/utils'
 import {useSettingsStore} from '@/store/settings'
@@ -19,11 +19,11 @@ export default defineComponent({
   },
   setup(props) {
     const {item} = toRefs(props)
-    const craftStore = useCraftStore()
+    const mainStore = useMainStore()
     const settingsStore = useSettingsStore()
 
     const isActive = computed(() => {
-      return item.value.id === craftStore.currentBlock.id
+      return item.value.id === mainStore.currentBlock.id
     })
 
     const color = computed(() => {
@@ -31,7 +31,7 @@ export default defineComponent({
     })
 
     return {
-      craftStore,
+      mainStore,
       settingsStore,
       isActive,
       color,

@@ -10,7 +10,7 @@ type CraftStore = {
   isAppDarkMode: boolean
 }
 
-export const useCraftStore = defineStore('craft', {
+export const useMainStore = defineStore('main', {
   state: (): CraftStore => {
     return {
       currentBlock:

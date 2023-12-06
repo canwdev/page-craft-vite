@@ -6,7 +6,7 @@ import {LsKeys} from '@/enum/page-craft'
 import {createOrFindStyleNode} from '@/utils/dom'
 import {sassToCSS, suggestElementClass} from '@/utils/css'
 import {copyToClipboard} from '@/utils'
-import {useCraftStore} from '@/store/craft'
+import {useMainStore} from '@/store/main'
 import {ActionBlockItems, BlockItem} from '@/enum/page-craft/block'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {
@@ -68,7 +68,7 @@ export default defineComponent({
     const {t: $t} = useI18n()
     const mVisible = useModelWrapper(props, emit, 'visible')
     const editorContainerRef = ref()
-    const craftStore = useCraftStore()
+    const mainStore = useMainStore()
     const settingsStore = useSettingsStore()
     // monaco.editor.IStandaloneCodeEditor
     const editorInstance = shallowRef<any>()
@@ -87,10 +87,10 @@ export default defineComponent({
     })
 
     const getThemeName = () => {
-      return craftStore.isAppDarkMode ? 'vs-dark' : 'vs'
+      return mainStore.isAppDarkMode ? 'vs-dark' : 'vs'
     }
     watch(
-      () => craftStore.isAppDarkMode,
+      () => mainStore.isAppDarkMode,
       (val) => {
         editorInstance.value.updateOptions({theme: getThemeName()})
       }
@@ -236,18 +236,18 @@ export default defineComponent({
 
     const backupBlock = ref<BlockItem | null>(null)
     const enterSelectMode = () => {
-      if (craftStore.isSelectMode) {
+      if (mainStore.isSelectMode) {
         return exitSelectMode()
       }
-      backupBlock.value = craftStore.currentBlock
-      craftStore.isSelectMode = true
-      craftStore.currentBlock = ActionBlockItems.SELECTION
+      backupBlock.value = mainStore.currentBlock
+      mainStore.isSelectMode = true
+      mainStore.currentBlock = ActionBlockItems.SELECTION
     }
     const exitSelectMode = () => {
       if (backupBlock.value) {
-        craftStore.currentBlock = backupBlock.value
+        mainStore.currentBlock = backupBlock.value
       }
-      craftStore.isSelectMode = false
+      mainStore.isSelectMode = false
       backupBlock.value = null
     }
     const handleAddStyle = ({el, code, isAppend = false}) => {
@@ -337,7 +337,7 @@ export default defineComponent({
       },
     ]
 
-    useOpenCloseSelect(() => craftStore.isSelectMode)
+    useOpenCloseSelect(() => mainStore.isSelectMode)
 
     const listenShortcuts = (event) => {
       // console.log(event)
@@ -371,7 +371,7 @@ export default defineComponent({
       copyStyle,
       enterSelectMode,
       exitSelectMode,
-      craftStore,
+      mainStore,
       errorTip,
       handleErrorTipClick,
       toolOptions,
@@ -398,11 +398,11 @@ export default defineComponent({
     <template #titleBarRightControls>
       <button
         :title="$t('msgs.select_an_element_in') + ' (ctrl+shift+x)'"
-        :class="{active: craftStore.isSelectMode}"
+        :class="{active: mainStore.isSelectMode}"
         @click="enterSelectMode"
       >
         <n-icon size="20">
-          <CursorHover20Regular v-if="!craftStore.isSelectMode" />
+          <CursorHover20Regular v-if="!mainStore.isSelectMode" />
           <CursorClick20Regular v-else />
         </n-icon>
       </button>
