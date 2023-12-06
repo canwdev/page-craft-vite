@@ -1,5 +1,13 @@
 import {throttle} from 'throttle-debounce'
 
+// 初始化窗口状态
+export type WinOptions = {
+  top: string
+  left: string
+  width: string
+  height: string
+}
+
 const ClassNames = {
   RESIZE_HANDLE: 'draggable-window-resize',
 }
@@ -51,6 +59,7 @@ type DraggableOptions = {
   allowOut?: boolean // 是否允许将窗体移动到视口之外
   opacify?: number // 移动时是否让窗体透明，如：0.8
   onMove?: Function // 移动中回调函数
+  onActive?: Function
   preventNode?: HTMLElement // 包含在这个元素下面的子元素将不会触发移动
   autoPosOnResize?: boolean // 调整窗口大小时始终让内容显示在视口内
   isDebug?: boolean
@@ -426,9 +435,23 @@ export class WindowController {
     }
   }
 
-  updateZIndex() {
+  /**
+   * 更新 z-index
+   */
+  updateZIndex(opt: any = {}) {
+    const {
+      preventOnActive = false, // 传入 true 用于防止死循环
+    } = opt
+    if (!preventOnActive) {
+      const {onActive} = this.options
+      if (typeof onActive === 'function') {
+        onActive()
+      }
+    }
+    if (!this.allowMove) {
+      return
+    }
     const {dragTargetEl} = this.options
-    // this.debugLog('[updateZIndex]', dragTargetEl)
     const fixedElements = document.querySelectorAll('.vp-window')
     // 获取当前元素的 z-index
     const maxZIndex = Math.max(

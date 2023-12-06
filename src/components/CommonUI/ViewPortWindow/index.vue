@@ -1,16 +1,10 @@
 <script lang="ts">
-import {defineComponent, shallowRef} from 'vue'
+import {defineComponent, PropType, shallowRef} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
-import {WindowController} from './window-controller'
+import {WindowController, WinOptions} from './window-controller'
 import {throttle} from 'throttle-debounce'
 import {Dismiss20Regular} from '@vicons/fluent'
 
-type StyleEditorOptions = {
-  wTop: string
-  wLeft: string
-  wWidth: string
-  wHeight: string
-}
 const LS_KEY_VP_WINDOW_OPTION = 'page_craft_vp_window'
 
 export default defineComponent({
@@ -29,16 +23,21 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    // 传入此参数用于保存窗口大小和位置
     wid: {
-      type: [Number, String],
-      default: 0,
+      type: [String],
+      default: null,
+    },
+    initWinOptions: {
+      type: Object as PropType<WinOptions>,
+      default: null,
     },
     transitionName: {
       type: String,
       default: 'mc-fade-scale',
     },
   },
-  emits: ['update:visible', 'resize'],
+  emits: ['update:visible', 'resize', 'onActive', 'onClose'],
   setup(props, {emit}) {
     const {allowMove, maximum} = toRefs(props)
     const storageKey = LS_KEY_VP_WINDOW_OPTION + '_' + props.wid
@@ -48,20 +47,28 @@ export default defineComponent({
     const titleBarButtonsRef = ref()
     const dWindow = shallowRef<any>(null)
 
-    const winOptions = reactive<StyleEditorOptions>(
-      JSON.parse(localStorage.getItem(storageKey) || 'null') || {
-        wTop: '100px',
-        wLeft: '100px',
-        wWidth: '300px',
-        wHeight: '300px',
+    const getInitWinOptions = () => {
+      const defaultValue = props.initWinOptions || {
+        top: '100px',
+        left: '100px',
+        width: '300px',
+        height: '300px',
       }
-    )
+      if (!props.wid) {
+        return props.initWinOptions || defaultValue
+      }
+      return JSON.parse(localStorage.getItem(storageKey) || 'null') || defaultValue
+    }
+
+    const winOptions = reactive<WinOptions>(getInitWinOptions())
     watch(
       winOptions,
       () => {
-        localStorage.setItem(storageKey, JSON.stringify({...winOptions}))
+        if (props.wid) {
+          localStorage.setItem(storageKey, JSON.stringify({...winOptions}))
+        }
       },
-      {deep: true}
+      {deep: Boolean(props.wid)}
     )
 
     watch(allowMove, (val) => {
@@ -93,8 +100,11 @@ export default defineComponent({
         onMove(data) {
           handleMoveDebounced(data)
         },
+        onActive(data) {
+          emit('onActive')
+        },
         autoPosOnResize: true,
-        isDebug: true,
+        isDebug: false,
         resizeable: true,
       })
       dWindow.value.allowMove = allowMove.value
@@ -107,23 +117,23 @@ export default defineComponent({
     })
 
     const initDialogStyle = () => {
-      const lsState = JSON.parse(localStorage.getItem(storageKey) || 'null')
+      const lsState = getInitWinOptions()
       if (lsState) {
-        winOptions.wTop = lsState.wTop
-        winOptions.wLeft = lsState.wLeft
-        winOptions.wWidth = lsState.wWidth
-        winOptions.wHeight = lsState.wHeight
+        winOptions.top = lsState.top
+        winOptions.left = lsState.left
+        winOptions.width = lsState.width
+        winOptions.height = lsState.height
       }
 
-      dialogRef.value.style.top = winOptions.wTop
-      dialogRef.value.style.left = winOptions.wLeft
-      dialogRef.value.style.width = winOptions.wWidth
-      dialogRef.value.style.height = winOptions.wHeight
+      dialogRef.value.style.top = winOptions.top
+      dialogRef.value.style.left = winOptions.left
+      dialogRef.value.style.width = winOptions.width
+      dialogRef.value.style.height = winOptions.height
     }
 
     const handleMoveDebounced = throttle(500, false, ({top, left}) => {
-      winOptions.wTop = top
-      winOptions.wLeft = left
+      winOptions.top = top
+      winOptions.left = left
     })
 
     const handleResizeDebounced = throttle(50, false, () => {
@@ -132,8 +142,8 @@ export default defineComponent({
       }
       emit('resize')
 
-      winOptions.wWidth = getComputedStyle(dialogRef.value).width
-      winOptions.wHeight = getComputedStyle(dialogRef.value).height
+      winOptions.width = getComputedStyle(dialogRef.value).width
+      winOptions.height = getComputedStyle(dialogRef.value).height
     })
 
     onBeforeUnmount(() => {
@@ -147,6 +157,13 @@ export default defineComponent({
       dialogRef,
       titleBarRef,
       titleBarButtonsRef,
+      handleClose() {
+        mVisible.value = false
+        emit('onClose')
+      },
+      setActive() {
+        dWindow.value.updateZIndex({preventOnActive: true})
+      },
     }
   },
 })
@@ -164,17 +181,14 @@ export default defineComponent({
       ref="dialogRef"
     >
       <div class="vp-window-content">
-        <div ref="titleBarRef" class="page-craft-title-bar">
-          <div
-            class="page-craft-title-bar-text"
-            style="display: flex; align-items: center; height: 14px"
-          >
+        <div ref="titleBarRef" class="page-craft-title-bar" @dblclick="$emit('onTitleBarDbclick')">
+          <div class="page-craft-title-bar-text text-overflow">
             <slot name="titleBarLeft"></slot>
           </div>
           <div ref="titleBarButtonsRef" class="vp-window-controls">
             <slot name="titleBarRightControls"> </slot>
             <slot name="titleBarRight">
-              <button :title="$t('actions.close')" @click="mVisible = false" class="_danger">
+              <button :title="`Close`" @click="handleClose" class="_danger">
                 <n-icon size="20"><Dismiss20Regular /></n-icon>
               </button>
             </slot>
@@ -191,11 +205,13 @@ export default defineComponent({
 
 <style lang="scss">
 .vp-window {
+  min-height: 50px;
+  min-width: 50px;
   &._allowMove {
     position: fixed;
     z-index: 100;
-    top: 100px;
-    left: 100px;
+    top: 0;
+    left: 0;
   }
 
   &._full {
@@ -230,13 +246,17 @@ export default defineComponent({
       user-select: none;
 
       .window-icon {
+        width: 16px;
+        height: 16px;
         pointer-events: none;
       }
 
       .page-craft-title-bar-text {
-        .window-icon {
-          margin-right: 5px;
-        }
+        display: flex;
+        align-items: center;
+        height: 16px;
+        gap: 4px;
+        line-height: 1;
       }
     }
     .vp-window-body {
