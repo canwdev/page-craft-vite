@@ -5,7 +5,7 @@ import {useMainStore} from '@/store/main'
 const getSystemIsDarkMode = () =>
   window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
 
-export const useHandleThemeChange = () => {
+export const useGlobalTheme = () => {
   const mainStore = useMainStore()
   const settingsStore = useSettingsStore()
 
@@ -20,15 +20,6 @@ export const useHandleThemeChange = () => {
     settingsStore.ldTheme = val
   }
 
-  return {
-    handleThemeChange,
-  }
-}
-
-export const useGlobalTheme = () => {
-  const mainStore = useMainStore()
-  const {handleThemeChange} = useHandleThemeChange()
-  const settingsStore = useSettingsStore()
   handleThemeChange(settingsStore.ldTheme)
 
   const handleSystemThemeChange = (event: any) => {
@@ -36,6 +27,8 @@ export const useGlobalTheme = () => {
       mainStore.isAppDarkMode = Boolean(event.matches)
     }
   }
+
+  watch(() => settingsStore.ldTheme, handleThemeChange)
 
   onMounted(() => {
     window

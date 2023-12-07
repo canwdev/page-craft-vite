@@ -11,14 +11,32 @@ export default defineComponent({
   name: 'ViewPortWindow',
   components: {Dismiss20Regular},
   props: {
+    // 是否显示窗口
     visible: {
       type: Boolean,
-      default: false,
+      default: true,
     },
+    // 是否显示关闭按钮
+    showClose: {
+      type: Boolean,
+      default: true,
+    },
+    // 窗体是否最大化
     maximum: {
       type: Boolean,
       default: false,
     },
+    // 窗体最大化样式
+    maximumStyle: {
+      type: Object,
+      default() {
+        return {
+          width: 'auto',
+          height: 'auto',
+        }
+      },
+    },
+    // 是否允许移动窗口
     allowMove: {
       type: Boolean,
       default: true,
@@ -28,10 +46,12 @@ export default defineComponent({
       type: [String],
       default: null,
     },
+    // 窗口初始化配置
     initWinOptions: {
       type: Object as PropType<WinOptions>,
       default: null,
     },
+    // 窗口出现/隐藏的过度动画名字
     transitionName: {
       type: String,
       default: 'mc-fade-scale',
@@ -39,7 +59,7 @@ export default defineComponent({
   },
   emits: ['update:visible', 'resize', 'onActive', 'onClose'],
   setup(props, {emit}) {
-    const {allowMove, maximum} = toRefs(props)
+    const {allowMove, maximum, maximumStyle} = toRefs(props)
     const storageKey = LS_KEY_VP_WINDOW_OPTION + '_' + props.wid
     const mVisible = useModelWrapper(props, emit, 'visible')
     const dialogRef = ref()
@@ -164,6 +184,11 @@ export default defineComponent({
       setActive() {
         dWindow.value.updateZIndex({preventOnActive: true})
       },
+      windowStyle: computed(() => {
+        if (maximum.value) {
+          return maximumStyle.value
+        }
+      }),
     }
   },
 })
@@ -178,6 +203,7 @@ export default defineComponent({
         _allowMove: allowMove,
         _full: maximum,
       }"
+      :style="windowStyle"
       ref="dialogRef"
     >
       <div class="vp-window-content">
@@ -188,7 +214,7 @@ export default defineComponent({
           <div ref="titleBarButtonsRef" class="vp-window-controls">
             <slot name="titleBarRightControls"> </slot>
             <slot name="titleBarRight">
-              <button :title="`Close`" @click="handleClose" class="_danger">
+              <button v-if="showClose" :title="`Close`" @click="handleClose" class="_danger">
                 <n-icon size="20"><Dismiss20Regular /></n-icon>
               </button>
             </slot>
@@ -220,8 +246,6 @@ export default defineComponent({
     left: 0 !important;
     right: 0 !important;
     bottom: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
     padding: 0;
     border: none;
     box-shadow: none;

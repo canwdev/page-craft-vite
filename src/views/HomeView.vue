@@ -3,7 +3,6 @@ import {defineComponent} from 'vue'
 import ToolBar from '@/components/PageCraft/ToolBar/index.vue'
 import MainCanvas from '@/components/PageCraft/MainCanvas/index.vue'
 import {LsKeys} from '@/enum/page-craft'
-import {useHandleThemeChange} from '@/hooks/use-global-theme'
 import {useSettingsStore} from '@/store/settings'
 import {customThemeOptions, CustomThemeType, ldThemeOptions} from '@/enum/settings'
 import {createOrFindStyleNode} from '@/utils/dom'
@@ -42,8 +41,6 @@ export default defineComponent({
     const {metaTitle} = useMetaTitle()
 
     const isShowSettings = ref(false)
-
-    const {handleThemeChange} = useHandleThemeChange()
 
     const styleEl = ref<HTMLElement | null>(null)
     const isShowGlobalStyleDialog = ref(false)
@@ -173,7 +170,6 @@ export default defineComponent({
       globalStyleText,
       settingsStore,
       ldThemeOptions,
-      handleThemeChange,
       isShowStylusTools,
       isShowIframeBrowser,
       styleMenuOptions,
@@ -254,7 +250,6 @@ export default defineComponent({
               v-model:value="settingsStore.ldTheme"
               :options="ldThemeOptions"
               style="width: 150px"
-              @update:value="handleThemeChange"
             />
           </template>
         </n-list-item>
