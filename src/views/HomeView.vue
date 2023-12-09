@@ -20,6 +20,7 @@ import {useI18n} from 'vue-i18n'
 import {useOpenCloseSound, useSfxBell} from '@/hooks/use-sfx'
 import VueMonaco from '@/components/CommonUI/VueMonaco.vue'
 import IframeBrowser from '@/components/IframeBrowser/index.vue'
+import {useGlobalStyle} from '@/hooks/use-global-theme'
 
 export default defineComponent({
   name: 'HomeView',
@@ -42,27 +43,8 @@ export default defineComponent({
 
     const isShowSettings = ref(false)
 
-    const styleEl = ref<HTMLElement | null>(null)
     const isShowGlobalStyleDialog = ref(false)
-    const globalStyleText = ref('')
-
-    const applyGlobalStyle = () => {
-      if (styleEl.value) {
-        if (settingsStore.enableGlobalCss) {
-          styleEl.value.innerHTML = globalStyleText.value
-          localStorage.setItem(LsKeys.GLOBAL_STYLE, globalStyleText.value)
-        } else {
-          styleEl.value.innerHTML = ''
-        }
-      }
-    }
-
-    watch(
-      () => settingsStore.enableGlobalCss,
-      (val) => {
-        applyGlobalStyle()
-      }
-    )
+    const {globalStyleText, applyGlobalStyle} = useGlobalStyle()
 
     const listenShortcuts = (event) => {
       const key = event.key.toLowerCase()
@@ -98,10 +80,6 @@ export default defineComponent({
     )
 
     onMounted(() => {
-      styleEl.value = createOrFindStyleNode(LsKeys.GLOBAL_STYLE)
-      globalStyleText.value = localStorage.getItem(LsKeys.GLOBAL_STYLE) || ''
-
-      applyGlobalStyle()
       document.addEventListener('keydown', listenShortcuts)
     })
     onBeforeUnmount(() => {
@@ -112,7 +90,6 @@ export default defineComponent({
     const isShowIframeBrowser = ref(false)
 
     const {loadCurCompStyle} = useCompStorage()
-    const mainStore = useMainStore()
     const styleMenuOptions = [
       {
         label: '📄 ' + $t('actions.copy_compiled_css'),

@@ -19,6 +19,7 @@ export default defineComponent({
       type: String,
       default: 'Input text',
     },
+    // 默认文本
     text: {
       type: String,
       default: '',
@@ -27,6 +28,11 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    // 输入框为input的type
+    type: {
+      type: String,
+      default: 'text',
+    },
   },
   emits: ['onSave'],
   setup(props, {emit}) {
@@ -34,9 +40,13 @@ export default defineComponent({
     const mVisible = useModelWrapper(props, emit, 'visible')
 
     const editingText = ref('')
-    watch(text, (val) => {
-      editingText.value = val
-    })
+    watch(
+      text,
+      (val) => {
+        editingText.value = val
+      },
+      {immediate: true}
+    )
 
     return {
       mVisible,
@@ -65,7 +75,7 @@ export default defineComponent({
       <VueMonaco v-if="isTextarea" v-model="editingText" language="json" style="height: 500px" />
       <n-input
         v-else
-        :type="isTextarea ? 'textarea' : 'text'"
+        :type="type"
         v-model:value="editingText"
         class="font-code"
         :rows="isTextarea ? 25 : null"
