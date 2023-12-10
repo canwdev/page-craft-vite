@@ -54,16 +54,27 @@ const getPointerXy = (e: any) => {
 }
 
 type DraggableOptions = {
-  dragHandleEl: HTMLElement // 被鼠标按下的 handle 元素
-  dragTargetEl: HTMLElement // 窗体元素
-  allowOut?: boolean // 是否允许将窗体移动到视口之外
-  opacify?: number // 移动时是否让窗体透明，如：0.8
-  onMove?: Function // 移动中回调函数
+  // 被鼠标按下的 handle 元素
+  dragHandleEl: HTMLElement
+  // 窗体元素
+  dragTargetEl: HTMLElement
+  // 是否允许将窗体移动到视口之外
+  allowOut?: boolean
+  // 移动时是否让窗体透明，如：0.8
+  opacify?: number
+  // 移动中回调函数
+  onMove?: Function
   onActive?: Function
-  preventNode?: HTMLElement // 包含在这个元素下面的子元素将不会触发移动
-  autoPosOnResize?: boolean // 调整窗口大小时始终让内容显示在视口内
+  // 包含在这个元素下面的子元素将不会触发移动
+  preventNode?: HTMLElement
+  // 调整窗口大小时始终让内容显示在视口内
+  autoPosOnResize?: boolean
+  // 是否打印日志
   isDebug?: boolean
+  // 是否可以调整窗口大小
   resizeable?: boolean
+  // 窗口是否最大化
+  maximized?: boolean
 }
 
 const RESIZE_BAR_WITH = 8
@@ -150,6 +161,7 @@ export class WindowController {
   private prevRect: DOMRect
   private currentResizeDirection: string | null
   private allowMove: boolean
+  private maximized: boolean
 
   constructor(options: DraggableOptions) {
     const {dragHandleEl, dragTargetEl, onMove, autoPosOnResize} = options
@@ -159,7 +171,7 @@ export class WindowController {
     this.docEl = document.documentElement
     this.deltaX = 0
     this.deltaY = 0
-    this.allowMove = true
+    this.maximized = options.maximized
 
     this.handleDragStart = this.handleDragStart.bind(this)
     this.handleDragMove = this.handleDragMove.bind(this)
@@ -191,8 +203,6 @@ export class WindowController {
       dragTargetEl.addEventListener(eventName, this.updateZIndex)
     })
 
-    this.updateZIndex()
-
     this.handleResizeStart = this.handleResizeStart.bind(this)
     this.handleResizeMove = this.handleResizeMove.bind(this)
     this.handleResizeStop = this.handleResizeStop.bind(this)
@@ -205,6 +215,10 @@ export class WindowController {
         })
       })
     }
+
+    setTimeout(() => {
+      this.updateZIndex()
+    })
 
     this.debugLog('initialized', this)
   }
@@ -230,7 +244,7 @@ export class WindowController {
   }
 
   handleDragStart(event) {
-    if (!this.allowMove) {
+    if (!this.allowMove || this.maximized) {
       return
     }
     const {docEl} = this
@@ -448,7 +462,8 @@ export class WindowController {
         onActive()
       }
     }
-    if (!this.allowMove) {
+    if (!this.allowMove && !this.maximized) {
+      this.debugLog('[updateZIndex] return')
       return
     }
     const {dragTargetEl} = this.options

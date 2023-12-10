@@ -26,16 +26,6 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
-    // 窗体最大化样式
-    maximumStyle: {
-      type: Object,
-      default() {
-        return {
-          width: 'auto',
-          height: 'auto',
-        }
-      },
-    },
     // 是否允许移动窗口
     allowMove: {
       type: Boolean,
@@ -59,7 +49,7 @@ export default defineComponent({
   },
   emits: ['update:visible', 'resize', 'onActive', 'onClose'],
   setup(props, {emit}) {
-    const {allowMove, maximum, maximumStyle} = toRefs(props)
+    const {allowMove, maximum} = toRefs(props)
     const storageKey = LS_KEY_VP_WINDOW_OPTION + '_' + props.wid
     const mVisible = useModelWrapper(props, emit, 'visible')
     const dialogRef = ref()
@@ -99,6 +89,7 @@ export default defineComponent({
     })
     watch(maximum, (val) => {
       dWindow.value.allowMove = !val
+      dWindow.value.maximized = val
       setTimeout(() => {
         dWindow.value.updateZIndex()
       }, 100)
@@ -126,6 +117,7 @@ export default defineComponent({
         autoPosOnResize: true,
         isDebug: false,
         resizeable: true,
+        maximized: maximum.value,
       })
       dWindow.value.allowMove = allowMove.value
 
@@ -184,11 +176,6 @@ export default defineComponent({
       setActive() {
         dWindow.value.updateZIndex({preventOnActive: true})
       },
-      windowStyle: computed(() => {
-        if (maximum.value) {
-          return maximumStyle.value
-        }
-      }),
     }
   },
 })
@@ -200,10 +187,9 @@ export default defineComponent({
       v-show="mVisible"
       class="vp-window"
       :class="{
-        _allowMove: allowMove,
-        _full: maximum,
+        _allow_move: allowMove,
+        _maximized: maximum,
       }"
-      :style="windowStyle"
       ref="dialogRef"
     >
       <div class="vp-window-content">
@@ -231,21 +217,24 @@ export default defineComponent({
 
 <style lang="scss">
 .vp-window {
+  z-index: 100;
   min-height: 50px;
   min-width: 50px;
-  &._allowMove {
+  &._allow_move {
     position: fixed;
     z-index: 100;
     top: 0;
     left: 0;
   }
 
-  &._full {
+  &._maximized {
     position: fixed;
     top: 0 !important;
     left: 0 !important;
     right: 0 !important;
     bottom: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
     padding: 0;
     border: none;
     box-shadow: none;
@@ -255,6 +244,13 @@ export default defineComponent({
         margin-left: unset;
         margin-right: unset;
       }
+      .vp-window-body {
+        border-left: 0;
+        border-right: 0;
+      }
+    }
+    .draggable-window-resize {
+      pointer-events: none;
     }
   }
 

@@ -101,7 +101,7 @@
     box-shadow: 0 1px 10px rgba(0, 0, 0, 0.27), inset 0 0 1px 1px rgba(255, 255, 255, 0.2);
     border-radius: $radius;
 
-    //.n-button {
+    //.vp-button {
     //  background-color: rgba(255, 255, 255, 0.71) !important;
     //}
   }
@@ -237,12 +237,13 @@
       background-color: rgba(43, 43, 43, 0.85);
       color: white;
 
-      .n-button {
-        background-color: transparent !important;
+      .vp-button {
       }
 
-      .n-input {
+      .vp-input {
+        border: none;
         background-color: rgba(0, 0, 0, 0.3);
+        color: white;
       }
     }
   }

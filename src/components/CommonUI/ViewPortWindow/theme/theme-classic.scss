@@ -89,15 +89,17 @@
     background-color: $theme_color_inactive;
     @include normal();
     border: $border;
-    .n-button {
+    .vp-button {
+      border: none;
       @include normal();
-      &:active {
+      &:active,&.active {
         @include active();
       }
     }
-    .n-input {
+    .vp-input {
       background: #fff;
-      box-shadow: inset -1px -1px #fff, inset 1px 1px grey, inset -2px -2px #dfdfdf, inset 2px 2px #0a0a0a;
+      border: none;
+      box-shadow: inset -1px -1px #fff, inset 1px 1px grey, inset -2px -2px #dfdfdf;
     }
   }
 
@@ -126,6 +128,7 @@
 
   &._dark {
     .vp-window {
+      color: white;
       .vp-window-body {
         &._bg {
           background-color: rgba(30, 30, 30, 1);
@@ -133,10 +136,11 @@
       }
     }
     .vp-panel {
-      background-color: black;
+      background-color: #313131;
       color: white;
-      .n-input {
-        background: black;
+      .vp-input {
+        background: #313131;
+        color: white;
       }
     }
   }

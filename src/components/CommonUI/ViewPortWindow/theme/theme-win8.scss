@@ -61,12 +61,14 @@
     &._active {
       box-shadow: $box_shadow;
       background-color: $theme_color !important;
-      color: black !important;
+      .page-craft-title-bar {
+        color: black !important;
+      }
     }
   }
 
   .vp-panel {
-    background-color: white;
+    background-color: rgba(255, 255, 255, 0.8);
     border: $border;
     box-shadow: $box_shadow;
   }
@@ -84,7 +86,7 @@
       }
     }
     .vp-panel {
-      background-color: black;
+      background-color: rgba(0, 0, 0, 0.75);
       color: white;
     }
   }
