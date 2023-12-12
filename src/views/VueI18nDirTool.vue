@@ -343,6 +343,47 @@ export default defineComponent({
                 </template>
               </div>
             </template>
+            <div class="null-intro" v-else>
+              <template v-if="dirTree.length">
+                <div class="intro-title">
+                  👈 请先选择一个json文件 <br />Please select a json file first
+                </div>
+              </template>
+              <div class="font-code" v-else>
+                <div class="intro-title">
+                  📁 推荐的i18n目录结构：<br />Recommended i18n folder structure example:
+                </div>
+                <textarea
+                  readonly
+                  cols="50"
+                  rows="25"
+                  :value="`└─locales    <-- Drag folder here! 拖拽文件夹到此
+    ├─de-DE
+    │      index.json
+    │
+    ├─en-US
+    │      index.json
+    │
+    ├─es-ES
+    │      index.json
+    │
+    ├─fr-FR
+    │      index.json
+    │
+    ├─ja-JP
+    │      index.json
+    │
+    ├─kr-KR
+    │      index.json
+    │
+    ├─zh-CN
+    │      index.json
+    │
+    └─zh-TW
+            index.json`"
+                ></textarea>
+              </div>
+            </div>
           </div>
         </n-layout-content>
       </n-layout>
@@ -391,6 +432,22 @@ export default defineComponent({
           }
         }
       }
+    }
+  }
+
+  .null-intro {
+    padding: 20px;
+    user-select: none;
+    .intro-title {
+      margin-bottom: 4px;
+      font-size: 18px;
+      font-weight: 500;
+    }
+    textarea {
+      resize: none;
+      color: #3a3a3a;
+      background-color: lightyellow;
+      font-size: 14px;
     }
   }
 }
