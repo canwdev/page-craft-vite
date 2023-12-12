@@ -171,7 +171,8 @@ export class WindowController {
     this.docEl = document.documentElement
     this.deltaX = 0
     this.deltaY = 0
-    this.maximized = options.maximized
+    this.allowMove = true
+    this.maximized = options.maximized || false
 
     this.handleDragStart = this.handleDragStart.bind(this)
     this.handleDragMove = this.handleDragMove.bind(this)
