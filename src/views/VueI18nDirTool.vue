@@ -354,6 +354,7 @@ export default defineComponent({
                   📁 推荐的i18n目录结构：<br />Recommended i18n folder structure example:
                 </div>
                 <textarea
+                  class="font-code"
                   readonly
                   cols="50"
                   rows="25"
