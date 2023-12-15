@@ -19,6 +19,7 @@ import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import VueMonaco from '@/components/CommonUI/VueMonaco.vue'
 import dynamicLoadScript from '@/utils/dynamic-load-script'
 import TranslateTreeItem from '@/components/VueI18nEditTool/TranslateTreeItem.vue'
+import {useSettingsStore} from '@/store/settings'
 
 let idSeed = 0
 
@@ -32,8 +33,10 @@ export default defineComponent({
     DialogTextTransformer,
   },
   setup() {
+    const settingsStore = useSettingsStore()
     const dirTree = ref<DirTreeItem[]>([])
 
+    // 递归读取文件夹
     const recursiveReadDir = async (
       dirHandle,
       deep = 0,
@@ -76,6 +79,31 @@ export default defineComponent({
           }
         }
       }
+      console.log('[recursiveReadDir]', tree)
+      return tree
+    }
+
+    // 获取当前目录下的所有文件
+    const readJsonFiles = async (dirHandle, tree: DirTreeItem[] = []): Promise<DirTreeItem[]> => {
+      idSeed++
+      let idx = 0
+      for await (const entry of dirHandle.values()) {
+        idx++
+        if (entry.kind !== 'directory') {
+          const isValidFile = /\.json$/gi.test(entry.name)
+          if (isValidFile) {
+            tree.push({
+              key: `${idSeed}-FILE-${idx}`,
+              kind: entry.kind,
+              label: entry.name,
+              entry,
+              parentDirs: [],
+              children: null,
+            })
+          }
+        }
+      }
+      console.log('[readJsonFiles]', tree)
       return tree
     }
 
@@ -86,10 +114,20 @@ export default defineComponent({
       // @ts-ignore
       dirHandle.value = await window.showDirectoryPicker()
       // console.log('dirHandle', dirHandle)
-      dirTree.value = await recursiveReadDir(dirHandle.value)
+      await reloadPickedDir()
     }
     const reloadPickedDir = async () => {
-      dirTree.value = await recursiveReadDir(dirHandle.value)
+      const handle = dirHandle.value
+      let tree: DirTreeItem[] = []
+      if (settingsStore.isFoldersMode) {
+        tree = await recursiveReadDir(handle)
+      } else {
+        tree = await readJsonFiles(handle)
+      }
+      if (!tree.length) {
+        window.$message.error('The content is empty, please check the folder directory structure!')
+      }
+      dirTree.value = tree
     }
 
     const currentEditEntry = ref<FileSystemFileHandle | null>(null)
@@ -220,13 +258,17 @@ export default defineComponent({
               const entry = await item.getAsFileSystemHandle()
               if (entry.kind === 'directory') {
                 dirHandle.value = entry
-                dirTree.value = await recursiveReadDir(dirHandle.value)
+                await reloadPickedDir()
+                break
+              } else {
+                window.$message.error('Please drag and drop a folder here!')
               }
             }
           }
         },
       }),
       isShowCopyDialog,
+      settingsStore,
     }
   },
 })
@@ -274,7 +316,7 @@ export default defineComponent({
               Pick i18n Directory
             </n-button>
 
-            <n-button secondary v-if="dirHandle" size="small" @click="reloadPickedDir">
+            <n-button secondary v-if="dirHandle" size="small" @click="reloadPickedDir()">
               Refresh
             </n-button>
           </n-space>
@@ -336,8 +378,9 @@ export default defineComponent({
                   <n-scrollbar v-if="editMode === 'batch'" style="height: 100%">
                     <BatchTranslate
                       :dir-tree="dirTree"
-                      :file-path-arr="currentFilePathArr.slice(1)"
+                      :file-path-arr="currentFilePathArr"
                       :translate-path="translatePath"
+                      :is-folders-mode="settingsStore.isFoldersMode"
                     />
                   </n-scrollbar>
                 </template>
@@ -351,37 +394,49 @@ export default defineComponent({
               </template>
               <div class="font-code" v-else>
                 <div class="intro-title">
-                  📁 推荐的i18n目录结构：<br />Recommended i18n folder structure example:
+                  📁 推荐的i18n目录结构：
+                  <n-switch v-model:value="settingsStore.isFoldersMode">
+                    <template #checked>Folders Mode</template>
+                    <template #unchecked>Files Mode</template>
+                  </n-switch>
+                  <br />Recommended i18n folder structure example:
                 </div>
                 <textarea
                   class="font-code"
                   readonly
                   cols="50"
-                  rows="25"
-                  :value="`└─locales    <-- Drag folder here! 拖拽文件夹到此
-    ├─de-DE
-    │      index.json
-    │
-    ├─en-US
-    │      index.json
-    │
-    ├─es-ES
-    │      index.json
-    │
-    ├─fr-FR
-    │      index.json
-    │
-    ├─ja-JP
-    │      index.json
-    │
-    ├─kr-KR
-    │      index.json
-    │
-    ├─zh-CN
-    │      index.json
-    │
-    └─zh-TW
-            index.json`"
+                  rows="20"
+                  :value="
+                    settingsStore.isFoldersMode
+                      ? `└─[locales]    --> Drag folder here! 拖拽文件夹到此
+   ├─de-DE
+   │  └─index.json
+   ├─en-US
+   │  └─index.json
+   ├─es-ES
+   │  └─index.json
+   ├─fr-FR
+   │  └─index.json
+   ├─ja-JP
+   │  └─index.json
+   ├─kr-KR
+   │  └─index.json
+   ├─zh-CN
+   │  └─index.json
+   └─zh-TW
+      └─index.json`
+                      : `└─[locales]    --> Drag folder here! 拖拽文件夹到此
+   ├─ ar.json
+   ├─ cn.json
+   ├─ de.json
+   ├─ en.json
+   ├─ es.json
+   ├─ fr.json
+   ├─ it.json
+   ├─ jp.json
+   └─ kr.json
+`
+                  "
                 ></textarea>
               </div>
             </div>
@@ -446,8 +501,8 @@ export default defineComponent({
     }
     textarea {
       resize: none;
-      color: #3a3a3a;
-      background-color: lightyellow;
+      color: #0f0;
+      background-color: black;
       font-size: 14px;
     }
   }

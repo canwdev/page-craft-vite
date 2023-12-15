@@ -36,10 +36,14 @@ export default defineComponent({
 
     const fileHandle = shallowRef<FileSystemFileHandle>()
     const handleImport = async (file) => {
-      const str = await handleReadSelectedFile(file)
-      const obj = JSON.parse(str as string)
-      // console.log(obj)
-      translateTreeRoot.value = I18nJsonObjUtils.parseWithRoot(obj)
+      try {
+        const str = await handleReadSelectedFile(file)
+        const obj = JSON.parse(str as string)
+        translateTreeRoot.value = I18nJsonObjUtils.parseWithRoot(obj)
+      } catch (e: any) {
+        console.error(e)
+        window.$message.error(e.message)
+      }
     }
 
     const handleSelectFile = async () => {
@@ -134,6 +138,8 @@ export default defineComponent({
                 fileHandle.value = entry
                 const file = await entry.getFile()
                 await handleImport(file)
+              } else {
+                window.$message.error('Please drag and drop a json file here!')
               }
             }
           }

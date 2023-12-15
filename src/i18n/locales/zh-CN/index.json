@@ -89,7 +89,7 @@
     "dark_bg": "黑暗背景",
     "component_insert_com": "组件插入完成",
     "import_success": "导入成功！",
-    "confirm_clear_curren": "确认清除当前 HTML+CSS 代码？",
+    "confirm_clear_curren": "确认清除当前 HTML 代码？将无法撤销！",
     "copy_success": "已复制！",
     "select_an_element_in": "选择页面中的一个元素以生成其 CSS 选择器",
     "confirm_reset_toolba": "确认重置工具栏？",

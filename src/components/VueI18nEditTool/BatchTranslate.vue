@@ -26,9 +26,13 @@ export default defineComponent({
       type: String,
       default: '',
     },
+    isFoldersMode: {
+      type: Boolean,
+      default: true,
+    },
   },
   setup(props, {emit}) {
-    const {dirTree} = toRefs(props)
+    const {dirTree, isFoldersMode} = toRefs(props)
     const itemsRef = ref()
 
     const handleSaveChanged = async () => {
@@ -50,6 +54,12 @@ export default defineComponent({
     return {
       handleSaveChanged,
       itemsRef,
+      filePathArrFiltered: computed(() => {
+        if (isFoldersMode.value) {
+          return dirTree.value.filter((i) => i.kind === 'directory')
+        }
+        return dirTree.value
+      }),
     }
   },
 })
@@ -59,12 +69,13 @@ export default defineComponent({
   <div class="batch-translate">
     <BatchTranslateItem
       ref="itemsRef"
-      v-for="item in dirTree.filter((i) => i.kind === 'directory')"
+      v-for="item in filePathArrFiltered"
       :key="item.key"
       :dir-item="item"
-      :file-path-arr="filePathArr"
+      :file-path-arr="isFoldersMode ? filePathArr.slice(1) : filePathArr"
       :translate-path="translatePath"
       @saveChanged="handleSaveChanged"
+      :is-folders-mode="isFoldersMode"
     />
   </div>
 </template>

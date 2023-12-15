@@ -5,7 +5,8 @@ import {CustomThemeType, FilterType, LdThemeType} from '@/enum/settings'
 interface IPageCraftSettings {
   ldTheme: LdThemeType
   customTheme: string
-  enableAeroTheme: boolean // transparent blur effect
+  // transparent blur effect
+  enableAeroTheme: boolean
   enableRoundedTheme: boolean
   enableGlobalCss: boolean
   enableTopLayout: boolean
@@ -15,11 +16,15 @@ interface IPageCraftSettings {
   inventoryTab: TabType
   inventoryFilterType: FilterType
   inventoryIsLargeCard: boolean
-  isInvAttached: boolean // inventory window attached to tool bar
+  // inventory window attached to toolbar
+  isInvAttached: boolean
   showStyleEditor: boolean
   toolbarIndex: number
   toolbarList: BlockItem[]
-  curCompoName: string // selected component name
+  // selected component name
+  curCompoName: string
+  // i18n dir tool 是否为文件夹模式
+  isFoldersMode: boolean
 }
 
 export const useSettingsStore = defineStore('settingsStore', {
@@ -42,6 +47,7 @@ export const useSettingsStore = defineStore('settingsStore', {
       toolbarIndex: 0,
       toolbarList: [],
       curCompoName: '',
+      isFoldersMode: true,
     }
   },
   persist: {

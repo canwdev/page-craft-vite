@@ -27,11 +27,16 @@ export default defineComponent({
       type: String,
       default: '',
     },
+    // 是否为多文件夹模式，如果为否则当作单个文件处理
+    isFoldersMode: {
+      type: Boolean,
+      default: true,
+    },
   },
   emits: ['saveChanged'],
   setup(props, {emit}) {
     const {t: $t} = useI18n()
-    const {dirItem, filePathArr, translatePath} = toRefs(props)
+    const {dirItem, filePathArr, translatePath, isFoldersMode} = toRefs(props)
 
     const findNode = (): DirTreeItem | null => {
       let find: DirTreeItem | null = null
@@ -64,6 +69,10 @@ export default defineComponent({
     }
 
     const currentItem = computed(() => {
+      if (!isFoldersMode.value) {
+        // 单文件读取
+        return dirItem.value
+      }
       return findNode()
     })
     const translateObj = shallowRef<any>(null)
@@ -217,9 +226,11 @@ export default defineComponent({
   <n-card size="small" class="batch-translate-item">
     <div class="card-header">
       <span class="card-title">
-        <span class="text-red">{{ dirItem.label }}</span
-        >{{ '/' + filePathArr.join('/') }}</span
-      >
+        <span class="text-red">{{ dirItem.label }}</span>
+        <template v-if="isFoldersMode">
+          {{ '/' + filePathArr.join('/') }}
+        </template>
+      </span>
       <span class="translate-path">
         {{ translatePath }}
       </span>

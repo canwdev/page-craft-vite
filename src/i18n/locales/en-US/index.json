@@ -89,7 +89,7 @@
     "dark_bg": "Dark BG",
     "component_insert_com": "Component insert complete",
     "import_success": "Import Success!",
-    "confirm_clear_curren": "Confirm clear current HTML + Style code? This can not be undo!",
+    "confirm_clear_curren": "Confirm clear current HTML code? This can not be undo!",
     "copy_success": "Copied!",
     "select_an_element_in": "Select an element in the page to generate its CSS Selector",
     "confirm_reset_toolba": "Confirm reset toolbar?",
