@@ -14,7 +14,7 @@ import DropZone from '@/components/CommonUI/DropZone.vue'
 import {useFileDrop} from '@/hooks/use-file-drop'
 import {useMetaTitle} from '@/hooks/use-meta'
 import DialogTextTransformer from '@/components/VueI18nEditTool/DialogTextTransformer.vue'
-import {useSaveShortcut} from '@/hooks/use-beforeunload'
+import {useBeforeUnload, useSaveShortcut} from '@/hooks/use-beforeunload'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import VueMonaco from '@/components/CommonUI/VueMonaco.vue'
 import dynamicLoadScript from '@/utils/dynamic-load-script'
@@ -203,6 +203,10 @@ export default defineComponent({
     onMounted(async () => {
       await dynamicLoadScript(import.meta.env.BASE_URL + 'lib/pinyinjs/pinyin_dict_notone.min.js')
       await dynamicLoadScript(import.meta.env.BASE_URL + 'lib/pinyinjs/pinyinUtil.js')
+    })
+
+    useBeforeUnload(() => {
+      return !!dirHandle.value
     })
 
     return {

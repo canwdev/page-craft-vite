@@ -136,3 +136,18 @@ export type DirTreeItem = {
   parentDirs: string[]
   children: DirTreeItem[] | null
 }
+
+// 一键复制模式枚举
+export enum CopyMode {
+  ORIGINAL = 'original',
+  TEMPLATE = 'template',
+  VHTML = 'vhtml',
+  DOLLART = 'dollart',
+}
+
+export const copyModeOptions = [
+  {label: '$()', value: CopyMode.ORIGINAL, desc: "Copy $('')"},
+  {label: '{{}}', value: CopyMode.TEMPLATE, desc: 'Copy HTML template'},
+  {label: 'v-html', value: CopyMode.VHTML, desc: 'Copy v-html template'},
+  {label: 'this.$t', value: CopyMode.DOLLART, desc: 'Copy JavaScript this.$t()'},
+]
