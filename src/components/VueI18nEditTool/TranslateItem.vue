@@ -1,19 +1,21 @@
 <script lang="ts">
 import {defineComponent, PropType} from 'vue'
 import {
+  CopyMode,
+  copyModeOptions,
   formatI18nKey,
   I18N_JSON_OBJ_ROOT_KEY_NAME,
   ITranslateItem,
   ITranslateTreeItem,
 } from '@/enum/vue-i18n-tool'
 import {copyToClipboard} from '@/utils'
-import {Delete20Regular, Globe16Regular} from '@vicons/fluent'
+import {Delete20Regular} from '@vicons/fluent'
 import {useI18n} from 'vue-i18n'
+import {useMainStore} from '@/store/main'
 
 export default defineComponent({
   name: 'TranslateItem',
   components: {
-    Globe16Regular,
     Delete20Regular,
   },
   props: {
@@ -37,6 +39,7 @@ export default defineComponent({
   emits: ['onRemove', 'previewArray', 'onKeyClick'],
   setup(props, {emit}) {
     const {t: $t} = useI18n()
+    const mainStore = useMainStore()
     const {item, treeItem, index} = toRefs(props)
 
     const namespacePrefix = computed(() => {
@@ -92,29 +95,66 @@ export default defineComponent({
       }
     }
 
+    // 一键复制模板
+    const highlightCopyMode = ref<CopyMode | null>(null)
+    const handleCopy = (mode: CopyMode) => {
+      let text = ``
+
+      if (mode === CopyMode.ORIGINAL) {
+        text = `$t('${nameDisplay.value}')`
+      } else if (mode === CopyMode.TEMPLATE) {
+        text = `{{ $t('${nameDisplay.value}') }}`
+      } else if (mode === CopyMode.VHTML) {
+        text = `v-html="$t('${nameDisplay.value}')"`
+      } else if (mode === CopyMode.DOLLART) {
+        text = `this.$t('${nameDisplay.value}')`
+      }
+
+      highlightCopyMode.value = mode
+      mainStore.trLastCopyMode = mode
+
+      copyToClipboard(text)
+      window.$message.success($t('msgs.copy_success') + text)
+    }
+
+    const handleValueBlur = () => {
+      if (!item.value.key) {
+        item.value.key = formatI18nKey(item.value.value)
+        checkDuplicatedKey()
+      }
+    }
+
+    const valueInputRef = ref()
+
+    onMounted(() => {
+      if (!item.value) {
+        return
+      }
+
+      // 如果相同，说明正在执行 handleAutoAdd 操作
+      if (mainStore.trAutoAddGuid !== null && item.value.key === mainStore.trAutoAddGuid) {
+        mainStore.trAutoAddGuid = null
+        item.value.key = ''
+        handleValueBlur()
+        setTimeout(() => {
+          handleCopy(mainStore.trLastCopyMode)
+        })
+      } else if (mainStore.trIsManualAdd) {
+        // 自动选择value输入框
+        if (valueInputRef.value) {
+          valueInputRef.value.focus()
+        }
+        mainStore.trIsManualAdd = false
+      }
+    })
+
     return {
+      copyModeOptions,
       namespacePrefix,
       nameDisplay,
-      handleCopy(type) {
-        let text = `$t('${nameDisplay.value}')`
-
-        if (type === 'html') {
-          text = `{{ $t('${nameDisplay.value}') }}`
-        } else if (type === 'v-html') {
-          text = `v-html="$t('${nameDisplay.value}')"`
-        } else if (type === 'js') {
-          text = `this.$t('${nameDisplay.value}')`
-        }
-
-        copyToClipboard(text)
-        window.$message.success($t('msgs.copy_success'))
-      },
-      handleValueBlur() {
-        if (!item.value.key) {
-          item.value.key = formatI18nKey(item.value.value)
-          checkDuplicatedKey()
-        }
-      },
+      highlightCopyMode,
+      handleCopy,
+      handleValueBlur,
       handleKeyBlur() {
         checkDuplicatedKey()
       },
@@ -123,13 +163,20 @@ export default defineComponent({
       },
       valType,
       isKeyDuplicated,
+      valueInputRef,
     }
   },
 })
 </script>
 
 <template>
-  <n-list-item size="small" v-if="item" class="translate-item" :class="{isLite, isKeyDuplicated}">
+  <n-list-item
+    :data-id="item.key"
+    size="small"
+    v-if="item"
+    class="translate-item"
+    :class="{isLite, isKeyDuplicated}"
+  >
     <n-space size="small" justify="space-between">
       <n-space size="small" align="center">
         <template v-if="isKeyDuplicated">
@@ -142,7 +189,7 @@ export default defineComponent({
         </template>
         <n-input
           size="small"
-          class="font-code translate-item-input"
+          class="font-code translate-item-input jssl_key"
           v-model:value="item.key"
           placeholder="key"
           @click="handleInputKeyClick"
@@ -150,14 +197,16 @@ export default defineComponent({
         />
         <template v-if="!isLite">
           <n-input-number
+            ref="valueInputRef"
             v-if="valType === 'number'"
             v-model:value="item.value"
             placeholder="number value"
             size="small"
-            class="item-value-edit"
+            class="item-value-edit jssl_value"
             @blur="handleValueBlur"
           />
           <n-input
+            ref="valueInputRef"
             v-else-if="!Array.isArray(item.value)"
             type="textarea"
             rows="1"
@@ -179,27 +228,17 @@ export default defineComponent({
         </template>
 
         <n-space v-if="!isLite && nameDisplay" size="small">
-          <n-input
-            class="font-code"
-            size="small"
-            style="width: 300px"
-            :value="`$t('${nameDisplay}')`"
-            readonly
-          />
-          <n-button size="small" @click="handleCopy" title="Copy Original $('')"> $() </n-button>
-          <n-button size="small" type="info" @click="handleCopy('html')" title="Copy HTML template">
-            {{ `\{\{ \}\}` }}
-          </n-button>
+          <!-- 一键复制按钮 -->
           <n-button
+            v-for="item in copyModeOptions"
+            :key="item.value"
+            :title="item.desc"
             size="small"
+            :secondary="item.value !== highlightCopyMode"
             type="success"
-            @click="handleCopy('v-html')"
-            title="Copy v-html template"
+            @click="handleCopy(item.value)"
           >
-            v-html
-          </n-button>
-          <n-button size="small" type="warning" @click="handleCopy('js')" title="Copy JavaScript">
-            this.$t
+            {{ item.label }}
           </n-button>
         </n-space>
 

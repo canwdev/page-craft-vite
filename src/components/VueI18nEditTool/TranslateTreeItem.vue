@@ -1,15 +1,15 @@
 <script lang="ts">
 import {defineComponent, PropType} from 'vue'
 import {
+  CopyMode,
   exportI18nTreeJsonObj,
   formatTranslateItem,
   formatTranslateTreeItem,
-  I18nJsonObjUtils,
   ITranslateItem,
   ITranslateTreeItem,
 } from '@/enum/vue-i18n-tool'
 import TranslateItem from './TranslateItem.vue'
-import {copyToClipboard} from '@/utils'
+import {copyToClipboard, guid, readClipboardData} from '@/utils'
 import DialogTextEdit from '@/components/CommonUI/DialogTextEdit.vue'
 import {
   Delete20Regular,
@@ -17,7 +17,9 @@ import {
   Add20Regular,
   Copy20Regular,
   Globe16Regular,
+  ClipboardPaste20Regular,
 } from '@vicons/fluent'
+import {useMainStore} from '@/store/main'
 
 export default defineComponent({
   name: 'TranslateTreeItem',
@@ -27,6 +29,7 @@ export default defineComponent({
     DialogTextEdit,
     AddSquare20Regular,
     Add20Regular,
+    ClipboardPaste20Regular,
     Copy20Regular,
     Globe16Regular,
   },
@@ -51,23 +54,39 @@ export default defineComponent({
   emits: ['onRemove', 'onKeyClick'],
   setup(props) {
     const {item, index} = toRefs(props)
+    const mainStore = useMainStore()
+
     const handleAddChildren = () => {
-      console.log('[handleAddChildren]')
+      mainStore.trIsManualAdd = true
       item.value.children.push(formatTranslateTreeItem({parent: item.value}))
     }
     const handleAddTranslate = () => {
-      console.log('[handleAddTranslate]')
+      mainStore.trIsManualAdd = true
       item.value.translates.push(formatTranslateItem())
     }
+
+    // 自动粘贴剪贴板的值，并自动复制翻译key值
+    const handleAutoAdd = async () => {
+      const text = await readClipboardData()
+      // 生成guid用来区分
+      mainStore.trAutoAddGuid = guid()
+      item.value.translates.push(
+        formatTranslateItem({
+          key: mainStore.trAutoAddGuid,
+          value: text,
+        })
+      )
+    }
+
     const isExpand = ref(true)
 
     const isShowArrayEdit = ref(false)
     const currentPreviewItem = shallowRef<ITranslateItem | null>(null)
-    const currentArrayString = ref<string | null>(null)
+    const currentArrayString = ref<string>('')
     watch(isShowArrayEdit, (val) => {
       if (!val) {
         currentPreviewItem.value = null
-        currentArrayString.value = null
+        currentArrayString.value = ''
       }
     })
 
@@ -101,9 +120,21 @@ export default defineComponent({
       }
     }
 
+    const namespaceInputRef = ref()
+    onMounted(() => {
+      if (mainStore.trIsManualAdd) {
+        // 自动选择value输入框
+        if (namespaceInputRef.value) {
+          namespaceInputRef.value.focus()
+        }
+        mainStore.trIsManualAdd = false
+      }
+    })
+
     return {
       handleAddChildren,
       handleAddTranslate,
+      handleAutoAdd,
       handleGetJSON() {
         const obj = exportI18nTreeJsonObj([item.value])
         console.log(obj)
@@ -143,6 +174,7 @@ export default defineComponent({
       isKeyDuplicated,
       checkDuplicatedGroupKey,
       namespacePrefix,
+      namespaceInputRef,
     }
   },
 })
@@ -160,6 +192,7 @@ export default defineComponent({
         </n-tooltip>
       </template>
       <n-input
+        ref="namespaceInputRef"
         size="small"
         :disabled="isRoot"
         class="font-code"
@@ -223,13 +256,25 @@ export default defineComponent({
         />
       </n-list>
 
-      <n-space v-if="!isLite" justify="space-between" align="center" style="margin-top: 5px">
-        <n-button title="Add translate item" type="info" @click="handleAddTranslate">
+      <n-space v-if="!isLite" align="center" style="margin-top: 5px">
+        <n-button size="small" title="Add translate item" type="info" @click="handleAddTranslate">
           <template #icon>
             <Add20Regular />
           </template>
-          {{ $t('common.translate') }}</n-button
+          {{ $t('common.translate') }}
+        </n-button>
+        <n-button
+          size="small"
+          title="Auto paste and copy key"
+          type="info"
+          secondary
+          @click="handleAutoAdd"
         >
+          <template #icon>
+            <ClipboardPaste20Regular />
+          </template>
+          Auto
+        </n-button>
       </n-space>
 
       <div class="split-line" />

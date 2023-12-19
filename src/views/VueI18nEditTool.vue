@@ -9,7 +9,7 @@ import {useFileDrop} from '@/hooks/use-file-drop'
 import {useMetaTitle} from '@/hooks/use-meta'
 import {Save20Regular} from '@vicons/fluent'
 import DialogTextTransformer from '@/components/VueI18nEditTool/DialogTextTransformer.vue'
-import {useSaveShortcut} from '@/hooks/use-beforeunload'
+import {useBeforeUnload, useSaveShortcut} from '@/hooks/use-beforeunload'
 import dynamicLoadScript from '@/utils/dynamic-load-script'
 
 const filePickerOptions = {
@@ -100,6 +100,10 @@ export default defineComponent({
       await dynamicLoadScript('./lib/pinyinjs/pinyinUtil.js')
     })
 
+    useBeforeUnload(() => {
+      return !!fileHandle.value
+    })
+
     return {
       metaTitle,
       translateTreeRoot,
@@ -181,7 +185,7 @@ export default defineComponent({
             >
             <n-button secondary @click="handleExport" size="small">Save as...</n-button>
 
-            <n-popconfirm @positive-click="loadDemo">
+            <n-popconfirm v-if="!fileHandle" @positive-click="loadDemo">
               <template #trigger>
                 <n-button tertiary size="small">Demo</n-button>
               </template>
