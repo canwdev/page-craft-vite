@@ -6,7 +6,7 @@ import {
   createComponentBlockItem,
 } from '@/enum/page-craft/block'
 import globalEventBus, {GlobalEvents, syncStorageData} from '@/utils/global-event-bus'
-import {getFileName, handleExportFile, handleReadSelectedFile} from '@/utils/exporter'
+import {promptGetFileName, handleExportFile, handleReadSelectedFile} from '@/utils/exporter'
 import {useSettingsStore} from '@/store/settings'
 
 const SPLIT_SIGN = '__'
@@ -207,7 +207,11 @@ export const useCompImportExport = () => {
     })
 
     // console.log(exportList)
-    handleExportFile(getFileName('', 'PageCraftAllComponents'), JSON.stringify(exportList), '.json')
+    handleExportFile(
+      await promptGetFileName('', 'PageCraftAllComponents'),
+      JSON.stringify(exportList),
+      '.json'
+    )
     window.$message.success('Exported success!')
   }
 

@@ -1,11 +1,14 @@
 <script lang="ts">
 import {defineComponent, ref} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
-import {copyToClipboard} from '@/utils'
+import {copyToClipboard, readClipboardData} from '@/utils'
 import {CopyMode, CopyModeOptions, formatMultipleLine} from '@/components/VueI18nEditTool/copy-enum'
+import {ClipboardPaste20Regular, Copy20Regular} from '@vicons/fluent'
+import {useI18n} from 'vue-i18n'
 
 export default defineComponent({
   name: 'DialogTextTransformer',
+  components: {ClipboardPaste20Regular, Copy20Regular},
   props: {
     visible: {
       type: Boolean,
@@ -13,6 +16,7 @@ export default defineComponent({
     },
   },
   setup(props, {emit}) {
+    const {t: $t} = useI18n()
     const mVisible = useModelWrapper(props, emit, 'visible')
     const textInput = ref('')
     const textOutput = ref('')
@@ -47,6 +51,22 @@ export default defineComponent({
       })
     }
 
+    const handlePaste = async () => {
+      textInput.value = await readClipboardData()
+    }
+
+    const handleCopy = async () => {
+      await copyToClipboard(textOutput.value)
+      window.$message.success($t('msgs.copy_success'))
+    }
+
+    const handleAutoPasteCopy = async () => {
+      await handlePaste()
+      setTimeout(() => {
+        handleCopy()
+      })
+    }
+
     return {
       mVisible,
       textInput,
@@ -57,6 +77,9 @@ export default defineComponent({
       isTrimEmptyLines,
       htmlTagName,
       htmlAttrs,
+      handleAutoPasteCopy,
+      handlePaste,
+      handleCopy,
     }
   },
 })
@@ -82,7 +105,7 @@ export default defineComponent({
         $t('msgs.trim_empty_lines')
       }}</n-checkbox>
 
-      <template v-if="mMode === CopyMode.html">
+      <n-input-group v-if="mMode === CopyMode.html">
         <n-input v-model:value="htmlTagName" clearable placeholder="HTML Tag Name" size="small" />
         <n-input
           v-if="htmlTagName"
@@ -91,7 +114,31 @@ export default defineComponent({
           placeholder="HTML Attrs"
           size="small"
         />
-      </template>
+      </n-input-group>
+
+      <n-button-group>
+        <n-button
+          @click="handleAutoPasteCopy"
+          size="small"
+          type="primary"
+          title="Paste and Copy Result"
+        >
+          <n-icon> <ClipboardPaste20Regular /> </n-icon>+
+          <n-icon>
+            <Copy20Regular />
+          </n-icon>
+        </n-button>
+        <n-button @click="handlePaste" size="small" title="Paste">
+          <template #icon>
+            <ClipboardPaste20Regular />
+          </template>
+        </n-button>
+        <n-button @click="handleCopy" size="small" title="Copy Result">
+          <template #icon>
+            <Copy20Regular />
+          </template>
+        </n-button>
+      </n-button-group>
     </n-space>
     <div class="style-tools">
       <div class="common-card">

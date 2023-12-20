@@ -4,7 +4,6 @@ import {useGlobalTheme} from '@/hooks/use-global-theme'
 import AppSub from '@/AppSub.vue'
 import {CustomThemeType} from '@/enum/settings'
 import {useSettingsStore} from '@/store/settings'
-import {usePreventKeys} from '@/hooks/use-beforeunload'
 export default defineComponent({
   components: {
     AppSub,

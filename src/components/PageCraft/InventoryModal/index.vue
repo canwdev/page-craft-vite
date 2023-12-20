@@ -39,6 +39,7 @@ import {useSfxPop} from '@/hooks/use-sfx'
 import PopFloat from '@/components/PageCraft/DomPreview/PopFloat.vue'
 import {takeScreenshot} from '@/utils/screenshot'
 import DialogImageCropper from '@/components/CommonUI/DialogImageCropper.vue'
+import {showInputPrompt} from '@/components/CommonUI/input-prompt'
 
 let idx = 1
 
@@ -125,18 +126,18 @@ export default defineComponent({
       settingsStore.curCompoName = ''
     }
 
-    const getNamePrompt = (message = '', name = '') => {
-      name = prompt(message, name) || ''
-      if (!name) {
-        const message = $t('msgs.the_component_name_c')
-        throw new Error(message)
-      }
-      if (componentList.value.find((item) => item.title === name)) {
-        const message = $t('msgs.name_already_exists')
-        window.$message.error(message)
-        throw new Error(message)
-      }
-      return name
+    const inputPrompt = (title = '', value = '') => {
+      return showInputPrompt({
+        title,
+        value,
+        validateFn: (val) => {
+          if (componentList.value.find((item) => item.title === val)) {
+            const message = $t('msgs.name_already_exists')
+            window.$message.error(message)
+            throw new Error(message)
+          }
+        },
+      })
     }
 
     onMounted(() => {
@@ -145,8 +146,8 @@ export default defineComponent({
       })
     })
 
-    const handleCreateComponent = () => {
-      let name = getNamePrompt($t('msgs.please_enter_the_nam'), `Component${idx}`)
+    const handleCreateComponent = async () => {
+      let name = await inputPrompt($t('msgs.please_enter_the_nam'), `Component${idx}`)
 
       const newItem = createComponentBlockItem(name)
       componentList.value = [newItem, ...componentList.value]
@@ -197,9 +198,9 @@ export default defineComponent({
       })
     }
 
-    const handleComponentRename = () => {
+    const handleComponentRename = async () => {
       const item = editingNode.value
-      const name = getNamePrompt($t('msgs.please_enter_the_nam'), item.title)
+      const name = await inputPrompt($t('msgs.please_enter_the_nam'), item.title)
 
       const index = componentList.value.findIndex((i) => i.id === item.id)
       const list = [...componentList.value]
@@ -215,9 +216,9 @@ export default defineComponent({
       item.title = name
     }
 
-    const handleComponentDuplicate = () => {
+    const handleComponentDuplicate = async () => {
       const item = editingNode.value
-      const newName = getNamePrompt($t('msgs.please_input_new_name'), item.title + '-1')
+      const newName = await inputPrompt($t('msgs.please_input_new_name'), item.title + '-1')
 
       copyCompStorage(item.title, newName)
 

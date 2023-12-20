@@ -3,9 +3,14 @@ import FileSaver from 'file-saver'
 import {ComponentExportData} from '@/enum/page-craft/block'
 import {sassToCSS} from '@/utils/css'
 import {formatCss, formatHtml} from '@/utils/formater'
+import {showInputPrompt} from '@/components/CommonUI/input-prompt'
 
-export const handleExportJson = (exportData: ComponentExportData) => {
-  handleExportFile(getFileName(exportData.name), JSON.stringify(exportData, null, 2), '.json')
+export const handleExportJson = async (exportData: ComponentExportData) => {
+  handleExportFile(
+    await promptGetFileName(exportData.name),
+    JSON.stringify(exportData, null, 2),
+    '.json'
+  )
 }
 
 export const handleExportStyle = async (exportData: ComponentExportData, isCss = false) => {
@@ -13,7 +18,7 @@ export const handleExportStyle = async (exportData: ComponentExportData, isCss =
   if (isCss) {
     style = formatCss(await sassToCSS(style))
   }
-  handleExportFile(getFileName(exportData.name), style, isCss ? '.css' : '.scss')
+  handleExportFile(await promptGetFileName(exportData.name), style, isCss ? '.css' : '.scss')
 }
 
 export const handleExportHtml = async (exportData: ComponentExportData, options?) => {
@@ -28,7 +33,7 @@ export const handleExportHtml = async (exportData: ComponentExportData, options?
     }
   }
 
-  let name = getFileName(exportData.name ? exportData.name + nameSuffix : '')
+  let name = await promptGetFileName(exportData.name ? exportData.name + nameSuffix : '')
 
   const cssCode = style ? formatCss(await sassToCSS(style)) : ''
   let htmlStr
@@ -61,9 +66,9 @@ ${html}
 
   handleExportFile(name, htmlStr, '.html')
 }
-export const handleExportVue = (exportData: ComponentExportData, version = 2) => {
+export const handleExportVue = async (exportData: ComponentExportData, version = 2) => {
   const {html, style} = exportData
-  const name = getFileName(exportData.name)
+  const name = await promptGetFileName(exportData.name)
 
   const styleStr = `
 <style lang="scss" scoped>
@@ -106,11 +111,11 @@ ${styleStr}
   handleExportFile(name, sfcStr, '.vue')
 }
 
-export const getFileName = (name?, fallbackPrefix = 'PageCraft') => {
-  return prompt(
-    `Export filename`,
-    name || `${fallbackPrefix}_${moment(new Date()).format('YYYYMMDD_HHmmss')}`
-  )
+export const promptGetFileName = async (name?, fallbackPrefix = 'PageCraft') => {
+  return await showInputPrompt({
+    title: 'Export filename',
+    value: name || `${fallbackPrefix}_${moment(new Date()).format('YYYYMMDD_HHmmss')}`,
+  })
 }
 
 export const handleExportFile = (filename, contentStr, ext) => {

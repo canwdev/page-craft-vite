@@ -129,7 +129,7 @@ export const useMcMain = (options) => {
       label: `📃 ${$t('actions.export')} JSON`,
       props: {
         onClick: async () => {
-          handleExportJson(await getEntityData())
+          await handleExportJson(await getEntityData())
         },
       },
     },
@@ -140,7 +140,7 @@ export const useMcMain = (options) => {
           label: `💚 ${$t('actions.export')} Vue 2 SFC`,
           props: {
             onClick: async () => {
-              handleExportVue(await getEntityData())
+              await handleExportVue(await getEntityData())
             },
           },
         },
@@ -148,7 +148,7 @@ export const useMcMain = (options) => {
           label: `💚 ${$t('actions.export')} Vue 3 SFC`,
           props: {
             onClick: async () => {
-              handleExportVue(await getEntityData(), 3)
+              await handleExportVue(await getEntityData(), 3)
             },
           },
         },

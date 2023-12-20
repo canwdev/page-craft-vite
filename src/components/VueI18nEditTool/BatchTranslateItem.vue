@@ -4,14 +4,20 @@ import {DirTreeItem} from '@/enum/vue-i18n-tool'
 import _get from 'lodash/get'
 import _set from 'lodash/set'
 import {handleReadSelectedFile} from '@/utils/exporter'
-import {DocumentEdit20Regular, SaveMultiple20Regular} from '@vicons/fluent'
+import {ClipboardPaste20Regular, DocumentEdit20Regular, SaveMultiple20Regular} from '@vicons/fluent'
 import DialogTextEdit from '@/components/CommonUI/DialogTextEdit.vue'
 import {useI18n} from 'vue-i18n'
+import {readClipboardData} from '@/utils'
 // import countryCodeEmoji from '@/utils/country-code-emoji'
 
 export default defineComponent({
   name: 'BatchTranslateItem',
-  components: {DialogTextEdit, DocumentEdit20Regular, SaveMultiple20Regular},
+  components: {
+    DialogTextEdit,
+    DocumentEdit20Regular,
+    SaveMultiple20Regular,
+    ClipboardPaste20Regular,
+  },
   props: {
     dirItem: {
       type: Object as PropType<DirTreeItem>,
@@ -170,11 +176,33 @@ export default defineComponent({
     const inputRef = ref()
     const isShowArrayEdit = ref(false)
 
+    const createField = (val) => {
+      setText('')
+      translateText.value = val
+      isFieldArray.value = Array.isArray(val)
+
+      nextTick(() => {
+        inputRef.value.focus()
+      })
+    }
+
+    const handlePaste = async () => {
+      translateText.value = await readClipboardData()
+    }
+
+    const pasteCreatePField = async () => {
+      const text = await readClipboardData()
+      createField(text)
+    }
+
     return {
       currentItem,
       translateObj,
       translateText,
       isChanged,
+      createField,
+      handlePaste,
+      pasteCreatePField,
       async saveChange({isEmit = false} = {}) {
         if (!isChanged.value) {
           return
@@ -192,15 +220,6 @@ export default defineComponent({
         translateText.value = getText()
         nextTick(() => {
           isChanged.value = false
-        })
-      },
-      createField(val) {
-        setText(val)
-        translateText.value = val
-        isFieldArray.value = Array.isArray(val)
-
-        nextTick(() => {
-          inputRef.value.focus()
         })
       },
       isFieldArray,
@@ -240,7 +259,7 @@ export default defineComponent({
       File does not exist, please create it on your local file system
     </div>
     <template v-else-if="translatePath">
-      <n-space v-if="translateText !== null" align="center">
+      <n-space v-if="translateText !== null" align="center" size="small">
         <n-input
           ref="inputRef"
           type="textarea"
@@ -250,36 +269,52 @@ export default defineComponent({
           :rows="isFieldArray ? 2 : 1"
           style="width: 450px"
           :class="{'font-code': isFieldArray}"
+          clearable
         />
-        <n-button
-          secondary
-          v-if="isFieldArray"
-          @click="isShowArrayEdit = true"
-          size="small"
-          :title="$t('actions.edit')"
-        >
-          <template #icon><DocumentEdit20Regular /></template>
-        </n-button>
 
-        <n-button
-          size="small"
-          v-if="isChanged"
-          type="primary"
-          @click="saveChange({isEmit: true})"
-          title="Batch save"
-        >
-          <template #icon><SaveMultiple20Regular /></template>
-        </n-button>
-        <n-button secondary size="small" v-if="isChanged" @click="cancelChange">
-          {{ $t('actions.cancel') }}
-        </n-button>
+        <n-button-group>
+          <n-button @click="handlePaste" secondary size="small" type="primary" title="Paste">
+            <template #icon>
+              <ClipboardPaste20Regular />
+            </template>
+          </n-button>
+
+          <n-button
+            secondary
+            v-if="isFieldArray"
+            @click="isShowArrayEdit = true"
+            size="small"
+            :title="$t('actions.edit')"
+          >
+            <template #icon><DocumentEdit20Regular /></template>
+          </n-button>
+        </n-button-group>
+
+        <n-button-group v-if="isChanged">
+          <n-button
+            size="small"
+            type="primary"
+            @click="saveChange({isEmit: true})"
+            title="Batch save"
+          >
+            <template #icon><SaveMultiple20Regular /></template>
+          </n-button>
+          <n-button secondary size="small" @click="cancelChange">
+            {{ $t('actions.cancel') }}
+          </n-button>
+        </n-button-group>
       </n-space>
-      <n-space v-else>
+      <n-button-group v-else>
+        <n-button size="small" @click="pasteCreatePField()" type="primary">
+          <template #icon>
+            <ClipboardPaste20Regular />
+          </template>
+        </n-button>
         <n-button size="small" @click="createField('')" type="primary">{{
           $t('actions.create_text')
         }}</n-button>
         <n-button size="small" @click="createField([])">{{ $t('actions.create_array') }}</n-button>
-      </n-space>
+      </n-button-group>
     </template>
     <div style="color: gray" v-else>{{ $t('msgs.please_select_a_tran') }}</div>
 

@@ -4,7 +4,7 @@ import FileChooser from '@/components/CommonUI/FileChooser.vue'
 import dynamicLoadScript from '@/utils/dynamic-load-script'
 import iconExcel from '../assets/textures/excel.svg?url'
 import {copyToClipboard} from '@/utils'
-import {getFileName, handleExportFile} from '@/utils/exporter'
+import {promptGetFileName, handleExportFile} from '@/utils/exporter'
 import DialogTextTransformer from '@/components/VueI18nEditTool/DialogTextTransformer.vue'
 import DropZone from '@/components/CommonUI/DropZone.vue'
 import {useFileDrop} from '@/hooks/use-file-drop'
@@ -149,16 +149,16 @@ export default defineComponent({
 
     const isShowCopyDialog = ref(false)
 
-    const handleExport = () => {
+    const handleExport = async () => {
       const json = getSheetsJson()
       handleExportFile(
-        getFileName(null, 'excel_sheet_export'),
+        await promptGetFileName(null, 'excel_sheet_export'),
         JSON.stringify(json, null, 2),
         '.json'
       )
     }
-    useSaveShortcut(() => {
-      handleExport()
+    useSaveShortcut(async () => {
+      await handleExport()
     })
 
     return {
@@ -257,7 +257,7 @@ export default defineComponent({
               </n-space>
 
               <n-button type="primary" @click="importFileChooserRef.chooseFile()" size="small">
-                Import Excel
+                Open Excel
               </n-button>
 
               <n-dropdown :options="dropdownMenuOptions" placement="bottom-start" key-field="label">

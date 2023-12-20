@@ -1,12 +1,14 @@
 <script lang="ts">
 import {defineComponent, ref} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
-import {copyToClipboard} from '@/utils'
+import {copyToClipboard, readClipboardData} from '@/utils'
 import VueMonaco from '@/components/CommonUI/VueMonaco.vue'
+import {ClipboardPaste20Regular, Copy20Regular} from '@vicons/fluent'
+import {useI18n} from 'vue-i18n'
 
 export default defineComponent({
   name: 'StylusToolsDialog',
-  components: {VueMonaco},
+  components: {Copy20Regular, ClipboardPaste20Regular, VueMonaco},
   props: {
     visible: {
       type: Boolean,
@@ -14,14 +16,15 @@ export default defineComponent({
     },
   },
   setup(props, {emit}) {
+    const {t: $t} = useI18n()
     const mVisible = useModelWrapper(props, emit, 'visible')
-    const styleInput = ref('')
-    const styleOutput = ref('')
+    const textInput = ref('')
+    const textOutput = ref('')
     const errorText = ref('')
 
     function doFormat() {
       try {
-        styleOutput.value = window.stylusSupermacyFormat(styleInput.value, {
+        textOutput.value = window.stylusSupermacyFormat(textInput.value, {
           tabStopChar: '  ',
         })
         errorText.value = ''
@@ -32,19 +35,35 @@ export default defineComponent({
     }
 
     function doClear() {
-      styleInput.value = ''
+      textInput.value = ''
       doFormat()
+    }
+
+    const handlePaste = async () => {
+      textInput.value = await readClipboardData()
+    }
+
+    const handleCopy = async () => {
+      await copyToClipboard(textOutput.value)
+      window.$message.success($t('msgs.copy_success'))
+    }
+
+    const handleAutoPasteCopy = async () => {
+      await handlePaste()
+      setTimeout(() => {
+        handleCopy()
+      })
     }
 
     return {
       mVisible,
-      styleInput,
-      styleOutput,
+      textInput,
+      textOutput,
       errorText,
       doFormat,
       doClear,
       showDemo() {
-        styleInput.value = `@require "./file.styl"
+        textInput.value = `@require "./file.styl"
 /**
 multi-line comment
 */
@@ -60,6 +79,9 @@ multi-line comment
     display none`
         doFormat()
       },
+      handleAutoPasteCopy,
+      handlePaste,
+      handleCopy,
     }
   },
 })
@@ -74,26 +96,54 @@ multi-line comment
   >
     <div class="style-tools">
       <div class="common-card">
-        <div class="action-row">
+        <n-space size="small" justify="space-between" align="center" class="action-row">
           <!--          <n-button type="primary" size="small" @click="doFormat">{{ $t('common.format') }}</n-button>-->
-          <n-button size="small" @click="doClear">{{ $t('actions.clear') }}</n-button>
-          <n-button size="small" @click="showDemo">{{ $t('common.demo') }}</n-button>
-          <n-a href="https://thisismanta.github.io/stylus-supremacy/#demo" target="_blank"
-            >Stylus Supermacy</n-a
-          >
-        </div>
+
+          <n-button-group>
+            <n-button
+              @click="handleAutoPasteCopy"
+              size="small"
+              type="primary"
+              title="Paste and Copy Result"
+            >
+              <n-icon> <ClipboardPaste20Regular /> </n-icon>+
+              <n-icon>
+                <Copy20Regular />
+              </n-icon>
+            </n-button>
+            <n-button @click="handlePaste" size="small" title="Paste">
+              <template #icon>
+                <ClipboardPaste20Regular />
+              </template>
+            </n-button>
+            <n-button @click="handleCopy" size="small" title="Copy Result">
+              <template #icon>
+                <Copy20Regular />
+              </template>
+            </n-button>
+          </n-button-group>
+
+          <n-a href="https://thisismanta.github.io/stylus-supremacy/#demo" target="_blank">
+            Stylus Supermacy
+          </n-a>
+
+          <n-button-group>
+            <n-button size="small" @click="doClear">{{ $t('actions.clear') }}</n-button>
+            <n-button size="small" @click="showDemo">{{ $t('common.demo') }}</n-button>
+          </n-button-group>
+        </n-space>
         <div class="main-box font-code">
           <n-input
             class="input-text"
             type="textarea"
-            v-model:value="styleInput"
+            v-model:value="textInput"
             @input="doFormat"
             placeholder="Input Stylus Code"
           ></n-input>
           <n-input
             class="input-text"
             type="textarea"
-            v-model:value="styleOutput"
+            v-model:value="textOutput"
             placeholder="Formatted"
           ></n-input>
         </div>
@@ -109,9 +159,6 @@ multi-line comment
 .style-tools {
   .action-row {
     margin-bottom: 10px;
-    button {
-      margin-right: 10px;
-    }
   }
 
   .main-box {

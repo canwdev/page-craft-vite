@@ -320,9 +320,12 @@ export default defineComponent({
               Pick i18n Directory
             </n-button>
 
-            <n-button secondary v-if="dirHandle" size="small" @click="reloadPickedDir()">
-              Refresh
-            </n-button>
+            <n-popconfirm v-if="dirHandle" @positive-click="reloadPickedDir()">
+              <template #trigger>
+                <n-button secondary size="small"> Reload </n-button>
+              </template>
+              Confirm reload files content? Unsaved contents will be lost.
+            </n-popconfirm>
           </n-space>
         </template>
       </n-page-header>
