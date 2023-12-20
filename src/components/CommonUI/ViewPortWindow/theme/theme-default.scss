@@ -1,14 +1,15 @@
 .theme-default {
-  $theme_color: #F0C869;
   $border_width: 6px;
+  $border: 1px solid rgba(0, 0, 0, 0.45);
   $radius: 8px;
 
   .vp-window {
-    border: 1px solid rgba(0, 0, 0, 0.5);
+    border: $border;
     padding: 0 6px 5px;
-    background-color: rgba(229, 229, 229, 0.8);
+    background-color: #F3F3F3;
     box-shadow: 0 1px 10px rgba(0, 0, 0, 0.27), inset 0 0 1px 1px rgba(255, 255, 255, 0.2);
     border-radius: $radius;
+    transition: opacity 0.3s, transform 0.3s, background-color 0.5s;
 
     .vp-window-content {
 
@@ -24,6 +25,9 @@
           margin-top: 4px;
         }
       }
+      .vp-window-body {
+        border: $border;
+      }
     }
 
     .vp-window-controls {
@@ -32,7 +36,7 @@
       button {
         margin-top: -1px;
         min-width: 30px;
-        border: 1px solid rgba(0, 0, 0, 0.5);
+        border: $border;
         & + button {
           border-left: 0 !important;
         }
@@ -65,39 +69,14 @@
     }
 
     &._active {
-      background-color: rgba(255, 255, 255, 0.8);
-
-      &._dark {
-        background-color: rgba(0, 0, 0, 0.6);
-      }
-    }
-
-    &._active {
-      background-color: rgba(255, 255, 255, 0.8);
-
-      &._dark {
-        background-color: rgba(0, 0, 0, 0.6);
-      }
-    }
-
-
-    &._aero {
-      backdrop-filter: blur(4px);
-      box-shadow: 0px 8.5px 10px rgba(0, 0, 0, 0.115), 0px 68px 80px rgba(0, 0, 0, 0.23),
-      inset 0 0 1px 1px rgba(255, 255, 255, 0.2);
-
-      .vp-window-body {
-        &._bg {
-          background-color: rgba(255, 255, 255, 0.5);
-        }
-      }
+      background-color: white;
     }
 
   }
 
   .vp-panel {
     background-color: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(0, 0, 0, .4);
+    border: $border;
     box-shadow: 0 1px 10px rgba(0, 0, 0, 0.27), inset 0 0 1px 1px rgba(255, 255, 255, 0.2);
     border-radius: $radius;
 
@@ -108,14 +87,16 @@
 
   &._aero {
     .vp-window {
-      backdrop-filter: blur(4px);
-      box-shadow: 0px 8.5px 10px rgba(0, 0, 0, 0.115), 0px 68px 80px rgba(0, 0, 0, 0.23),
-      inset 0 0 1px 1px rgba(255, 255, 255, 0.2);
-
       .vp-window-body {
         &._bg {
           background-color: rgba(255, 255, 255, 0.5);
         }
+      }
+
+      &._active {
+        background-color: rgba(255, 255, 255, 0.65);
+        box-shadow: 0px 8.5px 10px rgba(0, 0, 0, 0.115), 0px 68px 80px rgba(0, 0, 0, 0.23), inset 0 0 1px 1px rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(4px);
       }
 
     }
@@ -176,8 +157,12 @@
   }
   &._dark {
     .vp-window {
-      background-color: rgba(56, 56, 56, 0.6);
+      background-color: #4B4B4B;
       color: white;
+
+      &._active {
+        background-color: #202020;
+      }
 
       .vp-window-content {
         .page-craft-title-bar {
@@ -233,6 +218,16 @@
 
     }
 
+    &._aero {
+      .vp-window {
+        &._active {
+          background-color: rgba(0, 0, 0, 0.7);
+
+        }
+
+      }
+
+    }
     .vp-panel {
       background-color: rgba(43, 43, 43, 0.85);
       color: white;

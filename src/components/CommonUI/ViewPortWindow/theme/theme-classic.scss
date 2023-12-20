@@ -2,17 +2,17 @@
   $theme_color_inactive: #D4D0C8;
   $theme_color: #0A246A;
   $border_width: 1px;
-  $border: 1px solid rgba(45, 45, 45, 0.3);
-  $box-shadow: inset -1px -1px #808080, inset 1px 1px #fff, inset -2px -2px grey, inset 2px 2px #dfdfdf;
+  $border: $border_width solid rgba(45, 45, 45, 0.3);
+  $box-shadow: $border_width 0 #000, 0 $border_width #000, $border_width $border_width #000, inset $border_width $border_width #fff;
 
   @mixin normal() {
     box-shadow: $box-shadow;
-    //text-shadow: 1px 1px #222;
+    //text-shadow: $border_width $border_width #222;
     //color: transparent;
   }
   @mixin active() {
-    box-shadow: inset -1px -1px #fff, inset 1px 1px #0a0a0a, inset -2px -2px #dfdfdf, inset 2px 2px grey !important;
-    //text-shadow: 1px 1px #222;
+    box-shadow: inset $border_width $border_width gray, $border_width 0 #fff, 0 $border_width #fff, $border_width $border_width #fff !important;
+    //text-shadow: $border_width $border_width #222;
     //color: transparent;
   }
   @mixin disabled() {
@@ -28,7 +28,6 @@
 
   .vp-window {
     padding: $border_width;
-    padding-right: 3px;
     background: $theme_color_inactive;
     border: $border;
     box-shadow: $box-shadow !important;
@@ -72,7 +71,6 @@
 
     .vp-window-body {
       height: calc(100% - 23px) !important;
-      box-shadow: inset -1px -1px #dfdfdf, inset 1px 1px grey;
     }
 
     &._active {
@@ -89,14 +87,14 @@
     background-color: $theme_color_inactive;
     @include normal();
     border: $border;
-    .vp-button {
+    .vp-button, .n-button {
       border: none;
       @include normal();
       &:active,&.active {
         @include active();
       }
     }
-    .vp-input {
+    .vp-input, .n-input {
       background: #fff;
       border: none;
       box-shadow: inset -1px -1px #fff, inset 1px 1px grey, inset -2px -2px #dfdfdf;
