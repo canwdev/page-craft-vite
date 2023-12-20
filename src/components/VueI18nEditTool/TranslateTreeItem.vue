@@ -211,29 +211,30 @@ export default defineComponent({
         </template>
       </n-input>
       <n-space v-if="!isLite" style="margin-left: 10px" align="center">
-        <n-button
-          size="small"
-          secondary
-          type="info"
-          @click="handleGetJSON"
-          :title="`${$t('actions.copy')} JSON`"
-        >
-          <template #icon><Copy20Regular /></template>
-        </n-button>
-        <n-popconfirm v-if="!isRoot" @positive-click="$emit('onRemove')">
-          <template #trigger>
-            <n-button secondary type="error" size="small">
-              <template #icon>
-                <Delete20Regular />
-              </template>
-            </n-button>
-          </template>
-          {{ $t('msgs.remove_group') }}
-        </n-popconfirm>
-        <n-switch size="small" v-model:value="isExpand">
-          <template #checked> 👀 </template>
-          <template #unchecked> 🙈 </template>
-        </n-switch>
+        <n-button-group>
+          <n-button
+            size="small"
+            tertiary
+            type="info"
+            @click="handleGetJSON"
+            :title="`${$t('actions.copy')} JSON`"
+          >
+            <template #icon><Copy20Regular /></template>
+          </n-button>
+          <n-popconfirm v-if="!isRoot" @positive-click="$emit('onRemove')">
+            <template #trigger>
+              <n-button tertiary type="error" size="small">
+                <template #icon>
+                  <Delete20Regular />
+                </template>
+              </n-button>
+            </template>
+            {{ $t('msgs.remove_group') }}
+          </n-popconfirm>
+          <n-button size="small" secondary @click="isExpand = !isExpand" :title="`Toggle Expand`">
+            {{ !isExpand ? '🙈' : '👀' }}
+          </n-button>
+        </n-button-group>
       </n-space>
     </div>
 
@@ -256,7 +257,7 @@ export default defineComponent({
         />
       </n-list>
 
-      <n-space v-if="!isLite" align="center" style="margin-top: 5px">
+      <n-button-group v-if="!isLite" align="center" style="margin-top: 5px">
         <n-button size="small" title="Add translate item" type="info" @click="handleAddTranslate">
           <template #icon>
             <Add20Regular />
@@ -275,7 +276,7 @@ export default defineComponent({
           </template>
           Auto
         </n-button>
-      </n-space>
+      </n-button-group>
 
       <div class="split-line" />
 

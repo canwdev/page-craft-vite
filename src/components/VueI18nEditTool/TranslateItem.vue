@@ -8,14 +8,15 @@ import {
   ITranslateItem,
   ITranslateTreeItem,
 } from '@/enum/vue-i18n-tool'
-import {copyToClipboard} from '@/utils'
-import {Delete20Regular} from '@vicons/fluent'
+import {copyToClipboard, readClipboardData} from '@/utils'
+import {ClipboardPaste20Regular, Delete20Regular} from '@vicons/fluent'
 import {useI18n} from 'vue-i18n'
 import {useMainStore} from '@/store/main'
 
 export default defineComponent({
   name: 'TranslateItem',
   components: {
+    ClipboardPaste20Regular,
     Delete20Regular,
   },
   props: {
@@ -148,6 +149,13 @@ export default defineComponent({
       }
     })
 
+    const handlePaste = async () => {
+      item.value.value = await readClipboardData()
+      setTimeout(() => {
+        handleValueBlur()
+      })
+    }
+
     return {
       copyModeOptions,
       namespacePrefix,
@@ -164,6 +172,7 @@ export default defineComponent({
       valType,
       isKeyDuplicated,
       valueInputRef,
+      handlePaste,
     }
   },
 })
@@ -205,17 +214,24 @@ export default defineComponent({
             class="item-value-edit jssl_value"
             @blur="handleValueBlur"
           />
-          <n-input
-            ref="valueInputRef"
-            v-else-if="!Array.isArray(item.value)"
-            type="textarea"
-            rows="1"
-            size="small"
-            class="item-value-edit"
-            v-model:value="item.value"
-            placeholder="text value"
-            @blur="handleValueBlur"
-          />
+          <n-input-group v-else-if="!Array.isArray(item.value)">
+            <n-input
+              ref="valueInputRef"
+              type="textarea"
+              rows="1"
+              size="small"
+              class="item-value-edit"
+              v-model:value="item.value"
+              placeholder="text value"
+              clearable
+              @blur="handleValueBlur"
+            />
+            <n-button @click="handlePaste" secondary size="small" type="info" title="Paste">
+              <template #icon>
+                <ClipboardPaste20Regular />
+              </template>
+            </n-button>
+          </n-input-group>
           <n-button
             v-else
             :title="item.value"
@@ -227,7 +243,7 @@ export default defineComponent({
           </n-button>
         </template>
 
-        <n-space v-if="!isLite && nameDisplay" size="small">
+        <n-button-group v-if="!isLite && nameDisplay" size="small">
           <!-- 一键复制按钮 -->
           <n-button
             v-for="item in copyModeOptions"
@@ -240,11 +256,11 @@ export default defineComponent({
           >
             {{ item.label }}
           </n-button>
-        </n-space>
+        </n-button-group>
 
         <n-popconfirm v-if="!isLite" @positive-click="$emit('onRemove')">
           <template #trigger>
-            <n-button tertiary style="margin-left: 15px" size="small" type="error">
+            <n-button tertiary size="small" type="error">
               <template #icon>
                 <Delete20Regular />
               </template>

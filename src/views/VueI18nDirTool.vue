@@ -410,6 +410,7 @@ export default defineComponent({
                 </div>
                 <textarea
                   class="font-code"
+                  :class="{_alt: !settingsStore.isFoldersMode}"
                   readonly
                   cols="50"
                   rows="20"
@@ -508,9 +509,12 @@ export default defineComponent({
     }
     textarea {
       resize: none;
-      color: #0f0;
+      color: #ff0;
       background-color: black;
       font-size: 14px;
+      &._alt {
+        color: #0f0;
+      }
     }
   }
 }
