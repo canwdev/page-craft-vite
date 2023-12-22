@@ -1,16 +1,34 @@
 import {createRouter, createWebHashHistory} from 'vue-router'
-import HomeView from '@/views/HomeView.vue'
+import WelcomePage from '@/views/WelcomePage.vue'
+import CraftPage from '@/views/CraftPage.vue'
 import DevPage from '@/views/DevPage.vue'
 import pkg from '../../package.json'
+import {useSettingsStore} from '@/store/settings'
 
 let history = createWebHashHistory()
 let routes = [
   {
     path: '/',
-    name: 'HomeView',
-    component: HomeView,
+    name: 'HomePage',
+    component: WelcomePage,
     meta: {
-      title: ``,
+      title: `Welcome`,
+    },
+    beforeEnter: (to, from, next) => {
+      const settingsStore = useSettingsStore()
+
+      if (!settingsStore.enableWelcomePage) {
+        return next({name: 'CraftPage'})
+      }
+      return next()
+    },
+  },
+  {
+    path: '/craft',
+    name: 'CraftPage',
+    component: CraftPage,
+    meta: {
+      title: `Craft`,
     },
   },
   {

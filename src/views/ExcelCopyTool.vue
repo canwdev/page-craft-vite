@@ -5,12 +5,12 @@ import dynamicLoadScript from '@/utils/dynamic-load-script'
 import iconExcel from '../assets/textures/excel.svg?url'
 import {copyToClipboard} from '@/utils'
 import {promptGetFileName, handleExportFile} from '@/utils/exporter'
-import DialogTextTransformer from '@/components/VueI18nEditTool/DialogTextTransformer.vue'
 import DropZone from '@/components/CommonUI/DropZone.vue'
 import {useFileDrop} from '@/hooks/use-file-drop'
 import {useMetaTitle} from '@/hooks/use-meta'
 import {CopyMode, CopyModeOptions, formatMultipleLine} from '@/components/VueI18nEditTool/copy-enum'
 import {useSaveShortcut} from '@/hooks/use-beforeunload'
+import {useMainStore} from '@/store/main'
 
 const isAllowedElement = (el) => {
   return el.tagName.toLowerCase() === 'td'
@@ -20,10 +20,11 @@ export default defineComponent({
   name: 'ExcelCopyTool',
   components: {
     FileChooser,
-    DialogTextTransformer,
     DropZone,
   },
   setup() {
+    const mainStore = useMainStore()
+
     const importFileChooserRef = ref()
     const tableWrapperRef = ref()
     const isReady = ref(false)
@@ -147,8 +148,6 @@ export default defineComponent({
       return result
     }
 
-    const isShowCopyDialog = ref(false)
-
     const handleExport = async () => {
       const json = getSheetsJson()
       handleExportFile(
@@ -207,7 +206,6 @@ export default defineComponent({
           },
         },
       ],
-      isShowCopyDialog,
       formatMultipleLine,
       ...useFileDrop({
         cbFiles: (files) => {
@@ -218,6 +216,7 @@ export default defineComponent({
         },
       }),
       isTrimEmptyLines,
+      mainStore,
     }
   },
 })
@@ -236,7 +235,7 @@ export default defineComponent({
 
     <div>
       <n-card size="small">
-        <n-page-header subtitle="" @back="$router.push({name: 'HomeView'})">
+        <n-page-header subtitle="" @back="$router.push({name: 'HomePage'})">
           <template #title> {{ metaTitle }} </template>
           <template #avatar>
             <n-avatar :src="iconExcel" style="background: none" />
@@ -247,7 +246,7 @@ export default defineComponent({
                 <n-checkbox size="small" v-model:checked="isTrimEmptyLines"
                   >Trim empty lines</n-checkbox
                 >
-                <n-button text @click="isShowCopyDialog = true">CopyMode:</n-button>
+                <n-button text @click="mainStore.isShowTextTransformer = true">CopyMode:</n-button>
                 <n-select
                   size="small"
                   v-model:value="copyMode"
@@ -290,8 +289,6 @@ export default defineComponent({
       accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
       @selected="handleImport"
     />
-
-    <DialogTextTransformer v-model:visible="isShowCopyDialog" />
   </div>
 </template>
 

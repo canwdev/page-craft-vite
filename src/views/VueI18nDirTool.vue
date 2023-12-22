@@ -13,13 +13,13 @@ import BatchTranslate from '@/components/VueI18nEditTool/BatchTranslate.vue'
 import DropZone from '@/components/CommonUI/DropZone.vue'
 import {useFileDrop} from '@/hooks/use-file-drop'
 import {useMetaTitle} from '@/hooks/use-meta'
-import DialogTextTransformer from '@/components/VueI18nEditTool/DialogTextTransformer.vue'
 import {useBeforeUnload, useSaveShortcut} from '@/hooks/use-beforeunload'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import VueMonaco from '@/components/CommonUI/VueMonaco.vue'
 import dynamicLoadScript from '@/utils/dynamic-load-script'
 import TranslateTreeItem from '@/components/VueI18nEditTool/TranslateTreeItem.vue'
 import {useSettingsStore} from '@/store/settings'
+import {useMainStore} from '@/store/main'
 
 let idSeed = 0
 
@@ -30,9 +30,9 @@ export default defineComponent({
     VueMonaco,
     BatchTranslate,
     DropZone,
-    DialogTextTransformer,
   },
   setup() {
+    const mainStore = useMainStore()
     const settingsStore = useSettingsStore()
     const dirTree = ref<DirTreeItem[]>([])
 
@@ -188,7 +188,6 @@ export default defineComponent({
     })
 
     const {metaTitle} = useMetaTitle()
-    const isShowCopyDialog = ref(false)
 
     useSaveShortcut(() => {
       if (currentEditEntry.value && editMode.value !== 'batch') {
@@ -271,8 +270,8 @@ export default defineComponent({
           }
         },
       }),
-      isShowCopyDialog,
       settingsStore,
+      mainStore,
     }
   },
 })
@@ -290,12 +289,12 @@ export default defineComponent({
     </transition>
 
     <n-card size="small">
-      <n-page-header subtitle="" @back="$router.push({name: 'HomeView'})">
+      <n-page-header subtitle="" @back="$router.push({name: 'HomePage'})">
         <template #title>{{ metaTitle }}</template>
         <template #avatar> <n-avatar :src="iconTranslate" style="background: none" /> </template>
         <template #extra>
           <n-space align="center">
-            <n-button secondary size="small" @click="isShowCopyDialog = true">
+            <n-button secondary size="small" @click="mainStore.isShowTextTransformer = true">
               {{ $t('common.text_transformer') }}
             </n-button>
 
@@ -329,8 +328,6 @@ export default defineComponent({
           </n-space>
         </template>
       </n-page-header>
-
-      <DialogTextTransformer v-model:visible="isShowCopyDialog" />
     </n-card>
 
     <div class="_container">

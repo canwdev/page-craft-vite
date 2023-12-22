@@ -4,7 +4,6 @@ import ToolBar from '@/components/PageCraft/ToolBar/index.vue'
 import MainCanvas from '@/components/PageCraft/MainCanvas/index.vue'
 import {useSettingsStore} from '@/store/settings'
 import {customThemeOptions, CustomThemeType, ldThemeOptions} from '@/enum/settings'
-import {useMetaTitle} from '@/hooks/use-meta'
 import {handleExportStyle} from '@/utils/exporter'
 import {formatCss} from '@/utils/formater'
 import {sassToCSS} from '@/utils/css'
@@ -16,31 +15,24 @@ import {useI18n} from 'vue-i18n'
 import {useOpenCloseSound, useSfxBell} from '@/hooks/use-sfx'
 import VueMonaco from '@/components/CommonUI/VueMonaco.vue'
 import IframeBrowser from '@/components/IframeBrowser/index.vue'
-import {useGlobalStyle} from '@/hooks/use-global-theme'
-import SystemSettings from '@/components/PageCraft/SystemSettings.vue'
 import BackgroundLayer from '@/components/PageCraft/BackgroundLayer/index.vue'
+import {useMainStore} from '@/store/main'
 
 export default defineComponent({
-  name: 'HomeView',
+  name: 'CraftPage',
   components: {
-    SystemSettings,
     IframeBrowser,
     VueMonaco,
     ToolBar,
     StyleEditor: defineAsyncComponent(() => import('@/components/PageCraft/StyleEditor/index.vue')),
     MainCanvas,
-    StylusToolsDialog: defineAsyncComponent(
-      () => import('@/components/PageCraft/StyleEditor/StylusToolsDialog.vue')
-    ),
     BackgroundLayer,
     PaintBrush16Regular,
   },
   setup() {
     const {t: $t} = useI18n()
     const settingsStore = useSettingsStore()
-    const {metaTitle} = useMetaTitle()
-
-    const isShowSettings = ref(false)
+    const mainStore = useMainStore()
 
     const listenShortcuts = (event) => {
       const key = event.key.toLowerCase()
@@ -49,7 +41,7 @@ export default defineComponent({
       } else if (event.altKey && key === 's') {
         settingsStore.showStyleEditor = !settingsStore.showStyleEditor
       } else if (event.altKey && key === 'w') {
-        isShowSettings.value = !isShowSettings.value
+        mainStore.isShowSettings = !mainStore.isShowSettings
       } else if (event.altKey && key === 'i') {
         isShowIframeBrowser.value = !isShowIframeBrowser.value
       } else if (event.altKey && key === '1') {
@@ -86,7 +78,6 @@ export default defineComponent({
       document.removeEventListener('keydown', listenShortcuts)
     })
 
-    const isShowStylusTools = ref(false)
     const isShowIframeBrowser = ref(false)
 
     const {loadCurCompStyle} = useCompStorage()
@@ -138,13 +129,10 @@ export default defineComponent({
       },
     ]
 
-    useOpenCloseSound(() => isShowSettings.value)
-
     return {
-      isShowSettings,
+      mainStore,
       settingsStore,
       ldThemeOptions,
-      isShowStylusTools,
       isShowIframeBrowser,
       styleMenuOptions,
       customThemeOptions,
@@ -161,7 +149,7 @@ export default defineComponent({
     <MainCanvas>
       <template #settingsButtons>
         <n-space align="center" size="small">
-          <n-button title="(alt+w)" size="small" @click="isShowSettings = true">{{
+          <n-button title="(alt+w)" size="small" @click="mainStore.isShowSettings = true">{{
             $t('common.settings')
           }}</n-button>
           <n-a href="https://github.com/canwdev/page-craft-vite" target="_blank">Github...</n-a>
@@ -169,10 +157,7 @@ export default defineComponent({
       </template>
     </MainCanvas>
 
-    <ToolBar
-      @openStylusTools="isShowStylusTools = true"
-      @openIframeBrowser="isShowIframeBrowser = !isShowIframeBrowser"
-    >
+    <ToolBar @openIframeBrowser="isShowIframeBrowser = !isShowIframeBrowser">
       <n-dropdown
         :options="styleMenuOptions"
         key-field="label"
@@ -197,9 +182,6 @@ export default defineComponent({
         <StyleEditor v-model:visible="settingsStore.showStyleEditor" />
       </template>
     </ToolBar>
-    <StylusToolsDialog v-model:visible="isShowStylusTools" />
-
-    <SystemSettings v-model:visible="isShowSettings" />
   </div>
 </template>
 

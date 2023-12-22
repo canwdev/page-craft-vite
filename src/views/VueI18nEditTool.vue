@@ -8,9 +8,9 @@ import DropZone from '@/components/CommonUI/DropZone.vue'
 import {useFileDrop} from '@/hooks/use-file-drop'
 import {useMetaTitle} from '@/hooks/use-meta'
 import {Save20Regular} from '@vicons/fluent'
-import DialogTextTransformer from '@/components/VueI18nEditTool/DialogTextTransformer.vue'
 import {useBeforeUnload, useSaveShortcut} from '@/hooks/use-beforeunload'
 import dynamicLoadScript from '@/utils/dynamic-load-script'
+import {useMainStore} from '@/store/main'
 
 const filePickerOptions = {
   types: [
@@ -26,12 +26,12 @@ const filePickerOptions = {
 export default defineComponent({
   name: 'VueI18nEditTool',
   components: {
-    DialogTextTransformer,
     TranslateTreeItem,
     DropZone,
     Save20Regular,
   },
   setup() {
+    const mainStore = useMainStore()
     const translateTreeRoot = ref<ITranslateTreeItem[]>(I18nJsonObjUtils.parseWithRoot())
 
     const fileHandle = shallowRef<FileSystemFileHandle>()
@@ -84,7 +84,6 @@ export default defineComponent({
     }
 
     const {metaTitle} = useMetaTitle()
-    const isShowCopyDialog = ref(false)
 
     useSaveShortcut(() => {
       if (fileHandle.value) {
@@ -149,7 +148,7 @@ export default defineComponent({
           }
         },
       }),
-      isShowCopyDialog,
+      mainStore,
     }
   },
 })
@@ -167,12 +166,12 @@ export default defineComponent({
     </transition>
 
     <n-card size="small" style="position: sticky; top: 0; z-index: 100; margin-bottom: 10px">
-      <n-page-header subtitle="" @back="$router.push({name: 'HomeView'})">
+      <n-page-header subtitle="" @back="$router.push({name: 'HomePage'})">
         <template #title>{{ metaTitle }}</template>
         <template #avatar> <n-avatar :src="iconTranslate" style="background: none" /> </template>
         <template #extra>
           <n-space>
-            <n-button secondary size="small" @click="isShowCopyDialog = true">
+            <n-button secondary size="small" @click="mainStore.isShowTextTransformer = true">
               {{ $t('common.text_transformer') }}
             </n-button>
 
@@ -194,7 +193,6 @@ export default defineComponent({
           </n-space>
         </template>
       </n-page-header>
-      <DialogTextTransformer v-model:visible="isShowCopyDialog" />
     </n-card>
 
     <div class="_container">

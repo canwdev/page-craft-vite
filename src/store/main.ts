@@ -15,6 +15,10 @@ type CraftStore = {
   trLastCopyMode: CopyMode
   // 是否手动添加翻译项目（用于自动focus输入框）
   trIsManualAdd: boolean
+
+  isShowStylusTools: boolean
+  isShowTextTransformer: boolean
+  isShowSettings: boolean
 }
 
 export const useMainStore = defineStore('main', {
@@ -29,6 +33,10 @@ export const useMainStore = defineStore('main', {
       trAutoAddGuid: null,
       trLastCopyMode: CopyMode.ORIGINAL,
       trIsManualAdd: false,
+
+      isShowStylusTools: false,
+      isShowTextTransformer: false,
+      isShowSettings: false,
     }
   },
   // could also be defined as

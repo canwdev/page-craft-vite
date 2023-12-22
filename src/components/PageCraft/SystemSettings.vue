@@ -9,6 +9,7 @@ import {NSpace, NSwitch, NButton} from 'naive-ui'
 import VueMonaco from '@/components/CommonUI/VueMonaco.vue'
 import {useGlobalStyle} from '@/hooks/use-global-theme'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
+import {RouterLink} from 'vue-router'
 
 const getWallpaperText = () => {
   const list = [{label: 'Bing', url: 'https://api.dujin.org/bing/1920.php'}]
@@ -141,6 +142,14 @@ export default defineComponent({
               key: 'enableReferenceMap',
               store: settingsStore,
               type: StOptionType.SWITCH,
+            },
+            {
+              label: `Enable Welcome Page`,
+              subtitle: `Improve the user experience of using tools`,
+              key: 'enableWelcomePage',
+              store: settingsStore,
+              type: StOptionType.SWITCH,
+              actionRender: h(RouterLink, {to: {name: 'HomePage'}}, '/'),
             },
           ],
         },

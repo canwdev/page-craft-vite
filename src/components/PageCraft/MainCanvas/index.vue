@@ -30,7 +30,6 @@ export default defineComponent({
     Code20Filled,
     QuestionCircle20Regular,
   },
-  emits: ['openStylusTools'],
   setup(props, {emit}) {
     const mainCanvasRef = ref()
     const mainStore = useMainStore()

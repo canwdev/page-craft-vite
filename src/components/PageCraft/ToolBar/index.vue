@@ -10,16 +10,13 @@ import {useSettingsStore} from '@/store/settings'
 import {ArrowReset20Regular, Box20Regular, Toolbox20Regular} from '@vicons/fluent'
 import PreviewWindow from '@/components/PageCraft/DomPreview/PreviewWindow.vue'
 import {useI18n} from 'vue-i18n'
-import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
 import {useOpenCloseSound, useSfxSelect} from '@/hooks/use-sfx'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
-import DialogTextTransformer from '@/components/VueI18nEditTool/DialogTextTransformer.vue'
+import {useCommonTools} from '@/components/PageCraft/ToolBar/use-common-tools'
 
 export default defineComponent({
   name: 'BottomToolBar',
   components: {
-    DialogTextTransformer,
-    ViewPortWindow,
     PreviewWindow,
     ToolItem,
     InventoryModal,
@@ -27,7 +24,7 @@ export default defineComponent({
     Box20Regular,
     Toolbox20Regular,
   },
-  emits: ['openIframeBrowser', 'openStylusTools'],
+  emits: ['openIframeBrowser'],
   setup(props, {emit}) {
     const {t: $t} = useI18n()
     const mainStore = useMainStore()
@@ -137,57 +134,7 @@ export default defineComponent({
       playBlinkAnim(newIndex)
     }
 
-    const router = useRouter()
-    const toolsMenuOptions = [
-      {
-        label: '🌎 Iframe Browser (alt+i)',
-        props: {
-          onClick: async () => {
-            emit('openIframeBrowser')
-          },
-        },
-      },
-      {
-        label: '⚜ Stylus ' + $t('common.formatting_tool'),
-        props: {
-          onClick: async () => {
-            emit('openStylusTools')
-          },
-        },
-      },
-      {
-        label: '📊 ' + $t('common.excel_copy_tool'),
-        props: {
-          onClick: async () => {
-            await router.push({name: 'ExcelCopyTool'})
-          },
-        },
-      },
-      {
-        label: '🧬 ' + $t('common.text_transformer'),
-        props: {
-          onClick: async () => {
-            isShowTextTransformer.value = true
-          },
-        },
-      },
-      {
-        label: '🌐 ' + $t('common.i18njson_editing_too'),
-        props: {
-          onClick: async () => {
-            await router.push({name: 'VueI18nEditTool'})
-          },
-        },
-      },
-      {
-        label: '🌎 ' + $t('common.i18njson_batch_tool'),
-        props: {
-          onClick: async () => {
-            await router.push({name: 'VueI18nBatchTool'})
-          },
-        },
-      },
-    ]
+    const {toolsMenuOptions} = useCommonTools()
 
     const isShowPreviewDialog = ref(true)
 
@@ -240,8 +187,6 @@ export default defineComponent({
     }
     /*classname autocomplete end*/
 
-    const isShowTextTransformer = ref(false)
-
     return {
       settingsStore,
       toolbarRef,
@@ -257,12 +202,21 @@ export default defineComponent({
       handleDragStart,
       switchItemsPosition,
       blinkAnimIndex,
-      toolsMenuOptions,
+      toolsMenuOptions: [
+        {
+          label: '🌎 Iframe Browser (alt+i)',
+          props: {
+            onClick: async () => {
+              // emit('openIframeBrowser')
+            },
+          },
+        },
+        ...toolsMenuOptions,
+      ],
       isShowPreviewDialog,
       handleAddClassName,
       handleInputClassNameBlur,
       autocompleteOptions,
-      isShowTextTransformer,
     }
   },
 })
@@ -281,7 +235,6 @@ export default defineComponent({
     />
     <PreviewWindow />
 
-    <DialogTextTransformer v-model:visible="isShowTextTransformer" />
     <div ref="toolbarRef" class="page-craft-enhanced-toolbar vp-panel">
       <div class="page-craft-enhanced-toolbar-above">
         <n-space size="small">
