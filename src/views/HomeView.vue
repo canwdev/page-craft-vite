@@ -18,10 +18,12 @@ import {useOpenCloseSound, useSfxBell} from '@/hooks/use-sfx'
 import VueMonaco from '@/components/CommonUI/VueMonaco.vue'
 import IframeBrowser from '@/components/IframeBrowser/index.vue'
 import {useGlobalStyle} from '@/hooks/use-global-theme'
+import SystemSettings from '@/components/PageCraft/SystemSettings.vue'
 
 export default defineComponent({
   name: 'HomeView',
   components: {
+    SystemSettings,
     IframeBrowser,
     VueMonaco,
     ToolBar,
@@ -39,9 +41,6 @@ export default defineComponent({
     const {metaTitle} = useMetaTitle()
 
     const isShowSettings = ref(false)
-
-    const isShowGlobalStyleDialog = ref(false)
-    const {globalStyleText, applyGlobalStyle} = useGlobalStyle()
 
     const listenShortcuts = (event) => {
       const key = event.key.toLowerCase()
@@ -143,9 +142,6 @@ export default defineComponent({
 
     return {
       isShowSettings,
-      isShowGlobalStyleDialog,
-      applyGlobalStyle,
-      globalStyleText,
       settingsStore,
       ldThemeOptions,
       isShowStylusTools,
@@ -203,93 +199,7 @@ export default defineComponent({
     </ToolBar>
     <StylusToolsDialog v-model:visible="isShowStylusTools" />
 
-    <n-modal
-      v-model:show="isShowGlobalStyleDialog"
-      :negative-text="$t('actions.cancel')"
-      :positive-text="$t('actions.save')"
-      preset="dialog"
-      :title="$t('common.global_style') + ' ' + $t('msgs.css_code_only')"
-      @positive-click="applyGlobalStyle"
-    >
-      <VueMonaco
-        v-if="isShowGlobalStyleDialog"
-        v-model="globalStyleText"
-        style="height: 500px"
-        language="css"
-      />
-    </n-modal>
-
-    <n-modal v-model:show="isShowSettings" preset="dialog" :title="$t('common.settings')">
-      <n-list>
-        <n-list-item>
-          <n-thing :title="$t('actions.toggle_ld_theme')" />
-          <template #suffix>
-            <n-select
-              v-model:value="settingsStore.ldTheme"
-              :options="ldThemeOptions"
-              style="width: 150px"
-            />
-          </template>
-        </n-list-item>
-
-        <n-list-item>
-          <n-thing :title="$t('common.theme')" />
-          <template #suffix>
-            <n-select
-              v-model:value="settingsStore.customTheme"
-              :options="customThemeOptions"
-              style="width: 150px"
-            />
-          </template>
-        </n-list-item>
-
-        <n-list-item v-if="settingsStore.customTheme === CustomThemeType.DEFAULT">
-          <n-thing :title="$t('common.theme') + ' Config'" />
-          <template #suffix>
-            <div style="min-width: 150px">
-              <n-space size="small" justify="end">
-                Aero
-                <n-switch size="small" v-model:value="settingsStore.enableAeroTheme" />
-              </n-space>
-              <n-space size="small" justify="end">
-                Rounded
-                <n-switch
-                  size="small"
-                  v-model:value="settingsStore.enableRoundedTheme"
-                  :round="settingsStore.enableRoundedTheme"
-                />
-              </n-space>
-            </div>
-          </template>
-        </n-list-item>
-
-        <n-list-item>
-          <n-thing :title="$t('common.top_layout')" />
-          <template #suffix>
-            <n-switch v-model:value="settingsStore.enableTopLayout" />
-          </template>
-        </n-list-item>
-
-        <n-list-item>
-          <n-thing :title="`Sound Fx`" />
-          <template #suffix>
-            <n-switch v-model:value="settingsStore.enableSoundFx" />
-          </template>
-        </n-list-item>
-
-        <n-list-item>
-          <n-thing :title="$t('common.global_style')" />
-          <template #suffix>
-            <n-space align="center" justify="end" size="small" style="width: 200px">
-              <n-switch v-model:value="settingsStore.enableGlobalCss" />
-              <n-button size="small" @click="isShowGlobalStyleDialog = true">{{
-                $t('actions.edit')
-              }}</n-button>
-            </n-space>
-          </template>
-        </n-list-item>
-      </n-list>
-    </n-modal>
+    <SystemSettings v-model:visible="isShowSettings" />
   </div>
 </template>
 

@@ -1,6 +1,5 @@
 .theme-win8 {
   $theme_color_inactive: #EBEBEB;
-  $theme_color: #F0C869;
   $border_width: 6px;
   $box_shadow: 0 1px 5px rgba(0, 0, 0, 0.27);
   $border: 1px solid rgba(0, 0, 0, 0.5);
@@ -60,7 +59,7 @@
 
     &._active {
       box-shadow: $box_shadow;
-      background-color: $theme_color !important;
+      background-color: $primary !important;
       .page-craft-title-bar {
         color: black !important;
       }

@@ -3,6 +3,8 @@ import {useSettingsStore} from '@/store/settings'
 import {useMainStore} from '@/store/main'
 import {LsKeys} from '@/enum/page-craft'
 import {createOrFindStyleNode} from '@/utils/dom'
+import {hexToRgb} from '@/utils/color'
+import {GlobalThemeOverrides} from 'naive-ui'
 
 const getSystemIsDarkMode = () =>
   window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
@@ -32,18 +34,6 @@ export const useGlobalTheme = () => {
 
   watch(() => settingsStore.ldTheme, handleThemeChange)
 
-  onMounted(() => {
-    window
-      .matchMedia('(prefers-color-scheme: dark)')
-      .addEventListener('change', handleSystemThemeChange)
-  })
-
-  onBeforeUnmount(() => {
-    window
-      .matchMedia('(prefers-color-scheme: dark)')
-      .removeEventListener('change', handleSystemThemeChange)
-  })
-
   const isAppDarkMode = computed(() => mainStore.isAppDarkMode)
 
   const isRect = computed(() => {
@@ -58,10 +48,74 @@ export const useGlobalTheme = () => {
     return settingsStore.enableAeroTheme && settingsStore.customTheme === CustomThemeType.DEFAULT
   })
 
+  const updateThemeColor = () => {
+    const themeColor = settingsStore.themeColor
+    // console.log({themeColor})
+    if (themeColor) {
+      const res = hexToRgb(themeColor)
+      if (!res) {
+        return
+      }
+      const {r, g, b} = res
+      const root = document.documentElement
+      root.style.setProperty('--primary-rgb', `${r}, ${g}, ${b}`)
+    }
+  }
+
+  watch(
+    () => settingsStore.themeColor,
+    () => {
+      updateThemeColor()
+    }
+  )
+
+  watch(
+    () => settingsStore.disableAnimation,
+    (val) => {
+      if (val) {
+        document.documentElement.classList.add('disable-animation')
+      } else {
+        document.documentElement.classList.remove('disable-animation')
+      }
+    },
+    {
+      immediate: true,
+    }
+  )
+
+  onBeforeUnmount(() => {
+    window
+      .matchMedia('(prefers-color-scheme: dark)')
+      .removeEventListener('change', handleSystemThemeChange)
+  })
+  onMounted(() => {
+    window
+      .matchMedia('(prefers-color-scheme: dark)')
+      .addEventListener('change', handleSystemThemeChange)
+    updateThemeColor()
+  })
+
+  // NaiveUI GlobalThemeOverrides
+  const themeOverrides = computed<GlobalThemeOverrides>(() => {
+    const primaryColor = settingsStore.themeColor
+
+    return {
+      common: {
+        borderRadiusSmall: isRect.value ? 0 : '2px',
+        borderRadius: isRect.value ? 0 : '4px',
+        primaryColor,
+        primaryColorHover: primaryColor,
+        primaryColorPressed: primaryColor,
+        primaryColorSuppl: primaryColor,
+      },
+    } as GlobalThemeOverrides
+  })
+
   return {
     isRect,
     isAero,
     isAppDarkMode,
+    themeOverrides,
   }
 }
 

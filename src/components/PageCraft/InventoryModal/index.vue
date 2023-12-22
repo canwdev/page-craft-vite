@@ -680,7 +680,7 @@ export default defineComponent({
   bottom: 10px;
   right: 10px;
   border-radius: 50%;
-  background-color: #e91e63;
+  background-color: $primary; // #e91e63;
   color: white;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   cursor: pointer;

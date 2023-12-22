@@ -1,6 +1,5 @@
 .theme-classic {
   $theme_color_inactive: #D4D0C8;
-  $theme_color: #0A246A;
   $border_width: 1px;
   $border: $border_width solid rgba(45, 45, 45, 0.3);
   $box-shadow: $border_width 0 #000, 0 $border_width #000, $border_width $border_width #000, inset $border_width $border_width #fff;
@@ -44,27 +43,25 @@
     }
 
     .vp-window-controls {
+      gap: 2px;
       button {
         @include normal();
         background-color: $theme_color_inactive;
         color: black;
-        padding: 0 2px;
+        padding: 0;
         transition: none;
         border: none;
         height: 18px;
-        min-width: 25px;
+        min-width: 24px;
 
         i {
-          transform: scale(0.8);
+          transform: scale(0.72);
         }
 
         &:hover {
         }
         &:active {
           @include active();
-        }
-        &._danger {
-          margin-left: 2px;
         }
       }
     }
@@ -77,7 +74,8 @@
       .vp-window-content {
         .page-craft-title-bar {
           color: white;
-          background: linear-gradient(45deg, #0A246A, #A6CAF0);
+          //background: linear-gradient(45deg, #0A246A, #A6CAF0);
+          background: linear-gradient(45deg, $primary, $primary_opacity);
         }
       }
     }
@@ -87,18 +85,18 @@
     background-color: $theme_color_inactive;
     @include normal();
     border: $border;
-    .vp-button, .n-button {
-      border: none;
-      @include normal();
-      &:active,&.active {
-        @include active();
-      }
+  }
+  .vp-button, .n-button {
+    border: none;
+    @include normal();
+    &:active,&.active {
+      @include active();
     }
-    .vp-input, .n-input {
-      background: #fff;
-      border: none;
-      box-shadow: inset -1px -1px #fff, inset 1px 1px grey, inset -2px -2px #dfdfdf;
-    }
+  }
+  .vp-input, .n-input {
+    background: #fff;
+    border: none;
+    box-shadow: inset -1px -1px #fff, inset 1px 1px grey, inset -2px -2px #dfdfdf;
   }
 
   .tool-item, {
@@ -136,10 +134,10 @@
     .vp-panel {
       background-color: #313131;
       color: white;
-      .vp-input {
-        background: #313131;
-        color: white;
-      }
+    }
+    .vp-input {
+      background: #313131;
+      color: white;
     }
   }
 

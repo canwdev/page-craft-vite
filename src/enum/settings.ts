@@ -6,15 +6,15 @@ export enum LdThemeType {
 
 export const ldThemeOptions = [
   {
-    label: 'Follow System',
+    label: 'Auto',
     value: LdThemeType.SYSTEM,
   },
   {
-    label: 'Light Theme',
+    label: 'Light',
     value: LdThemeType.LIGHT,
   },
   {
-    label: 'Dark Theme',
+    label: 'Dark',
     value: LdThemeType.DARK,
   },
 ]

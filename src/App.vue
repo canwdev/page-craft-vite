@@ -11,41 +11,7 @@ export default defineComponent({
   setup() {
     const settingsStore = useSettingsStore()
 
-    const isRect = computed(() => {
-      return (
-        !settingsStore.enableRoundedTheme ||
-        settingsStore.customTheme === CustomThemeType.MINIMALISM ||
-        settingsStore.customTheme === CustomThemeType.WIN8 ||
-        settingsStore.customTheme === CustomThemeType.CLASSIC
-      )
-    })
-    const isAero = computed(() => {
-      return settingsStore.enableAeroTheme && settingsStore.customTheme === CustomThemeType.DEFAULT
-    })
-
-    // GlobalThemeOverrides
-    const themeOverrides = computed<GlobalThemeOverrides>(() => {
-      let primaryColor
-
-      if (settingsStore.customTheme === CustomThemeType.WIN8) {
-        primaryColor = '#F0C869'
-      } else if (settingsStore.customTheme === CustomThemeType.CLASSIC) {
-        primaryColor = '#3A6EA5'
-      }
-
-      return {
-        common: {
-          borderRadiusSmall: isRect.value ? 0 : '2px',
-          borderRadius: isRect.value ? 0 : '4px',
-          primaryColor,
-          primaryColorHover: primaryColor,
-          primaryColorPressed: primaryColor,
-          primaryColorSuppl: primaryColor,
-        },
-      } as GlobalThemeOverrides
-    })
-
-    const {isAppDarkMode} = useGlobalTheme()
+    const {isAppDarkMode, isRect, isAero, themeOverrides} = useGlobalTheme()
 
     return {
       isAppDarkMode,

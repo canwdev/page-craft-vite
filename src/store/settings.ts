@@ -3,11 +3,19 @@ import {TabType} from '@/enum/page-craft/inventory'
 import {CustomThemeType, FilterType, LdThemeType} from '@/enum/settings'
 
 interface IPageCraftSettings {
+  // 明暗主题
   ldTheme: LdThemeType
-  customTheme: string
-  // transparent blur effect
-  enableAeroTheme: boolean
+  // 自定义主题类型
+  customTheme: CustomThemeType
+  // 圆角主题
   enableRoundedTheme: boolean
+  // 开启半透明模糊UI
+  enableAeroTheme: boolean
+  // 主题色
+  themeColor: string
+  // 禁用动画效果
+  disableAnimation: boolean
+
   enableGlobalCss: boolean
   enableTopLayout: boolean
   enableSoundFx: boolean
@@ -32,8 +40,11 @@ export const useSettingsStore = defineStore('settingsStore', {
     return {
       ldTheme: LdThemeType.SYSTEM,
       customTheme: CustomThemeType.DEFAULT,
-      enableAeroTheme: false,
       enableRoundedTheme: true,
+      enableAeroTheme: false,
+      themeColor: '#258292',
+      disableAnimation: false,
+
       enableGlobalCss: true,
       enableTopLayout: false,
       enableSoundFx: true,
