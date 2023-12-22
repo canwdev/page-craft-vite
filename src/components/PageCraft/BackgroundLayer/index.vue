@@ -1,63 +1,49 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
-import {WindowController} from '@/utils/window-controller'
 import FileChooser from '@/components/CommonUI/FileChooser.vue'
+import ReferenceMap from '@/components/PageCraft/BackgroundLayer/ReferenceMap.vue'
+import {guid} from '@/utils'
 
 export default defineComponent({
   name: 'BackgroundLayer',
   components: {
+    ReferenceMap,
     FileChooser,
   },
   setup() {
-    const dWindow = ref<any>(null)
-    const imageRef = ref()
-    const imageSrc = ref<string | undefined>(undefined)
     const imageChooserRef = ref()
-    const isDragMode = ref(false)
-    const zoomPercent = ref(100)
+    const imgSrcList = ref<any>([])
 
-    onMounted(() => {
-      dWindow.value = new WindowController({
-        dragHandleEl: imageRef.value,
-        dragTargetEl: imageRef.value,
-        allowOut: true,
-      })
-    })
+    const handleChooseImage = (files) => {
+      // 处理选择的多个文件
+      for (const file of files) {
+        const reader = new FileReader()
 
-    const handleChooseImage = (file) => {
-      const reader = new FileReader()
+        reader.addEventListener(
+          'load',
+          () => {
+            // convert image file to base64 string
+            imgSrcList.value.push({
+              id: guid(),
+              src: String(reader.result),
+            })
+          },
+          false
+        )
 
-      reader.addEventListener(
-        'load',
-        () => {
-          // convert image file to base64 string
-          imageSrc.value = String(reader.result)
-          isDragMode.value = true
-        },
-        false
-      )
+        reader.readAsDataURL(file)
+      }
+    }
 
-      reader.readAsDataURL(file)
+    const handleImgClose = (index) => {
+      imgSrcList.value.splice(index, 1)
     }
 
     return {
-      imageRef,
-      imageSrc,
       imageChooserRef,
       handleChooseImage,
-      isDragMode,
-      onChoose() {
-        if (imageChooserRef.value) {
-          imageChooserRef.value.chooseFile()
-        }
-      },
-      onRemoveImage() {
-        imageSrc.value = undefined
-
-        imageRef.value.style.top = 0
-        imageRef.value.style.left = 0
-      },
-      zoomPercent,
+      imgSrcList,
+      handleImgClose,
     }
   },
 })
@@ -65,45 +51,16 @@ export default defineComponent({
 
 <template>
   <div class="background-layer">
-    <img
-      class="reference-map"
-      :class="{'is-drag-mode': isDragMode}"
-      ref="imageRef"
-      :src="imageSrc"
-      alt="Reference map"
-      draggable="false"
-      @dblclick="isDragMode = false"
-      :style="{
-        transform: `scale(${zoomPercent / 100})`,
-      }"
+    <ReferenceMap
+      :img-src="item.src"
+      v-for="(item, index) in imgSrcList"
+      :key="item.id"
+      @close="handleImgClose(index)"
     />
     <div class="operation-panel vp-panel font-emoji">
-      <n-tooltip>
-        <template #trigger>
-          <n-button v-if="imageSrc" size="tiny" @click="onRemoveImage">🗑</n-button>
-          <n-button v-else size="tiny" @click="onChoose">🖼</n-button>
-        </template>
-        Add/Remove Reference Map
-      </n-tooltip>
-      <template v-if="imageSrc">
-        |
-        <n-tooltip v-if="imageSrc">
-          <template #trigger>
-            <n-button size="tiny" @click="isDragMode = !isDragMode">{{
-              isDragMode ? '📌' : '🪂'
-            }}</n-button>
-          </template>
-          Drag Mode
-        </n-tooltip>
-        <n-tooltip v-if="imageSrc" show>
-          <template #trigger>
-            <n-button size="tiny" @click="zoomPercent = 100">🔎</n-button>
-          </template>
-          <n-slider style="width: 240px" v-model:value="zoomPercent" :min="0" :max="200" />
-        </n-tooltip>
-      </template>
+      <n-button size="tiny" @click="imageChooserRef.chooseFile()">🖼</n-button>
     </div>
-    <FileChooser ref="imageChooserRef" accept="image/*" @selected="handleChooseImage" />
+    <FileChooser ref="imageChooserRef" accept="image/*" @selected="handleChooseImage" multiple />
   </div>
 </template>
 
@@ -123,21 +80,6 @@ export default defineComponent({
     left: 10px;
     z-index: 2;
     padding: 3px;
-  }
-
-  .reference-map {
-    position: absolute;
-    top: 0;
-    left: 0;
-    &.is-drag-mode {
-      z-index: 2;
-      cursor: grab;
-      opacity: 0.5;
-      &:active {
-        cursor: grabbing;
-      }
-      outline: 1px dashed blue;
-    }
   }
 }
 </style>

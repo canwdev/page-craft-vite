@@ -391,7 +391,7 @@ export default defineComponent({
     @keyup="listenShortcuts"
   >
     <template #titleBarLeft>
-      <n-icon class="window-icon" size="20"><PaintBrush20Regular /></n-icon
+      <n-icon class="window-icon" size="18"><PaintBrush20Regular /></n-icon
       >{{ $t('common.style_editor') }}
       (scss)
     </template>

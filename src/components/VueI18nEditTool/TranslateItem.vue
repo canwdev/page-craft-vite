@@ -293,7 +293,7 @@ export default defineComponent({
 
   &:hover {
     transition: none;
-    background-color: rgba(147, 147, 147, 0.2);
+    background-color: $primary_opacity;
   }
   .i18n-badge {
     //user-select: all;

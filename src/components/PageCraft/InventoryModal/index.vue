@@ -510,7 +510,7 @@ export default defineComponent({
     :options="rightMenuOptions"
     :x="xRef"
     :y="yRef"
-    @select="handleSelect"
+    @select="handleSelectContextmenu"
     key-field="label"
     :on-clickoutside="handleClickOutside"
   />
@@ -525,7 +525,7 @@ export default defineComponent({
     :allow-move="!settingsStore.isInvAttached"
   >
     <template #titleBarLeft>
-      <n-icon class="window-icon" size="20"><Box20Regular /></n-icon
+      <n-icon class="window-icon" size="18"><Box20Regular /></n-icon
       >{{ $t('common.inventory_list') }}
     </template>
     <template #titleBarRightControls>

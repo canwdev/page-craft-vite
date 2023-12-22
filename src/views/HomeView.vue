@@ -11,7 +11,6 @@ import {sassToCSS} from '@/utils/css'
 import {copyToClipboard} from '@/utils'
 import {useCompStorage} from '@/hooks/use-component-storage'
 import {ComponentExportData} from '@/enum/page-craft/block'
-// import BackgroundLayer from '@/components/BackgroundLayer/index.vue'
 import {PaintBrush16Regular} from '@vicons/fluent'
 import {useI18n} from 'vue-i18n'
 import {useOpenCloseSound, useSfxBell} from '@/hooks/use-sfx'
@@ -19,6 +18,7 @@ import VueMonaco from '@/components/CommonUI/VueMonaco.vue'
 import IframeBrowser from '@/components/IframeBrowser/index.vue'
 import {useGlobalStyle} from '@/hooks/use-global-theme'
 import SystemSettings from '@/components/PageCraft/SystemSettings.vue'
+import BackgroundLayer from '@/components/PageCraft/BackgroundLayer/index.vue'
 
 export default defineComponent({
   name: 'HomeView',
@@ -32,7 +32,7 @@ export default defineComponent({
     StylusToolsDialog: defineAsyncComponent(
       () => import('@/components/PageCraft/StyleEditor/StylusToolsDialog.vue')
     ),
-    // BackgroundLayer,
+    BackgroundLayer,
     PaintBrush16Regular,
   },
   setup() {
@@ -156,7 +156,7 @@ export default defineComponent({
 
 <template>
   <div class="page-craft-home-view" :class="{_topLayout: settingsStore.enableTopLayout}">
-    <!--    <BackgroundLayer />-->
+    <BackgroundLayer v-if="settingsStore.enableReferenceMap" />
 
     <MainCanvas>
       <template #settingsButtons>

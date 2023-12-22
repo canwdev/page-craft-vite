@@ -16,12 +16,11 @@
   .n-modal, .n-card, .n-dropdown-menu, .n-notification, .n-message,
   .n-date-panel {
     box-shadow: none;
-    outline: 2px solid $primary;
+    outline: 1px solid $primary;
   }
 
   .vp-window {
     backdrop-filter: unset !important;
     box-shadow: none !important;
-    outline: 1px solid $primary !important;
   }
 }

@@ -324,7 +324,7 @@ export default defineComponent({
 
   &:hover {
     transition: none;
-    border: 1px solid darkseagreen;
+    border: 1px solid $primary; //darkseagreen;
   }
   &.isKeyDuplicated {
     background-color: rgba(244, 67, 54, 0.1) !important;
@@ -341,7 +341,7 @@ export default defineComponent({
 
   .split-line {
     opacity: 0.5;
-    border-top: 1px dashed darkseagreen;
+    border-top: 1px dashed $primary;
     margin-top: 10px;
     margin-bottom: 10px;
   }

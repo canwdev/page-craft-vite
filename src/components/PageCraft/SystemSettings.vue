@@ -111,6 +111,12 @@ export default defineComponent({
                 ),
               ]),
             },
+            {
+              label: `Reference Map`,
+              key: 'enableReferenceMap',
+              store: settingsStore,
+              type: StOptionType.SWITCH,
+            },
           ],
         },
       ]

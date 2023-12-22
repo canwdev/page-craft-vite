@@ -16,9 +16,12 @@ interface IPageCraftSettings {
   // 禁用动画效果
   disableAnimation: boolean
 
-  enableGlobalCss: boolean
   enableTopLayout: boolean
   enableSoundFx: boolean
+  enableGlobalCss: boolean
+  // 是否启用参考图
+  enableReferenceMap: boolean
+
   isInitialized: boolean
   showInventory: boolean
   inventoryTab: TabType
@@ -45,9 +48,11 @@ export const useSettingsStore = defineStore('settingsStore', {
       themeColor: '#258292',
       disableAnimation: false,
 
-      enableGlobalCss: true,
       enableTopLayout: false,
       enableSoundFx: true,
+      enableGlobalCss: false,
+      enableReferenceMap: false,
+
       isInitialized: false,
       showInventory: false,
       inventoryTab: TabType.COMPONENTS,

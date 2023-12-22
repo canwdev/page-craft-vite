@@ -92,7 +92,7 @@ export default defineComponent({
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: rgba(204, 204, 204, 0.2);
+    background-color: $primary_opacity; //rgba(204, 204, 204, 0.2);
 
     .p-left,
     .p-right {

@@ -64,7 +64,7 @@ export default defineComponent({
     const handleImport = async (file) => {
       checkPlugin()
       if (!/\.xlsx$/g.test(file.name)) {
-        alert('Only supports reading xlsx format!')
+        window.$message.error('Only supports reading xlsx format!')
         return
       }
       const reader = new FileReader()

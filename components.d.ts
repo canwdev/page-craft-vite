@@ -75,6 +75,7 @@ declare module '@vue/runtime-core' {
     PopFloat: typeof import('./src/components/PageCraft/DomPreview/PopFloat.vue')['default']
     PreviewWindow: typeof import('./src/components/PageCraft/DomPreview/PreviewWindow.vue')['default']
     RectSwitch: typeof import('./src/components/CommonUI/OptionUI/Tools/RectSwitch.vue')['default']
+    ReferenceMap: typeof import('./src/components/PageCraft/BackgroundLayer/ReferenceMap.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     StyleEditor: typeof import('./src/components/PageCraft/StyleEditor/index.vue')['default']

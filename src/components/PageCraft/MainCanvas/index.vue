@@ -190,7 +190,7 @@ export default defineComponent({
       :options="rightMenuOptions"
       :x="xRef"
       :y="yRef"
-      @select="handleSelect"
+      @select="handleSelectContextmenu"
       key-field="label"
       :on-clickoutside="handleClickOutside"
     />

@@ -15,7 +15,6 @@ export default defineComponent({
     },
   },
   setup(props, {emit}) {
-    const {expandId} = toRefs(props)
     // 保存展开状态
     const foldedKeyMap = ref({})
 

@@ -80,6 +80,9 @@ type DraggableOptions = {
 const RESIZE_BAR_WITH = 8
 const RESIZE_BAR_HALF_WITH = 2
 
+// 管理多个窗口的状态
+const windowStateSet: Set<WindowController> = new Set()
+
 /**
  * 创建调整大小的handle元素
  * @param parentEl 上层元素，相对它绝对定位
@@ -221,6 +224,8 @@ export class WindowController {
       this.updateZIndex()
     })
 
+    windowStateSet.add(this)
+
     this.debugLog('initialized', this)
   }
 
@@ -241,6 +246,7 @@ export class WindowController {
       }
     }
 
+    windowStateSet.delete(this)
     this.debugLog('destroyed')
   }
 
@@ -468,27 +474,47 @@ export class WindowController {
       return
     }
     const {dragTargetEl} = this.options
-    const fixedElements = document.querySelectorAll('.vp-window')
-    // 获取当前元素的 z-index
-    const maxZIndex = Math.max(
-      ...Array.from(fixedElements).map((elem) => {
-        const val = getComputedStyle(elem)['z-index']
-        // @ts-ignore
-        return parseInt(val) || 0
-      })
-    )
-    // console.log('maxZIndex', maxZIndex)
 
-    // 将当前元素的 z-index 设置为最大值
-    dragTargetEl.style.zIndex = String(maxZIndex)
+    // 获取当前元素的 z-index
+    const currentZIndex = getComputedStyle(dragTargetEl)['z-index']
+
+    // 获取同类型窗口最大的 z-index
+    let maxZIndex = -1
+    let maxZIndexEl: any = null
+    const els: HTMLElement[] = Array.from(windowStateSet)
+      .map((item) => {
+        if (item.allowMove) {
+          return item.options.dragTargetEl
+        }
+      })
+      .filter(Boolean) as HTMLElement[]
+
+    els.forEach((el) => {
+      const val = getComputedStyle(el)['z-index']
+      const idx = parseInt(val) || 0
+      if (idx > maxZIndex) {
+        maxZIndex = idx
+        maxZIndexEl = el
+      }
+    })
+
+    // console.log('[updateZIndex]', els, maxZIndex)
+
     dragTargetEl.classList.add('_active')
 
+    // 是当前窗口不进行操作
+    if (dragTargetEl === maxZIndexEl) {
+      return
+    }
+    // 将当前元素的 z-index 设置为最大值
+    dragTargetEl.style.zIndex = String(maxZIndex)
+
     // 将其它 fixed-element 元素的 z-index 设置为比它小的值
-    Array.from(fixedElements).forEach((elem) => {
-      if (elem !== dragTargetEl) {
+    Array.from(els).forEach((el) => {
+      if (el !== dragTargetEl) {
         // @ts-ignore
-        elem.style.zIndex = parseInt(getComputedStyle(elem)['z-index']) - 1
-        elem.classList.remove('_active')
+        el.style.zIndex = parseInt(getComputedStyle(el)['z-index']) - 1
+        el.classList.remove('_active')
       }
     })
   }

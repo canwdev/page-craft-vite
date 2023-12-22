@@ -20,7 +20,7 @@ export const useContextMenu = (getOptions) => {
     showRightMenu,
     xRef,
     yRef,
-    handleSelect: () => {
+    handleSelectContextmenu: () => {
       showRightMenu.value = false
     },
     handleClickOutside: () => {
