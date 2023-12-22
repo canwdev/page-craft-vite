@@ -10,6 +10,17 @@ import VueMonaco from '@/components/CommonUI/VueMonaco.vue'
 import {useGlobalStyle} from '@/hooks/use-global-theme'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 
+const getWallpaperText = () => {
+  const list = [{label: 'Bing', url: 'https://api.dujin.org/bing/1920.php'}]
+  let tpl = `<b><a href="https://www.dujin.org/12142.html" target="_blank">随机壁纸API</a></b>`
+
+  list.forEach((item) => {
+    tpl += `<br>${item.label}: <a href="${item.url}" target="_blank">${item.url}</a>`
+  })
+
+  return tpl
+}
+
 export default defineComponent({
   name: 'SystemSettings',
   components: {VueMonaco, OptionUI},
@@ -35,6 +46,20 @@ export default defineComponent({
             {
               label: 'Theme Color',
               key: 'themeColor',
+              store: settingsStore,
+              type: StOptionType.COLOR_PICKER,
+            },
+            {
+              label: 'Wallpaper',
+              key: 'desktopWallpaper',
+              store: settingsStore,
+              type: StOptionType.INPUT,
+              tips: getWallpaperText(),
+              placeholder: 'optional',
+            },
+            !settingsStore.desktopWallpaper && {
+              label: 'Bg Color',
+              key: 'desktopBgColor',
               store: settingsStore,
               type: StOptionType.COLOR_PICKER,
             },

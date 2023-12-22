@@ -13,6 +13,17 @@ export default defineComponent({
 
     const {isAppDarkMode, isRect, isAero, themeOverrides} = useGlobalTheme()
 
+    const bgStyle = computed(() => {
+      const s: any = {}
+      if (settingsStore.desktopWallpaper) {
+        s.backgroundImage = `url(${settingsStore.desktopWallpaper})`
+      }
+      if (settingsStore.desktopBgColor) {
+        s.backgroundColor = settingsStore.desktopBgColor
+      }
+      return s
+    })
+
     return {
       isAppDarkMode,
       themeOverrides,
@@ -20,6 +31,7 @@ export default defineComponent({
       settingsStore,
       isAero,
       isRect,
+      bgStyle,
     }
   },
 })
@@ -33,13 +45,13 @@ export default defineComponent({
         _aero: isAero,
         _rect: isRect,
         _rounded: !isRect,
-        '_mc-bg': false,
       },
       settingsStore.customTheme,
     ]"
     :theme="isAppDarkMode ? darkTheme : null"
     :theme-overrides="themeOverrides"
     class="page-craft-root _line-grid"
+    :style="bgStyle"
   >
     <n-loading-bar-provider>
       <n-notification-provider>
@@ -63,6 +75,9 @@ export default defineComponent({
   width: 100%;
   overflow: hidden;
   background-color: #f8f8f8;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
 
   //&::before {
   //  content: '';
@@ -78,7 +93,6 @@ export default defineComponent({
   //}
   &._dark {
     background-color: #181818;
-    background-image: linear-gradient(#434343, #282828);
     //background-color: #5480d3;
     //background-image: linear-gradient(#5480d3, #3256a7);
     //&::before {
@@ -89,16 +103,5 @@ export default defineComponent({
       text-shadow: 0 0 2px #000;
     }
   }
-
-  //&._mc-bg {
-  //  background-repeat: no-repeat;
-  //  background-size: cover;
-  //  background-position: center;
-  //  background-image: url('@/assets/bg/day.png');
-  //
-  //  &._dark {
-  //    background-image: url('@/assets/bg/twlight.png');
-  //  }
-  //}
 }
 </style>

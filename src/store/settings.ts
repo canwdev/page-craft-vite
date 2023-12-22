@@ -13,6 +13,10 @@ interface IPageCraftSettings {
   enableAeroTheme: boolean
   // 主题色
   themeColor: string
+  // 桌面壁纸url
+  desktopWallpaper: string
+  // 桌面背景色
+  desktopBgColor: string
   // 禁用动画效果
   disableAnimation: boolean
 
@@ -46,6 +50,8 @@ export const useSettingsStore = defineStore('settingsStore', {
       enableRoundedTheme: true,
       enableAeroTheme: false,
       themeColor: '#258292',
+      desktopBgColor: '',
+      desktopWallpaper: '',
       disableAnimation: false,
 
       enableTopLayout: false,

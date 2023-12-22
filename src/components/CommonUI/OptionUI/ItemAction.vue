@@ -85,7 +85,7 @@ export default defineComponent({
     />
 
     <n-input
-      class="option-select"
+      class="option-select option-input"
       v-else-if="item.type === StOptionType.INPUT"
       v-model:value="dynamicValue"
       size="small"
@@ -101,6 +101,7 @@ export default defineComponent({
       size="small"
       :swatches="swatches"
       :show-alpha="false"
+      :actions="['clear']"
     />
     <VueRender v-if="item.actionRender" :render-fn="item.actionRender" />
   </n-space>
@@ -121,6 +122,9 @@ export default defineComponent({
   }
   .option-select {
     width: 180px;
+  }
+  .option-input {
+    font-size: 12px;
   }
 }
 </style>
