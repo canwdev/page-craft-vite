@@ -341,10 +341,8 @@ export default defineComponent({
 </template>
 
 <style lang="scss">
-//$debugColor2: #ff00cc;
-//$debugColor: #00ccff;
-$debugColor: #f92250;
-$debugColor2: #2e92fc;
+$debugColor: $primary; // #f92250;
+//$debugColor2: #2e92fc;
 .page-craft-mc-wrap {
   display: flex;
   flex: 1;
@@ -528,7 +526,7 @@ $debugColor2: #2e92fc;
   .cls_mouse_over {
     outline: 1px solid $debugColor !important;
     border-color: $debugColor !important;
-    background-color: rgba($debugColor, 0.3) !important;
+    background-color: $primary_opacity !important; //rgba($debugColor, 0.1) !important;
     //color: #111 !important;
     opacity: 0.85 !important;
     fill: $debugColor !important; /* Helps in highlighting SVG elements */
@@ -540,7 +538,8 @@ $debugColor2: #2e92fc;
   height: 3px;
   position: fixed;
   //background-color: rgba($debugColor, 0.8);
-  background: linear-gradient(to right, rgba($debugColor, 0.8), rgba($debugColor2, 0.8));
+  //background: linear-gradient(to right, rgba($debugColor, 0.8), rgba($debugColor2, 0.8));
+  background: $primary_opacity;
   border-radius: 4px;
   pointer-events: none;
   transition: all 0.3s;
@@ -576,7 +575,8 @@ $debugColor2: #2e92fc;
     top: 50%;
     transform: translateY(-50%);
     border: $arrow_size solid transparent;
-    border-right-color: $debugColor2;
+    //border-right-color: $debugColor2;
+    border-right-color: $primary;
   }
 }
 </style>

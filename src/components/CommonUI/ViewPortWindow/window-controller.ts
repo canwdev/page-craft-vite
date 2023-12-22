@@ -483,9 +483,7 @@ export class WindowController {
     let maxZIndexEl: any = null
     const els: HTMLElement[] = Array.from(windowStateSet)
       .map((item) => {
-        if (item.allowMove) {
-          return item.options.dragTargetEl
-        }
+        return item.options.dragTargetEl
       })
       .filter(Boolean) as HTMLElement[]
 
