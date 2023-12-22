@@ -4,6 +4,7 @@ import CraftPage from '@/views/CraftPage.vue'
 import DevPage from '@/views/DevPage.vue'
 import pkg from '../../package.json'
 import {useSettingsStore} from '@/store/settings'
+import i18n from '@/i18n/index'
 
 let history = createWebHashHistory()
 let routes = [
@@ -49,7 +50,7 @@ let routes = [
         name: 'ExcelCopyTool',
         component: () => import('@/views/ExcelCopyTool.vue'),
         meta: {
-          title: 'Excel copy tool',
+          title: i18n.global.t('common.excel_copy_tool'),
         },
       },
       {
@@ -57,7 +58,7 @@ let routes = [
         name: 'VueI18nEditTool',
         component: () => import('@/views/VueI18nEditTool.vue'),
         meta: {
-          title: 'I18n(json) editing tool',
+          title: i18n.global.t('common.i18njson_editing_too'),
         },
       },
       {
@@ -65,7 +66,7 @@ let routes = [
         name: 'VueI18nBatchTool',
         component: () => import('@/views/VueI18nDirTool.vue'),
         meta: {
-          title: 'I18n(json) batch tool',
+          title: i18n.global.t('common.i18njson_batch_tool'),
         },
       },
     ],

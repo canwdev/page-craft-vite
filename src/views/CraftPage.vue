@@ -13,7 +13,6 @@ import {ComponentExportData} from '@/enum/page-craft/block'
 import {PaintBrush16Regular} from '@vicons/fluent'
 import {useI18n} from 'vue-i18n'
 import {useOpenCloseSound, useSfxBell} from '@/hooks/use-sfx'
-import VueMonaco from '@/components/CommonUI/VueMonaco.vue'
 import IframeBrowser from '@/components/IframeBrowser/index.vue'
 import BackgroundLayer from '@/components/PageCraft/BackgroundLayer/index.vue'
 import {useMainStore} from '@/store/main'
@@ -22,7 +21,6 @@ export default defineComponent({
   name: 'CraftPage',
   components: {
     IframeBrowser,
-    VueMonaco,
     ToolBar,
     StyleEditor: defineAsyncComponent(() => import('@/components/PageCraft/StyleEditor/index.vue')),
     MainCanvas,

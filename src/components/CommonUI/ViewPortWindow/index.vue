@@ -47,7 +47,7 @@ export default defineComponent({
       default: 'mc-fade-scale',
     },
   },
-  emits: ['update:visible', 'resize', 'onActive', 'onClose'],
+  emits: ['update:visible', 'resize', 'onActive', 'onClose', 'onTitleBarDbclick'],
   setup(props, {emit}) {
     const {allowMove, maximum} = toRefs(props)
     const storageKey = LS_KEY_VP_WINDOW_OPTION + '_' + props.wid
