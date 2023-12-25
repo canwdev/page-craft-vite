@@ -13,7 +13,7 @@ let routes = [
     name: 'HomePage',
     component: WelcomePage,
     meta: {
-      title: `Welcome`,
+      title: i18n.global.t('common.welcome'),
     },
     beforeEnter: (to, from, next) => {
       const settingsStore = useSettingsStore()

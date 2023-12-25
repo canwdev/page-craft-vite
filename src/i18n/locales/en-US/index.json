@@ -32,7 +32,21 @@
     "group": "Group",
     "options": "Options",
     "default_board": "Default Board",
-    "all_components": "All Components"
+    "all_components": "All Components",
+    "personalization": "Personalization",
+    "theme_color": "Theme Color",
+    "wallpaper": "Wallpaper",
+    "bg_color": "Bg Color",
+    "rounded": "Rounded",
+    "disable_animation": "Disable Animation",
+    "eink_optimization": "E-Ink optimization",
+    "others": "Others",
+    "sound_fx": "Sound Fx",
+    "reference_map": "Reference Map",
+    "welcome": "Welcome",
+    "edit_mode": "Edit Mode",
+    "folders_mode": "Folders Mode",
+    "files_mode": "Files Mode"
   },
   "actions": {
     "cancel": "Cancel",
@@ -70,7 +84,13 @@
     "delete": "Delete",
     "delete_all": "Delete All",
     "add_component": "Add Component",
-    "copy_compiled_css": "Copy Compiled CSS"
+    "copy_compiled_css": "Copy Compiled CSS",
+    "pick_i18n_directory": "Pick i18n Directory",
+    "reload": "Reload",
+    "save_changes": "Save Changes",
+    "save_as": "Save as",
+    "open_json": "Open JSON",
+    "open_excel": "Open Excel"
   },
   "msgs": {
     "css_code_only": "CSS Code Only",
@@ -106,6 +126,13 @@
     "please_enter_the_nam": "Please enter the name",
     "are_you_sure_to_dele": "Are you sure to delete ",
     "sure_to_del_all": "Are you sure to delete all components?",
-    "please_input_new_name": "Please input new component name"
+    "please_input_new_name": "Please input new component name",
+    "enable_welcome_page": "Enable Welcome Page",
+    "improve_the_user_exp": "Improve the user experience of using tools",
+    "confirm_reload_files": "Confirm reload files content? Unsaved contents will be lost.",
+    "please_select_a_json": "Please select a json file first",
+    "recommended_i18n_fol": "Recommended i18n folder structure example",
+    "drag_folder_here": "Drag folder here",
+    "load_demo_this_will": "Load Demo? This will override editing content."
   }
 }

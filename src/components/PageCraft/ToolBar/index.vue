@@ -27,6 +27,7 @@ export default defineComponent({
   emits: ['openIframeBrowser'],
   setup(props, {emit}) {
     const {t: $t} = useI18n()
+    const router = useRouter()
     const mainStore = useMainStore()
     const settingsStore = useSettingsStore()
 
@@ -202,17 +203,27 @@ export default defineComponent({
       handleDragStart,
       switchItemsPosition,
       blinkAnimIndex,
-      toolsMenuOptions: [
-        {
-          label: '🌎 Iframe Browser (alt+i)',
-          props: {
-            onClick: async () => {
-              // emit('openIframeBrowser')
+      toolsMenuOptions: computed(() => {
+        return [
+          settingsStore.enableWelcomePage && {
+            label: '🏠 Welcome Page',
+            props: {
+              onClick: async () => {
+                await router.push({name: 'HomePage'})
+              },
             },
           },
-        },
-        ...toolsMenuOptions,
-      ],
+          {
+            label: '🌎 Iframe Browser (alt+i)',
+            props: {
+              onClick: async () => {
+                emit('openIframeBrowser')
+              },
+            },
+          },
+          ...toolsMenuOptions,
+        ].filter(Boolean)
+      }),
       isShowPreviewDialog,
       handleAddClassName,
       handleInputClassNameBlur,

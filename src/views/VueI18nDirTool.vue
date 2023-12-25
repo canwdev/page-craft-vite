@@ -20,6 +20,7 @@ import dynamicLoadScript from '@/utils/dynamic-load-script'
 import TranslateTreeItem from '@/components/VueI18nEditTool/TranslateTreeItem.vue'
 import {useSettingsStore} from '@/store/settings'
 import {useMainStore} from '@/store/main'
+import {useI18n} from 'vue-i18n'
 
 let idSeed = 0
 
@@ -32,6 +33,7 @@ export default defineComponent({
     DropZone,
   },
   setup() {
+    const {t: $t} = useI18n()
     const mainStore = useMainStore()
     const settingsStore = useSettingsStore()
     const dirTree = ref<DirTreeItem[]>([])
@@ -160,7 +162,7 @@ export default defineComponent({
         await writable.write(currentEditText.value)
         await writable.close()
         await reloadPickedDir()
-        window.$message.success('Saved!')
+        window.$message.success($t('msgs.saved'))
       } catch (error: any) {
         console.error(error)
         window.$message.error('Save Failed!' + error.message)
@@ -285,7 +287,7 @@ export default defineComponent({
     @drop.prevent.stop="fileDrop"
   >
     <transition name="mc-fade">
-      <DropZone v-show="showDropzone" text="Drop locale folder here" />
+      <DropZone v-show="showDropzone" :text="$t('msgs.drag_folder_here')" />
     </transition>
 
     <n-card size="small">
@@ -303,10 +305,11 @@ export default defineComponent({
               v-if="currentEditEntry && editMode !== 'batch'"
               type="primary"
               @click="handleSaveFile"
-              >Save Changes</n-button
             >
+              {{ $t('actions.save_changes') }}
+            </n-button>
 
-            Edit Mode:<n-radio-group size="small" v-model:value="editMode">
+            {{ $t('common.edit_mode') }}:<n-radio-group size="small" v-model:value="editMode">
               <n-radio-button
                 v-for="mode in editModeList"
                 :key="mode"
@@ -316,14 +319,14 @@ export default defineComponent({
             </n-radio-group>
 
             <n-button type="primary" size="small" @click="handlePickDir">
-              Pick i18n Directory
+              {{ $t('actions.pick_i18n_directory') }}
             </n-button>
 
             <n-popconfirm v-if="dirHandle" @positive-click="reloadPickedDir()">
               <template #trigger>
-                <n-button secondary size="small"> Reload </n-button>
+                <n-button secondary size="small"> {{ $t('actions.reload') }} </n-button>
               </template>
-              Confirm reload files content? Unsaved contents will be lost.
+              {{ $t('msgs.confirm_reload_files') }}
             </n-popconfirm>
           </n-space>
         </template>
@@ -392,19 +395,17 @@ export default defineComponent({
             </template>
             <div class="null-intro" v-else>
               <template v-if="dirTree.length">
-                <div class="intro-title">
-                  👈 请先选择一个json文件 <br />Please select a json file first
-                </div>
+                <div class="intro-title">👈 {{ $t('msgs.please_select_a_json') }}</div>
               </template>
               <div class="font-code" v-else>
-                <div class="intro-title">
-                  📁 推荐的i18n目录结构：
-                  <n-switch v-model:value="settingsStore.isFoldersMode">
-                    <template #checked>Folders Mode</template>
-                    <template #unchecked>Files Mode</template>
+                <n-space align="center" class="intro-title">
+                  <n-switch size="large" v-model:value="settingsStore.isFoldersMode">
+                    <template #checked>{{ $t('common.folders_mode') }}</template>
+                    <template #unchecked>{{ $t('common.files_mode') }}</template>
                   </n-switch>
-                  <br />Recommended i18n folder structure example:
-                </div>
+
+                  📁 {{ $t('msgs.recommended_i18n_fol') }}:
+                </n-space>
                 <textarea
                   class="font-code"
                   :class="{_alt: !settingsStore.isFoldersMode}"
@@ -413,7 +414,7 @@ export default defineComponent({
                   rows="20"
                   :value="
                     settingsStore.isFoldersMode
-                      ? `└─[locales]    --> Drag folder here! 拖拽文件夹到此
+                      ? `└─[locales]    --> ${$t('msgs.drag_folder_here')}!
    ├─de-DE
    │  └─index.json
    ├─en-US
@@ -430,7 +431,7 @@ export default defineComponent({
    │  └─index.json
    └─zh-TW
       └─index.json`
-                      : `└─[locales]    --> Drag folder here! 拖拽文件夹到此
+                      : `└─[locales]    --> ${$t('msgs.drag_folder_here')}!
    ├─ ar.json
    ├─ cn.json
    ├─ de.json

@@ -11,6 +11,7 @@ import {Save20Regular} from '@vicons/fluent'
 import {useBeforeUnload, useSaveShortcut} from '@/hooks/use-beforeunload'
 import dynamicLoadScript from '@/utils/dynamic-load-script'
 import {useMainStore} from '@/store/main'
+import {useI18n} from 'vue-i18n'
 
 const filePickerOptions = {
   types: [
@@ -31,6 +32,7 @@ export default defineComponent({
     Save20Regular,
   },
   setup() {
+    const {t: $t} = useI18n()
     const mainStore = useMainStore()
     const translateTreeRoot = ref<ITranslateTreeItem[]>(I18nJsonObjUtils.parseWithRoot())
 
@@ -64,7 +66,7 @@ export default defineComponent({
 
       await writable.write(txt)
       await writable.close()
-      window.$message.success('Saved!')
+      window.$message.success($t('msgs.saved'))
     }
     const handleExport = async () => {
       console.log(translateTreeRoot.value)
@@ -80,7 +82,7 @@ export default defineComponent({
       await writable.write(txt)
       await writable.close()
 
-      window.$message.success('Saved!')
+      window.$message.success($t('msgs.saved'))
     }
 
     const {metaTitle} = useMetaTitle()
@@ -162,7 +164,7 @@ export default defineComponent({
     @drop.prevent.stop="fileDrop"
   >
     <transition name="mc-fade">
-      <DropZone v-show="showDropzone" text="Drop json file here" />
+      <DropZone v-show="showDropzone" :text="$t('msgs.drag_folder_here')" />
     </transition>
 
     <n-card size="small" style="position: sticky; top: 0; z-index: 100; margin-bottom: 10px">
@@ -175,20 +177,25 @@ export default defineComponent({
               {{ $t('common.text_transformer') }}
             </n-button>
 
-            <n-button type="primary" @click="handleSelectFile" size="small"> Open JSON </n-button>
+            <n-button type="primary" @click="handleSelectFile" size="small">{{
+              $t('actions.open_json')
+            }}</n-button>
             <n-button v-if="fileHandle" @click="handleSaveFile" size="small" type="info">
               <template #icon>
                 <Save20Regular />
               </template>
-              Save</n-button
+
+              {{ $t('actions.save') }}
+            </n-button>
+            <n-button secondary @click="handleExport" size="small"
+              >{{ $t('actions.save_as') }}...</n-button
             >
-            <n-button secondary @click="handleExport" size="small">Save as...</n-button>
 
             <n-popconfirm v-if="!fileHandle" @positive-click="loadDemo">
               <template #trigger>
-                <n-button tertiary size="small">Demo</n-button>
+                <n-button tertiary size="small">{{ $t('common.demo') }}</n-button>
               </template>
-              Load Demo? This will override editing content.
+              {{ $t('msgs.load_demo_this_will') }}
             </n-popconfirm>
           </n-space>
         </template>

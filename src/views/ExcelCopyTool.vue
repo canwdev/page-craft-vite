@@ -11,6 +11,7 @@ import {useMetaTitle} from '@/hooks/use-meta'
 import {CopyMode, CopyModeOptions, formatMultipleLine} from '@/components/VueI18nEditTool/copy-enum'
 import {useSaveShortcut} from '@/hooks/use-beforeunload'
 import {useMainStore} from '@/store/main'
+import {useI18n} from 'vue-i18n'
 
 const isAllowedElement = (el) => {
   return el.tagName.toLowerCase() === 'td'
@@ -23,6 +24,7 @@ export default defineComponent({
     DropZone,
   },
   setup() {
+    const {t: $t} = useI18n()
     const mainStore = useMainStore()
 
     const importFileChooserRef = ref()
@@ -118,7 +120,7 @@ export default defineComponent({
         text = formatMultipleLine(text, (tip = copyMode.value))
       }
       copyToClipboard(text)
-      window.$message.success(tip + ' copied!')
+      window.$message.success(tip + ' ' + $t('msgs.copy_success'))
 
       const range = document.createRange()
       range.selectNode(el)
@@ -243,10 +245,12 @@ export default defineComponent({
           <template #extra>
             <n-space>
               <n-space size="small" align="center">
-                <n-checkbox size="small" v-model:checked="isTrimEmptyLines"
-                  >Trim empty lines</n-checkbox
+                <n-checkbox size="small" v-model:checked="isTrimEmptyLines">
+                  {{ $t('msgs.trim_empty_lines') }}
+                </n-checkbox>
+                <n-button text @click="mainStore.isShowTextTransformer = true"
+                  >{{ $t('common.text_transformer') }}:</n-button
                 >
-                <n-button text @click="mainStore.isShowTextTransformer = true">CopyMode:</n-button>
                 <n-select
                   size="small"
                   v-model:value="copyMode"
@@ -256,14 +260,14 @@ export default defineComponent({
               </n-space>
 
               <n-button type="primary" @click="importFileChooserRef.chooseFile()" size="small">
-                Open Excel
+                {{ $t('actions.open_excel') }}
               </n-button>
 
               <n-dropdown :options="dropdownMenuOptions" placement="bottom-start" key-field="label">
-                <n-button size="small">Export</n-button>
+                <n-button size="small">{{ $t('actions.export') }}</n-button>
               </n-dropdown>
 
-              <n-button @click="loadDemo" size="small">Demo</n-button>
+              <n-button @click="loadDemo" size="small">{{ $t('common.demo') }}</n-button>
             </n-space>
           </template>
         </n-page-header>

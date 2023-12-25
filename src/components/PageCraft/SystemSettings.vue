@@ -41,17 +41,17 @@ export default defineComponent({
     const optionList = computed((): StOptionItem[] => {
       return [
         {
-          label: 'Personalization',
+          label: $t('common.personalization'),
           key: 'personalization',
           children: [
             {
-              label: 'Theme Color',
+              label: $t('common.theme_color'),
               key: 'themeColor',
               store: settingsStore,
               type: StOptionType.COLOR_PICKER,
             },
             {
-              label: 'Wallpaper',
+              label: $t('common.wallpaper'),
               key: 'desktopWallpaper',
               store: settingsStore,
               type: StOptionType.INPUT,
@@ -59,7 +59,7 @@ export default defineComponent({
               placeholder: 'optional',
             },
             !settingsStore.desktopWallpaper && {
-              label: 'Bg Color',
+              label: $t('common.bg_color'),
               key: 'desktopBgColor',
               store: settingsStore,
               type: StOptionType.COLOR_PICKER,
@@ -79,7 +79,7 @@ export default defineComponent({
               selectOptions: customThemeOptions,
             },
             settingsStore.customTheme === CustomThemeType.DEFAULT && {
-              label: 'Rounded',
+              label: $t('common.rounded'),
               key: 'enableRoundedTheme',
               store: settingsStore,
               type: StOptionType.SWITCH,
@@ -91,8 +91,8 @@ export default defineComponent({
               type: StOptionType.SWITCH,
             },
             {
-              label: 'Disable Animation',
-              subtitle: 'E-Ink optimization',
+              label: $t('common.disable_animation'),
+              subtitle: $t('common.eink_optimization'),
               key: 'disableAnimation',
               store: settingsStore,
               type: StOptionType.SWITCH,
@@ -100,7 +100,7 @@ export default defineComponent({
           ].filter(Boolean),
         },
         {
-          label: 'Others',
+          label: $t('common.others'),
           key: 'others',
           children: [
             {
@@ -110,7 +110,7 @@ export default defineComponent({
               type: StOptionType.SWITCH,
             },
             {
-              label: `Sound Fx`,
+              label: $t('common.sound_fx'),
               key: 'enableSoundFx',
               store: settingsStore,
               type: StOptionType.SWITCH,
@@ -138,14 +138,14 @@ export default defineComponent({
               ]),
             },
             {
-              label: `Reference Map`,
+              label: $t('common.reference_map'),
               key: 'enableReferenceMap',
               store: settingsStore,
               type: StOptionType.SWITCH,
             },
             {
-              label: `Enable Welcome Page`,
-              subtitle: `Improve the user experience of using tools`,
+              label: $t('msgs.enable_welcome_page'),
+              subtitle: $t('msgs.improve_the_user_exp'),
               key: 'enableWelcomePage',
               store: settingsStore,
               type: StOptionType.SWITCH,
@@ -185,7 +185,7 @@ export default defineComponent({
     :negative-text="$t('actions.cancel')"
     :positive-text="$t('actions.save')"
     preset="dialog"
-    :title="$t('common.global_style') + ' ' + $t('msgs.css_code_only')"
+    :title="$t('common.global_style') + ' / ' + $t('msgs.css_code_only')"
     @positive-click="applyGlobalStyle"
   >
     <VueMonaco

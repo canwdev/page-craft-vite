@@ -32,7 +32,21 @@
     "group": "组",
     "options": "选项",
     "default_board": "默认画布",
-    "all_components": "全部组件"
+    "all_components": "全部组件",
+    "personalization": "个性化",
+    "theme_color": "主题颜色",
+    "wallpaper": "壁纸",
+    "bg_color": "背景颜色",
+    "rounded": "圆角",
+    "disable_animation": "禁用动画",
+    "eink_optimization": "墨水屏优化",
+    "others": "其他",
+    "sound_fx": "交互音效",
+    "reference_map": "参考图",
+    "welcome": "欢迎使用",
+    "edit_mode": "编辑模式",
+    "folders_mode": "多文件夹模式",
+    "files_mode": "多文件模式"
   },
   "actions": {
     "cancel": "取消",
@@ -70,7 +84,13 @@
     "delete": "删除",
     "delete_all": "全部删除",
     "add_component": "新建组件",
-    "copy_compiled_css": "复制已编译的CSS"
+    "copy_compiled_css": "复制已编译的CSS",
+    "pick_i18n_directory": "选择 i18n 文件夹",
+    "reload": "重新加载",
+    "save_changes": "保存更改",
+    "save_as": "另存为",
+    "open_json": "打开 JSON",
+    "open_excel": "打开 Excel"
   },
   "msgs": {
     "css_code_only": "仅 CSS 代码",
@@ -106,6 +126,13 @@
     "please_enter_the_nam": "请输入名称",
     "are_you_sure_to_dele": "确定要删除",
     "sure_to_del_all": "确认要删除全部组件吗？",
-    "please_input_new_name": "请输入新的组件名称"
+    "please_input_new_name": "请输入新的组件名称",
+    "enable_welcome_page": "启用欢迎页面",
+    "improve_the_user_exp": "提升使用工具的用户体验",
+    "confirm_reload_files": "确认重新加载文件内容？未保存的内容将会丢失。",
+    "please_select_a_json": "请先选择一个json文件",
+    "recommended_i18n_fol": "推荐的 i18n 目录结构",
+    "drag_folder_here": "拖拽文件夹到此",
+    "load_demo_this_will": "加载演示？这将会覆盖当前编辑的内容。"
   }
 }
