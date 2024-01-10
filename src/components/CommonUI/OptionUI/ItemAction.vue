@@ -102,6 +102,7 @@ export default defineComponent({
       :swatches="swatches"
       :show-alpha="false"
       :actions="['clear']"
+      :modes="['hex']"
     />
     <VueRender v-if="item.actionRender" :render-fn="item.actionRender" />
   </n-space>

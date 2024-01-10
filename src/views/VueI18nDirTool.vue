@@ -226,7 +226,6 @@ export default defineComponent({
               currentEditEntry.value = entry
               const str = await handleReadSelectedFile(await entry.getFile())
               currentEditText.value = str as string
-              vueMonacoRef.value && vueMonacoRef.value.updateValue(str)
               currentFilePathArr.value = [...option.parentDirs, option.label]
               translatePath.value = ''
               updateGuiTranslateTree()

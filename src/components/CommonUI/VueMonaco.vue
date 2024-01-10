@@ -37,6 +37,25 @@ export default defineComponent({
       }
     )
 
+    watch(
+      () => props.modelValue,
+      (newValue) => {
+        if (editorInstance.value && newValue !== editorInstance.value.getValue()) {
+          editorInstance.value.setValue(newValue)
+        }
+      }
+    )
+
+    watch(
+      () => props.language,
+      (newValue) => {
+        if (editorInstance.value) {
+          // monaco.editor.setModelLanguage(editor.getModel(), "cpp")
+          monaco.editor.setModelLanguage(editorInstance.value.getModel(), newValue)
+        }
+      }
+    )
+
     onMounted(() => {
       editorInstance.value = monaco.editor.create(editorContainerRef.value, {
         value: mValue.value,
@@ -75,9 +94,6 @@ export default defineComponent({
 
     return {
       editorContainerRef,
-      updateValue(val = mValue.value) {
-        editorInstance.value.setValue(val)
-      },
     }
   },
 })

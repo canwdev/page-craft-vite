@@ -1,5 +1,5 @@
 export const CopyMode = {
-  none: 'none',
+  original: 'original',
   text: 'text',
   html: 'html',
   json: 'json',

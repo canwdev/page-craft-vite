@@ -4,6 +4,7 @@ import {useGlobalTheme} from '@/hooks/use-global-theme'
 import AppSub from '@/AppSub.vue'
 import {CustomThemeType} from '@/enum/settings'
 import {useSettingsStore} from '@/store/settings'
+import {isDev} from '@/enum'
 export default defineComponent({
   components: {
     AppSub,
@@ -22,6 +23,21 @@ export default defineComponent({
         s.backgroundColor = settingsStore.desktopBgColor
       }
       return s
+    })
+
+    const listenShortcuts = (event) => {
+      const key = event.key.toLowerCase()
+      if (event.ctrlKey && key === 'r' && !event.shiftKey && !isDev) {
+        event.preventDefault()
+        window.$message.info('Ctrl + R is disabled')
+      }
+    }
+
+    onMounted(() => {
+      document.addEventListener('keydown', listenShortcuts)
+    })
+    onBeforeUnmount(() => {
+      document.removeEventListener('keydown', listenShortcuts)
     })
 
     return {

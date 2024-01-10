@@ -5,10 +5,12 @@ import {copyToClipboard, readClipboardData} from '@/utils'
 import {CopyMode, CopyModeOptions, formatMultipleLine} from '@/components/VueI18nEditTool/copy-enum'
 import {ClipboardPaste20Regular, Copy20Regular} from '@vicons/fluent'
 import {useI18n} from 'vue-i18n'
+import VueMonaco from '@/components/CommonUI/VueMonaco.vue'
+import {useLocalStorageString} from '@/hooks/use-local-storage'
 
 export default defineComponent({
   name: 'DialogTextTransformer',
-  components: {ClipboardPaste20Regular, Copy20Regular},
+  components: {VueMonaco, ClipboardPaste20Regular, Copy20Regular},
   props: {
     visible: {
       type: Boolean,
@@ -20,7 +22,7 @@ export default defineComponent({
     const mVisible = useModelWrapper(props, emit, 'visible')
     const textInput = ref('')
     const textOutput = ref('')
-    const mMode = ref(CopyMode.json)
+    const mMode = useLocalStorageString('text_converter_copy_mode', CopyMode.json)
     const isTrimEmptyLines = ref(true)
     const htmlTagName = ref('')
     const htmlAttrs = ref('')
@@ -93,11 +95,11 @@ export default defineComponent({
     style="min-width: 800px"
   >
     <n-space align="center" style="margin-bottom: 10px">
-      {{ $t('common.mode') }}:
+      Convert to:
       <n-select
         size="small"
         v-model:value="mMode"
-        :options="CopyModeOptions"
+        :options="CopyModeOptions.filter((item) => item.value !== CopyMode.original)"
         style="width: 100px"
       />
 
@@ -143,18 +145,20 @@ export default defineComponent({
     <div class="style-tools">
       <div class="common-card">
         <div class="main-box font-code">
-          <n-input
-            class="input-text"
-            type="textarea"
-            v-model:value="textInput"
-            placeholder="Text Input"
-          ></n-input>
-          <n-input
-            class="input-text"
-            type="textarea"
-            v-model:value="textOutput"
-            placeholder="Text Output"
-          ></n-input>
+          <div class="input-wrapper">
+            <!--            <n-input
+              class="input-text"
+              type="textarea"
+              v-model:value="textInput"
+              placeholder="Text Input"
+            ></n-input>-->
+            <div class="input-tip">Text Input: text</div>
+            <VueMonaco language="text" v-model="textInput" class="input-text" />
+          </div>
+          <div class="input-wrapper">
+            <div class="input-tip">Text Output: {{ mMode }}</div>
+            <VueMonaco v-model="textOutput" :language="mMode" class="input-text" />
+          </div>
         </div>
       </div>
     </div>
@@ -168,13 +172,23 @@ export default defineComponent({
     align-items: center;
     justify-content: space-between;
     margin-bottom: 10px;
+    gap: 10px;
 
-    .input-text {
+    .input-wrapper {
       flex: 1;
-      height: 50vh;
-      padding: 5px;
-      & + .input-text {
-        margin-left: 10px;
+      height: 70vh;
+      outline: 1px solid $color_border;
+      display: flex;
+      flex-direction: column;
+
+      .input-tip {
+        padding: 0 5px;
+        background-color: $color_border;
+      }
+
+      .input-text {
+        flex: 1;
+        width: 100%;
       }
     }
   }

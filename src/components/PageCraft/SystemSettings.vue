@@ -149,7 +149,16 @@ export default defineComponent({
               key: 'enableWelcomePage',
               store: settingsStore,
               type: StOptionType.SWITCH,
-              actionRender: h(RouterLink, {to: {name: 'HomePage'}}, '/'),
+              actionRender: h(
+                RouterLink,
+                {
+                  to: {name: 'HomePage'},
+                  onClick: () => {
+                    mVisible.value = false
+                  },
+                },
+                '/'
+              ),
             },
           ],
         },

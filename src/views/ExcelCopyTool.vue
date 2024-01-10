@@ -98,7 +98,7 @@ export default defineComponent({
     const copyMode = ref(CopyMode.json)
     const handleClick = (event: MouseEvent) => {
       let el = event.target as HTMLElement
-      if (!isAllowedElement(el) || !copyMode.value || copyMode.value === CopyMode.none) {
+      if (!isAllowedElement(el) || !copyMode.value || copyMode.value === CopyMode.original) {
         return
       }
 
@@ -219,6 +219,7 @@ export default defineComponent({
       }),
       isTrimEmptyLines,
       mainStore,
+      isReady,
     }
   },
 })
@@ -259,21 +260,36 @@ export default defineComponent({
                 />
               </n-space>
 
-              <n-button type="primary" @click="importFileChooserRef.chooseFile()" size="small">
+              <n-button
+                type="primary"
+                :disabled="!isReady"
+                @click="importFileChooserRef.chooseFile()"
+                size="small"
+              >
                 {{ $t('actions.open_excel') }}
               </n-button>
 
-              <n-dropdown :options="dropdownMenuOptions" placement="bottom-start" key-field="label">
+              <n-dropdown
+                :options="dropdownMenuOptions"
+                placement="bottom-start"
+                key-field="label"
+                :disabled="!isReady"
+              >
                 <n-button size="small">{{ $t('actions.export') }}</n-button>
               </n-dropdown>
 
-              <n-button @click="loadDemo" size="small">{{ $t('common.demo') }}</n-button>
+              <n-button @click="loadDemo" size="small" :disabled="!isReady">{{
+                $t('common.demo')
+              }}</n-button>
             </n-space>
           </template>
         </n-page-header>
       </n-card>
 
-      <n-card class="sheet-name-card" size="small">
+      <div v-if="!isReady" style="text-align: center; padding: 20px">
+        <n-spin />
+      </div>
+      <n-card v-else class="sheet-name-card" size="small">
         <n-tabs size="small" type="card" animated v-model:value="sheetNameIndex">
           <n-tab-pane
             style="padding: 0"
