@@ -135,6 +135,7 @@ export type DirTreeItem = {
   entry: FileSystemDirectoryHandle | FileSystemFileHandle
   parentDirs: string[]
   children: DirTreeItem[] | null
+  prefix?: any
 }
 
 // 一键复制模式枚举

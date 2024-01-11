@@ -55,6 +55,12 @@ export default defineComponent({
       const file = await handle.getFile()
       handleImport(file)
     }
+
+    const handleCloseFile = () => {
+      fileHandle.value = undefined
+      translateTreeRoot.value = I18nJsonObjUtils.parseWithRoot()
+    }
+
     const handleSaveFile = async () => {
       if (!fileHandle.value) {
         return
@@ -111,6 +117,7 @@ export default defineComponent({
       fileHandle,
       handleImport,
       handleSelectFile,
+      handleCloseFile,
       handleSaveFile,
       handleExport,
       loadDemo() {
@@ -177,9 +184,18 @@ export default defineComponent({
               {{ $t('common.text_transformer') }}
             </n-button>
 
-            <n-button type="primary" @click="handleSelectFile" size="small">{{
-              $t('actions.open_json')
-            }}</n-button>
+            <n-popconfirm v-if="fileHandle" @positive-click="handleCloseFile">
+              <template #trigger>
+                <n-button v-if="fileHandle" secondary type="primary" size="small">
+                  Close JSON
+                </n-button>
+              </template>
+              Confirm close JSON? Unsaved contents will be lost.
+            </n-popconfirm>
+            <n-button v-else type="primary" @click="handleSelectFile" size="small">
+              {{ $t('actions.open_json') }}
+            </n-button>
+
             <n-button v-if="fileHandle" @click="handleSaveFile" size="small" type="info">
               <template #icon>
                 <Save20Regular />
@@ -187,9 +203,9 @@ export default defineComponent({
 
               {{ $t('actions.save') }}
             </n-button>
-            <n-button secondary @click="handleExport" size="small"
-              >{{ $t('actions.save_as') }}...</n-button
-            >
+            <n-button secondary @click="handleExport" size="small">
+              {{ $t('actions.save_as') }}...
+            </n-button>
 
             <n-popconfirm v-if="!fileHandle" @positive-click="loadDemo">
               <template #trigger>

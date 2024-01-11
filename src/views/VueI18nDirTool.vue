@@ -21,8 +21,28 @@ import TranslateTreeItem from '@/components/VueI18nEditTool/TranslateTreeItem.vu
 import {useSettingsStore} from '@/store/settings'
 import {useMainStore} from '@/store/main'
 import {useI18n} from 'vue-i18n'
+import {Document20Regular, Folder20Regular} from '@vicons/fluent'
+import {NIcon} from 'naive-ui'
 
 let idSeed = 0
+const formatDirTreeItem = (data: any = {}): DirTreeItem => {
+  return {
+    key: data.key,
+    kind: data.kind,
+    label: data.label,
+    entry: data.entry,
+    parentDirs: data.parentDirs,
+    children: data.children || null,
+    // prefix: () =>
+    //   h(
+    //     NIcon,
+    //     {size: 18},
+    //     {
+    //       default: () => h(data.kind === 'directory' ? Folder20Regular : Document20Regular),
+    //     }
+    //   ),
+  }
+}
 
 export default defineComponent({
   name: 'VueI18nBatchTool',
@@ -57,31 +77,46 @@ export default defineComponent({
         if (entry.kind === 'directory') {
           // console.log(`${space}[D] ${entry.name}`, {entry})
           let children = []
-          tree.push({
-            key: `${idSeed}-D-${deep}-${idx}`,
-            kind: entry.kind,
-            label: entry.name,
-            entry,
-            parentDirs,
-            children,
-          })
+          tree.push(
+            formatDirTreeItem({
+              key: `${idSeed}-D-${deep}-${idx}`,
+              kind: entry.kind,
+              label: entry.name,
+              entry,
+              parentDirs,
+              children,
+            })
+          )
           await recursiveReadDir(entry, deep + 1, children, [...parentDirs, entry.name])
         } else {
           // console.log(`${space}[F] ${entry.name}`, {entry})
           const isValidFile = /\.json$/gi.test(entry.name)
           if (isValidFile) {
-            tree.push({
-              key: `${idSeed}-F-${deep}-${idx}`,
-              kind: entry.kind,
-              label: entry.name,
-              entry,
-              parentDirs,
-              children: null,
-            })
+            tree.push(
+              formatDirTreeItem({
+                key: `${idSeed}-F-${deep}-${idx}`,
+                kind: entry.kind,
+                label: entry.name,
+                entry,
+                parentDirs,
+                children: null,
+              })
+            )
           }
         }
       }
-      console.log('[recursiveReadDir]', tree)
+
+      // 排序
+      tree.sort((a, b) => {
+        if (a.kind === 'directory' && b.kind === 'file') {
+          return -1 // 文件夹在文件的前面
+        } else if (a.kind === 'file' && b.kind === 'directory') {
+          return 1 // 文件在文件夹的后面
+        } else {
+          return 0 // 保持原有顺序
+        }
+      })
+      // console.log('[recursiveReadDir]', tree)
       return tree
     }
 
@@ -94,14 +129,16 @@ export default defineComponent({
         if (entry.kind !== 'directory') {
           const isValidFile = /\.json$/gi.test(entry.name)
           if (isValidFile) {
-            tree.push({
-              key: `${idSeed}-FILE-${idx}`,
-              kind: entry.kind,
-              label: entry.name,
-              entry,
-              parentDirs: [],
-              children: null,
-            })
+            tree.push(
+              formatDirTreeItem({
+                key: `${idSeed}-FILE-${idx}`,
+                kind: entry.kind,
+                label: entry.name,
+                entry,
+                parentDirs: [],
+                children: null,
+              })
+            )
           }
         }
       }
@@ -130,6 +167,10 @@ export default defineComponent({
         window.$message.error('The content is empty, please check the folder directory structure!')
       }
       dirTree.value = tree
+    }
+    const handleCloseDir = () => {
+      dirHandle.value = null
+      dirTree.value = []
     }
 
     const currentEditEntry = ref<FileSystemFileHandle | null>(null)
@@ -214,6 +255,7 @@ export default defineComponent({
       metaTitle,
       iconTranslate,
       handlePickDir,
+      handleCloseDir,
       dirTree,
       dirHandle,
       reloadPickedDir,
@@ -317,13 +359,24 @@ export default defineComponent({
               />
             </n-radio-group>
 
-            <n-button type="primary" size="small" @click="handlePickDir">
+            <n-popconfirm v-if="dirHandle" @positive-click="handleCloseDir()">
+              <template #trigger>
+                <n-button secondary type="primary" size="small" class="js_reload_btn">
+                  Close Folder
+                </n-button>
+              </template>
+              Confirm close folder? Unsaved contents will be lost.
+            </n-popconfirm>
+
+            <n-button v-else type="primary" size="small" @click="handlePickDir">
               {{ $t('actions.pick_i18n_directory') }}
             </n-button>
 
             <n-popconfirm v-if="dirHandle" @positive-click="reloadPickedDir()">
               <template #trigger>
-                <n-button secondary size="small"> {{ $t('actions.reload') }} </n-button>
+                <n-button secondary size="small" class="js_reload_btn">
+                  {{ $t('actions.reload') }}
+                </n-button>
               </template>
               {{ $t('msgs.confirm_reload_files') }}
             </n-popconfirm>
@@ -347,9 +400,11 @@ export default defineComponent({
               block-line
               :data="dirTree"
               :node-props="nodeProps"
-              default-expand-all
+              :default-expand-all="false"
               expand-on-click
               selectable
+              class="font-code"
+              virtual-scroll
             />
           </n-scrollbar>
         </n-layout-sider>

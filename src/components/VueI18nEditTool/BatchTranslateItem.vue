@@ -10,6 +10,49 @@ import {useI18n} from 'vue-i18n'
 import {readClipboardData} from '@/utils'
 // import countryCodeEmoji from '@/utils/country-code-emoji'
 
+/**
+ * 创建文件夹
+ * @param directoryHandle
+ * @param folderPath 如：pages/solution
+ */
+async function createFolder(directoryHandle: FileSystemDirectoryHandle, folderPath: string) {
+  const folders = folderPath.split('/')
+
+  let currentDirectory = directoryHandle
+
+  // 逐级创建文件夹
+  for (const folder of folders) {
+    currentDirectory = await currentDirectory.getDirectoryHandle(folder, {create: true})
+  }
+
+  console.log(`Folder "${folderPath}" created successfully.`)
+  return currentDirectory
+}
+
+/**
+ * 创建文件
+ * @param directoryHandle
+ * @param filePath 如：pages/solution/live.json，必须提前创建父文件夹
+ * @param content
+ */
+async function createFile(
+  directoryHandle: FileSystemDirectoryHandle,
+  filePath: string,
+  content: string
+) {
+  // 获取文件的可写入流
+  const fileHandle = await directoryHandle.getFileHandle(filePath, {create: true})
+  const writable = await fileHandle.createWritable()
+
+  // 将数据写入文件
+  await writable.write(content)
+
+  // 关闭文件写入流
+  await writable.close()
+
+  console.log(`File "${filePath}" created and written successfully.`)
+}
+
 export default defineComponent({
   name: 'BatchTranslateItem',
   components: {
@@ -195,6 +238,67 @@ export default defineComponent({
       createField(text)
     }
 
+    const saveChange = async ({isEmit = false} = {}) => {
+      if (!isChanged.value) {
+        return
+      }
+      setText()
+      await handleSaveFile()
+      nextTick(() => {
+        isChanged.value = false
+      })
+      if (isEmit) {
+        emit('saveChanged')
+      }
+    }
+
+    const cancelChange = () => {
+      translateText.value = getText()
+      nextTick(() => {
+        isChanged.value = false
+      })
+    }
+
+    const handleSaveArray = (val) => {
+      try {
+        JSON.parse(val) // validate only
+        translateText.value = val
+        isShowArrayEdit.value = false
+      } catch (e: any) {
+        console.error(e)
+        window.$message.error(e.message)
+      }
+    }
+
+    const isLocalCreated = ref(false)
+    const handleCreateFile = async () => {
+      if (!dirItem.value) {
+        return
+      }
+      const dirHandle = dirItem.value.entry as FileSystemDirectoryHandle
+      if (!dirHandle) {
+        return
+      }
+
+      const fullPath = filePathArr.value.join('/')
+      const folderPath = fullPath.substring(0, fullPath.lastIndexOf('/'))
+      const folderHandle = await createFolder(dirHandle, folderPath)
+
+      const txt = JSON.stringify({}, null, 2)
+      await createFile(folderHandle, fullPath.substring(fullPath.lastIndexOf('/') + 1), txt)
+
+      window.$message.success('Created ' + fullPath)
+      isLocalCreated.value = true
+      setTimeout(() => {
+        handleReload()
+      })
+    }
+
+    const handleReload = () => {
+      const btn = document.querySelector('.js_reload_btn')
+      btn && btn.click()
+    }
+
     return {
       currentItem,
       translateObj,
@@ -203,39 +307,16 @@ export default defineComponent({
       createField,
       handlePaste,
       pasteCreatePField,
-      async saveChange({isEmit = false} = {}) {
-        if (!isChanged.value) {
-          return
-        }
-        setText()
-        await handleSaveFile()
-        nextTick(() => {
-          isChanged.value = false
-        })
-        if (isEmit) {
-          emit('saveChanged')
-        }
-      },
-      cancelChange() {
-        translateText.value = getText()
-        nextTick(() => {
-          isChanged.value = false
-        })
-      },
+      saveChange,
+      cancelChange,
+      handleSaveArray,
       isFieldArray,
       inputRef,
       isShowArrayEdit,
-      handleSaveArray(val) {
-        try {
-          JSON.parse(val) // validate only
-          translateText.value = val
-          isShowArrayEdit.value = false
-        } catch (e: any) {
-          console.error(e)
-          window.$message.error(e.message)
-        }
-      },
       // countryFlag,
+      isLocalCreated,
+      handleCreateFile,
+      handleReload,
     }
   },
 })
@@ -256,7 +337,18 @@ export default defineComponent({
     </div>
 
     <div style="color: hotpink; margin-bottom: 10px" v-if="!currentItem">
-      File does not exist, please create it on your local file system
+      <template v-if="isLocalCreated">
+        <n-button secondary size="small" @click="handleReload">
+          {{ $t('actions.reload') }}
+        </n-button>
+      </template>
+      <template v-else>
+        File does not exist, please
+        <b style="text-decoration: underline; cursor: pointer" @click="handleCreateFile"
+          >create it</b
+        >
+        on your local file system
+      </template>
     </div>
     <template v-else-if="translatePath">
       <n-space v-if="translateText !== null" align="center" size="small">
