@@ -238,12 +238,8 @@ export default defineComponent({
       </n-space>
     </div>
 
-    <n-collapse-transition :show="isExpand">
-      <n-list
-        size="small"
-        style="margin-top: 10px"
-        v-if="item.translates && item.translates.length"
-      >
+    <div v-if="isExpand">
+      <div class="tr-list" v-if="item.translates && item.translates.length">
         <TranslateItem
           v-for="(vi, vIndex) in item.translates"
           :item="vi"
@@ -255,7 +251,7 @@ export default defineComponent({
           @onRemove="handleRemoveItem(vIndex)"
           @onKeyClick="(...args) => $emit('onKeyClick', ...args)"
         />
-      </n-list>
+      </div>
 
       <n-button-group v-if="!isLite" align="center" style="margin-top: 5px">
         <n-button size="small" title="Add translate item" type="info" @click="handleAddTranslate">
@@ -304,7 +300,7 @@ export default defineComponent({
         </template>
         {{ $t('common.group') }}</n-button
       >
-    </n-collapse-transition>
+    </div>
 
     <DialogTextEdit
       is-textarea
@@ -337,6 +333,10 @@ export default defineComponent({
     .error-tip-button {
       margin-right: 8px;
     }
+  }
+
+  .tr-list {
+    margin-top: 10px;
   }
 
   .split-line {

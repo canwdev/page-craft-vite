@@ -296,6 +296,7 @@ export default defineComponent({
 
     const handleReload = () => {
       const btn = document.querySelector('.js_reload_btn')
+      // @ts-ignore
       btn && btn.click()
     }
 

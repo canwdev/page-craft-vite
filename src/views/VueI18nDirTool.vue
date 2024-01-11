@@ -361,9 +361,7 @@ export default defineComponent({
 
             <n-popconfirm v-if="dirHandle" @positive-click="handleCloseDir()">
               <template #trigger>
-                <n-button secondary type="primary" size="small" class="js_reload_btn">
-                  Close Folder
-                </n-button>
+                <n-button secondary type="primary" size="small"> Close Folder </n-button>
               </template>
               Confirm close folder? Unsaved contents will be lost.
             </n-popconfirm>

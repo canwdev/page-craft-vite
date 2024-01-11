@@ -179,22 +179,11 @@ export default defineComponent({
 </script>
 
 <template>
-  <n-list-item
-    :data-id="item.key"
-    size="small"
-    v-if="item"
-    class="translate-item"
-    :class="{isLite, isKeyDuplicated}"
-  >
+  <div :data-id="item.key" v-if="item" class="translate-item" :class="{isLite, isKeyDuplicated}">
     <n-space size="small" justify="space-between">
       <n-space size="small" align="center">
         <template v-if="isKeyDuplicated">
-          <n-tooltip trigger="hover">
-            <template #trigger>
-              <div class="error-tip-button">!</div>
-            </template>
-            Key duplicated, may cause bug!
-          </n-tooltip>
+          <div class="error-tip-button" title="Key duplicated, may cause bug!">!</div>
         </template>
         <n-input
           size="small"
@@ -272,7 +261,7 @@ export default defineComponent({
       </n-space>
       <n-space> </n-space>
     </n-space>
-  </n-list-item>
+  </div>
 </template>
 
 <style lang="scss" scoped>
@@ -281,6 +270,8 @@ export default defineComponent({
   padding-left: 10px;
   margin-right: -10px;
   padding-right: 10px;
+  padding-top: 4px;
+  padding-bottom: 4px;
 
   &.isLite {
     padding-top: 4px;

@@ -72,6 +72,17 @@
     box-shadow: $box_shadow;
   }
 
+  .vp-button {
+    background-color: white;
+    border: 1px solid $color_border;
+
+    &:not(:disabled) {
+      &:hover {
+        border-color: $primary;
+      }
+    }
+  }
+
 
   &._dark {
     .vp-window {
@@ -88,5 +99,10 @@
       background-color: rgba(0, 0, 0, 0.75);
       color: white;
     }
+    .vp-button {
+      background-color: #4B4B4B;
+      color: white;
+    }
+
   }
 }
