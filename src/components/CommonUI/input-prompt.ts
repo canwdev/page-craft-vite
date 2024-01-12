@@ -1,18 +1,32 @@
 import {NButton, NInput, NSpace} from 'naive-ui'
 
 export const showInputPrompt = (options: any = {}): Promise<string> => {
-  const {title = '', value = '', validateFn} = options
+  const {
+    title = '',
+    value = '',
+    placeholder = '',
+    validateFn,
+    type = 'text',
+    allowEmpty = false,
+  } = options
 
   return new Promise((resolve, reject) => {
     let editingValue = ref(value)
     const inputRef = ref()
 
     const handlePositiveClick = async () => {
-      if (typeof validateFn === 'function') {
-        await validateFn(editingValue.value)
+      if (!editingValue.value && !allowEmpty) {
+        return
       }
-      d.destroy()
+      if (typeof validateFn === 'function') {
+        const message = await validateFn(editingValue.value)
+        if (typeof message === 'string') {
+          window.$message.error(message)
+          return
+        }
+      }
       resolve(editingValue.value)
+      d.destroy()
     }
 
     const d = window.$dialog.info({
@@ -30,12 +44,14 @@ export const showInputPrompt = (options: any = {}): Promise<string> => {
             h(NInput, {
               ref: inputRef,
               value: editingValue.value,
+              placeholder,
+              type,
               clearable: true,
               'onUpdate:value': (v) => {
                 editingValue.value = v
               },
               onKeydown: (event) => {
-                if (editingValue.value && event.key === 'Enter') {
+                if (event.key === 'Enter') {
                   handlePositiveClick()
                   event.preventDefault()
                 }
@@ -49,7 +65,7 @@ export const showInputPrompt = (options: any = {}): Promise<string> => {
             NButton,
             {
               type: 'primary',
-              disabled: !editingValue.value,
+              disabled: !allowEmpty && !editingValue.value,
               onClick: handlePositiveClick,
             },
             () => 'OK'

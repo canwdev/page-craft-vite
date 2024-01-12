@@ -29,7 +29,7 @@ export default defineComponent({
       const key = event.key.toLowerCase()
       if (event.ctrlKey && key === 'r' && !event.shiftKey && !isDev) {
         event.preventDefault()
-        window.$message.info('Ctrl + R is disabled')
+        window.$message.info('ctrl+r is disabled')
       }
     }
 
