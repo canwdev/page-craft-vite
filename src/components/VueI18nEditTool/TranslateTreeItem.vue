@@ -20,6 +20,12 @@ import {
   ClipboardPaste20Regular,
 } from '@vicons/fluent'
 import {useMainStore} from '@/store/main'
+import {useI18nToolSettingsStore} from '@/store/i18n-tool-settings'
+import {
+  textConvertMultipleLine,
+  textConvertAdvanced,
+  TextConvertMode,
+} from '@/components/VueI18nEditTool/copy-enum'
 
 export default defineComponent({
   name: 'TranslateTreeItem',
@@ -55,6 +61,7 @@ export default defineComponent({
   setup(props) {
     const {item, index} = toRefs(props)
     const mainStore = useMainStore()
+    const intSettingsStore = useI18nToolSettingsStore()
 
     const handleAddChildren = () => {
       mainStore.trIsManualAdd = true
@@ -67,13 +74,18 @@ export default defineComponent({
 
     // 自动粘贴剪贴板的值，并自动复制翻译key值
     const handleAutoAdd = async () => {
-      const text = await readClipboardData()
+      let val: any = await readClipboardData()
+
+      val = textConvertAdvanced(val, intSettingsStore.autoPasteTextConvertMode, {
+        isTrimQuotes: intSettingsStore.autoPasteTrimQuotes,
+      })
+
       // 生成guid用来区分
       mainStore.trAutoAddGuid = guid()
       item.value.translates.push(
         formatTranslateItem({
           key: mainStore.trAutoAddGuid,
-          value: text,
+          value: val,
         })
       )
     }
@@ -270,7 +282,7 @@ export default defineComponent({
           <template #icon>
             <ClipboardPaste20Regular />
           </template>
-          Auto
+          Auto Paste
         </n-button>
       </n-button-group>
 

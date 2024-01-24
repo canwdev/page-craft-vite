@@ -2,7 +2,11 @@
 import {defineComponent, ref} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {copyToClipboard, readClipboardData} from '@/utils'
-import {CopyMode, CopyModeOptions, formatMultipleLine} from '@/components/VueI18nEditTool/copy-enum'
+import {
+  TextConvertMode,
+  TextConvertOptions,
+  textConvertMultipleLine,
+} from '@/components/VueI18nEditTool/copy-enum'
 import {ClipboardPaste20Regular, Copy20Regular} from '@vicons/fluent'
 import {useI18n} from 'vue-i18n'
 import VueMonaco from '@/components/CommonUI/VueMonaco.vue'
@@ -22,7 +26,7 @@ export default defineComponent({
     const mVisible = useModelWrapper(props, emit, 'visible')
     const textInput = ref('')
     const textOutput = ref('')
-    const mMode = useLocalStorageString('text_converter_copy_mode', CopyMode.json)
+    const mMode = useLocalStorageString('text_converter_copy_mode', TextConvertMode.JSON)
     const isTrimEmptyLines = ref(true)
     const htmlTagName = ref('')
     const htmlAttrs = ref('')
@@ -46,7 +50,7 @@ export default defineComponent({
     })
 
     const updateFormat = () => {
-      textOutput.value = formatMultipleLine(textInput.value, mMode.value, {
+      textOutput.value = textConvertMultipleLine(textInput.value, mMode.value, {
         isTrimEmptyLines: isTrimEmptyLines.value,
         htmlTagName: htmlTagName.value,
         htmlAttrs: htmlAttrs.value,
@@ -73,8 +77,8 @@ export default defineComponent({
       mVisible,
       textInput,
       textOutput,
-      CopyMode,
-      CopyModeOptions,
+      TextConvertMode,
+      TextConvertOptions,
       mMode,
       isTrimEmptyLines,
       htmlTagName,
@@ -99,7 +103,7 @@ export default defineComponent({
       <n-select
         size="small"
         v-model:value="mMode"
-        :options="CopyModeOptions.filter((item) => item.value !== CopyMode.original)"
+        :options="TextConvertOptions"
         style="width: 100px"
       />
 
@@ -107,7 +111,7 @@ export default defineComponent({
         $t('msgs.trim_empty_lines')
       }}</n-checkbox>
 
-      <n-input-group v-if="mMode === CopyMode.html">
+      <n-input-group v-if="mMode === TextConvertMode.HTML">
         <n-input v-model:value="htmlTagName" clearable placeholder="HTML Tag Name" size="small" />
         <n-input
           v-if="htmlTagName"

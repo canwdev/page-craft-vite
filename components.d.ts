@@ -22,6 +22,7 @@ declare module '@vue/runtime-core' {
     ElementEditDialog: typeof import('./src/components/PageCraft/MainCanvas/ElementEditDialog.vue')['default']
     FileChooser: typeof import('./src/components/CommonUI/FileChooser.vue')['default']
     FileDrop: typeof import('./src/components/CommonUI/FileDrop.vue')['default']
+    I18nToolSettings: typeof import('./src/components/VueI18nEditTool/I18nToolSettings.vue')['default']
     IframeBrowser: typeof import('./src/components/IframeBrowser/index.vue')['default']
     IndicatorInfo: typeof import('./src/components/PageCraft/MainCanvas/IndicatorInfo.vue')['default']
     InventoryList: typeof import('./src/components/PageCraft/InventoryModal/InventoryList.vue')['default']

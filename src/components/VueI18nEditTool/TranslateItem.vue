@@ -12,6 +12,8 @@ import {copyToClipboard, readClipboardData} from '@/utils'
 import {ClipboardPaste20Regular, Delete20Regular} from '@vicons/fluent'
 import {useI18n} from 'vue-i18n'
 import {useMainStore} from '@/store/main'
+import {textConvertAdvanced} from '@/components/VueI18nEditTool/copy-enum'
+import {useI18nToolSettingsStore} from '@/store/i18n-tool-settings'
 
 export default defineComponent({
   name: 'TranslateItem',
@@ -41,6 +43,7 @@ export default defineComponent({
   setup(props, {emit}) {
     const {t: $t} = useI18n()
     const mainStore = useMainStore()
+    const intSettingsStore = useI18nToolSettingsStore()
     const {item, treeItem, index} = toRefs(props)
 
     const namespacePrefix = computed(() => {
@@ -150,7 +153,11 @@ export default defineComponent({
     })
 
     const handlePaste = async () => {
-      item.value.value = await readClipboardData()
+      let val: any = await readClipboardData()
+
+      item.value.value = textConvertAdvanced(val, intSettingsStore.autoPasteTextConvertMode, {
+        isTrimQuotes: intSettingsStore.autoPasteTrimQuotes,
+      })
       setTimeout(() => {
         handleValueBlur()
       })
@@ -215,7 +222,7 @@ export default defineComponent({
               clearable
               @blur="handleValueBlur"
             />
-            <n-button @click="handlePaste" secondary size="small" type="info" title="Paste">
+            <n-button @click="handlePaste" secondary size="small" type="info" title="Auto Paste">
               <template #icon>
                 <ClipboardPaste20Regular />
               </template>

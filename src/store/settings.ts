@@ -40,8 +40,6 @@ interface IPageCraftSettings {
   toolbarList: BlockItem[]
   // selected component name
   curCompoName: string
-  // i18n dir tool 是否为文件夹模式
-  isFoldersMode: boolean
 }
 
 export const useSettingsStore = defineStore('settingsStore', {
@@ -72,7 +70,6 @@ export const useSettingsStore = defineStore('settingsStore', {
       toolbarIndex: 0,
       toolbarList: [],
       curCompoName: '',
-      isFoldersMode: true,
     }
   },
   persist: {

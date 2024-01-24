@@ -23,6 +23,8 @@ import {useMainStore} from '@/store/main'
 import {useI18n} from 'vue-i18n'
 import {Document20Regular, Folder20Regular} from '@vicons/fluent'
 import {NIcon} from 'naive-ui'
+import {useI18nToolSettingsStore} from '@/store/i18n-tool-settings'
+import I18nToolSettings from '@/components/VueI18nEditTool/I18nToolSettings.vue'
 
 let idSeed = 0
 const formatDirTreeItem = (data: any = {}): DirTreeItem => {
@@ -47,6 +49,7 @@ const formatDirTreeItem = (data: any = {}): DirTreeItem => {
 export default defineComponent({
   name: 'VueI18nBatchTool',
   components: {
+    I18nToolSettings,
     TranslateTreeItem,
     VueMonaco,
     BatchTranslate,
@@ -55,7 +58,7 @@ export default defineComponent({
   setup() {
     const {t: $t} = useI18n()
     const mainStore = useMainStore()
-    const settingsStore = useSettingsStore()
+    const intSettingsStore = useI18nToolSettingsStore()
     const dirTree = ref<DirTreeItem[]>([])
 
     // 递归读取文件夹
@@ -158,7 +161,7 @@ export default defineComponent({
     const reloadPickedDir = async () => {
       const handle = dirHandle.value
       let tree: DirTreeItem[] = []
-      if (settingsStore.isFoldersMode) {
+      if (intSettingsStore.isFoldersMode) {
         tree = await recursiveReadDir(handle)
       } else {
         tree = await readJsonFiles(handle)
@@ -251,6 +254,8 @@ export default defineComponent({
       return !!dirHandle.value
     })
 
+    const isShowToolSettings = ref(false)
+
     return {
       metaTitle,
       iconTranslate,
@@ -313,8 +318,9 @@ export default defineComponent({
           }
         },
       }),
-      settingsStore,
+      intSettingsStore,
       mainStore,
+      isShowToolSettings,
     }
   },
 })
@@ -337,6 +343,10 @@ export default defineComponent({
         <template #avatar> <n-avatar :src="iconTranslate" style="background: none" /> </template>
         <template #extra>
           <n-space align="center">
+            <n-button secondary size="small" @click="isShowToolSettings = true">
+              {{ $t('common.settings') }}
+            </n-button>
+
             <n-button secondary size="small" @click="mainStore.isShowTextTransformer = true">
               {{ $t('common.text_transformer') }}
             </n-button>
@@ -398,7 +408,7 @@ export default defineComponent({
               block-line
               :data="dirTree"
               :node-props="nodeProps"
-              :default-expand-all="false"
+              :default-expand-all="intSettingsStore.autoExpandAllFolders"
               expand-on-click
               selectable
               class="font-code"
@@ -439,7 +449,7 @@ export default defineComponent({
                       :dir-tree="dirTree"
                       :file-path-arr="currentFilePathArr"
                       :translate-path="translatePath"
-                      :is-folders-mode="settingsStore.isFoldersMode"
+                      :is-folders-mode="intSettingsStore.isFoldersMode"
                     />
                   </n-scrollbar>
                 </template>
@@ -451,7 +461,7 @@ export default defineComponent({
               </template>
               <div class="font-code" v-else>
                 <n-space align="center" class="intro-title">
-                  <n-switch size="large" v-model:value="settingsStore.isFoldersMode">
+                  <n-switch size="large" v-model:value="intSettingsStore.isFoldersMode">
                     <template #checked>{{ $t('common.folders_mode') }}</template>
                     <template #unchecked>{{ $t('common.files_mode') }}</template>
                   </n-switch>
@@ -460,12 +470,12 @@ export default defineComponent({
                 </n-space>
                 <textarea
                   class="font-code"
-                  :class="{_alt: !settingsStore.isFoldersMode}"
+                  :class="{_alt: !intSettingsStore.isFoldersMode}"
                   readonly
                   cols="50"
                   rows="20"
                   :value="
-                    settingsStore.isFoldersMode
+                    intSettingsStore.isFoldersMode
                       ? `└─[locales]    --> ${$t('msgs.drag_folder_here')}!
    ├─de-DE
    │  └─index.json
@@ -502,6 +512,8 @@ export default defineComponent({
         </n-layout-content>
       </n-layout>
     </div>
+
+    <I18nToolSettings v-model:visible="isShowToolSettings" />
   </div>
 </template>
 

@@ -8,7 +8,11 @@ import {promptGetFileName, handleExportFile} from '@/utils/exporter'
 import DropZone from '@/components/CommonUI/DropZone.vue'
 import {useFileDrop} from '@/hooks/use-file-drop'
 import {useMetaTitle} from '@/hooks/use-meta'
-import {CopyMode, CopyModeOptions, formatMultipleLine} from '@/components/VueI18nEditTool/copy-enum'
+import {
+  TextConvertMode,
+  TextConvertOptions,
+  textConvertMultipleLine,
+} from '@/components/VueI18nEditTool/copy-enum'
 import {useSaveShortcut} from '@/hooks/use-beforeunload'
 import {useMainStore} from '@/store/main'
 import {useI18n} from 'vue-i18n'
@@ -95,29 +99,29 @@ export default defineComponent({
       isReady.value = true
     })
 
-    const copyMode = ref(CopyMode.json)
+    const copyMode = ref(TextConvertMode.JSON)
     const handleClick = (event: MouseEvent) => {
       let el = event.target as HTMLElement
-      if (!isAllowedElement(el) || !copyMode.value || copyMode.value === CopyMode.original) {
+      if (!isAllowedElement(el) || !copyMode.value || copyMode.value === TextConvertMode.DISABLED) {
         return
       }
 
       if (!el.innerText) {
         return
       }
-      let text = el.innerText
+      let text: string = el.innerText
 
       console.log(copyMode.value)
 
       let tip = ''
       if (event.ctrlKey && event.altKey) {
-        text = formatMultipleLine(text, (tip = CopyMode.json))
+        text = textConvertMultipleLine(text, (tip = TextConvertMode.JSON))
       } else if (event.ctrlKey) {
-        text = formatMultipleLine(text, (tip = CopyMode.text))
+        text = textConvertMultipleLine(text, (tip = TextConvertMode.TEXT))
       } else if (event.altKey) {
-        text = formatMultipleLine(text, (tip = CopyMode.html))
+        text = textConvertMultipleLine(text, (tip = TextConvertMode.HTML))
       } else {
-        text = formatMultipleLine(text, (tip = copyMode.value))
+        text = textConvertMultipleLine(text, (tip = copyMode.value))
       }
       copyToClipboard(text)
       window.$message.success(tip + ' ' + $t('msgs.copy_success'))
@@ -187,7 +191,9 @@ export default defineComponent({
       tableWrapperRef,
       handleClick,
       copyMode,
-      CopyModeOptions,
+      modTextConvertOptions: computed(() => {
+        return [{label: 'Disabled', value: TextConvertMode.DISABLED}, ...TextConvertOptions]
+      }),
       dropdownMenuOptions: [
         {
           label: 'Copy Sheets JSON',
@@ -208,7 +214,7 @@ export default defineComponent({
           },
         },
       ],
-      formatMultipleLine,
+      textConvertMultipleLine,
       ...useFileDrop({
         cbFiles: (files) => {
           if (!files.length) {
@@ -255,7 +261,7 @@ export default defineComponent({
                 <n-select
                   size="small"
                   v-model:value="copyMode"
-                  :options="CopyModeOptions"
+                  :options="modTextConvertOptions"
                   style="width: 100px"
                 />
               </n-space>

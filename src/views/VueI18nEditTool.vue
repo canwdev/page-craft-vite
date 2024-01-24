@@ -12,6 +12,7 @@ import {useBeforeUnload, useSaveShortcut} from '@/hooks/use-beforeunload'
 import dynamicLoadScript from '@/utils/dynamic-load-script'
 import {useMainStore} from '@/store/main'
 import {useI18n} from 'vue-i18n'
+import I18nToolSettings from '@/components/VueI18nEditTool/I18nToolSettings.vue'
 
 const filePickerOptions = {
   types: [
@@ -27,6 +28,7 @@ const filePickerOptions = {
 export default defineComponent({
   name: 'VueI18nEditTool',
   components: {
+    I18nToolSettings,
     TranslateTreeItem,
     DropZone,
     Save20Regular,
@@ -111,6 +113,8 @@ export default defineComponent({
       return !!fileHandle.value
     })
 
+    const isShowToolSettings = ref(false)
+
     return {
       metaTitle,
       translateTreeRoot,
@@ -158,6 +162,7 @@ export default defineComponent({
         },
       }),
       mainStore,
+      isShowToolSettings,
     }
   },
 })
@@ -180,6 +185,10 @@ export default defineComponent({
         <template #avatar> <n-avatar :src="iconTranslate" style="background: none" /> </template>
         <template #extra>
           <n-space>
+            <n-button secondary size="small" @click="isShowToolSettings = true">
+              {{ $t('common.settings') }}
+            </n-button>
+
             <n-button secondary size="small" @click="mainStore.isShowTextTransformer = true">
               {{ $t('common.text_transformer') }}
             </n-button>
@@ -227,6 +236,8 @@ export default defineComponent({
       />
     </div>
     <div style="height: 500px"></div>
+
+    <I18nToolSettings v-model:visible="isShowToolSettings" />
   </div>
 </template>
 

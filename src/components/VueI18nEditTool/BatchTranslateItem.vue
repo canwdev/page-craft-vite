@@ -8,6 +8,8 @@ import {ClipboardPaste20Regular, DocumentEdit20Regular, SaveMultiple20Regular} f
 import DialogTextEdit from '@/components/CommonUI/DialogTextEdit.vue'
 import {useI18n} from 'vue-i18n'
 import {readClipboardData} from '@/utils'
+import {textConvertAdvanced} from '@/components/VueI18nEditTool/copy-enum'
+import {useI18nToolSettingsStore} from '@/store/i18n-tool-settings'
 // import countryCodeEmoji from '@/utils/country-code-emoji'
 
 /**
@@ -85,6 +87,7 @@ export default defineComponent({
   emits: ['saveChanged'],
   setup(props, {emit}) {
     const {t: $t} = useI18n()
+    const intSettingsStore = useI18nToolSettingsStore()
     const {dirItem, filePathArr, translatePath, isFoldersMode} = toRefs(props)
 
     const findNode = (): DirTreeItem | null => {
@@ -125,26 +128,38 @@ export default defineComponent({
       return findNode()
     })
     const translateObj = shallowRef<any>(null)
-    const translateText = ref<string | null>(null)
+    const translateText = ref<string | number | null>(null)
     const isChanged = ref(false)
     const isFieldArray = ref(false)
+    const isFieldNumber = ref(false)
 
+    // 判断数据类型，并返回格式化的值
+    const getFormatTextType = (val: any) => {
+      isFieldArray.value = false
+      isFieldNumber.value = false
+
+      if (Array.isArray(val)) {
+        isFieldArray.value = true
+        // 如果是数组，则返回格式化的字符串
+        return JSON.stringify(val, null, 2)
+      }
+      if (typeof val === 'number') {
+        isFieldNumber.value = true
+      }
+      return val
+    }
     const getText = () => {
       const res = _get(translateObj.value, translatePath.value, null)
-      if (Array.isArray(res)) {
-        isFieldArray.value = true
-        return JSON.stringify(res, null, 2)
-      } else {
-        isFieldArray.value = false
-      }
-      return res
+      return getFormatTextType(res)
     }
-    const setText = (text = translateText.value) => {
+    const setText = (val: any = translateText.value) => {
       try {
-        if (isFieldArray.value && text) {
-          text = JSON.parse(text)
+        if (isFieldArray.value && val) {
+          val = JSON.parse(val)
+        } else if (isFieldNumber.value) {
+          val = Number(val)
         }
-        _set(translateObj.value, translatePath.value, text)
+        _set(translateObj.value, translatePath.value, val)
       } catch (e: any) {
         console.error(e)
         window.$message.error(e.message)
@@ -159,6 +174,7 @@ export default defineComponent({
           translateObj.value = null
           translateText.value = null
           isFieldArray.value = false
+          isFieldNumber.value = false
           nextTick(() => {
             isChanged.value = false
           })
@@ -229,13 +245,23 @@ export default defineComponent({
       })
     }
 
-    const handlePaste = async () => {
-      translateText.value = await readClipboardData()
+    const handlePasteFormat = (val) => {
+      val = textConvertAdvanced(val, intSettingsStore.autoPasteTextConvertMode, {
+        isTrimQuotes: intSettingsStore.autoPasteTrimQuotes,
+      })
+
+      return getFormatTextType(val)
     }
 
-    const pasteCreatePField = async () => {
-      const text = await readClipboardData()
-      createField(text)
+    const handlePaste = async () => {
+      const val: any = await readClipboardData()
+
+      translateText.value = handlePasteFormat(val)
+    }
+
+    const pasteCreateField = async () => {
+      const val: any = await readClipboardData()
+      createField(handlePasteFormat(val))
     }
 
     const saveChange = async ({isEmit = false} = {}) => {
@@ -307,11 +333,12 @@ export default defineComponent({
       isChanged,
       createField,
       handlePaste,
-      pasteCreatePField,
+      pasteCreateField,
       saveChange,
       cancelChange,
       handleSaveArray,
       isFieldArray,
+      isFieldNumber,
       inputRef,
       isShowArrayEdit,
       // countryFlag,
@@ -353,7 +380,16 @@ export default defineComponent({
     </div>
     <template v-else-if="translatePath">
       <n-space v-if="translateText !== null" align="center" size="small">
+        <n-input-number
+          ref="valueInputRef"
+          v-if="isFieldNumber"
+          v-model:value="translateText"
+          placeholder="number value"
+          size="small"
+          class="font-code"
+        />
         <n-input
+          v-else
           ref="inputRef"
           type="textarea"
           size="small"
@@ -366,7 +402,7 @@ export default defineComponent({
         />
 
         <n-button-group>
-          <n-button @click="handlePaste" secondary size="small" type="primary" title="Paste">
+          <n-button @click="handlePaste" secondary size="small" type="primary" title="Auto Paste">
             <template #icon>
               <ClipboardPaste20Regular />
             </template>
@@ -398,7 +434,7 @@ export default defineComponent({
         </n-button-group>
       </n-space>
       <n-button-group v-else>
-        <n-button size="small" @click="pasteCreatePField()" type="primary">
+        <n-button size="small" @click="pasteCreateField()" type="primary">
           <template #icon>
             <ClipboardPaste20Regular />
           </template>

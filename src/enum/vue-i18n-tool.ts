@@ -3,9 +3,15 @@ export interface ITranslateItem {
   value: string
 }
 export const formatTranslateItem = (data: any = {}): ITranslateItem => {
+  let value
+  if (typeof data.value === 'number') {
+    value = data.value
+  } else {
+    value = data.value || ''
+  }
   return {
     key: data.key || '',
-    value: data.value || '',
+    value,
   }
 }
 
@@ -111,10 +117,14 @@ function containsChinese(text: string) {
   return pattern.test(text)
 }
 
-export const formatI18nKey = (str: string): string => {
-  if (!str) {
+export const formatI18nKey = (val: number | string): string => {
+  if (typeof val === 'number') {
+    return `n_${val}`
+  }
+  if (!val) {
     return ''
   }
+  let str = String(val)
   const {pinyinUtil} = window
   if (pinyinUtil && containsChinese(str)) {
     str = pinyinUtil.getPinyin(str)
