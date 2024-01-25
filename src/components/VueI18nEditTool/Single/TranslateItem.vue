@@ -8,16 +8,16 @@ import {
   ITranslateItem,
   ITranslateTreeItem,
 } from '@/enum/vue-i18n-tool'
-import {copyToClipboard, readClipboardData} from '@/utils'
+import {copyToClipboard} from '@/utils'
 import {ClipboardPaste20Regular, Delete20Regular} from '@vicons/fluent'
 import {useI18n} from 'vue-i18n'
 import {useMainStore} from '@/store/main'
-import {textConvertAdvanced} from '@/components/VueI18nEditTool/copy-enum'
-import {useI18nToolSettingsStore} from '@/store/i18n-tool-settings'
+import FieldEdit from '@/components/VueI18nEditTool/Single/FieldEdit.vue'
 
 export default defineComponent({
   name: 'TranslateItem',
   components: {
+    FieldEdit,
     ClipboardPaste20Regular,
     Delete20Regular,
   },
@@ -43,7 +43,6 @@ export default defineComponent({
   setup(props, {emit}) {
     const {t: $t} = useI18n()
     const mainStore = useMainStore()
-    const intSettingsStore = useI18nToolSettingsStore()
     const {item, treeItem, index} = toRefs(props)
 
     const namespacePrefix = computed(() => {
@@ -71,19 +70,6 @@ export default defineComponent({
       name = name.replace(regex, '')
       return name
     })
-
-    const valType = ref<string | null>(null)
-    watch(
-      item,
-      (val) => {
-        if (!val) {
-          valType.value = null
-          return
-        }
-        valType.value = typeof val.value
-      },
-      {immediate: true}
-    )
 
     // 检查重复键
     const isKeyDuplicated = ref(false)
@@ -152,17 +138,6 @@ export default defineComponent({
       }
     })
 
-    const handlePaste = async () => {
-      let val: any = await readClipboardData()
-
-      item.value.value = textConvertAdvanced(val, intSettingsStore.autoPasteTextConvertMode, {
-        isTrimQuotes: intSettingsStore.autoPasteTrimQuotes,
-      })
-      setTimeout(() => {
-        handleValueBlur()
-      })
-    }
-
     return {
       copyModeOptions,
       namespacePrefix,
@@ -176,10 +151,8 @@ export default defineComponent({
       handleInputKeyClick(event) {
         emit('onKeyClick', nameDisplay.value, event)
       },
-      valType,
       isKeyDuplicated,
       valueInputRef,
-      handlePaste,
     }
   },
 })
@@ -201,42 +174,11 @@ export default defineComponent({
           @blur="handleKeyBlur"
         />
         <template v-if="!isLite">
-          <n-input-number
-            ref="valueInputRef"
-            v-if="valType === 'number'"
-            v-model:value="item.value"
-            placeholder="number value"
-            size="small"
-            class="item-value-edit jssl_value"
-            @blur="handleValueBlur"
+          <FieldEdit
+            v-model="item.value"
+            @onValueBlur="handleValueBlur"
+            @previewArray="$emit('previewArray', item)"
           />
-          <n-input-group v-else-if="!Array.isArray(item.value)">
-            <n-input
-              ref="valueInputRef"
-              type="textarea"
-              rows="1"
-              size="small"
-              class="item-value-edit"
-              v-model:value="item.value"
-              placeholder="text value"
-              clearable
-              @blur="handleValueBlur"
-            />
-            <n-button @click="handlePaste" secondary size="small" type="info" title="Auto Paste">
-              <template #icon>
-                <ClipboardPaste20Regular />
-              </template>
-            </n-button>
-          </n-input-group>
-          <n-button
-            v-else
-            :title="item.value"
-            size="small"
-            class="item-value-edit"
-            @click="$emit('previewArray', item)"
-          >
-            📝 {{ $t('common.array') }}
-          </n-button>
         </template>
 
         <n-button-group v-if="!isLite && nameDisplay" size="small">
@@ -271,7 +213,7 @@ export default defineComponent({
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .translate-item {
   margin-left: -10px;
   padding-left: 10px;

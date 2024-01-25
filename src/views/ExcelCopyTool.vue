@@ -239,7 +239,7 @@ export default defineComponent({
     @drop.prevent.stop="fileDrop"
   >
     <transition name="mc-fade">
-      <DropZone v-show="showDropzone" text="Drop Excel file here" />
+      <DropZone position-fixed v-show="showDropzone" text="Drop Excel file here" />
     </transition>
 
     <div>

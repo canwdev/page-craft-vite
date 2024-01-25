@@ -47,7 +47,7 @@
     "edit_mode": "Edit Mode",
     "folders_mode": "Folders Mode",
     "files_mode": "Files Mode",
-    "n_0": 1
+    "field": "Field"
   },
   "actions": {
     "cancel": "Cancel",

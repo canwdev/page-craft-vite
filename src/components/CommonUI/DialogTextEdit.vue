@@ -28,6 +28,10 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    clearable: {
+      type: Boolean,
+      default: false,
+    },
     // 输入框为input的type
     type: {
       type: String,
@@ -39,6 +43,7 @@ export default defineComponent({
     const {text} = toRefs(props)
     const mVisible = useModelWrapper(props, emit, 'visible')
 
+    const inputRef = ref()
     const editingText = ref('')
     watch(
       text,
@@ -48,7 +53,16 @@ export default defineComponent({
       {immediate: true}
     )
 
+    watch(mVisible, (val) => {
+      if (val) {
+        setTimeout(() => {
+          inputRef.value?.focus()
+        })
+      }
+    })
+
     return {
+      inputRef,
       mVisible,
       editingText,
       handleSave() {
@@ -72,8 +86,15 @@ export default defineComponent({
     :show="mVisible"
   >
     <template v-if="mVisible">
-      <VueMonaco v-if="isTextarea" v-model="editingText" language="json" style="height: 500px" />
+      <VueMonaco
+        ref="inputRef"
+        v-if="isTextarea"
+        v-model="editingText"
+        language="json"
+        style="height: 500px"
+      />
       <n-input
+        ref="inputRef"
         v-else
         :type="type"
         v-model:value="editingText"
@@ -81,6 +102,7 @@ export default defineComponent({
         :rows="isTextarea ? 25 : null"
         :placeholder="placeholder"
         autofocus
+        :clearable="clearable"
       ></n-input>
     </template>
   </n-modal>

@@ -10,6 +10,7 @@ import {useI18n} from 'vue-i18n'
 import {readClipboardData} from '@/utils'
 import {textConvertAdvanced} from '@/components/VueI18nEditTool/copy-enum'
 import {useI18nToolSettingsStore} from '@/store/i18n-tool-settings'
+import FieldEdit from '@/components/VueI18nEditTool/Single/FieldEdit.vue'
 // import countryCodeEmoji from '@/utils/country-code-emoji'
 
 /**
@@ -58,6 +59,7 @@ async function createFile(
 export default defineComponent({
   name: 'BatchTranslateItem',
   components: {
+    FieldEdit,
     DialogTextEdit,
     DocumentEdit20Regular,
     SaveMultiple20Regular,
@@ -127,38 +129,21 @@ export default defineComponent({
       }
       return findNode()
     })
+
+    // 翻译文件的json对象
     const translateObj = shallowRef<any>(null)
-    const translateText = ref<string | number | null>(null)
+
+    // 当前翻译的字段值
+    const fieldValue = ref<any>(null)
+
+    // 字段值是否发生变化
     const isChanged = ref(false)
-    const isFieldArray = ref(false)
-    const isFieldNumber = ref(false)
 
-    // 判断数据类型，并返回格式化的值
-    const getFormatTextType = (val: any) => {
-      isFieldArray.value = false
-      isFieldNumber.value = false
-
-      if (Array.isArray(val)) {
-        isFieldArray.value = true
-        // 如果是数组，则返回格式化的字符串
-        return JSON.stringify(val, null, 2)
-      }
-      if (typeof val === 'number') {
-        isFieldNumber.value = true
-      }
-      return val
+    const getValue = () => {
+      return _get(translateObj.value, translatePath.value, null)
     }
-    const getText = () => {
-      const res = _get(translateObj.value, translatePath.value, null)
-      return getFormatTextType(res)
-    }
-    const setText = (val: any = translateText.value) => {
+    const setValue = (val: any = fieldValue.value) => {
       try {
-        if (isFieldArray.value && val) {
-          val = JSON.parse(val)
-        } else if (isFieldNumber.value) {
-          val = Number(val)
-        }
         _set(translateObj.value, translatePath.value, val)
       } catch (e: any) {
         console.error(e)
@@ -172,9 +157,7 @@ export default defineComponent({
       async (value) => {
         if (!value) {
           translateObj.value = null
-          translateText.value = null
-          isFieldArray.value = false
-          isFieldNumber.value = false
+          fieldValue.value = null
           nextTick(() => {
             isChanged.value = false
           })
@@ -183,18 +166,18 @@ export default defineComponent({
         const file = await (value.entry as FileSystemFileHandle).getFile()
         const str = await handleReadSelectedFile(file)
         translateObj.value = JSON.parse(str as string)
-        translateText.value = getText()
+        fieldValue.value = getValue()
         nextTick(() => {
           isChanged.value = false
         })
       },
       {immediate: true}
     )
-    watch(translateText, () => {
+    watch(fieldValue, () => {
       isChanged.value = true
     })
     watch(translatePath, (val) => {
-      translateText.value = getText()
+      fieldValue.value = getValue()
       nextTick(() => {
         isChanged.value = false
       })
@@ -233,12 +216,10 @@ export default defineComponent({
     // })
 
     const inputRef = ref()
-    const isShowArrayEdit = ref(false)
 
     const createField = (val) => {
-      setText('')
-      translateText.value = val
-      isFieldArray.value = Array.isArray(val)
+      setValue('')
+      fieldValue.value = val
 
       nextTick(() => {
         inputRef.value.focus()
@@ -250,13 +231,7 @@ export default defineComponent({
         isTrimQuotes: intSettingsStore.autoPasteTrimQuotes,
       })
 
-      return getFormatTextType(val)
-    }
-
-    const handlePaste = async () => {
-      const val: any = await readClipboardData()
-
-      translateText.value = handlePasteFormat(val)
+      return val
     }
 
     const pasteCreateField = async () => {
@@ -268,7 +243,7 @@ export default defineComponent({
       if (!isChanged.value) {
         return
       }
-      setText()
+      setValue()
       await handleSaveFile()
       nextTick(() => {
         isChanged.value = false
@@ -279,21 +254,10 @@ export default defineComponent({
     }
 
     const cancelChange = () => {
-      translateText.value = getText()
+      fieldValue.value = getValue()
       nextTick(() => {
         isChanged.value = false
       })
-    }
-
-    const handleSaveArray = (val) => {
-      try {
-        JSON.parse(val) // validate only
-        translateText.value = val
-        isShowArrayEdit.value = false
-      } catch (e: any) {
-        console.error(e)
-        window.$message.error(e.message)
-      }
     }
 
     const isLocalCreated = ref(false)
@@ -326,25 +290,47 @@ export default defineComponent({
       btn && btn.click()
     }
 
+    const isShowArrayEdit = ref(false)
+    const currentArrayString = ref<string>('')
+    watch(isShowArrayEdit, (val) => {
+      if (!val) {
+        currentArrayString.value = ''
+      }
+    })
+    const handlePreviewArrayText = () => {
+      currentArrayString.value = JSON.stringify(fieldValue.value, null, 2)
+      isShowArrayEdit.value = true
+    }
+    const handleSaveArray = (val) => {
+      try {
+        fieldValue.value = JSON.parse(val)
+        isShowArrayEdit.value = false
+      } catch (e: any) {
+        console.error(e)
+        window.$message.error(e.message)
+      }
+    }
+
     return {
+      intSettingsStore,
       currentItem,
       translateObj,
-      translateText,
+      fieldValue,
       isChanged,
       createField,
-      handlePaste,
       pasteCreateField,
       saveChange,
       cancelChange,
-      handleSaveArray,
-      isFieldArray,
-      isFieldNumber,
       inputRef,
-      isShowArrayEdit,
       // countryFlag,
       isLocalCreated,
       handleCreateFile,
       handleReload,
+
+      isShowArrayEdit,
+      currentArrayString,
+      handlePreviewArrayText,
+      handleSaveArray,
     }
   },
 })
@@ -379,52 +365,15 @@ export default defineComponent({
       </template>
     </div>
     <template v-else-if="translatePath">
-      <n-space v-if="translateText !== null" align="center" size="small">
-        <n-input-number
-          ref="valueInputRef"
-          v-if="isFieldNumber"
-          v-model:value="translateText"
-          placeholder="number value"
-          size="small"
-          class="font-code"
-        />
-        <n-input
-          v-else
-          ref="inputRef"
-          type="textarea"
-          size="small"
-          v-model:value="translateText"
-          :placeholder="isFieldArray ? $t('msgs.input_array') : $t('msgs.input_text')"
-          :rows="isFieldArray ? 2 : 1"
-          style="width: 450px"
-          :class="{'font-code': isFieldArray}"
-          clearable
-        />
-
-        <n-button-group>
-          <n-button @click="handlePaste" secondary size="small" type="primary" title="Auto Paste">
-            <template #icon>
-              <ClipboardPaste20Regular />
-            </template>
-          </n-button>
-
-          <n-button
-            secondary
-            v-if="isFieldArray"
-            @click="isShowArrayEdit = true"
-            size="small"
-            :title="$t('actions.edit')"
-          >
-            <template #icon><DocumentEdit20Regular /></template>
-          </n-button>
-        </n-button-group>
+      <n-space v-if="fieldValue !== null" align="center" size="small">
+        <FieldEdit v-model="fieldValue" @previewArray="handlePreviewArrayText" />
 
         <n-button-group v-if="isChanged">
           <n-button
             size="small"
             type="primary"
             @click="saveChange({isEmit: true})"
-            title="Batch save"
+            title="Batch Save"
           >
             <template #icon><SaveMultiple20Regular /></template>
           </n-button>
@@ -434,7 +383,12 @@ export default defineComponent({
         </n-button-group>
       </n-space>
       <n-button-group v-else>
-        <n-button size="small" @click="pasteCreateField()" type="primary">
+        <n-button
+          size="small"
+          @click="pasteCreateField()"
+          type="primary"
+          :title="`Auto Paste Create (${intSettingsStore.autoPasteTextConvertMode})`"
+        >
           <template #icon>
             <ClipboardPaste20Regular />
           </template>
@@ -448,17 +402,18 @@ export default defineComponent({
     <div style="color: gray" v-else>{{ $t('msgs.please_select_a_tran') }}</div>
 
     <DialogTextEdit
+      v-if="isShowArrayEdit"
       is-textarea
       :title="$t('common.array_detail')"
       :placeholder="$t('common.array_json_string')"
       v-model:visible="isShowArrayEdit"
-      :text="translateText"
+      :text="currentArrayString"
       @onSave="handleSaveArray"
     />
   </n-card>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .batch-translate-item {
   margin-bottom: 10px;
 
@@ -484,6 +439,13 @@ export default defineComponent({
     font-size: 12px;
     opacity: 0.3;
     margin-left: 10px;
+  }
+
+  .item-value-edit {
+    width: 450px;
+    &._button {
+      width: 200px;
+    }
   }
 }
 </style>

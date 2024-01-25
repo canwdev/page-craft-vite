@@ -92,8 +92,13 @@ export default defineComponent({
       mValue.value = editorInstance.value.getValue()
     })
 
+    const focus = () => {
+      editorInstance.value.focus()
+    }
+
     return {
       editorContainerRef,
+      focus,
     }
   },
 })

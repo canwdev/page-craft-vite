@@ -8,12 +8,16 @@ export default defineComponent({
       type: String,
       default: '',
     },
+    positionFixed: {
+      type: Boolean,
+      default: false,
+    },
   },
 })
 </script>
 
 <template>
-  <div class="file-dropzone">
+  <div class="file-dropzone" :class="{'position-fixed': positionFixed}">
     <div class="border-dashed">{{ text || $t('msgs.drop_files_here') }}</div>
   </div>
 </template>
@@ -30,6 +34,10 @@ export default defineComponent({
   padding: 20px;
   box-sizing: border-box;
   z-index: 200;
+
+  &.position-fixed {
+    position: fixed;
+  }
 
   .border-dashed {
     height: 100%;

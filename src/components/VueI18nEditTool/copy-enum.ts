@@ -27,8 +27,11 @@ export const textConvertMultipleLine = (
     str = str.replace(/^\s*[\r\n]/gm, '')
   }
   if (isTrimQuotes) {
-    // 移除首尾引号 ` | ' | "
-    str = str.replace(/^['"`]+|['"`]+$/g, '')
+    // 首尾字符必须相同
+    if (str.charAt(0) === str.charAt(str.length - 1)) {
+      // 移除首尾引号 ` | ' | "
+      str = str.replace(/^['"`]+|['"`]+$/g, '')
+    }
   }
   if (mode === TextConvertMode.TEXT) {
     return str

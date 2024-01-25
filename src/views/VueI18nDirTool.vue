@@ -9,7 +9,7 @@ import {
   I18nJsonObjUtils,
   ITranslateTreeItem,
 } from '@/enum/vue-i18n-tool'
-import BatchTranslate from '@/components/VueI18nEditTool/BatchTranslate.vue'
+import BatchTranslate from '@/components/VueI18nEditTool/Batch/BatchTranslate.vue'
 import DropZone from '@/components/CommonUI/DropZone.vue'
 import {useFileDrop} from '@/hooks/use-file-drop'
 import {useMetaTitle} from '@/hooks/use-meta'
@@ -17,7 +17,7 @@ import {useBeforeUnload, useSaveShortcut} from '@/hooks/use-beforeunload'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import VueMonaco from '@/components/CommonUI/VueMonaco.vue'
 import dynamicLoadScript from '@/utils/dynamic-load-script'
-import TranslateTreeItem from '@/components/VueI18nEditTool/TranslateTreeItem.vue'
+import TranslateTreeItem from '@/components/VueI18nEditTool/Single/TranslateTreeItem.vue'
 import {useSettingsStore} from '@/store/settings'
 import {useMainStore} from '@/store/main'
 import {useI18n} from 'vue-i18n'
@@ -334,7 +334,7 @@ export default defineComponent({
     @drop.prevent.stop="fileDrop"
   >
     <transition name="mc-fade">
-      <DropZone v-show="showDropzone" :text="$t('msgs.drag_folder_here')" />
+      <DropZone position-fixed v-show="showDropzone" :text="$t('msgs.drag_folder_here')" />
     </transition>
 
     <n-card size="small">

@@ -1,6 +1,6 @@
 <script lang="ts">
 import {defineComponent, ref} from 'vue'
-import TranslateTreeItem from '@/components/VueI18nEditTool/TranslateTreeItem.vue'
+import TranslateTreeItem from '@/components/VueI18nEditTool/Single/TranslateTreeItem.vue'
 import {exportI18nTreeJsonObj, I18nJsonObjUtils, ITranslateTreeItem} from '@/enum/vue-i18n-tool'
 import {handleReadSelectedFile} from '@/utils/exporter'
 import iconTranslate from '../assets/textures/translate.svg?url'
@@ -37,16 +37,20 @@ export default defineComponent({
     const {t: $t} = useI18n()
     const mainStore = useMainStore()
     const translateTreeRoot = ref<ITranslateTreeItem[]>(I18nJsonObjUtils.parseWithRoot())
+    const isLoading = ref(false)
 
     const fileHandle = shallowRef<FileSystemFileHandle>()
     const handleImport = async (file) => {
       try {
+        isLoading.value = true
         const str = await handleReadSelectedFile(file)
         const obj = JSON.parse(str as string)
         translateTreeRoot.value = I18nJsonObjUtils.parseWithRoot(obj)
       } catch (e: any) {
         console.error(e)
         window.$message.error(e.message)
+      } finally {
+        isLoading.value = false
       }
     }
 
@@ -115,6 +119,42 @@ export default defineComponent({
 
     const isShowToolSettings = ref(false)
 
+    const loadDemo = () => {
+      translateTreeRoot.value = I18nJsonObjUtils.parseWithRoot({
+        hello_world: {
+          section_a: {
+            test_str: 'This is a test string',
+            test_arr: ['line 1', 'line 2', 'line 3'],
+            test_number: 114514,
+          },
+          section_b: {
+            '': "Blur this input and it'll generate the key automatically!",
+          },
+          section_c: {
+            '': '中文 is Supported',
+          },
+        },
+      })
+    }
+
+    const handleFileDrop = async (e) => {
+      // Process all the items.
+      for (const item of e.dataTransfer.items) {
+        // Careful: `kind` will be 'file' for both file
+        // _and_ directory entries.
+        if (item.kind === 'file') {
+          const entry = await item.getAsFileSystemHandle()
+          if (entry.kind !== 'directory') {
+            fileHandle.value = entry
+            const file = await entry.getFile()
+            await handleImport(file)
+          } else {
+            window.$message.error('Please drag and drop a json file here!')
+          }
+        }
+      }
+    }
+
     return {
       metaTitle,
       translateTreeRoot,
@@ -124,45 +164,14 @@ export default defineComponent({
       handleCloseFile,
       handleSaveFile,
       handleExport,
-      loadDemo() {
-        translateTreeRoot.value = I18nJsonObjUtils.parseWithRoot({
-          hello_world: {
-            section_a: {
-              test_str: 'This is a test string',
-              test_arr: ['line 1', 'line 2', 'line 3'],
-              test_number: 114514,
-            },
-            section_b: {
-              '': "Blur this input and it'll generate the key automatically!",
-            },
-            section_c: {
-              '': '中文 is Supported',
-            },
-          },
-        })
-      },
+      loadDemo,
       iconTranslate,
       ...useFileDrop({
-        cb: async (e) => {
-          // Process all the items.
-          for (const item of e.dataTransfer.items) {
-            // Careful: `kind` will be 'file' for both file
-            // _and_ directory entries.
-            if (item.kind === 'file') {
-              const entry = await item.getAsFileSystemHandle()
-              if (entry.kind !== 'directory') {
-                fileHandle.value = entry
-                const file = await entry.getFile()
-                await handleImport(file)
-              } else {
-                window.$message.error('Please drag and drop a json file here!')
-              }
-            }
-          }
-        },
+        cb: handleFileDrop,
       }),
       mainStore,
       isShowToolSettings,
+      isLoading,
     }
   },
 })
@@ -176,7 +185,7 @@ export default defineComponent({
     @drop.prevent.stop="fileDrop"
   >
     <transition name="mc-fade">
-      <DropZone v-show="showDropzone" :text="$t('msgs.drag_folder_here')" />
+      <DropZone position-fixed v-show="showDropzone" :text="$t('msgs.drag_folder_here')" />
     </transition>
 
     <n-card size="small" style="position: sticky; top: 0; z-index: 100; margin-bottom: 10px">
@@ -235,7 +244,9 @@ export default defineComponent({
         :index="index"
       />
     </div>
-    <div style="height: 500px"></div>
+    <div class="height-placeholder">
+      <div v-show="isLoading" class="loading-wrap">Loading...</div>
+    </div>
 
     <I18nToolSettings v-model:visible="isShowToolSettings" />
   </div>
@@ -248,8 +259,16 @@ export default defineComponent({
   overflow: auto;
   position: relative;
 
+  .height-placeholder {
+    height: 500px;
+  }
+  .loading-wrap {
+    text-align: center;
+    padding: 10px;
+  }
+
   ._container {
-    max-width: 1600px;
+    max-width: 1000px;
     margin-left: auto;
     margin-right: auto;
   }

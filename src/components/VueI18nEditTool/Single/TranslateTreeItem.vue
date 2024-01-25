@@ -8,7 +8,7 @@ import {
   ITranslateItem,
   ITranslateTreeItem,
 } from '@/enum/vue-i18n-tool'
-import TranslateItem from './TranslateItem.vue'
+import TranslateItem from '@/components/VueI18nEditTool/Single/TranslateItem.vue'
 import {copyToClipboard, guid, readClipboardData} from '@/utils'
 import DialogTextEdit from '@/components/CommonUI/DialogTextEdit.vue'
 import {
@@ -26,6 +26,7 @@ import {
   textConvertAdvanced,
   TextConvertMode,
 } from '@/components/VueI18nEditTool/copy-enum'
+import {useArrayEdit} from '@/components/VueI18nEditTool/Single/use-array-edit'
 
 export default defineComponent({
   name: 'TranslateTreeItem',
@@ -92,16 +93,6 @@ export default defineComponent({
 
     const isExpand = ref(true)
 
-    const isShowArrayEdit = ref(false)
-    const currentPreviewItem = shallowRef<ITranslateItem | null>(null)
-    const currentArrayString = ref<string>('')
-    watch(isShowArrayEdit, (val) => {
-      if (!val) {
-        currentPreviewItem.value = null
-        currentArrayString.value = ''
-      }
-    })
-
     const namespacePrefix = computed(() => {
       if (!item.value) {
         return ''
@@ -144,6 +135,7 @@ export default defineComponent({
     })
 
     return {
+      intSettingsStore,
       handleAddChildren,
       handleAddTranslate,
       handleAutoAdd,
@@ -164,29 +156,11 @@ export default defineComponent({
         item.value.translates = list
       },
       isExpand,
-      isShowArrayEdit,
-      currentPreviewItem,
-      currentArrayString,
-      handlePreviewArray(item: ITranslateItem) {
-        currentPreviewItem.value = item
-        currentArrayString.value = JSON.stringify(item.value, null, 2)
-        isShowArrayEdit.value = true
-      },
-      handleSaveArray(val) {
-        if (currentPreviewItem.value) {
-          try {
-            currentPreviewItem.value.value = JSON.parse(val || '[]')
-            isShowArrayEdit.value = false
-          } catch (e: any) {
-            console.error(e)
-            window.$message.error(e.message)
-          }
-        }
-      },
       isKeyDuplicated,
       checkDuplicatedGroupKey,
       namespacePrefix,
       namespaceInputRef,
+      ...useArrayEdit(),
     }
   },
 })
@@ -265,26 +239,28 @@ export default defineComponent({
         />
       </div>
 
-      <n-button-group v-if="!isLite" align="center" style="margin-top: 5px">
-        <n-button size="small" title="Add translate item" type="info" @click="handleAddTranslate">
-          <template #icon>
-            <Add20Regular />
-          </template>
-          {{ $t('common.translate') }}
-        </n-button>
-        <n-button
-          size="small"
-          title="Auto paste and copy key"
-          type="info"
-          secondary
-          @click="handleAutoAdd"
-        >
-          <template #icon>
-            <ClipboardPaste20Regular />
-          </template>
-          Auto Paste
-        </n-button>
-      </n-button-group>
+      <div class="actions-wrap">
+        <n-button-group v-if="!isLite">
+          <n-button size="small" title="Add translate item" type="info" @click="handleAddTranslate">
+            <template #icon>
+              <Add20Regular />
+            </template>
+            {{ $t('common.field') }}
+          </n-button>
+          <n-button
+            size="small"
+            type="info"
+            secondary
+            @click="handleAutoAdd"
+            :title="`Auto Paste (${intSettingsStore.autoPasteTextConvertMode}) and copy key`"
+          >
+            <template #icon>
+              <ClipboardPaste20Regular />
+            </template>
+            Auto Paste
+          </n-button>
+        </n-button-group>
+      </div>
 
       <div class="split-line" />
 
@@ -301,17 +277,23 @@ export default defineComponent({
           @onKeyClick="(...args) => $emit('onKeyClick', ...args)"
         />
       </template>
-      <n-button
-        v-if="!isLite"
-        type="primary"
-        @click="handleAddChildren"
-        title="Add translate children group"
-      >
-        <template #icon>
-          <AddSquare20Regular />
-        </template>
-        {{ $t('common.group') }}</n-button
-      >
+
+      <div class="actions-wrap">
+        <span class="namespace-display">
+          {{ namespacePrefix ? namespacePrefix + '.' : '' }}{{ item.namespace }}</span
+        >
+        <n-button
+          v-if="!isLite"
+          type="primary"
+          @click="handleAddChildren"
+          title="Add translate children group"
+        >
+          <template #icon>
+            <AddSquare20Regular />
+          </template>
+          {{ $t('common.group') }}
+        </n-button>
+      </div>
     </div>
 
     <DialogTextEdit
@@ -356,6 +338,18 @@ export default defineComponent({
     border-top: 1px dashed $primary;
     margin-top: 10px;
     margin-bottom: 10px;
+  }
+
+  .actions-wrap {
+    margin-top: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+
+    .namespace-display {
+      opacity: 0.5;
+      font-size: 12px;
+    }
   }
 }
 </style>

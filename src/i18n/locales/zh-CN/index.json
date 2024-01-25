@@ -46,7 +46,8 @@
     "welcome": "欢迎使用",
     "edit_mode": "编辑模式",
     "folders_mode": "多文件夹模式",
-    "files_mode": "多文件模式"
+    "files_mode": "多文件模式",
+    "field": "字段"
   },
   "actions": {
     "cancel": "取消",
