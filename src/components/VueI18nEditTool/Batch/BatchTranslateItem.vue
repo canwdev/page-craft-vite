@@ -3,6 +3,7 @@ import {defineComponent, PropType} from 'vue'
 import {DirTreeItem} from '@/enum/vue-i18n-tool'
 import _get from 'lodash/get'
 import _set from 'lodash/set'
+import _unset from 'lodash/unset'
 import {handleReadSelectedFile} from '@/utils/exporter'
 import {ClipboardPaste20Regular, DocumentEdit20Regular, SaveMultiple20Regular} from '@vicons/fluent'
 import DialogTextEdit from '@/components/CommonUI/DialogTextEdit.vue'
@@ -11,6 +12,7 @@ import {readClipboardData} from '@/utils'
 import {textConvertAdvanced} from '@/components/VueI18nEditTool/copy-enum'
 import {useI18nToolSettingsStore} from '@/store/i18n-tool-settings'
 import FieldEdit from '@/components/VueI18nEditTool/Single/FieldEdit.vue'
+import {useAutoPasteConvert} from '@/components/VueI18nEditTool/Single/use-auto-paste-convert'
 // import countryCodeEmoji from '@/utils/country-code-emoji'
 
 /**
@@ -142,7 +144,7 @@ export default defineComponent({
     const getValue = () => {
       return _get(translateObj.value, translatePath.value, null)
     }
-    const setValue = (val: any = fieldValue.value) => {
+    const setValue = (val: any) => {
       try {
         _set(translateObj.value, translatePath.value, val)
       } catch (e: any) {
@@ -150,6 +152,9 @@ export default defineComponent({
         window.$message.error(e.message)
         throw e
       }
+    }
+    const deleteValue = () => {
+      return _unset(translateObj.value, translatePath.value)
     }
 
     watch(
@@ -202,6 +207,7 @@ export default defineComponent({
 
         await writable.write(txt)
         await writable.close()
+        console.log('[handleSaveFile]')
         window.$message.success($t('msgs.saved'))
       } catch (error: any) {
         console.error(error)
@@ -217,9 +223,11 @@ export default defineComponent({
 
     const inputRef = ref()
 
+    const isCreatingNotSave = ref(false)
     const createField = (val) => {
-      setValue('')
+      setValue(val)
       fieldValue.value = val
+      isCreatingNotSave.value = true
 
       nextTick(() => {
         inputRef.value.focus()
@@ -243,7 +251,7 @@ export default defineComponent({
       if (!isChanged.value) {
         return
       }
-      setValue()
+      setValue(fieldValue.value)
       await handleSaveFile()
       nextTick(() => {
         isChanged.value = false
@@ -254,6 +262,13 @@ export default defineComponent({
     }
 
     const cancelChange = () => {
+      if (isCreatingNotSave.value) {
+        // 取消创建
+
+        fieldValue.value = null
+        isCreatingNotSave.value = false
+        return
+      }
       fieldValue.value = getValue()
       nextTick(() => {
         isChanged.value = false
@@ -348,6 +363,7 @@ export default defineComponent({
       <span class="translate-path">
         {{ translatePath }}
       </span>
+      <button disabled>Del</button>
     </div>
 
     <div style="color: hotpink; margin-bottom: 10px" v-if="!currentItem">
@@ -366,7 +382,7 @@ export default defineComponent({
     </div>
     <template v-else-if="translatePath">
       <n-space v-if="fieldValue !== null" align="center" size="small">
-        <FieldEdit v-model="fieldValue" @previewArray="handlePreviewArrayText" />
+        <FieldEdit ref="inputRef" v-model="fieldValue" @previewArray="handlePreviewArrayText" />
 
         <n-button-group v-if="isChanged">
           <n-button

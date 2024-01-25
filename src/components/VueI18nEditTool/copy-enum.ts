@@ -63,7 +63,14 @@ export const textConvertAdvanced = (
   options: any = {}
 ) => {
   if (mode === TextConvertMode.NUMBER) {
-    return Number(val)
+    let num = Number(val)
+
+    if (Number.isNaN(num)) {
+      window.$message.error(`Invalid number: ${val}, converted to 0`)
+      num = Number(0)
+    }
+    console.log(num)
+    return num
   }
   val = textConvertMultipleLine(val, mode, options)
   if (mode === TextConvertMode.JSON) {

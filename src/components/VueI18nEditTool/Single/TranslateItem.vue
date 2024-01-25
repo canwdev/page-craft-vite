@@ -175,6 +175,7 @@ export default defineComponent({
         />
         <template v-if="!isLite">
           <FieldEdit
+            ref="valueInputRef"
             v-model="item.value"
             @onValueBlur="handleValueBlur"
             @previewArray="$emit('previewArray', item)"

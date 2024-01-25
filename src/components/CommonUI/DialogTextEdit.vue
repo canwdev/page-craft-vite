@@ -38,7 +38,7 @@ export default defineComponent({
       default: 'text',
     },
   },
-  emits: ['onSave'],
+  emits: ['onSave', 'update:modelValue', 'update:visible'],
   setup(props, {emit}) {
     const {text} = toRefs(props)
     const mVisible = useModelWrapper(props, emit, 'visible')

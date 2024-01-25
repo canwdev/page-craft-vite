@@ -13,6 +13,7 @@ export interface StOptionItem {
   selectOptions?: any[]
   // 是否已禁用
   disabled?: boolean
+  hidden?: boolean
   children?: StOptionItem[] | any
   // 图标
   icon?: string

@@ -94,6 +94,10 @@ export default defineComponent({
     justify-content: space-between;
     font-weight: bold;
     border-bottom: 1px dashed $color_border;
+    position: sticky;
+    top: 0;
+    backdrop-filter: blur(10px);
+    z-index: 2;
 
     .p-left,
     .p-right {

@@ -52,6 +52,7 @@ export default defineComponent({
 <template>
   <div class="option-ui">
     <OptionItem
+      v-show="!item.hidden"
       v-for="item in optionList"
       :item="item"
       :key="item.key"
