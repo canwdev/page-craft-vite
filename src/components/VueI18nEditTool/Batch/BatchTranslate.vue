@@ -37,8 +37,9 @@ export default defineComponent({
 
     const handleSaveChanged = async () => {
       // save other texts in the same level if not save
-      // console.log('itemsRef', itemsRef.value)
+      // console.log('[handleSaveChanged]', itemsRef.value)
 
+      // 逐个更新文件，而不是在组件内更新，以减少磁盘读写
       for (let i = 0; i < itemsRef.value.length; i++) {
         const item = itemsRef.value[i]
         await item.saveChange({isSetValue: true})
@@ -77,6 +78,7 @@ export default defineComponent({
       :file-path-arr="isFoldersMode ? filePathArr.slice(1) : filePathArr"
       :translate-path="translatePath"
       :is-folders-mode="isFoldersMode"
+      @saveChanged="handleSaveChanged"
     />
   </div>
 </template>

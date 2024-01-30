@@ -3,8 +3,6 @@ import {TextConvertMode} from '@/components/VueI18nEditTool/copy-enum'
 type IState = {
   // 文件夹编辑器:是否为文件夹模式
   isFoldersMode: boolean
-  // 文件夹编辑器:是否自动展开所有文件夹
-  autoExpandAllFolders: boolean
   // 自动粘贴: 去掉引号
   autoPasteTrimQuotes: boolean
   // 自动粘贴: 文本转换器模式
@@ -15,7 +13,6 @@ export const useI18nToolSettingsStore = defineStore('i18nToolSettings', {
   state: (): IState => {
     return {
       isFoldersMode: true,
-      autoExpandAllFolders: false,
       autoPasteTrimQuotes: true,
       autoPasteTextConvertMode: TextConvertMode.TEXT,
     }

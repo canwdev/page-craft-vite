@@ -228,8 +228,9 @@ export default defineComponent({
 
         await writable.write(txt)
         await writable.close()
-        console.log('[handleSaveFile]')
-        window.$message.success($t('msgs.saved'))
+        const savedPath = dirItem.value.label + ': ' + fileHandle.name
+        console.log('[handleSaveFile]', savedPath)
+        window.$message.success(`${savedPath} ` + $t('msgs.saved'))
       } catch (error: any) {
         console.error(error)
         window.$message.error($t('msgs.error') + error.message)

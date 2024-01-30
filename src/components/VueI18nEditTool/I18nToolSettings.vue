@@ -55,12 +55,6 @@ export default defineComponent({
               store: intSettingsStore,
               type: StOptionType.SWITCH,
             },
-            {
-              label: `Folder Tree: autoExpandAllFolders`,
-              key: 'autoExpandAllFolders',
-              store: intSettingsStore,
-              type: StOptionType.SWITCH,
-            },
           ],
         },
       ]

@@ -18,15 +18,14 @@ import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import VueMonaco from '@/components/CommonUI/VueMonaco.vue'
 import dynamicLoadScript from '@/utils/dynamic-load-script'
 import TranslateTreeItem from '@/components/VueI18nEditTool/Single/TranslateTreeItem.vue'
-import {useSettingsStore} from '@/store/settings'
 import {useMainStore} from '@/store/main'
 import {useI18n} from 'vue-i18n'
 import {Document20Regular, Folder20Regular} from '@vicons/fluent'
 import {NIcon} from 'naive-ui'
 import {useI18nToolSettingsStore} from '@/store/i18n-tool-settings'
 import I18nToolSettings from '@/components/VueI18nEditTool/I18nToolSettings.vue'
+import {useLocalStorageObject} from '@/hooks/use-local-storage'
 
-let idSeed = 0
 const formatDirTreeItem = (data: any = {}): DirTreeItem => {
   return {
     key: data.key,
@@ -35,14 +34,14 @@ const formatDirTreeItem = (data: any = {}): DirTreeItem => {
     entry: data.entry,
     parentDirs: data.parentDirs,
     children: data.children || null,
-    // prefix: () =>
-    //   h(
-    //     NIcon,
-    //     {size: 18},
-    //     {
-    //       default: () => h(data.kind === 'directory' ? Folder20Regular : Document20Regular),
-    //     }
-    //   ),
+    prefix: () =>
+      h(
+        NIcon,
+        {size: 18},
+        {
+          default: () => h(data.kind === 'directory' ? Folder20Regular : Document20Regular),
+        }
+      ),
   }
 }
 
@@ -73,6 +72,9 @@ export default defineComponent({
     const dirTree = ref<DirTreeItem[]>([])
     const isLoading = ref(false)
 
+    // 保存手动展开的文件夹keys
+    const expandedKeys = useLocalStorageObject('vue_i18n_dir_tool_expanded_keys', [])
+
     // 递归读取文件夹
     const recursiveReadDir = async (
       dirHandle,
@@ -80,7 +82,6 @@ export default defineComponent({
       tree: DirTreeItem[] = [],
       parentDirs: string[] = []
     ): Promise<DirTreeItem[]> => {
-      idSeed++
       let idx = 0
       for await (const entry of dirHandle.values()) {
         idx++
@@ -94,7 +95,7 @@ export default defineComponent({
           let children = []
           tree.push(
             formatDirTreeItem({
-              key: `${idSeed}-D-${deep}-${idx}`,
+              key: `${deep}-${entry.kind}-${entry.name}`,
               kind: entry.kind,
               label: entry.name,
               entry,
@@ -109,7 +110,7 @@ export default defineComponent({
           if (isValidFile) {
             tree.push(
               formatDirTreeItem({
-                key: `${idSeed}-F-${deep}-${idx}`,
+                key: `${deep}-${entry.kind}-${entry.name}`,
                 kind: entry.kind,
                 label: entry.name,
                 entry,
@@ -137,7 +138,6 @@ export default defineComponent({
 
     // 获取当前目录下的所有文件
     const readJsonFiles = async (dirHandle, tree: DirTreeItem[] = []): Promise<DirTreeItem[]> => {
-      idSeed++
       let idx = 0
       for await (const entry of dirHandle.values()) {
         idx++
@@ -146,7 +146,7 @@ export default defineComponent({
           if (isValidFile) {
             tree.push(
               formatDirTreeItem({
-                key: `${idSeed}-FILE-${idx}`,
+                key: `${entry.kind}-${entry.name}`,
                 kind: entry.kind,
                 label: entry.name,
                 entry,
@@ -195,7 +195,10 @@ export default defineComponent({
     }
     const handleCloseDir = () => {
       dirHandle.value = null
+      currentEditEntry.value = null
+      currentEditText.value = null
       dirTree.value = []
+      currentFilePathArr.value = []
     }
 
     const currentEditEntry = ref<FileSystemFileHandle | null>(null)
@@ -371,6 +374,7 @@ export default defineComponent({
       mainStore,
       isShowToolSettings,
       isLoading,
+      expandedKeys,
     }
   },
 })
@@ -463,15 +467,17 @@ export default defineComponent({
               block-line
               :data="dirTree"
               :node-props="nodeProps"
-              :default-expand-all="intSettingsStore.autoExpandAllFolders"
+              :default-expand-all="false"
               expand-on-click
               selectable
               class="font-code"
               virtual-scroll
+              v-model:expanded-keys="expandedKeys"
             />
           </n-scrollbar>
         </n-layout-sider>
         <n-layout-content>
+          {{ expandedKeys }}
           <div class="main-edit-wrap">
             <template v-if="currentEditEntry">
               <div v-if="false" class="action-row"></div>
