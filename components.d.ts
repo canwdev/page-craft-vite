@@ -10,6 +10,7 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     BackgroundLayer: typeof import('./src/components/PageCraft/BackgroundLayer/index.vue')['default']
+    BatchTextEditor: typeof import('./src/components/VueI18nEditTool/BatchTextEditor/BatchTextEditor.vue')['default']
     BatchTranslate: typeof import('./src/components/VueI18nEditTool/Batch/BatchTranslate.vue')['default']
     BatchTranslateItem: typeof import('./src/components/VueI18nEditTool/Batch/BatchTranslateItem.vue')['default']
     BlockItemCard: typeof import('./src/components/PageCraft/InventoryModal/BlockItemCard.vue')['default']
@@ -79,6 +80,7 @@ declare module '@vue/runtime-core' {
     RouterView: typeof import('vue-router')['RouterView']
     StyleEditor: typeof import('./src/components/PageCraft/StyleEditor/index.vue')['default']
     StylusToolsDialog: typeof import('./src/components/PageCraft/StyleEditor/StylusToolsDialog.vue')['default']
+    SubTextEditor: typeof import('./src/components/VueI18nEditTool/BatchTextEditor/SubTextEditor.vue')['default']
     SystemSettings: typeof import('./src/components/PageCraft/SystemSettings.vue')['default']
     ToolBar: typeof import('./src/components/PageCraft/ToolBar/index.vue')['default']
     ToolItem: typeof import('./src/components/PageCraft/ToolBar/ToolItem.vue')['default']

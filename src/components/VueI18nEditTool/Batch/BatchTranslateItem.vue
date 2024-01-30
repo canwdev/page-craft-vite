@@ -18,6 +18,7 @@ import {textConvertAdvanced} from '@/components/VueI18nEditTool/copy-enum'
 import {useI18nToolSettingsStore} from '@/store/i18n-tool-settings'
 import FieldEdit from '@/components/VueI18nEditTool/Single/FieldEdit.vue'
 import {useAutoPasteConvert} from '@/components/VueI18nEditTool/Single/use-auto-paste-convert'
+import {useBatchItem} from '@/components/VueI18nEditTool/Batch/batch-hooks'
 // import countryCodeEmoji from '@/utils/country-code-emoji'
 
 /**
@@ -100,47 +101,10 @@ export default defineComponent({
   emits: ['saveChanged'],
   setup(props, {emit}) {
     const {t: $t} = useI18n()
-    const isLoading = ref(false)
     const intSettingsStore = useI18nToolSettingsStore()
     const {dirItem, filePathArr, translatePath, isFoldersMode} = toRefs(props)
 
-    const findNode = (): DirTreeItem | null => {
-      let find: DirTreeItem | null = null
-      const recursiveFindItem = (children: DirTreeItem[] | null, dirArr: string[], depth = 0) => {
-        const dirName = dirArr[depth]
-        if (!children) {
-          return
-        }
-        // console.log('---', depth, dirName)
-
-        for (let i = 0; i < children.length; i++) {
-          const child = children[i]
-          if (child.label === dirName) {
-            if (depth === dirArr.length - 1) {
-              find = child
-              throw new Error('item found')
-            }
-          }
-          if (child.children) {
-            recursiveFindItem(child.children, dirArr, depth + 1)
-          }
-        }
-      }
-      try {
-        recursiveFindItem(dirItem.value.children, filePathArr.value)
-      } catch (e) {
-        // console.warn(e)
-      }
-      return find
-    }
-
-    const currentItem = computed(() => {
-      if (!isFoldersMode.value) {
-        // 单文件读取
-        return dirItem.value
-      }
-      return findNode()
-    })
+    const {isLoading, currentItem, handleSaveFile} = useBatchItem(props)
 
     // 翻译文件的json对象
     let translateObj = shallowRef<any | null>(null)
@@ -180,7 +144,6 @@ export default defineComponent({
     onBeforeUnmount(() => {
       cleanup()
     })
-    onMounted(() => {})
 
     watch(
       currentItem,
@@ -208,37 +171,6 @@ export default defineComponent({
         isChanged.value = false
       })
     })
-
-    const handleSaveFile = async () => {
-      try {
-        isLoading.value = true
-        if (!currentItem.value) {
-          return
-        }
-        const fileHandle = currentItem.value.entry as FileSystemFileHandle
-        if (!fileHandle) {
-          return
-        }
-        // @ts-ignore
-        const writable = await fileHandle.createWritable()
-
-        // console.log('[translateObj.value]', translateObj.value)
-
-        const txt = JSON.stringify(translateObj.value, null, 2)
-
-        await writable.write(txt)
-        await writable.close()
-        const savedPath = dirItem.value.label + ': ' + fileHandle.name
-        console.log('[handleSaveFile]', savedPath)
-        window.$message.success(`${savedPath} ` + $t('msgs.saved'))
-      } catch (error: any) {
-        console.error(error)
-        window.$message.error($t('msgs.error') + error.message)
-        throw error
-      } finally {
-        isLoading.value = false
-      }
-    }
 
     // const countryFlag = computed(() => {
     //   const code = dirItem.value?.label.split('-').pop()
@@ -278,7 +210,7 @@ export default defineComponent({
       if (isSetValue) {
         setValue(fieldValue.value)
       }
-      await handleSaveFile()
+      await handleSaveFile(JSON.stringify(translateObj.value, null, 2))
       isChanged.value = false
       if (isEmit) {
         emit('saveChanged')

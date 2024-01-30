@@ -3,6 +3,7 @@ import {defineComponent, PropType} from 'vue'
 import {DirTreeItem} from '@/enum/vue-i18n-tool'
 import BatchTranslateItem from '@/components/VueI18nEditTool/Batch/BatchTranslateItem.vue'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
+import {useBatchWrapper} from '@/components/VueI18nEditTool/Batch/batch-hooks'
 
 export default defineComponent({
   name: 'BatchTranslate',
@@ -32,37 +33,16 @@ export default defineComponent({
     },
   },
   setup(props, {emit}) {
-    const {dirTree, isFoldersMode} = toRefs(props)
-    const itemsRef = ref()
+    const {dirTree, isFoldersMode, filePathArr} = toRefs(props)
 
-    const handleSaveChanged = async () => {
-      // save other texts in the same level if not save
-      // console.log('[handleSaveChanged]', itemsRef.value)
-
-      // 逐个更新文件，而不是在组件内更新，以减少磁盘读写
-      for (let i = 0; i < itemsRef.value.length; i++) {
-        const item = itemsRef.value[i]
-        await item.saveChange({isSetValue: true})
-      }
-    }
-    onMounted(() => {
-      globalEventBus.on(GlobalEvents.ON_I18N_SAVE_ALL_CHANGES, handleSaveChanged)
-    })
-    onBeforeUnmount(() => {
-      globalEventBus.off(GlobalEvents.ON_I18N_SAVE_ALL_CHANGES, handleSaveChanged)
-    })
-
-    const filePathArrFiltered = computed(() => {
-      if (isFoldersMode.value) {
-        return dirTree.value.filter((i) => i.kind === 'directory')
-      }
-      return dirTree.value
-    })
+    const {handleSaveChanged, itemsRef, filePathArrFiltered, subFilePathArr} =
+      useBatchWrapper(props)
 
     return {
       handleSaveChanged,
       itemsRef,
       filePathArrFiltered,
+      subFilePathArr,
     }
   },
 })
@@ -75,7 +55,7 @@ export default defineComponent({
       v-for="item in filePathArrFiltered"
       :key="item.key"
       :dir-item="item"
-      :file-path-arr="isFoldersMode ? filePathArr.slice(1) : filePathArr"
+      :file-path-arr="subFilePathArr"
       :translate-path="translatePath"
       :is-folders-mode="isFoldersMode"
       @saveChanged="handleSaveChanged"

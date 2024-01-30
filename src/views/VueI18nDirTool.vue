@@ -25,6 +25,7 @@ import {NIcon} from 'naive-ui'
 import {useI18nToolSettingsStore} from '@/store/i18n-tool-settings'
 import I18nToolSettings from '@/components/VueI18nEditTool/I18nToolSettings.vue'
 import {useLocalStorageObject, useLocalStorageString} from '@/hooks/use-local-storage'
+import BatchTextEditor from '@/components/VueI18nEditTool/BatchTextEditor/BatchTextEditor.vue'
 
 const formatDirTreeItem = (data: any = {}): DirTreeItem => {
   return {
@@ -80,6 +81,7 @@ const editModeOptions = [
 export default defineComponent({
   name: 'VueI18nBatchTool',
   components: {
+    BatchTextEditor,
     I18nToolSettings,
     TranslateTreeItem,
     VueMonaco,
@@ -217,13 +219,13 @@ export default defineComponent({
     const handleCloseDir = () => {
       dirHandle.value = null
       currentEditEntry.value = null
-      currentEditText.value = null
+      editingTextValue.value = null
       dirTree.value = []
       currentFilePathArr.value = []
     }
 
     const currentEditEntry = ref<FileSystemFileHandle | null>(null)
-    const currentEditText = ref<string | null>(null)
+    const editingTextValue = ref<string | null>(null)
     const currentFilePathArr = ref<string[]>([])
 
     const translatePath = ref('')
@@ -235,22 +237,21 @@ export default defineComponent({
         if (!fileHandle) {
           return
         }
-        const file = await fileHandle.getFile()
         // @ts-ignore
         const writable = await fileHandle.createWritable()
 
-        if (editMode.value !== 'text') {
-          currentEditText.value = JSON.stringify(
+        if (editMode.value !== EditMode.TEXT) {
+          editingTextValue.value = JSON.stringify(
             exportI18nTreeJsonObj(translateTreeRoot.value),
             null,
             2
           )
         }
 
-        if (!currentEditText.value) {
-          throw new Error('currentEditText is empty!')
+        if (!editingTextValue.value) {
+          throw new Error('editingTextValue is empty!')
         }
-        await writable.write(currentEditText.value)
+        await writable.write(editingTextValue.value)
         await writable.close()
         await reloadPickedDir()
         window.$message.success($t('msgs.saved'))
@@ -267,11 +268,11 @@ export default defineComponent({
     const translateTreeRoot = ref<ITranslateTreeItem[]>([formatTranslateTreeItem()])
     const updateGuiTranslateTree = () => {
       if (editMode.value !== 'text') {
-        if (!currentEditText.value) {
+        if (!editingTextValue.value) {
           translateTreeRoot.value = []
           return
         }
-        const obj = JSON.parse(currentEditText.value as string)
+        const obj = JSON.parse(editingTextValue.value as string)
         translateTreeRoot.value = I18nJsonObjUtils.parseWithRoot(obj)
       }
     }
@@ -283,7 +284,7 @@ export default defineComponent({
     const {metaTitle} = useMetaTitle()
 
     useSaveShortcut(() => {
-      if (currentEditEntry.value && editMode.value !== 'batch') {
+      if (currentEditEntry.value && editMode.value === EditMode.GUI) {
         handleSaveFile()
         return
       }
@@ -313,7 +314,7 @@ export default defineComponent({
               const entry = option.entry as FileSystemFileHandle
               currentEditEntry.value = entry
               const str = await handleReadSelectedFile(await entry.getFile())
-              currentEditText.value = str as string
+              editingTextValue.value = str as string
               currentFilePathArr.value = [...option.parentDirs, option.label]
               translatePath.value = ''
               updateGuiTranslateTree()
@@ -377,7 +378,7 @@ export default defineComponent({
       reloadPickedDir,
       vueMonacoRef,
       nodeProps,
-      currentEditText,
+      editingTextValue,
       currentEditEntry,
       handleSaveFile,
       editMode,
@@ -433,7 +434,7 @@ export default defineComponent({
             <n-button
               size="small"
               secondary
-              v-if="currentEditEntry && editMode !== EditMode.BATCH"
+              v-if="currentEditEntry && editMode === EditMode.GUI"
               type="primary"
               @click="handleSaveFile"
             >
@@ -501,51 +502,58 @@ export default defineComponent({
           <!--{{ expandedKeys }}-->
           <div class="main-edit-wrap">
             <template v-if="currentEditEntry">
-              <n-card class="action-row" v-if="editMode === EditMode.TEXT">
-                {{ currentFilePathArr.join('/') }}
-              </n-card>
+              <!--文本编辑器-->
+              <!--<template v-if="editMode === EditMode.TEXT">-->
+              <!--  <n-card class="action-row">-->
+              <!--    {{ currentFilePathArr.join('/') }}-->
+              <!--  </n-card>-->
+              <!--  <div class="edit-content-wrap">-->
+              <!--    <VueMonaco-->
+              <!--      ref="vueMonacoRef"-->
+              <!--      v-model="editingTextValue"-->
+              <!--      language="json"-->
+              <!--      show-line-numbers-->
+              <!--    />-->
+              <!--  </div>-->
+              <!--</template>-->
+              <BatchTextEditor
+                v-if="editMode === EditMode.TEXT"
+                :dir-tree="dirTree"
+                :file-path-arr="currentFilePathArr"
+                :translate-path="translatePath"
+                :is-folders-mode="intSettingsStore.isFoldersMode"
+              />
 
-              <div class="edit-content-wrap" :class="{'batch-mode': editMode === EditMode.BATCH}">
-                <!--文本编辑器-->
-                <VueMonaco
-                  ref="vueMonacoRef"
-                  v-if="editMode === EditMode.TEXT"
-                  v-model="currentEditText"
-                  language="json"
-                  show-line-numbers
-                />
+              <!--GUI模式-->
+              <div v-else class="edit-content-wrap batch-mode">
+                <n-scrollbar
+                  class="gui-edit-gui"
+                  :style="{width: editMode === EditMode.BATCH ? '500px' : '100%'}"
+                >
+                  <!--<n-card class="action-row">-->
+                  <!--  {{ currentFilePathArr.join('/') }}-->
+                  <!--</n-card>-->
 
-                <!--GUI模式-->
-                <template v-else>
-                  <n-scrollbar
-                    class="gui-edit-gui"
-                    :style="{width: editMode === EditMode.BATCH ? '500px' : '100%'}"
-                  >
-                    <!--                    <n-card class="action-row">-->
-                    <!--                      {{ currentFilePathArr.join('/') }}-->
-                    <!--                    </n-card>-->
+                  <TranslateTreeItem
+                    v-for="(item, index) in translateTreeRoot"
+                    :key="index"
+                    :index="index"
+                    :item="item"
+                    :is-lite="editMode === EditMode.BATCH"
+                    :title="currentFilePathArr.join('/')"
+                    @onKeyClick="handleKeyClick"
+                  />
+                </n-scrollbar>
 
-                    <TranslateTreeItem
-                      v-for="(item, index) in translateTreeRoot"
-                      :key="index"
-                      :index="index"
-                      :item="item"
-                      :is-lite="editMode === EditMode.BATCH"
-                      :title="currentFilePathArr.join('/')"
-                      @onKeyClick="handleKeyClick"
-                    />
-                  </n-scrollbar>
-
-                  <!--批处理模式-->
-                  <n-scrollbar class="gui-edit-batch" v-if="editMode === EditMode.BATCH">
-                    <BatchTranslate
-                      :dir-tree="dirTree"
-                      :file-path-arr="currentFilePathArr"
-                      :translate-path="translatePath"
-                      :is-folders-mode="intSettingsStore.isFoldersMode"
-                    />
-                  </n-scrollbar>
-                </template>
+                <!--批处理模式-->
+                <n-scrollbar class="gui-edit-batch" v-if="editMode === EditMode.BATCH">
+                  <BatchTranslate
+                    :dir-tree="dirTree"
+                    :file-path-arr="currentFilePathArr"
+                    :translate-path="translatePath"
+                    :is-folders-mode="intSettingsStore.isFoldersMode"
+                  />
+                </n-scrollbar>
               </div>
             </template>
 
