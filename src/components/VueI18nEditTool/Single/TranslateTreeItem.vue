@@ -172,7 +172,7 @@ export default defineComponent({
       <template v-if="isKeyDuplicated">
         <n-tooltip trigger="hover">
           <template #trigger>
-            <div class="error-tip-button">!</div>
+            <div class="mc-error-tip-button">!</div>
           </template>
           Group namespace duplicated, may cause bug!
         </n-tooltip>
@@ -324,7 +324,7 @@ export default defineComponent({
     display: flex;
     align-items: center;
 
-    .error-tip-button {
+    .mc-error-tip-button {
       margin-right: 8px;
     }
   }

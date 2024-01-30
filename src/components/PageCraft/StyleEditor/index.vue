@@ -425,7 +425,11 @@ export default defineComponent({
     </template>
 
     <transition name="mc-fade">
-      <div v-show="errorTip" class="code-error-tip-button font-code" @click="handleErrorTipClick">
+      <div
+        v-show="errorTip"
+        class="code-mc-error-tip-button font-code"
+        @click="handleErrorTipClick"
+      >
         {{ errorTip?.message }}
       </div>
     </transition>
@@ -459,7 +463,7 @@ export default defineComponent({
     height: 100%;
   }
 
-  .code-error-tip-button {
+  .code-mc-error-tip-button {
     position: absolute;
     left: 0;
     right: 0;

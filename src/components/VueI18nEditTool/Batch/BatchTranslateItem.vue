@@ -5,7 +5,12 @@ import _get from 'lodash/get'
 import _set from 'lodash/set'
 import _unset from 'lodash/unset'
 import {handleReadSelectedFile} from '@/utils/exporter'
-import {ClipboardPaste20Regular, DocumentEdit20Regular, SaveMultiple20Regular} from '@vicons/fluent'
+import {
+  ClipboardPaste20Regular,
+  Delete20Regular,
+  DocumentEdit20Regular,
+  SaveMultiple20Regular,
+} from '@vicons/fluent'
 import DialogTextEdit from '@/components/CommonUI/DialogTextEdit.vue'
 import {useI18n} from 'vue-i18n'
 import {readClipboardData} from '@/utils'
@@ -21,6 +26,9 @@ import {useAutoPasteConvert} from '@/components/VueI18nEditTool/Single/use-auto-
  * @param folderPath 如：pages/solution
  */
 async function createFolder(directoryHandle: FileSystemDirectoryHandle, folderPath: string) {
+  if (!folderPath) {
+    return directoryHandle
+  }
   const folders = folderPath.split('/')
 
   let currentDirectory = directoryHandle
@@ -61,6 +69,7 @@ async function createFile(
 export default defineComponent({
   name: 'BatchTranslateItem',
   components: {
+    Delete20Regular,
     FieldEdit,
     DialogTextEdit,
     DocumentEdit20Regular,
@@ -91,6 +100,7 @@ export default defineComponent({
   emits: ['saveChanged'],
   setup(props, {emit}) {
     const {t: $t} = useI18n()
+    const isLoading = ref(false)
     const intSettingsStore = useI18nToolSettingsStore()
     const {dirItem, filePathArr, translatePath, isFoldersMode} = toRefs(props)
 
@@ -132,8 +142,8 @@ export default defineComponent({
       return findNode()
     })
 
-    // 翻译文件的json对象
-    const translateObj = shallowRef<any>(null)
+    // 翻译文件的json对象(非响应式数据)
+    let translateObj: any | null = null
 
     // 当前翻译的字段值
     const fieldValue = ref<any>(null)
@@ -142,26 +152,28 @@ export default defineComponent({
     const isChanged = ref(false)
 
     const getValue = () => {
-      return _get(translateObj.value, translatePath.value, null)
+      return _get(translateObj, translatePath.value, null)
     }
     const setValue = (val: any) => {
       try {
-        _set(translateObj.value, translatePath.value, val)
+        _set(translateObj, translatePath.value, val)
       } catch (e: any) {
         console.error(e)
         window.$message.error(e.message)
         throw e
       }
     }
-    const deleteValue = () => {
-      return _unset(translateObj.value, translatePath.value)
+    const deleteField = () => {
+      _unset(translateObj, translatePath.value)
+      fieldValue.value = null
+      isChanged.value = true
     }
 
     watch(
       currentItem,
       async (value) => {
         if (!value) {
-          translateObj.value = null
+          translateObj = null
           fieldValue.value = null
           nextTick(() => {
             isChanged.value = false
@@ -170,7 +182,7 @@ export default defineComponent({
         }
         const file = await (value.entry as FileSystemFileHandle).getFile()
         const str = await handleReadSelectedFile(file)
-        translateObj.value = JSON.parse(str as string)
+        translateObj = JSON.parse(str as string)
         fieldValue.value = getValue()
         nextTick(() => {
           isChanged.value = false
@@ -190,6 +202,7 @@ export default defineComponent({
 
     const handleSaveFile = async () => {
       try {
+        isLoading.value = true
         if (!currentItem.value) {
           return
         }
@@ -201,9 +214,9 @@ export default defineComponent({
         // @ts-ignore
         const writable = await fileHandle.createWritable()
 
-        // console.log('[translateObj.value]', translateObj.value)
+        // console.log('[translateObj]', translateObj)
 
-        const txt = JSON.stringify(translateObj.value, null, 2)
+        const txt = JSON.stringify(translateObj, null, 2)
 
         await writable.write(txt)
         await writable.close()
@@ -213,6 +226,8 @@ export default defineComponent({
         console.error(error)
         window.$message.error($t('msgs.error') + error.message)
         throw error
+      } finally {
+        isLoading.value = false
       }
     }
 
@@ -247,11 +262,13 @@ export default defineComponent({
       createField(handlePasteFormat(val))
     }
 
-    const saveChange = async ({isEmit = false} = {}) => {
+    const saveChange = async ({isEmit = false, isSetValue = false} = {}) => {
       if (!isChanged.value) {
         return
       }
-      setValue(fieldValue.value)
+      if (isSetValue) {
+        setValue(fieldValue.value)
+      }
       await handleSaveFile()
       nextTick(() => {
         isChanged.value = false
@@ -264,8 +281,7 @@ export default defineComponent({
     const cancelChange = () => {
       if (isCreatingNotSave.value) {
         // 取消创建
-
-        fieldValue.value = null
+        deleteField()
         isCreatingNotSave.value = false
         return
       }
@@ -277,26 +293,35 @@ export default defineComponent({
 
     const isLocalCreated = ref(false)
     const handleCreateFile = async () => {
-      if (!dirItem.value) {
-        return
+      try {
+        isLoading.value = true
+
+        if (!dirItem.value) {
+          return
+        }
+        const dirHandle = dirItem.value.entry as FileSystemDirectoryHandle
+        if (!dirHandle) {
+          return
+        }
+
+        const fullPath = filePathArr.value.join('/')
+        const folderPath = fullPath.substring(0, fullPath.lastIndexOf('/'))
+        const folderHandle = await createFolder(dirHandle, folderPath)
+
+        const txt = JSON.stringify({}, null, 2)
+        await createFile(folderHandle, fullPath.substring(fullPath.lastIndexOf('/') + 1), txt)
+
+        window.$message.success('Created ' + fullPath)
+        isLocalCreated.value = true
+        setTimeout(() => {
+          handleReload()
+        })
+      } catch (e) {
+        console.error(e)
+        window.$message.error(e.message)
+      } finally {
+        isLoading.value = false
       }
-      const dirHandle = dirItem.value.entry as FileSystemDirectoryHandle
-      if (!dirHandle) {
-        return
-      }
-
-      const fullPath = filePathArr.value.join('/')
-      const folderPath = fullPath.substring(0, fullPath.lastIndexOf('/'))
-      const folderHandle = await createFolder(dirHandle, folderPath)
-
-      const txt = JSON.stringify({}, null, 2)
-      await createFile(folderHandle, fullPath.substring(fullPath.lastIndexOf('/') + 1), txt)
-
-      window.$message.success('Created ' + fullPath)
-      isLocalCreated.value = true
-      setTimeout(() => {
-        handleReload()
-      })
     }
 
     const handleReload = () => {
@@ -325,6 +350,10 @@ export default defineComponent({
         window.$message.error(e.message)
       }
     }
+    const handleDeleteField = () => {
+      deleteField()
+      saveChange()
+    }
 
     return {
       intSettingsStore,
@@ -346,6 +375,8 @@ export default defineComponent({
       currentArrayString,
       handlePreviewArrayText,
       handleSaveArray,
+      handleDeleteField,
+      isLoading,
     }
   },
 })
@@ -353,17 +384,35 @@ export default defineComponent({
 
 <template>
   <n-card size="small" class="batch-translate-item">
+    <div class="mc-loading-container" v-if="isLoading">
+      <n-spin size="small" />
+    </div>
+
     <div class="card-header">
-      <span class="card-title">
-        <span class="text-red">{{ dirItem.label }}</span>
-        <template v-if="isFoldersMode">
-          {{ '/' + filePathArr.join('/') }}
-        </template>
-      </span>
-      <span class="translate-path">
-        {{ translatePath }}
-      </span>
-      <button disabled>Del</button>
+      <div>
+        <span class="card-title">
+          <span class="text-red">{{ dirItem.label }}</span>
+          <template v-if="isFoldersMode">
+            {{ '/' + filePathArr.join('/') }}
+          </template>
+        </span>
+        <span class="translate-path">
+          {{ translatePath }}
+        </span>
+      </div>
+
+      <template v-if="currentItem && fieldValue !== null">
+        <n-popconfirm @positive-click="handleDeleteField">
+          <template #trigger>
+            <n-button size="small" tertiary type="error" title="Delete Field">
+              <template #icon>
+                <Delete20Regular />
+              </template>
+            </n-button>
+          </template>
+          {{ $t('msgs.remove_item') }}
+        </n-popconfirm>
+      </template>
     </div>
 
     <div style="color: hotpink; margin-bottom: 10px" v-if="!currentItem">
@@ -374,9 +423,9 @@ export default defineComponent({
       </template>
       <template v-else>
         File does not exist, please
-        <b style="text-decoration: underline; cursor: pointer" @click="handleCreateFile"
-          >create it</b
-        >
+        <b style="text-decoration: underline; cursor: pointer" @click="handleCreateFile">
+          create it
+        </b>
         on your local file system
       </template>
     </div>
@@ -388,7 +437,7 @@ export default defineComponent({
           <n-button
             size="small"
             type="primary"
-            @click="saveChange({isEmit: true})"
+            @click="saveChange({isEmit: true, isSetValue: true})"
             title="Batch Save"
           >
             <template #icon><SaveMultiple20Regular /></template>
@@ -432,12 +481,16 @@ export default defineComponent({
 <style lang="scss">
 .batch-translate-item {
   margin-bottom: 10px;
+  position: relative;
 
   :deep(.n-card__content) {
     padding: 10px;
   }
 
   .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     font-size: 12px;
     margin-bottom: 5px;
     .card-title {

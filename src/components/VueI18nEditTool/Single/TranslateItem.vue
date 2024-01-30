@@ -163,7 +163,7 @@ export default defineComponent({
     <n-space size="small" justify="space-between">
       <n-space size="small" align="center">
         <template v-if="isKeyDuplicated">
-          <div class="error-tip-button" title="Key duplicated, may cause bug!">!</div>
+          <div class="mc-error-tip-button" title="Key duplicated, may cause bug!">!</div>
         </template>
         <n-input
           size="small"
