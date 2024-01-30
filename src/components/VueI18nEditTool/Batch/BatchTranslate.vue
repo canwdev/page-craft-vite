@@ -3,15 +3,10 @@ import {defineComponent, PropType} from 'vue'
 import {DirTreeItem} from '@/enum/vue-i18n-tool'
 import BatchTranslateItem from '@/components/VueI18nEditTool/Batch/BatchTranslateItem.vue'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
-import DialogTextEdit from '@/components/CommonUI/DialogTextEdit.vue'
-import {useArrayEdit} from '@/components/VueI18nEditTool/Single/use-array-edit'
-import TranslateTreeItem from '@/components/VueI18nEditTool/Single/TranslateTreeItem.vue'
 
 export default defineComponent({
   name: 'BatchTranslate',
   components: {
-    TranslateTreeItem,
-    DialogTextEdit,
     BatchTranslateItem,
   },
   props: {
@@ -46,7 +41,7 @@ export default defineComponent({
 
       for (let i = 0; i < itemsRef.value.length; i++) {
         const item = itemsRef.value[i]
-        await item.saveChange()
+        await item.saveChange({isSetValue: true})
       }
     }
     onMounted(() => {
@@ -81,7 +76,6 @@ export default defineComponent({
       :dir-item="item"
       :file-path-arr="isFoldersMode ? filePathArr.slice(1) : filePathArr"
       :translate-path="translatePath"
-      @saveChanged="handleSaveChanged"
       :is-folders-mode="isFoldersMode"
     />
   </div>

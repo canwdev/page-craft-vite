@@ -142,8 +142,8 @@ export default defineComponent({
       return findNode()
     })
 
-    // 翻译文件的json对象(非响应式数据)
-    let translateObj: any | null = null
+    // 翻译文件的json对象
+    let translateObj = shallowRef<any | null>(null)
 
     // 当前翻译的字段值
     const fieldValue = ref<any>(null)
@@ -152,11 +152,11 @@ export default defineComponent({
     const isChanged = ref(false)
 
     const getValue = () => {
-      return _get(translateObj, translatePath.value, null)
+      return _get(translateObj.value, translatePath.value, null)
     }
     const setValue = (val: any) => {
       try {
-        _set(translateObj, translatePath.value, val)
+        _set(translateObj.value, translatePath.value, val)
       } catch (e: any) {
         console.error(e)
         window.$message.error(e.message)
@@ -164,25 +164,34 @@ export default defineComponent({
       }
     }
     const deleteField = () => {
-      _unset(translateObj, translatePath.value)
+      _unset(translateObj.value, translatePath.value)
       fieldValue.value = null
       isChanged.value = true
     }
+
+    const cleanup = () => {
+      translateObj.value = null
+      fieldValue.value = null
+      nextTick(() => {
+        isChanged.value = false
+      })
+    }
+
+    onBeforeUnmount(() => {
+      cleanup()
+    })
+    onMounted(() => {})
 
     watch(
       currentItem,
       async (value) => {
         if (!value) {
-          translateObj = null
-          fieldValue.value = null
-          nextTick(() => {
-            isChanged.value = false
-          })
+          cleanup()
           return
         }
         const file = await (value.entry as FileSystemFileHandle).getFile()
         const str = await handleReadSelectedFile(file)
-        translateObj = JSON.parse(str as string)
+        translateObj.value = JSON.parse(str as string)
         fieldValue.value = getValue()
         nextTick(() => {
           isChanged.value = false
@@ -210,13 +219,12 @@ export default defineComponent({
         if (!fileHandle) {
           return
         }
-        const file = await fileHandle.getFile()
         // @ts-ignore
         const writable = await fileHandle.createWritable()
 
-        // console.log('[translateObj]', translateObj)
+        // console.log('[translateObj.value]', translateObj.value)
 
-        const txt = JSON.stringify(translateObj, null, 2)
+        const txt = JSON.stringify(translateObj.value, null, 2)
 
         await writable.write(txt)
         await writable.close()
@@ -270,9 +278,7 @@ export default defineComponent({
         setValue(fieldValue.value)
       }
       await handleSaveFile()
-      nextTick(() => {
-        isChanged.value = false
-      })
+      isChanged.value = false
       if (isEmit) {
         emit('saveChanged')
       }

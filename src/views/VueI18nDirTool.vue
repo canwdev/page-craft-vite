@@ -46,6 +46,17 @@ const formatDirTreeItem = (data: any = {}): DirTreeItem => {
   }
 }
 
+const invalidFileNameMap = {
+  node_modules: true,
+  '.git': true,
+  '.idea': true,
+  '.vscode': true,
+  '.DS_Store': true,
+}
+const isValidDir = (name: string) => {
+  return !invalidFileNameMap[name]
+}
+
 export default defineComponent({
   name: 'VueI18nBatchTool',
   components: {
@@ -78,7 +89,7 @@ export default defineComponent({
           space += '    '
         }
 
-        if (entry.kind === 'directory') {
+        if (entry.kind === 'directory' && isValidDir(entry.name)) {
           // console.log(`${space}[D] ${entry.name}`, {entry})
           let children = []
           tree.push(
