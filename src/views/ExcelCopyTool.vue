@@ -292,10 +292,13 @@ export default defineComponent({
         </n-page-header>
       </n-card>
 
-      <div v-if="!isReady" style="text-align: center; padding: 20px">
-        <n-spin />
-      </div>
-      <n-card v-else class="sheet-name-card" size="small">
+      <transition name="mc-fade">
+        <div class="mc-loading-container" v-if="!isReady">
+          <n-spin />
+        </div>
+      </transition>
+
+      <n-card v-if="isReady" class="sheet-name-card" size="small">
         <n-tabs size="small" type="card" animated v-model:value="sheetNameIndex">
           <n-tab-pane
             style="padding: 0"

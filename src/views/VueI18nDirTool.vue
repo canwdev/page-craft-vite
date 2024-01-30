@@ -60,6 +60,7 @@ export default defineComponent({
     const mainStore = useMainStore()
     const intSettingsStore = useI18nToolSettingsStore()
     const dirTree = ref<DirTreeItem[]>([])
+    const isLoading = ref(false)
 
     // 递归读取文件夹
     const recursiveReadDir = async (
@@ -159,17 +160,27 @@ export default defineComponent({
       await reloadPickedDir()
     }
     const reloadPickedDir = async () => {
-      const handle = dirHandle.value
-      let tree: DirTreeItem[] = []
-      if (intSettingsStore.isFoldersMode) {
-        tree = await recursiveReadDir(handle)
-      } else {
-        tree = await readJsonFiles(handle)
+      try {
+        isLoading.value = true
+        const handle = dirHandle.value
+        let tree: DirTreeItem[] = []
+        if (intSettingsStore.isFoldersMode) {
+          tree = await recursiveReadDir(handle)
+        } else {
+          tree = await readJsonFiles(handle)
+        }
+        if (!tree.length) {
+          window.$message.error(
+            'The content is empty, please check the folder directory structure!'
+          )
+        }
+        dirTree.value = tree
+      } catch (e: any) {
+        console.error(e)
+        window.$message.error(e.message)
+      } finally {
+        isLoading.value = false
       }
-      if (!tree.length) {
-        window.$message.error('The content is empty, please check the folder directory structure!')
-      }
-      dirTree.value = tree
     }
     const handleCloseDir = () => {
       dirHandle.value = null
@@ -184,6 +195,7 @@ export default defineComponent({
 
     const handleSaveFile = async () => {
       try {
+        isLoading.value = true
         const fileHandle = currentEditEntry.value
         if (!fileHandle) {
           return
@@ -210,6 +222,8 @@ export default defineComponent({
       } catch (error: any) {
         console.error(error)
         window.$message.error('Save Failed!' + error.message)
+      } finally {
+        isLoading.value = false
       }
     }
 
@@ -256,18 +270,12 @@ export default defineComponent({
 
     const isShowToolSettings = ref(false)
 
-    return {
-      metaTitle,
-      iconTranslate,
-      handlePickDir,
-      handleCloseDir,
-      dirTree,
-      dirHandle,
-      reloadPickedDir,
-      vueMonacoRef,
-      nodeProps: ({option}: {option: DirTreeItem}) => {
-        return {
-          async onClick() {
+    const nodeProps = ({option}: {option: DirTreeItem}) => {
+      return {
+        // 处理树枝的点击事件
+        async onClick() {
+          try {
+            isLoading.value = true
             if (option.kind === 'file') {
               const entry = option.entry as FileSystemFileHandle
               currentEditEntry.value = entry
@@ -277,9 +285,65 @@ export default defineComponent({
               translatePath.value = ''
               updateGuiTranslateTree()
             }
-          },
+          } catch (e: any) {
+            console.error(e)
+            window.$message.error(e.message)
+          } finally {
+            isLoading.value = false
+          }
+        },
+      }
+    }
+
+    // 处理字段key点击的高亮效果
+    const handleKeyClick = (str, event) => {
+      // console.log(str, event)
+      const selector = '.translate-item'
+      translatePath.value = str
+
+      const els = Array.from(document.querySelectorAll(selector))
+      els.forEach((el) => {
+        el.classList.remove('active')
+      })
+      event.target.closest(selector).classList.add('active')
+    }
+
+    const handleFileDrop = async (e) => {
+      try {
+        isLoading.value = true
+        // Process all the items.
+        for (const item of e.dataTransfer.items) {
+          // Careful: `kind` will be 'file' for both file
+          // _and_ directory entries.
+          if (item.kind === 'file') {
+            const entry = await item.getAsFileSystemHandle()
+            if (entry.kind === 'directory') {
+              dirHandle.value = entry
+              await reloadPickedDir()
+              break
+            } else {
+              window.$message.error('Please drag and drop a folder here!')
+            }
+          }
         }
-      },
+      } catch (e: any) {
+        console.error(e)
+        window.$message.error(e.message)
+      } finally {
+        isLoading.value = false
+      }
+    }
+
+    return {
+      metaTitle,
+      iconTranslate,
+      handlePickDir,
+      handleCloseDir,
+      dirTree,
+      dirHandle,
+      reloadPickedDir,
+      vueMonacoRef,
+      nodeProps,
       currentEditText,
       currentEditEntry,
       handleSaveFile,
@@ -288,39 +352,14 @@ export default defineComponent({
       translateTreeRoot,
       currentFilePathArr,
       translatePath,
-      handleKeyClick(str, event) {
-        // console.log(str, event)
-        const selector = '.translate-item'
-        translatePath.value = str
-
-        const els = Array.from(document.querySelectorAll(selector))
-        els.forEach((el) => {
-          el.classList.remove('active')
-        })
-        event.target.closest(selector).classList.add('active')
-      },
+      handleKeyClick,
       ...useFileDrop({
-        cb: async (e) => {
-          // Process all the items.
-          for (const item of e.dataTransfer.items) {
-            // Careful: `kind` will be 'file' for both file
-            // _and_ directory entries.
-            if (item.kind === 'file') {
-              const entry = await item.getAsFileSystemHandle()
-              if (entry.kind === 'directory') {
-                dirHandle.value = entry
-                await reloadPickedDir()
-                break
-              } else {
-                window.$message.error('Please drag and drop a folder here!')
-              }
-            }
-          }
-        },
+        cb: handleFileDrop,
       }),
       intSettingsStore,
       mainStore,
       isShowToolSettings,
+      isLoading,
     }
   },
 })
@@ -333,6 +372,11 @@ export default defineComponent({
     @dragleave.prevent.stop="showDropzone = false"
     @drop.prevent.stop="fileDrop"
   >
+    <transition name="mc-fade">
+      <div class="mc-loading-container position-fixed" v-if="isLoading">
+        <n-spin />
+      </div>
+    </transition>
     <transition name="mc-fade">
       <DropZone position-fixed v-show="showDropzone" :text="$t('msgs.drag_folder_here')" />
     </transition>

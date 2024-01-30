@@ -59,7 +59,7 @@ export default defineComponent({
       const [handle] = await window.showOpenFilePicker(filePickerOptions)
       fileHandle.value = handle
       const file = await handle.getFile()
-      handleImport(file)
+      await handleImport(file)
     }
 
     const handleCloseFile = () => {
@@ -68,33 +68,49 @@ export default defineComponent({
     }
 
     const handleSaveFile = async () => {
-      if (!fileHandle.value) {
-        return
+      try {
+        isLoading.value = true
+        if (!fileHandle.value) {
+          return
+        }
+        // @ts-ignore
+        const writable = await fileHandle.value.createWritable()
+
+        const txt = JSON.stringify(exportI18nTreeJsonObj(translateTreeRoot.value), null, 2)
+
+        await writable.write(txt)
+        await writable.close()
+        window.$message.success($t('msgs.saved'))
+      } catch (e: any) {
+        console.error(e)
+        window.$message.error(e.message)
+      } finally {
+        isLoading.value = false
       }
-      // @ts-ignore
-      const writable = await fileHandle.value.createWritable()
-
-      const txt = JSON.stringify(exportI18nTreeJsonObj(translateTreeRoot.value), null, 2)
-
-      await writable.write(txt)
-      await writable.close()
-      window.$message.success($t('msgs.saved'))
     }
     const handleExport = async () => {
-      console.log(translateTreeRoot.value)
-      const txt = JSON.stringify(exportI18nTreeJsonObj(translateTreeRoot.value), null, 2)
+      try {
+        isLoading.value = true
+        console.log(translateTreeRoot.value)
+        const txt = JSON.stringify(exportI18nTreeJsonObj(translateTreeRoot.value), null, 2)
 
-      // @ts-ignore
-      const handle = await window.showSaveFilePicker({
-        suggestedName: fileHandle.value?.name,
-        ...filePickerOptions,
-      })
-      const writable = await handle.createWritable()
+        // @ts-ignore
+        const handle = await window.showSaveFilePicker({
+          suggestedName: fileHandle.value?.name,
+          ...filePickerOptions,
+        })
+        const writable = await handle.createWritable()
 
-      await writable.write(txt)
-      await writable.close()
+        await writable.write(txt)
+        await writable.close()
 
-      window.$message.success($t('msgs.saved'))
+        window.$message.success($t('msgs.saved'))
+      } catch (e: any) {
+        console.error(e)
+        window.$message.error(e.message)
+      } finally {
+        isLoading.value = false
+      }
     }
 
     const {metaTitle} = useMetaTitle()
@@ -138,20 +154,28 @@ export default defineComponent({
     }
 
     const handleFileDrop = async (e) => {
-      // Process all the items.
-      for (const item of e.dataTransfer.items) {
-        // Careful: `kind` will be 'file' for both file
-        // _and_ directory entries.
-        if (item.kind === 'file') {
-          const entry = await item.getAsFileSystemHandle()
-          if (entry.kind !== 'directory') {
-            fileHandle.value = entry
-            const file = await entry.getFile()
-            await handleImport(file)
-          } else {
-            window.$message.error('Please drag and drop a json file here!')
+      try {
+        isLoading.value = true
+        // Process all the items.
+        for (const item of e.dataTransfer.items) {
+          // Careful: `kind` will be 'file' for both file
+          // _and_ directory entries.
+          if (item.kind === 'file') {
+            const entry = await item.getAsFileSystemHandle()
+            if (entry.kind !== 'directory') {
+              fileHandle.value = entry
+              const file = await entry.getFile()
+              await handleImport(file)
+            } else {
+              window.$message.error('Please drag and drop a json file here!')
+            }
           }
         }
+      } catch (e: any) {
+        console.error(e)
+        window.$message.error(e.message)
+      } finally {
+        isLoading.value = false
       }
     }
 
@@ -184,6 +208,11 @@ export default defineComponent({
     @dragleave.prevent.stop="showDropzone = false"
     @drop.prevent.stop="fileDrop"
   >
+    <transition name="mc-fade">
+      <div class="mc-loading-container position-fixed" v-if="isLoading">
+        <n-spin />
+      </div>
+    </transition>
     <transition name="mc-fade">
       <DropZone position-fixed v-show="showDropzone" :text="$t('msgs.drag_folder_here')" />
     </transition>
@@ -244,9 +273,7 @@ export default defineComponent({
         :index="index"
       />
     </div>
-    <div class="height-placeholder">
-      <div v-show="isLoading" class="loading-wrap">Loading...</div>
-    </div>
+    <div class="height-placeholder"></div>
 
     <I18nToolSettings v-model:visible="isShowToolSettings" />
   </div>
