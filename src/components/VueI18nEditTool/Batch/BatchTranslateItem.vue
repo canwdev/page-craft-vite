@@ -422,7 +422,7 @@ export default defineComponent({
       </template>
     </div>
 
-    <div style="color: hotpink; margin-bottom: 10px" v-if="!currentItem">
+    <div class="tip-not-exist" v-if="!currentItem">
       <template v-if="isLocalCreated">
         <n-button secondary size="small" @click="handleReload">
           {{ $t('actions.reload') }}
@@ -522,6 +522,11 @@ export default defineComponent({
     &._button {
       width: 200px;
     }
+  }
+
+  .tip-not-exist {
+    color: $primary;
+    margin-bottom: 10px;
   }
 }
 </style>

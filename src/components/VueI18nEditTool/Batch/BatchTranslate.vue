@@ -85,6 +85,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .batch-translate {
-  padding: 5px;
+  padding: 10px;
 }
 </style>

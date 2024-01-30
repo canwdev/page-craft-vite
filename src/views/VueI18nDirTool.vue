@@ -24,7 +24,7 @@ import {Document20Regular, Folder20Regular} from '@vicons/fluent'
 import {NIcon} from 'naive-ui'
 import {useI18nToolSettingsStore} from '@/store/i18n-tool-settings'
 import I18nToolSettings from '@/components/VueI18nEditTool/I18nToolSettings.vue'
-import {useLocalStorageObject} from '@/hooks/use-local-storage'
+import {useLocalStorageObject, useLocalStorageString} from '@/hooks/use-local-storage'
 
 const formatDirTreeItem = (data: any = {}): DirTreeItem => {
   return {
@@ -55,6 +55,27 @@ const invalidFileNameMap = {
 const isValidDir = (name: string) => {
   return !invalidFileNameMap[name]
 }
+
+enum EditMode {
+  TEXT = 'text',
+  GUI = 'gui',
+  BATCH = 'batch',
+}
+
+const editModeOptions = [
+  {
+    label: 'Text',
+    value: EditMode.TEXT,
+  },
+  {
+    label: 'Single',
+    value: EditMode.GUI,
+  },
+  {
+    label: 'Batch',
+    value: EditMode.BATCH,
+  },
+]
 
 export default defineComponent({
   name: 'VueI18nBatchTool',
@@ -241,9 +262,7 @@ export default defineComponent({
       }
     }
 
-    type EditModeType = 'text' | 'gui' | 'batch'
-    const editModeList = ['text', 'gui', 'batch']
-    const editMode = ref<EditModeType>('batch')
+    const editMode = useLocalStorageString('vue_i18n_dir_tool_edit_mode', EditMode.BATCH)
 
     const translateTreeRoot = ref<ITranslateTreeItem[]>([formatTranslateTreeItem()])
     const updateGuiTranslateTree = () => {
@@ -362,7 +381,8 @@ export default defineComponent({
       currentEditEntry,
       handleSaveFile,
       editMode,
-      editModeList,
+      EditMode,
+      editModeOptions,
       translateTreeRoot,
       currentFilePathArr,
       translatePath,
@@ -382,7 +402,7 @@ export default defineComponent({
 
 <template>
   <div
-    class="vue-i18n-copy-tool"
+    class="vue-i18n-dir-tool"
     @dragover.prevent.stop="fileDragover"
     @dragleave.prevent.stop="showDropzone = false"
     @drop.prevent.stop="fileDrop"
@@ -411,8 +431,9 @@ export default defineComponent({
             </n-button>
 
             <n-button
+              size="small"
               secondary
-              v-if="currentEditEntry && editMode !== 'batch'"
+              v-if="currentEditEntry && editMode !== EditMode.BATCH"
               type="primary"
               @click="handleSaveFile"
             >
@@ -421,10 +442,10 @@ export default defineComponent({
 
             {{ $t('common.edit_mode') }}:<n-radio-group size="small" v-model:value="editMode">
               <n-radio-button
-                v-for="mode in editModeList"
-                :key="mode"
-                :value="mode"
-                :label="mode.toUpperCase()"
+                v-for="item in editModeOptions"
+                :key="item.value"
+                :value="item.value"
+                :label="item.label"
               />
             </n-radio-group>
 
@@ -477,35 +498,46 @@ export default defineComponent({
           </n-scrollbar>
         </n-layout-sider>
         <n-layout-content>
-          {{ expandedKeys }}
+          <!--{{ expandedKeys }}-->
           <div class="main-edit-wrap">
             <template v-if="currentEditEntry">
-              <div v-if="false" class="action-row"></div>
+              <n-card class="action-row" v-if="editMode === EditMode.TEXT">
+                {{ currentFilePathArr.join('/') }}
+              </n-card>
 
-              <div class="edit-content-wrap" :class="{'batch-mode': editMode === 'batch'}">
+              <div class="edit-content-wrap" :class="{'batch-mode': editMode === EditMode.BATCH}">
+                <!--文本编辑器-->
                 <VueMonaco
                   ref="vueMonacoRef"
-                  v-if="editMode === 'text'"
+                  v-if="editMode === EditMode.TEXT"
                   v-model="currentEditText"
                   language="json"
                   show-line-numbers
                 />
 
+                <!--GUI模式-->
                 <template v-else>
                   <n-scrollbar
-                    style="height: 100%"
-                    :style="{width: editMode === 'batch' ? '500px' : '100%'}"
+                    class="gui-edit-gui"
+                    :style="{width: editMode === EditMode.BATCH ? '500px' : '100%'}"
                   >
+                    <!--                    <n-card class="action-row">-->
+                    <!--                      {{ currentFilePathArr.join('/') }}-->
+                    <!--                    </n-card>-->
+
                     <TranslateTreeItem
                       v-for="(item, index) in translateTreeRoot"
                       :key="index"
                       :index="index"
                       :item="item"
-                      :is-lite="editMode === 'batch'"
+                      :is-lite="editMode === EditMode.BATCH"
+                      :title="currentFilePathArr.join('/')"
                       @onKeyClick="handleKeyClick"
                     />
                   </n-scrollbar>
-                  <n-scrollbar v-if="editMode === 'batch'" style="height: 100%">
+
+                  <!--批处理模式-->
+                  <n-scrollbar class="gui-edit-batch" v-if="editMode === EditMode.BATCH">
                     <BatchTranslate
                       :dir-tree="dirTree"
                       :file-path-arr="currentFilePathArr"
@@ -516,6 +548,8 @@ export default defineComponent({
                 </template>
               </div>
             </template>
+
+            <!--未打开文件夹，展示提示-->
             <div class="null-intro" v-else>
               <template v-if="dirTree.length">
                 <div class="intro-title">👈 {{ $t('msgs.please_select_a_json') }}</div>
@@ -578,8 +612,8 @@ export default defineComponent({
   </div>
 </template>
 
-<style lang="scss" scoped>
-.vue-i18n-copy-tool {
+<style lang="scss">
+.vue-i18n-dir-tool {
   width: 100%;
   height: 100%;
   overflow: auto;
@@ -597,27 +631,45 @@ export default defineComponent({
     overflow: hidden;
     height: 100%;
     .action-row {
-      padding: 10px;
+      font-size: 12px;
+      border: none;
       box-shadow: 0 0 5px rgba(71, 71, 71, 0.47);
       position: relative;
       z-index: 1;
+      .n-card__content {
+        border: none;
+        padding: 5px 10px;
+      }
     }
     .edit-content-wrap {
       flex: 1;
       overflow: hidden;
-      padding: 0 0 0 10px;
+      padding: 0;
       display: flex;
 
       &.batch-mode {
-        :deep(.translate-item.active) {
+        .translate-item.active {
           .n-input--focus {
             //background-color: rgba(98, 83, 82, 0.13);
           }
           .n-input__state-border {
-            border-color: #f4ce36 !important;
-            box-shadow: 0 0 10px rgba(244, 177, 54, 0.13) !important;
+            border-color: $primary !important;
+            box-shadow: 0 0 0 1px $primary !important;
           }
         }
+      }
+
+      .gui-edit-gui {
+        height: 100%;
+        .action-row {
+          position: sticky;
+          top: 0;
+          z-index: 2;
+        }
+      }
+
+      .gui-edit-batch {
+        height: 100%;
       }
     }
   }

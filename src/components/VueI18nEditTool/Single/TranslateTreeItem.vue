@@ -57,6 +57,10 @@ export default defineComponent({
       type: Number,
       required: true,
     },
+    title: {
+      type: String,
+      default: '',
+    },
   },
   emits: ['onRemove', 'onKeyClick'],
   setup(props) {
@@ -177,10 +181,27 @@ export default defineComponent({
           Group namespace duplicated, may cause bug!
         </n-tooltip>
       </template>
+
       <n-input
+        v-if="isRoot"
         ref="namespaceInputRef"
         size="small"
-        :disabled="isRoot"
+        class="font-code"
+        :value="title || item.namespace"
+        disabled
+        style="flex: 1"
+      >
+        <template #prefix>
+          <n-icon color="red" size="16">
+            <Globe16Regular />
+          </n-icon>
+        </template>
+      </n-input>
+
+      <n-input
+        v-else
+        ref="namespaceInputRef"
+        size="small"
         class="font-code"
         v-model:value="item.namespace"
         placeholder="namespace"

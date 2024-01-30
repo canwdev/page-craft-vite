@@ -203,7 +203,7 @@ export default defineComponent({
 
 <template>
   <div
-    class="vue-i18n-copy-tool"
+    class="vue-i18n-edit-tool"
     @dragover.prevent.stop="fileDragover"
     @dragleave.prevent.stop="showDropzone = false"
     @drop.prevent.stop="fileDrop"
@@ -271,6 +271,7 @@ export default defineComponent({
         :key="index"
         :item="item"
         :index="index"
+        :title="fileHandle?.name"
       />
     </div>
     <div class="height-placeholder"></div>
@@ -279,8 +280,8 @@ export default defineComponent({
   </div>
 </template>
 
-<style lang="scss" scoped>
-.vue-i18n-copy-tool {
+<style lang="scss">
+.vue-i18n-edit-tool {
   width: 100%;
   height: 100%;
   overflow: auto;
