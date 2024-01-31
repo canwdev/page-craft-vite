@@ -12,10 +12,12 @@ import {
   TextConvertMode,
   TextConvertOptions,
   textConvertMultipleLine,
+  textConvertAdvanced,
 } from '@/components/VueI18nEditTool/copy-enum'
 import {useSaveShortcut} from '@/hooks/use-beforeunload'
 import {useMainStore} from '@/store/main'
 import {useI18n} from 'vue-i18n'
+import {useLocalStorageString} from '@/hooks/use-local-storage'
 
 const isAllowedElement = (el) => {
   return el.tagName.toLowerCase() === 'td'
@@ -111,7 +113,7 @@ export default defineComponent({
       await initXLSX()
     })
 
-    const copyMode = ref(TextConvertMode.JSON)
+    const copyMode = useLocalStorageString('excel_copy_tool_copy_mode', TextConvertMode.HTML)
     const handleClick = (event: MouseEvent) => {
       let el = event.target as HTMLElement
       if (!isAllowedElement(el) || !copyMode.value || copyMode.value === TextConvertMode.DISABLED) {
@@ -133,7 +135,7 @@ export default defineComponent({
       } else if (event.altKey) {
         text = textConvertMultipleLine(text, (tip = TextConvertMode.HTML))
       } else {
-        text = textConvertMultipleLine(text, (tip = copyMode.value))
+        text = textConvertMultipleLine(text, (tip = copyMode.value as TextConvertMode))
       }
       copyToClipboard(text)
       window.$message.success(tip + ' ' + $t('msgs.copy_success'))
@@ -147,7 +149,24 @@ export default defineComponent({
       }
     }
 
+    // 获取excel表格json数据
     const getSheetsJson = ({currentOnly = false} = {}) => {
+      // 使用文本转换器自动转换
+      const formatArr = (arr) => {
+        const mode = copyMode.value as TextConvertMode
+        if (mode === TextConvertMode.DISABLED || mode === TextConvertMode.TEXT) {
+          return arr
+        }
+        return arr.map((obj) => {
+          for (const key in obj) {
+            if (typeof obj[key] === 'string') {
+              obj[key] = textConvertMultipleLine(obj[key], mode)
+            }
+          }
+          return obj
+        })
+      }
+
       if (!workbookRef.value) {
         const str = 'Please open Excel file first!'
         window.$message.error(str)
@@ -155,7 +174,8 @@ export default defineComponent({
       }
 
       if (currentOnly) {
-        return window.XLSX.utils.sheet_to_json(getWorksheet(workbookRef.value))
+        const roa = window.XLSX.utils.sheet_to_json(getWorksheet(workbookRef.value))
+        return formatArr(roa)
       }
 
       const workbook = workbookRef.value
@@ -163,7 +183,7 @@ export default defineComponent({
       workbook.SheetNames.forEach(function (sheetName) {
         const roa = window.XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName])
         if (roa.length > 0) {
-          result[sheetName] = roa
+          result[sheetName] = formatArr(roa)
         }
       })
       return result
@@ -355,6 +375,16 @@ export default defineComponent({
                 />
               </n-space>
 
+              <n-dropdown
+                v-if="workbookRef"
+                :options="dropdownMenuOptions"
+                placement="bottom-start"
+                key-field="label"
+                :disabled="!isReady"
+              >
+                <n-button size="small">{{ $t('actions.export') }}</n-button>
+              </n-dropdown>
+
               <n-button
                 v-if="!fileRef"
                 type="primary"
@@ -368,16 +398,6 @@ export default defineComponent({
               <n-button v-else type="primary" size="small" @click="handleCloseFile">
                 {{ $t('actions.close') }}
               </n-button>
-
-              <n-dropdown
-                v-if="workbookRef"
-                :options="dropdownMenuOptions"
-                placement="bottom-start"
-                key-field="label"
-                :disabled="!isReady"
-              >
-                <n-button size="small">{{ $t('actions.export') }}</n-button>
-              </n-dropdown>
 
               <n-button v-if="!fileRef" @click="loadDemo" size="small" :disabled="!isReady">{{
                 $t('common.demo')
