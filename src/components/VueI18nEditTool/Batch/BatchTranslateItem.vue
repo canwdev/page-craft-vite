@@ -21,52 +21,6 @@ import {useAutoPasteConvert} from '@/components/VueI18nEditTool/Single/use-auto-
 import {useBatchItem} from '@/components/VueI18nEditTool/Batch/batch-hooks'
 // import countryCodeEmoji from '@/utils/country-code-emoji'
 
-/**
- * 创建文件夹
- * @param directoryHandle
- * @param folderPath 如：pages/solution
- */
-async function createFolder(directoryHandle: FileSystemDirectoryHandle, folderPath: string) {
-  if (!folderPath) {
-    return directoryHandle
-  }
-  const folders = folderPath.split('/')
-
-  let currentDirectory = directoryHandle
-
-  // 逐级创建文件夹
-  for (const folder of folders) {
-    currentDirectory = await currentDirectory.getDirectoryHandle(folder, {create: true})
-  }
-
-  console.log(`Folder "${folderPath}" created successfully.`)
-  return currentDirectory
-}
-
-/**
- * 创建文件
- * @param directoryHandle
- * @param filePath 如：pages/solution/live.json，必须提前创建父文件夹
- * @param content
- */
-async function createFile(
-  directoryHandle: FileSystemDirectoryHandle,
-  filePath: string,
-  content: string
-) {
-  // 获取文件的可写入流
-  const fileHandle = await directoryHandle.getFileHandle(filePath, {create: true})
-  const writable = await fileHandle.createWritable()
-
-  // 将数据写入文件
-  await writable.write(content)
-
-  // 关闭文件写入流
-  await writable.close()
-
-  console.log(`File "${filePath}" created and written successfully.`)
-}
-
 export default defineComponent({
   name: 'BatchTranslateItem',
   components: {
@@ -104,7 +58,8 @@ export default defineComponent({
     const intSettingsStore = useI18nToolSettingsStore()
     const {dirItem, filePathArr, translatePath, isFoldersMode} = toRefs(props)
 
-    const {isLoading, currentItem, handleSaveFile} = useBatchItem(props)
+    const {isLoading, currentItem, handleSaveFile, isLocalCreated, handleCreateFile, handleReload} =
+      useBatchItem(props)
 
     // 翻译文件的json对象
     let translateObj = shallowRef<any | null>(null)
@@ -228,45 +183,6 @@ export default defineComponent({
       nextTick(() => {
         isChanged.value = false
       })
-    }
-
-    const isLocalCreated = ref(false)
-    const handleCreateFile = async () => {
-      try {
-        isLoading.value = true
-
-        if (!dirItem.value) {
-          return
-        }
-        const dirHandle = dirItem.value.entry as FileSystemDirectoryHandle
-        if (!dirHandle) {
-          return
-        }
-
-        const fullPath = filePathArr.value.join('/')
-        const folderPath = fullPath.substring(0, fullPath.lastIndexOf('/'))
-        const folderHandle = await createFolder(dirHandle, folderPath)
-
-        const txt = JSON.stringify({}, null, 2)
-        await createFile(folderHandle, fullPath.substring(fullPath.lastIndexOf('/') + 1), txt)
-
-        window.$message.success('Created ' + fullPath)
-        isLocalCreated.value = true
-        setTimeout(() => {
-          handleReload()
-        })
-      } catch (e) {
-        console.error(e)
-        window.$message.error(e.message)
-      } finally {
-        isLoading.value = false
-      }
-    }
-
-    const handleReload = () => {
-      const btn = document.querySelector('.js_reload_btn')
-      // @ts-ignore
-      btn && btn.click()
     }
 
     const isShowArrayEdit = ref(false)

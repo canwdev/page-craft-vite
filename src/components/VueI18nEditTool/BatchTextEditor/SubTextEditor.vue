@@ -37,7 +37,14 @@ export default defineComponent({
   emits: ['saveChanged'],
   setup(props, {emit}) {
     const {visible} = toRefs(props)
-    const {isLoading, currentItem, handleSaveFile} = useBatchItem(props)
+    const {
+      isLoading,
+      currentItem,
+      handleSaveFile,
+      isLocalCreated,
+      handleCreateFile: _handleCreateFile,
+      handleReload,
+    } = useBatchItem(props)
 
     // 值是否发生变化
     const isChanged = ref(false)
@@ -78,6 +85,19 @@ export default defineComponent({
       cleanup()
       window.removeEventListener('resize', handleResizeDebounced)
     })
+
+    const updateValueText = async () => {
+      const file = await (currentItem.value.entry as FileSystemFileHandle).getFile()
+
+      const str = await handleReadSelectedFile(file)
+      valueText.value = str as string
+
+      await nextTick(() => {
+        isChanged.value = false
+        vueMonacoRef.value?.resize()
+      })
+    }
+
     watch(
       currentItem,
       async (value) => {
@@ -85,15 +105,7 @@ export default defineComponent({
           cleanup()
           return
         }
-        const file = await (value.entry as FileSystemFileHandle).getFile()
-
-        const str = await handleReadSelectedFile(file)
-        valueText.value = str as string
-
-        await nextTick(() => {
-          isChanged.value = false
-          vueMonacoRef.value?.resize()
-        })
+        await updateValueText()
       },
       {immediate: true}
     )
@@ -107,6 +119,12 @@ export default defineComponent({
       if (isEmit) {
         emit('saveChanged')
       }
+    }
+
+    const handleCreateFile = async () => {
+      await _handleCreateFile(/*async () => {
+        await updateValueText()
+      }*/)
     }
 
     return {
@@ -137,12 +155,14 @@ export default defineComponent({
       >
         Save All
       </n-button>
+      <!--      {{ filePathArr }} <br />
+      {{ currentItem }}-->
     </div>
     <div class="editor-content-wrap">
       <div class="tip-not-exist" v-if="!currentItem">
         File does not exist, please
         <b style="text-decoration: underline; cursor: pointer" @click="handleCreateFile">
-          create it (TODO)
+          create it
         </b>
         on your local file system
       </div>

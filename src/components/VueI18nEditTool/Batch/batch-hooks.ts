@@ -2,6 +2,10 @@ import {DirTreeItem} from '@/enum/vue-i18n-tool'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {useI18n} from 'vue-i18n'
 
+/**
+ * 批处理管理器hook
+ * @param props
+ */
 export const useBatchWrapper = (props) => {
   const {dirTree, isFoldersMode, filePathArr} = toRefs(props)
   const itemsRef = ref()
@@ -45,6 +49,57 @@ export const useBatchWrapper = (props) => {
   }
 }
 
+/**
+ * 创建文件夹
+ * @param directoryHandle
+ * @param folderPath 如：pages/solution
+ */
+async function createFolder(directoryHandle: FileSystemDirectoryHandle, folderPath: string) {
+  if (!folderPath) {
+    return directoryHandle
+  }
+  const folders = folderPath.split('/')
+
+  let currentDirectory = directoryHandle
+
+  // 逐级创建文件夹
+  for (const folder of folders) {
+    currentDirectory = await currentDirectory.getDirectoryHandle(folder, {create: true})
+  }
+
+  console.log(`Folder "${folderPath}" created successfully.`)
+  return currentDirectory
+}
+
+/**
+ * 创建文件
+ * @param directoryHandle
+ * @param filePath 如：pages/solution/live.json，必须提前创建父文件夹
+ * @param content
+ */
+async function createFile(
+  directoryHandle: FileSystemDirectoryHandle,
+  filePath: string,
+  content: string
+) {
+  console.log('[createFile] 获取文件的可写入流')
+  const fileHandle = await directoryHandle.getFileHandle(filePath, {create: true})
+  const writable = await fileHandle.createWritable()
+
+  console.log('[createFile] 将数据写入文件')
+  await writable.write(content)
+
+  console.log('[createFile] 关闭文件写入流')
+  await writable.close()
+
+  console.log(`[createFile] ${filePath} created and written successfully.`)
+  return fileHandle
+}
+
+/**
+ * 批处理单个文件通用方法hook
+ * @param props
+ */
 export const useBatchItem = (props) => {
   const {t: $t} = useI18n()
   const isLoading = ref(false)
@@ -115,9 +170,59 @@ export const useBatchItem = (props) => {
     }
   }
 
+  const handleReload = () => {
+    const btn = document.querySelector('.js_reload_btn')
+    // @ts-ignore
+    btn && btn.click()
+  }
+
+  const isLocalCreated = ref(false)
+  const handleCreateFile = async (cb) => {
+    try {
+      isLoading.value = true
+
+      if (!dirItem.value) {
+        return
+      }
+      const dirHandle = dirItem.value.entry as FileSystemDirectoryHandle
+      if (!dirHandle) {
+        return
+      }
+
+      const fullPath = filePathArr.value.join('/')
+      const folderPath = fullPath.substring(0, fullPath.lastIndexOf('/'))
+      const folderHandle = await createFolder(dirHandle, folderPath)
+
+      const txt = JSON.stringify({}, null, 2)
+      const fileHandle = await createFile(
+        folderHandle,
+        fullPath.substring(fullPath.lastIndexOf('/') + 1),
+        txt
+      )
+
+      window.$message.success('Created ' + fullPath)
+      isLocalCreated.value = true
+
+      if (typeof cb === 'function') {
+        await cb()
+      }
+      setTimeout(() => {
+        handleReload()
+      })
+    } catch (error: any) {
+      console.error(error)
+      window.$message.error(error.message)
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   return {
     isLoading,
     currentItem,
     handleSaveFile,
+    isLocalCreated,
+    handleCreateFile,
+    handleReload,
   }
 }
