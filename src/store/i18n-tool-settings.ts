@@ -7,6 +7,7 @@ type IState = {
   autoPasteTrimQuotes: boolean
   // 自动粘贴: 文本转换器模式
   autoPasteTextConvertMode: TextConvertMode
+  ignoreFolders: string[]
 }
 
 export const useI18nToolSettingsStore = defineStore('i18nToolSettings', {
@@ -15,7 +16,18 @@ export const useI18nToolSettingsStore = defineStore('i18nToolSettings', {
       isFoldersMode: true,
       autoPasteTrimQuotes: true,
       autoPasteTextConvertMode: TextConvertMode.TEXT,
+      ignoreFolders: ['node_modules', '.git', '.idea', '.vscode', '.DS_Store'],
     }
+  },
+  getters: {
+    ignoreFoldersMap(): {[key: string]: boolean} {
+      const map = {}
+      this.ignoreFolders.forEach((item) => {
+        map[item] = true
+      })
+
+      return map
+    },
   },
   persist: {
     key: 'ls_key_i18n_tool_settings',

@@ -172,6 +172,7 @@ export default defineComponent({
           placeholder="key"
           @click="handleInputKeyClick"
           @blur="handleKeyBlur"
+          :readonly="isLite"
         />
         <template v-if="!isLite">
           <FieldEdit

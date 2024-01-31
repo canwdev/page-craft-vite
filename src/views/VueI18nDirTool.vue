@@ -46,17 +46,6 @@ const formatDirTreeItem = (data: any = {}): DirTreeItem => {
   }
 }
 
-const invalidFileNameMap = {
-  node_modules: true,
-  '.git': true,
-  '.idea': true,
-  '.vscode': true,
-  '.DS_Store': true,
-}
-const isValidDir = (name: string) => {
-  return !invalidFileNameMap[name]
-}
-
 enum EditMode {
   TEXT = 'text',
   GUI = 'gui',
@@ -97,6 +86,10 @@ export default defineComponent({
 
     // 保存手动展开的文件夹keys
     const expandedKeys = useLocalStorageObject('vue_i18n_dir_tool_expanded_keys', [])
+
+    const isValidDir = (name: string) => {
+      return !intSettingsStore.ignoreFoldersMap[name]
+    }
 
     // 递归读取文件夹
     const recursiveReadDir = async (

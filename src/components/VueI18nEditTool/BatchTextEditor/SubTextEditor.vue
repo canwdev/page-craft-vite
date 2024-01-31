@@ -4,6 +4,7 @@ import VueMonaco from '@/components/CommonUI/VueMonaco.vue'
 import {DirTreeItem} from '@/enum/vue-i18n-tool'
 import {useBatchItem} from '@/components/VueI18nEditTool/Batch/batch-hooks'
 import {handleReadSelectedFile} from '@/utils/exporter'
+import {throttle} from 'throttle-debounce'
 
 export default defineComponent({
   name: 'SubTextEditor',
@@ -54,14 +55,28 @@ export default defineComponent({
       }
     })
 
+    const handleResizeDebounced = throttle(500, false, () => {
+      nextTick(() => {
+        vueMonacoRef.value?.resize()
+      })
+    })
+
     const cleanup = () => {
       valueText.value = ''
       nextTick(() => {
         isChanged.value = false
       })
     }
+
+    onMounted(() => {
+      window.addEventListener('resize', handleResizeDebounced)
+      nextTick(() => {
+        handleResizeDebounced()
+      })
+    })
     onBeforeUnmount(() => {
       cleanup()
+      window.removeEventListener('resize', handleResizeDebounced)
     })
     watch(
       currentItem,
@@ -101,6 +116,7 @@ export default defineComponent({
       vueMonacoRef,
       saveChange,
       isChanged,
+      handleCreateFile,
     }
   },
 })
@@ -125,7 +141,9 @@ export default defineComponent({
     <div class="editor-content-wrap">
       <div class="tip-not-exist" v-if="!currentItem">
         File does not exist, please
-        <b style="text-decoration: underline; cursor: not-allowed"> create it (TODO) </b>
+        <b style="text-decoration: underline; cursor: pointer" @click="handleCreateFile">
+          create it (TODO)
+        </b>
         on your local file system
       </div>
       <VueMonaco v-else ref="vueMonacoRef" v-model="valueText" language="json" show-line-numbers />

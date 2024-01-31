@@ -55,6 +55,12 @@ export default defineComponent({
               store: intSettingsStore,
               type: StOptionType.SWITCH,
             },
+            {
+              label: 'ignoreFolders',
+              key: 'ignoreFolders',
+              store: intSettingsStore,
+              type: StOptionType.DYNAMIC_TAGS,
+            },
           ],
         },
       ]

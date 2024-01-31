@@ -206,6 +206,7 @@ export default defineComponent({
         v-model:value="item.namespace"
         placeholder="namespace"
         style="flex: 1"
+        :readonly="isLite"
         @blur="checkDuplicatedGroupKey"
         ><!--§-->
         <template #prefix>

@@ -58,7 +58,7 @@ export const useSettingsStore = defineStore('settingsStore', {
       enableSoundFx: true,
       enableGlobalCss: false,
       enableReferenceMap: false,
-      enableWelcomePage: false,
+      enableWelcomePage: true,
 
       isInitialized: false,
       showInventory: false,

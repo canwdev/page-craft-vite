@@ -1,7 +1,7 @@
 <script lang="ts">
 import * as monaco from 'monaco-editor'
 import {defineComponent, shallowRef} from 'vue'
-import {debounce, throttle} from 'throttle-debounce'
+import {debounce} from 'throttle-debounce'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {useMainStore} from '@/store/main'
 
@@ -56,13 +56,6 @@ export default defineComponent({
       }
     )
 
-    const handleResizeDebounced = throttle(1000, false, () => {
-      console.log('handleResizeDebounced')
-      nextTick(() => {
-        editorInstance.value?.layout()
-      })
-    })
-
     onMounted(() => {
       editorInstance.value = monaco.editor.create(editorContainerRef.value, {
         value: mValue.value,
@@ -90,16 +83,10 @@ export default defineComponent({
       editorInstance.value.onDidChangeModelContent(() => {
         handleEditorChangeDebounced()
       })
-
-      window.addEventListener('resize', handleResizeDebounced)
-      nextTick(() => {
-        handleResizeDebounced()
-      })
     })
 
     onBeforeUnmount(() => {
       editorInstance.value.dispose()
-      window.removeEventListener('resize', handleResizeDebounced)
     })
     const handleEditorChangeDebounced = debounce(100, false, () => {
       mValue.value = editorInstance.value.getValue()

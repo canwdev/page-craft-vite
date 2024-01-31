@@ -104,6 +104,13 @@ export default defineComponent({
       :actions="['clear']"
       :modes="['hex']"
     />
+
+    <n-dynamic-tags
+      class="dynamic-tags"
+      v-else-if="item.type === StOptionType.DYNAMIC_TAGS"
+      v-model:value="dynamicValue"
+      size="small"
+    />
     <VueRender v-if="item.actionRender" :render-fn="item.actionRender" />
   </n-space>
 </template>
@@ -123,6 +130,9 @@ export default defineComponent({
   }
   .option-select {
     width: 180px;
+  }
+  .dynamic-tags {
+    width: 250px;
   }
   .option-input {
     font-size: 12px;

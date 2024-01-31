@@ -34,6 +34,7 @@ export enum StOptionType {
   SELECT = 'select',
   INPUT = 'input',
   COLOR_PICKER = 'color_picker',
+  DYNAMIC_TAGS = 'dynamic_tags',
 }
 
 export type SwitchOption = {
