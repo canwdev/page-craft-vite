@@ -96,7 +96,8 @@ export default defineComponent({
       dirHandle,
       deep = 0,
       tree: DirTreeItem[] = [],
-      parentDirs: string[] = []
+      parentDirs: string[] = [],
+      parentKey?: string = ''
     ): Promise<DirTreeItem[]> => {
       let idx = 0
       for await (const entry of dirHandle.values()) {
@@ -109,9 +110,10 @@ export default defineComponent({
         if (entry.kind === 'directory' && isValidDir(entry.name)) {
           // console.log(`${space}[D] ${entry.name}`, {entry})
           let children = []
+          const key = `${parentKey}${deep}-${entry.name}`
           tree.push(
             formatDirTreeItem({
-              key: `${deep}-${entry.kind}-${entry.name}`,
+              key,
               kind: entry.kind,
               label: entry.name,
               entry,
@@ -119,14 +121,15 @@ export default defineComponent({
               children,
             })
           )
-          await recursiveReadDir(entry, deep + 1, children, [...parentDirs, entry.name])
+          await recursiveReadDir(entry, deep + 1, children, [...parentDirs, entry.name], key + '_')
         } else {
           // console.log(`${space}[F] ${entry.name}`, {entry})
           const isValidFile = /\.json$/gi.test(entry.name)
           if (isValidFile) {
+            const key = `${parentKey}${deep}-${entry.name}`
             tree.push(
               formatDirTreeItem({
-                key: `${deep}-${entry.kind}-${entry.name}`,
+                key,
                 kind: entry.kind,
                 label: entry.name,
                 entry,
@@ -160,9 +163,10 @@ export default defineComponent({
         if (entry.kind !== 'directory') {
           const isValidFile = /\.json$/gi.test(entry.name)
           if (isValidFile) {
+            const key = `${idx}-${entry.kind}-${entry.name}`
             tree.push(
               formatDirTreeItem({
-                key: `${entry.kind}-${entry.name}`,
+                key: key,
                 kind: entry.kind,
                 label: entry.name,
                 entry,
