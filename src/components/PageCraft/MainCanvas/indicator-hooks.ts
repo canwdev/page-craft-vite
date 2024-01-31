@@ -1,4 +1,4 @@
-import {LsKeys} from '@/enum/page-craft'
+import {LsKeys, TOOL_CLASSES} from '@/enum/page-craft'
 import {ActionType, BlockType} from '@/enum/page-craft/block'
 import {useMainStore} from '@/store/main'
 import {useI18n} from 'vue-i18n'
@@ -47,12 +47,38 @@ export const useIndicator = () => {
     {deep: true}
   )
 
+  const disableALinkClick = (event) => {
+    event.preventDefault()
+    window.$message.warning('Prevent link click')
+  }
+
+  watch(
+    () => mainStore.currentBlock,
+    (val) => {
+      console.log(val.actionType)
+      // 禁止a链接点击跳转事件
+      const sl = `.${TOOL_CLASSES.CLASS_MAIN_CANVAS_ROOT} a`
+      if (val.actionType !== ActionType.CURSOR) {
+        document.querySelectorAll(sl).forEach((link) => {
+          link.addEventListener('click', disableALinkClick)
+        })
+      } else {
+        setTimeout(() => {
+          document.querySelectorAll(sl).forEach((link) => {
+            link.removeEventListener('click', disableALinkClick)
+          })
+        }, 500)
+      }
+    }
+  )
+
   const mainCanvasClass = computed(() => {
     const currentBlock = mainStore.currentBlock
     return {
       'page-craft-mc--dev': indicatorOptions.enableDevHelpClass,
       'page-craft-mc--cursor-insert': currentBlock.blockType !== BlockType.ACTIONS,
       'page-craft-mc--cursor-pickaxe': currentBlock.actionType === ActionType.DELETE,
+      // 选择元素
       'page-craft-mc--cursor-arrow': currentBlock.actionType === ActionType.SELECTION,
       'page-craft-mc--cursor-sword': currentBlock.actionType === ActionType.DEBUG,
       'page-craft-mc--cursor-drag': currentBlock.actionType === ActionType.DRAG,

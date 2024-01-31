@@ -136,13 +136,13 @@ export const elementCustomPropsMap = {
         label: 'target',
         key: 'target',
         type: CustomFormInputType.SELECT,
-        options: formatSelectOptions(['', '_blank', '_self']),
+        options: formatSelectOptions(['', '_blank', '_self', '_parent', '_top']),
       },
       {
         label: 'rel',
         key: 'rel',
         type: CustomFormInputType.SELECT,
-        options: formatSelectOptions(['', 'nofollow']),
+        options: formatSelectOptions(['', 'nofollow noopener noreferrer']),
       },
     ],
     updateElement(el, formData: ElementEditForm) {
