@@ -32,9 +32,10 @@ export default defineComponent({
     const mainStore = useMainStore()
 
     const importFileChooserRef = ref()
-    const tableWrapperRef = ref()
+    const tableWrapperElRef = ref()
     const isReady = ref(false)
 
+    const fileRef = shallowRef<File | null>(null)
     const workbookRef = shallowRef()
     const sheetNames = ref<string[]>([])
     const sheetNameIndex = ref(0)
@@ -61,14 +62,16 @@ export default defineComponent({
     const renderWorkbook = () => {
       const workbook = workbookRef.value
       if (!workbook) {
-        tableWrapperRef.value.innerHTML = ''
+        tableWrapperElRef.value.innerHTML = ''
         return
       }
+      console.log('[renderWorkbook]', workbook)
       const html = window.XLSX.utils.sheet_to_html(getWorksheet(workbook))
-      tableWrapperRef.value.innerHTML = html
+      tableWrapperElRef.value.innerHTML = html
     }
 
-    const handleImport = async (file) => {
+    const handleImport = async (file: File) => {
+      fileRef.value = null
       checkPlugin()
       if (!/\.xlsx$/g.test(file.name)) {
         window.$message.error('Only supports reading xlsx format!')
@@ -77,6 +80,7 @@ export default defineComponent({
       const reader = new FileReader()
       workbookRef.value = null
       reader.onload = function (e: any) {
+        fileRef.value = file
         const data = e.target.result
         sheetNameIndex.value = 0
         workbookRef.value = window.XLSX.read(data, {type: 'binary'})
@@ -87,7 +91,11 @@ export default defineComponent({
 
     const isTrimEmptyLines = ref(true)
 
-    onMounted(async () => {
+    const initXLSX = async () => {
+      if (window.XLSX) {
+        isReady.value = true
+        return
+      }
       try {
         await dynamicLoadScript('//unpkg.com/xlsx@0.16.9/xlsx.mini.js')
       } catch (err: any) {
@@ -97,6 +105,10 @@ export default defineComponent({
       window.$message.success('XLSX Ready!')
       console.log('XLSX ready', window.XLSX)
       isReady.value = true
+    }
+
+    onMounted(async () => {
+      await initXLSX()
     })
 
     const copyMode = ref(TextConvertMode.JSON)
@@ -135,14 +147,17 @@ export default defineComponent({
       }
     }
 
-    const getSheetsJson = () => {
+    const getSheetsJson = ({currentOnly = false} = {}) => {
       if (!workbookRef.value) {
         const str = 'Please open Excel file first!'
         window.$message.error(str)
         throw new Error(str)
       }
 
-      // return window.XLSX.utils.sheet_to_json(getWorksheet(workbookRef.value))
+      if (currentOnly) {
+        return window.XLSX.utils.sheet_to_json(getWorksheet(workbookRef.value))
+      }
+
       const workbook = workbookRef.value
       const result = {}
       workbook.SheetNames.forEach(function (sheetName) {
@@ -154,16 +169,120 @@ export default defineComponent({
       return result
     }
 
-    const handleExport = async () => {
-      const json = getSheetsJson()
+    const handleExport = async (options = {}) => {
+      const json = getSheetsJson(options)
+
+      // 处理文件名
+      let name = fileRef.value?.name
+      if (name) {
+        name = name.substring(0, name.lastIndexOf('.')) + '.json'
+      }
+
       handleExportFile(
-        await promptGetFileName(null, 'excel_sheet_export'),
+        await promptGetFileName(name, 'excel_sheet_export'),
         JSON.stringify(json, null, 2),
         '.json'
       )
     }
     useSaveShortcut(async () => {
       await handleExport()
+    })
+
+    const loadDemo = () => {
+      checkPlugin()
+      const sheet1 = window.XLSX.utils.aoa_to_sheet([
+        ['Name', 'Value', 'Num', 'Time'],
+        ['test001', 'line1\nline2', 123, new Date()],
+        ['test001', 'line1\n\nline3', -1, new Date()],
+      ])
+      const sheet2 = window.XLSX.utils.aoa_to_sheet([['Name'], ['test002'], ['test002']])
+      const wb = window.XLSX.utils.book_new()
+      window.XLSX.utils.book_append_sheet(wb, sheet1, 'Sheet1')
+      window.XLSX.utils.book_append_sheet(wb, sheet2, 'Sheet2')
+
+      sheetNameIndex.value = 0
+      workbookRef.value = wb
+      renderWorkbook()
+    }
+    const dropdownMenuOptions = [
+      {
+        label: 'Current Sheet',
+        children: [
+          {
+            label: 'Export Current Sheet JSON',
+            props: {
+              onClick: async () => {
+                await handleExport({currentOnly: true})
+              },
+            },
+          },
+          {
+            label: 'Copy Current Sheet JSON',
+            props: {
+              onClick: async () => {
+                const json = getSheetsJson({currentOnly: true})
+                await copyToClipboard(JSON.stringify(json, null, 2))
+                window.$message.success('Sheet JSON Copied!')
+              },
+            },
+          },
+          {
+            label: 'Print Current Sheet to Console',
+            props: {
+              onClick: async () => {
+                const json = getSheetsJson({currentOnly: true})
+                console.log(json)
+                window.$message.success('Print to Console!')
+              },
+            },
+          },
+        ],
+      },
+      {
+        label: 'All Sheets',
+        children: [
+          {
+            label: 'Export All Sheets JSON',
+            props: {
+              onClick: async () => {
+                await handleExport()
+              },
+            },
+          },
+          {
+            label: 'Copy All Sheets JSON',
+            props: {
+              onClick: async () => {
+                const json = getSheetsJson()
+                await copyToClipboard(JSON.stringify(json, null, 2))
+                window.$message.success('Sheet JSON Copied!')
+              },
+            },
+          },
+          {
+            label: 'Print All Sheets to Console',
+            props: {
+              onClick: async () => {
+                const json = getSheetsJson()
+                console.log(json)
+                window.$message.success('Print to Console!')
+              },
+            },
+          },
+        ],
+      },
+    ]
+
+    const handleCloseFile = () => {
+      fileRef.value = null
+      workbookRef.value = null
+      sheetNames.value = []
+      sheetNameIndex.value = 0
+      tableWrapperElRef.value.innerHTML = ''
+    }
+
+    onBeforeUnmount(() => {
+      handleCloseFile()
     })
 
     return {
@@ -173,47 +292,14 @@ export default defineComponent({
       sheetNameIndex,
       handleImport,
       importFileChooserRef,
-      loadDemo() {
-        checkPlugin()
-        const aoa = [
-          ['Name', 'Value', 'Num', 'Time'],
-          ['test001', 'line1\nline2', 123, new Date()],
-          ['test001', 'line1\n\nline3', -1, new Date()],
-        ]
-        const sheet = window.XLSX.utils.aoa_to_sheet(aoa)
-        const wb = window.XLSX.utils.book_new()
-        window.XLSX.utils.book_append_sheet(wb, sheet, 'Sheet1')
-
-        sheetNameIndex.value = 0
-        workbookRef.value = wb
-        renderWorkbook()
-      },
-      tableWrapperRef,
+      loadDemo,
+      tableWrapperElRef,
       handleClick,
       copyMode,
       modTextConvertOptions: computed(() => {
         return [{label: 'Disabled', value: TextConvertMode.DISABLED}, ...TextConvertOptions]
       }),
-      dropdownMenuOptions: [
-        {
-          label: 'Copy Sheets JSON',
-          props: {
-            onClick: async () => {
-              const json = getSheetsJson()
-              copyToClipboard(JSON.stringify(json, null, 2))
-              window.$message.success('Sheet JSON Copied!')
-            },
-          },
-        },
-        {
-          label: 'Export Sheets JSON',
-          props: {
-            onClick: async () => {
-              handleExport()
-            },
-          },
-        },
-      ],
+      dropdownMenuOptions,
       textConvertMultipleLine,
       ...useFileDrop({
         cbFiles: (files) => {
@@ -226,6 +312,9 @@ export default defineComponent({
       isTrimEmptyLines,
       mainStore,
       isReady,
+      workbookRef,
+      fileRef,
+      handleCloseFile,
     }
   },
 })
@@ -267,6 +356,7 @@ export default defineComponent({
               </n-space>
 
               <n-button
+                v-if="!fileRef"
                 type="primary"
                 :disabled="!isReady"
                 @click="importFileChooserRef.chooseFile()"
@@ -275,7 +365,12 @@ export default defineComponent({
                 {{ $t('actions.open_excel') }}
               </n-button>
 
+              <n-button v-else type="primary" size="small" @click="handleCloseFile">
+                {{ $t('actions.close') }}
+              </n-button>
+
               <n-dropdown
+                v-if="workbookRef"
                 :options="dropdownMenuOptions"
                 placement="bottom-start"
                 key-field="label"
@@ -284,7 +379,7 @@ export default defineComponent({
                 <n-button size="small">{{ $t('actions.export') }}</n-button>
               </n-dropdown>
 
-              <n-button @click="loadDemo" size="small" :disabled="!isReady">{{
+              <n-button v-if="!fileRef" @click="loadDemo" size="small" :disabled="!isReady">{{
                 $t('common.demo')
               }}</n-button>
             </n-space>
@@ -311,7 +406,7 @@ export default defineComponent({
         </n-tabs>
       </n-card>
     </div>
-    <div ref="tableWrapperRef" class="excel-table-container" @click="handleClick"></div>
+    <div ref="tableWrapperElRef" class="excel-table-container" @click="handleClick"></div>
 
     <FileChooser
       ref="importFileChooserRef"
@@ -321,7 +416,7 @@ export default defineComponent({
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .excel-copy-tool {
   width: 100%;
   height: 100%;
@@ -330,22 +425,19 @@ export default defineComponent({
   flex-direction: column;
   position: relative;
 
-  .excel-table-container {
-    flex: 1;
-  }
-
   .sheet-name-card {
-    :deep(.n-card__content) {
+    .n-card__content {
       padding: 5px 5px 0;
     }
   }
 
-  :deep(.excel-table-container) {
+  .excel-table-container {
     position: relative;
     z-index: 1;
     background-color: white;
     width: 100%;
     overflow: auto;
+    flex: 1;
 
     table {
       border-collapse: collapse;
@@ -354,6 +446,7 @@ export default defineComponent({
     td {
       height: 25px;
       padding: 5px 10px;
+      min-width: 100px;
     }
 
     table,
