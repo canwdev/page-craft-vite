@@ -150,7 +150,6 @@ export default defineComponent({
           <n-button title="(alt+w)" size="small" @click="mainStore.isShowSettings = true">{{
             $t('common.settings')
           }}</n-button>
-          <n-a href="https://github.com/canwdev/page-craft-vite" target="_blank">Github...</n-a>
         </n-space>
       </template>
     </MainCanvas>

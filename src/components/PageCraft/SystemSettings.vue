@@ -10,6 +10,8 @@ import VueMonaco from '@/components/CommonUI/VueMonaco.vue'
 import {useGlobalStyle} from '@/hooks/use-global-theme'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {RouterLink} from 'vue-router'
+import {formatSiteTitle} from '@/router'
+import {Settings20Filled} from '@vicons/fluent'
 
 const getWallpaperText = () => {
   const list = [{label: 'Bing', url: 'https://api.dujin.org/bing/1920.php'}]
@@ -24,7 +26,7 @@ const getWallpaperText = () => {
 
 export default defineComponent({
   name: 'SystemSettings',
-  components: {VueMonaco, OptionUI},
+  components: {VueMonaco, OptionUI, Settings20Filled},
   props: {
     visible: {
       type: Boolean,
@@ -100,8 +102,8 @@ export default defineComponent({
           ].filter(Boolean),
         },
         {
-          label: $t('common.others'),
-          key: 'others',
+          label: 'PageCraft',
+          key: 'pagecraft',
           children: [
             {
               label: $t('common.top_layout'),
@@ -115,6 +117,18 @@ export default defineComponent({
               store: settingsStore,
               type: StOptionType.SWITCH,
             },
+            {
+              label: $t('common.reference_map'),
+              key: 'enableReferenceMap',
+              store: settingsStore,
+              type: StOptionType.SWITCH,
+            },
+          ],
+        },
+        {
+          label: $t('common.others'),
+          key: 'others',
+          children: [
             {
               label: $t('common.global_style'),
               key: 'global_style',
@@ -138,12 +152,6 @@ export default defineComponent({
               ]),
             },
             {
-              label: $t('common.reference_map'),
-              key: 'enableReferenceMap',
-              store: settingsStore,
-              type: StOptionType.SWITCH,
-            },
-            {
               label: $t('msgs.enable_welcome_page'),
               subtitle: $t('msgs.improve_the_user_exp'),
               key: 'enableWelcomePage',
@@ -157,7 +165,20 @@ export default defineComponent({
                     mVisible.value = false
                   },
                 },
-                '/'
+                'Go'
+              ),
+            },
+            {
+              label: formatSiteTitle(),
+              subtitle: `Copyright © 2022-${new Date().getFullYear()} canwdev`,
+              actionRender: h(
+                'a',
+                {
+                  href: 'https://github.com/canwdev/page-craft-vite',
+                  target: '_blank',
+                  rel: 'noopener noreferrer',
+                },
+                'Github'
               ),
             },
           ],
@@ -173,6 +194,9 @@ export default defineComponent({
       isShowGlobalStyleDialog,
       globalStyleText,
       applyGlobalStyle,
+      dialogIconRender() {
+        return h(Settings20Filled)
+      },
     }
   },
 })
@@ -184,7 +208,8 @@ export default defineComponent({
     preset="dialog"
     :title="$t('common.settings')"
     style="padding-left: 10px; padding-right: 10px"
-    :show-icon="false"
+    :icon="dialogIconRender"
+    class="system-settings"
   >
     <OptionUI :option-list="optionList" />
   </n-modal>
@@ -205,3 +230,11 @@ export default defineComponent({
     />
   </n-modal>
 </template>
+
+<style lang="scss" scoped>
+.system-settings {
+  a {
+    color: $primary;
+  }
+}
+</style>

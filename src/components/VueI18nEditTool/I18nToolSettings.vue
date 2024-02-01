@@ -5,6 +5,7 @@ import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {StOptionItem, StOptionType} from '@/components/CommonUI/OptionUI/enum'
 import {useI18nToolSettingsStore} from '@/store/i18n-tool-settings'
 import {TextConvertMode, TextConvertOptions} from '@/components/VueI18nEditTool/copy-enum'
+import {Globe20Regular} from '@vicons/fluent'
 
 export default defineComponent({
   name: 'I18nToolSettings',
@@ -69,6 +70,9 @@ export default defineComponent({
     return {
       mVisible,
       optionList,
+      dialogIconRender() {
+        return h(Globe20Regular)
+      },
     }
   },
 })
@@ -80,7 +84,7 @@ export default defineComponent({
     preset="dialog"
     :title="$t('common.settings')"
     style="padding-left: 10px; padding-right: 10px"
-    :show-icon="false"
+    :icon="dialogIconRender"
   >
     <OptionUI :option-list="optionList" />
   </n-modal>
