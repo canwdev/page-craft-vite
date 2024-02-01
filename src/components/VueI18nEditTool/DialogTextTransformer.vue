@@ -150,14 +150,13 @@ export default defineComponent({
       <div class="common-card">
         <div class="main-box font-code">
           <div class="input-wrapper">
-            <!--            <n-input
+            <div class="input-tip">Text Input: text</div>
+            <n-input
               class="input-text"
               type="textarea"
               v-model:value="textInput"
               placeholder="Text Input"
-            ></n-input>-->
-            <div class="input-tip">Text Input: text</div>
-            <VueMonaco language="text" v-model="textInput" class="input-text" />
+            ></n-input>
           </div>
           <div class="input-wrapper">
             <div class="input-tip">Text Output: {{ mMode }}</div>
