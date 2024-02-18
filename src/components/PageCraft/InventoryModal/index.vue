@@ -208,10 +208,18 @@ export default defineComponent({
         negativeText: $t('actions.cancel'),
         onPositiveClick: () => {
           settingsStore.curCompoName = ''
-          componentList.value.forEach((item) => {
+          const list = [...componentList.value]
+          // 只对当前过滤的列表项进行删除
+          componentListSorted.value.forEach((item) => {
             clearCompStorage(item.title)
+
+            // 清空内存中的列表项
+            const idx = list.findIndex((i) => i.title === item.title)
+            if (idx > -1) {
+              list.splice(idx, 1)
+            }
           })
-          componentList.value = []
+          componentList.value = list
         },
         onNegativeClick: () => {},
       })
@@ -244,6 +252,10 @@ export default defineComponent({
     }
 
     const confirmAppendPresetComponents = async () => {
+      if (!componentList.value.length) {
+        await doAppendPresetComponents()
+        return
+      }
       window.$dialog.warning({
         title: $t('actions.confirm'),
         content: `This action will override same name component, continue?`,
@@ -537,6 +549,7 @@ export default defineComponent({
       },
       {
         title: 'Not Stared',
+        value: FilterType.NOT_STARED,
         icon: h(Star20Regular),
         render: h(NIcon, {size: 20}, () => h(Star20Regular)),
       },
