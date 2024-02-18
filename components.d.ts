@@ -83,6 +83,7 @@ declare module '@vue/runtime-core' {
     StylusToolsDialog: typeof import('./src/components/PageCraft/StyleEditor/StylusToolsDialog.vue')['default']
     SubTextEditor: typeof import('./src/components/VueI18nEditTool/BatchTextEditor/SubTextEditor.vue')['default']
     SystemSettings: typeof import('./src/components/PageCraft/SystemSettings.vue')['default']
+    TabLayout: typeof import('./src/components/PageCraft/InventoryModal/TabLayout.vue')['default']
     ToolBar: typeof import('./src/components/PageCraft/ToolBar/index.vue')['default']
     ToolItem: typeof import('./src/components/PageCraft/ToolBar/ToolItem.vue')['default']
     TranslateItem: typeof import('./src/components/VueI18nEditTool/Single/TranslateItem.vue')['default']

@@ -40,12 +40,15 @@ import PopFloat from '@/components/PageCraft/DomPreview/PopFloat.vue'
 import {takeScreenshot} from '@/utils/screenshot'
 import DialogImageCropper from '@/components/CommonUI/DialogImageCropper.vue'
 import {showInputPrompt} from '@/components/CommonUI/input-prompt'
+import TabLayout from '@/components/PageCraft/InventoryModal/TabLayout.vue'
+import {NIcon} from 'naive-ui'
 
 let idx = 1
 
 export default defineComponent({
   name: 'InventoryModal',
   components: {
+    TabLayout,
     DialogImageCropper,
     PopFloat,
     ViewPortWindow,
@@ -521,6 +524,24 @@ export default defineComponent({
     const {editingNode, nodeAction, handleContextmenu, ...contextMenuEtc} =
       useContextMenu(getCompMenuOptions)
 
+    const componentFilterTabs = [
+      {
+        title: 'All',
+        value: FilterType.ALL,
+        render: h(NIcon, {size: 20}, () => h(BoxMultiple20Regular)),
+      },
+      {
+        title: 'Stared',
+        value: FilterType.STARED,
+        render: h(NIcon, {size: 20}, () => h(Star20Filled)),
+      },
+      {
+        title: 'Not Stared',
+        icon: h(Star20Regular),
+        render: h(NIcon, {size: 20}, () => h(Star20Regular)),
+      },
+    ]
+
     return {
       mainStore,
       settingsStore,
@@ -547,19 +568,14 @@ export default defineComponent({
       handleContextmenu,
       isSortByName,
       FilterType,
-      changeFilterType() {
-        const filterValues = Object.values(FilterType)
-        const currentIndex = filterValues.indexOf(settingsStore.inventoryFilterType)
-        const nextIndex = (currentIndex + 1) % filterValues.length
-        settingsStore.inventoryFilterType = filterValues[nextIndex]
-        playSfxPop()
-      },
       playSfxPop,
       isShowImageCropper,
       editingImageSrc: cropperEditingSrc,
       handleCropperSave,
       handleCropperCancel,
       ...contextMenuEtc,
+      // icons
+      componentFilterTabs,
     }
   },
 })
@@ -601,101 +617,103 @@ export default defineComponent({
       </button>
     </template>
 
-    <n-tabs
-      v-model:value="settingsStore.inventoryTab"
-      size="small"
-      type="segment"
-      animated
-      style="height: 100%"
+    <TabLayout
+      v-model="settingsStore.inventoryTab"
+      :tab-list="[
+        {
+          label: 'Tools' + ` (${actionBlockItemList.length})`,
+          value: TabType.TOOLS,
+        },
+        {
+          label: 'HTML ' + $t('common.blocks'),
+          value: TabType.HTML_ELEMENTS,
+        },
+        {
+          label: $t('common.components') + ` (${componentListSorted.length})`,
+          value: TabType.COMPONENTS,
+        },
+      ]"
     >
-      <n-tab-pane :name="TabType.TOOLS" :tab="'Tools' + ` (${actionBlockItemList.length})`">
-        <InventoryList
-          :item-list="actionBlockItemList"
-          @onItemClick="(v) => $emit('onItemClick', v)"
-        />
-      </n-tab-pane>
-      <n-tab-pane
-        :name="TabType.HTML_ELEMENTS"
-        :tab="'HTML ' + $t('common.blocks') + ` (${htmlBlockItemList.length})`"
+      <InventoryList
+        v-if="settingsStore.inventoryTab === TabType.TOOLS"
+        :item-list="actionBlockItemList"
+        @onItemClick="(v) => $emit('onItemClick', v)"
+      />
+      <InventoryList
+        v-else-if="settingsStore.inventoryTab === TabType.HTML_ELEMENTS"
+        :item-list="htmlBlockItemList"
+        @onItemClick="(v) => $emit('onItemClick', v)"
+      />
+      <InventoryList
+        v-else-if="settingsStore.inventoryTab === TabType.COMPONENTS"
+        :item-list="componentListSorted"
+        is-component-block
+        @onItemClick="handleComponentItemClick"
+        @contextmenu="handleContextmenu"
+        :large-card="settingsStore.inventoryIsLargeCard"
       >
-        <InventoryList
-          :item-list="htmlBlockItemList"
-          @onItemClick="(v) => $emit('onItemClick', v)"
-        />
-      </n-tab-pane>
-      <n-tab-pane
-        :name="TabType.COMPONENTS"
-        :tab="$t('common.components') + ` (${componentListSorted.length})`"
-      >
-        <InventoryList
-          :item-list="componentListSorted"
-          is-component-block
-          @onItemClick="handleComponentItemClick"
-          @contextmenu="handleContextmenu"
-          :large-card="settingsStore.inventoryIsLargeCard"
-        >
-          <template #customFilter>
-            <n-button
-              quaternary
-              @click="playSfxPop(), (isSortByName = !isSortByName)"
-              title="Change sort method"
-              size="small"
-            >
-              <n-icon size="20">
-                <TextSortAscending20Regular v-if="isSortByName" />
-                <Timeline20Regular v-else />
-              </n-icon>
-            </n-button>
-            <n-button quaternary @click="changeFilterType" title="Toggle stared" size="small">
-              <n-icon size="20">
-                <BoxMultiple20Regular v-if="settingsStore.inventoryFilterType === FilterType.ALL" />
-                <Star20Filled v-if="settingsStore.inventoryFilterType === FilterType.STARED" />
-                <Star20Regular v-if="settingsStore.inventoryFilterType === FilterType.NOT_STARED" />
-              </n-icon>
-            </n-button>
-            <n-button
-              quaternary
-              @click="
-                playSfxPop(),
-                  (settingsStore.inventoryIsLargeCard = !settingsStore.inventoryIsLargeCard)
-              "
-              title="Toggle stared"
-              size="small"
-            >
-              <n-icon size="20">
-                <Image20Filled v-if="settingsStore.inventoryIsLargeCard" />
-                <Image20Regular v-else />
-              </n-icon>
-            </n-button>
+        <template #filterStart>
+          <TabLayout
+            horizontal
+            v-model="settingsStore.inventoryFilterType"
+            :tab-list="componentFilterTabs"
+          />
+        </template>
+        <template #filterEnd>
+          <n-button
+            quaternary
+            @click="playSfxPop(), (isSortByName = !isSortByName)"
+            title="Change sort method"
+            size="small"
+          >
+            <n-icon size="20">
+              <TextSortAscending20Regular v-if="isSortByName" />
+              <Timeline20Regular v-else />
+            </n-icon>
+          </n-button>
 
-            <n-dropdown :options="getAddMenuOptions()" key-field="label" trigger="hover">
-              <n-button quaternary title="Component Menu" size="small">
-                <n-icon size="20">
-                  <MoreHorizontal20Regular />
-                </n-icon>
-              </n-button>
-            </n-dropdown>
-          </template>
-          <template #actionMenu="{item}">
-            <n-dropdown
-              :options="getCompMenuOptions(item)"
-              key-field="label"
-              placement="bottom-start"
-              trigger="hover"
-            >
-              <n-button quaternary size="tiny" style="min-width: 10px" @click.stop>
-                <n-icon size="20"> <MoreHorizontal20Regular /></n-icon>
-              </n-button>
-            </n-dropdown>
-          </template>
-          <template #end>
-            <button @click="handleCreateComponent" class="mc-btn-add">
-              <n-icon size="24"> <Add24Regular /></n-icon>
-            </button>
-          </template>
-        </InventoryList>
-      </n-tab-pane>
-    </n-tabs>
+          <n-button
+            quaternary
+            @click="
+              playSfxPop(),
+                (settingsStore.inventoryIsLargeCard = !settingsStore.inventoryIsLargeCard)
+            "
+            title="Toggle stared"
+            size="small"
+          >
+            <n-icon size="20">
+              <Image20Filled v-if="settingsStore.inventoryIsLargeCard" />
+              <Image20Regular v-else />
+            </n-icon>
+          </n-button>
+
+          <n-dropdown :options="getAddMenuOptions()" key-field="label" trigger="hover">
+            <n-button quaternary title="Component Menu" size="small">
+              <n-icon size="20">
+                <MoreHorizontal20Regular />
+              </n-icon>
+            </n-button>
+          </n-dropdown>
+        </template>
+        <template #actionMenu="{item}">
+          <n-dropdown
+            :options="getCompMenuOptions(item)"
+            key-field="label"
+            placement="bottom-start"
+            trigger="hover"
+          >
+            <n-button quaternary size="tiny" style="min-width: 10px" @click.stop>
+              <n-icon size="20"> <MoreHorizontal20Regular /></n-icon>
+            </n-button>
+          </n-dropdown>
+        </template>
+        <template #end>
+          <button @click="handleCreateComponent" class="mc-btn-add">
+            <n-icon size="24"> <Add24Regular /></n-icon>
+          </button>
+        </template>
+      </InventoryList>
+    </TabLayout>
 
     <PopFloat />
     <FileChooser

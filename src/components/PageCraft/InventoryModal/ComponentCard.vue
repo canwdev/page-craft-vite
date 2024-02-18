@@ -140,7 +140,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .tool-item {
   --block-color-rgb: 204, 204, 204;
-  width: 200px;
+  width: 180px;
   height: 50px;
   cursor: pointer;
   display: block;

@@ -55,6 +55,8 @@ export default defineComponent({
 <template>
   <div class="inventory-list-wrap">
     <div class="filter-row" v-if="showFilter">
+      <slot name="filterStart"></slot>
+
       <n-input
         v-model:value="filterText"
         clearable
@@ -68,7 +70,7 @@ export default defineComponent({
         </template>
       </n-input>
 
-      <slot name="customFilter"></slot>
+      <slot name="filterEnd"></slot>
     </div>
     <div v-if="!itemListFiltered.length" style="padding: 40px; text-align: center; font-size: 20px">
       {{ $t('msgs.no_items') }}
@@ -118,13 +120,13 @@ export default defineComponent({
     grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
     //grid-template-columns: repeat(12, 1fr);
     grid-template-rows: auto;
-    gap: 10px;
+    gap: 8px;
 
     * {
       box-sizing: border-box;
     }
     &._big {
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
       gap: 15px 10px;
     }
   }
