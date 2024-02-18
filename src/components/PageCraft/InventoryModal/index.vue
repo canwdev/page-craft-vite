@@ -5,16 +5,16 @@ import {
   actionBlockItemList,
   BlockItem,
   BlockType,
+  ComponentExportData,
   createComponentBlockItem,
 } from '@/enum/page-craft/block'
 import {htmlBlockItemList, TabType} from '@/enum/page-craft/inventory'
 import InventoryList from '@/components/PageCraft/InventoryModal/InventoryList.vue'
 import {useMainStore} from '@/store/main'
-import {useCompImportExport, useCompStorage} from '@/hooks/use-component-storage'
+import {saveCompStorage, useCompImportExport, useCompStorage} from '@/hooks/use-component-storage'
 import FileChooser from '@/components/CommonUI/FileChooser.vue'
 import {colorHash, sleep} from '@/utils'
 import {useContextMenu} from '@/hooks/use-context-menu'
-import {useInitComponents} from '@/hooks/use-init'
 import {FilterType} from '@/enum/settings'
 import {useSettingsStore} from '@/store/settings'
 import {
@@ -34,7 +34,7 @@ import {
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
 import {useI18n} from 'vue-i18n'
-import {fileToBase64} from '@/utils/exporter'
+import {fileToBase64, handleReadSelectedFile} from '@/utils/exporter'
 import {useSfxPop} from '@/hooks/use-sfx'
 import PopFloat from '@/components/PageCraft/DomPreview/PopFloat.vue'
 import {takeScreenshot} from '@/utils/screenshot'
@@ -94,6 +94,11 @@ export default defineComponent({
     const {handleExportAllJson, handleImportAllJson, componentList, updateCompMeta} =
       useCompImportExport()
     const importFileChooserRef = ref()
+    const handleImportJsonFileSelected = async (file) => {
+      const str = await handleReadSelectedFile(file)
+      const importList: ComponentExportData[] = JSON.parse(str as string)
+      return await handleImportAllJson(importList)
+    }
 
     const isSortByName = ref(false)
     const componentListSorted = computed(() => {
@@ -140,10 +145,8 @@ export default defineComponent({
       })
     }
 
-    onMounted(() => {
-      useInitComponents({
-        componentListRef: componentList,
-      })
+    onMounted(async () => {
+      await initComponents()
     })
 
     const handleCreateComponent = async () => {
@@ -156,9 +159,9 @@ export default defineComponent({
       idx++
     }
 
-    const handleComponentDelete = () => {
+    const handleDeleteComponent = () => {
       const item = editingNode.value
-      window.$dialog.warning({
+      /*window.$dialog.warning({
         title: $t('actions.confirm'),
         content: $t('msgs.are_you_sure_to_dele') + ` ${item.title}?`,
         positiveText: $t('actions.ok'),
@@ -179,9 +182,22 @@ export default defineComponent({
         },
         onNegativeClick: () => {},
       })
+*/
+      const index = componentList.value.findIndex((i) => i.id === item.id)
+      const list = [...componentList.value]
+      list.splice(index, 1)
+      componentList.value = list
+
+      // remove local storage
+      clearCompStorage(item.title)
+
+      // reset current component name
+      if (settingsStore.curCompoName === item.title) {
+        settingsStore.curCompoName = ''
+      }
     }
 
-    const handleDeleteAll = () => {
+    const handleComponentDeleteAll = () => {
       window.$dialog.warning({
         title: $t('actions.confirm'),
         content: $t('msgs.sure_to_del_all'),
@@ -193,6 +209,45 @@ export default defineComponent({
             clearCompStorage(item.title)
           })
           componentList.value = []
+        },
+        onNegativeClick: () => {},
+      })
+    }
+
+    const doAppendPresetComponents = async () => {
+      const res = await fetch('./preset-components.json')
+      const data = await res.json()
+      await handleImportAllJson(data)
+    }
+
+    const initComponents = async () => {
+      if (!settingsStore.isInitialized) {
+        // create example component if not initialized
+        let length = componentList.value.length
+        if (!length) {
+          await doAppendPresetComponents()
+
+          // 自动选择最后一项
+          setTimeout(() => {
+            length = componentList.value.length
+            if (componentList.value[length - 1]?.title) {
+              settingsStore.curCompoName = componentList.value[length - 1].title
+            }
+          })
+        }
+        window.$message.success('Welcome to PageCraft!')
+        settingsStore.isInitialized = true
+      }
+    }
+
+    const confirmAppendPresetComponents = async () => {
+      window.$dialog.warning({
+        title: $t('actions.confirm'),
+        content: `This action will override same name component, continue?`,
+        positiveText: $t('actions.ok'),
+        negativeText: $t('actions.cancel'),
+        onPositiveClick: async () => {
+          await doAppendPresetComponents()
         },
         onNegativeClick: () => {},
       })
@@ -395,7 +450,7 @@ export default defineComponent({
         props: {
           onClick: async () => {
             nodeAction(item, () => {
-              handleComponentDelete()
+              handleDeleteComponent()
             })
           },
         },
@@ -416,7 +471,15 @@ export default defineComponent({
           label: '❌ ' + $t('actions.delete_all'),
           props: {
             onClick: async () => {
-              handleDeleteAll()
+              handleComponentDeleteAll()
+            },
+          },
+        },
+        {
+          label: '📥 Append Preset',
+          props: {
+            onClick: () => {
+              confirmAppendPresetComponents()
             },
           },
         },
@@ -469,15 +532,16 @@ export default defineComponent({
       handleItemClick,
       handleComponentItemClick,
       componentList,
-      handleComponentDelete,
+      handleDeleteComponent,
       handleComponentRename,
-      handleDeleteAll,
+      handleComponentDeleteAll,
       cancelSelectComponent,
       getCompMenuOptions,
       getAddMenuOptions,
       componentListSorted,
       handleCreateComponent,
       importFileChooserRef,
+      handleImportJsonFileSelected,
       handleImportAllJson,
       colorHash,
       handleContextmenu,
@@ -603,6 +667,14 @@ export default defineComponent({
                 <Image20Regular v-else />
               </n-icon>
             </n-button>
+
+            <n-dropdown :options="getAddMenuOptions()" key-field="label" trigger="hover">
+              <n-button quaternary title="Component Menu" size="small">
+                <n-icon size="20">
+                  <MoreHorizontal20Regular />
+                </n-icon>
+              </n-button>
+            </n-dropdown>
           </template>
           <template #actionMenu="{item}">
             <n-dropdown
@@ -617,16 +689,9 @@ export default defineComponent({
             </n-dropdown>
           </template>
           <template #end>
-            <n-dropdown
-              :options="getAddMenuOptions()"
-              key-field="label"
-              placement="top-end"
-              trigger="hover"
-            >
-              <button @click="handleCreateComponent" class="mc-btn-add">
-                <n-icon size="24"> <Add24Regular /></n-icon>
-              </button>
-            </n-dropdown>
+            <button @click="handleCreateComponent" class="mc-btn-add">
+              <n-icon size="24"> <Add24Regular /></n-icon>
+            </button>
           </template>
         </InventoryList>
       </n-tab-pane>
@@ -636,7 +701,7 @@ export default defineComponent({
     <FileChooser
       ref="importFileChooserRef"
       accept="application/JSON"
-      @selected="handleImportAllJson"
+      @selected="handleImportJsonFileSelected"
     />
     <DialogImageCropper
       v-model:visible="isShowImageCropper"

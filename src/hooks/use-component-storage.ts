@@ -153,10 +153,7 @@ export const useCompImportExport = () => {
     saveCompStorage(LsKeys.COMP_META, name, JSON.stringify(data))
   }
 
-  const handleImportAllJson = async (file) => {
-    const str = await handleReadSelectedFile(file)
-    const importList: ComponentExportData[] = JSON.parse(str as string)
-
+  const handleImportAllJson = async (importList: ComponentExportData[]) => {
     const newList: BlockItem[] = []
     importList.forEach((item: ComponentExportData) => {
       const meta: ComponentData = {...item}

@@ -34,14 +34,17 @@ export default defineComponent({
       globalEventBus.off(GlobalEvents.ON_COMP_PREVIEW_CLOSE, handleClosePreview)
     })
 
-    watch(currentItem, (val) => {
+    watch(mVisible, (val) => {
       if (!val) {
+        return
+      }
+      if (!currentItem.value) {
         previewHtml.value = ''
         previewCss.value = ''
         return
       }
-      previewHtml.value = loadCompStorage(LsKeys.COMP_HTML, val.title)
-      previewCss.value = loadCompStorage(LsKeys.COMP_STYLE, val.title)
+      previewHtml.value = loadCompStorage(LsKeys.COMP_HTML, currentItem.value.title)
+      previewCss.value = loadCompStorage(LsKeys.COMP_STYLE, currentItem.value.title)
     })
 
     const handleCompPreview = (options) => {

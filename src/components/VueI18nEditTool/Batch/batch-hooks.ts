@@ -177,7 +177,7 @@ export const useBatchItem = (props) => {
   }
 
   const isLocalCreated = ref(false)
-  const handleCreateFile = async (cb) => {
+  const handleCreateFile = async (cb?) => {
     try {
       isLoading.value = true
 
