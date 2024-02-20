@@ -59,8 +59,8 @@ export default defineComponent({
 
     const getInitWinOptions = () => {
       const defaultValue = props.initWinOptions || {
-        top: '100px',
-        left: '100px',
+        top: '50px',
+        left: '50px',
         width: '300px',
         height: '300px',
       }

@@ -1,13 +1,14 @@
 {
   "name": "page-craft-vite",
   "private": true,
-  "version": "1.4.3",
+  "version": "1.4.4",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build --emptyOutDir",
     "build:strict": "vue-tsc --noEmit && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "tauri": "tauri"
   },
   "dependencies": {
     "@vueuse/sound": "^2.0.1",
