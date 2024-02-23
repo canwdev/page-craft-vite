@@ -1,9 +1,9 @@
 name: Tauri Auto Build
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "tauri-auto-build" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "tauri-auto-build" ]
 
 jobs:
   release:
@@ -12,12 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - os: windows-latest
-            target: x86_64-pc-windows-msvc
-          - os: windows-latest
-            target: aarch64-pc-windows-msvc
-        #platform: [macos-latest, ubuntu-20.04, windows-latest]
+        platform: [windows-latest] #[macos-latest, ubuntu-20.04, windows-latest]
     runs-on: ${{ matrix.platform }}
 
     steps:
