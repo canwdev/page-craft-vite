@@ -1,6 +1,7 @@
 import {BlockItem, BlockType} from '@/enum/page-craft/block'
 import {TabType} from '@/enum/page-craft/inventory'
 import {CustomThemeType, FilterType, LdThemeType} from '@/enum/settings'
+import {StyleTabType} from '@/enum/page-craft/styles'
 
 interface IPageCraftSettings {
   // 明暗主题
@@ -22,7 +23,7 @@ interface IPageCraftSettings {
 
   enableTopLayout: boolean
   enableSoundFx: boolean
-  enableGlobalCss: boolean
+  enableGlobalStyle: boolean
   // 是否启用参考图
   enableReferenceMap: boolean
   // 是否启用欢迎页面
@@ -40,6 +41,7 @@ interface IPageCraftSettings {
   toolbarList: BlockItem[]
   // selected component name
   curCompoName: string
+  styleEditorTab: StyleTabType
 }
 
 export const useSettingsStore = defineStore('settingsStore', {
@@ -56,7 +58,7 @@ export const useSettingsStore = defineStore('settingsStore', {
 
       enableTopLayout: false,
       enableSoundFx: true,
-      enableGlobalCss: false,
+      enableGlobalStyle: true,
       enableReferenceMap: false,
       enableWelcomePage: true,
 
@@ -70,6 +72,7 @@ export const useSettingsStore = defineStore('settingsStore', {
       toolbarIndex: 0,
       toolbarList: [],
       curCompoName: '',
+      styleEditorTab: StyleTabType.CURRENT,
     }
   },
   persist: {

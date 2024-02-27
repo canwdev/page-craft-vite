@@ -36,6 +36,8 @@ import {useOpenCloseSelect, useSfxBell, useSfxBrush, useSfxFill} from '@/hooks/u
 import TabLayout from '@/components/CommonUI/TabLayout.vue'
 import monaco from '@/components/CommonUI/VueMonaco/monaco-helper'
 import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
+import {useLocalStorageString} from '@/hooks/use-local-storage'
+import {useGlobalStyle} from '@/hooks/use-global-theme'
 
 export default defineComponent({
   name: 'StyleEditor',
@@ -64,7 +66,6 @@ export default defineComponent({
     const settingsStore = useSettingsStore()
 
     const vueMonacoRef = ref()
-    const curTab = ref(StyleTabType.CURRENT)
     const tabList = ref([
       {label: 'Global', value: StyleTabType.GLOBAL},
       {label: 'Variables', value: StyleTabType.VARIABLES},
@@ -78,11 +79,24 @@ export default defineComponent({
       const eIns = vueMonacoRef.value.getInstance()
       eIns?.layout()
     }
+    const focusEditor = () => {
+      setTimeout(() => {
+        const eIns = vueMonacoRef.value.getInstance()
+        eIns.focus()
+      }, 100)
+    }
     watch(mVisible, () => {
       if (mVisible) {
         updateEditorLayout()
+        focusEditor()
       }
     })
+    watch(
+      () => settingsStore.styleEditorTab,
+      () => {
+        focusEditor()
+      }
+    )
 
     const {loadCurCompStyle, saveCurCompStyle} = useCompStorage()
 
@@ -101,9 +115,18 @@ export default defineComponent({
       }, 100)
     }
 
+    const {globalStyleText, applyGlobalStyle} = useGlobalStyle()
+    watch(globalStyleText, () => {
+      applyGlobalStyle()
+    })
+
+    const variableStyleCode = useLocalStorageString(LsKeys.VARIABLES_STYLE, '')
+    watch(variableStyleCode, () => {
+      handleUpdateStyle()
+    })
     const currentStyleCode = ref('')
-    watch(currentStyleCode, (val) => {
-      handleUpdateStyle(val)
+    watch(currentStyleCode, () => {
+      handleUpdateStyle(true)
     })
 
     onMounted(() => {
@@ -124,27 +147,28 @@ export default defineComponent({
 
     /**
      * 把样式应用到页面
-     * @param value 样式代码（scss）
      */
-    const handleUpdateStyle = async (value: string) => {
-      if (styleEl.value) {
-        try {
-          if (_prevStyleValue.value === value) {
-            // console.log('prevent update')
-            return
-          }
-          _prevStyleValue.value = value
-          styleEl.value.innerHTML = value ? await sassToCSS(value) : ''
-          console.log('[handleUpdateStyle]', isAutoSave.value)
-          if (isAutoSave.value) {
-            saveCurCompStyle(value)
-          }
-          errorTip.value = ''
-        } catch (error: any) {
-          // console.error(error)
-          // window.$message.error(error.message)
-          errorTip.value = error
+    const handleUpdateStyle = async (doSave = false) => {
+      if (!styleEl.value) {
+        return
+      }
+      try {
+        // combine variables and styles
+        const value = variableStyleCode.value + '\n' + currentStyleCode.value
+        if (_prevStyleValue.value === value) {
+          // console.log('prevent update')
+          return
         }
+        _prevStyleValue.value = value
+        styleEl.value.innerHTML = value ? await sassToCSS(value) : ''
+        // console.log('[handleUpdateStyle]', isAutoSave.value)
+        if (doSave && isAutoSave.value) {
+          saveCurCompStyle(currentStyleCode.value)
+        }
+        errorTip.value = ''
+      } catch (error: any) {
+        // console.error(error)
+        errorTip.value = error
       }
     }
 
@@ -153,8 +177,8 @@ export default defineComponent({
     const {play: sfxFill} = useSfxFill()
 
     const execBeautifyCssAction = async () => {
-      const textValue = currentStyleCode.value
       const eIns = vueMonacoRef.value.getInstance()
+      const textValue = eIns.getValue()
 
       if (textValue.trim()) {
         const beautifiedCSS = formatCss(textValue)
@@ -183,7 +207,9 @@ export default defineComponent({
     }
 
     const copyStyle = () => {
-      copyToClipboard(currentStyleCode.value)
+      const eIns = vueMonacoRef.value.getInstance()
+      const textValue = eIns.getValue()
+      copyToClipboard(textValue)
       window.$message.success($t('msgs.copy_success'))
       playSfxBell()
     }
@@ -322,7 +348,6 @@ export default defineComponent({
     useGlobalBusOn(GlobalEvents.IMPORT_SUCCESS, reloadStyle)
 
     return {
-      curTab,
       tabList,
       settingsStore,
       mVisible,
@@ -338,6 +363,9 @@ export default defineComponent({
       currentStyleCode,
       vueMonacoRef,
       updateEditorLayout,
+      variableStyleCode,
+      StyleTabType,
+      globalStyleText,
     }
   },
 })
@@ -397,16 +425,34 @@ export default defineComponent({
 
     <div class="style-editor-inner">
       <div class="style-editor-action-bar">
-        <TabLayout v-model="curTab" :tab-list="tabList" horizontal />
+        <TabLayout v-model="settingsStore.styleEditorTab" :tab-list="tabList" horizontal />
       </div>
-      <VueMonaco
-        ref="vueMonacoRef"
-        class="code-editor-placeholder"
-        v-model="currentStyleCode"
-        language="scss"
-        :debounce-ms="500"
-        show-line-numbers
-      />
+      <div class="code-editor-placeholder">
+        <VueMonaco
+          v-if="settingsStore.styleEditorTab === StyleTabType.GLOBAL"
+          ref="vueMonacoRef"
+          v-model="globalStyleText"
+          language="scss"
+          :debounce-ms="500"
+          show-line-numbers
+        />
+        <VueMonaco
+          v-else-if="settingsStore.styleEditorTab === StyleTabType.VARIABLES"
+          ref="vueMonacoRef"
+          v-model="variableStyleCode"
+          language="scss"
+          :debounce-ms="500"
+          show-line-numbers
+        />
+        <VueMonaco
+          v-else
+          ref="vueMonacoRef"
+          v-model="currentStyleCode"
+          language="scss"
+          :debounce-ms="500"
+          show-line-numbers
+        />
+      </div>
     </div>
   </ViewPortWindow>
 </template>

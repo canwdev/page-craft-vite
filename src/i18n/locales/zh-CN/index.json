@@ -94,7 +94,6 @@
     "open_excel": "打开 Excel"
   },
   "msgs": {
-    "css_code_only": "仅 CSS 代码",
     "drop_files_here": "将文件拖放到此处",
     "filter_items": "过滤项目",
     "no_items": "没有相关物品。",

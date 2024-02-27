@@ -5,6 +5,7 @@ import {LsKeys} from '@/enum/page-craft'
 import {createOrFindStyleNode} from '@/utils/dom'
 import {getSystemIsDarkMode, hexToRgb} from '@/utils/color'
 import {GlobalThemeOverrides} from 'naive-ui'
+import {sassToCSS} from '@/utils/css'
 
 export const useGlobalTheme = () => {
   const mainStore = useMainStore()
@@ -128,19 +129,21 @@ export const useGlobalStyle = () => {
   const globalStyleText = ref('')
   const settingsStore = useSettingsStore()
 
-  const applyGlobalStyle = () => {
-    if (styleEl.value) {
-      if (settingsStore.enableGlobalCss) {
-        styleEl.value.innerHTML = globalStyleText.value
-        localStorage.setItem(LsKeys.GLOBAL_STYLE, globalStyleText.value)
-      } else {
-        styleEl.value.innerHTML = ''
-      }
+  const applyGlobalStyle = async () => {
+    if (!styleEl.value) {
+      return
+    }
+    if (settingsStore.enableGlobalStyle) {
+      const value = globalStyleText.value
+      styleEl.value.innerHTML = value ? await sassToCSS(value) : ''
+      localStorage.setItem(LsKeys.GLOBAL_STYLE, globalStyleText.value)
+    } else {
+      styleEl.value.innerHTML = ''
     }
   }
 
   watch(
-    () => settingsStore.enableGlobalCss,
+    () => settingsStore.enableGlobalStyle,
     (val) => {
       applyGlobalStyle()
     }
@@ -149,7 +152,7 @@ export const useGlobalStyle = () => {
   onMounted(() => {
     styleEl.value = createOrFindStyleNode(LsKeys.GLOBAL_STYLE)
     globalStyleText.value =
-      localStorage.getItem(LsKeys.GLOBAL_STYLE) || 'body {font-family: "LXGW WenKai", "楷体";}'
+      localStorage.getItem(LsKeys.GLOBAL_STYLE) || '/*body {font-family: "LXGW WenKai", "楷体";}*/'
 
     applyGlobalStyle()
   })

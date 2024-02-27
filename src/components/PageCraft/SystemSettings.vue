@@ -38,8 +38,6 @@ export default defineComponent({
     const mVisible = useModelWrapper(props, emit, 'visible')
     const settingsStore = useSettingsStore()
 
-    const isShowGlobalStyleDialog = ref(false)
-
     const optionList = computed((): StOptionItem[] => {
       return [
         {
@@ -134,21 +132,11 @@ export default defineComponent({
               key: 'global_style',
               actionRender: h(NSpace, {size: 'small', align: 'center'}, () => [
                 h(NSwitch, {
-                  value: settingsStore.enableGlobalCss,
+                  value: settingsStore.enableGlobalStyle,
                   'onUpdate:value': (v) => {
-                    settingsStore.enableGlobalCss = v
+                    settingsStore.enableGlobalStyle = v
                   },
                 }),
-                h(
-                  NButton,
-                  {
-                    size: 'small',
-                    onClick: () => {
-                      isShowGlobalStyleDialog.value = true
-                    },
-                  },
-                  () => $t('actions.edit')
-                ),
               ]),
             },
             {
@@ -165,7 +153,7 @@ export default defineComponent({
                     mVisible.value = false
                   },
                 },
-                'Go'
+                () => 'Go'
               ),
             },
             {
@@ -191,7 +179,6 @@ export default defineComponent({
     return {
       mVisible,
       optionList,
-      isShowGlobalStyleDialog,
       globalStyleText,
       applyGlobalStyle,
       dialogIconRender() {
@@ -212,22 +199,6 @@ export default defineComponent({
     class="system-settings"
   >
     <OptionUI :option-list="optionList" />
-  </n-modal>
-
-  <n-modal
-    v-model:show="isShowGlobalStyleDialog"
-    :negative-text="$t('actions.cancel')"
-    :positive-text="$t('actions.save')"
-    preset="dialog"
-    :title="$t('common.global_style') + ' / ' + $t('msgs.css_code_only')"
-    @positive-click="applyGlobalStyle"
-  >
-    <VueMonaco
-      v-if="isShowGlobalStyleDialog"
-      v-model="globalStyleText"
-      style="height: 500px"
-      language="css"
-    />
   </n-modal>
 </template>
 

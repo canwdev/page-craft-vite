@@ -10,6 +10,7 @@ export enum LsKeys {
   /*组件专用 end*/
   INDICATOR_OPTIONS = 'page_craft_indicator_options',
   TOOL_BAR_LIST = 'page_craft_tool_bar_list',
+  VARIABLES_STYLE = 'page_craft_variables_style',
 }
 
 const CLASS_MOUSE_OVER = 'cls_mouse_over'
