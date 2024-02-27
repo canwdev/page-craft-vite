@@ -40,7 +40,7 @@ import PopFloat from '@/components/PageCraft/DomPreview/PopFloat.vue'
 import {takeScreenshot} from '@/utils/screenshot'
 import DialogImageCropper from '@/components/CommonUI/DialogImageCropper.vue'
 import {showInputPrompt} from '@/components/CommonUI/input-prompt'
-import TabLayout from '@/components/PageCraft/InventoryModal/TabLayout.vue'
+import TabLayout from '@/components/CommonUI/TabLayout.vue'
 import {NIcon} from 'naive-ui'
 
 let idx = 1
@@ -164,7 +164,7 @@ export default defineComponent({
 
     const handleDeleteComponent = () => {
       const item = editingNode.value
-      /*window.$dialog.warning({
+      window.$dialog.warning({
         title: $t('actions.confirm'),
         content: $t('msgs.are_you_sure_to_dele') + ` ${item.title}?`,
         positiveText: $t('actions.ok'),
@@ -185,19 +185,6 @@ export default defineComponent({
         },
         onNegativeClick: () => {},
       })
-*/
-      const index = componentList.value.findIndex((i) => i.id === item.id)
-      const list = [...componentList.value]
-      list.splice(index, 1)
-      componentList.value = list
-
-      // remove local storage
-      clearCompStorage(item.title)
-
-      // reset current component name
-      if (settingsStore.curCompoName === item.title) {
-        settingsStore.curCompoName = ''
-      }
     }
 
     const handleComponentDeleteAll = () => {

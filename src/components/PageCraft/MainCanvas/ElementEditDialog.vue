@@ -3,7 +3,7 @@ import {defineComponent, PropType, ref} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {FormInst} from 'naive-ui'
 import {CustomFormInputType, CustomFormItem, formatForm, getCustomFormItems} from './element-edit'
-import VueMonaco from '@/components/CommonUI/VueMonaco.vue'
+import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
 
 export default defineComponent({
   name: 'ElementEditDialog',

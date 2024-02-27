@@ -9,7 +9,7 @@ import {
 } from '@/components/VueI18nEditTool/copy-enum'
 import {ClipboardPaste20Regular, Copy20Regular} from '@vicons/fluent'
 import {useI18n} from 'vue-i18n'
-import VueMonaco from '@/components/CommonUI/VueMonaco.vue'
+import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
 import {useLocalStorageString} from '@/hooks/use-local-storage'
 
 export default defineComponent({

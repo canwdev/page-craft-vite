@@ -15,7 +15,7 @@ import {
   Code20Filled,
   QuestionCircle20Regular,
 } from '@vicons/fluent'
-import VueMonaco from '@/components/CommonUI/VueMonaco.vue'
+import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
 
 export default defineComponent({
   name: 'MainCanvas',

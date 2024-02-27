@@ -522,3 +522,9 @@ $mq_pc_2k_height: 1250px; // 1328px`,
     code: `@media screen and (min-width: $mq_mobile_width) and (max-width: $mq_tablet_width) and (max-height: $mq_mobile_height_land) {}`,
   },
 ]
+
+export enum StyleTabType {
+  GLOBAL = 'global',
+  VARIABLES = 'variables',
+  CURRENT = 'current',
+}

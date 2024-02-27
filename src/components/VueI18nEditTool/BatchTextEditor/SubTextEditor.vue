@@ -1,6 +1,6 @@
 <script lang="ts">
 import {defineComponent, PropType} from 'vue'
-import VueMonaco from '@/components/CommonUI/VueMonaco.vue'
+import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
 import {DirTreeItem} from '@/enum/vue-i18n-tool'
 import {useBatchItem} from '@/components/VueI18nEditTool/Batch/batch-hooks'
 import {handleReadSelectedFile} from '@/utils/exporter'

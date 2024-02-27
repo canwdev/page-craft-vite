@@ -1,20 +1,20 @@
 <script lang="ts">
-import {defineComponent, shallowRef} from 'vue'
+import {defineComponent} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
-import {debounce} from 'throttle-debounce'
 import {LsKeys} from '@/enum/page-craft'
 import {createOrFindStyleNode} from '@/utils/dom'
 import {sassToCSS, suggestElementClass} from '@/utils/css'
 import {copyToClipboard} from '@/utils'
 import {useMainStore} from '@/store/main'
 import {ActionBlockItems, BlockItem} from '@/enum/page-craft/block'
-import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
+import {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
 import {
   cssHelperClassList,
   cssKeyFramesList,
   cssSnippetList,
   mediaQueryList,
   sassVariablesList,
+  StyleTabType,
   vue2TransitionsList,
   vue3TransitionsList,
 } from '@/enum/page-craft/styles'
@@ -22,28 +22,20 @@ import {formatCss} from '@/utils/formater'
 import {useCompStorage} from '@/hooks/use-component-storage'
 import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
 
-import * as monaco from 'monaco-editor'
-import {emmetCSS} from 'emmet-monaco-es'
-emmetCSS(monaco, ['css', 'scss'])
 import {useSettingsStore} from '@/store/settings'
 import {
-  CursorHover20Regular,
-  CursorClick20Regular,
-  Dismiss20Regular,
-  PaintBucket20Filled,
   Copy20Regular,
-  Wand20Regular,
+  CursorClick20Regular,
+  CursorHover20Regular,
   PaintBrush20Regular,
+  PaintBucket20Filled,
+  Wand20Regular,
 } from '@vicons/fluent'
 import {useI18n} from 'vue-i18n'
-import {useBeforeUnload} from '@/hooks/use-beforeunload'
-import {
-  useOpenCloseSelect,
-  useOpenCloseSound,
-  useSfxBell,
-  useSfxBrush,
-  useSfxFill,
-} from '@/hooks/use-sfx'
+import {useOpenCloseSelect, useSfxBell, useSfxBrush, useSfxFill} from '@/hooks/use-sfx'
+import TabLayout from '@/components/CommonUI/TabLayout.vue'
+import monaco from '@/components/CommonUI/VueMonaco/monaco-helper'
+import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
 
 export default defineComponent({
   name: 'StyleEditor',
@@ -54,10 +46,11 @@ export default defineComponent({
     },
   },
   components: {
+    VueMonaco,
+    TabLayout,
     ViewPortWindow,
     CursorHover20Regular,
     CursorClick20Regular,
-    Dismiss20Regular,
     PaintBucket20Filled,
     Copy20Regular,
     Wand20Regular,
@@ -67,34 +60,29 @@ export default defineComponent({
   setup(props, {emit}) {
     const {t: $t} = useI18n()
     const mVisible = useModelWrapper(props, emit, 'visible')
-    const editorContainerRef = ref()
     const mainStore = useMainStore()
     const settingsStore = useSettingsStore()
-    // monaco.editor.IStandaloneCodeEditor
-    const editorInstance = shallowRef<any>()
 
-    const isEditorContentChanged = ref(false)
-    useBeforeUnload(() => {
-      return isEditorContentChanged.value
-    })
+    const vueMonacoRef = ref()
+    const curTab = ref(StyleTabType.CURRENT)
+    const tabList = ref([
+      {label: 'Global', value: StyleTabType.GLOBAL},
+      {label: 'Variables', value: StyleTabType.VARIABLES},
+      {label: 'Current', value: StyleTabType.CURRENT},
+    ])
 
     const styleEl = ref<HTMLElement | null>(null)
+    const isAutoSave = ref(false)
 
+    const updateEditorLayout = () => {
+      const eIns = vueMonacoRef.value.getInstance()
+      eIns?.layout()
+    }
     watch(mVisible, () => {
       if (mVisible) {
-        editorInstance.value.layout()
+        updateEditorLayout()
       }
     })
-
-    const getThemeName = () => {
-      return mainStore.isAppDarkMode ? 'vs-dark' : 'vs'
-    }
-    watch(
-      () => mainStore.isAppDarkMode,
-      (val) => {
-        editorInstance.value.updateOptions({theme: getThemeName()})
-      }
-    )
 
     const {loadCurCompStyle, saveCurCompStyle} = useCompStorage()
 
@@ -106,61 +94,21 @@ export default defineComponent({
     )
 
     const reloadStyle = () => {
-      const style = loadCurCompStyle()
-      editorInstance.value.setValue(style)
-      // call instantly
-      handleUpdateStyle(style, false)
-
+      isAutoSave.value = false
+      currentStyleCode.value = loadCurCompStyle()
       setTimeout(() => {
-        isEditorContentChanged.value = false
-      }, 500)
+        isAutoSave.value = true
+      }, 100)
     }
+
+    const currentStyleCode = ref('')
+    watch(currentStyleCode, (val) => {
+      handleUpdateStyle(val)
+    })
 
     onMounted(() => {
       styleEl.value = createOrFindStyleNode(LsKeys.COMP_STYLE)
-      const style = loadCurCompStyle()
-
-      editorInstance.value = monaco.editor.create(editorContainerRef.value, {
-        value: style,
-        language: 'scss',
-        theme: getThemeName(), // 'vs' 'hc-black' 'vs-dark'
-        wordWrap: 'on',
-        foldingStrategy: 'indentation', // 代码可分小段折叠
-        minimap: {
-          enabled: false,
-        },
-        scrollbar: {
-          alwaysConsumeMouseWheel: false,
-        },
-        quickSuggestions: true,
-        suggest: {
-          snippetsPreventQuickSuggestions: false,
-        },
-        // cursorSmoothCaretAnimation: true, // 是否启用光标平滑插入动画
-        tabSize: 2,
-      })
-
-      editorInstance.value.onDidChangeModelContent(() => {
-        handleEditorChangeDebounced()
-      })
-
-      handleUpdateStyle(style, false)
-
-      // @ts-ignore
-      globalEventBus.on(GlobalEvents.ON_ADD_STYLE, handleAddStyle)
-      globalEventBus.on(GlobalEvents.IMPORT_SUCCESS, reloadStyle)
-    })
-
-    onBeforeUnmount(() => {
-      editorInstance.value.dispose()
-      // @ts-ignore
-      globalEventBus.off(GlobalEvents.ON_ADD_STYLE, handleAddStyle)
-      globalEventBus.off(GlobalEvents.IMPORT_SUCCESS, reloadStyle)
-    })
-
-    const handleEditorChangeDebounced = debounce(500, false, () => {
-      isEditorContentChanged.value = true
-      handleUpdateStyle(editorInstance.value.getValue())
+      reloadStyle()
     })
 
     const errorTip = ref()
@@ -171,66 +119,72 @@ export default defineComponent({
       }, 500)
     }
 
-    const _prevStyleValue = ref('') // 创建一个临时变量防止重复更新
-    const handleUpdateStyle = async (value, isSave = true) => {
+    // 创建一个临时变量防止重复更新
+    const _prevStyleValue = ref('')
+
+    /**
+     * 把样式应用到页面
+     * @param value 样式代码（scss）
+     */
+    const handleUpdateStyle = async (value: string) => {
       if (styleEl.value) {
         try {
           if (_prevStyleValue.value === value) {
             // console.log('prevent update')
             return
           }
-          // console.warn('handleUpdateStyle')
           _prevStyleValue.value = value
           styleEl.value.innerHTML = value ? await sassToCSS(value) : ''
-          if (isSave) {
+          console.log('[handleUpdateStyle]', isAutoSave.value)
+          if (isAutoSave.value) {
             saveCurCompStyle(value)
           }
           errorTip.value = ''
         } catch (error: any) {
           // console.error(error)
-          // message.error(error.message)
+          // window.$message.error(error.message)
           errorTip.value = error
         }
       }
     }
 
-    const message = useMessage()
-
     const {play: playSfxBrush} = useSfxBrush()
+    const {play: playSfxBell} = useSfxBell()
+    const {play: sfxFill} = useSfxFill()
+
     const execBeautifyCssAction = async () => {
-      const textValue = editorInstance.value.getValue()
+      const textValue = currentStyleCode.value
+      const eIns = vueMonacoRef.value.getInstance()
+
       if (textValue.trim()) {
         const beautifiedCSS = formatCss(textValue)
         if (textValue.trim() !== beautifiedCSS.trim()) {
           // Select all text
-          const fullRange = editorInstance.value.getModel()?.getFullModelRange()
+          const fullRange = eIns.getModel()?.getFullModelRange()
           if (fullRange) {
             // Apply the text over the range
-            editorInstance.value.executeEdits(null, [
+            eIns.executeEdits(null, [
               {
                 text: beautifiedCSS,
                 range: fullRange,
               },
             ])
             // Indicates the above edit is a complete undo/redo change.
-            // editorInstance.value.pushUndoStop()
+            // eIns.pushUndoStop()
           } else {
-            await editorInstance.value.setValue(beautifiedCSS)
+            currentStyleCode.value = beautifiedCSS
           }
 
-          await handleUpdateStyle(beautifiedCSS)
           // await editor.reInitTextComponent({pleaseIgnoreCursorActivity: true})
         }
       }
-      editorInstance.value.focus()
+      eIns.focus()
       playSfxBrush()
     }
 
-    const {play: playSfxBell} = useSfxBell()
-    const {play: sfxFill} = useSfxFill()
     const copyStyle = () => {
-      copyToClipboard(editorInstance.value.getValue())
-      message.success($t('msgs.copy_success'))
+      copyToClipboard(currentStyleCode.value)
+      window.$message.success($t('msgs.copy_success'))
       playSfxBell()
     }
 
@@ -265,13 +219,14 @@ export default defineComponent({
     const insertStyleCode = (code, isAppend = false) => {
       sfxFill()
       if (isAppend) {
-        const style = loadCurCompStyle()
-        editorInstance.value.setValue(style + '\n' + code)
+        currentStyleCode.value = currentStyleCode.value + '\n' + code
         return
       }
 
-      const selection = editorInstance.value.getSelection()
-      editorInstance.value.executeEdits('', [
+      const eIns = vueMonacoRef.value.getInstance()
+
+      const selection = eIns.getSelection()
+      eIns.executeEdits('', [
         {
           range: new monaco.Range(
             selection?.startLineNumber || 0,
@@ -284,7 +239,7 @@ export default defineComponent({
         },
       ])
       setTimeout(() => {
-        editorInstance.value.focus()
+        eIns.focus()
       }, 100)
     }
 
@@ -362,11 +317,15 @@ export default defineComponent({
       document.removeEventListener('keydown', listenGlobalShortcuts)
     })
 
+    // @ts-ignore
+    useGlobalBusOn(GlobalEvents.ON_ADD_STYLE, handleAddStyle)
+    useGlobalBusOn(GlobalEvents.IMPORT_SUCCESS, reloadStyle)
+
     return {
+      curTab,
+      tabList,
       settingsStore,
       mVisible,
-      handleUpdateStyle,
-      editorContainerRef,
       execBeautifyCssAction,
       copyStyle,
       enterSelectMode,
@@ -375,8 +334,10 @@ export default defineComponent({
       errorTip,
       handleErrorTipClick,
       toolOptions,
-      editorInstance,
       listenShortcuts,
+      currentStyleCode,
+      vueMonacoRef,
+      updateEditorLayout,
     }
   },
 })
@@ -386,7 +347,7 @@ export default defineComponent({
   <ViewPortWindow
     class="style-editor-dialog"
     v-model:visible="mVisible"
-    @resize="editorInstance.layout()"
+    @resize="updateEditorLayout"
     wid="style_editor"
     @keyup="listenShortcuts"
   >
@@ -434,7 +395,19 @@ export default defineComponent({
       </div>
     </transition>
 
-    <div ref="editorContainerRef" class="code-editor-placeholder" />
+    <div class="style-editor-inner">
+      <div class="style-editor-action-bar">
+        <TabLayout v-model="curTab" :tab-list="tabList" horizontal />
+      </div>
+      <VueMonaco
+        ref="vueMonacoRef"
+        class="code-editor-placeholder"
+        v-model="currentStyleCode"
+        language="scss"
+        :debounce-ms="500"
+        show-line-numbers
+      />
+    </div>
   </ViewPortWindow>
 </template>
 
@@ -458,9 +431,17 @@ export default defineComponent({
     }
   }
 
-  .code-editor-placeholder {
+  .style-editor-inner {
     width: 100%;
     height: 100%;
+    display: flex;
+    flex-direction: column;
+    .style-editor-action-bar {
+    }
+
+    .code-editor-placeholder {
+      flex: 1;
+    }
   }
 
   .code-mc-error-tip-button {

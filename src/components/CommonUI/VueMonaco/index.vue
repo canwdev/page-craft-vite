@@ -1,9 +1,9 @@
 <script lang="ts">
-import * as monaco from 'monaco-editor'
 import {defineComponent, shallowRef} from 'vue'
 import {debounce} from 'throttle-debounce'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {useMainStore} from '@/store/main'
+import monaco from './monaco-helper'
 
 export default defineComponent({
   name: 'VueMonaco',
@@ -20,16 +20,19 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    debounceMs: {
+      type: Number,
+      default: 100,
+    },
   },
+  emits: ['update:modelValue'],
   setup(props, {emit}) {
     const mValue = useModelWrapper(props, emit)
     const editorContainerRef = ref()
     const editorInstance = shallowRef<any>()
 
     const mainStore = useMainStore()
-    const getThemeName = () => {
-      return mainStore.isAppDarkMode ? 'vs-dark' : 'vs'
-    }
+    const getThemeName = () => (mainStore.isAppDarkMode ? 'vs-dark' : 'vs')
     watch(
       () => mainStore.isAppDarkMode,
       () => {
@@ -50,7 +53,6 @@ export default defineComponent({
       () => props.language,
       (newValue) => {
         if (editorInstance.value) {
-          // monaco.editor.setModelLanguage(editor.getModel(), "cpp")
           monaco.editor.setModelLanguage(editorInstance.value.getModel(), newValue)
         }
       }
@@ -64,7 +66,7 @@ export default defineComponent({
         wordWrap: 'on',
         foldingStrategy: 'indentation', // 代码可分小段折叠
         minimap: {
-          enabled: false,
+          enabled: props.showLineNumbers,
         },
         scrollbar: {
           alwaysConsumeMouseWheel: false,
@@ -88,7 +90,7 @@ export default defineComponent({
     onBeforeUnmount(() => {
       editorInstance.value.dispose()
     })
-    const handleEditorChangeDebounced = debounce(100, false, () => {
+    const handleEditorChangeDebounced = debounce(props.debounceMs, false, () => {
       mValue.value = editorInstance.value.getValue()
     })
 
@@ -100,10 +102,15 @@ export default defineComponent({
       editorInstance.value.layout()
     }
 
+    const getInstance = () => {
+      return editorInstance.value
+    }
+
     return {
       editorContainerRef,
       focus,
       resize,
+      getInstance,
     }
   },
 })

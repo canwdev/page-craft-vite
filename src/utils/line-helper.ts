@@ -36,7 +36,7 @@ export class LineHelper {
     this.targetElement = targetElement
     const crossX = document.querySelector('.line-helper-x')
     if (!crossX) {
-      throw new Error('crossX is not exist!')
+      console.error('crossX is not exist!')
     }
     this.crossX = crossX as HTMLElement
   }

@@ -17,6 +17,15 @@ export const GlobalEvents = {
   ON_I18N_SAVE_ALL_CHANGES: 'ON_I18N_SAVE_ALL_CHANGES',
 }
 
+export const useGlobalBusOn = (eventName, callback) => {
+  onMounted(() => {
+    globalEventBus.on(eventName, callback)
+  })
+  onBeforeUnmount(() => {
+    globalEventBus.off(eventName, callback)
+  })
+}
+
 export const syncStorageData = () => {
   return new Promise((resolve) => {
     globalEventBus.emit(GlobalEvents.SYNC_STORAGE_DATA, resolve)
