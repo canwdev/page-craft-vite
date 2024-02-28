@@ -30,7 +30,7 @@ const MAX_WAIT_TIME = 0.3 * 1000
 
 export const useInteractionHooks = (options) => {
   const {t: $t} = useI18n()
-  const {mainCanvasRef, saveData, indicatorOptions, copyHtml, recordUndo} = options
+  const {mainPlaygroundRef, saveData, indicatorOptions, copyHtml, recordUndo} = options
   const mainStore = useMainStore()
   const waitingTime = ref(0)
   const waitTimer = ref<any>(null)
@@ -44,18 +44,18 @@ export const useInteractionHooks = (options) => {
   const lineHelper = shallowRef()
 
   onMounted(() => {
-    mainCanvasRef.value.addEventListener('mousemove', handleMouseMove)
-    mainCanvasRef.value.addEventListener('contextmenu', handleContextMenu)
-    mainCanvasRef.value.addEventListener('pointerdown', handlePointerDown)
-    mainCanvasRef.value.addEventListener('pointerup', handlePointerUp)
+    mainPlaygroundRef.value.addEventListener('mousemove', handleMouseMove)
+    mainPlaygroundRef.value.addEventListener('contextmenu', handleContextMenu)
+    mainPlaygroundRef.value.addEventListener('pointerdown', handlePointerDown)
+    mainPlaygroundRef.value.addEventListener('pointerup', handlePointerUp)
 
-    lineHelper.value = new LineHelper(mainCanvasRef.value)
+    lineHelper.value = new LineHelper(mainPlaygroundRef.value)
   })
   onBeforeUnmount(() => {
-    mainCanvasRef.value.removeEventListener('mousemove', handleMouseMove)
-    mainCanvasRef.value.removeEventListener('contextmenu', handleContextMenu)
-    mainCanvasRef.value.removeEventListener('pointerdown', handlePointerDown)
-    mainCanvasRef.value.removeEventListener('pointerup', handlePointerUp)
+    mainPlaygroundRef.value.removeEventListener('mousemove', handleMouseMove)
+    mainPlaygroundRef.value.removeEventListener('contextmenu', handleContextMenu)
+    mainPlaygroundRef.value.removeEventListener('pointerdown', handlePointerDown)
+    mainPlaygroundRef.value.removeEventListener('pointerup', handlePointerUp)
   })
 
   const selectionRef = ref<Selection | null>(null)
@@ -204,7 +204,7 @@ export const useInteractionHooks = (options) => {
       return []
     }
     const blockMenu =
-      targetEl === mainCanvasRef.value
+      targetEl === mainPlaygroundRef.value
         ? []
         : [
             {
@@ -364,7 +364,7 @@ export const useInteractionHooks = (options) => {
     if (!currentNode) {
       return
     }
-    if (currentNode === mainCanvasRef.value) {
+    if (currentNode === mainPlaygroundRef.value) {
       // do nothing
     } else {
       const $parent = $(currentNode).parent()
@@ -392,7 +392,7 @@ export const useInteractionHooks = (options) => {
     }
     addOptions = addOptions || mainStore
 
-    await appendCustomBlock(newBlock, event, addOptions, mainCanvasRef)
+    await appendCustomBlock(newBlock, event, addOptions, mainPlaygroundRef)
     if (newBlock.actionType === ActionType.DELETE) {
       playSfxDestroy()
     } else if (
@@ -476,7 +476,7 @@ export const useInteractionHooks = (options) => {
   const handleDrop = async (event) => {
     lineHelper.value.hideLine()
 
-    let targetEl = event.target || mainCanvasRef.value
+    let targetEl = event.target || mainPlaygroundRef.value
     const currentPosition = lineHelper.value.currentPosition
 
     // 放置HTML代码

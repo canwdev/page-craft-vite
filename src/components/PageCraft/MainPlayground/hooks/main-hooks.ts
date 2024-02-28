@@ -6,7 +6,7 @@ import {
   handleReadSelectedFile,
 } from '@/utils/exporter'
 import globalEventBus, {GlobalEvents, syncStorageData} from '@/utils/global-event-bus'
-import {removeMouseOverDomElementEffect} from '@/components/PageCraft/MainPlayground/interaction-hooks'
+import {removeMouseOverDomElementEffect} from '@/components/PageCraft/MainPlayground/hooks/interaction-hooks'
 import {copyToClipboard} from '@/utils'
 import {formatCss, formatHtml} from '@/utils/formater'
 import {ComponentData, ComponentExportData} from '@/enum/page-craft/block'
@@ -18,10 +18,11 @@ import {useSettingsStore} from '@/store/settings'
 import {useI18n} from 'vue-i18n'
 import {useBeforeUnload, useSaveShortcut} from '@/hooks/use-beforeunload'
 import {useSfxBass, useSfxBell, useSfxFill, useSfxGuitar} from '@/hooks/use-sfx'
+import {useBroadcastMessage} from '@/components/PageCraft/MainPlayground/hooks/use-broadcast-messae'
 
 export const useMcMain = (options) => {
   const {t: $t} = useI18n()
-  const {mainCanvasRef, emit} = options
+  const {mainPlaygroundRef, emit} = options
   const mainStore = useMainStore()
   const settingsStore = useSettingsStore()
   const fileChooserRef = ref()
@@ -47,7 +48,7 @@ export const useMcMain = (options) => {
 
   const copyHtml = (el?) => {
     removeMouseOverDomElementEffect()
-    const html = el ? el.outerHTML : mainCanvasRef.value.innerHTML
+    const html = el ? el.outerHTML : mainPlaygroundRef.value.innerHTML
     copyToClipboard(formatHtml(html))
     window.$message.success($t('msgs.copy_success'))
 
@@ -70,30 +71,52 @@ export const useMcMain = (options) => {
 
   const saveData = (cb?) => {
     removeMouseOverDomElementEffect()
-    const innerHTML = mainCanvasRef.value.innerHTML
+    const innerHTML = mainPlaygroundRef.value.innerHTML
     saveCurCompHtml(innerHTML)
+    // 如果开启了多个窗口（iframe)，发送同步状态
+    channelRef.value?.postMessage(null)
     if (cb) {
       cb()
     }
   }
 
+  // 用来防止多窗口通信导致的死循环
+  const isSelfUpdating = ref(false)
+  // 处理多个窗口(iframe)间的状态同步
+  const {channelRef} = useBroadcastMessage('mainPlaygroundUpdate', (event) => {
+    isSelfUpdating.value = true
+    console.log('[mainPlaygroundUpdate]')
+
+    // 强制重新读取数据
+    settingsStore.$hydrate({runHooks: false})
+    reloadHtml()
+    nextTick(() => {
+      isSelfUpdating.value = false
+    })
+  })
+
   watch(
     () => settingsStore.curCompoName,
     () => {
+      if (isSelfUpdating.value) {
+        console.warn('isSelfUpdating')
+        return
+      }
       reloadHtml()
+      // 如果开启了多个窗口（iframe)，发送同步状态
+      channelRef.value?.postMessage(null)
     }
   )
 
-  const setMainCanvasHtml = (html: string = '') => {
-    if (mainCanvasRef.value) {
-      console.log(mainCanvasRef.value)
-      mainCanvasRef.value.innerHTML = html
+  const setPlaygroundHtml = (html: string = '') => {
+    if (mainPlaygroundRef.value) {
+      mainPlaygroundRef.value.innerHTML = html
     }
   }
 
   const reloadHtml = () => {
     const html = loadCurCompHtml()
-    setMainCanvasHtml(html)
+    setPlaygroundHtml(html)
     undoRedo.value.clear()
     sfxFill()
   }
@@ -112,7 +135,7 @@ export const useMcMain = (options) => {
 
   const handleImportHtml = (html: string) => {
     recordUndo()
-    setMainCanvasHtml(html)
+    setPlaygroundHtml(html)
     saveData()
     sfxFill()
   }
@@ -204,7 +227,7 @@ export const useMcMain = (options) => {
       label: 'd1',
     },
     {
-      label: '❌ ' + $t('actions.clear_all_code'),
+      label: '❌ ' + $t('actions.clear_all_html'),
       props: {
         onClick: async () => {
           window.$dialog.warning({
@@ -230,7 +253,7 @@ export const useMcMain = (options) => {
 
   // record html before action
   const recordUndo = () => {
-    const innerHTML = mainCanvasRef.value.innerHTML
+    const innerHTML = mainPlaygroundRef.value.innerHTML
     undoRedo.value.recordUndo(innerHTML)
   }
   const {play: playSfxGuitar} = useSfxGuitar()
@@ -240,9 +263,9 @@ export const useMcMain = (options) => {
       return
     }
     playSfxGuitar()
-    const innerHTML = mainCanvasRef.value.innerHTML
+    const innerHTML = mainPlaygroundRef.value.innerHTML
     const html = undoRedo.value.undo(innerHTML)
-    setMainCanvasHtml(html)
+    setPlaygroundHtml(html)
     saveData()
   }
 
@@ -251,9 +274,9 @@ export const useMcMain = (options) => {
       return
     }
     playSfxBass()
-    const innerHTML = mainCanvasRef.value.innerHTML
+    const innerHTML = mainPlaygroundRef.value.innerHTML
     const html = undoRedo.value.redo(innerHTML)
-    setMainCanvasHtml(html)
+    setPlaygroundHtml(html)
     saveData()
   }
 
@@ -261,7 +284,7 @@ export const useMcMain = (options) => {
     htmlMenuOptions,
     fileChooserRef,
     isShowImportDialog,
-    setMainCanvasHtml,
+    setPlaygroundHtml,
     pasteHtmlText,
     handleImportHtml,
     handleImportJsonSelected,

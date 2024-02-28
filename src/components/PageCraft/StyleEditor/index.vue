@@ -38,6 +38,8 @@ import monaco from '@/components/CommonUI/VueMonaco/monaco-helper'
 import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
 import {useLocalStorageString} from '@/hooks/use-local-storage'
 import {useGlobalStyle} from '@/hooks/use-global-theme'
+import {useBroadcastMessage} from '@/components/PageCraft/MainPlayground/hooks/use-broadcast-messae'
+import {usePlaygroundStore} from '@/store/playground'
 
 export default defineComponent({
   name: 'StyleEditor',
@@ -64,6 +66,7 @@ export default defineComponent({
     const mVisible = useModelWrapper(props, emit, 'visible')
     const mainStore = useMainStore()
     const settingsStore = useSettingsStore()
+    const playgroundStore = usePlaygroundStore()
 
     const vueMonacoRef = ref()
     const tabList = ref([
@@ -72,7 +75,6 @@ export default defineComponent({
       {label: 'Current', value: StyleTabType.CURRENT},
     ])
 
-    const styleEl = ref<HTMLElement | null>(null)
     const isAutoSave = ref(false)
 
     const updateEditorLayout = () => {
@@ -115,10 +117,8 @@ export default defineComponent({
       }, 100)
     }
 
-    const {globalStyleText, applyGlobalStyle} = useGlobalStyle()
-    watch(globalStyleText, () => {
-      applyGlobalStyle()
-    })
+    const {channelRef} = useBroadcastMessage('currentStyleChange')
+    const {globalStyleText} = useGlobalStyle()
 
     const variableStyleCode = useLocalStorageString(LsKeys.VARIABLES_STYLE, '')
     watch(variableStyleCode, () => {
@@ -130,7 +130,6 @@ export default defineComponent({
     })
 
     onMounted(() => {
-      styleEl.value = createOrFindStyleNode(LsKeys.COMP_STYLE)
       reloadStyle()
     })
 
@@ -149,9 +148,6 @@ export default defineComponent({
      * 把样式应用到页面
      */
     const handleUpdateStyle = async (doSave = false) => {
-      if (!styleEl.value) {
-        return
-      }
       try {
         // combine variables and styles
         const value = variableStyleCode.value + '\n' + currentStyleCode.value
@@ -160,7 +156,11 @@ export default defineComponent({
           return
         }
         _prevStyleValue.value = value
-        styleEl.value.innerHTML = value ? await sassToCSS(value) : ''
+        const result = value ? await sassToCSS(value) : ''
+
+        playgroundStore.currentCSS = result
+        channelRef.value!.postMessage(result)
+
         // console.log('[handleUpdateStyle]', isAutoSave.value)
         if (doSave && isAutoSave.value) {
           saveCurCompStyle(currentStyleCode.value)

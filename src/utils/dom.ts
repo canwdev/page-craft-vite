@@ -55,8 +55,8 @@ export const createBlockElement = (block: BlockItem, addOptions?) => {
   return addEl
 }
 
-export const appendCustomBlock = async (block: BlockItem, event, addOptions, mainCanvasRef) => {
-  let targetEl = event.target || mainCanvasRef.value
+export const appendCustomBlock = async (block: BlockItem, event, addOptions, mainPlaygroundRef) => {
+  let targetEl = event.target || mainPlaygroundRef.value
 
   if (block.blockType === BlockType.ACTIONS) {
     if (block.actionType === ActionType.PASTE_REPLACE) {
@@ -85,7 +85,7 @@ export const appendCustomBlock = async (block: BlockItem, event, addOptions, mai
       return
     }
     if (block.actionType === ActionType.DELETE) {
-      if (targetEl === mainCanvasRef.value) {
+      if (targetEl === mainPlaygroundRef.value) {
         return
       }
       targetEl.parentNode.removeChild(targetEl)

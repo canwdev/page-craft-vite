@@ -3,6 +3,7 @@ import {ActionType, BlockType} from '@/enum/page-craft/block'
 import {useMainStore} from '@/store/main'
 import {useI18n} from 'vue-i18n'
 import {useSfxBass, useSfxPop} from '@/hooks/use-sfx'
+import {useBroadcastMessage} from '@/components/PageCraft/MainPlayground/hooks/use-broadcast-messae'
 
 export type IndicatorOptions = {
   enableDevHelpClass: boolean
@@ -23,6 +24,17 @@ export const useIndicator = () => {
   const mainStore = useMainStore()
   const {play: playSfxPop} = useSfxPop()
 
+  // 用来防止多窗口通信导致的死循环
+  const isSelfUpdating = ref(false)
+  // 处理多个窗口(iframe)间的状态同步
+  const {channelRef} = useBroadcastMessage('indicatorUpdate', (event) => {
+    isSelfUpdating.value = true
+    Object.assign(indicatorOptions, event.data)
+    nextTick(() => {
+      isSelfUpdating.value = false
+    })
+  })
+
   const indicatorOptions = reactive<IndicatorOptions>(
     JSON.parse(localStorage.getItem(LsKeys.INDICATOR_OPTIONS) || 'null') || {
       enableDevHelpClass: true,
@@ -41,8 +53,15 @@ export const useIndicator = () => {
   watch(
     indicatorOptions,
     () => {
-      localStorage.setItem(LsKeys.INDICATOR_OPTIONS, JSON.stringify({...indicatorOptions}))
-      playSfxPop()
+      if (isSelfUpdating.value) {
+        console.warn('isSelfUpdating')
+        return
+      }
+      const obj = {...indicatorOptions}
+      localStorage.setItem(LsKeys.INDICATOR_OPTIONS, JSON.stringify(obj))
+
+      // 如果开启了多个窗口（iframe)，发送同步状态
+      channelRef.value?.postMessage(obj)
     },
     {deep: true}
   )

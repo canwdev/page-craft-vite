@@ -6,6 +6,8 @@ import {createOrFindStyleNode} from '@/utils/dom'
 import {getSystemIsDarkMode, hexToRgb} from '@/utils/color'
 import {GlobalThemeOverrides} from 'naive-ui'
 import {sassToCSS} from '@/utils/css'
+import {usePlaygroundStore} from '@/store/playground'
+import {useBroadcastMessage} from '@/components/PageCraft/MainPlayground/hooks/use-broadcast-messae'
 
 export const useGlobalTheme = () => {
   const mainStore = useMainStore()
@@ -121,27 +123,54 @@ export const useGlobalTheme = () => {
   }
 }
 
+export const useHeadStyleEl = (id) => {
+  const styleEl = ref<HTMLElement | null>(null)
+
+  onMounted(() => {
+    styleEl.value = createOrFindStyleNode(id)
+  })
+
+  onBeforeUnmount(() => {
+    const elementToRemove = document.getElementById(id)
+    if (elementToRemove) {
+      // console.log('elementToRemove', elementToRemove)
+      // 从DOM中移除元素
+      elementToRemove.parentNode?.removeChild(elementToRemove)
+    }
+  })
+
+  return {
+    styleEl,
+  }
+}
+
 /**
  * 使用全局样式
  */
 export const useGlobalStyle = () => {
-  const styleEl = ref<HTMLElement | null>(null)
+  const playgroundStore = usePlaygroundStore()
+
   const globalStyleText = ref('')
   const settingsStore = useSettingsStore()
 
+  const {channelRef} = useBroadcastMessage('globalStyleChange')
+
+  watch(globalStyleText, (val) => {
+    applyGlobalStyle()
+  })
+
   const applyGlobalStyle = async () => {
-    if (!styleEl.value) {
-      return
-    }
     try {
       if (settingsStore.enableGlobalStyle) {
         const value = globalStyleText.value
         const result = value ? await sassToCSS(value) : ''
         // console.log(result)
-        styleEl.value.innerHTML = result
+        playgroundStore.globalCSS = result
         localStorage.setItem(LsKeys.GLOBAL_STYLE, globalStyleText.value)
+
+        channelRef.value!.postMessage(result)
       } else {
-        styleEl.value.innerHTML = ''
+        playgroundStore.globalCSS = ''
       }
     } catch (e: any) {
       window.$message.error(e.message)
@@ -156,10 +185,7 @@ export const useGlobalStyle = () => {
   )
 
   onMounted(() => {
-    styleEl.value = createOrFindStyleNode(LsKeys.GLOBAL_STYLE)
     globalStyleText.value = localStorage.getItem(LsKeys.GLOBAL_STYLE) || ''
-
-    applyGlobalStyle()
   })
 
   return {

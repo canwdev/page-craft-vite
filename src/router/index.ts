@@ -33,6 +33,14 @@ let routes = [
     },
   },
   {
+    path: '/craft/playground',
+    name: 'CraftPlayground',
+    component: () => import('@/views/CraftPlayground.vue'),
+    meta: {
+      title: `Playground`,
+    },
+  },
+  {
     path: '/dev',
     name: 'Dev',
     component: DevPage,

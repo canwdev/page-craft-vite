@@ -7,7 +7,6 @@ import {useSettingsStore} from '@/store/settings'
 import {customThemeOptions, CustomThemeType, ldThemeOptions} from '@/enum/settings'
 import {NSpace, NSwitch, NButton} from 'naive-ui'
 import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
-import {useGlobalStyle} from '@/hooks/use-global-theme'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {RouterLink} from 'vue-router'
 import {formatSiteTitle} from '@/router'
@@ -174,13 +173,9 @@ export default defineComponent({
       ]
     })
 
-    const {globalStyleText, applyGlobalStyle} = useGlobalStyle()
-
     return {
       mVisible,
       optionList,
-      globalStyleText,
-      applyGlobalStyle,
       dialogIconRender() {
         return h(Settings20Filled)
       },

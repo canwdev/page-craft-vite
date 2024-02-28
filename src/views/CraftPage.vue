@@ -16,10 +16,14 @@ import {useOpenCloseSound, useSfxBell} from '@/hooks/use-sfx'
 import IframeBrowser from '@/components/IframeBrowser/index.vue'
 import BackgroundLayer from '@/components/PageCraft/BackgroundLayer/index.vue'
 import {useMainStore} from '@/store/main'
+import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
+import IframePlayground from '@/components/PageCraft/MainPlayground/IframePlayground.vue'
 
 export default defineComponent({
   name: 'CraftPage',
   components: {
+    IframePlayground,
+    ViewPortWindow,
     IframeBrowser,
     ToolBar,
     StyleEditor: defineAsyncComponent(() => import('@/components/PageCraft/StyleEditor/index.vue')),
@@ -77,6 +81,7 @@ export default defineComponent({
     })
 
     const isShowIframeBrowser = ref(false)
+    const isShowExperimental = ref(true)
 
     const {loadCurCompStyle} = useCompStorage()
     const styleMenuOptions = [
@@ -132,6 +137,7 @@ export default defineComponent({
       settingsStore,
       ldThemeOptions,
       isShowIframeBrowser,
+      isShowExperimental,
       styleMenuOptions,
       customThemeOptions,
       CustomThemeType,
@@ -144,15 +150,7 @@ export default defineComponent({
   <div class="page-craft-home-view" :class="{_topLayout: settingsStore.enableTopLayout}">
     <BackgroundLayer v-if="settingsStore.enableReferenceMap" />
 
-    <MainPlayground>
-      <template #settingsButtons>
-        <n-space align="center" size="small">
-          <n-button title="(alt+w)" size="small" @click="mainStore.isShowSettings = true">{{
-            $t('common.settings')
-          }}</n-button>
-        </n-space>
-      </template>
-    </MainPlayground>
+    <MainPlayground />
 
     <ToolBar @openIframeBrowser="isShowIframeBrowser = !isShowIframeBrowser">
       <n-dropdown
@@ -176,6 +174,12 @@ export default defineComponent({
       </n-dropdown>
       <template #end>
         <IframeBrowser v-model:visible="isShowIframeBrowser" />
+
+        <ViewPortWindow v-model:visible="isShowExperimental" v-if="isShowExperimental">
+          <template #titleBarLeft>iframe Preview</template>
+          <IframePlayground />
+        </ViewPortWindow>
+
         <StyleEditor v-model:visible="settingsStore.showStyleEditor" />
       </template>
     </ToolBar>

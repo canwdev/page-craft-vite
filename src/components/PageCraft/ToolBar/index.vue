@@ -160,14 +160,7 @@ export default defineComponent({
       blinkAnimIndex,
       toolsMenuOptions: computed(() => {
         return [
-          settingsStore.enableWelcomePage && {
-            label: '🏠 Welcome Page',
-            props: {
-              onClick: async () => {
-                await router.push({name: 'HomePage'})
-              },
-            },
-          },
+          ...toolsMenuOptions,
           {
             label: '🌎 Iframe Browser (alt+i)',
             props: {
@@ -176,7 +169,14 @@ export default defineComponent({
               },
             },
           },
-          ...toolsMenuOptions,
+          settingsStore.enableWelcomePage && {
+            label: '🏠 Welcome Page',
+            props: {
+              onClick: async () => {
+                await router.push({name: 'HomePage'})
+              },
+            },
+          },
         ].filter(Boolean)
       }),
       isShowPreviewDialog,
@@ -292,6 +292,7 @@ export default defineComponent({
 .page-craft-enhanced-toolbar {
   padding: 5px 6px 5px;
   overflow: hidden;
+  box-sizing: border-box;
 
   $barWidth: 900px;
 

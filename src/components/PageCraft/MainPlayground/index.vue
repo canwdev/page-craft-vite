@@ -3,9 +3,9 @@ import {useMainStore} from '@/store/main'
 import {ActionType} from '@/enum/page-craft/block'
 import FileChooser from '@/components/CommonUI/FileChooser.vue'
 import IndicatorInfo from '@/components/PageCraft/MainPlayground/IndicatorInfo.vue'
-import {useIndicator} from '@/components/PageCraft/MainPlayground/indicator-hooks'
-import {useInteractionHooks} from '@/components/PageCraft/MainPlayground/interaction-hooks'
-import {useMcMain} from '@/components/PageCraft/MainPlayground/main-hooks'
+import {useIndicator} from '@/components/PageCraft/MainPlayground/hooks/indicator-hooks'
+import {useInteractionHooks} from '@/components/PageCraft/MainPlayground/hooks/interaction-hooks'
+import {useMcMain} from '@/components/PageCraft/MainPlayground/hooks/main-hooks'
 import ElementEditDialog from '@/components/PageCraft/MainPlayground/ElementEditDialog.vue'
 import {useSettingsStore} from '@/store/settings'
 import {
@@ -16,6 +16,8 @@ import {
   QuestionCircle20Regular,
 } from '@vicons/fluent'
 import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
+import {useBroadcastMessage} from '@/components/PageCraft/MainPlayground/hooks/use-broadcast-messae'
+import {usePlaygroundStyle} from '@/components/PageCraft/MainPlayground/hooks/use-playground-style'
 
 export default defineComponent({
   name: 'MainPlayground',
@@ -31,19 +33,15 @@ export default defineComponent({
     QuestionCircle20Regular,
   },
   setup(props, {emit}) {
-    const mainIframeRef = ref()
+    const mainPlaygroundRef = ref()
     const mainStore = useMainStore()
     const settingsStore = useSettingsStore()
-
-    const mainCanvasRef = computed(() => {
-      return mainIframeRef.value.contentDocument || mainIframeRef.value.contentWindow.document
-    })
 
     const {
       htmlMenuOptions,
       fileChooserRef,
       isShowImportDialog,
-      setMainCanvasHtml,
+      setPlaygroundHtml,
       pasteHtmlText,
       handleImportHtml,
       handleImportJsonSelected,
@@ -54,7 +52,7 @@ export default defineComponent({
       handleUndo,
       handleRedo,
     } = useMcMain({
-      mainCanvasRef,
+      mainPlaygroundRef,
       emit,
     })
 
@@ -79,7 +77,7 @@ export default defineComponent({
       editingNode,
       updateEditingElement,
     } = useInteractionHooks({
-      mainCanvasRef,
+      mainPlaygroundRef,
       saveData,
       indicatorOptions,
       copyHtml,
@@ -121,10 +119,12 @@ export default defineComponent({
       document.removeEventListener('keydown', listenGlobalShortcuts)
     })
 
+    usePlaygroundStyle()
+
     return {
       mainStore,
       settingsStore,
-      mainIframeRef,
+      mainPlaygroundRef,
       handleBlockClick,
       indicatorOptions,
       currentHoveredEl,
@@ -142,7 +142,7 @@ export default defineComponent({
       htmlMenuOptions,
       fileChooserRef,
       isShowImportDialog,
-      setMainCanvasHtml,
+      setPlaygroundHtml,
       pasteHtmlText,
       handleImportHtml,
       handleImportJsonSelected,
@@ -165,7 +165,7 @@ export default defineComponent({
 
 <template>
   <div tabindex="0" @keyup="listenShortcuts" class="page-craft-mc-wrap">
-    <IndicatorInfo :current-el="currentHoveredEl" v-if="currentHoveredEl !== mainIframeRef" />
+    <IndicatorInfo :current-el="currentHoveredEl" v-if="currentHoveredEl !== mainPlaygroundRef" />
 
     <transition name="mc-fade">
       <div
@@ -275,7 +275,11 @@ export default defineComponent({
             </div>
             <n-slider v-model:value="indicatorOptions.bgTransparentPercent" :step="1" />
             <template #footer>
-              <slot name="settingsButtons"></slot>
+              <n-space align="center" size="small">
+                <n-button title="(alt+w)" size="small" @click="mainStore.isShowSettings = true">{{
+                  $t('common.settings')
+                }}</n-button>
+              </n-space>
             </template>
           </n-popover>
 
@@ -310,8 +314,8 @@ export default defineComponent({
       </div>
     </portal>
     <!-- Main Canvas !!! -->
-    <!--    <div
-      ref="mainCanvasRef"
+    <div
+      ref="mainPlaygroundRef"
       :class="mainCanvasClass"
       :contenteditable="indicatorOptions.contentEditable"
       class="page-craft-mc"
@@ -322,22 +326,7 @@ export default defineComponent({
       @dragleave.prevent.stop="handleDragLeave"
       @drop.prevent.stop="handleDrop"
       :style="backgroundStyle"
-    ></div>-->
-
-    <iframe
-      ref="mainIframeRef"
-      class="page-craft-mc"
-      frameborder="0"
-      :class="mainCanvasClass"
-      :contenteditable="indicatorOptions.contentEditable"
-      @mousedown="handleMouseDown"
-      @mouseleave="handleMouseUp"
-      @mouseup="handleMouseUp"
-      @dragover.prevent.stop="handleDragOver"
-      @dragleave.prevent.stop="handleDragLeave"
-      @drop.prevent.stop="handleDrop"
-      :style="backgroundStyle"
-    ></iframe>
+    ></div>
 
     <!-- 辅助定位线 -->
     <div class="line-helper-x"></div>
@@ -359,242 +348,5 @@ export default defineComponent({
 </template>
 
 <style lang="scss">
-$debugColor: $primary; // #f92250;
-//$debugColor2: #2e92fc;
-.page-craft-mc-wrap {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  z-index: 1;
-  outline: none;
-}
-
-.selection-action {
-  position: fixed;
-  top: 10px;
-  left: 10px;
-  background: #13181e;
-  color: #fcffff;
-  box-sizing: border-box;
-  z-index: 100;
-  font-size: 11px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
-  outline: 1px solid #41484e;
-  border-top: 2px solid $debugColor;
-  max-width: 240px;
-
-  button {
-    padding: 2px 5px;
-
-    &:hover {
-      background: rgba(255, 255, 255, 0.32);
-    }
-
-    &:active {
-      background: rgba(255, 255, 255, 0.1);
-    }
-  }
-}
-
-.page-craft-mc-indicator {
-  //margin-left: auto;
-  //margin-right: auto;
-  //padding: 5px 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  //position: sticky;
-  //top: 0;
-  //border-top: 0;
-  //z-index: 997;
-
-  text-shadow: 0 0 10px white;
-}
-.mc-digging-wrap {
-  $fill-color: white;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  z-index: 9999;
-  pointer-events: none;
-  transform: translate(-50%, -50%);
-  width: 86px;
-  height: 86px;
-  border-radius: 50%;
-  outline: 4px solid $fill-color;
-  mix-blend-mode: difference;
-
-  .mc-digging-inner {
-    border-radius: 50%;
-    background-color: $fill-color;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
-}
-
-.page-craft-mc {
-  flex: 1;
-  background-color: white;
-  width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
-
-  &._dark {
-    background-color: #1e1e1e;
-    color: white;
-  }
-
-  @media screen and (max-width: 1200px) {
-    width: 100%;
-  }
-
-  &--cursor-insert {
-    cursor: crosshair;
-
-    * {
-      cursor: crosshair;
-    }
-  }
-
-  &--cursor-pickaxe {
-    cursor: url('@/assets/textures/iron_pickaxe--cursor.png') 6 24, default;
-
-    * {
-      cursor: url('@/assets/textures/iron_pickaxe--cursor.png') 6 24, default;
-    }
-  }
-
-  &--cursor-arrow {
-    cursor: url('@/assets/textures/arrow--cursor.png') 6 2, default;
-
-    * {
-      cursor: url('@/assets/textures/arrow--cursor.png') 6 2, default;
-    }
-  }
-
-  &--cursor-sword {
-    cursor: url('@/assets/textures/iron_sword--cursor.png') 0 0, default;
-
-    * {
-      cursor: url('@/assets/textures/iron_sword--cursor.png') 0 0, default;
-    }
-  }
-  &--cursor-oaksign {
-    cursor: url('@/assets/textures/oak_sign.png') 0 0, default;
-
-    * {
-      cursor: url('@/assets/textures/oak_sign.png') 0 0, default;
-    }
-  }
-
-  &--cursor-drag {
-    cursor: grab;
-    &:active {
-      cursor: grabbing;
-    }
-
-    * {
-      cursor: grab;
-      &:active {
-        cursor: grabbing;
-      }
-    }
-  }
-  &--dev {
-    * {
-      outline: 1px dashed $debugColor;
-    }
-
-    .cls_mouse_over_parent,
-    .cls_mouse_over {
-    }
-  }
-
-  &--expand {
-    * {
-      transition: padding 1s;
-      padding: 10px;
-    }
-  }
-
-  &--full-width {
-    width: 100%;
-  }
-
-  &--transparent {
-    background-color: transparent !important;
-  }
-
-  &--centered-y {
-    display: flex;
-    align-items: center;
-  }
-
-  &--centered-x {
-    display: flex;
-    justify-content: center;
-  }
-
-  &.cls_mouse_over,
-  .cls_mouse_over {
-    outline: 1px solid $debugColor !important;
-    border-color: $debugColor !important;
-    background-color: $primary_opacity !important; //rgba($debugColor, 0.1) !important;
-    //color: #111 !important;
-    opacity: 0.85 !important;
-    fill: $debugColor !important; /* Helps in highlighting SVG elements */
-  }
-}
-
-.line-helper-x {
-  width: 20px;
-  height: 3px;
-  position: fixed;
-  //background-color: rgba($debugColor, 0.8);
-  //background: linear-gradient(to right, rgba($debugColor, 0.8), rgba($debugColor2, 0.8));
-  background: $primary_opacity;
-  border-radius: 4px;
-  pointer-events: none;
-  transition: all 0.3s;
-  visibility: hidden;
-  opacity: 0;
-
-  &.visible {
-    visibility: visible;
-    opacity: 1;
-  }
-
-  &:before,
-  &:after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    width: 0;
-    height: 0;
-  }
-
-  $arrow_size: 8px;
-
-  &:before {
-    left: -$arrow_size;
-    top: 50%;
-    transform: translateY(-50%);
-    border: $arrow_size solid transparent;
-    border-left-color: $debugColor;
-  }
-
-  &:after {
-    right: -$arrow_size;
-    top: 50%;
-    transform: translateY(-50%);
-    border: $arrow_size solid transparent;
-    //border-right-color: $debugColor2;
-    border-right-color: $primary;
-  }
-}
+@import './main-playground';
 </style>

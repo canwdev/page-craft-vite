@@ -1,0 +1,241 @@
+
+$debugColor: $primary; // #f92250;
+$primaryOpacity: $primary_opacity; // rgba(249, 34, 80, 0.2)
+
+//$debugColor2: #2e92fc;
+.page-craft-mc-wrap {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  z-index: 1;
+  outline: none;
+}
+
+.selection-action {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  background: #13181e;
+  color: #fcffff;
+  box-sizing: border-box;
+  z-index: 100;
+  font-size: 11px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
+  outline: 1px solid #41484e;
+  border-top: 2px solid $debugColor;
+  max-width: 240px;
+
+  button {
+    padding: 2px 5px;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.32);
+    }
+
+    &:active {
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
+}
+
+.page-craft-mc-indicator {
+  //margin-left: auto;
+  //margin-right: auto;
+  //padding: 5px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  //position: sticky;
+  //top: 0;
+  //border-top: 0;
+  //z-index: 997;
+
+  text-shadow: 0 0 10px white;
+}
+.mc-digging-wrap {
+  $fill-color: white;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 9999;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  outline: 4px solid $fill-color;
+  mix-blend-mode: difference;
+
+  .mc-digging-inner {
+    border-radius: 50%;
+    background-color: $fill-color;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.page-craft-mc {
+  flex: 1;
+  background-color: white;
+  width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+
+  &._dark {
+    background-color: #1e1e1e;
+    color: white;
+  }
+
+  @media screen and (max-width: 1200px) {
+    width: 100%;
+  }
+
+  &--cursor-insert {
+    cursor: crosshair;
+
+    * {
+      cursor: crosshair;
+    }
+  }
+
+  &--cursor-pickaxe {
+    cursor: url('@/assets/textures/iron_pickaxe--cursor.png') 6 24, default;
+
+    * {
+      cursor: url('@/assets/textures/iron_pickaxe--cursor.png') 6 24, default;
+    }
+  }
+
+  &--cursor-arrow {
+    cursor: url('@/assets/textures/arrow--cursor.png') 6 2, default;
+
+    * {
+      cursor: url('@/assets/textures/arrow--cursor.png') 6 2, default;
+    }
+  }
+
+  &--cursor-sword {
+    cursor: url('@/assets/textures/iron_sword--cursor.png') 0 0, default;
+
+    * {
+      cursor: url('@/assets/textures/iron_sword--cursor.png') 0 0, default;
+    }
+  }
+  &--cursor-oaksign {
+    cursor: url('@/assets/textures/oak_sign.png') 0 0, default;
+
+    * {
+      cursor: url('@/assets/textures/oak_sign.png') 0 0, default;
+    }
+  }
+
+  &--cursor-drag {
+    cursor: grab;
+    &:active {
+      cursor: grabbing;
+    }
+
+    * {
+      cursor: grab;
+      &:active {
+        cursor: grabbing;
+      }
+    }
+  }
+  &--dev {
+    * {
+      outline: 1px dashed $debugColor;
+    }
+
+    .cls_mouse_over_parent,
+    .cls_mouse_over {
+    }
+  }
+
+  &--expand {
+    * {
+      transition: padding 1s;
+      padding: 10px;
+    }
+  }
+
+  &--full-width {
+    width: 100%;
+  }
+
+  &--transparent {
+    background-color: transparent !important;
+  }
+
+  &--centered-y {
+    display: flex;
+    align-items: center;
+  }
+
+  &--centered-x {
+    display: flex;
+    justify-content: center;
+  }
+
+  &.cls_mouse_over,
+  .cls_mouse_over {
+    outline: 1px solid $debugColor !important;
+    border-color: $debugColor !important;
+    background-color: $primaryOpacity !important; //rgba($debugColor, 0.1) !important;
+    //color: #111 !important;
+    opacity: 0.85 !important;
+    fill: $debugColor !important; /* Helps in highlighting SVG elements */
+  }
+}
+
+.line-helper-x {
+  width: 20px;
+  height: 3px;
+  position: fixed;
+  //background-color: rgba($debugColor, 0.8);
+  //background: linear-gradient(to right, rgba($debugColor, 0.8), rgba($debugColor2, 0.8));
+  background: $primaryOpacity;
+  border-radius: 4px;
+  pointer-events: none;
+  transition: all 0.3s;
+  visibility: hidden;
+  opacity: 0;
+
+  &.visible {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  &:before,
+  &:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    width: 0;
+    height: 0;
+  }
+
+  $arrow_size: 8px;
+
+  &:before {
+    left: -$arrow_size;
+    top: 50%;
+    transform: translateY(-50%);
+    border: $arrow_size solid transparent;
+    border-left-color: $debugColor;
+  }
+
+  &:after {
+    right: -$arrow_size;
+    top: 50%;
+    transform: translateY(-50%);
+    border: $arrow_size solid transparent;
+    //border-right-color: $debugColor2;
+    border-right-color: $debugColor;
+  }
+}
