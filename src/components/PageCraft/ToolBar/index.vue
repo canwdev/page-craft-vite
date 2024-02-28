@@ -13,10 +13,12 @@ import {useI18n} from 'vue-i18n'
 import {useOpenCloseSound, useSfxSelect} from '@/hooks/use-sfx'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {useCommonTools} from '@/components/PageCraft/ToolBar/use-common-tools'
+import ClassNameInput from '@/components/PageCraft/ToolBar/ClassNameInput.vue'
 
 export default defineComponent({
   name: 'BottomToolBar',
   components: {
+    ClassNameInput,
     PreviewWindow,
     ToolItem,
     InventoryModal,
@@ -141,53 +143,6 @@ export default defineComponent({
 
     useOpenCloseSound(() => settingsStore.showInventory)
 
-    /*classname autocomplete start*/
-    const autocompleteKeywordMap = ref({})
-    const autocompleteOptions = computed(() => {
-      const value = mainStore.className
-      const list = Object.keys(autocompleteKeywordMap.value)
-        .map((key) => {
-          return {
-            label: key,
-            value: key,
-          }
-        })
-        .filter((item) => {
-          return item.value.includes(value)
-        })
-
-      if (!autocompleteKeywordMap.value[value] && list.length) {
-        list.unshift({
-          label: value,
-          value: value,
-        })
-      }
-      return list.filter((item) => {
-        return item.value.includes(value)
-      })
-    })
-    const handleInputClassNameBlur = () => {
-      if (!mainStore.className) {
-        return
-      }
-      autocompleteKeywordMap.value[mainStore.className] = true
-    }
-    const handleAddClassName = () => {
-      const value = mainStore.className
-      console.log(value)
-      let sl = ''
-      value.split(' ').forEach((c) => {
-        sl += '.' + c
-      })
-      const code = `\n${sl} {\n}\n`
-      globalEventBus.emit(GlobalEvents.ON_ADD_STYLE, {code, isAppend: false})
-
-      autocompleteKeywordMap.value[value] = true
-
-      mainStore.className = ''
-    }
-    /*classname autocomplete end*/
-
     return {
       settingsStore,
       toolbarRef,
@@ -225,9 +180,6 @@ export default defineComponent({
         ].filter(Boolean)
       }),
       isShowPreviewDialog,
-      handleAddClassName,
-      handleInputClassNameBlur,
-      autocompleteOptions,
     }
   },
 })
@@ -235,7 +187,7 @@ export default defineComponent({
 
 <template>
   <div
-    class="page-craft-enhanced-toolbar-wrapper"
+    class="page-craft-toolbar-root"
     :class="{
       _topLayout: settingsStore.enableTopLayout,
     }"
@@ -256,33 +208,7 @@ export default defineComponent({
             -->
           </portal-target>
 
-          <div class="field-row">
-            <n-auto-complete
-              v-model:value="mainStore.className"
-              :options="autocompleteOptions"
-              size="tiny"
-              type="text"
-              placeholder="CSS class"
-              clearable
-              class="font-code sl-css-class-input"
-              title="focus shortcut: alt+1; press enter to insert css class; input without dot(.)"
-              :placement="settingsStore.enableTopLayout ? 'bottom' : 'top'"
-              @blur="handleInputClassNameBlur"
-              @keyup.enter="handleAddClassName()"
-            />
-          </div>
-
-          <div class="field-row">
-            <n-input
-              size="tiny"
-              type="text"
-              v-model:value="mainStore.innerText"
-              placeholder="innerHTML | src | value"
-              title="focus shortcut: alt+2"
-              class="sl-inner-html-input"
-              clearable
-            />
-          </div>
+          <ClassNameInput />
         </n-space>
         <n-space size="small" justify="end">
           <n-popconfirm @positive-click="resetToolbar">
@@ -344,8 +270,8 @@ export default defineComponent({
   </div>
 </template>
 
-<style lang="scss" scoped>
-.page-craft-enhanced-toolbar-wrapper {
+<style lang="scss">
+.page-craft-toolbar-root {
   position: sticky;
   bottom: 0;
   user-select: none;

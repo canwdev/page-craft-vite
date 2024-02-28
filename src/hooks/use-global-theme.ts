@@ -133,12 +133,18 @@ export const useGlobalStyle = () => {
     if (!styleEl.value) {
       return
     }
-    if (settingsStore.enableGlobalStyle) {
-      const value = globalStyleText.value
-      styleEl.value.innerHTML = value ? await sassToCSS(value) : ''
-      localStorage.setItem(LsKeys.GLOBAL_STYLE, globalStyleText.value)
-    } else {
-      styleEl.value.innerHTML = ''
+    try {
+      if (settingsStore.enableGlobalStyle) {
+        const value = globalStyleText.value
+        const result = value ? await sassToCSS(value) : ''
+        // console.log(result)
+        styleEl.value.innerHTML = result
+        localStorage.setItem(LsKeys.GLOBAL_STYLE, globalStyleText.value)
+      } else {
+        styleEl.value.innerHTML = ''
+      }
+    } catch (e: any) {
+      window.$message.error(e.message)
     }
   }
 
@@ -151,8 +157,7 @@ export const useGlobalStyle = () => {
 
   onMounted(() => {
     styleEl.value = createOrFindStyleNode(LsKeys.GLOBAL_STYLE)
-    globalStyleText.value =
-      localStorage.getItem(LsKeys.GLOBAL_STYLE) || '/*body {font-family: "LXGW WenKai", "楷体";}*/'
+    globalStyleText.value = localStorage.getItem(LsKeys.GLOBAL_STYLE) || ''
 
     applyGlobalStyle()
   })

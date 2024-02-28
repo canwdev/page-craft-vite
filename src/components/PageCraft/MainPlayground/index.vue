@@ -2,11 +2,11 @@
 import {useMainStore} from '@/store/main'
 import {ActionType} from '@/enum/page-craft/block'
 import FileChooser from '@/components/CommonUI/FileChooser.vue'
-import IndicatorInfo from '@/components/PageCraft/MainCanvas/IndicatorInfo.vue'
-import {useIndicator} from '@/components/PageCraft/MainCanvas/indicator-hooks'
-import {useInteractionHooks} from '@/components/PageCraft/MainCanvas/interaction-hooks'
-import {useMcMain} from '@/components/PageCraft/MainCanvas/main-hooks'
-import ElementEditDialog from '@/components/PageCraft/MainCanvas/ElementEditDialog.vue'
+import IndicatorInfo from '@/components/PageCraft/MainPlayground/IndicatorInfo.vue'
+import {useIndicator} from '@/components/PageCraft/MainPlayground/indicator-hooks'
+import {useInteractionHooks} from '@/components/PageCraft/MainPlayground/interaction-hooks'
+import {useMcMain} from '@/components/PageCraft/MainPlayground/main-hooks'
+import ElementEditDialog from '@/components/PageCraft/MainPlayground/ElementEditDialog.vue'
 import {useSettingsStore} from '@/store/settings'
 import {
   ArrowUndo20Filled,
@@ -18,7 +18,7 @@ import {
 import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
 
 export default defineComponent({
-  name: 'MainCanvas',
+  name: 'MainPlayground',
   components: {
     VueMonaco,
     FileChooser,
@@ -31,9 +31,13 @@ export default defineComponent({
     QuestionCircle20Regular,
   },
   setup(props, {emit}) {
-    const mainCanvasRef = ref()
+    const mainIframeRef = ref()
     const mainStore = useMainStore()
     const settingsStore = useSettingsStore()
+
+    const mainCanvasRef = computed(() => {
+      return mainIframeRef.value.contentDocument || mainIframeRef.value.contentWindow.document
+    })
 
     const {
       htmlMenuOptions,
@@ -120,7 +124,7 @@ export default defineComponent({
     return {
       mainStore,
       settingsStore,
-      mainCanvasRef,
+      mainIframeRef,
       handleBlockClick,
       indicatorOptions,
       currentHoveredEl,
@@ -161,7 +165,7 @@ export default defineComponent({
 
 <template>
   <div tabindex="0" @keyup="listenShortcuts" class="page-craft-mc-wrap">
-    <IndicatorInfo :current-el="currentHoveredEl" v-if="currentHoveredEl !== mainCanvasRef" />
+    <IndicatorInfo :current-el="currentHoveredEl" v-if="currentHoveredEl !== mainIframeRef" />
 
     <transition name="mc-fade">
       <div
@@ -306,7 +310,7 @@ export default defineComponent({
       </div>
     </portal>
     <!-- Main Canvas !!! -->
-    <div
+    <!--    <div
       ref="mainCanvasRef"
       :class="mainCanvasClass"
       :contenteditable="indicatorOptions.contentEditable"
@@ -318,7 +322,22 @@ export default defineComponent({
       @dragleave.prevent.stop="handleDragLeave"
       @drop.prevent.stop="handleDrop"
       :style="backgroundStyle"
-    ></div>
+    ></div>-->
+
+    <iframe
+      ref="mainIframeRef"
+      class="page-craft-mc"
+      frameborder="0"
+      :class="mainCanvasClass"
+      :contenteditable="indicatorOptions.contentEditable"
+      @mousedown="handleMouseDown"
+      @mouseleave="handleMouseUp"
+      @mouseup="handleMouseUp"
+      @dragover.prevent.stop="handleDragOver"
+      @dragleave.prevent.stop="handleDragLeave"
+      @drop.prevent.stop="handleDrop"
+      :style="backgroundStyle"
+    ></iframe>
 
     <!-- 辅助定位线 -->
     <div class="line-helper-x"></div>

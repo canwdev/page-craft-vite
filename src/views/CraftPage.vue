@@ -1,7 +1,7 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import ToolBar from '@/components/PageCraft/ToolBar/index.vue'
-import MainCanvas from '@/components/PageCraft/MainCanvas/index.vue'
+import MainPlayground from '@/components/PageCraft/MainPlayground/index.vue'
 import {useSettingsStore} from '@/store/settings'
 import {customThemeOptions, CustomThemeType, ldThemeOptions} from '@/enum/settings'
 import {handleExportStyle} from '@/utils/exporter'
@@ -23,7 +23,7 @@ export default defineComponent({
     IframeBrowser,
     ToolBar,
     StyleEditor: defineAsyncComponent(() => import('@/components/PageCraft/StyleEditor/index.vue')),
-    MainCanvas,
+    MainPlayground,
     BackgroundLayer,
     PaintBrush16Regular,
   },
@@ -144,7 +144,7 @@ export default defineComponent({
   <div class="page-craft-home-view" :class="{_topLayout: settingsStore.enableTopLayout}">
     <BackgroundLayer v-if="settingsStore.enableReferenceMap" />
 
-    <MainCanvas>
+    <MainPlayground>
       <template #settingsButtons>
         <n-space align="center" size="small">
           <n-button title="(alt+w)" size="small" @click="mainStore.isShowSettings = true">{{
@@ -152,7 +152,7 @@ export default defineComponent({
           }}</n-button>
         </n-space>
       </template>
-    </MainCanvas>
+    </MainPlayground>
 
     <ToolBar @openIframeBrowser="isShowIframeBrowser = !isShowIframeBrowser">
       <n-dropdown

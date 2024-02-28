@@ -6,7 +6,7 @@ import {
   handleReadSelectedFile,
 } from '@/utils/exporter'
 import globalEventBus, {GlobalEvents, syncStorageData} from '@/utils/global-event-bus'
-import {removeMouseOverDomElementEffect} from '@/components/PageCraft/MainCanvas/interaction-hooks'
+import {removeMouseOverDomElementEffect} from '@/components/PageCraft/MainPlayground/interaction-hooks'
 import {copyToClipboard} from '@/utils'
 import {formatCss, formatHtml} from '@/utils/formater'
 import {ComponentData, ComponentExportData} from '@/enum/page-craft/block'
@@ -86,6 +86,7 @@ export const useMcMain = (options) => {
 
   const setMainCanvasHtml = (html: string = '') => {
     if (mainCanvasRef.value) {
+      console.log(mainCanvasRef.value)
       mainCanvasRef.value.innerHTML = html
     }
   }
