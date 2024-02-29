@@ -59,11 +59,8 @@ export default defineComponent({
     Box20Regular,
     MoreHorizontal20Regular,
     Add24Regular,
-    Star20Filled,
-    Star20Regular,
     TextSortAscending20Regular,
     Timeline20Regular,
-    BoxMultiple20Regular,
     Image20Filled,
     Image20Regular,
   },
@@ -625,7 +622,7 @@ export default defineComponent({
           value: TabType.TOOLS,
         },
         {
-          label: 'HTML ' + $t('common.blocks'),
+          label: 'HTML' + ` (${htmlBlockItemList.length})`,
           value: TabType.HTML_ELEMENTS,
         },
         {

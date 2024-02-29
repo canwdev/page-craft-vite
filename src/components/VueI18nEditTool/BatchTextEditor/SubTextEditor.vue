@@ -51,6 +51,13 @@ export default defineComponent({
     const valueText = ref('')
     const vueMonacoRef = ref()
 
+    const focusEditor = () => {
+      setTimeout(() => {
+        const eIns = vueMonacoRef.value.getInstance()
+        eIns.focus()
+      }, 100)
+    }
+
     watch(valueText, () => {
       isChanged.value = true
     })
@@ -59,6 +66,7 @@ export default defineComponent({
         nextTick(() => {
           vueMonacoRef.value?.resize()
         })
+        focusEditor()
       }
     })
 
