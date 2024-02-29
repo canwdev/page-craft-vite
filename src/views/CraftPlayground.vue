@@ -37,5 +37,5 @@ export default defineComponent({
 </script>
 
 <template>
-  <MainPlayground style="height: 100%" />
+  <MainPlayground style="height: 100%; overflow: auto" />
 </template>

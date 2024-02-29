@@ -1,7 +1,7 @@
 {
   "name": "page-craft-vite",
   "private": true,
-  "version": "1.4.4",
+  "version": "1.5.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -11,6 +11,7 @@
     "tauri": "tauri"
   },
   "dependencies": {
+    "@tauri-apps/api": "^1.5.3",
     "@vueuse/sound": "^2.0.1",
     "color-hash": "^2.0.2",
     "cropperjs": "^1.6.1",

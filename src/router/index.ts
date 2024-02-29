@@ -5,6 +5,7 @@ import DevPage from '@/views/DevPage.vue'
 import pkg from '../../package.json'
 import {useSettingsStore} from '@/store/settings'
 import i18n from '@/i18n/index'
+import {window as tauriWin} from '@tauri-apps/api'
 
 let history = createWebHashHistory()
 let routes = [
@@ -92,5 +93,11 @@ export const formatSiteTitle = (t?: string) => {
 
 router.afterEach((to, _, failure) => {
   document.title = formatSiteTitle(to?.meta?.title as string)
+
+  if (window.__TAURI__) {
+    let curWin = tauriWin.getCurrent()
+    console.log('curWin', curWin)
+    curWin.setTitle(document.title)
+  }
 })
 export default router

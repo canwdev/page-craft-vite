@@ -14,6 +14,7 @@ declare global {
     $juice: any
     XLSX: any
     pinyinUtil: any // https://github.com/sxei/pinyinjs/
+    __TAURI__: any
   }
 }
 

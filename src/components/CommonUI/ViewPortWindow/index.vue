@@ -122,7 +122,6 @@ export default defineComponent({
     })
 
     onMounted(() => {
-      console.log('winOptions', winOptions)
       dWindow.value = new WindowController({
         dragHandleEl: titleBarRef.value,
         dragTargetEl: winElRef.value,
@@ -174,7 +173,6 @@ export default defineComponent({
       if (!mVisible.value || !winElRef.value) {
         return
       }
-      console.log('[handleResizeDebounced]')
       emit('resize')
 
       winOptions.width = getComputedStyle(winElRef.value).width

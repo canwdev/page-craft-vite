@@ -8,11 +8,19 @@
   },
   "package": {
     "productName": "page-craft-vite",
-    "version": "1.4.4"
+    "version": "1.5.0"
   },
   "tauri": {
     "allowlist": {
-      "all": false
+      "window": {
+        "create": true,
+        "setAlwaysOnTop": true,
+        "setFullscreen": true,
+        "setTitle": true
+      },
+      "shell": {
+        "open": true
+      }
     },
     "bundle": {
       "active": true,

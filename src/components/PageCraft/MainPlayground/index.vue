@@ -18,6 +18,7 @@ import {
 import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
 import {useBroadcastMessage} from '@/components/PageCraft/MainPlayground/hooks/use-broadcast-messae'
 import {usePlaygroundStyle} from '@/components/PageCraft/MainPlayground/hooks/use-playground-style'
+import {WebviewWindow} from '@tauri-apps/api/window'
 
 export default defineComponent({
   name: 'MainPlayground',
@@ -120,6 +121,16 @@ export default defineComponent({
     })
 
     usePlaygroundStyle()
+    const openPlayground = () => {
+      const url = '/#/craft/playground'
+      if (window.__TAURI__) {
+        const webview = new WebviewWindow('theUniqueLabel', {
+          url,
+        })
+        return
+      }
+      window.open(url)
+    }
 
     return {
       mainStore,
@@ -158,6 +169,7 @@ export default defineComponent({
       updateEditingElement,
       backgroundStyle,
       listenShortcuts,
+      openPlayground,
     }
   },
 })
@@ -280,12 +292,7 @@ export default defineComponent({
                   $t('common.settings')
                 }}</n-button>
 
-                <a
-                  style="font-size: 12px; color: inherit"
-                  href="/#/craft/playground"
-                  target="_blank"
-                  >Playground</a
-                >
+                <n-button size="small" @click="openPlayground"> Playground </n-button>
               </n-space>
             </template>
           </n-popover>
