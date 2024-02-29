@@ -279,6 +279,13 @@ export default defineComponent({
                 <n-button title="(alt+w)" size="small" @click="mainStore.isShowSettings = true">{{
                   $t('common.settings')
                 }}</n-button>
+
+                <a
+                  style="font-size: 12px; color: inherit"
+                  href="/#/craft/playground"
+                  target="_blank"
+                  >Playground</a
+                >
               </n-space>
             </template>
           </n-popover>

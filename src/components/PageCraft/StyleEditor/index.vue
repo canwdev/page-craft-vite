@@ -24,6 +24,8 @@ import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
 
 import {useSettingsStore} from '@/store/settings'
 import {
+  ArrowMaximize20Regular,
+  ArrowMinimize20Regular,
   Copy20Regular,
   CursorClick20Regular,
   CursorHover20Regular,
@@ -50,6 +52,8 @@ export default defineComponent({
     },
   },
   components: {
+    ArrowMinimize20Regular,
+    ArrowMaximize20Regular,
     VueMonaco,
     TabLayout,
     ViewPortWindow,
@@ -76,6 +80,8 @@ export default defineComponent({
     ])
 
     const isAutoSave = ref(false)
+
+    const isMaximum = ref(false)
 
     const updateEditorLayout = () => {
       const eIns = vueMonacoRef.value.getInstance()
@@ -366,6 +372,8 @@ export default defineComponent({
       variableStyleCode,
       StyleTabType,
       globalStyleText,
+      focusEditor,
+      isMaximum,
     }
   },
 })
@@ -373,11 +381,14 @@ export default defineComponent({
 
 <template>
   <ViewPortWindow
-    class="style-editor-dialog"
+    class="mc-style-editor-dialog"
     v-model:visible="mVisible"
     @resize="updateEditorLayout"
     wid="style_editor"
     @keyup="listenShortcuts"
+    @onActive="focusEditor"
+    :maximum="isMaximum"
+    :allow-move="!isMaximum"
   >
     <template #titleBarLeft>
       <n-icon class="window-icon" size="18"><PaintBrush20Regular /></n-icon
@@ -410,6 +421,13 @@ export default defineComponent({
 
       <button :title="$t('actions.copy_code') + ' (ctrl+a ctrl+c)'" @click="copyStyle">
         <n-icon size="20"><Copy20Regular /></n-icon>
+      </button>
+
+      <button @click="isMaximum = !isMaximum">
+        <n-icon size="20">
+          <ArrowMinimize20Regular v-if="isMaximum" />
+          <ArrowMaximize20Regular v-else />
+        </n-icon>
       </button>
     </template>
 
@@ -457,8 +475,8 @@ export default defineComponent({
   </ViewPortWindow>
 </template>
 
-<style lang="scss" scoped>
-.style-editor-dialog {
+<style lang="scss">
+.mc-style-editor-dialog {
   min-width: 400px;
   min-height: 200px;
   z-index: 1000;
@@ -483,10 +501,11 @@ export default defineComponent({
     display: flex;
     flex-direction: column;
     .style-editor-action-bar {
+      height: 31px;
     }
 
     .code-editor-placeholder {
-      flex: 1;
+      height: calc(100% - 31px);
     }
   }
 
