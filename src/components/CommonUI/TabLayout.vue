@@ -66,6 +66,7 @@ export default defineComponent({
   align-items: center;
   height: 100%;
   overflow: hidden;
+  line-height: 1.6;
 
   .sidebar-wrap {
     width: 120px;

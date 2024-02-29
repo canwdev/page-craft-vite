@@ -115,7 +115,7 @@ export default defineComponent({
       </button>
     </template>
 
-    <div class="iframe-browser-inner-wrap">
+    <div v-if="mVisible" class="iframe-browser-inner-wrap">
       <div class="iframe-browser-address-bar-wrap">
         <n-dropdown
           :options="shortcutList"
