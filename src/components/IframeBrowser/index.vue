@@ -2,7 +2,8 @@
 import {defineComponent} from 'vue'
 import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
-import {ArrowMaximize20Regular, ArrowMinimize20Regular, PaintBucket20Filled} from '@vicons/fluent'
+import {useLocalStorageString} from '@/hooks/use-local-storage'
+import {ViewDesktopMobile20Regular} from '@vicons/fluent'
 
 export default defineComponent({
   name: 'IframeBrowser',
@@ -12,21 +13,29 @@ export default defineComponent({
       default: false,
     },
   },
-  components: {PaintBucket20Filled, ArrowMaximize20Regular, ArrowMinimize20Regular, ViewPortWindow},
+  components: {ViewPortWindow, ViewDesktopMobile20Regular},
   setup(props, {emit}) {
     const mVisible = useModelWrapper(props, emit, 'visible')
-    const isMaximum = ref(false)
     const isLoading = ref(false)
 
     const iframeRef = ref()
     const iframeSrc = ref('')
-    const addressBarUrl = ref('')
+    const addressBarUrl = useLocalStorageString(
+      'pagecraft_iframe_browser_url',
+      '/#/craft/playground'
+    )
 
     const titleText = computed(() => {
       if (isLoading.value) {
         return '(Loading...)'
       }
       return ''
+    })
+
+    onMounted(() => {
+      if (addressBarUrl.value) {
+        handleGo()
+      }
     })
 
     const handleGo = () => {
@@ -44,6 +53,7 @@ export default defineComponent({
 
     const shortcutList = computed(() => {
       return [
+        {label: 'PageCraft Playground', value: '/#/craft/playground'},
         {label: 'Google', value: 'https://www.google.com/webhp?igu=1'},
         {label: 'Bing', value: 'https://www.bing.com'},
         {label: 'Win11React', value: 'https://win11.blueedge.me/'},
@@ -66,18 +76,25 @@ export default defineComponent({
       handleGo()
     }
 
+    const iframeWinRef = ref()
+    const setMobileView = () => {
+      console.log(iframeWinRef.value)
+      iframeWinRef.value.setSize(`${375}px`, `${668 + 52}px`)
+    }
+
     return {
       mVisible,
+      iframeWinRef,
       iframeRef,
       iframeSrc,
       addressBarUrl,
-      isMaximum,
       handleGo,
       handleIframeLoad,
       handleIframeError,
       titleText,
       shortcutList,
       handleSelectShortcut,
+      setMobileView,
     }
   },
 })
@@ -85,19 +102,16 @@ export default defineComponent({
 
 <template>
   <ViewPortWindow
+    ref="iframeWinRef"
     class="iframe-browser-vp-window"
     v-model:visible="mVisible"
     wid="iframe_browser"
-    :maximum="isMaximum"
-    :allow-move="!isMaximum"
+    allow-maximum
   >
     <template #titleBarLeft>Iframe Browser {{ titleText }}</template>
     <template #titleBarRightControls>
-      <button @click="isMaximum = !isMaximum">
-        <n-icon size="20">
-          <ArrowMinimize20Regular v-if="isMaximum" />
-          <ArrowMaximize20Regular v-else />
-        </n-icon>
+      <button @click="setMobileView">
+        <n-icon size="20"> <ViewDesktopMobile20Regular /> </n-icon>
       </button>
     </template>
 

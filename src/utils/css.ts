@@ -4,6 +4,9 @@ const Sass = window.Sass
 
 export const sassToCSS = (sassCode, options?): Promise<string> => {
   return new Promise((resolve, reject) => {
+    if (!sassCode) {
+      return resolve('')
+    }
     Sass.compile(sassCode, (output) => {
       if (output.message) {
         reject(output)

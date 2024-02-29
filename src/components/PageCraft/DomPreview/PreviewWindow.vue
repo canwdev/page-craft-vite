@@ -5,21 +5,17 @@ import {BlockItem} from '@/enum/page-craft/block'
 import DomPreview from '@/components/PageCraft/DomPreview/DomPreview.vue'
 import {loadCompStorage} from '@/hooks/use-component-storage'
 import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
-import {ArrowMaximize20Regular, ArrowMinimize20Regular} from '@vicons/fluent'
 import {LsKeys} from '@/enum/page-craft'
 
 export default defineComponent({
   name: 'PopWindow',
   components: {
-    ArrowMaximize20Regular,
-    ArrowMinimize20Regular,
     ViewPortWindow,
     DomPreview,
   },
   emits: ['update:visible'],
   setup(props, {emit}) {
     const mVisible = ref(false)
-    const isMaximum = ref(false)
     const currentItem = ref<BlockItem | null>(null)
 
     const previewHtml = ref('')
@@ -47,25 +43,27 @@ export default defineComponent({
       previewCss.value = loadCompStorage(LsKeys.COMP_STYLE, currentItem.value.title)
     })
 
+    const previewWinRef = ref()
+
     const handleCompPreview = (options) => {
       const {item, maximum = false} = options || {}
       currentItem.value = item
-      isMaximum.value = maximum
+      previewWinRef.value.isMaximized = maximum
       mVisible.value = true
     }
 
     const handleClosePreview = (options) => {
       const {maximum = false} = options || {}
-      isMaximum.value = maximum
+      previewWinRef.value.isMaximized = maximum
       mVisible.value = false
     }
 
     return {
+      previewWinRef,
       mVisible,
       currentItem,
       previewHtml,
       previewCss,
-      isMaximum,
     }
   },
 })
@@ -73,21 +71,13 @@ export default defineComponent({
 
 <template>
   <ViewPortWindow
+    ref="previewWinRef"
     class="preview-dialog"
     v-model:visible="mVisible"
     wid="preview"
-    :maximum="isMaximum"
-    :allow-move="!isMaximum"
+    allow-maximum
   >
     <template #titleBarLeft> {{ $t('actions.preview') }}: {{ currentItem?.title }} </template>
-    <template #titleBarRightControls>
-      <button @click="isMaximum = !isMaximum">
-        <n-icon size="20">
-          <ArrowMinimize20Regular v-if="isMaximum" />
-          <ArrowMaximize20Regular v-else />
-        </n-icon>
-      </button>
-    </template>
     <template v-if="currentItem">
       <DomPreview :id="currentItem.id" :css="previewCss">
         <div v-html="previewHtml"></div>

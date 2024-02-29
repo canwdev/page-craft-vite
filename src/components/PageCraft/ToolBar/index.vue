@@ -26,7 +26,6 @@ export default defineComponent({
     Box20Regular,
     Toolbox20Regular,
   },
-  emits: ['openIframeBrowser'],
   setup(props, {emit}) {
     const {t: $t} = useI18n()
     const router = useRouter()
@@ -165,7 +164,7 @@ export default defineComponent({
             label: '🌎 Iframe Browser (alt+i)',
             props: {
               onClick: async () => {
-                emit('openIframeBrowser')
+                settingsStore.isShowIframeBrowser = !settingsStore.isShowIframeBrowser
               },
             },
           },

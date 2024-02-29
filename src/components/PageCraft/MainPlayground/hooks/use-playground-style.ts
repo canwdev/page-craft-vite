@@ -9,14 +9,6 @@ export const usePlaygroundStyle = () => {
   const {styleEl: globalStyleEl} = useHeadStyleEl(LsKeys.GLOBAL_STYLE)
   const {styleEl: currentStyleEl} = useHeadStyleEl(LsKeys.COMP_STYLE)
 
-  useBroadcastMessage('globalStyleChange', (event) => {
-    playgroundStore.globalCSS = event.data
-  })
-
-  useBroadcastMessage('currentStyleChange', (event) => {
-    playgroundStore.currentCSS = event.data
-  })
-
   watch(
     () => playgroundStore.globalCSS,
     (val) => {

@@ -40,7 +40,7 @@ export default defineComponent({
 <template>
   <div class="mc-vertical-tab-layout" :class="{horizontal}">
     <div class="sidebar-wrap">
-      <div class="tab-list">
+      <div class="mc-tab-list">
         <div
           v-for="item in tabList"
           :key="item.value"
@@ -73,7 +73,7 @@ export default defineComponent({
     overflow-y: auto;
     border-right: 1px solid $color_border;
 
-    .tab-list {
+    .mc-tab-list {
       .list-item {
         padding: 4px 8px;
         transition: background-color 0.3s;
@@ -100,7 +100,7 @@ export default defineComponent({
       width: auto;
       border-right: 0;
       border-bottom: 1px solid $color_border;
-      .tab-list {
+      .mc-tab-list {
         display: flex;
         .list-item {
           flex-shrink: 0;

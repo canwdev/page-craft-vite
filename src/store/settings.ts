@@ -28,6 +28,7 @@ interface IPageCraftSettings {
   enableReferenceMap: boolean
   // 是否启用欢迎页面
   enableWelcomePage: boolean
+  isShowIframeBrowser: boolean
 
   isInitialized: boolean
   showInventory: boolean
@@ -61,6 +62,7 @@ export const useSettingsStore = defineStore('settingsStore', {
       enableGlobalStyle: true,
       enableReferenceMap: false,
       enableWelcomePage: true,
+      isShowIframeBrowser: false,
 
       isInitialized: false,
       showInventory: false,

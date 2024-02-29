@@ -3,7 +3,7 @@ import {BlockItem} from '@/enum/page-craft/block'
 import {LsKeys} from '@/enum/page-craft'
 import {CopyMode} from '@/enum/vue-i18n-tool'
 
-type CraftStore = {
+type IStore = {
   currentBlock: BlockItem
   className: string
   innerText: string
@@ -22,7 +22,7 @@ type CraftStore = {
 }
 
 export const useMainStore = defineStore('main', {
-  state: (): CraftStore => {
+  state: (): IStore => {
     return {
       currentBlock:
         JSON.parse(localStorage.getItem(LsKeys.CURRENT_BLOCK) || 'null') || ActionBlockItems.EMPTY,
@@ -46,5 +46,11 @@ export const useMainStore = defineStore('main', {
       this.currentBlock = block
       localStorage.setItem(LsKeys.CURRENT_BLOCK, JSON.stringify(block))
     },
+  },
+  share: {
+    // An array of fields that the plugin will ignore.
+    omit: ['isShowStylusTools', 'isShowTextTransformer', 'isShowSettings'],
+    enable: true,
+    initialize: true,
   },
 })

@@ -6,6 +6,7 @@ export type WinOptions = {
   left: string
   width: string
   height: string
+  maximized?: boolean
 }
 
 const ClassNames = {

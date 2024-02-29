@@ -130,14 +130,15 @@ export const useHeadStyleEl = (id) => {
     styleEl.value = createOrFindStyleNode(id)
   })
 
-  onBeforeUnmount(() => {
+  // 组件销毁时不需要移除
+  /*  onBeforeUnmount(() => {
     const elementToRemove = document.getElementById(id)
     if (elementToRemove) {
       // console.log('elementToRemove', elementToRemove)
       // 从DOM中移除元素
       elementToRemove.parentNode?.removeChild(elementToRemove)
     }
-  })
+  })*/
 
   return {
     styleEl,
@@ -153,8 +154,6 @@ export const useGlobalStyle = () => {
   const globalStyleText = ref('')
   const settingsStore = useSettingsStore()
 
-  const {channelRef} = useBroadcastMessage('globalStyleChange')
-
   watch(globalStyleText, (val) => {
     applyGlobalStyle()
   })
@@ -167,8 +166,6 @@ export const useGlobalStyle = () => {
         // console.log(result)
         playgroundStore.globalCSS = result
         localStorage.setItem(LsKeys.GLOBAL_STYLE, globalStyleText.value)
-
-        channelRef.value!.postMessage(result)
       } else {
         playgroundStore.globalCSS = ''
       }

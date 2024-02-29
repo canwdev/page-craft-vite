@@ -15,12 +15,22 @@ export default defineComponent({
     const playgroundStore = usePlaygroundStore()
     const {loadCurCompStyle} = useCompStorage()
 
+    async function _sassToCSS(val) {
+      try {
+        return await sassToCSS(val)
+      } catch (e) {
+        console.error('[_sassToCSS]', e)
+        return ''
+      }
+    }
+
     onMounted(async () => {
-      playgroundStore.globalCSS = await sassToCSS(localStorage.getItem(LsKeys.GLOBAL_STYLE) || '')
+      const gloCss = localStorage.getItem(LsKeys.GLOBAL_STYLE) || ''
+      playgroundStore.globalCSS = await _sassToCSS(gloCss)
 
       let curScss = localStorage.getItem(LsKeys.VARIABLES_STYLE) || ''
       curScss = curScss + '\n' + loadCurCompStyle()
-      playgroundStore.currentCSS = await sassToCSS(curScss)
+      playgroundStore.currentCSS = await _sassToCSS(curScss)
     })
   },
 })

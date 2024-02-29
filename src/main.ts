@@ -10,6 +10,7 @@ import './styles/style.scss'
 import '@/components/CommonUI/ViewPortWindow/theme/index.scss'
 import router from './router'
 import {createPinia} from 'pinia'
+import {PiniaSharedState} from 'pinia-shared-state'
 const naive = create({
   components: [NButton],
 })
@@ -23,6 +24,12 @@ app.use(naive)
 app.use(router)
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
+pinia.use(
+  PiniaSharedState({
+    // Enables the plugin for all stores. Defaults to true.
+    enable: false,
+  })
+)
 app.use(pinia)
 app.use(PortalVue)
 app.mount('#app')

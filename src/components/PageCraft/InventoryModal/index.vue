@@ -742,7 +742,7 @@ export default defineComponent({
     top: unset !important;
     bottom: 86px !important;
     width: auto !important;
-    box-shadow: none;
+    box-shadow: none !important;
     &._topLayout {
       top: 86px !important;
       bottom: unset !important;

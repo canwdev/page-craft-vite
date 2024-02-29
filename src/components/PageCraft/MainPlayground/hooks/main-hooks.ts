@@ -88,7 +88,7 @@ export const useMcMain = (options) => {
     console.log('[mainPlaygroundUpdate]')
 
     // 强制重新读取数据
-    settingsStore.$hydrate({runHooks: false})
+    settingsStore.$hydrate({runHooks: true})
     reloadHtml()
     nextTick(() => {
       isSelfUpdating.value = false

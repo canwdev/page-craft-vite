@@ -81,8 +81,6 @@ export default defineComponent({
 
     const isAutoSave = ref(false)
 
-    const isMaximum = ref(false)
-
     const updateEditorLayout = () => {
       const eIns = vueMonacoRef.value.getInstance()
       eIns?.layout()
@@ -99,12 +97,6 @@ export default defineComponent({
         focusEditor()
       }
     })
-    watch(
-      () => settingsStore.styleEditorTab,
-      () => {
-        focusEditor()
-      }
-    )
 
     const {loadCurCompStyle, saveCurCompStyle} = useCompStorage()
 
@@ -123,7 +115,6 @@ export default defineComponent({
       }, 100)
     }
 
-    const {channelRef} = useBroadcastMessage('currentStyleChange')
     const {globalStyleText} = useGlobalStyle()
 
     const variableStyleCode = useLocalStorageString(LsKeys.VARIABLES_STYLE, '')
@@ -165,7 +156,6 @@ export default defineComponent({
         const result = value ? await sassToCSS(value) : ''
 
         playgroundStore.currentCSS = result
-        channelRef.value!.postMessage(result)
 
         // console.log('[handleUpdateStyle]', isAutoSave.value)
         if (doSave && isAutoSave.value) {
@@ -373,7 +363,6 @@ export default defineComponent({
       StyleTabType,
       globalStyleText,
       focusEditor,
-      isMaximum,
     }
   },
 })
@@ -387,8 +376,7 @@ export default defineComponent({
     wid="style_editor"
     @keyup="listenShortcuts"
     @onActive="focusEditor"
-    :maximum="isMaximum"
-    :allow-move="!isMaximum"
+    allow-maximum
   >
     <template #titleBarLeft>
       <n-icon class="window-icon" size="18"><PaintBrush20Regular /></n-icon
@@ -421,13 +409,6 @@ export default defineComponent({
 
       <button :title="$t('actions.copy_code') + ' (ctrl+a ctrl+c)'" @click="copyStyle">
         <n-icon size="20"><Copy20Regular /></n-icon>
-      </button>
-
-      <button @click="isMaximum = !isMaximum">
-        <n-icon size="20">
-          <ArrowMinimize20Regular v-if="isMaximum" />
-          <ArrowMaximize20Regular v-else />
-        </n-icon>
       </button>
     </template>
 

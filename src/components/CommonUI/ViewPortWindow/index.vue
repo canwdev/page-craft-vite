@@ -3,13 +3,13 @@ import {defineComponent, PropType, shallowRef} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {WindowController, WinOptions} from './window-controller'
 import {throttle} from 'throttle-debounce'
-import {Dismiss20Regular} from '@vicons/fluent'
+import {ArrowMaximize20Regular, ArrowMinimize20Regular, Dismiss20Regular} from '@vicons/fluent'
 
 const LS_KEY_VP_WINDOW_OPTION = 'page_craft_vp_window'
 
 export default defineComponent({
   name: 'ViewPortWindow',
-  components: {Dismiss20Regular},
+  components: {ArrowMinimize20Regular, ArrowMaximize20Regular, Dismiss20Regular},
   props: {
     // 是否显示窗口
     visible: {
@@ -21,8 +21,8 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
-    // 窗体是否最大化
-    maximum: {
+    // 是否允许最大化
+    allowMaximum: {
       type: Boolean,
       default: false,
     },
@@ -49,13 +49,15 @@ export default defineComponent({
   },
   emits: ['update:visible', 'resize', 'onActive', 'onClose', 'onTitleBarDbclick'],
   setup(props, {emit}) {
-    const {allowMove, maximum} = toRefs(props)
+    const {allowMove} = toRefs(props)
     const storageKey = LS_KEY_VP_WINDOW_OPTION + '_' + props.wid
     const mVisible = useModelWrapper(props, emit, 'visible')
-    const dialogRef = ref()
+    const winElRef = ref()
     const titleBarRef = ref()
     const titleBarButtonsRef = ref()
     const dWindow = shallowRef<any>(null)
+
+    const isMaximized = ref(false)
 
     const getInitWinOptions = () => {
       const defaultValue = props.initWinOptions || {
@@ -63,6 +65,7 @@ export default defineComponent({
         left: '50px',
         width: '300px',
         height: '300px',
+        maximized: false,
       }
       if (!props.wid) {
         return props.initWinOptions || defaultValue
@@ -74,6 +77,20 @@ export default defineComponent({
     watch(
       winOptions,
       () => {
+        if (isMaximized.value) {
+          // 最大化时只更新最大化状态
+          const s = JSON.parse(localStorage.getItem(storageKey) || 'null')
+          if (s) {
+            localStorage.setItem(
+              storageKey,
+              JSON.stringify({
+                ...s,
+                maximized: isMaximized.value,
+              })
+            )
+          }
+          return
+        }
         if (props.wid) {
           localStorage.setItem(storageKey, JSON.stringify({...winOptions}))
         }
@@ -87,9 +104,12 @@ export default defineComponent({
         dWindow.value.updateZIndex()
       }
     })
-    watch(maximum, (val) => {
+    watch(isMaximized, (val) => {
       dWindow.value.allowMove = !val
       dWindow.value.maximized = val
+
+      winOptions.maximized = val
+
       setTimeout(() => {
         dWindow.value.updateZIndex()
       }, 100)
@@ -102,9 +122,10 @@ export default defineComponent({
     })
 
     onMounted(() => {
+      console.log('winOptions', winOptions)
       dWindow.value = new WindowController({
         dragHandleEl: titleBarRef.value,
-        dragTargetEl: dialogRef.value,
+        dragTargetEl: winElRef.value,
         allowOut: true,
         // opacify: 0.8,
         preventNode: titleBarButtonsRef.value,
@@ -117,13 +138,14 @@ export default defineComponent({
         autoPosOnResize: true,
         isDebug: false,
         resizeable: true,
-        maximized: maximum.value,
+        maximized: winOptions.maximized || false,
       })
+      isMaximized.value = winOptions.maximized || false
       dWindow.value.allowMove = allowMove.value
 
       new ResizeObserver(() => {
         handleResizeDebounced()
-      }).observe(dialogRef.value)
+      }).observe(winElRef.value)
 
       initDialogStyle()
     })
@@ -137,10 +159,10 @@ export default defineComponent({
         winOptions.height = lsState.height
       }
 
-      dialogRef.value.style.top = winOptions.top
-      dialogRef.value.style.left = winOptions.left
-      dialogRef.value.style.width = winOptions.width
-      dialogRef.value.style.height = winOptions.height
+      winElRef.value.style.top = winOptions.top
+      winElRef.value.style.left = winOptions.left
+      winElRef.value.style.width = winOptions.width
+      winElRef.value.style.height = winOptions.height
     }
 
     const handleMoveDebounced = throttle(500, false, ({top, left}) => {
@@ -149,13 +171,14 @@ export default defineComponent({
     })
 
     const handleResizeDebounced = throttle(50, false, () => {
-      if (!mVisible.value || !dialogRef.value) {
+      if (!mVisible.value || !winElRef.value) {
         return
       }
+      console.log('[handleResizeDebounced]')
       emit('resize')
 
-      winOptions.width = getComputedStyle(dialogRef.value).width
-      winOptions.height = getComputedStyle(dialogRef.value).height
+      winOptions.width = getComputedStyle(winElRef.value).width
+      winOptions.height = getComputedStyle(winElRef.value).height
     })
 
     onBeforeUnmount(() => {
@@ -164,18 +187,29 @@ export default defineComponent({
       }
     })
 
+    const setActive = () => {
+      dWindow.value.updateZIndex({preventOnActive: true})
+    }
+
+    const setSize = (w, h) => {
+      dWindow.value.updateZIndex({preventOnActive: true})
+      winElRef.value.style.width = w
+      winElRef.value.style.height = h
+      // handleResizeDebounced()
+    }
+
     return {
       mVisible,
-      dialogRef,
+      winElRef,
       titleBarRef,
       titleBarButtonsRef,
       handleClose() {
         mVisible.value = false
         emit('onClose')
       },
-      setActive() {
-        dWindow.value.updateZIndex({preventOnActive: true})
-      },
+      setActive,
+      setSize,
+      isMaximized,
     }
   },
 })
@@ -187,10 +221,10 @@ export default defineComponent({
       v-show="mVisible"
       class="vp-window"
       :class="{
-        _allow_move: allowMove,
-        _maximized: maximum,
+        _allow_move: allowMove && !isMaximized,
+        _maximized: isMaximized,
       }"
-      ref="dialogRef"
+      ref="winElRef"
     >
       <div class="vp-window-content">
         <div ref="titleBarRef" class="page-craft-title-bar" @dblclick="$emit('onTitleBarDbclick')">
@@ -200,6 +234,13 @@ export default defineComponent({
           <div ref="titleBarButtonsRef" class="vp-window-controls">
             <slot name="titleBarRightControls"> </slot>
             <slot name="titleBarRight">
+              <button v-if="allowMaximum" @click="isMaximized = !isMaximized">
+                <n-icon size="20">
+                  <ArrowMinimize20Regular v-if="isMaximized" />
+                  <ArrowMaximize20Regular v-else />
+                </n-icon>
+              </button>
+
               <button v-if="showClose" :title="`Close`" @click="handleClose" class="_danger">
                 <n-icon size="20"><Dismiss20Regular /></n-icon>
               </button>
@@ -236,9 +277,9 @@ export default defineComponent({
     width: 100% !important;
     height: 100% !important;
     padding: 0;
-    border: none;
-    box-shadow: none;
-    border-radius: 0;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
     .vp-window-content {
       .page-craft-title-bar {
         margin-left: unset;

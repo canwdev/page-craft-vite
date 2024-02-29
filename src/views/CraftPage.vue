@@ -45,7 +45,7 @@ export default defineComponent({
       } else if (event.altKey && key === 'w') {
         mainStore.isShowSettings = !mainStore.isShowSettings
       } else if (event.altKey && key === 'i') {
-        isShowIframeBrowser.value = !isShowIframeBrowser.value
+        settingsStore.isShowIframeBrowser = !settingsStore.isShowIframeBrowser
       } else if (event.altKey && key === '1') {
         const el = document.querySelector('.sl-css-class-input input') as HTMLInputElement | null
         el && el.focus()
@@ -79,9 +79,6 @@ export default defineComponent({
     onBeforeUnmount(() => {
       document.removeEventListener('keydown', listenShortcuts)
     })
-
-    const isShowIframeBrowser = ref(false)
-    const isShowExperimental = ref(true)
 
     const {loadCurCompStyle} = useCompStorage()
     const styleMenuOptions = [
@@ -136,8 +133,6 @@ export default defineComponent({
       mainStore,
       settingsStore,
       ldThemeOptions,
-      isShowIframeBrowser,
-      isShowExperimental,
       styleMenuOptions,
       customThemeOptions,
       CustomThemeType,
@@ -152,7 +147,7 @@ export default defineComponent({
 
     <MainPlayground />
 
-    <ToolBar @openIframeBrowser="isShowIframeBrowser = !isShowIframeBrowser">
+    <ToolBar>
       <n-dropdown
         :options="styleMenuOptions"
         key-field="label"
@@ -173,12 +168,7 @@ export default defineComponent({
         </n-button>
       </n-dropdown>
       <template #end>
-        <IframeBrowser v-model:visible="isShowIframeBrowser" />
-
-        <ViewPortWindow v-model:visible="isShowExperimental" v-if="isShowExperimental">
-          <template #titleBarLeft>iframe Preview</template>
-          <IframePlayground />
-        </ViewPortWindow>
+        <IframeBrowser v-model:visible="settingsStore.isShowIframeBrowser" />
 
         <StyleEditor v-model:visible="settingsStore.showStyleEditor" />
       </template>

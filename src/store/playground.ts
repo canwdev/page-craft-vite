@@ -10,4 +10,8 @@ export const usePlaygroundStore = defineStore('playground', {
       currentCSS: '',
     }
   },
+  share: {
+    enable: true,
+    initialize: true,
+  },
 })
