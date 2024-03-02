@@ -42,6 +42,7 @@ import DialogImageCropper from '@/components/CommonUI/DialogImageCropper.vue'
 import {showInputPrompt} from '@/components/CommonUI/input-prompt'
 import TabLayout from '@/components/CommonUI/TabLayout.vue'
 import {NIcon} from 'naive-ui'
+import {formatI18nKey} from '@/enum/vue-i18n-tool'
 
 let idx = 1
 
@@ -85,7 +86,8 @@ export default defineComponent({
       }
     )
 
-    const {clearCompStorage, renameCompStorage, copyCompStorage} = useCompStorage()
+    const {clearCompStorage, renameCompStorage, copyCompStorage, saveCompHtml, saveCompStyle} =
+      useCompStorage()
 
     const handleItemClick = (item: BlockItem) => {
       mainStore.setCurrentBlock(item)
@@ -155,6 +157,13 @@ export default defineComponent({
       const newItem = createComponentBlockItem(name)
       componentList.value = [newItem, ...componentList.value]
       updateCompMeta(newItem.title, newItem.data)
+
+      // 设置默认HTML、SCSS代码
+      const className = formatI18nKey(name, '-', 50)
+      saveCompHtml(name, `<div class="${className}"></div>`)
+      saveCompStyle(name, `.${className} {\n}\n`)
+
+      // 设置当前选中的组件名
       settingsStore.curCompoName = name
       idx++
     }

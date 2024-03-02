@@ -1,10 +1,10 @@
 export const cssSnippetList = [
   {
-    name: 'Flex View',
+    label: 'Flex View',
     code: ['display: flex;', 'align-items: center;', 'justify-content: space-between;'].join('\n'),
   },
   {
-    name: 'Grid View',
+    label: 'Grid View',
     code: [
       'display: grid;',
       'grid-template-columns: repeat(5, 1fr);',
@@ -13,11 +13,11 @@ export const cssSnippetList = [
     ].join('\n'),
   },
   {
-    name: 'Text Overflow',
+    label: 'Text Overflow',
     code: ['white-space: nowrap;', 'overflow: hidden;', 'text-overflow: ellipsis;'].join('\n'),
   },
   {
-    name: 'Text Overflow Limit 3',
+    label: 'Text Overflow Limit 3',
     code: [
       'display: -webkit-box;',
       '-webkit-line-clamp: 3;',
@@ -27,7 +27,7 @@ export const cssSnippetList = [
     ].join('\n'),
   },
   {
-    name: 'Background Cover',
+    label: 'Background Cover',
     code: [
       'background-image: url("");',
       'background-repeat: no-repeat;',
@@ -36,7 +36,7 @@ export const cssSnippetList = [
     ].join('\n'),
   },
   {
-    name: 'Absolute Center',
+    label: 'Absolute Center',
     code: [
       'position: absolute;',
       'top: 50%;',
@@ -45,15 +45,15 @@ export const cssSnippetList = [
     ].join('\n'),
   },
   {
-    name: 'Absolute Full',
+    label: 'Absolute Full',
     code: ['position: absolute;', 'top: 0;', 'left: 0;', 'right: 0;', 'bottom: 0;'].join('\n'),
   },
   {
-    name: 'Margin Center',
+    label: 'Margin Center',
     code: ['max-width: 1200px', 'margin-left: auto;', 'margin-right: auto;'].join('\n'),
   },
   {
-    name: 'Blur Card',
+    label: 'Blur Card',
     code: [
       'background-color: rgba(255, 255, 255, 0.6);',
       'box-shadow: 0 1px 10px rgba(0, 0, 0, 0.27), inset 0 0 0.5px #fff;',
@@ -66,7 +66,7 @@ export const cssSnippetList = [
 
 export const cssHelperClassList = [
   {
-    name: '.btn-no-style',
+    label: '.btn-no-style',
     code: `.btn-no-style {
   background: none;
   border: none;
@@ -87,7 +87,7 @@ export const cssHelperClassList = [
 }`,
   },
   {
-    name: '.background-cover',
+    label: '.background-cover',
     code: `.background-cover {
   background-repeat: no-repeat;
   background-position: center;
@@ -95,7 +95,7 @@ export const cssHelperClassList = [
 }`,
   },
   {
-    name: '.text-overflow',
+    label: '.text-overflow',
     code: `.text-overflow {
   white-space: nowrap;
   overflow: hidden;
@@ -103,7 +103,7 @@ export const cssHelperClassList = [
 }`,
   },
   {
-    name: '.absolute-center',
+    label: '.absolute-center',
     code: `.absolute-center {
   position: absolute;
   top: 50%;
@@ -112,7 +112,7 @@ export const cssHelperClassList = [
 }`,
   },
   {
-    name: '.absolute-full',
+    label: '.absolute-full',
     code: `.absolute-full {
   position: absolute;
   top: 0;
@@ -122,7 +122,7 @@ export const cssHelperClassList = [
 }`,
   },
   {
-    name: '.flex',
+    label: '.flex',
     code: `.flex {
   display: flex;
 }
@@ -158,7 +158,7 @@ export const cssHelperClassList = [
 }`,
   },
   {
-    name: '.scrollbar-mini',
+    label: '.scrollbar-mini',
     code: `.scrollbar-mini {
   &::-webkit-scrollbar {
     width: 8px;
@@ -184,19 +184,19 @@ export const cssHelperClassList = [
 }`,
   },
   {
-    name: '.font-code',
+    label: '.font-code',
     code: `.font-code {
   font-family: 'Operator Mono', 'Source Code Pro', Menlo, Monaco, Consolas, 'Courier New', monospace;
 }`,
   },
   {
-    name: '.font-emoji',
+    label: '.font-emoji',
     code: `.font-emoji {
   font-family: "Segoe UI Emoji", "SF Pro SC", "SF Pro Text", "SF Pro Icons", "PingFang SC", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 }`,
   },
   {
-    name: 'win2k',
+    label: 'win2k',
     code: `.win2k-frame {
   background-color: silver;
   box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #fff, inset -2px -2px grey, inset 2px 2px #dfdfdf;
@@ -251,7 +251,7 @@ export const cssHelperClassList = [
 
 export const cssKeyFramesList = [
   {
-    name: 'rotating180',
+    label: 'rotating180',
     code: `@keyframes rotating180 {
   from {
     transform: rotate(0deg);
@@ -262,7 +262,7 @@ export const cssKeyFramesList = [
 }`,
   },
   {
-    name: 'rotating360',
+    label: 'rotating360',
     code: `@keyframes rotating360 {
   from {
     transform: rotate(0deg);
@@ -273,7 +273,7 @@ export const cssKeyFramesList = [
 }`,
   },
   {
-    name: 'zoomIn',
+    label: 'zoomIn',
     code: `@keyframes zoomIn {
   0% {
     transform: scale(1);
@@ -303,7 +303,7 @@ export const cssKeyFramesList = [
 }`,
   },
   {
-    name: 'textFadeInUp',
+    label: 'textFadeInUp',
     code: `@keyframes textFadeInUp {
   0% {
     opacity: 0;
@@ -317,7 +317,7 @@ export const cssKeyFramesList = [
 }`,
   },
   {
-    name: 'airShrinkIn',
+    label: 'airShrinkIn',
     code: `@keyframes airShrinkIn {
   0% {
     opacity: 0;
@@ -331,7 +331,7 @@ export const cssKeyFramesList = [
 }`,
   },
   {
-    name: 'airShrinkInReverse',
+    label: 'airShrinkInReverse',
     code: `@keyframes airShrinkInReverse {
   0% {
     opacity: 0;
@@ -348,8 +348,8 @@ export const cssKeyFramesList = [
 
 export const vue2TransitionsList = [
   {
-    name: 'fade',
-    code: `// <transition name="fade">
+    label: 'fade',
+    code: `// <transition label="fade">
 .fade-enter-active, .fade-leave-active {
   transition: opacity 0.3s;
 }
@@ -359,7 +359,7 @@ export const vue2TransitionsList = [
 }`,
   },
   {
-    name: 'fade-up',
+    label: 'fade-up',
     code: `.fade-up-enter-active, .fade-up-leave-active {
   transition: all 0.23s;
 }
@@ -370,7 +370,7 @@ export const vue2TransitionsList = [
 }`,
   },
   {
-    name: 'slide-left',
+    label: 'slide-left',
     code: `.slide-left-enter-active, .slide-left-leave-active {
   transition: all .3s;
 }
@@ -385,7 +385,7 @@ export const vue2TransitionsList = [
 
 export const vue3TransitionsList = [
   {
-    name: 'fade',
+    label: 'fade',
     code: `.fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.3s ease;
@@ -397,7 +397,7 @@ export const vue3TransitionsList = [
 }`,
   },
   {
-    name: 'scale',
+    label: 'scale',
     code: `.fade-scale-enter-active,
 .fade-scale-leave-active {
   transform: scale(1);
@@ -415,7 +415,7 @@ export const vue3TransitionsList = [
 
 export const sassVariablesList = [
   {
-    name: 'Theme Color',
+    label: 'Theme Color',
     code: `$light: #fafafa;
 $dark-alt: #1b1b1b;
 $dark: #212121;
@@ -461,7 +461,7 @@ $layout-border: 1px solid $border-color;
 }`,
   },
   {
-    name: 'Colors',
+    label: 'Colors',
     code: `$success: #4caf50;
 $error: #e91e63;
 $info: #009688;
@@ -499,7 +499,7 @@ $color-dark-yellow: #ffd60a;`,
 
 export const mediaQueryList = [
   {
-    name: 'Media Query Variables',
+    label: 'Media Query Variables',
     code: `$mq_mobile_min_width: 330px; // 618px // 426px
 $mq_mobile_width: 567px; // 618px // 426px
 $mq_mobile_height_land: 485px; // Landscape
@@ -510,15 +510,15 @@ $mq_pc_2k_width: 2300px; // 2560px
 $mq_pc_2k_height: 1250px; // 1328px`,
   },
   {
-    name: 'max-width',
+    label: 'max-width',
     code: `@media screen and (max-width: $mq_mobile_width) {}`,
   },
   {
-    name: 'min-width',
+    label: 'min-width',
     code: `@media screen and (min-width: $mq_mobile_width) {}`,
   },
   {
-    name: 'min-width and max-width and max-height',
+    label: 'min-width and max-width and max-height',
     code: `@media screen and (min-width: $mq_mobile_width) and (max-width: $mq_tablet_width) and (max-height: $mq_mobile_height_land) {}`,
   },
 ]

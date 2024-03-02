@@ -47,12 +47,18 @@ export const useCompStorage = () => {
   const saveCurCompHtml = (text: string) => {
     localStorage.setItem(getKeyWithSuffix(LsKeys.COMP_HTML), text)
   }
+  const saveCompHtml = (name: string, text: string) => {
+    localStorage.setItem(getKeyWithSuffix(LsKeys.COMP_HTML, name), text)
+  }
 
   const loadCurCompStyle = () => {
     return localStorage.getItem(getKeyWithSuffix(LsKeys.COMP_STYLE)) || ''
   }
   const saveCurCompStyle = (text: string) => {
     localStorage.setItem(getKeyWithSuffix(LsKeys.COMP_STYLE), text)
+  }
+  const saveCompStyle = (name: string, text: string) => {
+    localStorage.setItem(getKeyWithSuffix(LsKeys.COMP_STYLE, name), text)
   }
 
   const availableKeys = [LsKeys.COMP_HTML, LsKeys.COMP_STYLE, LsKeys.COMP_META]
@@ -78,38 +84,15 @@ export const useCompStorage = () => {
   return {
     loadCurCompHtml,
     saveCurCompHtml,
+    saveCompHtml,
     loadCurCompStyle,
     saveCurCompStyle,
+    saveCompStyle,
     clearCompStorage,
     renameCompStorage,
     copyCompStorage,
   }
 }
-
-/**
- * 自动升级数据 COMPONENT_LIST -> COMP_INDEX_LIST
- */
-const autoMigrateData = () => {
-  const oldList: null | any[] = JSON.parse(localStorage.getItem(LsKeys.COMPONENT_LIST) || 'null')
-  if (oldList && oldList.length) {
-    oldList.forEach((item) => {
-      const data = item.data
-      delete data.name
-      saveCompStorage(LsKeys.COMP_META, item.title, JSON.stringify(data))
-    })
-    localStorage.setItem(
-      LsKeys.COMP_INDEX_LIST,
-      JSON.stringify(
-        oldList.map((item) => {
-          return {name: item.title}
-        })
-      )
-    )
-    localStorage.removeItem(LsKeys.COMPONENT_LIST)
-    console.log('[autoMigrateData] complete!')
-  }
-}
-autoMigrateData()
 
 export const useCompImportExport = () => {
   // const componentList = useLocalStorageObject(LsKeys.COMPONENT_LIST, [])

@@ -91,6 +91,7 @@ export default defineComponent({
     />
 
     <n-button
+      v-if="valType !== 'object'"
       @click="handlePaste"
       secondary
       size="small"
