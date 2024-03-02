@@ -4,6 +4,7 @@ import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {useLocalStorageString} from '@/hooks/use-local-storage'
 import {ViewDesktopMobile20Regular} from '@vicons/fluent'
+import {useRouter} from 'vue-router'
 
 export default defineComponent({
   name: 'IframeBrowser',
@@ -15,15 +16,18 @@ export default defineComponent({
   },
   components: {ViewPortWindow, ViewDesktopMobile20Regular},
   setup(props, {emit}) {
+    const router = useRouter()
     const mVisible = useModelWrapper(props, emit, 'visible')
     const isLoading = ref(false)
 
     const iframeRef = ref()
     const iframeSrc = ref('')
-    const addressBarUrl = useLocalStorageString(
-      'pagecraft_iframe_browser_url',
-      '/#/craft/playground'
-    )
+
+    const defUrl = router.resolve({
+      name: 'CraftPlayground',
+    }).href
+
+    const addressBarUrl = useLocalStorageString('pagecraft_iframe_browser_url', defUrl)
 
     const titleText = computed(() => {
       if (isLoading.value) {
