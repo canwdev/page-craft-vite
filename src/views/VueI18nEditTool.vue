@@ -124,8 +124,11 @@ export default defineComponent({
     })
 
     onMounted(async () => {
-      console.log(import.meta)
-      await dynamicLoadScript('./lib/pinyinjs/pinyin_dict_notone.min.js')
+      // https://github.com/sxei/pinyinjs
+      await dynamicLoadScript(import.meta.env.BASE_URL + 'lib/pinyinjs/pinyin_dict_withtone.min.js')
+      await dynamicLoadScript(
+        import.meta.env.BASE_URL + 'lib/pinyinjs/pinyin_dict_polyphone.min.js'
+      )
       await dynamicLoadScript('./lib/pinyinjs/pinyinUtil.js')
     })
 

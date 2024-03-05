@@ -132,10 +132,14 @@ export const formatI18nKey = (
   const {pinyinUtil} = window
   // 中文转换拼音
   if (pinyinUtil && containsChinese(str)) {
-    str = pinyinUtil.getPinyin(str)
+    try {
+      str = pinyinUtil.getPinyin(str, '_', false, true)
+    } catch (e) {
+      console.warn(e)
+    }
   }
   // 移除非字母和数字字符
-  str = str.replace(/[^a-zA-Z0-9\s]+/g, '')
+  str = str.replace(/[^a-zA-Z0-9_\s]+/g, '')
   // 大驼峰转换 AbCd -> _ab_cd
   str = str.replace(/([A-Z])/g, `${replace}$1`)
   // 转换成小写

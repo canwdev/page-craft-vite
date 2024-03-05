@@ -6,6 +6,7 @@ import {StOptionItem, StOptionType} from '@/components/CommonUI/OptionUI/enum'
 import {useI18nToolSettingsStore} from '@/store/i18n-tool-settings'
 import {TextConvertMode, TextConvertOptions} from '@/components/VueI18nEditTool/copy-enum'
 import {Globe20Regular} from '@vicons/fluent'
+import {NButton} from 'naive-ui'
 
 export default defineComponent({
   name: 'I18nToolSettings',
@@ -43,6 +44,20 @@ export default defineComponent({
                 {label: 'Number', value: TextConvertMode.NUMBER},
                 ...TextConvertOptions,
               ],
+            },
+            {
+              label: 'Dev',
+              key: 'dev',
+              actionRender: h(
+                NButton,
+                {
+                  size: 'small',
+                  onClick: () => {
+                    console.log('window.$consoleUtils', window.$consoleUtils)
+                  },
+                },
+                () => 'Print Utils Console'
+              ),
             },
           ],
         },

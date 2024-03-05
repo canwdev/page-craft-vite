@@ -2,6 +2,9 @@
 import {defineComponent} from 'vue'
 import {useMainStore} from '@/store/main'
 import DialogTextTransformer from '@/components/VueI18nEditTool/DialogTextTransformer.vue'
+import {formatI18nKey} from '@/enum/vue-i18n-tool'
+import {textConvertAdvanced} from '@/components/VueI18nEditTool/copy-enum'
+import {handleExportFile} from '@/utils/exporter'
 
 export default defineComponent({
   name: 'AppSub',
@@ -17,6 +20,14 @@ export default defineComponent({
     window.$notification = useNotification()
     window.$dialog = useDialog()
     window.$loadingBar = useLoadingBar()
+
+    onMounted(() => {
+      window.$consoleUtils = {
+        formatI18nKey,
+        textConvertAdvanced,
+        handleExportFile,
+      }
+    })
 
     const mainStore = useMainStore()
     return {
