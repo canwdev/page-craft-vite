@@ -69,6 +69,7 @@ export const useMcMain = (options) => {
   }
   const pasteHtmlText = ref('')
 
+  // 保存当前组件的 HTML
   const saveData = (cb?) => {
     removeMouseOverDomElementEffect()
     const innerHTML = mainPlaygroundRef.value.innerHTML

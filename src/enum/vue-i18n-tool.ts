@@ -117,24 +117,36 @@ function containsChinese(text: string) {
   return pattern.test(text)
 }
 
-export const formatI18nKey = (val: number | string): string => {
+export const formatI18nKey = (
+  val: number | string,
+  replace: string = '_',
+  limitLength: number = 20
+): string => {
   if (typeof val === 'number') {
-    return `n_${val}`
+    return `n${replace}${val}`
   }
   if (!val) {
     return ''
   }
   let str = String(val)
   const {pinyinUtil} = window
+  // 中文转换拼音
   if (pinyinUtil && containsChinese(str)) {
     str = pinyinUtil.getPinyin(str)
   }
-
-  str = str.toLowerCase()
+  // 移除非字母和数字字符
   str = str.replace(/[^a-zA-Z0-9\s]+/g, '')
-  str = str.replace(/\s/gi, '_')
-  str = str.slice(0, 20)
-  str = str.replace(/_$|^_/g, '')
+  // 大驼峰转换 AbCd -> _ab_cd
+  str = str.replace(/([A-Z])/g, `${replace}$1`)
+  // 转换成小写
+  str = str.toLowerCase()
+  // 替换空白为 "_"
+  str = str.replace(/\s/gi, replace)
+  // 移除重复的 "_"
+  str = str.replace(new RegExp(`${replace}{1,}`, 'gi'), replace)
+  str = str.slice(0, limitLength)
+  // 移除首位的 "_"
+  str = str.replace(new RegExp(`${replace}$|^${replace}`, 'g'), '')
   return str
 }
 

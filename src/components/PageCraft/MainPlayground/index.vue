@@ -19,6 +19,7 @@ import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
 import {useBroadcastMessage} from '@/components/PageCraft/MainPlayground/hooks/use-broadcast-messae'
 import {usePlaygroundStyle} from '@/components/PageCraft/MainPlayground/hooks/use-playground-style'
 import {WebviewWindow} from '@tauri-apps/api/window'
+import {useRouter} from 'vue-router'
 
 export default defineComponent({
   name: 'MainPlayground',
@@ -34,6 +35,7 @@ export default defineComponent({
     QuestionCircle20Regular,
   },
   setup(props, {emit}) {
+    const router = useRouter()
     const mainPlaygroundRef = ref()
     const mainStore = useMainStore()
     const settingsStore = useSettingsStore()
@@ -122,7 +124,10 @@ export default defineComponent({
 
     usePlaygroundStyle()
     const openPlayground = () => {
-      const url = '/#/craft/playground'
+      const url = router.resolve({
+        name: 'CraftPlayground',
+      }).href
+      console.log(url)
       if (window.__TAURI__) {
         const webview = new WebviewWindow('theUniqueLabel', {
           url,
@@ -292,7 +297,9 @@ export default defineComponent({
                   $t('common.settings')
                 }}</n-button>
 
-                <n-button size="small" @click="openPlayground"> Playground </n-button>
+                <n-button quaternary type="primary" size="small" @click="openPlayground">
+                  Playground
+                </n-button>
               </n-space>
             </template>
           </n-popover>

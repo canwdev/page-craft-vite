@@ -42,6 +42,8 @@ import {useLocalStorageString} from '@/hooks/use-local-storage'
 import {useGlobalStyle} from '@/hooks/use-global-theme'
 import {useBroadcastMessage} from '@/components/PageCraft/MainPlayground/hooks/use-broadcast-messae'
 import {usePlaygroundStore} from '@/store/playground'
+import QuickOptions from '@/components/CommonUI/QuickOptions/index.vue'
+import {QuickOptionItem} from '@/components/CommonUI/QuickOptions/enum'
 
 export default defineComponent({
   name: 'StyleEditor',
@@ -52,6 +54,7 @@ export default defineComponent({
     },
   },
   components: {
+    QuickOptions,
     ArrowMinimize20Regular,
     ArrowMaximize20Regular,
     VueMonaco,
@@ -80,20 +83,29 @@ export default defineComponent({
     ])
 
     const isAutoSave = ref(false)
+    const isShowQuickOptions = ref(false)
 
     const updateEditorLayout = () => {
       const eIns = vueMonacoRef.value.getInstance()
       eIns?.layout()
     }
     const focusEditor = () => {
+      if (isShowQuickOptions.value) {
+        return
+      }
       setTimeout(() => {
         const eIns = vueMonacoRef.value.getInstance()
         eIns.focus()
       }, 100)
     }
-    watch(mVisible, () => {
-      if (mVisible) {
+    watch(mVisible, (val) => {
+      if (val) {
         updateEditorLayout()
+        focusEditor()
+      }
+    })
+    watch(isShowQuickOptions, (val) => {
+      if (!val) {
         focusEditor()
       }
     })
@@ -265,54 +277,30 @@ export default defineComponent({
       }, 100)
     }
 
-    const getToolChildren = (list) => {
-      return list.map((item) => {
-        return {
-          label: item.name,
-          props: {
-            onClick: async () => {
-              insertStyleCode(item.code)
-            },
-          },
-        }
-      })
-    }
+    const toolOptions = ref<QuickOptionItem[]>([])
+    const loadSnippets = async () => {
+      const res = await fetch('./scss-snippets.json')
+      const data = await res.json()
 
-    const toolOptions = [
-      {
-        label: 'CSS ' + $t('common.snippets'),
-        children: getToolChildren(cssSnippetList),
-      },
-      {
-        label: 'CSS ' + $t('common.helper_classes'),
-        children: getToolChildren(cssHelperClassList),
-      },
-      {
-        label: 'Animation',
-        children: [
-          {
-            label: '@keyframes',
-            children: getToolChildren(cssKeyFramesList),
-          },
-          {
-            label: 'Vue 2 ' + $t('common.transitions'),
-            children: getToolChildren(vue2TransitionsList),
-          },
-          {
-            label: 'Vue 3 ' + $t('common.transitions'),
-            children: getToolChildren(vue3TransitionsList),
-          },
-        ],
-      },
-      {
-        label: 'Media Query',
-        children: getToolChildren(mediaQueryList),
-      },
-      {
-        label: 'Sass ' + $t('common.variables'),
-        children: getToolChildren(sassVariablesList),
-      },
-    ]
+      const traverse = (list: any[] = [], result: QuickOptionItem[] = []) => {
+        list.forEach((i: any) => {
+          const r: QuickOptionItem = {
+            label: i.label,
+            children: i.children ? traverse(i.children) : null,
+            props: {},
+          }
+          if (i.code) {
+            r!.props!.onClick = async () => {
+              insertStyleCode(i.code)
+            }
+          }
+          result.push(r)
+        })
+        return result
+      }
+      toolOptions.value = traverse(data)
+    }
+    onMounted(loadSnippets)
 
     useOpenCloseSelect(() => mainStore.isSelectMode)
 
@@ -325,10 +313,15 @@ export default defineComponent({
     }
 
     const listenGlobalShortcuts = (event) => {
+      if (!mVisible.value) {
+        return
+      }
       // console.log(event)
       const key = event.key.toLowerCase()
       if (event.ctrlKey && event.shiftKey && key === 'x') {
         enterSelectMode()
+      } else if (event.altKey && key === 'q') {
+        isShowQuickOptions.value = !isShowQuickOptions.value
       }
     }
 
@@ -363,6 +356,7 @@ export default defineComponent({
       StyleTabType,
       globalStyleText,
       focusEditor,
+      isShowQuickOptions,
     }
   },
 })
@@ -394,11 +388,12 @@ export default defineComponent({
           <CursorClick20Regular v-else />
         </n-icon>
       </button>
-      <n-dropdown :options="toolOptions" key-field="label" size="large">
-        <button :title="$t('actions.add_tool_codes')">
-          <n-icon size="20"><PaintBucket20Filled /></n-icon>
-        </button>
-      </n-dropdown>
+      <button
+        @click="isShowQuickOptions = !isShowQuickOptions"
+        :title="$t('actions.add_tool_codes')"
+      >
+        <n-icon size="20"><PaintBucket20Filled /></n-icon>
+      </button>
 
       <button
         :title="$t('actions.beautify_code') + ' (ctrl+shift+f)'"
@@ -425,6 +420,13 @@ export default defineComponent({
     <div class="style-editor-inner">
       <div class="style-editor-action-bar">
         <TabLayout v-model="settingsStore.styleEditorTab" :tab-list="tabList" horizontal />
+        <QuickOptions
+          v-model:visible="isShowQuickOptions"
+          :options="toolOptions"
+          :title="`${$t('actions.add_tool_codes')} (alt+q)`"
+          class="font-code"
+          style="top: 2px; right: 2px; transform: unset"
+        />
       </div>
       <div class="code-editor-placeholder">
         <VueMonaco
@@ -459,7 +461,7 @@ export default defineComponent({
 <style lang="scss">
 .mc-style-editor-dialog {
   min-width: 400px;
-  min-height: 200px;
+  min-height: 320px;
   z-index: 1000;
   top: 30%;
   left: 30%;
