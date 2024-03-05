@@ -99,7 +99,7 @@ export default defineComponent({
         return
       }
       try {
-        await dynamicLoadScript('//unpkg.com/xlsx@0.16.9/xlsx.mini.js')
+        await dynamicLoadScript(import.meta.env.BASE_URL + 'lib/xlsx.mini.js')
       } catch (err: any) {
         window.$message.error(err.message)
         console.error(err)
@@ -195,7 +195,7 @@ export default defineComponent({
       // 处理文件名
       let name = fileRef.value?.name
       if (name) {
-        name = name.substring(0, name.lastIndexOf('.')) + '.json'
+        name = name.substring(0, name.lastIndexOf('.'))
       }
 
       handleExportFile(
