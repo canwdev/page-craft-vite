@@ -20,9 +20,13 @@ export default defineComponent({
         return []
       },
     },
+    isStatic: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup(props, {emit}) {
-    const {options} = toRefs(props)
+    const {options, isStatic} = toRefs(props)
     const mVisible = useModelWrapper(props, emit, 'visible')
     const quickRootRef = ref()
 
@@ -39,13 +43,22 @@ export default defineComponent({
         curIndex.value = 0
       }
     }
+    const focus = () => {
+      setTimeout(() => {
+        quickRootRef.value.focus()
+      }, 100)
+    }
+
+    onMounted(() => {
+      if (isStatic.value) {
+        focus()
+      }
+    })
 
     watch(mVisible, (val) => {
       if (val) {
         curIndex.value = 0
-        setTimeout(() => {
-          quickRootRef.value.focus()
-        }, 100)
+        focus()
       } else {
         menuStack.value = []
       }
@@ -135,8 +148,9 @@ export default defineComponent({
 
 <template>
   <div
-    v-if="mVisible"
+    v-if="mVisible || isStatic"
     class="quick-options vp-panel"
+    :class="{_absolute: !isStatic, _s: isStatic}"
     @keyup.stop="handleKeyUp"
     tabindex="0"
     ref="quickRootRef"
@@ -174,15 +188,23 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .quick-options {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1000;
-  overflow: hidden;
   &:focus {
     border: 1px solid $primary;
     outline: none;
+  }
+
+  &._absolute {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    overflow: hidden;
+  }
+
+  &._s {
+    box-shadow: none;
+    border: none;
   }
 
   .option-title {
@@ -201,6 +223,7 @@ export default defineComponent({
     position: relative;
     box-sizing: border-box;
     cursor: pointer;
+    border-bottom: 1px solid $color_border;
     transition: all 0.2s;
 
     &._back {
@@ -224,10 +247,6 @@ export default defineComponent({
       right: 8px;
       top: 50%;
       transform: translateY(-50%);
-    }
-
-    & + .option-item {
-      border-top: 1px solid $color_border;
     }
 
     &.focus {

@@ -6,9 +6,11 @@ import {useRouter} from 'vue-router'
 import {useI18n} from 'vue-i18n'
 import {useMainStore} from '@/store/main'
 import {useMetaTitle} from '@/hooks/use-meta'
+import QuickOptions from '@/components/CommonUI/QuickOptions/index.vue'
 
 export default defineComponent({
   name: 'WelcomePage',
+  components: {QuickOptions},
   setup() {
     const showWelcome = ref(true)
     const {t: $t} = useI18n()
@@ -45,27 +47,21 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="welcome-page" v-if="showWelcome">
+  <div class="mc-welcome-page" v-if="showWelcome">
     <ViewPortWindow :show-close="false" wid="welcome" class="welcome-window">
       <template #titleBarLeft>
         {{ metaTitle }}
       </template>
+
       <div class="tools-wrapper">
-        <button
-          class="tool-button vp-button font-emoji"
-          v-for="(item, index) in toolsMenuOptions"
-          :key="index"
-          @click="item.props.onClick()"
-        >
-          {{ item.label }}
-        </button>
+        <QuickOptions :options="toolsMenuOptions" is-static />
       </div>
     </ViewPortWindow>
   </div>
 </template>
 
-<style lang="scss" scoped>
-.welcome-page {
+<style lang="scss">
+.mc-welcome-page {
   height: 100%;
   width: 100%;
 
@@ -75,19 +71,8 @@ export default defineComponent({
   }
 
   .tools-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    overflow: auto;
-    height: 100%;
-    padding: 10px;
-    box-sizing: border-box;
-    .tool-button {
-      padding: 16px 20px;
-      cursor: pointer;
+    .option-item {
       font-size: 16px;
-      text-align: left;
-      font-weight: 500;
     }
   }
 }
