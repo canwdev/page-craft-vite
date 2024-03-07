@@ -2,22 +2,12 @@
 import {defineComponent} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {LsKeys} from '@/enum/page-craft'
-import {createOrFindStyleNode} from '@/utils/dom'
 import {sassToCSS, suggestElementClass} from '@/utils/css'
 import {copyToClipboard} from '@/utils'
 import {useMainStore} from '@/store/main'
 import {ActionBlockItems, BlockItem} from '@/enum/page-craft/block'
 import {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
-import {
-  cssHelperClassList,
-  cssKeyFramesList,
-  cssSnippetList,
-  mediaQueryList,
-  sassVariablesList,
-  StyleTabType,
-  vue2TransitionsList,
-  vue3TransitionsList,
-} from '@/enum/page-craft/styles'
+import {StyleTabType} from '@/enum/page-craft/styles'
 import {formatCss} from '@/utils/formater'
 import {useCompStorage} from '@/hooks/use-component-storage'
 import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
@@ -55,8 +45,6 @@ export default defineComponent({
   },
   components: {
     QuickOptions,
-    ArrowMinimize20Regular,
-    ArrowMaximize20Regular,
     VueMonaco,
     TabLayout,
     ViewPortWindow,

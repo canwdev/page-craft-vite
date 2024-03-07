@@ -24,9 +24,13 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    autoFocus: {
+      type: Boolean,
+      default: true,
+    },
   },
   setup(props, {emit}) {
-    const {options, isStatic} = toRefs(props)
+    const {options, isStatic, autoFocus} = toRefs(props)
     const mVisible = useModelWrapper(props, emit, 'visible')
     const quickRootRef = ref()
 
@@ -34,12 +38,12 @@ export default defineComponent({
     const selectPrev = () => {
       curIndex.value--
       if (curIndex.value < 0) {
-        curIndex.value = mOptions.value.length
+        curIndex.value = mOptions.value.length - 1
       }
     }
     const selectNext = () => {
       curIndex.value++
-      if (curIndex.value > mOptions.value.length) {
+      if (curIndex.value > mOptions.value.length - 1) {
         curIndex.value = 0
       }
     }
@@ -51,7 +55,9 @@ export default defineComponent({
 
     onMounted(() => {
       if (isStatic.value) {
-        focus()
+        if (autoFocus.value) {
+          focus()
+        }
       }
     })
 
@@ -115,11 +121,7 @@ export default defineComponent({
     }
 
     const handleKeyEnter = () => {
-      if (curIndex.value === 0) {
-        handleBack()
-        return
-      }
-      const item = mOptions.value[curIndex.value - 1]
+      const item = mOptions.value[curIndex.value]
       handleOptionClick(item)
     }
 
@@ -136,6 +138,7 @@ export default defineComponent({
     return {
       mVisible,
       quickRootRef,
+      menuStack,
       curIndex,
       handleKeyUp,
       handleBack,
@@ -149,7 +152,7 @@ export default defineComponent({
 <template>
   <div
     v-if="mVisible || isStatic"
-    class="quick-options vp-panel"
+    class="quick-options vp-panel _scrollbar_mini"
     :class="{_absolute: !isStatic, _s: isStatic}"
     @keyup.stop="handleKeyUp"
     tabindex="0"
@@ -159,26 +162,23 @@ export default defineComponent({
       {{ title }}
       <button class="btn-no-style" @click="mVisible = false">×</button>
     </div>
-    <div class="option-item _back" @click="handleBack" :class="{focus: curIndex === 0}">
-      <div class="index-wrap">
-        <div style="transform: scale(0.7)">
-          <div class="css-arrow left"></div>
-        </div>
-      </div>
-      Back
-    </div>
     <div
       class="option-item"
       v-for="(item, index) in mOptions"
       :key="index"
       @click="handleOptionClick(item)"
-      :class="{focus: curIndex === index + 1}"
+      :class="{
+        focus: curIndex === index,
+        clickable: item?.props?.onClick || (item.children && item.children.length),
+      }"
     >
       <div class="index-wrap" v-if="index < 9">
         <span>{{ index + 1 }}</span>
       </div>
-
-      {{ item.label }}
+      <div class="item-content" v-if="item.html" v-html="item.html"></div>
+      <div class="item-content" v-else>
+        {{ item.label }}
+      </div>
       <div v-if="item.children && item.children.length" class="arrow-wrap">
         <div class="css-arrow right"></div>
       </div>
@@ -191,6 +191,11 @@ export default defineComponent({
   &:focus {
     border: 1px solid $primary;
     outline: none;
+    .option-item {
+      &.focus {
+        background-color: $primary_opacity !important;
+      }
+    }
   }
 
   &._absolute {
@@ -205,6 +210,7 @@ export default defineComponent({
   &._s {
     box-shadow: none;
     border: none;
+    border-radius: 0;
   }
 
   .option-title {
@@ -222,7 +228,6 @@ export default defineComponent({
     min-width: 120px;
     position: relative;
     box-sizing: border-box;
-    cursor: pointer;
     border-bottom: 1px solid $color_border;
     transition: all 0.2s;
 
@@ -249,10 +254,6 @@ export default defineComponent({
       transform: translateY(-50%);
     }
 
-    &.focus {
-      background-color: $primary_opacity !important;
-    }
-
     &:focus {
       outline: none;
     }
@@ -262,10 +263,17 @@ export default defineComponent({
       transition: all 0s;
     }
 
-    &.active,
-    &:active {
+    &.active {
       color: white;
       background-color: $primary !important;
+    }
+
+    &.clickable {
+      cursor: pointer;
+      &:active {
+        color: white;
+        background-color: $primary !important;
+      }
     }
   }
 }

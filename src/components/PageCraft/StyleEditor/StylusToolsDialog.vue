@@ -22,6 +22,10 @@ export default defineComponent({
     const textOutput = ref('')
     const errorText = ref('')
 
+    watch(textInput, () => {
+      doFormat()
+    })
+
     function doFormat() {
       try {
         textOutput.value = window.stylusSupermacyFormat(textInput.value, {
@@ -141,11 +145,11 @@ multi-line comment
               placeholder="Text Input"
             ></n-input>-->
             <div class="input-tip">Input Stylus Code</div>
-            <VueMonaco language="stylus" v-model="textInput" class="input-text" />
+            <VueMonaco language="styl" v-model="textInput" class="input-text" />
           </div>
           <div class="input-wrapper">
             <div class="input-tip">Formatted</div>
-            <VueMonaco v-model="textOutput" language="stylus" class="input-text" />
+            <VueMonaco v-model="textOutput" language="scss" class="input-text" />
           </div>
         </div>
         <div class="error-box">

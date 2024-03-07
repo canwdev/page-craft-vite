@@ -290,15 +290,6 @@ export default defineComponent({
 
     const vueMonacoRef = ref()
 
-    onMounted(async () => {
-      // https://github.com/sxei/pinyinjs
-      await dynamicLoadScript(import.meta.env.BASE_URL + 'lib/pinyinjs/pinyin_dict_withtone.min.js')
-      await dynamicLoadScript(
-        import.meta.env.BASE_URL + 'lib/pinyinjs/pinyin_dict_polyphone.min.js'
-      )
-      await dynamicLoadScript(import.meta.env.BASE_URL + 'lib/pinyinjs/pinyinUtil.js')
-    })
-
     useBeforeUnload(() => {
       return !!dirHandle.value
     })

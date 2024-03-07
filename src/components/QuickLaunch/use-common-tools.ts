@@ -10,6 +10,7 @@ export const useCommonTools = () => {
   const toolsMenuOptions = [
     {
       label: '⚜ Stylus ' + $t('common.formatting_tool'),
+      search: 'stylus formatting',
       props: {
         onClick: async () => {
           mainStore.isShowStylusTools = true
@@ -18,14 +19,17 @@ export const useCommonTools = () => {
     },
     {
       label: '📊 ' + $t('common.excel_copy_tool'),
+      search: 'excel copy',
       props: {
         onClick: async () => {
+          mainStore.isShowQuickLaunch = false
           await router.push({name: 'ExcelCopyTool'})
         },
       },
     },
     {
       label: '🧬 ' + $t('common.text_transformer'),
+      search: 'text transformer',
       props: {
         onClick: async () => {
           mainStore.isShowTextTransformer = true
@@ -34,16 +38,20 @@ export const useCommonTools = () => {
     },
     {
       label: '🌐 ' + $t('common.i18njson_editing_too'),
+      search: 'json editor',
       props: {
         onClick: async () => {
+          mainStore.isShowQuickLaunch = false
           await router.push({name: 'VueI18nEditTool'})
         },
       },
     },
     {
       label: '🌎 ' + $t('common.i18njson_batch_tool'),
+      search: 'json editor batch',
       props: {
         onClick: async () => {
+          mainStore.isShowQuickLaunch = false
           await router.push({name: 'VueI18nBatchTool'})
         },
       },

@@ -159,10 +159,22 @@ export const sleep = (timeoutInMs: number) =>
     setTimeout(r, timeoutInMs)
   })
 
-export const guid = () => {
-  function S4() {
-    return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1)
-  }
-
-  return S4() + S4() + '-' + S4() + '-' + S4() + '-' + S4() + '-' + S4() + S4() + S4()
+export function guid_S4() {
+  return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1)
+}
+export const guid = (split = '-') => {
+  return (
+    guid_S4() +
+    guid_S4() +
+    split +
+    guid_S4() +
+    split +
+    guid_S4() +
+    split +
+    guid_S4() +
+    split +
+    guid_S4() +
+    guid_S4() +
+    guid_S4()
+  )
 }

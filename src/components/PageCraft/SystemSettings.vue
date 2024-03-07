@@ -9,8 +9,8 @@ import {NSpace, NSwitch, NButton} from 'naive-ui'
 import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {RouterLink} from 'vue-router'
-import {formatSiteTitle} from '@/router'
 import {Settings20Filled} from '@vicons/fluent'
+import {formatSiteTitle} from '@/router/router-utils'
 
 const getWallpaperText = () => {
   const list = [{label: 'Bing', url: 'https://api.dujin.org/bing/1920.php'}]

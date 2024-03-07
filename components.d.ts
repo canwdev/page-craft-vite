@@ -77,6 +77,7 @@ declare module '@vue/runtime-core' {
     OptionUI: typeof import('./src/components/CommonUI/OptionUI/index.vue')['default']
     PopFloat: typeof import('./src/components/PageCraft/DomPreview/PopFloat.vue')['default']
     PreviewWindow: typeof import('./src/components/PageCraft/DomPreview/PreviewWindow.vue')['default']
+    QuickLaunch: typeof import('./src/components/QuickLaunch/QuickLaunch.vue')['default']
     QuickOptions: typeof import('./src/components/CommonUI/QuickOptions/index.vue')['default']
     RectSwitch: typeof import('./src/components/CommonUI/OptionUI/Tools/RectSwitch.vue')['default']
     ReferenceMap: typeof import('./src/components/PageCraft/BackgroundLayer/ReferenceMap.vue')['default']

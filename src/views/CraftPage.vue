@@ -16,14 +16,10 @@ import {useOpenCloseSound, useSfxBell} from '@/hooks/use-sfx'
 import IframeBrowser from '@/components/IframeBrowser/index.vue'
 import BackgroundLayer from '@/components/PageCraft/BackgroundLayer/index.vue'
 import {useMainStore} from '@/store/main'
-import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
-import IframePlayground from '@/components/PageCraft/MainPlayground/IframePlayground.vue'
 
 export default defineComponent({
   name: 'CraftPage',
   components: {
-    IframePlayground,
-    ViewPortWindow,
     IframeBrowser,
     ToolBar,
     StyleEditor: defineAsyncComponent(() => import('@/components/PageCraft/StyleEditor/index.vue')),
@@ -167,13 +163,11 @@ export default defineComponent({
           >{{ $t('common.style') }}
         </n-button>
       </n-dropdown>
-      <template #end>
-        <IframeBrowser v-model:visible="settingsStore.isShowIframeBrowser" />
-
-        <StyleEditor v-model:visible="settingsStore.showStyleEditor" />
-      </template>
+      <template #end> </template>
     </ToolBar>
   </div>
+  <IframeBrowser v-model:visible="settingsStore.isShowIframeBrowser" />
+  <StyleEditor v-model:visible="settingsStore.showStyleEditor" />
 </template>
 
 <style lang="scss" scoped>

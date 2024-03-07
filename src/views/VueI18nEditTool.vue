@@ -123,15 +123,6 @@ export default defineComponent({
       handleExport()
     })
 
-    onMounted(async () => {
-      // https://github.com/sxei/pinyinjs
-      await dynamicLoadScript(import.meta.env.BASE_URL + 'lib/pinyinjs/pinyin_dict_withtone.min.js')
-      await dynamicLoadScript(
-        import.meta.env.BASE_URL + 'lib/pinyinjs/pinyin_dict_polyphone.min.js'
-      )
-      await dynamicLoadScript('./lib/pinyinjs/pinyinUtil.js')
-    })
-
     useBeforeUnload(() => {
       return !!fileHandle.value
     })
