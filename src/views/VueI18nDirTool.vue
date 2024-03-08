@@ -24,6 +24,7 @@ import {useI18nToolSettingsStore} from '@/store/i18n-tool-settings'
 import I18nToolSettings from '@/components/VueI18nEditTool/I18nToolSettings.vue'
 import {useLocalStorageObject, useLocalStorageString} from '@/hooks/use-local-storage'
 import BatchTextEditor from '@/components/VueI18nEditTool/BatchTextEditor/BatchTextEditor.vue'
+import {useI18nMainStore} from '@/store/i18n-tool-main'
 
 const formatDirTreeItem = (data: any = {}): DirTreeItem => {
   return {
@@ -77,8 +78,8 @@ export default defineComponent({
   setup() {
     const {t: $t} = useI18n()
     const mainStore = useMainStore()
+    const i18nMainStore = useI18nMainStore()
     const i18nSetStore = useI18nToolSettingsStore()
-    const dirTree = ref<DirTreeItem[]>([])
     const isLoading = ref(false)
 
     // 保存手动展开的文件夹keys
@@ -202,7 +203,7 @@ export default defineComponent({
             'The content is empty, please check the folder directory structure!'
           )
         }
-        dirTree.value = tree
+        i18nMainStore.dirTree = tree
       } catch (e: any) {
         console.error(e)
         window.$message.error(e.message)
@@ -214,15 +215,12 @@ export default defineComponent({
       dirHandle.value = null
       currentEditEntry.value = null
       editingTextValue.value = null
-      dirTree.value = []
-      currentFilePathArr.value = []
+      i18nMainStore.dirTree = []
+      i18nMainStore.filePathArr = []
     }
 
     const currentEditEntry = ref<FileSystemFileHandle | null>(null)
     const editingTextValue = ref<string | null>(null)
-    const currentFilePathArr = ref<string[]>([])
-
-    const translatePath = ref('')
 
     const handleSaveFile = async () => {
       try {
@@ -304,8 +302,8 @@ export default defineComponent({
               currentEditEntry.value = entry
               const str = await handleReadSelectedFile(await entry.getFile())
               editingTextValue.value = str as string
-              currentFilePathArr.value = [...option.parentDirs, option.label]
-              translatePath.value = ''
+              i18nMainStore.filePathArr = [...option.parentDirs, option.label]
+              i18nMainStore.translatePath = ''
               updateGuiTranslateTree()
             }
           } catch (e: any) {
@@ -322,7 +320,7 @@ export default defineComponent({
     const handleKeyClick = (str, event) => {
       // console.log(str, event)
       const selector = '.translate-item'
-      translatePath.value = str
+      i18nMainStore.translatePath = str
 
       const els = Array.from(document.querySelectorAll(selector))
       els.forEach((el) => {
@@ -359,10 +357,10 @@ export default defineComponent({
 
     return {
       metaTitle,
+      i18nMainStore,
       iconTranslate,
       handlePickDir,
       handleCloseDir,
-      dirTree,
       dirHandle,
       reloadPickedDir,
       vueMonacoRef,
@@ -374,8 +372,6 @@ export default defineComponent({
       EditMode,
       editModeOptions,
       translateTreeRoot,
-      currentFilePathArr,
-      translatePath,
       handleKeyClick,
       ...useFileDrop({
         cb: handleFileDrop,
@@ -476,7 +472,7 @@ export default defineComponent({
           <n-scrollbar style="height: 100%">
             <n-tree
               block-line
-              :data="dirTree"
+              :data="i18nMainStore.dirTree"
               :node-props="nodeProps"
               :default-expand-all="false"
               expand-on-click
@@ -494,7 +490,7 @@ export default defineComponent({
               <!--文本编辑器-->
               <!--<template v-if="editMode === EditMode.TEXT">-->
               <!--  <n-card class="action-row">-->
-              <!--    {{ currentFilePathArr.join('/') }}-->
+              <!--    {{ i18nMainStore.filePathArr.join('/') }}-->
               <!--  </n-card>-->
               <!--  <div class="edit-content-wrap">-->
               <!--    <VueMonaco-->
@@ -507,9 +503,9 @@ export default defineComponent({
               <!--</template>-->
               <BatchTextEditor
                 v-if="editMode === EditMode.TEXT"
-                :dir-tree="dirTree"
-                :file-path-arr="currentFilePathArr"
-                :translate-path="translatePath"
+                :dir-tree="i18nMainStore.dirTree"
+                :file-path-arr="i18nMainStore.filePathArr"
+                :translate-path="i18nMainStore.translatePath"
                 :is-folders-mode="i18nSetStore.isFoldersMode"
               />
 
@@ -521,7 +517,7 @@ export default defineComponent({
                 >
                   <n-card v-if="editMode === EditMode.BATCH" class="action-row">
                     <n-button size="tiny">Analyse</n-button>
-                    <!-- {{ currentFilePathArr.join('/') }}-->
+                    <!-- {{ i18nMainStore.filePathArr.join('/') }}-->
                   </n-card>
 
                   <TranslateTreeItem
@@ -530,7 +526,7 @@ export default defineComponent({
                     :index="index"
                     :item="item"
                     :is-lite="editMode === EditMode.BATCH"
-                    :title="currentFilePathArr.join('/')"
+                    :title="i18nMainStore.filePathArr.join('/')"
                     @onKeyClick="handleKeyClick"
                   />
                 </n-scrollbar>
@@ -538,9 +534,9 @@ export default defineComponent({
                 <!--批处理模式-->
                 <n-scrollbar class="gui-edit-batch" v-if="editMode === EditMode.BATCH">
                   <BatchTranslate
-                    :dir-tree="dirTree"
-                    :file-path-arr="currentFilePathArr"
-                    :translate-path="translatePath"
+                    :dir-tree="i18nMainStore.dirTree"
+                    :file-path-arr="i18nMainStore.filePathArr"
+                    :translate-path="i18nMainStore.translatePath"
                     :is-folders-mode="i18nSetStore.isFoldersMode"
                   />
                 </n-scrollbar>
@@ -549,7 +545,7 @@ export default defineComponent({
 
             <!--未打开文件夹，展示提示-->
             <div class="null-intro" v-else>
-              <template v-if="dirTree.length">
+              <template v-if="i18nMainStore.dirTree.length">
                 <div class="intro-title">👈 {{ $t('msgs.please_select_a_json') }}</div>
               </template>
               <div class="font-code" v-else>
