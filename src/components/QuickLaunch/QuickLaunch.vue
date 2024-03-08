@@ -55,7 +55,7 @@ export default defineComponent({
       let list: QuickOptionItem[] = [
         ...toolsMenuOptions,
         {
-          label: $t('common.settings'),
+          label: '⚙️ ' + $t('common.settings'),
           search: 'settings',
           props: {
             onClick: async () => {

@@ -95,8 +95,8 @@ export default defineComponent({
       curIndex.value = 0
     }
 
-    const handleKeyUp = (event) => {
-      console.log('[handleKeyUp]', event)
+    const handleKeyPress = (event) => {
+      console.log('[handleKeyPress]', event)
       if (event.key === 'Escape' || event.key === 'q') {
         handleBack()
       } else if (event.key === 'ArrowUp') {
@@ -148,7 +148,7 @@ export default defineComponent({
       quickRootRef,
       menuStack,
       curIndex,
-      handleKeyUp,
+      handleKeyPress,
       handleBack,
       mOptions,
       handleOptionClick,
@@ -162,7 +162,7 @@ export default defineComponent({
     v-if="mVisible || isStatic"
     class="quick-options vp-panel _scrollbar_mini"
     :class="{_absolute: !isStatic, _s: isStatic}"
-    @keydown.stop="handleKeyUp"
+    @keydown.stop="handleKeyPress"
     tabindex="0"
     ref="quickRootRef"
   >
