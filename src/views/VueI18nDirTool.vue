@@ -501,13 +501,7 @@ export default defineComponent({
               <!--    />-->
               <!--  </div>-->
               <!--</template>-->
-              <BatchTextEditor
-                v-if="editMode === EditMode.TEXT"
-                :dir-tree="i18nMainStore.dirTree"
-                :file-path-arr="i18nMainStore.filePathArr"
-                :translate-path="i18nMainStore.translatePath"
-                :is-folders-mode="i18nSetStore.isFoldersMode"
-              />
+              <BatchTextEditor v-if="editMode === EditMode.TEXT" />
 
               <!--GUI模式-->
               <div v-else class="edit-content-wrap batch-mode">
@@ -533,12 +527,7 @@ export default defineComponent({
 
                 <!--批处理模式-->
                 <n-scrollbar class="gui-edit-batch" v-if="editMode === EditMode.BATCH">
-                  <BatchTranslate
-                    :dir-tree="i18nMainStore.dirTree"
-                    :file-path-arr="i18nMainStore.filePathArr"
-                    :translate-path="i18nMainStore.translatePath"
-                    :is-folders-mode="i18nSetStore.isFoldersMode"
-                  />
+                  <BatchTranslate />
                 </n-scrollbar>
               </div>
             </template>

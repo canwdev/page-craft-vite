@@ -13,6 +13,7 @@ import {textConvertAdvanced} from '@/components/VueI18nEditTool/copy-enum'
 import {useI18nToolSettingsStore} from '@/store/i18n-tool-settings'
 import FieldEdit from '@/components/VueI18nEditTool/Single/FieldEdit.vue'
 import {useBatchItem} from '@/components/VueI18nEditTool/Batch/batch-hooks'
+import {useI18nMainStore} from '@/store/i18n-tool-main'
 // import countryCodeEmoji from '@/utils/country-code-emoji'
 
 export default defineComponent({
@@ -35,16 +36,12 @@ export default defineComponent({
         return []
       },
     },
-    translatePath: {
-      type: String,
-      default: '',
-    },
   },
   emits: ['saveChanged'],
   setup(props, {emit}) {
     const {t: $t} = useI18n()
+    const i18nMainStore = useI18nMainStore()
     const i18nSetStore = useI18nToolSettingsStore()
-    const {dirItem, filePathArr, translatePath} = toRefs(props)
 
     const {isLoading, currentItem, handleSaveFile, isLocalCreated, handleCreateFile, handleReload} =
       useBatchItem(props)
@@ -59,11 +56,11 @@ export default defineComponent({
     const isChanged = ref(false)
 
     const getValue = () => {
-      return _get(translateObj.value, translatePath.value, null)
+      return _get(translateObj.value, i18nMainStore.translatePath, null)
     }
     const setValue = (val: any) => {
       try {
-        _set(translateObj.value, translatePath.value, val)
+        _set(translateObj.value, i18nMainStore.translatePath, val)
       } catch (e: any) {
         console.error(e)
         window.$message.error(e.message)
@@ -71,7 +68,7 @@ export default defineComponent({
       }
     }
     const deleteField = () => {
-      _unset(translateObj.value, translatePath.value)
+      _unset(translateObj.value, i18nMainStore.translatePath)
       fieldValue.value = null
       isChanged.value = true
     }
@@ -108,12 +105,15 @@ export default defineComponent({
     watch(fieldValue, () => {
       isChanged.value = true
     })
-    watch(translatePath, (val) => {
-      fieldValue.value = getValue()
-      nextTick(() => {
-        isChanged.value = false
-      })
-    })
+    watch(
+      () => i18nMainStore.translatePath,
+      (val) => {
+        fieldValue.value = getValue()
+        nextTick(() => {
+          isChanged.value = false
+        })
+      }
+    )
 
     // const countryFlag = computed(() => {
     //   const code = dirItem.value?.label.split('-').pop()
@@ -199,6 +199,7 @@ export default defineComponent({
     }
 
     return {
+      i18nMainStore,
       i18nSetStore,
       currentItem,
       translateObj,
@@ -240,7 +241,7 @@ export default defineComponent({
           </template>
         </span>
         <span class="translate-path">
-          {{ translatePath }}
+          {{ i18nMainStore.translatePath }}
         </span>
       </div>
 
@@ -272,7 +273,7 @@ export default defineComponent({
         on your local file system
       </template>
     </div>
-    <template v-else-if="translatePath">
+    <template v-else-if="i18nMainStore.translatePath">
       <n-space v-if="fieldValue !== null" align="center" size="small">
         <FieldEdit ref="inputRef" v-model="fieldValue" @previewArray="handlePreviewArrayText" />
 

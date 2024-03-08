@@ -9,24 +9,7 @@ export default defineComponent({
   components: {
     BatchTranslateItem,
   },
-  props: {
-    dirTree: {
-      type: Array as PropType<DirTreeItem[]>,
-      default() {
-        return []
-      },
-    },
-    filePathArr: {
-      type: Array as PropType<string[]>,
-      default() {
-        return []
-      },
-    },
-    translatePath: {
-      type: String,
-      default: '',
-    },
-  },
+  props: {},
   setup(props, {emit}) {
     const {handleSaveChanged, itemsRef, filePathArrFiltered, subFilePathArr} =
       useBatchWrapper(props)
@@ -49,7 +32,6 @@ export default defineComponent({
       :key="item.key"
       :dir-item="item"
       :file-path-arr="subFilePathArr"
-      :translate-path="translatePath"
       @saveChanged="handleSaveChanged"
     />
   </div>

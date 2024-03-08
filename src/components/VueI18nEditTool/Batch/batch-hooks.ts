@@ -2,14 +2,16 @@ import {DirTreeItem} from '@/enum/vue-i18n-tool'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {useI18n} from 'vue-i18n'
 import {useI18nToolSettingsStore} from '@/store/i18n-tool-settings'
+import {useI18nMainStore} from '@/store/i18n-tool-main'
 
 /**
  * 批处理管理器hook
  * @param props
  */
 export const useBatchWrapper = (props) => {
+  const i18nMainStore = useI18nMainStore()
   const i18nSetStore = useI18nToolSettingsStore()
-  const {dirTree, filePathArr} = toRefs(props)
+  const {filePathArr} = toRefs(props)
   const itemsRef = ref()
 
   const handleSaveChanged = async () => {
@@ -31,16 +33,16 @@ export const useBatchWrapper = (props) => {
 
   const filePathArrFiltered = computed(() => {
     if (i18nSetStore.isFoldersMode) {
-      return dirTree.value.filter((i) => i.kind === 'directory')
+      return i18nMainStore.dirTree.filter((i) => i.kind === 'directory')
     }
-    return dirTree.value
+    return i18nMainStore.dirTree
   })
 
   const subFilePathArr = computed(() => {
     if (i18nSetStore.isFoldersMode) {
-      return filePathArr.value.slice(1)
+      return i18nMainStore.filePathArr.slice(1)
     }
-    return filePathArr.value
+    return i18nMainStore.filePathArr
   })
 
   return {
@@ -103,10 +105,11 @@ async function createFile(
  * @param props
  */
 export const useBatchItem = (props) => {
+  const i18nMainStore = useI18nMainStore()
   const i18nSetStore = useI18nToolSettingsStore()
   const {t: $t} = useI18n()
   const isLoading = ref(false)
-  const {dirItem, filePathArr, translatePath} = toRefs(props)
+  const {dirItem, filePathArr} = toRefs(props)
   const findNode = (): DirTreeItem | null => {
     let find: DirTreeItem | null = null
     const recursiveFindItem = (children: DirTreeItem[] | null, dirArr: string[], depth = 0) => {
@@ -130,6 +133,7 @@ export const useBatchItem = (props) => {
       }
     }
     try {
+      // 提示：这里应该使用外部组件传入的值 filePathArr.value，而不是 i18nMainStore.filePathArr
       recursiveFindItem(dirItem.value.children, filePathArr.value)
     } catch (e) {
       // console.warn(e)
@@ -192,7 +196,7 @@ export const useBatchItem = (props) => {
         return
       }
 
-      const fullPath = filePathArr.value.join('/')
+      const fullPath = i18nMainStore.filePathArr.join('/')
       const folderPath = fullPath.substring(0, fullPath.lastIndexOf('/'))
       const folderHandle = await createFolder(dirHandle, folderPath)
 
