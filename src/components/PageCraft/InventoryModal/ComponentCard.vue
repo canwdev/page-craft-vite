@@ -107,7 +107,7 @@ export default defineComponent({
     }"
     @mousemove="handleMouseMove"
     @mouseleave="handleMouseLeave"
-    class="tool-item"
+    class="mc-component-card vp-button"
     :style="{
       '--block-color-rgb': color,
     }"
@@ -120,7 +120,7 @@ export default defineComponent({
     </div>
     <div class="title-wrap">
       <img v-if="item.icon" :src="item.icon" alt="icon" style="margin-right: 5px" />
-      <span v-if="item.title" class="item-text"> {{ item.title }}</span>
+      <span v-if="item.title" class="item-text-c"> {{ item.title }}</span>
     </div>
 
     <div class="component-cover" :style="{backgroundImage: `url(${item.data.cover})`}"></div>
@@ -137,9 +137,10 @@ export default defineComponent({
   </div>
 </template>
 
-<style lang="scss" scoped>
-.tool-item {
+<style lang="scss">
+.mc-component-card {
   --block-color-rgb: 204, 204, 204;
+  padding: 0 !important;
   width: 180px;
   height: 50px;
   cursor: pointer;
@@ -175,7 +176,7 @@ export default defineComponent({
     outline: 3px solid rgb(var(--block-color-rgb));
 
     .title-wrap {
-      .item-text {
+      .item-text-c {
         font-weight: bold;
         text-decoration: underline;
       }
@@ -219,7 +220,7 @@ export default defineComponent({
       height: 32px;
       image-rendering: pixelated;
     }
-    .item-text {
+    .item-text-c {
       color: inherit;
       font-weight: 500;
       white-space: nowrap;

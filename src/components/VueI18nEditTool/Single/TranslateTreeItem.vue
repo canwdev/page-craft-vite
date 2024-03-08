@@ -183,7 +183,7 @@ export default defineComponent({
       </template>
 
       <div v-if="isRoot" class="namespace-input-wrap font-code">
-        <span v-if="!isLite" style="color: #f44336"> § </span>
+        <span v-if="!isLite" style="color: #f44336" class="namespace-prefix"> § </span>
         <input
           ref="namespaceInputRef"
           class="font-code vp-input"
@@ -197,7 +197,7 @@ export default defineComponent({
       </div>
 
       <div v-else class="namespace-input-wrap font-code">
-        <span v-if="!isLite" style="color: darkseagreen">
+        <span v-if="!isLite" class="namespace-prefix">
           § {{ namespacePrefix + (namespacePrefix ? '.' : '') }}
         </span>
         <input
@@ -324,31 +324,8 @@ export default defineComponent({
     display: flex;
     align-items: center;
     gap: 4px;
-  }
-
-  .vp-input {
-    height: 28px;
-    box-sizing: border-box;
-    padding: 4px 8px;
-  }
-
-  .vp-button {
-    display: inline-flex;
-    gap: 4px;
-    padding: 4px 8px;
-    align-items: center;
-    height: 28px;
-    svg {
-      width: 20px;
-      height: 20px;
-      flex-shrink: 0;
-    }
-    &.primary {
-      background-color: $primary;
-      color: white;
-    }
-    &.danger {
-      color: #f44336;
+    .namespace-prefix {
+      color: $primary;
     }
   }
 
@@ -383,12 +360,6 @@ export default defineComponent({
       opacity: 0.5;
       font-size: 12px;
     }
-  }
-
-  .actions-buttons-wrap {
-    display: flex;
-    align-items: center;
-    gap: 4px;
   }
 }
 </style>

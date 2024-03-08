@@ -86,48 +86,44 @@ export default defineComponent({
       class="item-value-edit jssl_value"
       @blur="handleValueBlur"
     />
-    <n-button
+    <button
       v-else-if="valType === 'object'"
       :title="mValue"
-      size="small"
-      class="item-value-edit _button"
+      class="item-value-edit _button vp-button"
       @click="$emit('previewArray')"
     >
       📝 {{ $t('common.array') }}
-    </n-button>
-    <n-input
+    </button>
+    <textarea
       v-else
       ref="valueInputRef"
       type="textarea"
       rows="1"
-      size="small"
-      class="item-value-edit"
-      v-model:value="mValue"
+      class="item-value-edit vp-input"
+      v-model="mValue"
       placeholder="text value"
       @blur="handleValueBlur"
-    />
+    ></textarea>
 
-    <n-button
+    <button
       v-if="valType !== 'object'"
       @click="handlePaste"
-      secondary
-      size="small"
-      type="info"
+      class="vp-button primary"
       :title="`Auto Paste [${autoPasteConvertMode}]`"
     >
-      <template #icon>
-        <ClipboardPaste20Regular />
-      </template>
-    </n-button>
+      <ClipboardPaste20Regular />
+    </button>
   </div>
 </template>
 
 <style lang="scss">
 .item-value-edit-wrap {
   display: flex;
+  align-items: center;
   .item-value-edit {
     flex: 1;
     min-width: 200px;
+    scrollbar-width: thin;
   }
 
   .res-preview-wrap {

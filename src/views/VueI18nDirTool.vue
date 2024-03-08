@@ -388,7 +388,7 @@ export default defineComponent({
 
 <template>
   <div
-    class="vue-i18n-dir-tool"
+    class="vue-i18n-dir-tool i18n-style"
     @dragover.prevent.stop="fileDragover"
     @dragleave.prevent.stop="showDropzone = false"
     @drop.prevent.stop="fileDrop"
@@ -596,6 +596,7 @@ export default defineComponent({
 </template>
 
 <style lang="scss">
+@import '@/components/VueI18nEditTool/i18n-style';
 .vue-i18n-dir-tool {
   width: 100%;
   height: 100%;

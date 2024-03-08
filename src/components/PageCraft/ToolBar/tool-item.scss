@@ -10,7 +10,8 @@
   }
 }
 
-.tool-item {
+.mc-tool-item {
+  padding: 0 !important;
   width: 50px;
   height: 50px;
   cursor: pointer;
@@ -19,10 +20,10 @@
   justify-content: center;
   font-size: 12px;
   position: relative;
-  border: 2px solid rgba(128, 128, 128, 0.5);
+  border: 2px solid rgba(128, 128, 128, 0.5)!important;
 
   &:hover {
-    filter: contrast(200%) brightness(1.5);
+    opacity: .6;
   }
 
   &._mini {
@@ -48,7 +49,7 @@
     animation-timing-function: linear; /* 这里可以修改时间函数 */
   }
 
-  .tool-item-bg {
+  .mc-tool-item-bg {
     position: absolute;
     top: 0;
     left: 0;

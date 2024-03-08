@@ -245,6 +245,7 @@ export default defineComponent({
 </template>
 
 <style lang="scss">
+@import 'tool-item';
 .page-craft-toolbar-root {
   position: sticky;
   bottom: 0;

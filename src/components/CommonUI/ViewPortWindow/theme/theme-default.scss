@@ -94,13 +94,7 @@
   }
 
   .vp-input {
-    padding: 2px 4px;
-    border: 1px solid $color_border;
     border-radius: 4px;
-
-    &:focus {
-      outline-color: $primary;
-    }
   }
 
   &._aero {
@@ -164,17 +158,13 @@
       }
     }
     .vp-panel,
-    .vp-button {
+    .vp-button,
+    .vp-input {
       border-radius: 0;
     }
   }
   &._rounded {
-    .tool-item, .component-cover {
-      border-radius: calc($radius / 2);
-    }
-    .tool-item-bg {
-      border-radius: calc($radius / 4);
-    }
+
   }
   &._dark {
     .vp-window {
@@ -237,7 +227,6 @@
           }
         }
       }
-
     }
 
     &._aero {
@@ -253,19 +242,14 @@
     .vp-panel {
       background-color: rgba(43, 43, 43, 0.85);
       color: white;
-
-      .vp-button {
-      }
-
-      .vp-input {
-        border: none;
-        background-color: rgba(0, 0, 0, 0.3);
-        color: white;
-      }
     }
 
     .vp-button {
-      background-color: #4B4B4B;
+      background-color: #757575;
+      color: white;
+    }
+    .vp-input {
+      background-color: rgba(0, 0, 0, 0.3);
       color: white;
     }
   }

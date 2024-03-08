@@ -163,10 +163,9 @@ export default defineComponent({
       <template v-if="isKeyDuplicated">
         <div class="mc-error-tip-button" title="Key duplicated, may cause bug!">!</div>
       </template>
-      <n-input
-        size="small"
-        class="font-code translate-item-input"
-        v-model:value="item.key"
+      <input
+        class="font-code translate-item-input vp-input"
+        v-model="item.key"
         placeholder="key"
         @click="handleInputKeyClick"
         @blur="handleKeyBlur"
@@ -184,14 +183,14 @@ export default defineComponent({
         />
       </template>
 
-      <div class="actions-buttons-wrap" v-if="!isLite && nameDisplay">
+      <div class="actions-buttons-wrap _mini" v-if="!isLite && nameDisplay">
         <!-- 一键复制按钮 -->
         <button
           v-for="item in copyModeOptions"
           :key="item.value"
           :title="item.desc"
           @click="handleCopy(item.value)"
-          class="vp-button"
+          class="vp-button secondary"
           :class="{primary: item.value === highlightCopyMode}"
         >
           {{ item.label }}

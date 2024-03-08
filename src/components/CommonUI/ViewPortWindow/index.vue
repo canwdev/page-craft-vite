@@ -313,9 +313,8 @@ export default defineComponent({
       .page-craft-title-bar-text {
         display: flex;
         align-items: center;
-        height: 16px;
         gap: 4px;
-        line-height: 1;
+        line-height: 1.4;
       }
     }
     .vp-window-body {

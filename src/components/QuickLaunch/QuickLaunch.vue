@@ -152,16 +152,15 @@ export default defineComponent({
     </template>
 
     <div class="tools-wrapper">
-      <n-input
+      <textarea
         ref="inputRef"
         rows="1"
-        clearable
-        v-model:value="anyText"
-        @input="handleInput"
+        v-model="anyText"
+        @input="() => handleInput(anyText)"
         placeholder="/?"
         type="textarea"
-        class="font-code"
-      />
+        class="font-code vp-input"
+      ></textarea>
       <QuickOptions
         ref="qRef"
         :auto-focus="false"
@@ -185,6 +184,9 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   height: 100%;
+  & > textarea {
+    border-radius: 0 !important;
+  }
   .quick-options {
     flex: 1;
     overflow: auto;

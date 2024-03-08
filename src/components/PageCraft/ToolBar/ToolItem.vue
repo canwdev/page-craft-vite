@@ -52,7 +52,7 @@ export default defineComponent({
 <template>
   <div
     :class="{active, blink: showDropzone}"
-    class="tool-item _mini font-code"
+    class="mc-tool-item _mini font-code vp-button"
     :title="item.title"
     draggable="true"
     @dragstart="$emit('onDragStart', $event)"
@@ -64,7 +64,7 @@ export default defineComponent({
       :style="{
         backgroundColor: color,
       }"
-      class="tool-item-bg"
+      class="mc-tool-item-bg"
     ></div>
     <img v-if="item.icon" :src="item.icon" alt="icon" />
     <span v-else-if="item.title" class="item-text">{{ item.title }}</span>
@@ -72,9 +72,7 @@ export default defineComponent({
 </template>
 
 <style lang="scss" scoped>
-@import './tool-item.scss';
-
-.tool-item {
+.mc-tool-item {
   cursor: grab;
   &:active {
     cursor: grabbing;
