@@ -1,7 +1,8 @@
 <script lang="ts">
-import {defineComponent} from 'vue'
+import {defineComponent, PropType} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {QuickOptionItem} from './enum'
+import {onClickOutside, onKeyStroke} from '@vueuse/core'
 
 export default defineComponent({
   name: 'QuickOptions',
@@ -33,6 +34,13 @@ export default defineComponent({
     const {options, isStatic, autoFocus} = toRefs(props)
     const mVisible = useModelWrapper(props, emit, 'visible')
     const quickRootRef = ref()
+
+    // 点击外部隐藏
+    onClickOutside(quickRootRef, (event) => {
+      if (!isStatic.value) {
+        mVisible.value = false
+      }
+    })
 
     const curIndex = ref(0)
     const selectPrev = () => {
@@ -88,8 +96,8 @@ export default defineComponent({
     }
 
     const handleKeyUp = (event) => {
-      // console.log('[handleKeyUp]', event)
-      if (event.key === 'Escape') {
+      console.log('[handleKeyUp]', event)
+      if (event.key === 'Escape' || event.key === 'q') {
         handleBack()
       } else if (event.key === 'ArrowUp') {
         selectPrev()
@@ -154,7 +162,7 @@ export default defineComponent({
     v-if="mVisible || isStatic"
     class="quick-options vp-panel _scrollbar_mini"
     :class="{_absolute: !isStatic, _s: isStatic}"
-    @keyup.stop="handleKeyUp"
+    @keydown.stop="handleKeyUp"
     tabindex="0"
     ref="quickRootRef"
   >

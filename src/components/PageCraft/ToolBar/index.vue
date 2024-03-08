@@ -161,6 +161,13 @@ export default defineComponent({
 
 <template>
   <PreviewWindow />
+
+  <InventoryModal
+    v-if="!settingsStore.isInvAttached"
+    v-model:visible="settingsStore.showInventory"
+    @onItemClick="setCurrentToolItem"
+  />
+
   <div
     class="page-craft-toolbar-root"
     :class="{
@@ -168,6 +175,7 @@ export default defineComponent({
     }"
   >
     <InventoryModal
+      v-if="settingsStore.isInvAttached"
       v-model:visible="settingsStore.showInventory"
       @onItemClick="setCurrentToolItem"
     />

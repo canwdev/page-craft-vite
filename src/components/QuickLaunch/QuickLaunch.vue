@@ -24,10 +24,6 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
-    showClose: {
-      type: Boolean,
-      default: true,
-    },
   },
   components: {ViewPortWindow, QuickOptions},
   emits: ['update:visible'],
@@ -124,6 +120,10 @@ export default defineComponent({
       handleInput(anyText.value)
     })
 
+    const showClose = computed(() => {
+      return route.name !== 'HomePage'
+    })
+
     return {
       mVisible,
       metaTitle,
@@ -133,6 +133,7 @@ export default defineComponent({
       qlOptions,
       handleInput,
       filteredOptions,
+      showClose,
     }
   },
 })
