@@ -12,12 +12,12 @@ import {readClipboardData} from '@/utils'
 import {textConvertAdvanced} from '@/components/VueI18nEditTool/copy-enum'
 import {useI18nToolSettingsStore} from '@/store/i18n-tool-settings'
 import FieldEdit from '@/components/VueI18nEditTool/Single/FieldEdit.vue'
-import {useBatchItem} from '@/components/VueI18nEditTool/Batch/batch-hooks'
+import {useBatchItem} from '@/components/VueI18nEditTool/BatchGUI/batch-hooks'
 import {useI18nMainStore} from '@/store/i18n-tool-main'
 // import countryCodeEmoji from '@/utils/country-code-emoji'
 
 export default defineComponent({
-  name: 'BatchTranslateItem',
+  name: 'SubGuiItem',
   components: {
     Delete20Regular,
     FieldEdit,
@@ -30,12 +30,6 @@ export default defineComponent({
       type: Object as PropType<DirTreeItem>,
       required: true,
     },
-    filePathArr: {
-      type: Array as PropType<string[]>,
-      default() {
-        return []
-      },
-    },
   },
   emits: ['saveChanged'],
   setup(props, {emit}) {
@@ -43,8 +37,15 @@ export default defineComponent({
     const i18nMainStore = useI18nMainStore()
     const i18nSetStore = useI18nToolSettingsStore()
 
-    const {isLoading, currentItem, handleSaveFile, isLocalCreated, handleCreateFile, handleReload} =
-      useBatchItem(props)
+    const {
+      isLoading,
+      currentItem,
+      handleSaveFile,
+      isLocalCreated,
+      handleCreateFile,
+      handleReload,
+      subFilePathArr,
+    } = useBatchItem(props)
 
     // 翻译文件的json对象
     let translateObj = shallowRef<any | null>(null)
@@ -221,6 +222,7 @@ export default defineComponent({
       handleSaveArray,
       handleDeleteField,
       isLoading,
+      subFilePathArr,
     }
   },
 })
@@ -237,7 +239,7 @@ export default defineComponent({
         <span class="card-title">
           <span class="text-red">{{ dirItem.label }}</span>
           <template v-if="i18nSetStore.isFoldersMode">
-            {{ '/' + filePathArr.join('/') }}
+            {{ '/' + subFilePathArr.join('/') }}
           </template>
         </span>
         <span class="translate-path">

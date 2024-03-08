@@ -10,9 +10,10 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     BackgroundLayer: typeof import('./src/components/PageCraft/BackgroundLayer/index.vue')['default']
-    BatchTextEditor: typeof import('./src/components/VueI18nEditTool/BatchTextEditor/BatchTextEditor.vue')['default']
-    BatchTranslate: typeof import('./src/components/VueI18nEditTool/Batch/BatchTranslate.vue')['default']
-    BatchTranslateItem: typeof import('./src/components/VueI18nEditTool/Batch/BatchTranslateItem.vue')['default']
+    BatchGUI: typeof import('./src/components/VueI18nEditTool/BatchGUI/index.vue')['default']
+    BatchTextEditor: typeof import('./src/components/VueI18nEditTool/BatchTextEditor/index.vue')['default']
+    BatchTranslate: typeof import('./src/components/VueI18nEditTool/BatchGUI/BatchTranslate.vue')['default']
+    BatchTranslateItem: typeof import('./src/components/VueI18nEditTool/BatchGUI/BatchTranslateItem.vue')['default']
     BlockItemCard: typeof import('./src/components/PageCraft/InventoryModal/BlockItemCard.vue')['default']
     ClassNameInput: typeof import('./src/components/PageCraft/ToolBar/ClassNameInput.vue')['default']
     ComponentCard: typeof import('./src/components/PageCraft/InventoryModal/ComponentCard.vue')['default']
@@ -85,7 +86,9 @@ declare module '@vue/runtime-core' {
     RouterView: typeof import('vue-router')['RouterView']
     StyleEditor: typeof import('./src/components/PageCraft/StyleEditor/index.vue')['default']
     StylusToolsDialog: typeof import('./src/components/PageCraft/StyleEditor/StylusToolsDialog.vue')['default']
+    SubGuiItem: typeof import('./src/components/VueI18nEditTool/BatchGUI/SubGuiItem.vue')['default']
     SubTextEditor: typeof import('./src/components/VueI18nEditTool/BatchTextEditor/SubTextEditor.vue')['default']
+    SubTextItem: typeof import('./src/components/VueI18nEditTool/BatchTextEditor/SubTextItem.vue')['default']
     SystemSettings: typeof import('./src/components/PageCraft/SystemSettings.vue')['default']
     TabLayout: typeof import('./src/components/CommonUI/TabLayout.vue')['default']
     ToolBar: typeof import('./src/components/PageCraft/ToolBar/index.vue')['default']

@@ -1,24 +1,22 @@
 <script lang="ts">
 import {defineComponent, PropType} from 'vue'
 import {DirTreeItem} from '@/enum/vue-i18n-tool'
-import BatchTranslateItem from '@/components/VueI18nEditTool/Batch/BatchTranslateItem.vue'
-import {useBatchWrapper} from '@/components/VueI18nEditTool/Batch/batch-hooks'
+import SubGuiItem from '@/components/VueI18nEditTool/BatchGUI/SubGuiItem.vue'
+import {useBatchWrapper} from '@/components/VueI18nEditTool/BatchGUI/batch-hooks'
 
 export default defineComponent({
   name: 'BatchTranslate',
   components: {
-    BatchTranslateItem,
+    SubGuiItem,
   },
   props: {},
   setup(props, {emit}) {
-    const {handleSaveChanged, itemsRef, filePathArrFiltered, subFilePathArr} =
-      useBatchWrapper(props)
+    const {handleSaveChanged, itemsRef, filePathArrFiltered} = useBatchWrapper(props)
 
     return {
       handleSaveChanged,
       itemsRef,
       filePathArrFiltered,
-      subFilePathArr,
     }
   },
 })
@@ -26,12 +24,11 @@ export default defineComponent({
 
 <template>
   <div class="batch-translate">
-    <BatchTranslateItem
+    <SubGuiItem
       ref="itemsRef"
       v-for="item in filePathArrFiltered"
       :key="item.key"
       :dir-item="item"
-      :file-path-arr="subFilePathArr"
       @saveChanged="handleSaveChanged"
     />
   </div>

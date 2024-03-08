@@ -2,12 +2,12 @@
 import {defineComponent, PropType} from 'vue'
 import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
 import {DirTreeItem} from '@/enum/vue-i18n-tool'
-import {useBatchItem} from '@/components/VueI18nEditTool/Batch/batch-hooks'
+import {useBatchItem} from '@/components/VueI18nEditTool/BatchGUI/batch-hooks'
 import {handleReadSelectedFile} from '@/utils/exporter'
 import {throttle} from 'throttle-debounce'
 
 export default defineComponent({
-  name: 'SubTextEditor',
+  name: 'SubTextItem',
   components: {VueMonaco},
   props: {
     visible: {
@@ -17,12 +17,6 @@ export default defineComponent({
     dirItem: {
       type: Object as PropType<DirTreeItem>,
       required: true,
-    },
-    filePathArr: {
-      type: Array as PropType<string[]>,
-      default() {
-        return []
-      },
     },
     translatePath: {
       type: String,
@@ -39,6 +33,7 @@ export default defineComponent({
       isLocalCreated,
       handleCreateFile: _handleCreateFile,
       handleReload,
+      subFilePathArr,
     } = useBatchItem(props)
 
     // 值是否发生变化
@@ -138,6 +133,7 @@ export default defineComponent({
       saveChange,
       isChanged,
       handleCreateFile,
+      subFilePathArr,
     }
   },
 })
@@ -158,8 +154,7 @@ export default defineComponent({
       >
         Save All
       </n-button>
-      <!--      {{ filePathArr }} <br />
-      {{ currentItem }}-->
+      {{ subFilePathArr.join('/') }}
     </div>
     <div class="editor-content-wrap">
       <div class="tip-not-exist" v-if="!currentItem">
@@ -184,6 +179,10 @@ export default defineComponent({
   flex-direction: column;
 
   .editor-action-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: space-between;
   }
   .editor-content-wrap {
     flex: 1;

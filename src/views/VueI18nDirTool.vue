@@ -9,7 +9,7 @@ import {
   I18nJsonObjUtils,
   ITranslateTreeItem,
 } from '@/enum/vue-i18n-tool'
-import BatchTranslate from '@/components/VueI18nEditTool/Batch/BatchTranslate.vue'
+import BatchTranslate from '@/components/VueI18nEditTool/BatchGUI/index.vue'
 import DropZone from '@/components/CommonUI/DropZone.vue'
 import {useFileDrop} from '@/hooks/use-file-drop'
 import {useMetaTitle} from '@/hooks/use-meta'
@@ -23,7 +23,7 @@ import {NIcon} from 'naive-ui'
 import {useI18nToolSettingsStore} from '@/store/i18n-tool-settings'
 import I18nToolSettings from '@/components/VueI18nEditTool/I18nToolSettings.vue'
 import {useLocalStorageObject, useLocalStorageString} from '@/hooks/use-local-storage'
-import BatchTextEditor from '@/components/VueI18nEditTool/BatchTextEditor/BatchTextEditor.vue'
+import BatchTextEditor from '@/components/VueI18nEditTool/BatchTextEditor/index.vue'
 import {useI18nMainStore} from '@/store/i18n-tool-main'
 
 const formatDirTreeItem = (data: any = {}): DirTreeItem => {
@@ -53,15 +53,15 @@ enum EditMode {
 
 const editModeOptions = [
   {
-    label: 'Text',
+    label: 'TEXT',
     value: EditMode.TEXT,
   },
   {
-    label: 'Single',
+    label: 'SINGLE',
     value: EditMode.GUI,
   },
   {
-    label: 'Batch',
+    label: 'BATCH',
     value: EditMode.BATCH,
   },
 ]
@@ -95,7 +95,7 @@ export default defineComponent({
       deep = 0,
       tree: DirTreeItem[] = [],
       parentDirs: string[] = [],
-      parentKey?: string = ''
+      parentKey: string = ''
     ): Promise<DirTreeItem[]> => {
       let idx = 0
       for await (const entry of dirHandle.values()) {

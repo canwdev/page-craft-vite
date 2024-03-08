@@ -1,16 +1,15 @@
 <script lang="ts">
 import {defineComponent, PropType} from 'vue'
 import {DirTreeItem} from '@/enum/vue-i18n-tool'
-import SubTextEditor from '@/components/VueI18nEditTool/BatchTextEditor/SubTextEditor.vue'
-import {useBatchWrapper} from '@/components/VueI18nEditTool/Batch/batch-hooks'
+import SubTextItem from '@/components/VueI18nEditTool/BatchTextEditor/SubTextItem.vue'
+import {useBatchWrapper} from '@/components/VueI18nEditTool/BatchGUI/batch-hooks'
 
 export default defineComponent({
   name: 'BatchTextEditor',
-  components: {SubTextEditor},
+  components: {SubTextItem},
   props: {},
   setup(props, {emit}) {
-    const {handleSaveChanged, itemsRef, filePathArrFiltered, subFilePathArr} =
-      useBatchWrapper(props)
+    const {handleSaveChanged, itemsRef, filePathArrFiltered} = useBatchWrapper(props)
 
     const currentTab = ref('')
 
@@ -35,7 +34,6 @@ export default defineComponent({
       itemsRef,
       filePathArrFiltered,
       currentTab,
-      subFilePathArr,
     }
   },
 })
@@ -48,7 +46,7 @@ export default defineComponent({
         <n-tab-pane
           style="padding: 0"
           :name="item.key"
-          :tab="item.label + '/' + subFilePathArr.join('/')"
+          :tab="item.label"
           :key="item.key"
           v-for="item in filePathArrFiltered"
         >
@@ -57,12 +55,11 @@ export default defineComponent({
     </div>
 
     <div class="editor-wrap">
-      <SubTextEditor
+      <SubTextItem
         ref="itemsRef"
         v-for="item in filePathArrFiltered"
         :key="item.key"
         :dir-item="item"
-        :file-path-arr="subFilePathArr"
         :visible="item.key === currentTab"
         @saveChanged="handleSaveChanged"
       />

@@ -11,7 +11,6 @@ import {useI18nMainStore} from '@/store/i18n-tool-main'
 export const useBatchWrapper = (props) => {
   const i18nMainStore = useI18nMainStore()
   const i18nSetStore = useI18nToolSettingsStore()
-  const {filePathArr} = toRefs(props)
   const itemsRef = ref()
 
   const handleSaveChanged = async () => {
@@ -38,18 +37,10 @@ export const useBatchWrapper = (props) => {
     return i18nMainStore.dirTree
   })
 
-  const subFilePathArr = computed(() => {
-    if (i18nSetStore.isFoldersMode) {
-      return i18nMainStore.filePathArr.slice(1)
-    }
-    return i18nMainStore.filePathArr
-  })
-
   return {
     handleSaveChanged,
     itemsRef,
     filePathArrFiltered,
-    subFilePathArr,
   }
 }
 
@@ -109,7 +100,15 @@ export const useBatchItem = (props) => {
   const i18nSetStore = useI18nToolSettingsStore()
   const {t: $t} = useI18n()
   const isLoading = ref(false)
-  const {dirItem, filePathArr} = toRefs(props)
+  const {dirItem} = toRefs(props)
+
+  const subFilePathArr = computed(() => {
+    if (i18nSetStore.isFoldersMode) {
+      return i18nMainStore.filePathArr.slice(1)
+    }
+    return i18nMainStore.filePathArr
+  })
+
   const findNode = (): DirTreeItem | null => {
     let find: DirTreeItem | null = null
     const recursiveFindItem = (children: DirTreeItem[] | null, dirArr: string[], depth = 0) => {
@@ -133,8 +132,7 @@ export const useBatchItem = (props) => {
       }
     }
     try {
-      // 提示：这里应该使用外部组件传入的值 filePathArr.value，而不是 i18nMainStore.filePathArr
-      recursiveFindItem(dirItem.value.children, filePathArr.value)
+      recursiveFindItem(dirItem.value.children, subFilePathArr.value)
     } catch (e) {
       // console.warn(e)
     }
@@ -196,7 +194,7 @@ export const useBatchItem = (props) => {
         return
       }
 
-      const fullPath = i18nMainStore.filePathArr.join('/')
+      const fullPath = subFilePathArr.value.join('/')
       const folderPath = fullPath.substring(0, fullPath.lastIndexOf('/'))
       const folderHandle = await createFolder(dirHandle, folderPath)
 
@@ -231,5 +229,6 @@ export const useBatchItem = (props) => {
     isLocalCreated,
     handleCreateFile,
     handleReload,
+    subFilePathArr,
   }
 }
