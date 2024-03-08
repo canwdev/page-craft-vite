@@ -167,6 +167,7 @@ export default defineComponent({
         :auto-focus="false"
         :options="filteredOptions"
         is-static
+        class="font-emoji"
         @onClose="inputRef.focus()"
       />
     </div>
@@ -175,7 +176,7 @@ export default defineComponent({
 
 <style lang="scss">
 .quick-launch-window {
-  min-width: 300px;
+  min-width: 400px;
   min-height: 400px;
   position: fixed;
 }

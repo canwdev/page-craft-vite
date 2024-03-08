@@ -19,7 +19,7 @@ export default defineComponent({
   setup(props, {emit}) {
     const {t: $t} = useI18n()
     const mVisible = useModelWrapper(props, emit, 'visible')
-    const intSettingsStore = useI18nToolSettingsStore()
+    const i18nSetStore = useI18nToolSettingsStore()
 
     const optionList = computed((): StOptionItem[] => {
       return [
@@ -31,13 +31,13 @@ export default defineComponent({
               label: '自动粘贴: 移除首尾引号',
               subtitle: 'Trim: \` | \' | "',
               key: 'autoPasteTrimQuotes',
-              store: intSettingsStore,
+              store: i18nSetStore,
               type: StOptionType.SWITCH,
             },
             {
               label: '自动粘贴: 文本转换器模式',
               key: 'autoPasteTextConvertMode',
-              store: intSettingsStore,
+              store: i18nSetStore,
               type: StOptionType.SELECT,
               selectOptions: [
                 {label: 'Disabled', value: TextConvertMode.DISABLED},
@@ -68,14 +68,20 @@ export default defineComponent({
             {
               label: $t('common.folders_mode'),
               key: 'isFoldersMode',
-              store: intSettingsStore,
+              store: i18nSetStore,
               type: StOptionType.SWITCH,
             },
             {
               label: 'ignoreFolders',
               key: 'ignoreFolders',
-              store: intSettingsStore,
+              store: i18nSetStore,
               type: StOptionType.DYNAMIC_TAGS,
+            },
+            {
+              label: 'Auto Show image',
+              key: 'isAutoShowImage',
+              store: i18nSetStore,
+              type: StOptionType.SWITCH,
             },
           ],
         },

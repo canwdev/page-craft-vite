@@ -167,13 +167,16 @@ export default defineComponent({
         </template>
         <n-input
           size="small"
-          class="font-code translate-item-input jssl_key"
+          class="font-code translate-item-input"
           v-model:value="item.key"
           placeholder="key"
           @click="handleInputKeyClick"
           @blur="handleKeyBlur"
           :readonly="isLite"
         />
+
+        <!--        <div>A</div>-->
+
         <template v-if="!isLite">
           <FieldEdit
             ref="valueInputRef"

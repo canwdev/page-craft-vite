@@ -55,12 +55,24 @@ export const createBlockElement = (block: BlockItem, addOptions?) => {
   return addEl
 }
 
+// 自动粘贴并替换值
+export const autoPasteReplaceValue = async (targetEl: Element) => {
+  const val = await navigator.clipboard.readText()
+  if ('src' in targetEl) {
+    // 如果有src属性就替换src
+    targetEl.src = val
+  } else {
+    targetEl.innerHTML = val
+  }
+  return val
+}
+
 export const appendCustomBlock = async (block: BlockItem, event, addOptions, mainPlaygroundRef) => {
   let targetEl = event.target || mainPlaygroundRef.value
 
   if (block.blockType === BlockType.ACTIONS) {
     if (block.actionType === ActionType.PASTE_REPLACE) {
-      targetEl.innerHTML = await navigator.clipboard.readText()
+      await autoPasteReplaceValue(targetEl)
       return
     }
     if (block.actionType === ActionType.DEBUG) {

@@ -80,7 +80,7 @@ export default defineComponent({
   setup() {
     const {t: $t} = useI18n()
     const mainStore = useMainStore()
-    const intSettingsStore = useI18nToolSettingsStore()
+    const i18nSetStore = useI18nToolSettingsStore()
     const dirTree = ref<DirTreeItem[]>([])
     const isLoading = ref(false)
 
@@ -88,7 +88,7 @@ export default defineComponent({
     const expandedKeys = useLocalStorageObject('vue_i18n_dir_tool_expanded_keys', [])
 
     const isValidDir = (name: string) => {
-      return !intSettingsStore.ignoreFoldersMap[name]
+      return !i18nSetStore.ignoreFoldersMap[name]
     }
 
     // 递归读取文件夹
@@ -195,7 +195,7 @@ export default defineComponent({
         isLoading.value = true
         const handle = dirHandle.value
         let tree: DirTreeItem[] = []
-        if (intSettingsStore.isFoldersMode) {
+        if (i18nSetStore.isFoldersMode) {
           tree = await recursiveReadDir(handle)
         } else {
           tree = await readJsonFiles(handle)
@@ -383,7 +383,7 @@ export default defineComponent({
       ...useFileDrop({
         cb: handleFileDrop,
       }),
-      intSettingsStore,
+      i18nSetStore,
       mainStore,
       isShowToolSettings,
       isLoading,
@@ -513,7 +513,7 @@ export default defineComponent({
                 :dir-tree="dirTree"
                 :file-path-arr="currentFilePathArr"
                 :translate-path="translatePath"
-                :is-folders-mode="intSettingsStore.isFoldersMode"
+                :is-folders-mode="i18nSetStore.isFoldersMode"
               />
 
               <!--GUI模式-->
@@ -522,9 +522,10 @@ export default defineComponent({
                   class="gui-edit-gui"
                   :style="{width: editMode === EditMode.BATCH ? '500px' : '100%'}"
                 >
-                  <!--<n-card class="action-row">-->
-                  <!--  {{ currentFilePathArr.join('/') }}-->
-                  <!--</n-card>-->
+                  <n-card v-if="editMode === EditMode.BATCH" class="action-row">
+                    <n-button size="tiny">Analyse</n-button>
+                    <!-- {{ currentFilePathArr.join('/') }}-->
+                  </n-card>
 
                   <TranslateTreeItem
                     v-for="(item, index) in translateTreeRoot"
@@ -543,7 +544,7 @@ export default defineComponent({
                     :dir-tree="dirTree"
                     :file-path-arr="currentFilePathArr"
                     :translate-path="translatePath"
-                    :is-folders-mode="intSettingsStore.isFoldersMode"
+                    :is-folders-mode="i18nSetStore.isFoldersMode"
                   />
                 </n-scrollbar>
               </div>
@@ -556,7 +557,7 @@ export default defineComponent({
               </template>
               <div class="font-code" v-else>
                 <n-space align="center" class="intro-title">
-                  <n-switch size="large" v-model:value="intSettingsStore.isFoldersMode">
+                  <n-switch size="large" v-model:value="i18nSetStore.isFoldersMode">
                     <template #checked>{{ $t('common.folders_mode') }}</template>
                     <template #unchecked>{{ $t('common.files_mode') }}</template>
                   </n-switch>
@@ -565,12 +566,12 @@ export default defineComponent({
                 </n-space>
                 <textarea
                   class="font-code"
-                  :class="{_alt: !intSettingsStore.isFoldersMode}"
+                  :class="{_alt: !i18nSetStore.isFoldersMode}"
                   readonly
                   cols="50"
                   rows="20"
                   :value="
-                    intSettingsStore.isFoldersMode
+                    i18nSetStore.isFoldersMode
                       ? `└─[locales]    --> ${$t('msgs.drag_folder_here')}!
    ├─de-DE
    │  └─index.json

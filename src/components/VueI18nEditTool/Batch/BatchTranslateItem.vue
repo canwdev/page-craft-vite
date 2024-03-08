@@ -55,7 +55,7 @@ export default defineComponent({
   emits: ['saveChanged'],
   setup(props, {emit}) {
     const {t: $t} = useI18n()
-    const intSettingsStore = useI18nToolSettingsStore()
+    const i18nSetStore = useI18nToolSettingsStore()
     const {dirItem, filePathArr, translatePath, isFoldersMode} = toRefs(props)
 
     const {isLoading, currentItem, handleSaveFile, isLocalCreated, handleCreateFile, handleReload} =
@@ -146,8 +146,8 @@ export default defineComponent({
     }
 
     const handlePasteFormat = (val) => {
-      val = textConvertAdvanced(val, intSettingsStore.autoPasteTextConvertMode, {
-        isTrimQuotes: intSettingsStore.autoPasteTrimQuotes,
+      val = textConvertAdvanced(val, i18nSetStore.autoPasteTextConvertMode, {
+        isTrimQuotes: i18nSetStore.autoPasteTrimQuotes,
       })
 
       return val
@@ -211,7 +211,7 @@ export default defineComponent({
     }
 
     return {
-      intSettingsStore,
+      i18nSetStore,
       currentItem,
       translateObj,
       fieldValue,
@@ -307,7 +307,7 @@ export default defineComponent({
           size="small"
           @click="pasteCreateField()"
           type="primary"
-          :title="`Auto Paste Create (${intSettingsStore.autoPasteTextConvertMode})`"
+          :title="`Auto Paste Create (${i18nSetStore.autoPasteTextConvertMode})`"
         >
           <template #icon>
             <ClipboardPaste20Regular />

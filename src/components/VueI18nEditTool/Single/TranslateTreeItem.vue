@@ -66,7 +66,7 @@ export default defineComponent({
   setup(props) {
     const {item, index} = toRefs(props)
     const mainStore = useMainStore()
-    const intSettingsStore = useI18nToolSettingsStore()
+    const i18nSetStore = useI18nToolSettingsStore()
 
     const handleAddChildren = () => {
       mainStore.trIsManualAdd = true
@@ -81,8 +81,8 @@ export default defineComponent({
     const handleAutoAdd = async () => {
       let val: any = await readClipboardData()
 
-      val = textConvertAdvanced(val, intSettingsStore.autoPasteTextConvertMode, {
-        isTrimQuotes: intSettingsStore.autoPasteTrimQuotes,
+      val = textConvertAdvanced(val, i18nSetStore.autoPasteTextConvertMode, {
+        isTrimQuotes: i18nSetStore.autoPasteTrimQuotes,
       })
 
       // 生成guid用来区分
@@ -139,7 +139,7 @@ export default defineComponent({
     })
 
     return {
-      intSettingsStore,
+      i18nSetStore,
       handleAddChildren,
       handleAddTranslate,
       handleAutoAdd,
@@ -274,7 +274,7 @@ export default defineComponent({
             type="info"
             secondary
             @click="handleAutoAdd"
-            :title="`Auto Paste (${intSettingsStore.autoPasteTextConvertMode}) and copy key`"
+            :title="`Auto Paste (${i18nSetStore.autoPasteTextConvertMode}) and copy key`"
           >
             <template #icon>
               <ClipboardPaste20Regular />

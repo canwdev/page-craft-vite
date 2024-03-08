@@ -64,7 +64,7 @@
     "remove_element": "Remove Element",
     "paste": "Paste",
     "paste_at": "Paste at",
-    "paste__replace_inner": "Paste & Replace innerHTML",
+    "paste_replace_value": "Paste & Replace Value",
     "print_to_console": "Print to Console",
     "append_style": "Append Style",
     "insert_at": "Insert at",

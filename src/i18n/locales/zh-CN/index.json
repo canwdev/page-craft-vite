@@ -64,7 +64,7 @@
     "remove_element": "删除元素",
     "paste": "粘贴",
     "paste_at": "粘贴于",
-    "paste__replace_inner": "粘贴并替换 innerHTML",
+    "paste_replace_value": "粘贴并替换值",
     "print_to_console": "打印到控制台",
     "append_style": "追加样式",
     "insert_at": "插入于",

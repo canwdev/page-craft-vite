@@ -1,7 +1,6 @@
 import {createRouter, createWebHashHistory} from 'vue-router'
 import WelcomePage from '@/views/WelcomePage.vue'
 import CraftPage from '@/views/CraftPage.vue'
-import DevPage from '@/views/DevPage.vue'
 import {useSettingsStore} from '@/store/settings'
 import i18n from '@/i18n/index'
 import {window as tauriWin} from '@tauri-apps/api'
@@ -39,14 +38,6 @@ let routes = [
     component: () => import('@/views/CraftPlayground.vue'),
     meta: {
       title: `Playground`,
-    },
-  },
-  {
-    path: '/dev',
-    name: 'Dev',
-    component: DevPage,
-    meta: {
-      title: `Dev Page`,
     },
   },
   {

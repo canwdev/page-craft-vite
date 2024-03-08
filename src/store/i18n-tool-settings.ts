@@ -8,6 +8,8 @@ type IState = {
   // 自动粘贴: 文本转换器模式
   autoPasteTextConvertMode: TextConvertMode
   ignoreFolders: string[]
+  // 是否检测链接自动渲染图片
+  isAutoShowImage: boolean
 }
 
 export const useI18nToolSettingsStore = defineStore('i18nToolSettings', {
@@ -17,6 +19,7 @@ export const useI18nToolSettingsStore = defineStore('i18nToolSettings', {
       autoPasteTrimQuotes: true,
       autoPasteTextConvertMode: TextConvertMode.TEXT,
       ignoreFolders: ['node_modules', '.git', '.idea', '.vscode', '.DS_Store'],
+      isAutoShowImage: true,
     }
   },
   getters: {
@@ -32,4 +35,8 @@ export const useI18nToolSettingsStore = defineStore('i18nToolSettings', {
   persist: {
     key: 'ls_key_i18n_tool_settings',
   },
+  // share: {
+  //   enable: false,
+  //   initialize: false,
+  // },
 })
