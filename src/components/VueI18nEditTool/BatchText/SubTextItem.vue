@@ -1,15 +1,21 @@
 <script lang="ts">
-import {defineComponent, PropType} from 'vue'
+import {defineComponent, PropType, ref} from 'vue'
 import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
-import {DirTreeItem} from '@/enum/vue-i18n-tool'
+import {
+  DirTreeItem,
+  formatTranslateTreeItem,
+  I18nJsonObjUtils,
+  ITranslateTreeItem,
+} from '@/enum/vue-i18n-tool'
 import {useBatchItem} from '@/components/VueI18nEditTool/BatchGUI/batch-hooks'
 import {handleReadSelectedFile} from '@/utils/exporter'
 import {throttle} from 'throttle-debounce'
 import {useI18nMainStore} from '@/store/i18n-tool-main'
+import TranslateTreeItem from '@/components/VueI18nEditTool/Single/TranslateTreeItem.vue'
 
 export default defineComponent({
   name: 'SubTextItem',
-  components: {VueMonaco},
+  components: {TranslateTreeItem, VueMonaco},
   props: {
     visible: {
       type: Boolean,
@@ -93,11 +99,14 @@ export default defineComponent({
       window.removeEventListener('resize', handleResizeDebounced)
     })
 
+    // const translateTreeRoot = ref<ITranslateTreeItem[]>([formatTranslateTreeItem()])
     const updateValueText = async () => {
       const file = await (currentItem.value.entry as FileSystemFileHandle).getFile()
 
       const str = await handleReadSelectedFile(file)
       valueText.value = str as string
+      // const obj = JSON.parse(valueText.value as string)
+      // translateTreeRoot.value = I18nJsonObjUtils.parseWithRoot(obj)
 
       await nextTick(() => {
         setChanged(false)
@@ -143,6 +152,7 @@ export default defineComponent({
       isChanged,
       handleCreateFile,
       subFilePathArr,
+      // translateTreeRoot,
     }
   },
 })
@@ -175,6 +185,13 @@ export default defineComponent({
         on your local file system
       </div>
       <VueMonaco v-else ref="vueMonacoRef" v-model="valueText" language="json" show-line-numbers />
+
+      <!--      <TranslateTreeItem-->
+      <!--        v-for="(item, index) in translateTreeRoot"-->
+      <!--        :key="index"-->
+      <!--        :index="index"-->
+      <!--        :item="item"-->
+      <!--      />-->
     </div>
   </div>
 </template>
