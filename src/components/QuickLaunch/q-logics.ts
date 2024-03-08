@@ -104,6 +104,21 @@ export const useQLogics = (qlOptionsRef) => {
         return flag
       }),
       {
+        label: '⚡ Eval JavaScript',
+        props: {
+          onClick: async () => {
+            try {
+              const result = eval(val)
+              window.$message.success(result + '')
+              await copy(result)
+            } catch (error: any) {
+              console.log(error)
+              window.$message.error(error.message)
+            }
+          },
+        },
+      },
+      {
         label: '📋 Copy i18n key',
         props: {
           onClick: async () => {

@@ -167,7 +167,7 @@ export default defineComponent({
         :auto-focus="false"
         :options="filteredOptions"
         is-static
-        @keyup.esc="inputRef.focus()"
+        @onClose="inputRef.focus()"
       />
     </div>
   </ViewPortWindow>

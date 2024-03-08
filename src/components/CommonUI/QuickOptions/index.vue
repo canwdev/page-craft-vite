@@ -91,12 +91,14 @@ export default defineComponent({
         menuStack.value.pop()
       } else {
         mVisible.value = false
+        setTimeout(() => {
+          emit('onClose')
+        }, 100)
       }
       curIndex.value = 0
     }
 
     const handleKeyPress = (event) => {
-      console.log('[handleKeyPress]', event)
       if (event.key === 'Escape' || event.key === 'q') {
         handleBack()
       } else if (event.key === 'ArrowUp') {
