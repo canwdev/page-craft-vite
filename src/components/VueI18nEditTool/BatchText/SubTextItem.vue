@@ -5,6 +5,7 @@ import {DirTreeItem} from '@/enum/vue-i18n-tool'
 import {useBatchItem} from '@/components/VueI18nEditTool/BatchGUI/batch-hooks'
 import {handleReadSelectedFile} from '@/utils/exporter'
 import {throttle} from 'throttle-debounce'
+import {useI18nMainStore} from '@/store/i18n-tool-main'
 
 export default defineComponent({
   name: 'SubTextItem',
@@ -25,7 +26,8 @@ export default defineComponent({
   },
   emits: ['saveChanged'],
   setup(props, {emit}) {
-    const {visible} = toRefs(props)
+    const {visible, dirItem} = toRefs(props)
+    const i18nMainStore = useI18nMainStore()
     const {
       isLoading,
       currentItem,
@@ -36,8 +38,6 @@ export default defineComponent({
       subFilePathArr,
     } = useBatchItem(props)
 
-    // 值是否发生变化
-    const isChanged = ref(false)
     const valueText = ref('')
     const vueMonacoRef = ref()
 
@@ -48,8 +48,17 @@ export default defineComponent({
       }, 100)
     }
 
+    // 值是否发生变化
+    const isChanged = computed(() => {
+      return i18nMainStore.changedLabelMap[dirItem.value.label]
+    })
+
+    const setChanged = (flag: boolean) => {
+      i18nMainStore.changedLabelMap[dirItem.value.label] = flag
+    }
+
     watch(valueText, () => {
-      isChanged.value = true
+      setChanged(true)
     })
     watch(visible, (val) => {
       if (val) {
@@ -69,7 +78,7 @@ export default defineComponent({
     const cleanup = () => {
       valueText.value = ''
       nextTick(() => {
-        isChanged.value = false
+        setChanged(false)
       })
     }
 
@@ -91,7 +100,7 @@ export default defineComponent({
       valueText.value = str as string
 
       await nextTick(() => {
-        isChanged.value = false
+        setChanged(false)
         vueMonacoRef.value?.resize()
       })
     }
@@ -113,7 +122,7 @@ export default defineComponent({
         return
       }
       await handleSaveFile(valueText.value)
-      isChanged.value = false
+      setChanged(false)
       if (isEmit) {
         emit('saveChanged')
       }
@@ -155,6 +164,7 @@ export default defineComponent({
         Save All
       </n-button>
       {{ subFilePathArr.join('/') }}
+      {{ dirItem.label }}
     </div>
     <div class="editor-content-wrap">
       <div class="tip-not-exist" v-if="!currentItem">

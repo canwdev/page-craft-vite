@@ -23,7 +23,7 @@ import {NIcon} from 'naive-ui'
 import {useI18nToolSettingsStore} from '@/store/i18n-tool-settings'
 import I18nToolSettings from '@/components/VueI18nEditTool/I18nToolSettings.vue'
 import {useLocalStorageObject, useLocalStorageString} from '@/hooks/use-local-storage'
-import BatchTextEditor from '@/components/VueI18nEditTool/BatchTextEditor/index.vue'
+import BatchTextEditor from '@/components/VueI18nEditTool/BatchText/index.vue'
 import {useI18nMainStore} from '@/store/i18n-tool-main'
 
 const formatDirTreeItem = (data: any = {}): DirTreeItem => {
