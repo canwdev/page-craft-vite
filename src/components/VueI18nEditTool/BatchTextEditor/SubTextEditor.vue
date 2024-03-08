@@ -28,11 +28,6 @@ export default defineComponent({
       type: String,
       default: '',
     },
-    // 是否为多文件夹模式，如果为否则当作单个文件处理
-    isFoldersMode: {
-      type: Boolean,
-      default: true,
-    },
   },
   emits: ['saveChanged'],
   setup(props, {emit}) {

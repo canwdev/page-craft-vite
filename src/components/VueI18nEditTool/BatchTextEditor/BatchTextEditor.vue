@@ -2,12 +2,11 @@
 import {defineComponent, PropType} from 'vue'
 import {DirTreeItem} from '@/enum/vue-i18n-tool'
 import SubTextEditor from '@/components/VueI18nEditTool/BatchTextEditor/SubTextEditor.vue'
-import BatchTranslateItem from '@/components/VueI18nEditTool/Batch/BatchTranslateItem.vue'
 import {useBatchWrapper} from '@/components/VueI18nEditTool/Batch/batch-hooks'
 
 export default defineComponent({
   name: 'BatchTextEditor',
-  components: {BatchTranslateItem, SubTextEditor},
+  components: {SubTextEditor},
   props: {
     dirTree: {
       type: Array as PropType<DirTreeItem[]>,
@@ -25,14 +24,8 @@ export default defineComponent({
       type: String,
       default: '',
     },
-    isFoldersMode: {
-      type: Boolean,
-      default: true,
-    },
   },
   setup(props, {emit}) {
-    const {dirTree, isFoldersMode, filePathArr} = toRefs(props)
-
     const {handleSaveChanged, itemsRef, filePathArrFiltered, subFilePathArr} =
       useBatchWrapper(props)
 
@@ -88,7 +81,6 @@ export default defineComponent({
         :dir-item="item"
         :file-path-arr="subFilePathArr"
         :translate-path="translatePath"
-        :is-folders-mode="isFoldersMode"
         :visible="item.key === currentTab"
         @saveChanged="handleSaveChanged"
       />

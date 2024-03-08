@@ -1,7 +1,17 @@
-type IState = {}
+import {DirTreeItem} from '@/enum/vue-i18n-tool'
 
-export const useI18nToolSettingsStore = defineStore('i18nToolMain', {
+type IState = {
+  dirTree: DirTreeItem[]
+  filePathArr: string[]
+  translatePath: string
+}
+
+export const useI18nMainStore = defineStore('i18nToolMain', {
   state: (): IState => {
-    return {}
+    return {
+      dirTree: [],
+      filePathArr: [],
+      translatePath: '',
+    }
   },
 })

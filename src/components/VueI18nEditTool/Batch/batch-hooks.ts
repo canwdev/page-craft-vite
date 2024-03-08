@@ -1,13 +1,15 @@
 import {DirTreeItem} from '@/enum/vue-i18n-tool'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {useI18n} from 'vue-i18n'
+import {useI18nToolSettingsStore} from '@/store/i18n-tool-settings'
 
 /**
  * 批处理管理器hook
  * @param props
  */
 export const useBatchWrapper = (props) => {
-  const {dirTree, isFoldersMode, filePathArr} = toRefs(props)
+  const i18nSetStore = useI18nToolSettingsStore()
+  const {dirTree, filePathArr} = toRefs(props)
   const itemsRef = ref()
 
   const handleSaveChanged = async () => {
@@ -28,14 +30,14 @@ export const useBatchWrapper = (props) => {
   })
 
   const filePathArrFiltered = computed(() => {
-    if (isFoldersMode.value) {
+    if (i18nSetStore.isFoldersMode) {
       return dirTree.value.filter((i) => i.kind === 'directory')
     }
     return dirTree.value
   })
 
   const subFilePathArr = computed(() => {
-    if (isFoldersMode.value) {
+    if (i18nSetStore.isFoldersMode) {
       return filePathArr.value.slice(1)
     }
     return filePathArr.value
@@ -101,9 +103,10 @@ async function createFile(
  * @param props
  */
 export const useBatchItem = (props) => {
+  const i18nSetStore = useI18nToolSettingsStore()
   const {t: $t} = useI18n()
   const isLoading = ref(false)
-  const {dirItem, filePathArr, translatePath, isFoldersMode} = toRefs(props)
+  const {dirItem, filePathArr, translatePath} = toRefs(props)
   const findNode = (): DirTreeItem | null => {
     let find: DirTreeItem | null = null
     const recursiveFindItem = (children: DirTreeItem[] | null, dirArr: string[], depth = 0) => {
@@ -135,7 +138,7 @@ export const useBatchItem = (props) => {
   }
 
   const currentItem = computed(() => {
-    if (!isFoldersMode.value) {
+    if (!i18nSetStore.isFoldersMode) {
       // 单文件读取
       return dirItem.value
     }

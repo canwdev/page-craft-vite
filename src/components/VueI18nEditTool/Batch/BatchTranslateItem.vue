@@ -5,19 +5,13 @@ import _get from 'lodash/get'
 import _set from 'lodash/set'
 import _unset from 'lodash/unset'
 import {handleReadSelectedFile} from '@/utils/exporter'
-import {
-  ClipboardPaste20Regular,
-  Delete20Regular,
-  DocumentEdit20Regular,
-  SaveMultiple20Regular,
-} from '@vicons/fluent'
+import {ClipboardPaste20Regular, Delete20Regular, SaveMultiple20Regular} from '@vicons/fluent'
 import DialogTextEdit from '@/components/CommonUI/DialogTextEdit.vue'
 import {useI18n} from 'vue-i18n'
 import {readClipboardData} from '@/utils'
 import {textConvertAdvanced} from '@/components/VueI18nEditTool/copy-enum'
 import {useI18nToolSettingsStore} from '@/store/i18n-tool-settings'
 import FieldEdit from '@/components/VueI18nEditTool/Single/FieldEdit.vue'
-import {useAutoPasteConvert} from '@/components/VueI18nEditTool/Single/use-auto-paste-convert'
 import {useBatchItem} from '@/components/VueI18nEditTool/Batch/batch-hooks'
 // import countryCodeEmoji from '@/utils/country-code-emoji'
 
@@ -27,7 +21,6 @@ export default defineComponent({
     Delete20Regular,
     FieldEdit,
     DialogTextEdit,
-    DocumentEdit20Regular,
     SaveMultiple20Regular,
     ClipboardPaste20Regular,
   },
@@ -46,17 +39,12 @@ export default defineComponent({
       type: String,
       default: '',
     },
-    // 是否为多文件夹模式，如果为否则当作单个文件处理
-    isFoldersMode: {
-      type: Boolean,
-      default: true,
-    },
   },
   emits: ['saveChanged'],
   setup(props, {emit}) {
     const {t: $t} = useI18n()
     const i18nSetStore = useI18nToolSettingsStore()
-    const {dirItem, filePathArr, translatePath, isFoldersMode} = toRefs(props)
+    const {dirItem, filePathArr, translatePath} = toRefs(props)
 
     const {isLoading, currentItem, handleSaveFile, isLocalCreated, handleCreateFile, handleReload} =
       useBatchItem(props)
@@ -247,7 +235,7 @@ export default defineComponent({
       <div>
         <span class="card-title">
           <span class="text-red">{{ dirItem.label }}</span>
-          <template v-if="isFoldersMode">
+          <template v-if="i18nSetStore.isFoldersMode">
             {{ '/' + filePathArr.join('/') }}
           </template>
         </span>
