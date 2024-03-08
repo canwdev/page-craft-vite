@@ -40,11 +40,11 @@
     box-shadow: $box_shadow !important;
 
     .vp-window-content {
-      .page-craft-title-bar {
+      .vp-window-title-bar {
         background: linear-gradient(45deg, #808080, #C0C0C0);
         color: #D4D0C8;
         padding: 1px 1px 1px 2px;
-        .page-craft-title-bar-text {
+        .vp-window-title-bar-text {
           font-size: 12px;
         }
       }
@@ -82,7 +82,7 @@
 
     &._active {
       .vp-window-content {
-        .page-craft-title-bar {
+        .vp-window-title-bar {
           color: white;
           //background: linear-gradient(45deg, #0A246A, #A6CAF0);
           background: linear-gradient(45deg, $primary, $primary_opacity);

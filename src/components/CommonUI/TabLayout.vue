@@ -46,7 +46,7 @@ export default defineComponent({
           :key="item.value"
           :class="{active: item.value === mValue}"
           @click="mValue = item.value"
-          class="list-item"
+          class="list-item vp-button"
           :title="item.title"
         >
           <VueRender v-if="item.render" :render-fn="item.render"></VueRender>

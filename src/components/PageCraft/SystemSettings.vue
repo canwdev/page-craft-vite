@@ -4,13 +4,14 @@ import OptionUI from '@/components/CommonUI/OptionUI/index.vue'
 import {useI18n} from 'vue-i18n'
 import {StOptionItem, StOptionType} from '@/components/CommonUI/OptionUI/enum'
 import {useSettingsStore} from '@/store/settings'
-import {customThemeOptions, CustomThemeType, ldThemeOptions} from '@/enum/settings'
+import {ldThemeOptions} from '@/enum/settings'
 import {NSpace, NSwitch, NButton} from 'naive-ui'
 import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {RouterLink} from 'vue-router'
 import {Settings20Filled} from '@vicons/fluent'
 import {formatSiteTitle} from '@/router/router-utils'
+import {customThemeOptions, CustomThemeType} from '@/components/CommonUI/ViewPortWindow/enum'
 
 const getWallpaperText = () => {
   const list = [{label: 'Bing', url: 'https://api.dujin.org/bing/1920.php'}]

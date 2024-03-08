@@ -3,6 +3,11 @@
 @import "./theme-win8";
 @import "./theme-classic";
 
+
+@import "./theme-xp/index";
+@import "./theme-vista/index";
+@import "./theme-98/index";
+
 .disable-animation {
   * {
     transition: none !important;

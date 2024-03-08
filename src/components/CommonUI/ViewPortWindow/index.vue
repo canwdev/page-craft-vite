@@ -225,8 +225,8 @@ export default defineComponent({
       ref="winElRef"
     >
       <div class="vp-window-content">
-        <div ref="titleBarRef" class="page-craft-title-bar" @dblclick="$emit('onTitleBarDbclick')">
-          <div class="page-craft-title-bar-text text-overflow">
+        <div ref="titleBarRef" class="vp-window-title-bar" @dblclick="$emit('onTitleBarDbclick')">
+          <div class="vp-window-title-bar-text text-overflow">
             <slot name="titleBarLeft"></slot>
           </div>
           <div ref="titleBarButtonsRef" class="vp-window-controls">
@@ -239,7 +239,12 @@ export default defineComponent({
                 </n-icon>
               </button>
 
-              <button v-if="showClose" :title="`Close`" @click="handleClose" class="_danger">
+              <button
+                v-if="showClose"
+                :title="`Close`"
+                @click="handleClose"
+                class="_danger is-close"
+              >
                 <n-icon size="20"><Dismiss20Regular /></n-icon>
               </button>
             </slot>
@@ -279,7 +284,7 @@ export default defineComponent({
     box-shadow: none !important;
     border-radius: 0 !important;
     .vp-window-content {
-      .page-craft-title-bar {
+      .vp-window-title-bar {
         margin-left: unset;
         margin-right: unset;
       }
@@ -298,7 +303,7 @@ export default defineComponent({
     display: flex;
     flex-direction: column;
 
-    .page-craft-title-bar {
+    .vp-window-title-bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -310,7 +315,7 @@ export default defineComponent({
         pointer-events: none;
       }
 
-      .page-craft-title-bar-text {
+      .vp-window-title-bar-text {
         display: flex;
         align-items: center;
         gap: 4px;

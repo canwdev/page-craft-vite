@@ -3,7 +3,7 @@ import {defineComponent} from 'vue'
 import ToolBar from '@/components/PageCraft/ToolBar/index.vue'
 import MainPlayground from '@/components/PageCraft/MainPlayground/index.vue'
 import {useSettingsStore} from '@/store/settings'
-import {customThemeOptions, CustomThemeType, ldThemeOptions} from '@/enum/settings'
+import {ldThemeOptions} from '@/enum/settings'
 import {handleExportStyle} from '@/utils/exporter'
 import {formatCss} from '@/utils/formater'
 import {sassToCSS} from '@/utils/css'
@@ -16,6 +16,7 @@ import {useOpenCloseSound, useSfxBell} from '@/hooks/use-sfx'
 import IframeBrowser from '@/components/IframeBrowser/index.vue'
 import BackgroundLayer from '@/components/PageCraft/BackgroundLayer/index.vue'
 import {useMainStore} from '@/store/main'
+import {customThemeOptions, CustomThemeType} from '@/components/CommonUI/ViewPortWindow/enum'
 
 export default defineComponent({
   name: 'CraftPage',
