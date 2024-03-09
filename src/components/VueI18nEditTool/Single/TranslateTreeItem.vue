@@ -171,7 +171,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="vp-panel translate-tree-item" v-if="item" :class="{isKeyDuplicated}">
+  <div class="vp-panel vp-window-panel translate-tree-item" v-if="item" :class="{isKeyDuplicated}">
     <div class="group-header">
       <template v-if="isKeyDuplicated">
         <n-tooltip trigger="hover">

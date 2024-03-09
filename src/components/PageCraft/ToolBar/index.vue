@@ -180,7 +180,7 @@ export default defineComponent({
       @onItemClick="setCurrentToolItem"
     />
 
-    <div ref="toolbarRef" class="page-craft-enhanced-toolbar vp-panel">
+    <div ref="toolbarRef" class="page-craft-enhanced-toolbar vp-panel vp-window-panel _panel-bg">
       <div class="page-craft-enhanced-toolbar-above">
         <n-space size="small">
           <portal-target name="indicatorBarTeleportDest">

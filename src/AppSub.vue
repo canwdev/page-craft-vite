@@ -5,12 +5,12 @@ import DialogTextTransformer from '@/components/VueI18nEditTool/DialogTextTransf
 import {formatI18nKey} from '@/enum/vue-i18n-tool'
 import {textConvertAdvanced, textConvertMultipleLine} from '@/components/VueI18nEditTool/copy-enum'
 import {handleExportFile} from '@/utils/exporter'
-import QuickLaunch from '@/components/QuickLaunch/QuickLaunch.vue'
+import QuickLaunchWindow from '@/components/QuickLaunch/QuickLaunchWindow.vue'
 
 export default defineComponent({
   name: 'AppSub',
   components: {
-    QuickLaunch,
+    QuickLaunchWindow,
     SystemSettings: defineAsyncComponent(() => import('@/components/PageCraft/SystemSettings.vue')),
     DialogTextTransformer,
     StylusToolsDialog: defineAsyncComponent(
@@ -44,5 +44,5 @@ export default defineComponent({
   <StylusToolsDialog v-model:visible="mainStore.isShowStylusTools" />
   <DialogTextTransformer v-model:visible="mainStore.isShowTextTransformer" />
   <SystemSettings v-model:visible="mainStore.isShowSettings" />
-  <QuickLaunch v-model:visible="mainStore.isShowQuickLaunch" />
+  <QuickLaunchWindow v-model:visible="mainStore.isShowQuickLaunch" />
 </template>
