@@ -482,5 +482,9 @@ export default defineComponent({
     z-index: 1;
     padding: 5px 5px 5px 10px;
   }
+
+  .quick-options {
+    max-width: 300px;
+  }
 }
 </style>
