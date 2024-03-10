@@ -3,9 +3,11 @@ import {defineComponent, PropType} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {QuickOptionItem} from './enum'
 import {onClickOutside, onKeyStroke} from '@vueuse/core'
+import VueRender from '@/components/CommonUI/OptionUI/Tools/VueRender.vue'
 
 export default defineComponent({
   name: 'QuickOptions',
+  components: {VueRender},
   props: {
     visible: {
       type: Boolean,
@@ -30,6 +32,7 @@ export default defineComponent({
       default: true,
     },
   },
+  emits: ['onClose'],
   setup(props, {emit}) {
     const {options, isStatic, autoFocus} = toRefs(props)
     const mVisible = useModelWrapper(props, emit, 'visible')
@@ -172,6 +175,16 @@ export default defineComponent({
       {{ title }}
       <button class="btn-no-style" @click="mVisible = false">×</button>
     </div>
+
+    <div v-if="menuStack.length" class="option-item _back clickable" @click="handleBack">
+      <div class="index-wrap">
+        <div style="transform: scale(0.7)">
+          <div class="css-arrow left"></div>
+        </div>
+      </div>
+      Back (q)
+    </div>
+
     <div
       class="option-item"
       v-for="(item, index) in mOptions"
@@ -185,7 +198,13 @@ export default defineComponent({
       <div class="index-wrap" v-if="index < 9">
         <span>{{ index + 1 }}</span>
       </div>
+      <div class="item-icon" v-if="item.icon">
+        <img :src="item.icon" alt="icon" />
+      </div>
       <div class="item-content" v-if="item.html" v-html="item.html"></div>
+      <div class="item-content" v-else-if="item.render">
+        <VueRender :render-fn="item.render" />
+      </div>
       <div class="item-content" v-else>
         {{ item.label }}
       </div>
@@ -240,6 +259,9 @@ export default defineComponent({
     box-sizing: border-box;
     border-bottom: 1px solid $color_border;
     transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 
     &._back {
       padding: 2px 24px;
@@ -254,6 +276,16 @@ export default defineComponent({
       font-size: 12px;
       span {
         opacity: 0.7;
+      }
+    }
+
+    .item-icon {
+      display: inline-flex;
+      width: 24px;
+      height: 24px;
+      img {
+        width: 100%;
+        height: 100%;
       }
     }
 

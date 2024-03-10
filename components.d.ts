@@ -76,6 +76,7 @@ declare module '@vue/runtime-core' {
     OptionUI: typeof import('./src/components/CommonUI/OptionUI/index.vue')['default']
     PopFloat: typeof import('./src/components/PageCraft/DomPreview/PopFloat.vue')['default']
     PreviewWindow: typeof import('./src/components/PageCraft/DomPreview/PreviewWindow.vue')['default']
+    QrCodeDisplay: typeof import('./src/components/QuickLaunch/q-logics/qr-code/QrCodeDisplay.vue')['default']
     QuickLaunch: typeof import('./src/components/QuickLaunch/index.vue')['default']
     QuickLaunchWindow: typeof import('./src/components/QuickLaunch/QuickLaunchWindow.vue')['default']
     QuickOptions: typeof import('./src/components/CommonUI/QuickOptions/index.vue')['default']
