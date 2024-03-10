@@ -22,9 +22,10 @@ import {Document20Regular, Folder20Regular} from '@vicons/fluent'
 import {NIcon} from 'naive-ui'
 import {useI18nToolSettingsStore} from '@/store/i18n-tool-settings'
 import I18nToolSettings from '@/components/VueI18nEditTool/I18nToolSettings.vue'
-import {useLocalStorageObject, useLocalStorageString} from '@/hooks/use-local-storage'
 import BatchTextEditor from '@/components/VueI18nEditTool/BatchText/index.vue'
 import {useI18nMainStore} from '@/store/i18n-tool-main'
+import {useStorage} from '@vueuse/core'
+import TabLayout from '@/components/CommonUI/TabLayout.vue'
 
 const formatDirTreeItem = (data: any = {}): DirTreeItem => {
   return {
@@ -69,6 +70,7 @@ const editModeOptions = [
 export default defineComponent({
   name: 'VueI18nBatchTool',
   components: {
+    TabLayout,
     BatchTextEditor,
     I18nToolSettings,
     TranslateTreeItem,
@@ -83,7 +85,7 @@ export default defineComponent({
     const isLoading = ref(false)
 
     // 保存手动展开的文件夹keys
-    const expandedKeys = useLocalStorageObject('vue_i18n_dir_tool_expanded_keys', [])
+    const expandedKeys = useStorage('vue_i18n_dir_tool_expanded_keys', [])
 
     const isValidDir = (name: string) => {
       return !i18nSetStore.ignoreFoldersMap[name]
@@ -255,7 +257,7 @@ export default defineComponent({
       }
     }
 
-    const editMode = useLocalStorageString('vue_i18n_dir_tool_edit_mode', EditMode.BATCH)
+    const editMode = useStorage('vue_i18n_dir_tool_edit_mode', EditMode.BATCH)
 
     const translateTreeRoot = ref<ITranslateTreeItem[]>([formatTranslateTreeItem()])
     const updateGuiTranslateTree = () => {
@@ -402,7 +404,7 @@ export default defineComponent({
       <DropZone position-fixed v-show="showDropzone" :text="$t('msgs.drag_folder_here')" />
     </transition>
 
-    <n-card size="small">
+    <div class="vp-panel navbar-wrap">
       <n-page-header subtitle="" @back="$router.push({name: 'HomePage'})">
         <template #title>{{ metaTitle }}</template>
         <template #avatar> <n-avatar :src="iconTranslate" style="background: none" /> </template>
@@ -412,8 +414,8 @@ export default defineComponent({
               {{ $t('common.settings') }}
             </n-button>
 
-            <n-button secondary size="small" @click="mainStore.isShowTextTransformer = true">
-              {{ $t('common.text_transformer') }}
+            <n-button secondary size="small" @click="mainStore.isShowQuickLaunch = true">
+              {{ $t('common.tools') }}
             </n-button>
 
             <n-button
@@ -426,14 +428,8 @@ export default defineComponent({
               {{ $t('actions.save_changes') }}
             </n-button>
 
-            {{ $t('common.edit_mode') }}:<n-radio-group size="small" v-model:value="editMode">
-              <n-radio-button
-                v-for="item in editModeOptions"
-                :key="item.value"
-                :value="item.value"
-                :label="item.label"
-              />
-            </n-radio-group>
+            {{ $t('common.edit_mode') }}:
+            <TabLayout v-model="editMode" horizontal :tab-list="editModeOptions" />
 
             <n-popconfirm v-if="dirHandle" @positive-click="handleCloseDir()">
               <template #trigger>
@@ -457,7 +453,7 @@ export default defineComponent({
           </n-space>
         </template>
       </n-page-header>
-    </n-card>
+    </div>
 
     <div class="_container">
       <n-layout style="height: 100%" has-sider>

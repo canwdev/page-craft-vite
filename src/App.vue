@@ -5,7 +5,8 @@ import AppSub from '@/AppSub.vue'
 import {useSettingsStore} from '@/store/settings'
 import {isDev} from '@/enum'
 import {useMainStore} from '@/store/main'
-import {CustomThemeType} from '@/components/CommonUI/ViewPortWindow/enum'
+import {useEventListener} from '@vueuse/core'
+
 export default defineComponent({
   components: {
     AppSub,
@@ -27,7 +28,7 @@ export default defineComponent({
       return s
     })
 
-    const listenShortcuts = (event) => {
+    useEventListener(document, 'keydown', (event) => {
       const key = event.key.toLowerCase()
       if (event.ctrlKey && key === 'r' && !event.shiftKey && !isDev) {
         event.preventDefault()
@@ -35,13 +36,6 @@ export default defineComponent({
       } else if (event.altKey && key === 'r') {
         mainStore.isShowQuickLaunch = !mainStore.isShowQuickLaunch
       }
-    }
-
-    onMounted(() => {
-      document.addEventListener('keydown', listenShortcuts)
-    })
-    onBeforeUnmount(() => {
-      document.removeEventListener('keydown', listenShortcuts)
     })
 
     return {

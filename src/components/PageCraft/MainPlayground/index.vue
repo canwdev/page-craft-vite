@@ -16,10 +16,10 @@ import {
   QuestionCircle20Regular,
 } from '@vicons/fluent'
 import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
-import {useBroadcastMessage} from '@/components/PageCraft/MainPlayground/hooks/use-broadcast-messae'
 import {usePlaygroundStyle} from '@/components/PageCraft/MainPlayground/hooks/use-playground-style'
 import {WebviewWindow} from '@tauri-apps/api/window'
 import {useRouter} from 'vue-router'
+import {useEventListener} from '@vueuse/core'
 
 export default defineComponent({
   name: 'MainPlayground',
@@ -105,7 +105,8 @@ export default defineComponent({
         handleUndo()
       }
     }
-    const listenGlobalShortcuts = (event) => {
+
+    useEventListener(document, 'keydown', (event) => {
       // console.log(event)
       const key = event.key.toLowerCase()
       if (event.altKey && key === 'x') {
@@ -113,13 +114,6 @@ export default defineComponent({
       } else if (event.altKey && key === 'z') {
         indicatorOptions.enableDevHelpClass = !indicatorOptions.enableDevHelpClass
       }
-    }
-
-    onMounted(() => {
-      document.addEventListener('keydown', listenGlobalShortcuts)
-    })
-    onBeforeUnmount(() => {
-      document.removeEventListener('keydown', listenGlobalShortcuts)
     })
 
     usePlaygroundStyle()

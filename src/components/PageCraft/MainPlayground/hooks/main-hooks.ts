@@ -18,7 +18,7 @@ import {useSettingsStore} from '@/store/settings'
 import {useI18n} from 'vue-i18n'
 import {useBeforeUnload, useSaveShortcut} from '@/hooks/use-beforeunload'
 import {useSfxBass, useSfxBell, useSfxFill, useSfxGuitar} from '@/hooks/use-sfx'
-import {useBroadcastMessage} from '@/components/PageCraft/MainPlayground/hooks/use-broadcast-messae'
+import {useBroadcastMessage} from '@/hooks/use-broadcast-messae'
 
 export const useMcMain = (options) => {
   const {t: $t} = useI18n()

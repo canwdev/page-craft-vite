@@ -9,7 +9,6 @@ import {useFileDrop} from '@/hooks/use-file-drop'
 import {useMetaTitle} from '@/hooks/use-meta'
 import {Save20Regular} from '@vicons/fluent'
 import {useBeforeUnload, useSaveShortcut} from '@/hooks/use-beforeunload'
-import dynamicLoadScript from '@/utils/dynamic-load-script'
 import {useMainStore} from '@/store/main'
 import {useI18n} from 'vue-i18n'
 import I18nToolSettings from '@/components/VueI18nEditTool/I18nToolSettings.vue'
@@ -208,10 +207,13 @@ export default defineComponent({
       </div>
     </transition>
     <transition name="mc-fade">
-      <DropZone position-fixed v-show="showDropzone" :text="$t('msgs.drag_folder_here')" />
+      <DropZone position-fixed v-show="showDropzone" :text="$t('msgs.drag_file_here')" />
     </transition>
 
-    <n-card size="small" style="position: sticky; top: 0; z-index: 100; margin-bottom: 10px">
+    <div
+      class="vp-panel navbar-wrap"
+      style="position: sticky; top: 0; z-index: 100; margin-bottom: 10px"
+    >
       <n-page-header subtitle="" @back="$router.push({name: 'HomePage'})">
         <template #title>{{ metaTitle }}</template>
         <template #avatar> <n-avatar :src="iconTranslate" style="background: none" /> </template>
@@ -222,7 +224,7 @@ export default defineComponent({
             </n-button>
 
             <n-button secondary size="small" @click="mainStore.isShowTextTransformer = true">
-              {{ $t('common.text_transformer') }}
+              {{ $t('common.tools') }}
             </n-button>
 
             <n-popconfirm v-if="fileHandle" @positive-click="handleCloseFile">
@@ -257,7 +259,7 @@ export default defineComponent({
           </n-space>
         </template>
       </n-page-header>
-    </n-card>
+    </div>
 
     <div class="_container">
       <TranslateTreeItem

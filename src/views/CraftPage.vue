@@ -17,6 +17,7 @@ import IframeBrowser from '@/components/IframeBrowser/index.vue'
 import BackgroundLayer from '@/components/PageCraft/BackgroundLayer/index.vue'
 import {useMainStore} from '@/store/main'
 import {customThemeOptions, CustomThemeType} from '@/components/CommonUI/ViewPortWindow/enum'
+import {useEventListener} from '@vueuse/core'
 
 export default defineComponent({
   name: 'CraftPage',
@@ -32,25 +33,6 @@ export default defineComponent({
     const {t: $t} = useI18n()
     const settingsStore = useSettingsStore()
     const mainStore = useMainStore()
-
-    const listenShortcuts = (event) => {
-      const key = event.key.toLowerCase()
-      if (event.altKey && key === 'a') {
-        settingsStore.showInventory = !settingsStore.showInventory
-      } else if (event.altKey && key === 's') {
-        settingsStore.showStyleEditor = !settingsStore.showStyleEditor
-      } else if (event.altKey && key === 'w') {
-        mainStore.isShowSettings = !mainStore.isShowSettings
-      } else if (event.altKey && key === 'i') {
-        settingsStore.isShowIframeBrowser = !settingsStore.isShowIframeBrowser
-      } else if (event.altKey && key === '1') {
-        const el = document.querySelector('.sl-css-class-input input') as HTMLInputElement | null
-        el && el.focus()
-      } else if (event.altKey && key === '2') {
-        const el = document.querySelector('.sl-inner-html-input input') as HTMLInputElement | null
-        el && el.focus()
-      }
-    }
 
     const {play: playSfxBell} = useSfxBell()
     useOpenCloseSound(() => settingsStore.showStyleEditor)
@@ -69,12 +51,23 @@ export default defineComponent({
         })
       }
     )
-
-    onMounted(() => {
-      document.addEventListener('keydown', listenShortcuts)
-    })
-    onBeforeUnmount(() => {
-      document.removeEventListener('keydown', listenShortcuts)
+    useEventListener(document, 'keydown', (event) => {
+      const key = event.key.toLowerCase()
+      if (event.altKey && key === 'a') {
+        settingsStore.showInventory = !settingsStore.showInventory
+      } else if (event.altKey && key === 's') {
+        settingsStore.showStyleEditor = !settingsStore.showStyleEditor
+      } else if (event.altKey && key === 'w') {
+        mainStore.isShowSettings = !mainStore.isShowSettings
+      } else if (event.altKey && key === 'i') {
+        settingsStore.isShowIframeBrowser = !settingsStore.isShowIframeBrowser
+      } else if (event.altKey && key === '1') {
+        const el = document.querySelector('.sl-css-class-input input') as HTMLInputElement | null
+        el && el.focus()
+      } else if (event.altKey && key === '2') {
+        const el = document.querySelector('.sl-inner-html-input input') as HTMLInputElement | null
+        el && el.focus()
+      }
     })
 
     const {loadCurCompStyle} = useCompStorage()

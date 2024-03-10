@@ -132,6 +132,7 @@
     "confirm_reload_files": "Confirm reload files content? Unsaved contents will be lost.",
     "please_select_a_json": "Please select a json file first",
     "recommended_i18n_fol": "Recommended i18n folder structure example",
+    "drag_file_here": "Drag file here",
     "drag_folder_here": "Drag folder here",
     "load_demo_this_will": "Load Demo? This will override editing content."
   }

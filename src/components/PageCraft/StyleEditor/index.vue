@@ -14,8 +14,6 @@ import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
 
 import {useSettingsStore} from '@/store/settings'
 import {
-  ArrowMaximize20Regular,
-  ArrowMinimize20Regular,
   Copy20Regular,
   CursorClick20Regular,
   CursorHover20Regular,
@@ -28,12 +26,11 @@ import {useOpenCloseSelect, useSfxBell, useSfxBrush, useSfxFill} from '@/hooks/u
 import TabLayout from '@/components/CommonUI/TabLayout.vue'
 import monaco from '@/components/CommonUI/VueMonaco/monaco-helper'
 import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
-import {useLocalStorageString} from '@/hooks/use-local-storage'
 import {useGlobalStyle} from '@/hooks/use-global-theme'
-import {useBroadcastMessage} from '@/components/PageCraft/MainPlayground/hooks/use-broadcast-messae'
 import {usePlaygroundStore} from '@/store/playground'
 import QuickOptions from '@/components/CommonUI/QuickOptions/index.vue'
 import {QuickOptionItem} from '@/components/CommonUI/QuickOptions/enum'
+import {useEventListener, useStorage} from '@vueuse/core'
 
 export default defineComponent({
   name: 'StyleEditor',
@@ -117,7 +114,7 @@ export default defineComponent({
 
     const {globalStyleText} = useGlobalStyle()
 
-    const variableStyleCode = useLocalStorageString(LsKeys.VARIABLES_STYLE, '')
+    const variableStyleCode = useStorage(LsKeys.VARIABLES_STYLE, '')
     watch(variableStyleCode, () => {
       handleUpdateStyle()
     })
@@ -300,7 +297,7 @@ export default defineComponent({
       }
     }
 
-    const listenGlobalShortcuts = (event) => {
+    useEventListener(document, 'keydown', (event) => {
       if (!mVisible.value) {
         return
       }
@@ -311,13 +308,6 @@ export default defineComponent({
       } else if (event.altKey && key === 'q') {
         isShowQuickOptions.value = !isShowQuickOptions.value
       }
-    }
-
-    onMounted(() => {
-      document.addEventListener('keydown', listenGlobalShortcuts)
-    })
-    onBeforeUnmount(() => {
-      document.removeEventListener('keydown', listenGlobalShortcuts)
     })
 
     // @ts-ignore

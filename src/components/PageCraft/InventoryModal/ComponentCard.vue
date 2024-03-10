@@ -221,6 +221,7 @@ export default defineComponent({
       image-rendering: pixelated;
     }
     .item-text-c {
+      text-align: left;
       color: inherit;
       font-weight: 500;
       white-space: nowrap;

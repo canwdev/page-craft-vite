@@ -7,7 +7,6 @@ import {getSystemIsDarkMode, hexToRgb} from '@/utils/color'
 import {GlobalThemeOverrides} from 'naive-ui'
 import {sassToCSS} from '@/utils/css'
 import {usePlaygroundStore} from '@/store/playground'
-import {useBroadcastMessage} from '@/components/PageCraft/MainPlayground/hooks/use-broadcast-messae'
 import {CustomThemeType} from '@/components/CommonUI/ViewPortWindow/enum'
 
 export const useGlobalTheme = () => {
