@@ -4,6 +4,7 @@ import {qLogicQrCode} from './qr-code'
 import {Ref} from 'vue'
 import {qLogicTextConvert} from '../q-logics-mc'
 import {qLogicStringManipulation} from './string-manipulation'
+import {qLogicSpeechSynthesis} from '@/components/QuickLaunch/q-logics/speech-synthesis'
 
 export const useQLogics = (qlOptionsRef) => {
   const filteredOptions = ref<QuickOptionItem[]>([])
@@ -26,6 +27,7 @@ export const useQLogics = (qlOptionsRef) => {
       qLogicStringManipulation(valRef),
       qLogicBase64(valRef),
       qLogicQrCode(valRef),
+      qLogicSpeechSynthesis(valRef),
     ]
     const filterableOptions = [...qlOptionsRef.value, qLogicEyeDrop]
 
