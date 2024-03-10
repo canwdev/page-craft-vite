@@ -46,6 +46,7 @@ export default defineComponent({
     :show-close="showClose"
     wid="ql"
     class="quick-launch-window"
+    allow-maximum
   >
     <template #titleBarLeft>
       <img src="@/assets/textures/enchanted_book.png" alt="icon" />

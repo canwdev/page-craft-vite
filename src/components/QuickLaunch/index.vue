@@ -4,13 +4,13 @@ import {useCommonTools} from './use-common-tools'
 import {useRoute, useRouter} from 'vue-router'
 import QuickOptions from '@/components/CommonUI/QuickOptions/index.vue'
 import {useQLogics} from './q-logics'
+import {useTextareaAutosize} from '@vueuse/core'
 
 export default defineComponent({
   name: 'QuickLaunch',
   components: {QuickOptions},
   setup(props, {emit}) {
     const route = useRoute()
-    const inputRef = ref()
     const qRef = ref()
     const focus = () => {
       inputRef.value.focus()
@@ -19,7 +19,7 @@ export default defineComponent({
       focus()
     })
 
-    const anyText = ref('')
+    const {textarea: inputRef, input: anyText} = useTextareaAutosize()
 
     const {qlOptions} = useCommonTools()
     const {filteredOptions, handleSearch} = useQLogics(qlOptions)
@@ -81,7 +81,10 @@ export default defineComponent({
   flex-direction: column;
   height: 100%;
   & > textarea {
+    box-sizing: border-box;
+    width: 100% !important;
     border-radius: 0 !important;
+    max-height: 150px !important;
   }
   .quick-options {
     flex: 1;
