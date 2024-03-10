@@ -18,7 +18,7 @@ export default defineComponent({
       default: false,
     },
   },
-  emits: ['onSave'],
+  emits: ['onSave', 'update:visible'],
   setup(props, {emit}) {
     const mVisible = useModelWrapper(props, emit, 'visible')
     const isEditInnerHTML = ref(true)

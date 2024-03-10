@@ -16,7 +16,7 @@ export default defineComponent({
       default: null,
     },
   },
-  emits: ['onSave', 'onCancel'],
+  emits: ['onSave', 'onCancel', 'update:visible'],
   setup(props, {emit}) {
     const {src} = toRefs(props)
     const mVisible = useModelWrapper(props, emit, 'visible')

@@ -21,6 +21,7 @@ export default defineComponent({
       default: false,
     },
   },
+  emits: ['update:visible'],
   setup(props, {emit}) {
     const {t: $t} = useI18n()
     const mVisible = useModelWrapper(props, emit, 'visible')

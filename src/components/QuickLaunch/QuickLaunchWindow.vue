@@ -1,7 +1,6 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
-import QuickOptions from '@/components/CommonUI/QuickOptions/index.vue'
 import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import QuickLaunch from '@/components/QuickLaunch/index.vue'
@@ -14,7 +13,7 @@ export default defineComponent({
       default: false,
     },
   },
-  components: {QuickLaunch, ViewPortWindow, QuickOptions},
+  components: {QuickLaunch, ViewPortWindow},
   emits: ['update:visible'],
   setup(props, {emit}) {
     const mVisible = useModelWrapper(props, emit, 'visible')

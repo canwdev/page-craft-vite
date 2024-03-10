@@ -6,7 +6,6 @@ import {StOptionItem, StOptionType} from '@/components/CommonUI/OptionUI/enum'
 import {useSettingsStore} from '@/store/settings'
 import {ldThemeOptions} from '@/enum/settings'
 import {NSpace, NSwitch, NButton} from 'naive-ui'
-import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {RouterLink} from 'vue-router'
 import {Settings20Filled} from '@vicons/fluent'
@@ -26,13 +25,14 @@ const getWallpaperText = () => {
 
 export default defineComponent({
   name: 'SystemSettings',
-  components: {VueMonaco, OptionUI, Settings20Filled},
+  components: {OptionUI},
   props: {
     visible: {
       type: Boolean,
       default: false,
     },
   },
+  emits: ['update:visible'],
   setup(props, {emit}) {
     const {t: $t} = useI18n()
     const mVisible = useModelWrapper(props, emit, 'visible')

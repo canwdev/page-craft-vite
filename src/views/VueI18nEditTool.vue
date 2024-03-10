@@ -223,7 +223,7 @@ export default defineComponent({
               {{ $t('common.settings') }}
             </n-button>
 
-            <n-button secondary size="small" @click="mainStore.isShowTextTransformer = true">
+            <n-button secondary size="small" @click="mainStore.isShowQuickLaunch = true">
               {{ $t('common.tools') }}
             </n-button>
 

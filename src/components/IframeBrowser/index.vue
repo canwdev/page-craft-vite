@@ -15,6 +15,7 @@ export default defineComponent({
     },
   },
   components: {ViewPortWindow, ViewDesktopMobile20Regular},
+  emits: ['update:visible'],
   setup(props, {emit}) {
     const router = useRouter()
     const mVisible = useModelWrapper(props, emit, 'visible')

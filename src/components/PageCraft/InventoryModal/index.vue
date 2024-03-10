@@ -71,7 +71,7 @@ export default defineComponent({
       default: false,
     },
   },
-  emits: ['onItemClick'],
+  emits: ['onItemClick', 'update:visible'],
   setup(props, {emit}) {
     const {t: $t} = useI18n()
     const mVisible = useModelWrapper(props, emit, 'visible')
