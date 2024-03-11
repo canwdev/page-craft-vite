@@ -17,6 +17,7 @@ import {LsKeys} from '@/enum/page-craft'
 import {guid} from '@/utils'
 import {QuickOptionItem} from '@/components/CommonUI/QuickOptions/enum'
 import QuickOptions from '@/components/CommonUI/QuickOptions/index.vue'
+import {FileHandleHistory, verifyPermission} from '@/components/VueI18nEditTool/file-history'
 
 const filePickerOptions = {
   types: [
@@ -28,12 +29,6 @@ const filePickerOptions = {
     },
   ],
 }
-
-type FileHandleHistory = {
-  handle: FileSystemFileHandle
-  lastOpened: number
-}
-
 export default defineComponent({
   name: 'VueI18nEditTool',
   components: {
@@ -70,19 +65,21 @@ export default defineComponent({
     }
 
     const appendHistory = (handle: FileSystemFileHandle) => {
-      fileHistory.value.push({
+      console.log(handle)
+      const list = [...fileHistory.value]
+      list.push({
         handle,
         lastOpened: Date.now(),
       })
       // 最多保存5条历史记录，因为无法区分打开的文件是否为同一文件
-      fileHistory.value.splice(0, 5)
+      fileHistory.value = list.slice(0, 5)
     }
 
     const handleSelectFile = async () => {
       // @ts-ignore
       const [handle] = await window.showOpenFilePicker(filePickerOptions)
-      fileHandle.value = handle
       appendHistory(handle)
+      fileHandle.value = handle
       const file = await handle.getFile()
       await handleImport(file)
     }
@@ -97,8 +94,8 @@ export default defineComponent({
           if (item.kind === 'file') {
             const handle = await item.getAsFileSystemHandle()
             if (handle.kind !== 'directory') {
-              fileHandle.value = handle
               appendHistory(handle)
+              fileHandle.value = handle
               const file = await handle.getFile()
               await handleImport(file)
             } else {
@@ -200,6 +197,36 @@ export default defineComponent({
     }
 
     const menuOptions = computed((): QuickOptionItem[] => {
+      const getHistoryOptions = () => {
+        if (!fileHistory.value.length) {
+          return
+        }
+        return [
+          ...fileHistory.value.reverse().map((i) => {
+            const {handle} = i
+            return {
+              label: handle.name,
+              props: {
+                onClick: async () => {
+                  if (await verifyPermission(handle)) {
+                    fileHandle.value = handle
+                    const file = await handle.getFile()
+                    await handleImport(file)
+                  }
+                },
+              },
+            }
+          }),
+          {
+            label: '🧹 Clear History',
+            props: {
+              onClick: () => {
+                fileHistory.value = []
+              },
+            },
+          },
+        ]
+      }
       // @ts-ignore
       return [
         {
@@ -220,28 +247,22 @@ export default defineComponent({
         },
         fileHandle.value
           ? {
-              label: `Close JSON`,
-              props: {
-                onClick: () => {
-                  window.$dialog.warning({
-                    title: 'Confirm close JSON? Unsaved contents will be lost.',
-                    positiveText: $t('actions.ok'),
-                    negativeText: $t('actions.cancel'),
-                    onPositiveClick: () => {
-                      handleCloseFile()
-                    },
-                    onNegativeClick: () => {},
-                  })
+              label: $t('actions.close') + ' JSON',
+              children: [
+                {
+                  label: $t('Confirm close JSON? Unsaved contents will be lost.'),
+                  props: {onClick: handleCloseFile, isBack: true},
                 },
-              },
+              ],
             }
           : {
-              label: $t('actions.open_json'),
+              label: $t('actions.open') + ' JSON',
               props: {
                 onClick: () => {
                   handleSelectFile()
                 },
               },
+              dropdown: getHistoryOptions(),
             },
 
         fileHandle.value
@@ -264,19 +285,9 @@ export default defineComponent({
         },
         {
           label: $t('common.demo'),
-          props: {
-            onClick: () => {
-              window.$dialog.warning({
-                title: $t('msgs.load_demo_this_will'),
-                positiveText: $t('actions.ok'),
-                negativeText: $t('actions.cancel'),
-                onPositiveClick: () => {
-                  loadDemo()
-                },
-                onNegativeClick: () => {},
-              })
-            },
-          },
+          children: [
+            {label: $t('msgs.load_demo_this_will'), props: {onClick: loadDemo, isBack: true}},
+          ],
         },
       ].filter(Boolean)
     })
@@ -328,7 +339,13 @@ export default defineComponent({
         <template #title>{{ metaTitle }}</template>
         <template #avatar> <n-avatar :src="iconTranslate" style="background: none" /> </template>
         <template #extra>
-          <QuickOptions is-static :options="menuOptions" horizontal :auto-focus="false" />
+          <QuickOptions
+            is-static
+            :options="menuOptions"
+            horizontal
+            :auto-focus="false"
+            item-cls="vp-button"
+          />
         </template>
       </n-page-header>
     </div>
@@ -356,6 +373,12 @@ export default defineComponent({
   overflow: auto;
   position: relative;
   scrollbar-width: thin;
+
+  .n-page-header__extra {
+    .quick-options {
+      gap: 8px;
+    }
+  }
 
   .height-placeholder {
     height: 500px;

@@ -392,7 +392,7 @@ export default defineComponent({
                 @click="importFileChooserRef.chooseFile()"
                 size="small"
               >
-                {{ $t('actions.open_excel') }}
+                {{ $t('actions.open') + ' Excel' }}
               </n-button>
 
               <n-button v-else type="primary" size="small" @click="handleCloseFile">

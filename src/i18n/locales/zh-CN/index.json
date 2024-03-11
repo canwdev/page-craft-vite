@@ -90,8 +90,7 @@
     "reload": "重新加载",
     "save_changes": "保存更改",
     "save_as": "另存为",
-    "open_json": "打开 JSON",
-    "open_excel": "打开 Excel"
+    "open": "打开"
   },
   "msgs": {
     "drop_files_here": "将文件拖放到此处",
