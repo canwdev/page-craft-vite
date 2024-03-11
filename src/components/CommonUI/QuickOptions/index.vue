@@ -1,10 +1,13 @@
 <script lang="ts">
-import {defineComponent} from 'vue'
+import {defineComponent, PropType} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {QuickOptionItem} from './enum'
+import {onClickOutside, onKeyStroke} from '@vueuse/core'
+import VueRender from '@/components/CommonUI/OptionUI/Tools/VueRender.vue'
 
 export default defineComponent({
   name: 'QuickOptions',
+  components: {VueRender},
   props: {
     visible: {
       type: Boolean,
@@ -20,32 +23,68 @@ export default defineComponent({
         return []
       },
     },
+    isStatic: {
+      type: Boolean,
+      default: false,
+    },
+    autoFocus: {
+      type: Boolean,
+      default: true,
+    },
   },
+  emits: ['onClose', 'update:visible'],
   setup(props, {emit}) {
-    const {options} = toRefs(props)
+    const {options, isStatic, autoFocus} = toRefs(props)
     const mVisible = useModelWrapper(props, emit, 'visible')
     const quickRootRef = ref()
+
+    // 点击外部隐藏
+    onClickOutside(quickRootRef, (event) => {
+      if (!isStatic.value) {
+        mVisible.value = false
+      }
+    })
+
+    const scrollToIndex = () => {
+      const el = quickRootRef.value.querySelector(`[data-index="${curIndex.value}"]`)
+      nextTick(() => {
+        el && el.scrollIntoView({behavior: 'instant', block: 'center'})
+      })
+    }
 
     const curIndex = ref(0)
     const selectPrev = () => {
       curIndex.value--
       if (curIndex.value < 0) {
-        curIndex.value = mOptions.value.length
+        curIndex.value = mOptions.value.length - 1
       }
+      scrollToIndex()
     }
     const selectNext = () => {
       curIndex.value++
-      if (curIndex.value > mOptions.value.length) {
+      if (curIndex.value > mOptions.value.length - 1) {
         curIndex.value = 0
       }
+      scrollToIndex()
     }
+    const focus = () => {
+      setTimeout(() => {
+        quickRootRef.value.focus()
+      }, 100)
+    }
+
+    onMounted(() => {
+      if (isStatic.value) {
+        if (autoFocus.value) {
+          focus()
+        }
+      }
+    })
 
     watch(mVisible, (val) => {
       if (val) {
         curIndex.value = 0
-        setTimeout(() => {
-          quickRootRef.value.focus()
-        }, 100)
+        focus()
       } else {
         menuStack.value = []
       }
@@ -64,13 +103,17 @@ export default defineComponent({
         menuStack.value.pop()
       } else {
         mVisible.value = false
+        setTimeout(() => {
+          emit('onClose')
+        }, 100)
       }
       curIndex.value = 0
+      scrollToIndex()
     }
 
-    const handleKeyUp = (event) => {
-      // console.log('[handleKeyUp]', event)
-      if (event.key === 'Escape') {
+    const handleKeyPress = (event) => {
+      event.preventDefault()
+      if (event.key === 'Escape' || event.key === 'q') {
         handleBack()
       } else if (event.key === 'ArrowUp') {
         selectPrev()
@@ -102,17 +145,19 @@ export default defineComponent({
     }
 
     const handleKeyEnter = () => {
-      if (curIndex.value === 0) {
-        handleBack()
-        return
-      }
-      const item = mOptions.value[curIndex.value - 1]
+      const item = mOptions.value[curIndex.value]
       handleOptionClick(item)
     }
 
-    const handleOptionClick = (item: QuickOptionItem) => {
-      if (item.children && item.children.length) {
-        menuStack.value.push(item.children)
+    const handleOptionClick = async (item: QuickOptionItem) => {
+      if (item.children) {
+        let subList: QuickOptionItem[] = []
+        if (typeof item.children === 'function') {
+          subList = await item.children()
+        } else if (item.children.length) {
+          subList = item.children
+        }
+        menuStack.value.push(subList)
         curIndex.value = 0
       } else if (item?.props?.onClick) {
         item.props.onClick(item)
@@ -123,8 +168,9 @@ export default defineComponent({
     return {
       mVisible,
       quickRootRef,
+      menuStack,
       curIndex,
-      handleKeyUp,
+      handleKeyPress,
       handleBack,
       mOptions,
       handleOptionClick,
@@ -135,9 +181,10 @@ export default defineComponent({
 
 <template>
   <div
-    v-if="mVisible"
-    class="quick-options vp-panel"
-    @keyup.stop="handleKeyUp"
+    v-if="mVisible || isStatic"
+    class="quick-options vp-panel _scrollbar_mini"
+    :class="{_absolute: !isStatic, _s: isStatic}"
+    @keydown.stop="handleKeyPress"
     tabindex="0"
     ref="quickRootRef"
   >
@@ -145,27 +192,41 @@ export default defineComponent({
       {{ title }}
       <button class="btn-no-style" @click="mVisible = false">×</button>
     </div>
-    <div class="option-item _back" @click="handleBack" :class="{focus: curIndex === 0}">
+
+    <div v-if="menuStack.length" class="option-item _back clickable" @click="handleBack">
       <div class="index-wrap">
         <div style="transform: scale(0.7)">
           <div class="css-arrow left"></div>
         </div>
       </div>
-      Back
+      Back (q)
     </div>
+
     <div
       class="option-item"
       v-for="(item, index) in mOptions"
       :key="index"
       @click="handleOptionClick(item)"
-      :class="{focus: curIndex === index + 1}"
+      :class="{
+        focus: curIndex === index,
+        clickable: item?.props?.onClick || (item.children && item.children),
+      }"
+      :data-index="index"
     >
       <div class="index-wrap" v-if="index < 9">
         <span>{{ index + 1 }}</span>
       </div>
-
-      {{ item.label }}
-      <div v-if="item.children && item.children.length" class="arrow-wrap">
+      <div class="item-icon" v-if="item.icon">
+        <img :src="item.icon" alt="icon" />
+      </div>
+      <div class="item-content" v-if="item.html" v-html="item.html"></div>
+      <div class="item-content" v-else-if="item.render">
+        <VueRender :render-fn="item.render" />
+      </div>
+      <div class="item-content" v-else>
+        {{ item.label }}
+      </div>
+      <div v-if="item.children && item.children" class="arrow-wrap">
         <div class="css-arrow right"></div>
       </div>
     </div>
@@ -174,15 +235,29 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .quick-options {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1000;
-  overflow: hidden;
   &:focus {
     border: 1px solid $primary;
     outline: none;
+    .option-item {
+      &.focus {
+        background-color: $primary_opacity !important;
+      }
+    }
+  }
+
+  &._absolute {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    overflow: hidden;
+  }
+
+  &._s {
+    box-shadow: none;
+    border: none;
+    border-radius: 0;
   }
 
   .option-title {
@@ -200,8 +275,11 @@ export default defineComponent({
     min-width: 120px;
     position: relative;
     box-sizing: border-box;
-    cursor: pointer;
+    border-bottom: 1px solid $color_border;
     transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 
     &._back {
       padding: 2px 24px;
@@ -219,19 +297,26 @@ export default defineComponent({
       }
     }
 
+    .item-icon {
+      display: inline-flex;
+      width: 24px;
+      height: 24px;
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    .item-content {
+      flex: 1;
+      word-break: break-word;
+    }
+
     .arrow-wrap {
       position: absolute;
       right: 8px;
       top: 50%;
       transform: translateY(-50%);
-    }
-
-    & + .option-item {
-      border-top: 1px solid $color_border;
-    }
-
-    &.focus {
-      background-color: $primary_opacity !important;
     }
 
     &:focus {
@@ -243,10 +328,17 @@ export default defineComponent({
       transition: all 0s;
     }
 
-    &.active,
-    &:active {
+    &.active {
       color: white;
       background-color: $primary !important;
+    }
+
+    &.clickable {
+      cursor: pointer;
+      &:active {
+        color: white;
+        background-color: $primary !important;
+      }
     }
   }
 }

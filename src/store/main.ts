@@ -19,6 +19,7 @@ type IStore = {
   isShowStylusTools: boolean
   isShowTextTransformer: boolean
   isShowSettings: boolean
+  isShowQuickLaunch: boolean
 }
 
 export const useMainStore = defineStore('main', {
@@ -37,6 +38,7 @@ export const useMainStore = defineStore('main', {
       isShowStylusTools: false,
       isShowTextTransformer: false,
       isShowSettings: false,
+      isShowQuickLaunch: false,
     }
   },
   // could also be defined as
@@ -49,7 +51,7 @@ export const useMainStore = defineStore('main', {
   },
   share: {
     // An array of fields that the plugin will ignore.
-    omit: ['isShowStylusTools', 'isShowTextTransformer', 'isShowSettings'],
+    omit: ['isShowStylusTools', 'isShowTextTransformer', 'isShowSettings', 'isShowQuickLaunch'],
     enable: true,
     initialize: true,
   },

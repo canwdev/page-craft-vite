@@ -6,6 +6,7 @@ import {StOptionItem, StOptionType} from '@/components/CommonUI/OptionUI/enum'
 import {useI18nToolSettingsStore} from '@/store/i18n-tool-settings'
 import {TextConvertMode, TextConvertOptions} from '@/components/VueI18nEditTool/copy-enum'
 import {Globe20Regular} from '@vicons/fluent'
+import {NButton} from 'naive-ui'
 
 export default defineComponent({
   name: 'I18nToolSettings',
@@ -15,10 +16,11 @@ export default defineComponent({
       default: false,
     },
   },
+  emits: ['update:visible'],
   setup(props, {emit}) {
     const {t: $t} = useI18n()
     const mVisible = useModelWrapper(props, emit, 'visible')
-    const intSettingsStore = useI18nToolSettingsStore()
+    const i18nSetStore = useI18nToolSettingsStore()
 
     const optionList = computed((): StOptionItem[] => {
       return [
@@ -30,19 +32,33 @@ export default defineComponent({
               label: '自动粘贴: 移除首尾引号',
               subtitle: 'Trim: \` | \' | "',
               key: 'autoPasteTrimQuotes',
-              store: intSettingsStore,
+              store: i18nSetStore,
               type: StOptionType.SWITCH,
             },
             {
               label: '自动粘贴: 文本转换器模式',
               key: 'autoPasteTextConvertMode',
-              store: intSettingsStore,
+              store: i18nSetStore,
               type: StOptionType.SELECT,
               selectOptions: [
                 {label: 'Disabled', value: TextConvertMode.DISABLED},
                 {label: 'Number', value: TextConvertMode.NUMBER},
                 ...TextConvertOptions,
               ],
+            },
+            {
+              label: 'Dev',
+              key: 'dev',
+              actionRender: h(
+                NButton,
+                {
+                  size: 'small',
+                  onClick: () => {
+                    console.log('window.$consoleUtils', window.$consoleUtils)
+                  },
+                },
+                () => 'Print Utils Console'
+              ),
             },
           ],
         },
@@ -53,14 +69,20 @@ export default defineComponent({
             {
               label: $t('common.folders_mode'),
               key: 'isFoldersMode',
-              store: intSettingsStore,
+              store: i18nSetStore,
               type: StOptionType.SWITCH,
             },
             {
               label: 'ignoreFolders',
               key: 'ignoreFolders',
-              store: intSettingsStore,
+              store: i18nSetStore,
               type: StOptionType.DYNAMIC_TAGS,
+            },
+            {
+              label: 'Auto Show image',
+              key: 'isAutoShowImage',
+              store: i18nSetStore,
+              type: StOptionType.SWITCH,
             },
           ],
         },

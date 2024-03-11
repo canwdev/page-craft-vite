@@ -4,16 +4,14 @@ import {BlockItem, initToolbarList} from '@/enum/page-craft/block'
 import ToolItem from '@/components/PageCraft/ToolBar/ToolItem.vue'
 import InventoryModal from '@/components/PageCraft/InventoryModal/index.vue'
 import {LsKeys} from '@/enum/page-craft'
-import {useLocalStorageObject} from '@/hooks/use-local-storage'
 import {useRouter} from 'vue-router'
 import {useSettingsStore} from '@/store/settings'
 import {ArrowReset20Regular, Box20Regular, Toolbox20Regular} from '@vicons/fluent'
 import PreviewWindow from '@/components/PageCraft/DomPreview/PreviewWindow.vue'
 import {useI18n} from 'vue-i18n'
 import {useOpenCloseSound, useSfxSelect} from '@/hooks/use-sfx'
-import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
-import {useCommonTools} from '@/components/PageCraft/ToolBar/use-common-tools'
 import ClassNameInput from '@/components/PageCraft/ToolBar/ClassNameInput.vue'
+import {useStorage} from '@vueuse/core'
 
 export default defineComponent({
   name: 'BottomToolBar',
@@ -32,7 +30,7 @@ export default defineComponent({
     const mainStore = useMainStore()
     const settingsStore = useSettingsStore()
 
-    const toolBarList = useLocalStorageObject(LsKeys.TOOL_BAR_LIST, [...initToolbarList])
+    const toolBarList = useStorage(LsKeys.TOOL_BAR_LIST, [...initToolbarList])
 
     const blinkAnimIndex = ref(-1)
     // add blink animation
@@ -136,8 +134,6 @@ export default defineComponent({
       playBlinkAnim(newIndex)
     }
 
-    const {toolsMenuOptions} = useCommonTools()
-
     const isShowPreviewDialog = ref(true)
 
     useOpenCloseSound(() => settingsStore.showInventory)
@@ -157,27 +153,6 @@ export default defineComponent({
       handleDragStart,
       switchItemsPosition,
       blinkAnimIndex,
-      toolsMenuOptions: computed(() => {
-        return [
-          ...toolsMenuOptions,
-          {
-            label: '🌎 Iframe Browser (alt+i)',
-            props: {
-              onClick: async () => {
-                settingsStore.isShowIframeBrowser = !settingsStore.isShowIframeBrowser
-              },
-            },
-          },
-          settingsStore.enableWelcomePage && {
-            label: '🏠 Welcome Page',
-            props: {
-              onClick: async () => {
-                await router.push({name: 'HomePage'})
-              },
-            },
-          },
-        ].filter(Boolean)
-      }),
       isShowPreviewDialog,
     }
   },
@@ -185,6 +160,14 @@ export default defineComponent({
 </script>
 
 <template>
+  <PreviewWindow />
+
+  <InventoryModal
+    v-if="!settingsStore.isInvAttached"
+    v-model:visible="settingsStore.showInventory"
+    @onItemClick="setCurrentToolItem"
+  />
+
   <div
     class="page-craft-toolbar-root"
     :class="{
@@ -192,12 +175,12 @@ export default defineComponent({
     }"
   >
     <InventoryModal
+      v-if="settingsStore.isInvAttached"
       v-model:visible="settingsStore.showInventory"
       @onItemClick="setCurrentToolItem"
     />
-    <PreviewWindow />
 
-    <div ref="toolbarRef" class="page-craft-enhanced-toolbar vp-panel">
+    <div ref="toolbarRef" class="page-craft-enhanced-toolbar vp-panel vp-window-panel _panel-bg">
       <div class="page-craft-enhanced-toolbar-above">
         <n-space size="small">
           <portal-target name="indicatorBarTeleportDest">
@@ -235,20 +218,12 @@ export default defineComponent({
 
           <slot></slot>
 
-          <n-dropdown
-            class="font-emoji"
-            :options="toolsMenuOptions"
-            key-field="label"
-            placement="bottom-start"
-            trigger="hover"
-          >
-            <n-button size="tiny">
-              <template #icon>
-                <n-icon size="18"><Toolbox20Regular /></n-icon>
-              </template>
-              {{ $t('common.tools') }}
-            </n-button>
-          </n-dropdown>
+          <n-button size="tiny" @click="mainStore.isShowQuickLaunch = !mainStore.isShowQuickLaunch">
+            <template #icon>
+              <n-icon size="18"><Toolbox20Regular /></n-icon>
+            </template>
+            {{ $t('common.tools') }}
+          </n-button>
         </n-space>
       </div>
       <div class="page-craft-enhanced-toolbar-main _scrollbar_mini">
@@ -270,13 +245,14 @@ export default defineComponent({
 </template>
 
 <style lang="scss">
+@import 'tool-item';
 .page-craft-toolbar-root {
   position: sticky;
   bottom: 0;
   user-select: none;
   margin-left: auto;
   margin-right: auto;
-  z-index: 999;
+  z-index: 99;
 
   &._topLayout {
     position: fixed;

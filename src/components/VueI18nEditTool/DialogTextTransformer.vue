@@ -10,7 +10,7 @@ import {
 import {ClipboardPaste20Regular, Copy20Regular} from '@vicons/fluent'
 import {useI18n} from 'vue-i18n'
 import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
-import {useLocalStorageString} from '@/hooks/use-local-storage'
+import {useStorage} from '@vueuse/core'
 
 export default defineComponent({
   name: 'DialogTextTransformer',
@@ -21,12 +21,13 @@ export default defineComponent({
       default: false,
     },
   },
+  emits: ['update:visible'],
   setup(props, {emit}) {
     const {t: $t} = useI18n()
     const mVisible = useModelWrapper(props, emit, 'visible')
     const textInput = ref('')
     const textOutput = ref('')
-    const mMode = useLocalStorageString('text_converter_copy_mode', TextConvertMode.JSON)
+    const mMode = useStorage('text_converter_copy_mode', TextConvertMode.JSON)
     const isTrimEmptyLines = ref(true)
     const htmlTagName = ref('')
     const htmlAttrs = ref('')

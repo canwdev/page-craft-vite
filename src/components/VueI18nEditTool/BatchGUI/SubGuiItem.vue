@@ -5,29 +5,23 @@ import _get from 'lodash/get'
 import _set from 'lodash/set'
 import _unset from 'lodash/unset'
 import {handleReadSelectedFile} from '@/utils/exporter'
-import {
-  ClipboardPaste20Regular,
-  Delete20Regular,
-  DocumentEdit20Regular,
-  SaveMultiple20Regular,
-} from '@vicons/fluent'
+import {ClipboardPaste20Regular, Delete20Regular, SaveMultiple20Regular} from '@vicons/fluent'
 import DialogTextEdit from '@/components/CommonUI/DialogTextEdit.vue'
 import {useI18n} from 'vue-i18n'
 import {readClipboardData} from '@/utils'
 import {textConvertAdvanced} from '@/components/VueI18nEditTool/copy-enum'
 import {useI18nToolSettingsStore} from '@/store/i18n-tool-settings'
 import FieldEdit from '@/components/VueI18nEditTool/Single/FieldEdit.vue'
-import {useAutoPasteConvert} from '@/components/VueI18nEditTool/Single/use-auto-paste-convert'
-import {useBatchItem} from '@/components/VueI18nEditTool/Batch/batch-hooks'
+import {useBatchItem} from '@/components/VueI18nEditTool/BatchGUI/batch-hooks'
+import {useI18nMainStore} from '@/store/i18n-tool-main'
 // import countryCodeEmoji from '@/utils/country-code-emoji'
 
 export default defineComponent({
-  name: 'BatchTranslateItem',
+  name: 'SubGuiItem',
   components: {
     Delete20Regular,
     FieldEdit,
     DialogTextEdit,
-    DocumentEdit20Regular,
     SaveMultiple20Regular,
     ClipboardPaste20Regular,
   },
@@ -36,30 +30,22 @@ export default defineComponent({
       type: Object as PropType<DirTreeItem>,
       required: true,
     },
-    filePathArr: {
-      type: Array as PropType<string[]>,
-      default() {
-        return []
-      },
-    },
-    translatePath: {
-      type: String,
-      default: '',
-    },
-    // 是否为多文件夹模式，如果为否则当作单个文件处理
-    isFoldersMode: {
-      type: Boolean,
-      default: true,
-    },
   },
   emits: ['saveChanged'],
   setup(props, {emit}) {
     const {t: $t} = useI18n()
-    const intSettingsStore = useI18nToolSettingsStore()
-    const {dirItem, filePathArr, translatePath, isFoldersMode} = toRefs(props)
+    const i18nMainStore = useI18nMainStore()
+    const i18nSetStore = useI18nToolSettingsStore()
 
-    const {isLoading, currentItem, handleSaveFile, isLocalCreated, handleCreateFile, handleReload} =
-      useBatchItem(props)
+    const {
+      isLoading,
+      currentItem,
+      handleSaveFile,
+      isLocalCreated,
+      handleCreateFile,
+      handleReload,
+      subFilePathArr,
+    } = useBatchItem(props)
 
     // 翻译文件的json对象
     let translateObj = shallowRef<any | null>(null)
@@ -71,11 +57,11 @@ export default defineComponent({
     const isChanged = ref(false)
 
     const getValue = () => {
-      return _get(translateObj.value, translatePath.value, null)
+      return _get(translateObj.value, i18nMainStore.translatePath, null)
     }
     const setValue = (val: any) => {
       try {
-        _set(translateObj.value, translatePath.value, val)
+        _set(translateObj.value, i18nMainStore.translatePath, val)
       } catch (e: any) {
         console.error(e)
         window.$message.error(e.message)
@@ -83,7 +69,7 @@ export default defineComponent({
       }
     }
     const deleteField = () => {
-      _unset(translateObj.value, translatePath.value)
+      _unset(translateObj.value, i18nMainStore.translatePath)
       fieldValue.value = null
       isChanged.value = true
     }
@@ -120,12 +106,15 @@ export default defineComponent({
     watch(fieldValue, () => {
       isChanged.value = true
     })
-    watch(translatePath, (val) => {
-      fieldValue.value = getValue()
-      nextTick(() => {
-        isChanged.value = false
-      })
-    })
+    watch(
+      () => i18nMainStore.translatePath,
+      (val) => {
+        fieldValue.value = getValue()
+        nextTick(() => {
+          isChanged.value = false
+        })
+      }
+    )
 
     // const countryFlag = computed(() => {
     //   const code = dirItem.value?.label.split('-').pop()
@@ -146,8 +135,8 @@ export default defineComponent({
     }
 
     const handlePasteFormat = (val) => {
-      val = textConvertAdvanced(val, intSettingsStore.autoPasteTextConvertMode, {
-        isTrimQuotes: intSettingsStore.autoPasteTrimQuotes,
+      val = textConvertAdvanced(val, i18nSetStore.autoPasteTextConvertMode, {
+        isTrimQuotes: i18nSetStore.autoPasteTrimQuotes,
       })
 
       return val
@@ -211,7 +200,8 @@ export default defineComponent({
     }
 
     return {
-      intSettingsStore,
+      i18nMainStore,
+      i18nSetStore,
       currentItem,
       translateObj,
       fieldValue,
@@ -232,6 +222,7 @@ export default defineComponent({
       handleSaveArray,
       handleDeleteField,
       isLoading,
+      subFilePathArr,
     }
   },
 })
@@ -247,12 +238,12 @@ export default defineComponent({
       <div>
         <span class="card-title">
           <span class="text-red">{{ dirItem.label }}</span>
-          <template v-if="isFoldersMode">
-            {{ '/' + filePathArr.join('/') }}
+          <template v-if="i18nSetStore.isFoldersMode">
+            {{ '/' + subFilePathArr.join('/') }}
           </template>
         </span>
         <span class="translate-path">
-          {{ translatePath }}
+          {{ i18nMainStore.translatePath }}
         </span>
       </div>
 
@@ -284,7 +275,7 @@ export default defineComponent({
         on your local file system
       </template>
     </div>
-    <template v-else-if="translatePath">
+    <template v-else-if="i18nMainStore.translatePath">
       <n-space v-if="fieldValue !== null" align="center" size="small">
         <FieldEdit ref="inputRef" v-model="fieldValue" @previewArray="handlePreviewArrayText" />
 
@@ -307,7 +298,7 @@ export default defineComponent({
           size="small"
           @click="pasteCreateField()"
           type="primary"
-          :title="`Auto Paste Create (${intSettingsStore.autoPasteTextConvertMode})`"
+          :title="`Auto Paste Create (${i18nSetStore.autoPasteTextConvertMode})`"
         >
           <template #icon>
             <ClipboardPaste20Regular />

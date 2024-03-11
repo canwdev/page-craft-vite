@@ -1,3 +1,5 @@
+import {useEventListener} from '@vueuse/core'
+
 /**
  * 防止页面关闭
  * @param checkIsChanged 回调函数
@@ -29,7 +31,7 @@ export const useUnSavedChanges = () => {
 
 // replace ctrl+s save action
 export const useSaveShortcut = (saveFn) => {
-  const handleSave = (event) => {
+  useEventListener(document, 'keydown', (event) => {
     if (event.ctrlKey && event.key === 's') {
       event.preventDefault() // 阻止默认的保存操作
 
@@ -37,11 +39,5 @@ export const useSaveShortcut = (saveFn) => {
         saveFn()
       }
     }
-  }
-  onMounted(() => {
-    document.addEventListener('keydown', handleSave)
-  })
-  onBeforeUnmount(() => {
-    document.removeEventListener('keydown', handleSave)
   })
 }

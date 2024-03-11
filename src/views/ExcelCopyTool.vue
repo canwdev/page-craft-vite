@@ -17,7 +17,7 @@ import {
 import {useSaveShortcut} from '@/hooks/use-beforeunload'
 import {useMainStore} from '@/store/main'
 import {useI18n} from 'vue-i18n'
-import {useLocalStorageString} from '@/hooks/use-local-storage'
+import {useStorage} from '@vueuse/core'
 
 const isAllowedElement = (el) => {
   return el.tagName.toLowerCase() === 'td'
@@ -99,7 +99,7 @@ export default defineComponent({
         return
       }
       try {
-        await dynamicLoadScript('//unpkg.com/xlsx@0.16.9/xlsx.mini.js')
+        await dynamicLoadScript(import.meta.env.BASE_URL + 'lib/xlsx.mini.js')
       } catch (err: any) {
         window.$message.error(err.message)
         console.error(err)
@@ -113,7 +113,7 @@ export default defineComponent({
       await initXLSX()
     })
 
-    const copyMode = useLocalStorageString('excel_copy_tool_copy_mode', TextConvertMode.HTML)
+    const copyMode = useStorage('excel_copy_tool_copy_mode', TextConvertMode.HTML)
     const handleClick = (event: MouseEvent) => {
       let el = event.target as HTMLElement
       if (!isAllowedElement(el) || !copyMode.value || copyMode.value === TextConvertMode.DISABLED) {
@@ -195,7 +195,7 @@ export default defineComponent({
       // 处理文件名
       let name = fileRef.value?.name
       if (name) {
-        name = name.substring(0, name.lastIndexOf('.')) + '.json'
+        name = name.substring(0, name.lastIndexOf('.'))
       }
 
       handleExportFile(

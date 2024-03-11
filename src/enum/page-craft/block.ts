@@ -129,7 +129,7 @@ export const ActionBlockItems = {
   }),
   PASTE_REPLACE: new BlockItem({
     blockType: BlockType.ACTIONS,
-    title: 'Paste & Replace innerHTML 🎈',
+    title: 'Paste & Replace Value 🎈',
     icon: iconOakSign,
     actionType: ActionType.PASTE_REPLACE,
   }),

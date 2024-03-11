@@ -9,7 +9,7 @@ import {
   ITranslateTreeItem,
 } from '@/enum/vue-i18n-tool'
 import {copyToClipboard} from '@/utils'
-import {ClipboardPaste20Regular, Delete20Regular} from '@vicons/fluent'
+import {Delete20Regular} from '@vicons/fluent'
 import {useI18n} from 'vue-i18n'
 import {useMainStore} from '@/store/main'
 import FieldEdit from '@/components/VueI18nEditTool/Single/FieldEdit.vue'
@@ -18,7 +18,6 @@ export default defineComponent({
   name: 'TranslateItem',
   components: {
     FieldEdit,
-    ClipboardPaste20Regular,
     Delete20Regular,
   },
   props: {
@@ -160,57 +159,53 @@ export default defineComponent({
 
 <template>
   <div :data-id="item.key" v-if="item" class="translate-item" :class="{isLite, isKeyDuplicated}">
-    <n-space size="small" justify="space-between">
-      <n-space size="small" align="center">
-        <template v-if="isKeyDuplicated">
-          <div class="mc-error-tip-button" title="Key duplicated, may cause bug!">!</div>
-        </template>
-        <n-input
-          size="small"
-          class="font-code translate-item-input jssl_key"
-          v-model:value="item.key"
-          placeholder="key"
-          @click="handleInputKeyClick"
-          @blur="handleKeyBlur"
-          :readonly="isLite"
+    <n-space size="small" align="center">
+      <template v-if="isKeyDuplicated">
+        <div class="mc-error-tip-button" title="Key duplicated, may cause bug!">!</div>
+      </template>
+      <input
+        class="font-code translate-item-input vp-input"
+        v-model="item.key"
+        placeholder="key"
+        @click="handleInputKeyClick"
+        @blur="handleKeyBlur"
+        :readonly="isLite"
+      />
+
+      <!--        <div>A</div>-->
+
+      <template v-if="!isLite">
+        <FieldEdit
+          ref="valueInputRef"
+          v-model="item.value"
+          @onValueBlur="handleValueBlur"
+          @previewArray="$emit('previewArray', item)"
         />
-        <template v-if="!isLite">
-          <FieldEdit
-            ref="valueInputRef"
-            v-model="item.value"
-            @onValueBlur="handleValueBlur"
-            @previewArray="$emit('previewArray', item)"
-          />
+      </template>
+
+      <div class="actions-buttons-wrap _mini" v-if="!isLite && nameDisplay">
+        <!-- 一键复制按钮 -->
+        <button
+          v-for="item in copyModeOptions"
+          :key="item.value"
+          :title="item.desc"
+          @click="handleCopy(item.value)"
+          class="vp-button secondary"
+          :class="{primary: item.value === highlightCopyMode}"
+        >
+          {{ item.label }}
+        </button>
+      </div>
+
+      <n-popconfirm v-if="!isLite" @positive-click="$emit('onRemove')">
+        <template #trigger>
+          <button class="vp-button danger">
+            <Delete20Regular />
+          </button>
+          <!--× Del-->
         </template>
-
-        <n-button-group v-if="!isLite && nameDisplay" size="small">
-          <!-- 一键复制按钮 -->
-          <n-button
-            v-for="item in copyModeOptions"
-            :key="item.value"
-            :title="item.desc"
-            size="small"
-            :secondary="item.value !== highlightCopyMode"
-            type="success"
-            @click="handleCopy(item.value)"
-          >
-            {{ item.label }}
-          </n-button>
-        </n-button-group>
-
-        <n-popconfirm v-if="!isLite" @positive-click="$emit('onRemove')">
-          <template #trigger>
-            <n-button tertiary size="small" type="error">
-              <template #icon>
-                <Delete20Regular />
-              </template>
-            </n-button>
-            <!--× Del-->
-          </template>
-          {{ $t('msgs.remove_item') }}
-        </n-popconfirm>
-      </n-space>
-      <n-space> </n-space>
+        {{ $t('msgs.remove_item') }}
+      </n-popconfirm>
     </n-space>
   </div>
 </template>

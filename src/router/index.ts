@@ -1,11 +1,10 @@
 import {createRouter, createWebHashHistory} from 'vue-router'
 import WelcomePage from '@/views/WelcomePage.vue'
 import CraftPage from '@/views/CraftPage.vue'
-import DevPage from '@/views/DevPage.vue'
-import pkg from '../../package.json'
 import {useSettingsStore} from '@/store/settings'
 import i18n from '@/i18n/index'
 import {window as tauriWin} from '@tauri-apps/api'
+import {formatSiteTitle} from '@/router/router-utils'
 
 let history = createWebHashHistory()
 let routes = [
@@ -42,14 +41,6 @@ let routes = [
     },
   },
   {
-    path: '/dev',
-    name: 'Dev',
-    component: DevPage,
-    meta: {
-      title: `Dev Page`,
-    },
-  },
-  {
     path: '/tools',
     name: 'ToolsView',
     redirect: '/tools/excel-cp',
@@ -82,14 +73,6 @@ let routes = [
   },
 ]
 const router = createRouter({history, routes})
-
-export const formatSiteTitle = (t?: string) => {
-  const title = `Page Craft v${pkg.version}`
-  if (!t) {
-    return title
-  }
-  return `${t} - ${title}`
-}
 
 router.afterEach((to, _, failure) => {
   document.title = formatSiteTitle(to?.meta?.title as string)

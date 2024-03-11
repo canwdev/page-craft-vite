@@ -1,40 +1,17 @@
 <script lang="ts">
 import {defineComponent, PropType} from 'vue'
 import {DirTreeItem} from '@/enum/vue-i18n-tool'
-import SubTextEditor from '@/components/VueI18nEditTool/BatchTextEditor/SubTextEditor.vue'
-import BatchTranslateItem from '@/components/VueI18nEditTool/Batch/BatchTranslateItem.vue'
-import {useBatchWrapper} from '@/components/VueI18nEditTool/Batch/batch-hooks'
+import SubTextItem from '@/components/VueI18nEditTool/BatchText/SubTextItem.vue'
+import {useBatchWrapper} from '@/components/VueI18nEditTool/BatchGUI/batch-hooks'
+import {useI18nMainStore} from '@/store/i18n-tool-main'
 
 export default defineComponent({
-  name: 'BatchTextEditor',
-  components: {BatchTranslateItem, SubTextEditor},
-  props: {
-    dirTree: {
-      type: Array as PropType<DirTreeItem[]>,
-      default() {
-        return []
-      },
-    },
-    filePathArr: {
-      type: Array as PropType<string[]>,
-      default() {
-        return []
-      },
-    },
-    translatePath: {
-      type: String,
-      default: '',
-    },
-    isFoldersMode: {
-      type: Boolean,
-      default: true,
-    },
-  },
+  name: 'BatchText',
+  components: {SubTextItem},
+  props: {},
   setup(props, {emit}) {
-    const {dirTree, isFoldersMode, filePathArr} = toRefs(props)
-
-    const {handleSaveChanged, itemsRef, filePathArrFiltered, subFilePathArr} =
-      useBatchWrapper(props)
+    const i18nMainStore = useI18nMainStore()
+    const {handleSaveChanged, itemsRef, filePathArrFiltered} = useBatchWrapper(props)
 
     const currentTab = ref('')
 
@@ -55,11 +32,11 @@ export default defineComponent({
     )
 
     return {
+      i18nMainStore,
       handleSaveChanged,
       itemsRef,
       filePathArrFiltered,
       currentTab,
-      subFilePathArr,
     }
   },
 })
@@ -72,7 +49,7 @@ export default defineComponent({
         <n-tab-pane
           style="padding: 0"
           :name="item.key"
-          :tab="item.label + '/' + subFilePathArr.join('/')"
+          :tab="(i18nMainStore.changedLabelMap[item.label] ? '* ' : '') + item.label"
           :key="item.key"
           v-for="item in filePathArrFiltered"
         >
@@ -81,14 +58,11 @@ export default defineComponent({
     </div>
 
     <div class="editor-wrap">
-      <SubTextEditor
+      <SubTextItem
         ref="itemsRef"
         v-for="item in filePathArrFiltered"
         :key="item.key"
         :dir-item="item"
-        :file-path-arr="subFilePathArr"
-        :translate-path="translatePath"
-        :is-folders-mode="isFoldersMode"
         :visible="item.key === currentTab"
         @saveChanged="handleSaveChanged"
       />

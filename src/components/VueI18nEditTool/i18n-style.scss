@@ -1,0 +1,50 @@
+.i18n-style {
+  .navbar-wrap {
+    border-radius: 0;
+    padding: 8px 10px;
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+  }
+
+  .vp-input {
+    height: 28px;
+    box-sizing: border-box;
+    padding: 4px 8px;
+  }
+
+  .vp-button {
+    display: inline-flex;
+    gap: 4px;
+    padding: 4px 8px;
+    align-items: center;
+    height: 28px;
+    svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+    &.danger {
+      color: #f44336;
+    }
+    &.secondary {
+      color: $primary;
+      border: none;
+      outline: 1px solid $primary;
+    }
+    &.primary {
+      background: $primary;
+      color: white;
+    }
+  }
+
+  .actions-buttons-wrap {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    &._mini {
+      gap: 0;
+    }
+  }
+}

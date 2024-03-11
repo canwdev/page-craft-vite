@@ -64,7 +64,7 @@
     "remove_element": "删除元素",
     "paste": "粘贴",
     "paste_at": "粘贴于",
-    "paste__replace_inner": "粘贴并替换 innerHTML",
+    "paste_replace_value": "粘贴并替换值",
     "print_to_console": "打印到控制台",
     "append_style": "追加样式",
     "insert_at": "插入于",
@@ -132,6 +132,7 @@
     "confirm_reload_files": "确认重新加载文件内容？未保存的内容将会丢失。",
     "please_select_a_json": "请先选择一个json文件",
     "recommended_i18n_fol": "推荐的 i18n 目录结构",
+    "drag_file_here": "拖拽文件到此",
     "drag_folder_here": "拖拽文件夹到此",
     "load_demo_this_will": "加载演示？这将会覆盖当前编辑的内容。"
   }

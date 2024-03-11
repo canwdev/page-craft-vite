@@ -10,7 +10,7 @@
     background-color: $theme_color_inactive;
 
     .vp-window-content {
-      .page-craft-title-bar {
+      .vp-window-title-bar {
         margin-left: -$border_width;
         margin-right: -$border_width;
         padding: 0 $border_width 5px;
@@ -18,7 +18,7 @@
           position: absolute;
           left: $border_width;
         }
-        .page-craft-title-bar-text {
+        .vp-window-title-bar-text {
           margin-top: 4px;
           flex: 1;
           justify-content: center;
@@ -39,17 +39,17 @@
         &:hover {
           background-color: rgba(255, 255, 255, 0.55);
           transition: all 0.1s;
-          &._danger {
+          &.is-close {
             background-color: #f56767 !important;
           }
         }
         &:active {
           background-color: rgba(31, 31, 31, 0.55);
-          &._danger {
+          &.is-close {
             background-color: #9b3f3f !important;
           }
         }
-        &._danger {
+        &.is-close {
           background-color: #C75050;
           color: white;
           padding-left: 10px;
@@ -61,7 +61,7 @@
     &._active {
       box-shadow: $box_shadow;
       background-color: $primary !important;
-      .page-craft-title-bar {
+      .vp-window-title-bar {
         color: white !important;
       }
     }
@@ -104,6 +104,9 @@
       background-color: #4B4B4B;
       color: white;
     }
-
+    .vp-input {
+      background-color: #2a2a2a;
+      color: white;
+    }
   }
 }

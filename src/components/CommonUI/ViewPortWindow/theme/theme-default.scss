@@ -13,7 +13,7 @@
 
     .vp-window-content {
 
-      .page-craft-title-bar {
+      .vp-window-title-bar {
         margin-left: -$border_width;
         margin-right: -$border_width;
         overflow: hidden;
@@ -21,7 +21,7 @@
         padding: 0 6px 4px;
         text-shadow: 0 0 10px white;
 
-        .page-craft-title-bar-text {
+        .vp-window-title-bar-text {
           margin-top: 4px;
         }
       }
@@ -44,14 +44,14 @@
         &:hover {
           background-color: rgb(233, 233, 233);
           transition: all 0.1s;
-          &._danger {
+          &.is-close {
             background-color: #ffa5aa !important;
           }
         }
 
         &:active {
           background-color: rgba(181, 181, 181, 0.46);
-          &._danger {
+          &.is-close {
             background-color: #ff6a72 !important;
           }
         }
@@ -94,13 +94,7 @@
   }
 
   .vp-input {
-    padding: 2px 4px;
-    border: 1px solid $color_border;
     border-radius: 4px;
-
-    &:focus {
-      outline-color: $primary;
-    }
   }
 
   &._aero {
@@ -129,7 +123,7 @@
       box-shadow: 0 1px 10px rgba(0, 0, 0, 0.27);
       .vp-window-content {
 
-        .page-craft-title-bar {
+        .vp-window-title-bar {
           margin-left: 0;
           margin-right: 0;
           padding-right: 0;
@@ -164,17 +158,13 @@
       }
     }
     .vp-panel,
-    .vp-button {
+    .vp-button,
+    .vp-input {
       border-radius: 0;
     }
   }
   &._rounded {
-    .tool-item, .component-cover {
-      border-radius: calc($radius / 2);
-    }
-    .tool-item-bg {
-      border-radius: calc($radius / 4);
-    }
+
   }
   &._dark {
     .vp-window {
@@ -187,7 +177,7 @@
       }
 
       .vp-window-content {
-        .page-craft-title-bar {
+        .vp-window-title-bar {
           color: white;
           text-shadow: 0 0 10px black;
         }
@@ -197,13 +187,13 @@
 
             &:hover {
               background-color: rgba(255, 255, 255, 0.2);
-              &._danger {
+              &.is-close {
                 background-color: rgba(232, 17, 35, 0.7) !important;
               }
             }
             &:active {
               background-color: rgba(255, 255, 255, 0.1);
-              &._danger {
+              &.is-close {
                 background-color: rgba(151, 23, 34, 0.7) !important;
               }
             }
@@ -237,7 +227,6 @@
           }
         }
       }
-
     }
 
     &._aero {
@@ -253,19 +242,14 @@
     .vp-panel {
       background-color: rgba(43, 43, 43, 0.85);
       color: white;
-
-      .vp-button {
-      }
-
-      .vp-input {
-        border: none;
-        background-color: rgba(0, 0, 0, 0.3);
-        color: white;
-      }
     }
 
     .vp-button {
-      background-color: #4B4B4B;
+      background-color: #757575;
+      color: white;
+    }
+    .vp-input {
+      background-color: rgba(0, 0, 0, 0.3);
       color: white;
     }
   }

@@ -1,14 +1,21 @@
 <script lang="ts">
-import {defineComponent, PropType} from 'vue'
+import {defineComponent, PropType, ref} from 'vue'
 import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
-import {DirTreeItem} from '@/enum/vue-i18n-tool'
-import {useBatchItem} from '@/components/VueI18nEditTool/Batch/batch-hooks'
+import {
+  DirTreeItem,
+  formatTranslateTreeItem,
+  I18nJsonObjUtils,
+  ITranslateTreeItem,
+} from '@/enum/vue-i18n-tool'
+import {useBatchItem} from '@/components/VueI18nEditTool/BatchGUI/batch-hooks'
 import {handleReadSelectedFile} from '@/utils/exporter'
 import {throttle} from 'throttle-debounce'
+import {useI18nMainStore} from '@/store/i18n-tool-main'
+import TranslateTreeItem from '@/components/VueI18nEditTool/Single/TranslateTreeItem.vue'
 
 export default defineComponent({
-  name: 'SubTextEditor',
-  components: {VueMonaco},
+  name: 'SubTextItem',
+  components: {TranslateTreeItem, VueMonaco},
   props: {
     visible: {
       type: Boolean,
@@ -18,25 +25,15 @@ export default defineComponent({
       type: Object as PropType<DirTreeItem>,
       required: true,
     },
-    filePathArr: {
-      type: Array as PropType<string[]>,
-      default() {
-        return []
-      },
-    },
     translatePath: {
       type: String,
       default: '',
     },
-    // 是否为多文件夹模式，如果为否则当作单个文件处理
-    isFoldersMode: {
-      type: Boolean,
-      default: true,
-    },
   },
   emits: ['saveChanged'],
   setup(props, {emit}) {
-    const {visible} = toRefs(props)
+    const {visible, dirItem} = toRefs(props)
+    const i18nMainStore = useI18nMainStore()
     const {
       isLoading,
       currentItem,
@@ -44,10 +41,9 @@ export default defineComponent({
       isLocalCreated,
       handleCreateFile: _handleCreateFile,
       handleReload,
+      subFilePathArr,
     } = useBatchItem(props)
 
-    // 值是否发生变化
-    const isChanged = ref(false)
     const valueText = ref('')
     const vueMonacoRef = ref()
 
@@ -58,8 +54,17 @@ export default defineComponent({
       }, 100)
     }
 
+    // 值是否发生变化
+    const isChanged = computed(() => {
+      return i18nMainStore.changedLabelMap[dirItem.value.label]
+    })
+
+    const setChanged = (flag: boolean) => {
+      i18nMainStore.changedLabelMap[dirItem.value.label] = flag
+    }
+
     watch(valueText, () => {
-      isChanged.value = true
+      setChanged(true)
     })
     watch(visible, (val) => {
       if (val) {
@@ -79,7 +84,7 @@ export default defineComponent({
     const cleanup = () => {
       valueText.value = ''
       nextTick(() => {
-        isChanged.value = false
+        setChanged(false)
       })
     }
 
@@ -94,14 +99,17 @@ export default defineComponent({
       window.removeEventListener('resize', handleResizeDebounced)
     })
 
+    // const translateTreeRoot = ref<ITranslateTreeItem[]>([formatTranslateTreeItem()])
     const updateValueText = async () => {
       const file = await (currentItem.value.entry as FileSystemFileHandle).getFile()
 
       const str = await handleReadSelectedFile(file)
       valueText.value = str as string
+      // const obj = JSON.parse(valueText.value as string)
+      // translateTreeRoot.value = I18nJsonObjUtils.parseWithRoot(obj)
 
       await nextTick(() => {
-        isChanged.value = false
+        setChanged(false)
         vueMonacoRef.value?.resize()
       })
     }
@@ -123,7 +131,7 @@ export default defineComponent({
         return
       }
       await handleSaveFile(valueText.value)
-      isChanged.value = false
+      setChanged(false)
       if (isEmit) {
         emit('saveChanged')
       }
@@ -143,6 +151,8 @@ export default defineComponent({
       saveChange,
       isChanged,
       handleCreateFile,
+      subFilePathArr,
+      // translateTreeRoot,
     }
   },
 })
@@ -163,8 +173,8 @@ export default defineComponent({
       >
         Save All
       </n-button>
-      <!--      {{ filePathArr }} <br />
-      {{ currentItem }}-->
+      {{ subFilePathArr.join('/') }}
+      {{ dirItem.label }}
     </div>
     <div class="editor-content-wrap">
       <div class="tip-not-exist" v-if="!currentItem">
@@ -175,6 +185,13 @@ export default defineComponent({
         on your local file system
       </div>
       <VueMonaco v-else ref="vueMonacoRef" v-model="valueText" language="json" show-line-numbers />
+
+      <!--      <TranslateTreeItem-->
+      <!--        v-for="(item, index) in translateTreeRoot"-->
+      <!--        :key="index"-->
+      <!--        :index="index"-->
+      <!--        :item="item"-->
+      <!--      />-->
     </div>
   </div>
 </template>
@@ -189,6 +206,10 @@ export default defineComponent({
   flex-direction: column;
 
   .editor-action-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: space-between;
   }
   .editor-content-wrap {
     flex: 1;

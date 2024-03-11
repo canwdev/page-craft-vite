@@ -2,30 +2,18 @@
 import {defineComponent} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {LsKeys} from '@/enum/page-craft'
-import {createOrFindStyleNode} from '@/utils/dom'
 import {sassToCSS, suggestElementClass} from '@/utils/css'
 import {copyToClipboard} from '@/utils'
 import {useMainStore} from '@/store/main'
 import {ActionBlockItems, BlockItem} from '@/enum/page-craft/block'
 import {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
-import {
-  cssHelperClassList,
-  cssKeyFramesList,
-  cssSnippetList,
-  mediaQueryList,
-  sassVariablesList,
-  StyleTabType,
-  vue2TransitionsList,
-  vue3TransitionsList,
-} from '@/enum/page-craft/styles'
+import {StyleTabType} from '@/enum/page-craft/styles'
 import {formatCss} from '@/utils/formater'
 import {useCompStorage} from '@/hooks/use-component-storage'
 import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
 
 import {useSettingsStore} from '@/store/settings'
 import {
-  ArrowMaximize20Regular,
-  ArrowMinimize20Regular,
   Copy20Regular,
   CursorClick20Regular,
   CursorHover20Regular,
@@ -38,12 +26,11 @@ import {useOpenCloseSelect, useSfxBell, useSfxBrush, useSfxFill} from '@/hooks/u
 import TabLayout from '@/components/CommonUI/TabLayout.vue'
 import monaco from '@/components/CommonUI/VueMonaco/monaco-helper'
 import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
-import {useLocalStorageString} from '@/hooks/use-local-storage'
 import {useGlobalStyle} from '@/hooks/use-global-theme'
-import {useBroadcastMessage} from '@/components/PageCraft/MainPlayground/hooks/use-broadcast-messae'
 import {usePlaygroundStore} from '@/store/playground'
 import QuickOptions from '@/components/CommonUI/QuickOptions/index.vue'
 import {QuickOptionItem} from '@/components/CommonUI/QuickOptions/enum'
+import {useEventListener, useStorage} from '@vueuse/core'
 
 export default defineComponent({
   name: 'StyleEditor',
@@ -55,8 +42,6 @@ export default defineComponent({
   },
   components: {
     QuickOptions,
-    ArrowMinimize20Regular,
-    ArrowMaximize20Regular,
     VueMonaco,
     TabLayout,
     ViewPortWindow,
@@ -129,7 +114,7 @@ export default defineComponent({
 
     const {globalStyleText} = useGlobalStyle()
 
-    const variableStyleCode = useLocalStorageString(LsKeys.VARIABLES_STYLE, '')
+    const variableStyleCode = useStorage(LsKeys.VARIABLES_STYLE, '')
     watch(variableStyleCode, () => {
       handleUpdateStyle()
     })
@@ -312,7 +297,7 @@ export default defineComponent({
       }
     }
 
-    const listenGlobalShortcuts = (event) => {
+    useEventListener(document, 'keydown', (event) => {
       if (!mVisible.value) {
         return
       }
@@ -323,13 +308,6 @@ export default defineComponent({
       } else if (event.altKey && key === 'q') {
         isShowQuickOptions.value = !isShowQuickOptions.value
       }
-    }
-
-    onMounted(() => {
-      document.addEventListener('keydown', listenGlobalShortcuts)
-    })
-    onBeforeUnmount(() => {
-      document.removeEventListener('keydown', listenGlobalShortcuts)
     })
 
     // @ts-ignore
@@ -503,6 +481,10 @@ export default defineComponent({
     color: #ff8989;
     z-index: 1;
     padding: 5px 5px 5px 10px;
+  }
+
+  .quick-options {
+    max-width: 300px;
   }
 }
 </style>

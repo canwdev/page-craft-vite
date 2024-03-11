@@ -46,7 +46,7 @@ export default defineComponent({
 <template>
   <div
     :class="{active: isActive}"
-    class="tool-item font-code"
+    class="mc-tool-item font-code vp-button"
     :title="item.title"
     draggable="true"
     @dragstart="handleDragStart"
@@ -55,7 +55,7 @@ export default defineComponent({
       :style="{
         backgroundColor: color,
       }"
-      class="tool-item-bg"
+      class="mc-tool-item-bg"
     ></div>
 
     <img v-if="item.icon" :src="item.icon" alt="icon" />
@@ -63,7 +63,3 @@ export default defineComponent({
     <span v-if="item.icon && item.title" class="item-subtext">{{ item.title }}</span>
   </div>
 </template>
-
-<style lang="scss" scoped>
-@import '../ToolBar/tool-item.scss';
-</style>

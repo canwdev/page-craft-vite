@@ -3,7 +3,7 @@ import {defineComponent} from 'vue'
 import ToolBar from '@/components/PageCraft/ToolBar/index.vue'
 import MainPlayground from '@/components/PageCraft/MainPlayground/index.vue'
 import {useSettingsStore} from '@/store/settings'
-import {customThemeOptions, CustomThemeType, ldThemeOptions} from '@/enum/settings'
+import {ldThemeOptions} from '@/enum/settings'
 import {handleExportStyle} from '@/utils/exporter'
 import {formatCss} from '@/utils/formater'
 import {sassToCSS} from '@/utils/css'
@@ -16,14 +16,12 @@ import {useOpenCloseSound, useSfxBell} from '@/hooks/use-sfx'
 import IframeBrowser from '@/components/IframeBrowser/index.vue'
 import BackgroundLayer from '@/components/PageCraft/BackgroundLayer/index.vue'
 import {useMainStore} from '@/store/main'
-import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
-import IframePlayground from '@/components/PageCraft/MainPlayground/IframePlayground.vue'
+import {customThemeOptions, CustomThemeType} from '@/components/CommonUI/ViewPortWindow/enum'
+import {useEventListener} from '@vueuse/core'
 
 export default defineComponent({
   name: 'CraftPage',
   components: {
-    IframePlayground,
-    ViewPortWindow,
     IframeBrowser,
     ToolBar,
     StyleEditor: defineAsyncComponent(() => import('@/components/PageCraft/StyleEditor/index.vue')),
@@ -35,25 +33,6 @@ export default defineComponent({
     const {t: $t} = useI18n()
     const settingsStore = useSettingsStore()
     const mainStore = useMainStore()
-
-    const listenShortcuts = (event) => {
-      const key = event.key.toLowerCase()
-      if (event.altKey && key === 'a') {
-        settingsStore.showInventory = !settingsStore.showInventory
-      } else if (event.altKey && key === 's') {
-        settingsStore.showStyleEditor = !settingsStore.showStyleEditor
-      } else if (event.altKey && key === 'w') {
-        mainStore.isShowSettings = !mainStore.isShowSettings
-      } else if (event.altKey && key === 'i') {
-        settingsStore.isShowIframeBrowser = !settingsStore.isShowIframeBrowser
-      } else if (event.altKey && key === '1') {
-        const el = document.querySelector('.sl-css-class-input input') as HTMLInputElement | null
-        el && el.focus()
-      } else if (event.altKey && key === '2') {
-        const el = document.querySelector('.sl-inner-html-input input') as HTMLInputElement | null
-        el && el.focus()
-      }
-    }
 
     const {play: playSfxBell} = useSfxBell()
     useOpenCloseSound(() => settingsStore.showStyleEditor)
@@ -72,12 +51,23 @@ export default defineComponent({
         })
       }
     )
-
-    onMounted(() => {
-      document.addEventListener('keydown', listenShortcuts)
-    })
-    onBeforeUnmount(() => {
-      document.removeEventListener('keydown', listenShortcuts)
+    useEventListener(document, 'keydown', (event) => {
+      const key = event.key.toLowerCase()
+      if (event.altKey && key === 'a') {
+        settingsStore.showInventory = !settingsStore.showInventory
+      } else if (event.altKey && key === 's') {
+        settingsStore.showStyleEditor = !settingsStore.showStyleEditor
+      } else if (event.altKey && key === 'w') {
+        mainStore.isShowSettings = !mainStore.isShowSettings
+      } else if (event.altKey && key === 'i') {
+        settingsStore.isShowIframeBrowser = !settingsStore.isShowIframeBrowser
+      } else if (event.altKey && key === '1') {
+        const el = document.querySelector('.sl-css-class-input input') as HTMLInputElement | null
+        el && el.focus()
+      } else if (event.altKey && key === '2') {
+        const el = document.querySelector('.sl-inner-html-input input') as HTMLInputElement | null
+        el && el.focus()
+      }
     })
 
     const {loadCurCompStyle} = useCompStorage()
@@ -167,13 +157,11 @@ export default defineComponent({
           >{{ $t('common.style') }}
         </n-button>
       </n-dropdown>
-      <template #end>
-        <IframeBrowser v-model:visible="settingsStore.isShowIframeBrowser" />
-
-        <StyleEditor v-model:visible="settingsStore.showStyleEditor" />
-      </template>
+      <template #end> </template>
     </ToolBar>
   </div>
+  <IframeBrowser v-model:visible="settingsStore.isShowIframeBrowser" />
+  <StyleEditor v-model:visible="settingsStore.showStyleEditor" />
 </template>
 
 <style lang="scss" scoped>

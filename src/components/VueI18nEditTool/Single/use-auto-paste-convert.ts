@@ -2,7 +2,7 @@ import {TextConvertMode} from '@/components/VueI18nEditTool/copy-enum'
 import {useI18nToolSettingsStore} from '@/store/i18n-tool-settings'
 
 export const useAutoPasteConvert = (valueRef) => {
-  const intSettingsStore = useI18nToolSettingsStore()
+  const i18nSetStore = useI18nToolSettingsStore()
 
   const valType = ref<string | null>(null)
   watch(
@@ -24,7 +24,7 @@ export const useAutoPasteConvert = (valueRef) => {
       return TextConvertMode.NUMBER
     }
     if (type === 'string') {
-      if (intSettingsStore.autoPasteTextConvertMode === TextConvertMode.HTML) {
+      if (i18nSetStore.autoPasteTextConvertMode === TextConvertMode.HTML) {
         return TextConvertMode.HTML
       }
       return TextConvertMode.TEXT
@@ -32,7 +32,7 @@ export const useAutoPasteConvert = (valueRef) => {
     if (type === 'object') {
       return TextConvertMode.JSON
     }
-    return intSettingsStore.autoPasteTextConvertMode
+    return i18nSetStore.autoPasteTextConvertMode
   })
   return {
     autoPasteConvertMode,

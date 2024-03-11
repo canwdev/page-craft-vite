@@ -13,7 +13,7 @@
 	}
 })(typeof window !== "undefined" ? window : this, function(window) {
 
-	var toneMap = 
+	var toneMap =
 	{
 		"ā": "a1",
 		"á": "a2",
@@ -137,7 +137,7 @@
 						if(!withtone) pinyin = this.removeTone(pinyin); // 如果不需要声调
 						//空格，把noChinese作为一个词插入
 						noChinese && ( result.push( noChinese), noChinese = '' );
-						result.push( pinyin ); 
+						result.push( pinyin );
 					}
 					else if ( !chinese[i] || /^ +$/g.test(chinese[i]) ){
 						//空格，把noChinese作为一个词插入
@@ -343,7 +343,9 @@
 		// 最后这一步是为了防止出现词库里面也没有包含的多音字词语
 		for(var i=0; i<result.length; i++)
 		{
-			result[i] = result[i].replace(/ .*$/g, '');
+			if (result[i]) {
+				result[i] = result[i].replace(/ .*$/g, '');
+			}
 		}
 		return result.join(splitter);
 	}

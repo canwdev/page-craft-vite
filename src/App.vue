@@ -2,15 +2,18 @@
 import {darkTheme, GlobalThemeOverrides} from 'naive-ui'
 import {useGlobalTheme} from '@/hooks/use-global-theme'
 import AppSub from '@/AppSub.vue'
-import {CustomThemeType} from '@/enum/settings'
 import {useSettingsStore} from '@/store/settings'
 import {isDev} from '@/enum'
+import {useMainStore} from '@/store/main'
+import {useEventListener} from '@vueuse/core'
+
 export default defineComponent({
   components: {
     AppSub,
   },
   setup() {
     const settingsStore = useSettingsStore()
+    const mainStore = useMainStore()
 
     const {isAppDarkMode, isRect, isAero, themeOverrides} = useGlobalTheme()
 
@@ -25,19 +28,14 @@ export default defineComponent({
       return s
     })
 
-    const listenShortcuts = (event) => {
+    useEventListener(document, 'keydown', (event) => {
       const key = event.key.toLowerCase()
       if (event.ctrlKey && key === 'r' && !event.shiftKey && !isDev) {
         event.preventDefault()
         window.$message.info('ctrl+r is disabled')
+      } else if (event.altKey && key === 'r') {
+        mainStore.isShowQuickLaunch = !mainStore.isShowQuickLaunch
       }
-    }
-
-    onMounted(() => {
-      document.addEventListener('keydown', listenShortcuts)
-    })
-    onBeforeUnmount(() => {
-      document.removeEventListener('keydown', listenShortcuts)
     })
 
     return {

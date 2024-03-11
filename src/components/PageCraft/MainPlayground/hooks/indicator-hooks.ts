@@ -3,7 +3,7 @@ import {ActionType, BlockType} from '@/enum/page-craft/block'
 import {useMainStore} from '@/store/main'
 import {useI18n} from 'vue-i18n'
 import {useSfxBass, useSfxPop} from '@/hooks/use-sfx'
-import {useBroadcastMessage} from '@/components/PageCraft/MainPlayground/hooks/use-broadcast-messae'
+import {useBroadcastMessage} from '@/hooks/use-broadcast-messae'
 
 export type IndicatorOptions = {
   enableDevHelpClass: boolean

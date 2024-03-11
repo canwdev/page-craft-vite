@@ -1,4 +1,4 @@
-import {CustomThemeType, LdThemeType} from '@/enum/settings'
+import {LdThemeType} from '@/enum/settings'
 import {useSettingsStore} from '@/store/settings'
 import {useMainStore} from '@/store/main'
 import {LsKeys} from '@/enum/page-craft'
@@ -7,7 +7,7 @@ import {getSystemIsDarkMode, hexToRgb} from '@/utils/color'
 import {GlobalThemeOverrides} from 'naive-ui'
 import {sassToCSS} from '@/utils/css'
 import {usePlaygroundStore} from '@/store/playground'
-import {useBroadcastMessage} from '@/components/PageCraft/MainPlayground/hooks/use-broadcast-messae'
+import {CustomThemeType} from '@/components/CommonUI/ViewPortWindow/enum'
 
 export const useGlobalTheme = () => {
   const mainStore = useMainStore()

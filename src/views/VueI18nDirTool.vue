@@ -9,14 +9,12 @@ import {
   I18nJsonObjUtils,
   ITranslateTreeItem,
 } from '@/enum/vue-i18n-tool'
-import BatchTranslate from '@/components/VueI18nEditTool/Batch/BatchTranslate.vue'
+import BatchTranslate from '@/components/VueI18nEditTool/BatchGUI/index.vue'
 import DropZone from '@/components/CommonUI/DropZone.vue'
 import {useFileDrop} from '@/hooks/use-file-drop'
 import {useMetaTitle} from '@/hooks/use-meta'
 import {useBeforeUnload, useSaveShortcut} from '@/hooks/use-beforeunload'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
-import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
-import dynamicLoadScript from '@/utils/dynamic-load-script'
 import TranslateTreeItem from '@/components/VueI18nEditTool/Single/TranslateTreeItem.vue'
 import {useMainStore} from '@/store/main'
 import {useI18n} from 'vue-i18n'
@@ -24,8 +22,10 @@ import {Document20Regular, Folder20Regular} from '@vicons/fluent'
 import {NIcon} from 'naive-ui'
 import {useI18nToolSettingsStore} from '@/store/i18n-tool-settings'
 import I18nToolSettings from '@/components/VueI18nEditTool/I18nToolSettings.vue'
-import {useLocalStorageObject, useLocalStorageString} from '@/hooks/use-local-storage'
-import BatchTextEditor from '@/components/VueI18nEditTool/BatchTextEditor/BatchTextEditor.vue'
+import BatchTextEditor from '@/components/VueI18nEditTool/BatchText/index.vue'
+import {useI18nMainStore} from '@/store/i18n-tool-main'
+import {useStorage} from '@vueuse/core'
+import TabLayout from '@/components/CommonUI/TabLayout.vue'
 
 const formatDirTreeItem = (data: any = {}): DirTreeItem => {
   return {
@@ -54,15 +54,15 @@ enum EditMode {
 
 const editModeOptions = [
   {
-    label: 'Text',
+    label: 'TEXT',
     value: EditMode.TEXT,
   },
   {
-    label: 'Single',
+    label: 'SINGLE',
     value: EditMode.GUI,
   },
   {
-    label: 'Batch',
+    label: 'BATCH',
     value: EditMode.BATCH,
   },
 ]
@@ -70,25 +70,25 @@ const editModeOptions = [
 export default defineComponent({
   name: 'VueI18nBatchTool',
   components: {
+    TabLayout,
     BatchTextEditor,
     I18nToolSettings,
     TranslateTreeItem,
-    VueMonaco,
     BatchTranslate,
     DropZone,
   },
   setup() {
     const {t: $t} = useI18n()
     const mainStore = useMainStore()
-    const intSettingsStore = useI18nToolSettingsStore()
-    const dirTree = ref<DirTreeItem[]>([])
+    const i18nMainStore = useI18nMainStore()
+    const i18nSetStore = useI18nToolSettingsStore()
     const isLoading = ref(false)
 
     // 保存手动展开的文件夹keys
-    const expandedKeys = useLocalStorageObject('vue_i18n_dir_tool_expanded_keys', [])
+    const expandedKeys = useStorage('vue_i18n_dir_tool_expanded_keys', [])
 
     const isValidDir = (name: string) => {
-      return !intSettingsStore.ignoreFoldersMap[name]
+      return !i18nSetStore.ignoreFoldersMap[name]
     }
 
     // 递归读取文件夹
@@ -97,7 +97,7 @@ export default defineComponent({
       deep = 0,
       tree: DirTreeItem[] = [],
       parentDirs: string[] = [],
-      parentKey?: string = ''
+      parentKey: string = ''
     ): Promise<DirTreeItem[]> => {
       let idx = 0
       for await (const entry of dirHandle.values()) {
@@ -195,7 +195,7 @@ export default defineComponent({
         isLoading.value = true
         const handle = dirHandle.value
         let tree: DirTreeItem[] = []
-        if (intSettingsStore.isFoldersMode) {
+        if (i18nSetStore.isFoldersMode) {
           tree = await recursiveReadDir(handle)
         } else {
           tree = await readJsonFiles(handle)
@@ -205,7 +205,7 @@ export default defineComponent({
             'The content is empty, please check the folder directory structure!'
           )
         }
-        dirTree.value = tree
+        i18nMainStore.dirTree = tree
       } catch (e: any) {
         console.error(e)
         window.$message.error(e.message)
@@ -217,15 +217,12 @@ export default defineComponent({
       dirHandle.value = null
       currentEditEntry.value = null
       editingTextValue.value = null
-      dirTree.value = []
-      currentFilePathArr.value = []
+      i18nMainStore.dirTree = []
+      i18nMainStore.filePathArr = []
     }
 
     const currentEditEntry = ref<FileSystemFileHandle | null>(null)
     const editingTextValue = ref<string | null>(null)
-    const currentFilePathArr = ref<string[]>([])
-
-    const translatePath = ref('')
 
     const handleSaveFile = async () => {
       try {
@@ -260,7 +257,7 @@ export default defineComponent({
       }
     }
 
-    const editMode = useLocalStorageString('vue_i18n_dir_tool_edit_mode', EditMode.BATCH)
+    const editMode = useStorage('vue_i18n_dir_tool_edit_mode', EditMode.BATCH)
 
     const translateTreeRoot = ref<ITranslateTreeItem[]>([formatTranslateTreeItem()])
     const updateGuiTranslateTree = () => {
@@ -290,11 +287,6 @@ export default defineComponent({
 
     const vueMonacoRef = ref()
 
-    onMounted(async () => {
-      await dynamicLoadScript(import.meta.env.BASE_URL + 'lib/pinyinjs/pinyin_dict_notone.min.js')
-      await dynamicLoadScript(import.meta.env.BASE_URL + 'lib/pinyinjs/pinyinUtil.js')
-    })
-
     useBeforeUnload(() => {
       return !!dirHandle.value
     })
@@ -312,8 +304,8 @@ export default defineComponent({
               currentEditEntry.value = entry
               const str = await handleReadSelectedFile(await entry.getFile())
               editingTextValue.value = str as string
-              currentFilePathArr.value = [...option.parentDirs, option.label]
-              translatePath.value = ''
+              i18nMainStore.filePathArr = [...option.parentDirs, option.label]
+              i18nMainStore.translatePath = ''
               updateGuiTranslateTree()
             }
           } catch (e: any) {
@@ -330,7 +322,7 @@ export default defineComponent({
     const handleKeyClick = (str, event) => {
       // console.log(str, event)
       const selector = '.translate-item'
-      translatePath.value = str
+      i18nMainStore.translatePath = str
 
       const els = Array.from(document.querySelectorAll(selector))
       els.forEach((el) => {
@@ -367,10 +359,10 @@ export default defineComponent({
 
     return {
       metaTitle,
+      i18nMainStore,
       iconTranslate,
       handlePickDir,
       handleCloseDir,
-      dirTree,
       dirHandle,
       reloadPickedDir,
       vueMonacoRef,
@@ -382,13 +374,11 @@ export default defineComponent({
       EditMode,
       editModeOptions,
       translateTreeRoot,
-      currentFilePathArr,
-      translatePath,
       handleKeyClick,
       ...useFileDrop({
         cb: handleFileDrop,
       }),
-      intSettingsStore,
+      i18nSetStore,
       mainStore,
       isShowToolSettings,
       isLoading,
@@ -400,7 +390,7 @@ export default defineComponent({
 
 <template>
   <div
-    class="vue-i18n-dir-tool"
+    class="vue-i18n-dir-tool i18n-style"
     @dragover.prevent.stop="fileDragover"
     @dragleave.prevent.stop="showDropzone = false"
     @drop.prevent.stop="fileDrop"
@@ -414,7 +404,7 @@ export default defineComponent({
       <DropZone position-fixed v-show="showDropzone" :text="$t('msgs.drag_folder_here')" />
     </transition>
 
-    <n-card size="small">
+    <div class="vp-panel navbar-wrap">
       <n-page-header subtitle="" @back="$router.push({name: 'HomePage'})">
         <template #title>{{ metaTitle }}</template>
         <template #avatar> <n-avatar :src="iconTranslate" style="background: none" /> </template>
@@ -424,8 +414,8 @@ export default defineComponent({
               {{ $t('common.settings') }}
             </n-button>
 
-            <n-button secondary size="small" @click="mainStore.isShowTextTransformer = true">
-              {{ $t('common.text_transformer') }}
+            <n-button secondary size="small" @click="mainStore.isShowQuickLaunch = true">
+              {{ $t('common.tools') }}
             </n-button>
 
             <n-button
@@ -438,14 +428,8 @@ export default defineComponent({
               {{ $t('actions.save_changes') }}
             </n-button>
 
-            {{ $t('common.edit_mode') }}:<n-radio-group size="small" v-model:value="editMode">
-              <n-radio-button
-                v-for="item in editModeOptions"
-                :key="item.value"
-                :value="item.value"
-                :label="item.label"
-              />
-            </n-radio-group>
+            {{ $t('common.edit_mode') }}:
+            <TabLayout v-model="editMode" horizontal :tab-list="editModeOptions" />
 
             <n-popconfirm v-if="dirHandle" @positive-click="handleCloseDir()">
               <template #trigger>
@@ -469,7 +453,7 @@ export default defineComponent({
           </n-space>
         </template>
       </n-page-header>
-    </n-card>
+    </div>
 
     <div class="_container">
       <n-layout style="height: 100%" has-sider>
@@ -484,7 +468,7 @@ export default defineComponent({
           <n-scrollbar style="height: 100%">
             <n-tree
               block-line
-              :data="dirTree"
+              :data="i18nMainStore.dirTree"
               :node-props="nodeProps"
               :default-expand-all="false"
               expand-on-click
@@ -502,7 +486,7 @@ export default defineComponent({
               <!--文本编辑器-->
               <!--<template v-if="editMode === EditMode.TEXT">-->
               <!--  <n-card class="action-row">-->
-              <!--    {{ currentFilePathArr.join('/') }}-->
+              <!--    {{ i18nMainStore.filePathArr.join('/') }}-->
               <!--  </n-card>-->
               <!--  <div class="edit-content-wrap">-->
               <!--    <VueMonaco-->
@@ -513,13 +497,7 @@ export default defineComponent({
               <!--    />-->
               <!--  </div>-->
               <!--</template>-->
-              <BatchTextEditor
-                v-if="editMode === EditMode.TEXT"
-                :dir-tree="dirTree"
-                :file-path-arr="currentFilePathArr"
-                :translate-path="translatePath"
-                :is-folders-mode="intSettingsStore.isFoldersMode"
-              />
+              <BatchTextEditor v-if="editMode === EditMode.TEXT" />
 
               <!--GUI模式-->
               <div v-else class="edit-content-wrap batch-mode">
@@ -527,9 +505,10 @@ export default defineComponent({
                   class="gui-edit-gui"
                   :style="{width: editMode === EditMode.BATCH ? '500px' : '100%'}"
                 >
-                  <!--<n-card class="action-row">-->
-                  <!--  {{ currentFilePathArr.join('/') }}-->
-                  <!--</n-card>-->
+                  <n-card v-if="editMode === EditMode.BATCH" class="action-row">
+                    <n-button size="tiny">Analyse</n-button>
+                    <!-- {{ i18nMainStore.filePathArr.join('/') }}-->
+                  </n-card>
 
                   <TranslateTreeItem
                     v-for="(item, index) in translateTreeRoot"
@@ -537,31 +516,26 @@ export default defineComponent({
                     :index="index"
                     :item="item"
                     :is-lite="editMode === EditMode.BATCH"
-                    :title="currentFilePathArr.join('/')"
+                    :title="i18nMainStore.filePathArr.join('/')"
                     @onKeyClick="handleKeyClick"
                   />
                 </n-scrollbar>
 
                 <!--批处理模式-->
                 <n-scrollbar class="gui-edit-batch" v-if="editMode === EditMode.BATCH">
-                  <BatchTranslate
-                    :dir-tree="dirTree"
-                    :file-path-arr="currentFilePathArr"
-                    :translate-path="translatePath"
-                    :is-folders-mode="intSettingsStore.isFoldersMode"
-                  />
+                  <BatchTranslate />
                 </n-scrollbar>
               </div>
             </template>
 
             <!--未打开文件夹，展示提示-->
             <div class="null-intro" v-else>
-              <template v-if="dirTree.length">
+              <template v-if="i18nMainStore.dirTree.length">
                 <div class="intro-title">👈 {{ $t('msgs.please_select_a_json') }}</div>
               </template>
               <div class="font-code" v-else>
                 <n-space align="center" class="intro-title">
-                  <n-switch size="large" v-model:value="intSettingsStore.isFoldersMode">
+                  <n-switch size="large" v-model:value="i18nSetStore.isFoldersMode">
                     <template #checked>{{ $t('common.folders_mode') }}</template>
                     <template #unchecked>{{ $t('common.files_mode') }}</template>
                   </n-switch>
@@ -570,12 +544,12 @@ export default defineComponent({
                 </n-space>
                 <textarea
                   class="font-code"
-                  :class="{_alt: !intSettingsStore.isFoldersMode}"
+                  :class="{_alt: !i18nSetStore.isFoldersMode}"
                   readonly
                   cols="50"
                   rows="20"
                   :value="
-                    intSettingsStore.isFoldersMode
+                    i18nSetStore.isFoldersMode
                       ? `└─[locales]    --> ${$t('msgs.drag_folder_here')}!
    ├─de-DE
    │  └─index.json
@@ -618,6 +592,7 @@ export default defineComponent({
 </template>
 
 <style lang="scss">
+@import '@/components/VueI18nEditTool/i18n-style';
 .vue-i18n-dir-tool {
   width: 100%;
   height: 100%;

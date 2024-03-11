@@ -1,6 +1,6 @@
 import {ActionType, BlockItem, BlockType} from '@/enum/page-craft/block'
 import {useMainStore} from '@/store/main'
-import {appendCustomBlock, createBlockElement} from '@/utils/dom'
+import {appendCustomBlock, autoPasteReplaceValue, createBlockElement} from '@/utils/dom'
 import {LsKeys, TOOL_CLASSES} from '@/enum/page-craft'
 import {throttle} from 'throttle-debounce'
 import $ from 'jquery'
@@ -175,9 +175,9 @@ export const useInteractionHooks = (options) => {
     playSfxPlace()
   }
 
-  const pasteReplaceInnerHtml = async (targetEl) => {
+  const pasteReplaceValue = async (targetEl) => {
     recordUndo()
-    targetEl.innerHTML = await navigator.clipboard.readText()
+    await autoPasteReplaceValue(targetEl)
     saveData()
     playSfxPlace()
   }
@@ -287,10 +287,10 @@ export const useInteractionHooks = (options) => {
         },
       },
       {
-        label: '🎈 ' + $t('actions.paste__replace_inner'),
+        label: '🎈 ' + $t('actions.paste_replace_value'),
         props: {
           onClick: async () => {
-            await pasteReplaceInnerHtml(targetEl)
+            await pasteReplaceValue(targetEl)
             contextMenuEtc.showRightMenu.value = false
           },
         },

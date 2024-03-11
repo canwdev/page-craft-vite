@@ -66,7 +66,7 @@ export default defineComponent({
   setup(props) {
     const {item, index} = toRefs(props)
     const mainStore = useMainStore()
-    const intSettingsStore = useI18nToolSettingsStore()
+    const i18nSetStore = useI18nToolSettingsStore()
 
     const handleAddChildren = () => {
       mainStore.trIsManualAdd = true
@@ -81,8 +81,8 @@ export default defineComponent({
     const handleAutoAdd = async () => {
       let val: any = await readClipboardData()
 
-      val = textConvertAdvanced(val, intSettingsStore.autoPasteTextConvertMode, {
-        isTrimQuotes: intSettingsStore.autoPasteTrimQuotes,
+      val = textConvertAdvanced(val, i18nSetStore.autoPasteTextConvertMode, {
+        isTrimQuotes: i18nSetStore.autoPasteTrimQuotes,
       })
 
       // 生成guid用来区分
@@ -139,7 +139,7 @@ export default defineComponent({
     })
 
     return {
-      intSettingsStore,
+      i18nSetStore,
       handleAddChildren,
       handleAddTranslate,
       handleAutoAdd,
@@ -171,7 +171,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <n-card size="small" class="tree-item" v-if="item" :class="{isKeyDuplicated}">
+  <div class="vp-panel vp-window-panel translate-tree-item" v-if="item" :class="{isKeyDuplicated}">
     <div class="group-header">
       <template v-if="isKeyDuplicated">
         <n-tooltip trigger="hover">
@@ -182,68 +182,50 @@ export default defineComponent({
         </n-tooltip>
       </template>
 
-      <n-input
-        v-if="isRoot"
-        ref="namespaceInputRef"
-        size="small"
-        class="font-code"
-        :value="title || item.namespace"
-        disabled
-        style="flex: 1"
-      >
-        <template #prefix>
-          <n-icon color="red" size="16">
-            <Globe16Regular />
-          </n-icon>
-        </template>
-      </n-input>
+      <div v-if="isRoot" class="namespace-input-wrap font-code">
+        <span v-if="!isLite" style="color: #f44336" class="namespace-prefix"> § </span>
+        <input
+          ref="namespaceInputRef"
+          class="font-code vp-input"
+          :value="title || item.namespace"
+          placeholder="namespace"
+          style="flex: 1"
+          :readonly="isLite"
+          disabled
+          @blur="checkDuplicatedGroupKey"
+        />
+      </div>
 
-      <n-input
-        v-else
-        ref="namespaceInputRef"
-        size="small"
-        class="font-code"
-        v-model:value="item.namespace"
-        placeholder="namespace"
-        style="flex: 1"
-        :readonly="isLite"
-        @blur="checkDuplicatedGroupKey"
-        ><!--§-->
-        <template #prefix>
-          <n-icon color="darkseagreen" size="16" :title="namespacePrefix">
-            <Globe16Regular />
-          </n-icon>
-          <span v-if="!isLite" style="color: darkseagreen">
-            {{ namespacePrefix + (namespacePrefix ? '.' : '') }}
-          </span>
-        </template>
-      </n-input>
-      <n-space v-if="!isLite" style="margin-left: 10px" align="center">
-        <n-button-group>
-          <n-button
-            size="small"
-            tertiary
-            type="info"
-            @click="handleGetJSON"
-            :title="`${$t('actions.copy')} JSON`"
-          >
-            <template #icon><Copy20Regular /></template>
-          </n-button>
-          <n-popconfirm v-if="!isRoot" @positive-click="$emit('onRemove')">
-            <template #trigger>
-              <n-button tertiary type="error" size="small">
-                <template #icon>
-                  <Delete20Regular />
-                </template>
-              </n-button>
-            </template>
-            {{ $t('msgs.remove_group') }}
-          </n-popconfirm>
-          <n-button size="small" secondary @click="isExpand = !isExpand" :title="`Toggle Expand`">
-            {{ !isExpand ? '🙈' : '👀' }}
-          </n-button>
-        </n-button-group>
-      </n-space>
+      <div v-else class="namespace-input-wrap font-code">
+        <span v-if="!isLite" class="namespace-prefix">
+          § {{ namespacePrefix + (namespacePrefix ? '.' : '') }}
+        </span>
+        <input
+          ref="namespaceInputRef"
+          class="font-code vp-input"
+          v-model="item.namespace"
+          placeholder="namespace"
+          style="flex: 1"
+          :readonly="isLite"
+          @blur="checkDuplicatedGroupKey"
+        />
+      </div>
+      <div class="actions-buttons-wrap" v-if="!isLite">
+        <button class="vp-button" @click="handleGetJSON" :title="`${$t('actions.copy')} JSON`">
+          <Copy20Regular />
+        </button>
+        <n-popconfirm v-if="!isRoot" @positive-click="$emit('onRemove')">
+          <template #trigger>
+            <button class="vp-button danger">
+              <Delete20Regular />
+            </button>
+          </template>
+          {{ $t('msgs.remove_group') }}
+        </n-popconfirm>
+        <button @click="isExpand = !isExpand" :title="`Toggle Expand`" class="vp-button">
+          {{ !isExpand ? '🙈' : '👀' }}
+        </button>
+      </div>
     </div>
 
     <div v-if="isExpand">
@@ -262,26 +244,20 @@ export default defineComponent({
       </div>
 
       <div class="actions-wrap">
-        <n-button-group v-if="!isLite">
-          <n-button size="small" title="Add translate item" type="info" @click="handleAddTranslate">
-            <template #icon>
-              <Add20Regular />
-            </template>
+        <div class="actions-buttons-wrap" v-if="!isLite">
+          <button title="Add translate item" @click="handleAddTranslate" class="vp-button">
+            <Add20Regular />
             {{ $t('common.field') }}
-          </n-button>
-          <n-button
-            size="small"
-            type="info"
-            secondary
+          </button>
+          <button
             @click="handleAutoAdd"
-            :title="`Auto Paste (${intSettingsStore.autoPasteTextConvertMode}) and copy key`"
+            :title="`Auto Paste (${i18nSetStore.autoPasteTextConvertMode}) and copy key`"
+            class="vp-button primary"
           >
-            <template #icon>
-              <ClipboardPaste20Regular />
-            </template>
+            <ClipboardPaste20Regular />
             Auto Paste
-          </n-button>
-        </n-button-group>
+          </button>
+        </div>
       </div>
 
       <div class="split-line" />
@@ -304,17 +280,15 @@ export default defineComponent({
         <span class="namespace-display">
           {{ namespacePrefix ? namespacePrefix + '.' : '' }}{{ item.namespace }}</span
         >
-        <n-button
+        <button
           v-if="!isLite"
-          type="primary"
           @click="handleAddChildren"
           title="Add translate children group"
+          class="vp-button primary"
         >
-          <template #icon>
-            <AddSquare20Regular />
-          </template>
+          <AddSquare20Regular />
           {{ $t('common.group') }}
-        </n-button>
+        </button>
       </div>
     </div>
 
@@ -325,14 +299,17 @@ export default defineComponent({
       v-model:visible="isShowArrayEdit"
       :text="currentArrayString"
       @onSave="handleSaveArray"
+      v-if="isShowArrayEdit"
     />
-  </n-card>
+  </div>
 </template>
 
-<style lang="scss" scoped>
-.tree-item {
+<style lang="scss">
+.translate-tree-item {
   margin-top: 10px;
   margin-bottom: 10px;
+  padding: 10px;
+  box-shadow: none !important;
 
   &:hover {
     transition: none;
@@ -342,9 +319,20 @@ export default defineComponent({
     background-color: rgba(244, 67, 54, 0.1) !important;
   }
 
+  .namespace-input-wrap {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    .namespace-prefix {
+      color: $primary;
+    }
+  }
+
   .group-header {
     display: flex;
     align-items: center;
+    gap: 8px;
 
     .mc-error-tip-button {
       margin-right: 8px;

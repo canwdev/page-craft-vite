@@ -1,15 +1,20 @@
 <script lang="ts">
 import {defineComponent, PropType, shallowRef} from 'vue'
-import {useModelWrapper} from '@/hooks/use-model-wrapper'
+import {useModelWrapper, useModelWrapperV2} from '@/hooks/use-model-wrapper'
 import {WindowController, WinOptions} from './window-controller'
 import {throttle} from 'throttle-debounce'
-import {ArrowMaximize20Regular, ArrowMinimize20Regular, Dismiss20Regular} from '@vicons/fluent'
+import {
+  ArrowMaximize20Regular,
+  ArrowMinimize20Regular,
+  Dismiss20Regular,
+  Subtract20Filled,
+} from '@vicons/fluent'
 
 const LS_KEY_VP_WINDOW_OPTION = 'page_craft_vp_window'
 
 export default defineComponent({
   name: 'ViewPortWindow',
-  components: {ArrowMinimize20Regular, ArrowMaximize20Regular, Dismiss20Regular},
+  components: {Subtract20Filled, ArrowMinimize20Regular, ArrowMaximize20Regular, Dismiss20Regular},
   props: {
     // 是否显示窗口
     visible: {
@@ -23,6 +28,19 @@ export default defineComponent({
     },
     // 是否允许最大化
     allowMaximum: {
+      type: Boolean,
+      default: false,
+    },
+    // 外部传入的是否最大化属性，支持双向绑定
+    maximized: {
+      type: Boolean,
+      default: false,
+    },
+    allowMinimum: {
+      type: Boolean,
+      default: false,
+    },
+    minimized: {
       type: Boolean,
       default: false,
     },
@@ -47,9 +65,16 @@ export default defineComponent({
       default: 'mc-fade-scale',
     },
   },
-  emits: ['update:visible', 'resize', 'onActive', 'onClose', 'onTitleBarDbclick'],
+  emits: [
+    'update:visible',
+    'resize',
+    'onActive',
+    'onClose',
+    'update:minimized',
+    'update:maximized',
+  ],
   setup(props, {emit}) {
-    const {allowMove} = toRefs(props)
+    const {allowMaximum, allowMove} = toRefs(props)
     const storageKey = LS_KEY_VP_WINDOW_OPTION + '_' + props.wid
     const mVisible = useModelWrapper(props, emit, 'visible')
     const winElRef = ref()
@@ -57,7 +82,8 @@ export default defineComponent({
     const titleBarButtonsRef = ref()
     const dWindow = shallowRef<any>(null)
 
-    const isMaximized = ref(false)
+    const isMaximized = useModelWrapperV2(props, emit, 'maximized')
+    const isMinimized = useModelWrapperV2(props, emit, 'minimized')
 
     const getInitWinOptions = () => {
       const defaultValue = props.initWinOptions || {
@@ -196,6 +222,12 @@ export default defineComponent({
       // handleResizeDebounced()
     }
 
+    const handleTitlebarDbClick = () => {
+      if (allowMaximum.value) {
+        isMaximized.value = !isMaximized.value
+      }
+    }
+
     return {
       mVisible,
       winElRef,
@@ -208,6 +240,8 @@ export default defineComponent({
       setActive,
       setSize,
       isMaximized,
+      isMinimized,
+      handleTitlebarDbClick,
     }
   },
 })
@@ -225,21 +259,31 @@ export default defineComponent({
       ref="winElRef"
     >
       <div class="vp-window-content">
-        <div ref="titleBarRef" class="page-craft-title-bar" @dblclick="$emit('onTitleBarDbclick')">
-          <div class="page-craft-title-bar-text text-overflow">
+        <div ref="titleBarRef" class="vp-window-title-bar" @dblclick="handleTitlebarDbClick">
+          <div class="vp-window-title-bar-text text-overflow">
             <slot name="titleBarLeft"></slot>
           </div>
           <div ref="titleBarButtonsRef" class="vp-window-controls">
             <slot name="titleBarRightControls"> </slot>
             <slot name="titleBarRight">
-              <button v-if="allowMaximum" @click="isMaximized = !isMaximized">
+              <button v-if="allowMinimum" @click="isMinimized = true" class="is-minimize">
+                <n-icon size="20">
+                  <Subtract20Filled />
+                </n-icon>
+              </button>
+
+              <button
+                v-if="allowMaximum"
+                @click="isMaximized = !isMaximized"
+                :class="[isMaximized ? 'is-restore' : 'is-maximize']"
+              >
                 <n-icon size="20">
                   <ArrowMinimize20Regular v-if="isMaximized" />
                   <ArrowMaximize20Regular v-else />
                 </n-icon>
               </button>
 
-              <button v-if="showClose" :title="`Close`" @click="handleClose" class="_danger">
+              <button v-if="showClose" :title="`Close`" @click="handleClose" class="is-close">
                 <n-icon size="20"><Dismiss20Regular /></n-icon>
               </button>
             </slot>
@@ -279,7 +323,7 @@ export default defineComponent({
     box-shadow: none !important;
     border-radius: 0 !important;
     .vp-window-content {
-      .page-craft-title-bar {
+      .vp-window-title-bar {
         margin-left: unset;
         margin-right: unset;
       }
@@ -298,7 +342,7 @@ export default defineComponent({
     display: flex;
     flex-direction: column;
 
-    .page-craft-title-bar {
+    .vp-window-title-bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -310,12 +354,11 @@ export default defineComponent({
         pointer-events: none;
       }
 
-      .page-craft-title-bar-text {
+      .vp-window-title-bar-text {
         display: flex;
         align-items: center;
-        height: 16px;
         gap: 4px;
-        line-height: 1;
+        line-height: 1.4;
       }
     }
     .vp-window-body {
