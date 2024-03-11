@@ -13,6 +13,10 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    horizontal: {
+      type: Boolean,
+      default: false,
+    },
     title: {
       type: String,
       default: '',
@@ -149,7 +153,7 @@ export default defineComponent({
       handleOptionClick(item)
     }
 
-    const handleOptionClick = async (item: QuickOptionItem) => {
+    const handleOptionClick = async (item: QuickOptionItem, event?) => {
       if (item.children) {
         let subList: QuickOptionItem[] = []
         if (typeof item.children === 'function') {
@@ -160,8 +164,15 @@ export default defineComponent({
         menuStack.value.push(subList)
         curIndex.value = 0
       } else if (item?.props?.onClick) {
-        item.props.onClick(item)
+        item.props.onClick(item, event)
         mVisible.value = false
+      }
+    }
+
+    const handleOptionContextmenu = async (item: QuickOptionItem, event?) => {
+      if (item?.props?.onContextmenu) {
+        event?.preventDefault()
+        item.props.onContextmenu(item, event)
       }
     }
 
@@ -174,6 +185,7 @@ export default defineComponent({
       handleBack,
       mOptions,
       handleOptionClick,
+      handleOptionContextmenu,
     }
   },
 })
@@ -183,7 +195,7 @@ export default defineComponent({
   <div
     v-if="mVisible || isStatic"
     class="quick-options vp-panel _scrollbar_mini"
-    :class="{_absolute: !isStatic, _s: isStatic}"
+    :class="{_absolute: !isStatic, _s: isStatic, horizontal}"
     @keydown.stop="handleKeyPress"
     tabindex="0"
     ref="quickRootRef"
@@ -206,7 +218,8 @@ export default defineComponent({
       class="option-item"
       v-for="(item, index) in mOptions"
       :key="index"
-      @click="handleOptionClick(item)"
+      @click="handleOptionClick(item, $event)"
+      @contextmenu="handleOptionContextmenu(item, $event)"
       :class="{
         focus: curIndex === index,
         clickable: item?.props?.onClick || (item.children && item.children),
@@ -258,6 +271,18 @@ export default defineComponent({
     box-shadow: none;
     border: none;
     border-radius: 0;
+  }
+
+  &.horizontal {
+    display: flex;
+    .option-item {
+      padding: 4px 8px;
+      min-width: auto;
+      border-bottom: 0;
+      .index-wrap {
+        display: none;
+      }
+    }
   }
 
   .option-title {

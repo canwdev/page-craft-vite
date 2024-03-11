@@ -9,5 +9,6 @@ export type QuickOptionItem = {
   children?: QuickOptionItem[] | Function
   props?: {
     onClick?: any
+    onContextmenu?: any
   }
 }
