@@ -115,7 +115,7 @@ export default defineComponent({
 
   .inventory-list {
     overflow: auto;
-    padding: 10px;
+    padding: 8px;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
     //grid-template-columns: repeat(12, 1fr);
