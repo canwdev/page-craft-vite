@@ -303,6 +303,7 @@ export default defineComponent({
   z-index: 100;
   min-height: 50px;
   min-width: 50px;
+  box-sizing: border-box;
   &._allow_move {
     position: fixed;
     z-index: 100;

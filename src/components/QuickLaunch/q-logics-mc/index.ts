@@ -6,6 +6,9 @@ import {guid_S4} from '@/utils'
 import {copy} from '../q-logics/utils'
 
 const copyI18n = async (val, isObject = false) => {
+  if (!val) {
+    return
+  }
   // 单行
   if (!val.includes('\n')) {
     const key = window.$consoleUtils.formatI18nKey(val)

@@ -68,6 +68,19 @@
       }
     }
 
+    &._maximized {
+      padding: 0;
+      .vp-window-content {
+        .vp-window-title-bar {
+          margin-left: 0;
+          margin-right: -3px;
+        }
+        .vp-window-body {
+          border: none;
+        }
+      }
+    }
+
     &._active {
       background-color: white;
     }

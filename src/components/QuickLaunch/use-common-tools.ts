@@ -91,7 +91,7 @@ export const useCommonTools = () => {
     } else {
       list = [
         {
-          label: '🖼️ ' + formatSiteTitle(),
+          label: '⛏️ ' + formatSiteTitle(),
           props: {
             onClick: async () => {
               mainStore.isShowQuickLaunch = false
