@@ -26,6 +26,9 @@ import BatchTextEditor from '@/components/VueI18nEditTool/BatchText/index.vue'
 import {useI18nMainStore} from '@/store/i18n-tool-main'
 import {useStorage} from '@vueuse/core'
 import TabLayout from '@/components/CommonUI/TabLayout.vue'
+import {useIDBKeyval} from '@vueuse/integrations/useIDBKeyval'
+import {FileHandleHistory, verifyPermission} from '@/components/VueI18nEditTool/file-history'
+import {LsKeys} from '@/enum/page-craft'
 
 const formatDirTreeItem = (data: any = {}): DirTreeItem => {
   return {
@@ -83,6 +86,11 @@ export default defineComponent({
     const i18nMainStore = useI18nMainStore()
     const i18nSetStore = useI18nToolSettingsStore()
     const isLoading = ref(false)
+
+    const {data: fileHistory, set: setFileHistory} = useIDBKeyval<FileHandleHistory[]>(
+      LsKeys.I18N_FOLDER_HANDLE_HISTORY,
+      []
+    )
 
     // 保存手动展开的文件夹keys
     const expandedKeys = useStorage('vue_i18n_dir_tool_expanded_keys', [])
@@ -181,12 +189,25 @@ export default defineComponent({
       return tree
     }
 
-    const dirHandle = shallowRef()
+    const appendHistory = async (handle: FileSystemFileHandle) => {
+      console.log(handle)
+      const list = [...fileHistory.value]
+      list.push({
+        handle,
+        lastOpened: Date.now(),
+      })
+      // 最多保存5条历史记录，因为无法区分打开的文件是否为同一文件
+      await setFileHistory(list.slice(0, 5))
+    }
+
+    const dirHandle = shallowRef<FileSystemDirectoryHandle>()
     const handlePickDir = async () => {
       // https://css-tricks.com/getting-started-with-the-file-system-access-api/
       // https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryHandle
       // @ts-ignore
-      dirHandle.value = await window.showDirectoryPicker()
+      const handle = await window.showDirectoryPicker()
+      await appendHistory(handle)
+      dirHandle.value = handle
       // console.log('dirHandle', dirHandle)
       await reloadPickedDir()
     }
@@ -213,6 +234,34 @@ export default defineComponent({
         isLoading.value = false
       }
     }
+
+    const handleFileDrop = async (e) => {
+      try {
+        isLoading.value = true
+        // Process all the items.
+        for (const item of e.dataTransfer.items) {
+          // Careful: `kind` will be 'file' for both file
+          // _and_ directory entries.
+          if (item.kind === 'file') {
+            const handle = await item.getAsFileSystemHandle()
+            if (handle.kind === 'directory') {
+              await appendHistory(handle)
+              dirHandle.value = handle
+              await reloadPickedDir()
+              break
+            } else {
+              window.$message.error('Please drag and drop a folder here!')
+            }
+          }
+        }
+      } catch (e: any) {
+        console.error(e)
+        window.$message.error(e.message)
+      } finally {
+        isLoading.value = false
+      }
+    }
+
     const handleCloseDir = () => {
       dirHandle.value = null
       currentEditEntry.value = null
@@ -331,31 +380,35 @@ export default defineComponent({
       event.target.closest(selector).classList.add('active')
     }
 
-    const handleFileDrop = async (e) => {
-      try {
-        isLoading.value = true
-        // Process all the items.
-        for (const item of e.dataTransfer.items) {
-          // Careful: `kind` will be 'file' for both file
-          // _and_ directory entries.
-          if (item.kind === 'file') {
-            const entry = await item.getAsFileSystemHandle()
-            if (entry.kind === 'directory') {
-              dirHandle.value = entry
-              await reloadPickedDir()
-              break
-            } else {
-              window.$message.error('Please drag and drop a folder here!')
-            }
-          }
-        }
-      } catch (e: any) {
-        console.error(e)
-        window.$message.error(e.message)
-      } finally {
-        isLoading.value = false
+    const historyOptions = computed(() => {
+      if (!fileHistory.value.length) {
+        return
       }
-    }
+      return [
+        ...fileHistory.value.reverse().map((i) => {
+          const {handle} = i
+          return {
+            label: handle.name,
+            props: {
+              onClick: async () => {
+                if (await verifyPermission(handle)) {
+                  dirHandle.value = handle
+                  await reloadPickedDir()
+                }
+              },
+            },
+          }
+        }),
+        {
+          label: '🧹 Clear History',
+          props: {
+            onClick: () => {
+              fileHistory.value = []
+            },
+          },
+        },
+      ]
+    })
 
     return {
       metaTitle,
@@ -383,6 +436,7 @@ export default defineComponent({
       isShowToolSettings,
       isLoading,
       expandedKeys,
+      historyOptions,
     }
   },
 })
@@ -433,14 +487,18 @@ export default defineComponent({
 
             <n-popconfirm v-if="dirHandle" @positive-click="handleCloseDir()">
               <template #trigger>
-                <n-button secondary type="primary" size="small"> Close Folder </n-button>
+                <n-button secondary type="primary" size="small">
+                  {{ $t('actions.close') }} Folder
+                </n-button>
               </template>
               Confirm close folder? Unsaved contents will be lost.
             </n-popconfirm>
 
-            <n-button v-else type="primary" size="small" @click="handlePickDir">
-              {{ $t('actions.pick_i18n_directory') }}
-            </n-button>
+            <n-dropdown v-else size="small" :options="historyOptions">
+              <n-button type="primary" size="small" @click="handlePickDir">
+                {{ $t('actions.pick_i18n_directory') }}
+              </n-button>
+            </n-dropdown>
 
             <n-popconfirm v-if="dirHandle" @positive-click="reloadPickedDir()">
               <template #trigger>

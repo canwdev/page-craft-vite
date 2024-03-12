@@ -271,12 +271,16 @@ export default defineComponent({
         list.forEach((i: any) => {
           const r: QuickOptionItem = {
             label: i.label,
-            children: i.children ? traverse(i.children) : null,
+            children: i.children ? traverse(i.children) : undefined,
             props: {},
           }
           if (i.code) {
-            r!.props!.onClick = async () => {
+            r.props!.onClick = async () => {
               insertStyleCode(i.code)
+            }
+            r.props!.onContextmenu = async () => {
+              await copyToClipboard(i.code)
+              window.$message.success($t('msgs.copy_success'))
             }
           }
           result.push(r)

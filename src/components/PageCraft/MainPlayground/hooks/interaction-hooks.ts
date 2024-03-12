@@ -36,7 +36,7 @@ export const useInteractionHooks = (options) => {
   const waitTimer = ref<any>(null)
   const cursorX = ref(0)
   const cursorY = ref(0)
-  const currentHoveredEl = ref<any>(null)
+  const currentHoveredEl = shallowRef<any>(null)
   const isShowElementEdit = ref(false)
 
   useOpenCloseSound(() => isShowElementEdit.value)

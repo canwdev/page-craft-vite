@@ -90,8 +90,7 @@
     "reload": "Reload",
     "save_changes": "Save Changes",
     "save_as": "Save as",
-    "open_json": "Open JSON",
-    "open_excel": "Open Excel"
+    "open": "Open"
   },
   "msgs": {
     "drop_files_here": "Drop files here",

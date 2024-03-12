@@ -14,10 +14,10 @@ import {customThemeOptions, CustomThemeType} from '@/components/CommonUI/ViewPor
 
 const getWallpaperText = () => {
   const list = [{label: 'Bing', url: 'https://api.dujin.org/bing/1920.php'}]
-  let tpl = `<b><a href="https://www.dujin.org/12142.html" target="_blank">随机壁纸API</a></b>`
+  let tpl = `<b><a style="color: inherit" href="https://www.dujin.org/12142.html" target="_blank">随机壁纸API</a></b>`
 
   list.forEach((item) => {
-    tpl += `<br>${item.label}: <a href="${item.url}" target="_blank">${item.url}</a>`
+    tpl += `<br>${item.label}: <a style="color: inherit" href="${item.url}" target="_blank">${item.url}</a>`
   })
 
   return tpl

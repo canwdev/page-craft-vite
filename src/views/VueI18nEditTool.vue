@@ -12,6 +12,12 @@ import {useBeforeUnload, useSaveShortcut} from '@/hooks/use-beforeunload'
 import {useMainStore} from '@/store/main'
 import {useI18n} from 'vue-i18n'
 import I18nToolSettings from '@/components/VueI18nEditTool/I18nToolSettings.vue'
+import {useIDBKeyval} from '@vueuse/integrations/useIDBKeyval'
+import {LsKeys} from '@/enum/page-craft'
+import {guid} from '@/utils'
+import {QuickOptionItem} from '@/components/CommonUI/QuickOptions/enum'
+import QuickOptions from '@/components/CommonUI/QuickOptions/index.vue'
+import {FileHandleHistory, verifyPermission} from '@/components/VueI18nEditTool/file-history'
 
 const filePickerOptions = {
   types: [
@@ -23,10 +29,10 @@ const filePickerOptions = {
     },
   ],
 }
-
 export default defineComponent({
   name: 'VueI18nEditTool',
   components: {
+    QuickOptions,
     I18nToolSettings,
     TranslateTreeItem,
     DropZone,
@@ -37,6 +43,11 @@ export default defineComponent({
     const mainStore = useMainStore()
     const translateTreeRoot = ref<ITranslateTreeItem[]>(I18nJsonObjUtils.parseWithRoot())
     const isLoading = ref(false)
+
+    const {data: fileHistory, set: setFileHistory} = useIDBKeyval<FileHandleHistory[]>(
+      LsKeys.I18N_FILE_HANDLE_HISTORY,
+      []
+    )
 
     const fileHandle = shallowRef<FileSystemFileHandle>()
     const handleImport = async (file) => {
@@ -53,12 +64,51 @@ export default defineComponent({
       }
     }
 
+    const appendHistory = async (handle: FileSystemFileHandle) => {
+      console.log(handle)
+      const list = [...fileHistory.value]
+      list.push({
+        handle,
+        lastOpened: Date.now(),
+      })
+      // 最多保存5条历史记录，因为无法区分打开的文件是否为同一文件
+      await setFileHistory(list.slice(0, 5))
+    }
+
     const handleSelectFile = async () => {
       // @ts-ignore
       const [handle] = await window.showOpenFilePicker(filePickerOptions)
+      await appendHistory(handle)
       fileHandle.value = handle
       const file = await handle.getFile()
       await handleImport(file)
+    }
+
+    const handleFileDrop = async (e) => {
+      try {
+        isLoading.value = true
+        // Process all the items.
+        for (const item of e.dataTransfer.items) {
+          // Careful: `kind` will be 'file' for both file
+          // _and_ directory entries.
+          if (item.kind === 'file') {
+            const handle = await item.getAsFileSystemHandle()
+            if (handle.kind !== 'directory') {
+              await appendHistory(handle)
+              fileHandle.value = handle
+              const file = await handle.getFile()
+              await handleImport(file)
+            } else {
+              window.$message.error('Please drag and drop a json file here!')
+            }
+          }
+        }
+      } catch (e: any) {
+        console.error(e)
+        window.$message.error(e.message)
+      } finally {
+        isLoading.value = false
+      }
     }
 
     const handleCloseFile = () => {
@@ -146,31 +196,101 @@ export default defineComponent({
       })
     }
 
-    const handleFileDrop = async (e) => {
-      try {
-        isLoading.value = true
-        // Process all the items.
-        for (const item of e.dataTransfer.items) {
-          // Careful: `kind` will be 'file' for both file
-          // _and_ directory entries.
-          if (item.kind === 'file') {
-            const entry = await item.getAsFileSystemHandle()
-            if (entry.kind !== 'directory') {
-              fileHandle.value = entry
-              const file = await entry.getFile()
-              await handleImport(file)
-            } else {
-              window.$message.error('Please drag and drop a json file here!')
-            }
-          }
+    const menuOptions = computed((): QuickOptionItem[] => {
+      const getHistoryOptions = () => {
+        if (!fileHistory.value.length) {
+          return
         }
-      } catch (e: any) {
-        console.error(e)
-        window.$message.error(e.message)
-      } finally {
-        isLoading.value = false
+        return [
+          ...fileHistory.value.reverse().map((i) => {
+            const {handle} = i
+            return {
+              label: handle.name,
+              props: {
+                onClick: async () => {
+                  if (await verifyPermission(handle)) {
+                    fileHandle.value = handle
+                    const file = await handle.getFile()
+                    await handleImport(file)
+                  }
+                },
+              },
+            }
+          }),
+          {
+            label: '🧹 Clear History',
+            props: {
+              onClick: () => {
+                fileHistory.value = []
+              },
+            },
+          },
+        ]
       }
-    }
+      // @ts-ignore
+      return [
+        {
+          label: $t('common.settings'),
+          props: {
+            onClick: () => {
+              isShowToolSettings.value = true
+            },
+          },
+        },
+        {
+          label: $t('common.tools'),
+          props: {
+            onClick: () => {
+              mainStore.isShowQuickLaunch = true
+            },
+          },
+        },
+        fileHandle.value
+          ? {
+              label: $t('actions.close') + ' JSON',
+              children: [
+                {
+                  label: $t('Confirm close JSON? Unsaved contents will be lost.'),
+                  props: {onClick: handleCloseFile, isBack: true},
+                },
+              ],
+            }
+          : {
+              label: $t('actions.open') + ' JSON',
+              props: {
+                onClick: () => {
+                  handleSelectFile()
+                },
+              },
+              dropdown: getHistoryOptions(),
+            },
+
+        fileHandle.value
+          ? {
+              label: $t('actions.save'),
+              props: {
+                onClick: () => {
+                  handleSaveFile()
+                },
+              },
+            }
+          : null,
+        {
+          label: $t('actions.save_as') + '...',
+          props: {
+            onClick: () => {
+              handleExport()
+            },
+          },
+        },
+        {
+          label: $t('common.demo'),
+          children: [
+            {label: $t('msgs.load_demo_this_will'), props: {onClick: loadDemo, isBack: true}},
+          ],
+        },
+      ].filter(Boolean)
+    })
 
     return {
       metaTitle,
@@ -189,6 +309,7 @@ export default defineComponent({
       mainStore,
       isShowToolSettings,
       isLoading,
+      menuOptions,
     }
   },
 })
@@ -218,45 +339,13 @@ export default defineComponent({
         <template #title>{{ metaTitle }}</template>
         <template #avatar> <n-avatar :src="iconTranslate" style="background: none" /> </template>
         <template #extra>
-          <n-space>
-            <n-button secondary size="small" @click="isShowToolSettings = true">
-              {{ $t('common.settings') }}
-            </n-button>
-
-            <n-button secondary size="small" @click="mainStore.isShowQuickLaunch = true">
-              {{ $t('common.tools') }}
-            </n-button>
-
-            <n-popconfirm v-if="fileHandle" @positive-click="handleCloseFile">
-              <template #trigger>
-                <n-button v-if="fileHandle" secondary type="primary" size="small">
-                  Close JSON
-                </n-button>
-              </template>
-              Confirm close JSON? Unsaved contents will be lost.
-            </n-popconfirm>
-            <n-button v-else type="primary" @click="handleSelectFile" size="small">
-              {{ $t('actions.open_json') }}
-            </n-button>
-
-            <n-button v-if="fileHandle" @click="handleSaveFile" size="small" type="info">
-              <template #icon>
-                <Save20Regular />
-              </template>
-
-              {{ $t('actions.save') }}
-            </n-button>
-            <n-button secondary @click="handleExport" size="small">
-              {{ $t('actions.save_as') }}...
-            </n-button>
-
-            <n-popconfirm v-if="!fileHandle" @positive-click="loadDemo">
-              <template #trigger>
-                <n-button tertiary size="small">{{ $t('common.demo') }}</n-button>
-              </template>
-              {{ $t('msgs.load_demo_this_will') }}
-            </n-popconfirm>
-          </n-space>
+          <QuickOptions
+            is-static
+            :options="menuOptions"
+            horizontal
+            :auto-focus="false"
+            item-cls="vp-button"
+          />
         </template>
       </n-page-header>
     </div>
@@ -284,6 +373,12 @@ export default defineComponent({
   overflow: auto;
   position: relative;
   scrollbar-width: thin;
+
+  .n-page-header__extra {
+    .quick-options {
+      gap: 8px;
+    }
+  }
 
   .height-placeholder {
     height: 500px;

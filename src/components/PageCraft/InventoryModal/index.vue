@@ -43,6 +43,7 @@ import {showInputPrompt} from '@/components/CommonUI/input-prompt'
 import TabLayout from '@/components/CommonUI/TabLayout.vue'
 import {NIcon} from 'naive-ui'
 import {formatI18nKey} from '@/enum/vue-i18n-tool'
+import * as changeCase from 'change-case'
 
 let idx = 1
 
@@ -159,7 +160,7 @@ export default defineComponent({
       updateCompMeta(newItem.title, newItem.data)
 
       // 设置默认HTML、SCSS代码
-      const className = formatI18nKey(name, '-', 50)
+      const className = changeCase.paramCase(name)
       saveCompHtml(name, `<div class="${className}"></div>`)
       saveCompStyle(name, `.${className} {\n}\n`)
 

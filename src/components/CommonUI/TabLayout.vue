@@ -101,6 +101,7 @@ export default defineComponent({
       width: auto;
       border-right: 0;
       border-bottom: 1px solid $color_border;
+      overflow: hidden;
       .mc-tab-list {
         display: flex;
         .list-item {

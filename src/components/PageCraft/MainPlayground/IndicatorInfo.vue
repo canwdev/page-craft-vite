@@ -16,6 +16,10 @@ export default defineComponent({
       if (currentEl.value) {
         let str = `${currentEl.value.localName}`
         let className = currentEl.value.className || ''
+        if (typeof className !== 'string') {
+          console.warn('className', className)
+          className = ''
+        }
         className = className.replace(TOOL_CLASSES.CLASS_MOUSE_OVER, '').trim().split(' ').join('.')
         if (className) {
           str += `.${className}`

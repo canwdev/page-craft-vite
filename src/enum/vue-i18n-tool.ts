@@ -133,7 +133,7 @@ export const formatI18nKey = (
   // 中文转换拼音
   if (pinyinUtil && containsChinese(str)) {
     try {
-      str = pinyinUtil.getPinyin(str, '_', false, true)
+      str = pinyinUtil.getPinyin(str, replace, false, true)
     } catch (e) {
       console.warn(e)
     }
