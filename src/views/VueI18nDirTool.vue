@@ -87,7 +87,7 @@ export default defineComponent({
     const i18nSetStore = useI18nToolSettingsStore()
     const isLoading = ref(false)
 
-    const {data: fileHistory, isFinished} = useIDBKeyval<FileHandleHistory[]>(
+    const {data: fileHistory, set: setFileHistory} = useIDBKeyval<FileHandleHistory[]>(
       LsKeys.I18N_FOLDER_HANDLE_HISTORY,
       []
     )
@@ -189,7 +189,7 @@ export default defineComponent({
       return tree
     }
 
-    const appendHistory = (handle: FileSystemFileHandle) => {
+    const appendHistory = async (handle: FileSystemFileHandle) => {
       console.log(handle)
       const list = [...fileHistory.value]
       list.push({
@@ -197,16 +197,16 @@ export default defineComponent({
         lastOpened: Date.now(),
       })
       // 最多保存5条历史记录，因为无法区分打开的文件是否为同一文件
-      fileHistory.value = list.slice(0, 5)
+      await setFileHistory(list.slice(0, 5))
     }
 
-    const dirHandle = shallowRef()
+    const dirHandle = shallowRef<FileSystemDirectoryHandle>()
     const handlePickDir = async () => {
       // https://css-tricks.com/getting-started-with-the-file-system-access-api/
       // https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryHandle
       // @ts-ignore
       const handle = await window.showDirectoryPicker()
-      appendHistory(handle)
+      await appendHistory(handle)
       dirHandle.value = handle
       // console.log('dirHandle', dirHandle)
       await reloadPickedDir()
@@ -245,7 +245,7 @@ export default defineComponent({
           if (item.kind === 'file') {
             const handle = await item.getAsFileSystemHandle()
             if (handle.kind === 'directory') {
-              appendHistory(handle)
+              await appendHistory(handle)
               dirHandle.value = handle
               await reloadPickedDir()
               break

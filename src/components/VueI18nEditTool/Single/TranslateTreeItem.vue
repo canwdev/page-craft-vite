@@ -27,10 +27,12 @@ import {
   TextConvertMode,
 } from '@/components/VueI18nEditTool/copy-enum'
 import {useArrayEdit} from '@/components/VueI18nEditTool/Single/use-array-edit'
+import CcFlag from '@/components/VueI18nEditTool/CcFlag.vue'
 
 export default defineComponent({
   name: 'TranslateTreeItem',
   components: {
+    CcFlag,
     Delete20Regular,
     TranslateItem,
     DialogTextEdit,
@@ -64,7 +66,7 @@ export default defineComponent({
   },
   emits: ['onRemove', 'onKeyClick'],
   setup(props) {
-    const {item, index} = toRefs(props)
+    const {item, index, title} = toRefs(props)
     const mainStore = useMainStore()
     const i18nSetStore = useI18nToolSettingsStore()
 
@@ -138,6 +140,17 @@ export default defineComponent({
       }
     })
 
+    const ccName = computed(() => {
+      const txt = title.value
+      if (txt) {
+        if (txt.includes('/')) {
+          return txt.split('/')[0]
+        } else if (txt.includes('.')) {
+          return txt.split('.')[0]
+        }
+      }
+    })
+
     return {
       i18nSetStore,
       handleAddChildren,
@@ -164,6 +177,7 @@ export default defineComponent({
       checkDuplicatedGroupKey,
       namespacePrefix,
       namespaceInputRef,
+      ccName,
       ...useArrayEdit(),
     }
   },
@@ -183,7 +197,8 @@ export default defineComponent({
       </template>
 
       <div v-if="isRoot" class="namespace-input-wrap font-code">
-        <span v-if="!isLite" style="color: #f44336" class="namespace-prefix"> § </span>
+        <CcFlag v-if="i18nSetStore.enableFlag" :cc="ccName" />
+        <span v-else style="color: #f44336" class="namespace-prefix"> § </span>
         <input
           ref="namespaceInputRef"
           class="font-code vp-input"

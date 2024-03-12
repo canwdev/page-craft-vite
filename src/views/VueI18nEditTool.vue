@@ -44,7 +44,7 @@ export default defineComponent({
     const translateTreeRoot = ref<ITranslateTreeItem[]>(I18nJsonObjUtils.parseWithRoot())
     const isLoading = ref(false)
 
-    const {data: fileHistory, isFinished} = useIDBKeyval<FileHandleHistory[]>(
+    const {data: fileHistory, set: setFileHistory} = useIDBKeyval<FileHandleHistory[]>(
       LsKeys.I18N_FILE_HANDLE_HISTORY,
       []
     )
@@ -64,7 +64,7 @@ export default defineComponent({
       }
     }
 
-    const appendHistory = (handle: FileSystemFileHandle) => {
+    const appendHistory = async (handle: FileSystemFileHandle) => {
       console.log(handle)
       const list = [...fileHistory.value]
       list.push({
@@ -72,13 +72,13 @@ export default defineComponent({
         lastOpened: Date.now(),
       })
       // 最多保存5条历史记录，因为无法区分打开的文件是否为同一文件
-      fileHistory.value = list.slice(0, 5)
+      await setFileHistory(list.slice(0, 5))
     }
 
     const handleSelectFile = async () => {
       // @ts-ignore
       const [handle] = await window.showOpenFilePicker(filePickerOptions)
-      appendHistory(handle)
+      await appendHistory(handle)
       fileHandle.value = handle
       const file = await handle.getFile()
       await handleImport(file)
@@ -94,7 +94,7 @@ export default defineComponent({
           if (item.kind === 'file') {
             const handle = await item.getAsFileSystemHandle()
             if (handle.kind !== 'directory') {
-              appendHistory(handle)
+              await appendHistory(handle)
               fileHandle.value = handle
               const file = await handle.getFile()
               await handleImport(file)

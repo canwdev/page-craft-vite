@@ -96,5 +96,10 @@
                 }
             }
         }
+
+
+        .vp-window-body {
+            height: calc(100% - 24px) !important;
+        }
     }
 }

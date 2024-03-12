@@ -10,6 +10,7 @@ type IState = {
   ignoreFolders: string[]
   // 是否检测链接自动渲染图片
   isAutoShowImage: boolean
+  enableFlag: boolean
 }
 
 export const useI18nToolSettingsStore = defineStore('i18nToolSettings', {
@@ -20,6 +21,7 @@ export const useI18nToolSettingsStore = defineStore('i18nToolSettings', {
       autoPasteTextConvertMode: TextConvertMode.TEXT,
       ignoreFolders: ['node_modules', '.git', '.idea', '.vscode', '.DS_Store'],
       isAutoShowImage: true,
+      enableFlag: false,
     }
   },
   getters: {

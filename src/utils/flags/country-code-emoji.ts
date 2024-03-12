@@ -3,6 +3,7 @@
  * https://www.npmjs.com/package/country-code-emoji
  * https://github.com/thekelvinliu/country-code-emoji/blob/main/src/index.js
  */
+import {countries} from '@/utils/flags/countries'
 
 // country code regex
 const CC_REGEX = /^[a-z]{2}$/i
@@ -50,3 +51,11 @@ export function emojiCountryCode(flag) {
 }
 
 export default countryCodeEmoji
+
+const countryMap = {}
+countries.forEach((i) => {
+  countryMap[i.iso2] = i
+})
+export function countryCodeSvg(cc) {
+  return countryMap[cc.toUpperCase()]?.flag
+}

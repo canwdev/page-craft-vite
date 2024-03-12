@@ -84,6 +84,12 @@ export default defineComponent({
               store: i18nSetStore,
               type: StOptionType.SWITCH,
             },
+            {
+              label: 'Enable Flag (Wikipedia)',
+              key: 'enableFlag',
+              store: i18nSetStore,
+              type: StOptionType.SWITCH,
+            },
           ],
         },
       ]

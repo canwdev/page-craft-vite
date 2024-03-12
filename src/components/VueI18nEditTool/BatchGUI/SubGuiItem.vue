@@ -14,11 +14,12 @@ import {useI18nToolSettingsStore} from '@/store/i18n-tool-settings'
 import FieldEdit from '@/components/VueI18nEditTool/Single/FieldEdit.vue'
 import {useBatchItem} from '@/components/VueI18nEditTool/BatchGUI/batch-hooks'
 import {useI18nMainStore} from '@/store/i18n-tool-main'
-// import countryCodeEmoji from '@/utils/country-code-emoji'
+import CcFlag from '@/components/VueI18nEditTool/CcFlag.vue'
 
 export default defineComponent({
   name: 'SubGuiItem',
   components: {
+    CcFlag,
     Delete20Regular,
     FieldEdit,
     DialogTextEdit,
@@ -33,6 +34,7 @@ export default defineComponent({
   },
   emits: ['saveChanged'],
   setup(props, {emit}) {
+    const {dirItem} = toRefs(props)
     const {t: $t} = useI18n()
     const i18nMainStore = useI18nMainStore()
     const i18nSetStore = useI18nToolSettingsStore()
@@ -115,11 +117,6 @@ export default defineComponent({
         })
       }
     )
-
-    // const countryFlag = computed(() => {
-    //   const code = dirItem.value?.label.split('-').pop()
-    //   return countryCodeEmoji(code)
-    // })
 
     const inputRef = ref()
 
@@ -211,7 +208,6 @@ export default defineComponent({
       saveChange,
       cancelChange,
       inputRef,
-      // countryFlag,
       isLocalCreated,
       handleCreateFile,
       handleReload,
@@ -235,8 +231,9 @@ export default defineComponent({
     </div>
 
     <div class="card-header">
-      <div>
+      <div class="card-title-wrap">
         <span class="card-title">
+          <CcFlag v-if="i18nSetStore.enableFlag" :cc="dirItem.label" />
           <span class="text-red">{{ dirItem.label }}</span>
           <template v-if="i18nSetStore.isFoldersMode">
             {{ '/' + subFilePathArr.join('/') }}
@@ -339,13 +336,21 @@ export default defineComponent({
     justify-content: space-between;
     font-size: 12px;
     margin-bottom: 5px;
+    .card-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
     .card-title {
       font-size: 14px;
       font-weight: 400;
-    }
-    .text-red {
-      color: #f44336;
-      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      .text-red {
+        color: #f44336;
+        font-weight: 500;
+      }
     }
   }
 
@@ -353,7 +358,6 @@ export default defineComponent({
     max-width: 200px;
     font-size: 12px;
     opacity: 0.3;
-    margin-left: 10px;
   }
 
   .item-value-edit {
