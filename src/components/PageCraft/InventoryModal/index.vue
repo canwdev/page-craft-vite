@@ -160,7 +160,7 @@ export default defineComponent({
       updateCompMeta(newItem.title, newItem.data)
 
       // 设置默认HTML、SCSS代码
-      const className = changeCase.paramCase(name)
+      const className = changeCase.paramCase(name || 'my-component')
       saveCompHtml(name, `<div class="${className}"></div>`)
       saveCompStyle(name, `.${className} {\n}\n`)
 
