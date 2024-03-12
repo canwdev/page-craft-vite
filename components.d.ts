@@ -21,7 +21,7 @@ declare module '@vue/runtime-core' {
     DialogTextTransformer: typeof import('./src/components/VueI18nEditTool/DialogTextTransformer.vue')['default']
     DomPreview: typeof import('./src/components/PageCraft/DomPreview/DomPreview.vue')['default']
     DropZone: typeof import('./src/components/CommonUI/DropZone.vue')['default']
-    DynamicValueDisplay: typeof import('./src/components/QuickLaunch/q-logics/string-manipulation/DynamicValueDisplay.vue')['default']
+    DynamicValueDisplay: typeof import('./src/components/QuickLaunch/q-logics/DynamicValueDisplay.vue')['default']
     ElementEditDialog: typeof import('./src/components/PageCraft/MainPlayground/ElementEditDialog.vue')['default']
     FieldEdit: typeof import('./src/components/VueI18nEditTool/Single/FieldEdit.vue')['default']
     FileChooser: typeof import('./src/components/CommonUI/FileChooser.vue')['default']

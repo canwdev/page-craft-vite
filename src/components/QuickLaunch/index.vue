@@ -13,13 +13,13 @@ export default defineComponent({
     const route = useRoute()
     const qRef = ref()
     const focus = () => {
-      inputRef.value.focus()
+      textareaRef.value.focus()
     }
     onMounted(() => {
       focus()
     })
 
-    const {textarea: inputRef, input: anyText} = useTextareaAutosize()
+    const {textarea: textareaRef, input: anyText} = useTextareaAutosize()
 
     const {qlOptions} = useCommonTools()
     const {filteredOptions, handleSearch} = useQLogics(qlOptions)
@@ -39,7 +39,7 @@ export default defineComponent({
     }
 
     return {
-      inputRef,
+      textareaRef,
       qRef,
       anyText,
       qlOptions,
@@ -55,7 +55,7 @@ export default defineComponent({
 <template>
   <div class="quick-launch">
     <textarea
-      ref="inputRef"
+      ref="textareaRef"
       rows="1"
       v-model="anyText"
       @input="handleInput"
@@ -70,7 +70,7 @@ export default defineComponent({
       :options="filteredOptions"
       is-static
       class="font-emoji"
-      @onClose="inputRef.focus()"
+      @onClose="textareaRef.focus()"
     />
   </div>
 </template>

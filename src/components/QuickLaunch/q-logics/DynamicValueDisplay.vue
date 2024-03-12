@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import {watchDebounced} from '@vueuse/core'
+
 interface Props {
   text: any
   label: string
@@ -11,11 +13,16 @@ const props = withDefaults(defineProps<Props>(), {
 
 const {text} = toRefs(props)
 
-const textDisplay = computed(() => {
-  if (typeof props.formatFn === 'function') {
-    return props.formatFn(text.value)
-  }
-})
+const textDisplay = ref('')
+watchDebounced(
+  text,
+  () => {
+    if (typeof props.formatFn === 'function') {
+      textDisplay.value = props.formatFn(text.value)
+    }
+  },
+  {debounce: 300, immediate: true}
+)
 </script>
 
 <template>

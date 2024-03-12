@@ -5,11 +5,12 @@ import {Ref} from 'vue'
 import {qLogicTextConvert} from '../q-logics-mc'
 import {qLogicStringManipulation} from './string-manipulation'
 import {qLogicSpeechSynthesis} from '@/components/QuickLaunch/q-logics/speech-synthesis'
+import {useDebounceFn} from '@vueuse/core'
 
 export const useQLogics = (qlOptionsRef) => {
   const filteredOptions = ref<QuickOptionItem[]>([])
 
-  const handleSearch = (valRef: Ref<string>) => {
+  const _handleSearch = (valRef: Ref<string>) => {
     let options: QuickOptionItem[] = []
     const val = valRef.value
     if (val === '/?') {
@@ -56,6 +57,8 @@ export const useQLogics = (qlOptionsRef) => {
       ...extraOptions,
     ].filter((val) => !!val)
   }
+
+  const handleSearch = useDebounceFn(_handleSearch, 100)
 
   return {
     handleSearch,

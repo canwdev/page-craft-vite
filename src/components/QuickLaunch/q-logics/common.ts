@@ -3,7 +3,7 @@ import moment from 'moment/moment'
 import {EyeDropper, useFileDialog} from '@vueuse/core'
 import {Ref} from 'vue'
 import {copy} from './utils'
-import DynamicValueDisplay from './string-manipulation/DynamicValueDisplay.vue'
+import DynamicValueDisplay from './DynamicValueDisplay.vue'
 
 const isTimestamp = (val) => {
   val = Number(val)
