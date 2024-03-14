@@ -6,6 +6,8 @@ import {formatI18nKey} from '@/enum/vue-i18n-tool'
 import {textConvertAdvanced, textConvertMultipleLine} from '@/components/VueI18nEditTool/copy-enum'
 import {handleExportFile} from '@/utils/exporter'
 import QuickLaunchWindow from '@/components/QuickLaunch/QuickLaunchWindow.vue'
+import {promptGetFileName} from '@/utils/exporter'
+import {TextConvertMode} from '@/components/VueI18nEditTool/copy-enum'
 
 export default defineComponent({
   name: 'AppSub',
@@ -25,11 +27,13 @@ export default defineComponent({
     window.$loadingBar = useLoadingBar()
 
     onMounted(() => {
-      window.$consoleUtils = {
+      window.$mcUtils = {
         formatI18nKey,
         textConvertAdvanced,
         handleExportFile,
         textConvertMultipleLine,
+        TextConvertMode,
+        promptGetFileName,
       }
     })
 

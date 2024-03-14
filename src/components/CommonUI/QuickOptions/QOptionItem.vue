@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import VueRender from '@/components/CommonUI/OptionUI/Tools/VueRender.vue'
 import {QuickOptionItem} from './enum'
+import DynamicValueDisplay from './DynamicValueDisplay.vue'
 
 interface Props {
   item: QuickOptionItem
@@ -39,6 +40,9 @@ const props = withDefaults(defineProps<Props>(), {
     <div class="item-content" v-if="item.html" v-html="item.html"></div>
     <div class="item-content" v-else-if="item.render">
       <VueRender :render-fn="item.render" />
+    </div>
+    <div class="item-content" v-else-if="!!item.dynamicProps">
+      <DynamicValueDisplay v-bind="item.dynamicProps" />
     </div>
     <div class="item-content" v-else>
       {{ item.label }}

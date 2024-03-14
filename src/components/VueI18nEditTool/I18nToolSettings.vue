@@ -54,7 +54,7 @@ export default defineComponent({
                 {
                   size: 'small',
                   onClick: () => {
-                    console.log('window.$consoleUtils', window.$consoleUtils)
+                    console.log('window.$mcUtils', window.$mcUtils)
                   },
                 },
                 () => 'Print Utils Console'
