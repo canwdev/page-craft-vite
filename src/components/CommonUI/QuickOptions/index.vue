@@ -39,7 +39,7 @@ export default defineComponent({
       default: '',
     },
   },
-  emits: ['onClose', 'update:visible'],
+  emits: ['onClose', 'update:visible', 'onBack', 'onEnter'],
   setup(props, {emit}) {
     const {options, horizontal, isStatic, autoFocus} = toRefs(props)
     const mVisible = useVModel(props, 'visible', emit)
@@ -108,6 +108,7 @@ export default defineComponent({
     const handleBack = () => {
       if (menuStack.value.length) {
         menuStack.value.pop()
+        emit('onBack')
       } else {
         mVisible.value = false
         setTimeout(() => {
@@ -185,6 +186,7 @@ export default defineComponent({
         }
         menuStack.value.push(subList)
         curIndex.value = 0
+        emit('onEnter')
       }
       if (item?.props?.isBack) {
         handleBack()
@@ -227,7 +229,7 @@ export default defineComponent({
       <button class="btn-no-style" @click="mVisible = false">×</button>
     </div>
 
-    <div v-if="menuStack.length" class="option-item _back clickable" @click="handleBack">
+    <div v-if="menuStack.length" class="option-item vp-panel _back clickable" @click="handleBack">
       <div class="index-wrap">
         <div style="transform: scale(0.7)">
           <div class="css-arrow left"></div>
@@ -323,6 +325,10 @@ export default defineComponent({
     &._back {
       padding: 2px 24px;
       font-size: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      border: none;
     }
 
     .index-wrap {

@@ -1,5 +1,5 @@
 ;(function () {
-  const {addPlugin, copy} = window.$qlUtils
+  const {addPlugin, copy, reloadPlugins} = window.$qlUtils
 
   addPlugin({
     label: '💧 Eye Drop',
@@ -22,6 +22,7 @@
     label: '🔠 System Fonts',
     children: async () => {
       const fonts = await window.queryLocalFonts()
+      console.log(fonts)
 
       return [
         ...fonts.map((v) => {

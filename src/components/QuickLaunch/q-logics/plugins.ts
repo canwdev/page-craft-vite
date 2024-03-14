@@ -23,6 +23,63 @@ export const usePluginState = createGlobalState(() => {
 export const useQuickLaunchPlugins = (update) => {
   const {staticPlugins, dynamicPlugins} = usePluginState()
 
+  const basePath = `q-plugins`
+  // 获取插件json
+  const {isFetching, onFetchResponse, data, execute} = useFetch(`${basePath}/index.json`, {
+    immediate: false,
+  })
+    .get()
+    .json()
+
+  const unloadFns = ref<any[]>([])
+  const reloadPlugins = async () => {
+    dynamicPlugins.value = []
+    staticPlugins.value = []
+    if (unloadFns.value.length) {
+      console.log('[reloadPlugins] unloading plugin scripts...')
+      for (const key in unloadFns.value) {
+        const unload = unloadFns.value[key]
+        await unload()
+      }
+      unloadFns.value = []
+    }
+
+    const res = await fetch(`${basePath}/index.json`)
+    const data = await res.json()
+    const {plugins} = data
+    console.log('[reloadPlugins] loading plugins...', plugins)
+    // 逐个加载js文件
+    for (const pluginsKey in plugins) {
+      let url = plugins[pluginsKey]
+
+      const outboundUrlRegex = /^(?:http(s)?:\/\/)/
+      // 允许相对路径
+      if (!outboundUrlRegex.test(url)) {
+        url = basePath + '/' + url
+      }
+      const {load, unload} = useScriptTag(
+        url,
+        () => {
+          // do something
+        },
+        {manual: true}
+      )
+      unloadFns.value.push(unload)
+      await load()
+    }
+  }
+
+  const addPlugin = (plugin: QuickOptionItem | DynamicPlugin) => {
+    // console.log('[addPlugin]', plugin)
+    if (typeof plugin === 'function') {
+      dynamicPlugins.value.push(plugin)
+    } else {
+      staticPlugins.value.push(plugin)
+    }
+    // 由于update函数使用了防抖，这里可以直接执行
+    update()
+  }
+
   onBeforeMount(() => {
     window.$qlUtils = {
       copy,
@@ -31,35 +88,12 @@ export const useQuickLaunchPlugins = (update) => {
       changeCase,
       // 刷新列表
       update,
+      // 重新加载所有插件
+      reloadPlugins,
       // 添加一个插件
-      addPlugin: (plugin: QuickOptionItem | DynamicPlugin) => {
-        if (typeof plugin === 'function') {
-          dynamicPlugins.value.push(plugin)
-        } else {
-          staticPlugins.value.push(plugin)
-        }
-        // 由于update函数使用了防抖，这里可以直接执行
-        update()
-      },
+      addPlugin,
     }
-  })
 
-  // 获取插件json
-  const {isFetching, onFetchResponse, data} = useFetch('q-plugins/index.json').get().json()
-
-  onFetchResponse(async (res) => {
-    const {plugins} = data.value
-    // 逐个加载js文件
-    for (const pluginsKey in plugins) {
-      const url = plugins[pluginsKey]
-      const {load} = useScriptTag(
-        url,
-        () => {
-          // do something
-        },
-        {manual: true}
-      )
-      await load()
-    }
+    reloadPlugins()
   })
 }

@@ -9,6 +9,15 @@ export const useQLogics = (qlOptionsRef) => {
 
   const filteredOptions = ref<QuickOptionItem[]>([])
 
+  const qLogicReload = {
+    label: '🔄 Reload Plugins',
+    props: {
+      onClick: async () => {
+        window.$qlUtils.reloadPlugins()
+      },
+    },
+  }
+
   const _handleSearch = (valRef: Ref<string>) => {
     let options: QuickOptionItem[] = []
     const val = valRef.value
@@ -23,7 +32,12 @@ export const useQLogics = (qlOptionsRef) => {
       })
     }
 
-    const filterableOptions = [...qlOptionsRef.value, ...staticPlugins.value, qLogicQrCode(valRef)]
+    const filterableOptions = [
+      ...qlOptionsRef.value,
+      ...staticPlugins.value,
+      qLogicQrCode(valRef),
+      qLogicReload,
+    ]
 
     // 没有输入，显示默认内容
     if (!val) {
