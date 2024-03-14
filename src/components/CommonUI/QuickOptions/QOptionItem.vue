@@ -25,7 +25,9 @@ const props = withDefaults(defineProps<Props>(), {
         clickable: item?.props?.onClick || (item.children && item.children),
       },
       itemCls,
+      item.props?.class,
     ]"
+    :style="item.props?.style"
     :data-index="index"
   >
     <div class="index-wrap" v-if="index < 9">

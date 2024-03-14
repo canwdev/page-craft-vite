@@ -13,5 +13,7 @@ export type QuickOptionItem = {
     isBack?: boolean
     onClick?: any
     onContextmenu?: any
+    style?: any
+    class?: any
   }
 }

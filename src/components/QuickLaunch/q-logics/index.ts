@@ -4,8 +4,9 @@ import {qLogicQrCode} from './qr-code'
 import {Ref} from 'vue'
 import {qLogicTextConvert} from '../q-logics-mc'
 import {qLogicStringManipulation} from './string-manipulation'
-import {qLogicSpeechSynthesis} from '@/components/QuickLaunch/q-logics/speech-synthesis'
+import {qLogicSpeechSynthesis} from './speech-synthesis'
 import {useDebounceFn} from '@vueuse/core'
+import {qLogicSystemFonts} from '@/components/QuickLaunch/q-logics/system-fonts'
 
 export const useQLogics = (qlOptionsRef) => {
   const filteredOptions = ref<QuickOptionItem[]>([])
@@ -29,6 +30,7 @@ export const useQLogics = (qlOptionsRef) => {
       qLogicBase64(valRef),
       qLogicQrCode(valRef),
       qLogicSpeechSynthesis(valRef),
+      qLogicSystemFonts(valRef),
     ]
     const filterableOptions = [...qlOptionsRef.value, qLogicEyeDrop]
 
