@@ -104,19 +104,17 @@ export const useCommonTools = () => {
     }
 
     if (route.name !== 'HomePage') {
-      if (settingsStore.enableWelcomePage) {
-        list = [
-          ...list,
-          {
-            label: '🏠 Welcome Page',
-            props: {
-              onClick: async () => {
-                await router.push({name: 'HomePage'})
-              },
+      list = [
+        ...list,
+        {
+          label: '🏠 Welcome Page',
+          props: {
+            onClick: async () => {
+              await router.push({name: 'HomePage'})
             },
           },
-        ]
-      }
+        },
+      ]
     }
 
     return list

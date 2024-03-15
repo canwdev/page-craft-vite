@@ -27,8 +27,7 @@ interface IPageCraftSettings {
   enableGlobalStyle: boolean
   // 是否启用参考图
   enableReferenceMap: boolean
-  // 是否启用欢迎页面
-  enableWelcomePage: boolean
+  enableFocusAutoAction: boolean
   isShowIframeBrowser: boolean
 
   isInitialized: boolean
@@ -62,7 +61,7 @@ export const useSettingsStore = defineStore('settingsStore', {
       enableSoundFx: true,
       enableGlobalStyle: true,
       enableReferenceMap: false,
-      enableWelcomePage: true,
+      enableFocusAutoAction: false,
       isShowIframeBrowser: false,
 
       isInitialized: false,

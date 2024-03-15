@@ -6,6 +6,7 @@ import {useSettingsStore} from '@/store/settings'
 import {isDev} from '@/enum'
 import {useMainStore} from '@/store/main'
 import {useEventListener} from '@vueuse/core'
+import {useFocusAutoAction} from '@/hooks/use-focus-auto-action'
 
 export default defineComponent({
   components: {
@@ -37,6 +38,8 @@ export default defineComponent({
         mainStore.isShowQuickLaunch = !mainStore.isShowQuickLaunch
       }
     })
+
+    useFocusAutoAction()
 
     return {
       isAppDarkMode,

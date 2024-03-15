@@ -140,21 +140,11 @@ export default defineComponent({
               ]),
             },
             {
-              label: $t('msgs.enable_welcome_page'),
-              subtitle: $t('msgs.improve_the_user_exp'),
-              key: 'enableWelcomePage',
+              label: '视口聚焦后自动操作',
+              subtitle: '视口聚焦后，自动点击上一次点击的按钮，以提升效率',
+              key: 'enableFocusAutoAction',
               store: settingsStore,
               type: StOptionType.SWITCH,
-              actionRender: h(
-                RouterLink,
-                {
-                  to: {name: 'HomePage'},
-                  onClick: () => {
-                    mVisible.value = false
-                  },
-                },
-                () => 'Go'
-              ),
             },
             {
               label: formatSiteTitle(),

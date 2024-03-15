@@ -126,8 +126,6 @@
     "are_you_sure_to_dele": "Are you sure to delete ",
     "sure_to_del_all": "Are you sure to delete all components?",
     "please_input_new_name": "Please input new component name",
-    "enable_welcome_page": "Enable Welcome Page",
-    "improve_the_user_exp": "Improve the user experience of using tools",
     "confirm_reload_files": "Confirm reload files content? Unsaved contents will be lost.",
     "please_select_a_json": "Please select a json file first",
     "recommended_i18n_fol": "Recommended i18n folder structure example",

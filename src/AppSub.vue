@@ -8,6 +8,8 @@ import {handleExportFile} from '@/utils/exporter'
 import QuickLaunchWindow from '@/components/QuickLaunch/QuickLaunchWindow.vue'
 import {promptGetFileName} from '@/utils/exporter'
 import {TextConvertMode} from '@/components/VueI18nEditTool/copy-enum'
+import {useWindowFocus, useEventListener} from '@vueuse/core'
+import {useSettingsStore} from '@/store/settings'
 
 export default defineComponent({
   name: 'AppSub',

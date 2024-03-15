@@ -98,8 +98,9 @@ export default defineComponent({
     preset="dialog"
     :title="$t('common.text_transformer')"
     style="min-width: 800px"
+    :mask-closable="false"
   >
-    <n-space align="center" style="margin-bottom: 10px">
+    <n-space v-if="mVisible" align="center" style="margin-bottom: 10px">
       Convert to:
       <n-select
         size="small"
@@ -129,6 +130,7 @@ export default defineComponent({
           size="small"
           type="primary"
           title="Paste and Copy Result"
+          class="focus-auto-action"
         >
           <n-icon> <ClipboardPaste20Regular /> </n-icon>+
           <n-icon>

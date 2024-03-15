@@ -16,11 +16,6 @@ let routes = [
       title: i18n.global.t('common.welcome'),
     },
     beforeEnter: (to, from, next) => {
-      const settingsStore = useSettingsStore()
-
-      if (!settingsStore.enableWelcomePage) {
-        return next({name: 'CraftPage'})
-      }
       return next()
     },
   },

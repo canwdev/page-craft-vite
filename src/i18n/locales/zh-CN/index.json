@@ -126,8 +126,6 @@
     "are_you_sure_to_dele": "确定要删除",
     "sure_to_del_all": "确认要删除全部组件吗？",
     "please_input_new_name": "请输入新的组件名称",
-    "enable_welcome_page": "启用欢迎页面",
-    "improve_the_user_exp": "提升使用工具的用户体验",
     "confirm_reload_files": "确认重新加载文件内容？未保存的内容将会丢失。",
     "please_select_a_json": "请先选择一个json文件",
     "recommended_i18n_fol": "推荐的 i18n 目录结构",
