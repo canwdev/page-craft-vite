@@ -9,6 +9,7 @@ import {
   Dismiss20Regular,
   Subtract20Filled,
 } from '@vicons/fluent'
+import {useParallax} from '@vueuse/core'
 
 const LS_KEY_VP_WINDOW_OPTION = 'page_craft_vp_window'
 
@@ -304,6 +305,7 @@ export default defineComponent({
   min-height: 50px;
   min-width: 50px;
   box-sizing: border-box;
+
   &._allow_move {
     position: fixed;
     z-index: 100;
@@ -323,6 +325,7 @@ export default defineComponent({
     border: none !important;
     box-shadow: none !important;
     border-radius: 0 !important;
+
     .vp-window-content {
       .vp-window-title-bar {
         margin-left: unset;

@@ -110,6 +110,7 @@ multi-line comment
               size="small"
               type="primary"
               title="Paste and Copy Result"
+              class="focus-auto-action"
             >
               <n-icon> <ClipboardPaste20Regular /> </n-icon>+
               <n-icon>

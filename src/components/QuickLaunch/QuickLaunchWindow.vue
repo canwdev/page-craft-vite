@@ -4,6 +4,7 @@ import {useRoute, useRouter} from 'vue-router'
 import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import QuickLaunch from '@/components/QuickLaunch/index.vue'
+import {useParallax} from '@vueuse/core'
 
 export default defineComponent({
   name: 'QuickLaunchWindow',
@@ -31,6 +32,7 @@ export default defineComponent({
     const showClose = computed(() => {
       return route.name !== 'HomePage'
     })
+
     return {
       mVisible,
       showClose,

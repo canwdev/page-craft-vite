@@ -2,7 +2,6 @@ import {ActionBlockItems} from '@/enum/page-craft/block'
 import {BlockItem} from '@/enum/page-craft/block'
 import {LsKeys} from '@/enum/page-craft'
 import {CopyMode} from '@/enum/vue-i18n-tool'
-import {useWindowFocus} from '@vueuse/core'
 
 type IStore = {
   currentBlock: BlockItem
@@ -25,7 +24,6 @@ type IStore = {
 
 export const useMainStore = defineStore('main', {
   state: (): IStore => {
-    const isFocus = useWindowFocus()
     return {
       currentBlock:
         JSON.parse(localStorage.getItem(LsKeys.CURRENT_BLOCK) || 'null') || ActionBlockItems.EMPTY,
