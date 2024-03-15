@@ -1,5 +1,5 @@
 ;(function () {
-  const {addPlugin, copy, reloadPlugins} = window.$qlUtils
+  const {addPlugin, copy, ref, computed, watch} = window.$qlUtils
 
   addPlugin({
     label: '💧 Eye Drop',
@@ -18,26 +18,38 @@
     },
   })
 
-  addPlugin({
-    label: '🔠 System Fonts',
-    children: async () => {
-      const fonts = await window.queryLocalFonts()
-      console.log(fonts)
+  let fonts = []
+  addPlugin((valRef) => {
+    return {
+      label: '🔠 System Fonts',
+      children: async () => {
+        if (!fonts.length) {
+          fonts = await window.queryLocalFonts()
+          console.log(fonts)
+        }
 
-      return [
-        ...fonts.map((v) => {
-          return {
-            label: v.fullName,
-            props: {
-              onClick: () => {
-                copy(v.fullName, true)
-              },
-              style: {fontFamily: v.fullName},
-            },
-          }
-        }),
-      ]
-    },
+        return computed(() => {
+          return [
+            ...fonts
+              .filter((v) => {
+                const sVal = valRef.value.trim().toLowerCase()
+                return v.fullName.toLowerCase().includes(sVal)
+              })
+              .map((v) => {
+                return {
+                  label: v.fullName,
+                  props: {
+                    onClick: () => {
+                      copy(v.fullName, true)
+                    },
+                    style: {fontFamily: v.fullName},
+                  },
+                }
+              }),
+          ]
+        })
+      },
+    }
   })
 
   // https://eeejay.github.io/webspeechdemos/

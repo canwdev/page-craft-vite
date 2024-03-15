@@ -181,6 +181,7 @@ export default defineComponent({
         let subList: QuickOptionItem[] = []
         if (typeof item.children === 'function') {
           subList = await item.children()
+          console.log(subList)
         } else if (item.children.length) {
           subList = item.children
         }

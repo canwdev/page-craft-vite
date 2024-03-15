@@ -3,6 +3,7 @@ import {qLogicQrCode} from './qr-code'
 import {Ref} from 'vue'
 import {useDebounceFn} from '@vueuse/core'
 import {usePluginState} from './plugins'
+import {filterLabel} from './utils'
 
 export const useQLogics = (qlOptionsRef) => {
   const {staticPlugins, dynamicPlugins} = usePluginState()
@@ -47,17 +48,7 @@ export const useQLogics = (qlOptionsRef) => {
     filteredOptions.value = [
       ...options,
       // 过滤列表功能
-      ...filterableOptions.filter((i) => {
-        const sVal = val.trim().toLowerCase()
-        let flag = false
-        if (i.search) {
-          flag = i.search.toLowerCase().includes(sVal)
-        }
-        if (!flag && i.label) {
-          flag = i.label.toLowerCase().includes(sVal)
-        }
-        return flag
-      }),
+      ...filterableOptions.filter((i) => filterLabel(i, val)),
       ...dynamicPlugins.value.map((f) => f(valRef)),
     ].filter((val) => !!val)
   }

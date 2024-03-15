@@ -3,6 +3,7 @@ import {copy} from './utils'
 import moment from 'moment/moment'
 import {QuickOptionItem} from '@/components/CommonUI/QuickOptions/enum'
 import * as changeCase from 'change-case'
+import {filterLabel} from './utils'
 
 export type DynamicPlugin = (key: any) => QuickOptionItem
 
@@ -24,14 +25,9 @@ export const useQuickLaunchPlugins = (update) => {
   const {staticPlugins, dynamicPlugins} = usePluginState()
 
   const basePath = `q-plugins`
-  // 获取插件json
-  const {isFetching, onFetchResponse, data, execute} = useFetch(`${basePath}/index.json`, {
-    immediate: false,
-  })
-    .get()
-    .json()
-
   const unloadFns = ref<any[]>([])
+
+  // 重新加载所有插件
   const reloadPlugins = async () => {
     dynamicPlugins.value = []
     staticPlugins.value = []
@@ -44,6 +40,7 @@ export const useQuickLaunchPlugins = (update) => {
       unloadFns.value = []
     }
 
+    // 获取插件json
     const res = await fetch(`${basePath}/index.json`)
     const data = await res.json()
     const {plugins} = data
@@ -69,6 +66,7 @@ export const useQuickLaunchPlugins = (update) => {
     }
   }
 
+  // 添加一个插件
   const addPlugin = (plugin: QuickOptionItem | DynamicPlugin) => {
     // console.log('[addPlugin]', plugin)
     if (typeof plugin === 'function') {
@@ -86,6 +84,13 @@ export const useQuickLaunchPlugins = (update) => {
       moment,
       useFileDialog,
       changeCase,
+
+      ref,
+      computed,
+      watch,
+
+      // 过滤列表功能
+      filterLabel,
       // 刷新列表
       update,
       // 重新加载所有插件
