@@ -5,32 +5,34 @@ import {useDebounceFn} from '@vueuse/core'
 import {usePluginState} from './plugins'
 import {filterLabel} from './utils'
 
+const qLogicHelp = {
+  label: `❓帮助说明：
+- 输入 /? 查看帮助
+- 按 tab 键切换到下方功能列表，再按 esc 聚焦到输入框
+- 部分功能支持多行文本
+- 支持输入时间戳，如：1709794946384
+- 支持插件功能，你可以在 /q-plugins 文件夹下编写自己的插件
+`,
+}
+const qLogicReload = {
+  label: '🔄 Reload Plugins',
+  props: {
+    onClick: async () => {
+      await window.$qlUtils.reloadPlugins()
+    },
+  },
+}
+
 export const useQLogics = (qlOptionsRef) => {
   const {staticPlugins, dynamicPlugins} = usePluginState()
 
   const filteredOptions = ref<QuickOptionItem[]>([])
 
-  const qLogicReload = {
-    label: '🔄 Reload Plugins',
-    props: {
-      onClick: async () => {
-        window.$qlUtils.reloadPlugins()
-      },
-    },
-  }
-
   const _handleSearch = (valRef: Ref<string>) => {
     let options: QuickOptionItem[] = []
     const val = valRef.value
     if (val === '/?') {
-      const label = `❓帮助说明：
-- 支持输入时间戳，如：1709794946384
-- 输入 /? 查看帮助
-- 按 tab 键切换到下方功能列表，再按 esc 聚焦到输入框
-- 部分功能支持多行文本`
-      options.push({
-        label,
-      })
+      options.push(qLogicHelp)
     }
 
     const filterableOptions = [

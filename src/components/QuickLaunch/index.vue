@@ -38,7 +38,7 @@ export default defineComponent({
     const handleInput = () => {
       if (isEnterSub.value) {
         // 进入子页面后不刷新查询
-        // return
+        return
       }
       update()
     }

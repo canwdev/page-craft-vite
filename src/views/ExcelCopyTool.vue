@@ -226,10 +226,10 @@ export default defineComponent({
     }
     const dropdownMenuOptions = [
       {
-        label: 'Current Sheet',
+        label: '🧩 Current Sheet',
         children: [
           {
-            label: 'Export Current Sheet JSON',
+            label: '📤 Export JSON',
             props: {
               onClick: async () => {
                 await handleExport({currentOnly: true})
@@ -237,7 +237,7 @@ export default defineComponent({
             },
           },
           {
-            label: 'Copy Current Sheet JSON',
+            label: '📋 Copy JSON',
             props: {
               onClick: async () => {
                 const json = getSheetsJson({currentOnly: true})
@@ -247,7 +247,7 @@ export default defineComponent({
             },
           },
           {
-            label: 'Print Current Sheet to Console',
+            label: '💻 Print to Console',
             props: {
               onClick: async () => {
                 const json = getSheetsJson({currentOnly: true})
@@ -259,10 +259,10 @@ export default defineComponent({
         ],
       },
       {
-        label: 'All Sheets',
+        label: '📗 All Sheets',
         children: [
           {
-            label: 'Export All Sheets JSON',
+            label: '📤 Export All JSON',
             props: {
               onClick: async () => {
                 await handleExport()
@@ -270,7 +270,7 @@ export default defineComponent({
             },
           },
           {
-            label: 'Copy All Sheets JSON',
+            label: '📋 Copy All JSON',
             props: {
               onClick: async () => {
                 const json = getSheetsJson()
@@ -280,7 +280,7 @@ export default defineComponent({
             },
           },
           {
-            label: 'Print All Sheets to Console',
+            label: '💻 Print All to Console',
             props: {
               onClick: async () => {
                 const json = getSheetsJson()
@@ -382,7 +382,7 @@ export default defineComponent({
                 key-field="label"
                 :disabled="!isReady"
               >
-                <n-button size="small">{{ $t('actions.export') }}</n-button>
+                <n-button size="small">💻 {{ $t('actions.export') }}</n-button>
               </n-dropdown>
 
               <n-button
@@ -467,6 +467,7 @@ export default defineComponent({
       height: 25px;
       padding: 5px 10px;
       min-width: 100px;
+      vertical-align: baseline;
     }
 
     table,

@@ -247,7 +247,7 @@ export default defineComponent({
         },
         fileHandle.value
           ? {
-              label: $t('actions.close') + ' JSON',
+              label: '💻 ' + $t('actions.close') + ' JSON',
               children: [
                 {
                   label: $t('Confirm close JSON? Unsaved contents will be lost.'),
@@ -256,7 +256,7 @@ export default defineComponent({
               ],
             }
           : {
-              label: $t('actions.open') + ' JSON',
+              label: '💻  ' + $t('actions.open') + ' JSON',
               props: {
                 onClick: () => {
                   handleSelectFile()
@@ -267,7 +267,7 @@ export default defineComponent({
 
         fileHandle.value
           ? {
-              label: $t('actions.save'),
+              label: '💾 ' + $t('actions.save'),
               props: {
                 onClick: () => {
                   handleSaveFile()

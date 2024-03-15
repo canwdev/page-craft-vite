@@ -28,6 +28,7 @@
           console.log(fonts)
         }
 
+        // 支持直接返回vue3计算属性
         return computed(() => {
           return [
             ...fonts

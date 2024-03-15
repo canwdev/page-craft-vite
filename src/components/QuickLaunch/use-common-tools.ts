@@ -23,7 +23,7 @@ export const useCommonTools = () => {
       },
     },
     {
-      label: '📊 ' + $t('common.excel_copy_tool'),
+      label: '📗 ' + $t('common.excel_copy_tool'),
       search: 'excel copy',
       props: {
         onClick: async () => {
