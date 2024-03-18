@@ -4,7 +4,7 @@ import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {BlockItem} from '@/enum/page-craft/block'
 import DomPreview from '@/components/PageCraft/DomPreview/DomPreview.vue'
 import {loadCompStorage} from '@/hooks/use-component-storage'
-import {throttle} from 'throttle-debounce'
+import {useThrottleFn} from '@vueuse/core'
 import {LsKeys} from '@/enum/page-craft'
 
 export default defineComponent({
@@ -61,9 +61,9 @@ export default defineComponent({
       }
     })
 
-    const handleMousemoveDebounced = throttle(50, true, (options) => {
+    const handleMousemoveDebounced = useThrottleFn((options) => {
       handleCompHover(options)
-    })
+    }, 50)
     const handleCompHover = (options) => {
       const {event, item} = options || {}
       currentItem.value = item

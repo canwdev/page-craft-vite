@@ -1,4 +1,4 @@
-import {throttle} from 'throttle-debounce'
+import {useThrottleFn} from '@vueuse/core'
 
 // 初始化窗口状态
 export type WinOptions = {
@@ -182,7 +182,7 @@ export class WindowController {
     this.handleDragMove = this.handleDragMove.bind(this)
     this.handleDragStop = this.handleDragStop.bind(this)
     this.currentResizeDirection = null
-    this.handleResizeDebounced = throttle(500, false, () => {
+    this.handleResizeDebounced = useThrottleFn(() => {
       if (this.isHidden()) {
         return
       }
@@ -195,7 +195,7 @@ export class WindowController {
       if (typeof onMove === 'function') {
         onMove({top, left})
       }
-    })
+    }, 500)
 
     if (autoPosOnResize) {
       window.addEventListener('resize', this.handleResizeDebounced)

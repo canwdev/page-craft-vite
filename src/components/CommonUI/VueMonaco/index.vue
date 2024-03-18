@@ -1,6 +1,6 @@
 <script lang="ts">
 import {defineComponent, shallowRef} from 'vue'
-import {debounce} from 'throttle-debounce'
+import {useDebounceFn} from '@vueuse/core'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {useMainStore} from '@/store/main'
 import monaco from './monaco-helper'
@@ -90,9 +90,9 @@ export default defineComponent({
     onBeforeUnmount(() => {
       editorInstance.value.dispose()
     })
-    const handleEditorChangeDebounced = debounce(props.debounceMs, false, () => {
+    const handleEditorChangeDebounced = useDebounceFn(() => {
       mValue.value = editorInstance.value.getValue()
-    })
+    }, props.debounceMs)
 
     const focus = () => {
       editorInstance.value.focus()

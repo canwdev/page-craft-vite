@@ -2,7 +2,7 @@ import {ActionType, BlockItem, BlockType} from '@/enum/page-craft/block'
 import {useMainStore} from '@/store/main'
 import {appendCustomBlock, autoPasteReplaceValue, createBlockElement} from '@/utils/dom'
 import {LsKeys, TOOL_CLASSES} from '@/enum/page-craft'
-import {throttle} from 'throttle-debounce'
+import {useThrottleFn} from '@vueuse/core'
 import $ from 'jquery'
 import {useContextMenu} from '@/hooks/use-context-menu'
 import {copyToClipboard} from '@/utils'
@@ -353,7 +353,7 @@ export const useInteractionHooks = (options) => {
     handleMousemoveDebounced(event)
   }
 
-  const handleMousemoveDebounced = throttle(50, false, (event: Event) => {
+  const handleMousemoveDebounced = useThrottleFn((event: Event) => {
     const currentNode: any = event.target
     if (currentHoveredEl.value === currentNode) {
       return
@@ -373,7 +373,7 @@ export const useInteractionHooks = (options) => {
       }
       $(currentNode).addClass(TOOL_CLASSES.CLASS_MOUSE_OVER)
     }
-  })
+  }, 50)
 
   const {play: playSfxPlace} = useSfxPlace()
   const {play: playSfxDestroy} = useSfxDestroy()

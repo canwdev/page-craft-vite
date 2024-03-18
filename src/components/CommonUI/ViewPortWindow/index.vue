@@ -1,8 +1,6 @@
 <script lang="ts">
 import {defineComponent, PropType, shallowRef} from 'vue'
-import {useModelWrapper, useModelWrapperV2} from '@/hooks/use-model-wrapper'
 import {WindowController, WinOptions} from './window-controller'
-import {throttle} from 'throttle-debounce'
 import {
   ArrowMaximize20Regular,
   ArrowMinimize20Regular,
@@ -10,10 +8,8 @@ import {
   Subtract20Filled,
 } from '@vicons/fluent'
 import LayoutHelper from './LayoutHelper/index.vue'
-import {
-  useDynamicClassName,
-  useMouseOver,
-} from '@/components/CommonUI/ViewPortWindow/LayoutHelper/use-utils'
+import {useDynamicClassName, useMouseOver} from './LayoutHelper/use-utils'
+import {useThrottleFn, useVModel} from '@vueuse/core'
 
 const LS_KEY_VP_WINDOW_OPTION = 'vp_window'
 
@@ -92,14 +88,14 @@ export default defineComponent({
   setup(props, {emit}) {
     const {allowMaximum, allowMove} = toRefs(props)
     const storageKey = LS_KEY_VP_WINDOW_OPTION + '_' + props.wid
-    const mVisible = useModelWrapper(props, emit, 'visible')
+    const mVisible = useVModel(props, 'visible', emit)
     const rootRef = ref()
     const titleBarRef = ref()
     const titleBarButtonsRef = ref()
     const dWindow = shallowRef<any>(null)
 
-    const isMaximized = useModelWrapperV2(props, emit, 'maximized')
-    const isMinimized = useModelWrapperV2(props, emit, 'minimized')
+    const isMaximized = useVModel(props, 'maximized', emit, {passive: true})
+    const isMinimized = useVModel(props, 'minimized', emit, {passive: true})
 
     const isTransition = ref(false)
     const setIsTransition = (val: boolean) => {
@@ -244,12 +240,12 @@ export default defineComponent({
       })
     }
 
-    const handleMoveDebounced = throttle(500, false, ({top, left}) => {
+    const handleMoveDebounced = useThrottleFn(({top, left}) => {
       winOptions.top = top
       winOptions.left = left
-    })
+    }, 500)
 
-    const handleResizeDebounced = throttle(50, false, () => {
+    const handleResizeDebounced = useThrottleFn(() => {
       if (!mVisible.value || !rootRef.value) {
         return
       }
@@ -257,7 +253,7 @@ export default defineComponent({
 
       winOptions.width = getComputedStyle(rootRef.value).width
       winOptions.height = getComputedStyle(rootRef.value).height
-    })
+    }, 50)
 
     onBeforeUnmount(() => {
       if (dWindow.value) {

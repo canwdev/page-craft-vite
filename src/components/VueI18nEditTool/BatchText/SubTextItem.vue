@@ -1,15 +1,10 @@
 <script lang="ts">
 import {defineComponent, PropType, ref} from 'vue'
 import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
-import {
-  DirTreeItem,
-  formatTranslateTreeItem,
-  I18nJsonObjUtils,
-  ITranslateTreeItem,
-} from '@/enum/vue-i18n-tool'
+import {DirTreeItem} from '@/enum/vue-i18n-tool'
 import {useBatchItem} from '@/components/VueI18nEditTool/BatchGUI/batch-hooks'
 import {handleReadSelectedFile} from '@/utils/exporter'
-import {throttle} from 'throttle-debounce'
+import {useThrottleFn} from '@vueuse/core'
 import {useI18nMainStore} from '@/store/i18n-tool-main'
 import TranslateTreeItem from '@/components/VueI18nEditTool/Single/TranslateTreeItem.vue'
 
@@ -75,11 +70,11 @@ export default defineComponent({
       }
     })
 
-    const handleResizeDebounced = throttle(500, false, () => {
+    const handleResizeDebounced = useThrottleFn(() => {
       nextTick(() => {
         vueMonacoRef.value?.resize()
       })
-    })
+    }, 500)
 
     const cleanup = () => {
       valueText.value = ''

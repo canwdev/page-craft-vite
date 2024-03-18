@@ -33,7 +33,6 @@
     "pinia-shared-state": "^0.5.1",
     "portal-vue": "^3.0.0",
     "qrcode": "^1.5.3",
-    "throttle-debounce": "^2.3.0",
     "vue": "^3.4.10",
     "vue-i18n": "^9.9.0",
     "vue-router": "^4.2.5"
