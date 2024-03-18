@@ -5,16 +5,18 @@ import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {ViewDesktopMobile20Regular} from '@vicons/fluent'
 import {useRouter} from 'vue-router'
 import {useStorage} from '@vueuse/core'
+import {useRemoteOptions} from '@/components/CommonUI/QuickOptions/use-remote-options'
+import QuickOptions from '@/components/CommonUI/QuickOptions/index.vue'
 
 export default defineComponent({
   name: 'IframeBrowser',
+  components: {ViewPortWindow, ViewDesktopMobile20Regular, QuickOptions},
   props: {
     visible: {
       type: Boolean,
       default: false,
     },
   },
-  components: {ViewPortWindow, ViewDesktopMobile20Regular},
   emits: ['update:visible'],
   setup(props, {emit}) {
     const router = useRouter()
@@ -56,30 +58,27 @@ export default defineComponent({
       console.error('[handleIframeError]', e)
     }
 
-    const shortcutList = computed(() => {
-      return [
-        {label: 'PageCraft Playground', value: '/#/craft/playground'},
-        {label: 'Google', value: 'https://www.google.com/webhp?igu=1'},
-        {label: 'Bing', value: 'https://www.bing.com'},
-        {label: 'Win11React', value: 'https://win11.blueedge.me/'},
-        {label: 'Grid Layout it', value: 'https://grid.layoutit.com/'},
-        {label: 'Can I use', value: 'https://caniuse.com/'},
-        {label: 'CSS Gradient Generator', value: 'https://www.colorzilla.com/gradient-editor/'},
-        {label: 'CSS clip-path maker', value: 'https://bennettfeely.com/clippy/'},
-        {label: 'JSON Editor Online', value: 'https://jsoneditoronline.org/'},
-        {label: '在线工具 tool.lu', value: 'https://tool.lu/'},
-        {label: '二维码生成 cli.im', value: 'https://cli.im/'},
-      ].map((item) => {
+    const {options: shortcutList} = useRemoteOptions({
+      fetchFn: async () => {
+        const res = await fetch('./bookmarks.json')
+        return await res.json()
+      },
+      mapFn: (item) => {
         return {
           label: '🌎 ' + (item.label || item.value),
           value: item.value,
+          props: {
+            onClick: !item.children
+              ? () => {
+                  addressBarUrl.value = item.value
+                  handleGo()
+                }
+              : undefined,
+          },
         }
-      })
+      },
     })
-    const handleSelectShortcut = (url) => {
-      addressBarUrl.value = url
-      handleGo()
-    }
+    const showShortcuts = ref(false)
 
     const iframeWinRef = ref()
     const setMobileView = () => {
@@ -90,6 +89,7 @@ export default defineComponent({
     return {
       mVisible,
       iframeWinRef,
+      setMobileView,
       iframeRef,
       iframeSrc,
       addressBarUrl,
@@ -98,8 +98,7 @@ export default defineComponent({
       handleIframeError,
       titleText,
       shortcutList,
-      handleSelectShortcut,
-      setMobileView,
+      showShortcuts,
     }
   },
 })
@@ -122,15 +121,10 @@ export default defineComponent({
 
     <div v-if="mVisible" class="iframe-browser-inner-wrap">
       <div class="iframe-browser-address-bar-wrap">
-        <n-dropdown
-          :options="shortcutList"
-          key-field="value"
-          size="small"
-          placement="bottom-start"
-          @select="handleSelectShortcut"
-        >
-          <n-button size="tiny">@</n-button>
-        </n-dropdown>
+        <div class="button-wrap">
+          <n-button size="tiny" @click="showShortcuts = true">@</n-button>
+          <QuickOptions :options="shortcutList" v-model:visible="showShortcuts" title="Shortcuts" />
+        </div>
 
         <n-input
           class="iframe-browser-input font-code"
@@ -160,6 +154,16 @@ export default defineComponent({
   width: 100%;
   display: flex;
   flex-direction: column;
+
+  .button-wrap {
+    position: relative;
+    .quick-options {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      min-width: 250px;
+    }
+  }
 
   .iframe-browser-address-bar-wrap {
     display: flex;

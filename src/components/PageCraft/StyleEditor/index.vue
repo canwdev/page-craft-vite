@@ -31,6 +31,7 @@ import {usePlaygroundStore} from '@/store/playground'
 import QuickOptions from '@/components/CommonUI/QuickOptions/index.vue'
 import {QuickOptionItem} from '@/components/CommonUI/QuickOptions/enum'
 import {useEventListener, useStorage} from '@vueuse/core'
+import {useRemoteOptions} from '@/components/CommonUI/QuickOptions/use-remote-options'
 
 export default defineComponent({
   name: 'StyleEditor',
@@ -262,34 +263,28 @@ export default defineComponent({
       }, 100)
     }
 
-    const toolOptions = ref<QuickOptionItem[]>([])
-    const loadSnippets = async () => {
-      const res = await fetch('./scss-snippets.json')
-      const data = await res.json()
-
-      const traverse = (list: any[] = [], result: QuickOptionItem[] = []) => {
-        list.forEach((i: any) => {
-          const r: QuickOptionItem = {
-            label: i.label,
-            children: i.children ? traverse(i.children) : undefined,
-            props: {},
+    const {options: toolOptions} = useRemoteOptions({
+      fetchFn: async () => {
+        const res = await fetch('./scss-snippets.json')
+        return await res.json()
+      },
+      mapFn: (i) => {
+        const r: QuickOptionItem = {
+          label: i.label,
+          props: {},
+        }
+        if (i.code) {
+          r.props!.onClick = async () => {
+            insertStyleCode(i.code)
           }
-          if (i.code) {
-            r.props!.onClick = async () => {
-              insertStyleCode(i.code)
-            }
-            r.props!.onContextmenu = async () => {
-              await copyToClipboard(i.code)
-              window.$message.success($t('msgs.copy_success'))
-            }
+          r.props!.onContextmenu = async () => {
+            await copyToClipboard(i.code)
+            window.$message.success($t('msgs.copy_success'))
           }
-          result.push(r)
-        })
-        return result
-      }
-      toolOptions.value = traverse(data)
-    }
-    onMounted(loadSnippets)
+        }
+        return r
+      },
+    })
 
     useOpenCloseSelect(() => mainStore.isSelectMode)
 

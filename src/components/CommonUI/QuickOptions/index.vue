@@ -294,16 +294,13 @@ export default defineComponent({
     outline: none;
     .option-item {
       &.focus {
-        background-color: $primary_opacity !important;
+        box-shadow: 0 0 0 1px currentColor inset;
       }
     }
   }
 
   &._absolute {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     z-index: 1000;
     overflow: hidden;
   }
@@ -398,7 +395,7 @@ export default defineComponent({
     }
 
     &.active {
-      color: white;
+      color: white !important;
       background-color: $primary !important;
     }
 
