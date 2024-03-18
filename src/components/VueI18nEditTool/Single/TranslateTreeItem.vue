@@ -266,7 +266,7 @@ export default defineComponent({
           </button>
           <button
             @click="handleAutoAdd"
-            :title="`Auto Paste (${i18nSetStore.autoPasteTextConvertMode}) and copy key`"
+            :title="`[Auto] Paste (${i18nSetStore.autoPasteTextConvertMode}) and copy key`"
             class="vp-button primary focus-auto-action"
           >
             <ClipboardPaste20Regular />

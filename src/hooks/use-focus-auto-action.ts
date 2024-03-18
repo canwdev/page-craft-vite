@@ -1,5 +1,6 @@
 import {useAnimate, useEventListener, useWindowFocus} from '@vueuse/core'
 import {useSettingsStore} from '@/store/settings'
+import {isDev} from '@/enum'
 
 function isElementInViewport(el) {
   const rect = el.getBoundingClientRect()
@@ -36,8 +37,16 @@ export const useFocusAutoAction = () => {
       if (!val) {
         lastClickedEl.value = null
       }
+      window.$message.info(`视口聚焦后自动操作: ${val ? 'ON' : 'OFF'}`)
     }
   )
+  useEventListener(document, 'keydown', (event) => {
+    const key = event.key.toLowerCase()
+    if (event.ctrlKey && key === 'a' && event.ctrlKey && event.altKey) {
+      settingsStore.enableFocusAutoAction = !settingsStore.enableFocusAutoAction
+    }
+  })
+
   useEventListener(document, 'click', (evt) => {
     if (settingsStore.enableFocusAutoAction) {
       // 必须匹配此类才会记录，否则可能造成误操作

@@ -6,7 +6,7 @@ import {readClipboardData} from '@/utils'
 import {textConvertAdvanced, TextConvertMode} from '@/components/VueI18nEditTool/copy-enum'
 import {useI18nToolSettingsStore} from '@/store/i18n-tool-settings'
 import {useAutoPasteConvert} from '@/components/VueI18nEditTool/Single/use-auto-paste-convert'
-import {isBase64Image, isSrcHttpUrl} from '@/utils/is'
+import {isBase64Image, isSrcHttpUrl, isUrlImage} from '@/utils/is'
 
 export default defineComponent({
   name: 'FieldEdit',
@@ -52,7 +52,7 @@ export default defineComponent({
       if (valType.value !== 'string') {
         return false
       }
-      return isSrcHttpUrl(mValue.value) || isBase64Image(mValue.value)
+      return (isSrcHttpUrl(mValue.value) && isUrlImage(mValue.value)) || isBase64Image(mValue.value)
     })
 
     return {
@@ -138,12 +138,12 @@ export default defineComponent({
       max-height: 200px;
       transition: all 0.3s;
     }
-    &:hover {
-      img {
-        max-width: 800px;
-        max-height: 800px;
-      }
-    }
+    //&:hover {
+    //  img {
+    //    max-width: 800px;
+    //    max-height: 800px;
+    //  }
+    //}
   }
 }
 </style>

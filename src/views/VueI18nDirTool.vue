@@ -687,13 +687,7 @@ export default defineComponent({
 
       &.batch-mode {
         .translate-item.active {
-          .n-input--focus {
-            //background-color: rgba(98, 83, 82, 0.13);
-          }
-          .n-input__state-border {
-            border-color: $primary !important;
-            box-shadow: 0 0 0 1px $primary !important;
-          }
+          background-color: $primary !important;
         }
       }
 

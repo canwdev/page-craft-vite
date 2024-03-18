@@ -13,7 +13,9 @@ export default defineComponent({
   name: 'AppSub',
   components: {
     QuickLaunchWindow,
-    SystemSettings: defineAsyncComponent(() => import('@/components/PageCraft/SystemSettings.vue')),
+    SystemSettings: defineAsyncComponent(
+      () => import('@/components/PageCraft/Settings/SystemSettings.vue')
+    ),
     DialogTextTransformer,
     StylusToolsDialog: defineAsyncComponent(
       () => import('@/components/PageCraft/StyleEditor/StylusToolsDialog.vue')

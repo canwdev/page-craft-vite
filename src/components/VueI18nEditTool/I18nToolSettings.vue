@@ -7,6 +7,7 @@ import {useI18nToolSettingsStore} from '@/store/i18n-tool-settings'
 import {TextConvertMode, TextConvertOptions} from '@/components/VueI18nEditTool/copy-enum'
 import {Globe20Regular} from '@vicons/fluent'
 import {NButton} from 'naive-ui'
+import {useCommonSettings} from '@/components/PageCraft/Settings/use-common-settings'
 
 export default defineComponent({
   name: 'I18nToolSettings',
@@ -21,6 +22,8 @@ export default defineComponent({
     const {t: $t} = useI18n()
     const mVisible = useModelWrapper(props, emit, 'visible')
     const i18nSetStore = useI18nToolSettingsStore()
+
+    const {commonSettingsOptions} = useCommonSettings()
 
     const optionList = computed((): StOptionItem[] => {
       return [
@@ -92,6 +95,7 @@ export default defineComponent({
             },
           ],
         },
+        ...commonSettingsOptions.value,
       ]
     })
 

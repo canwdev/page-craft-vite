@@ -371,5 +371,11 @@ export default defineComponent({
     color: $primary;
     margin-bottom: 10px;
   }
+
+  .item-value-edit-wrap {
+    .item-value-edit {
+      min-height: 50px;
+    }
+  }
 }
 </style>

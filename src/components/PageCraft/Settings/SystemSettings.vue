@@ -11,6 +11,7 @@ import {RouterLink} from 'vue-router'
 import {Settings20Filled} from '@vicons/fluent'
 import {formatSiteTitle} from '@/router/router-utils'
 import {customThemeOptions, CustomThemeType} from '@/components/CommonUI/ViewPortWindow/enum'
+import {useCommonSettings} from '@/components/PageCraft/Settings/use-common-settings'
 
 const getWallpaperText = () => {
   const list = [{label: 'Bing', url: 'https://api.dujin.org/bing/1920.php'}]
@@ -37,6 +38,8 @@ export default defineComponent({
     const {t: $t} = useI18n()
     const mVisible = useModelWrapper(props, emit, 'visible')
     const settingsStore = useSettingsStore()
+
+    const {commonSettingsOptions} = useCommonSettings()
 
     const optionList = computed((): StOptionItem[] => {
       return [
@@ -121,12 +124,6 @@ export default defineComponent({
               store: settingsStore,
               type: StOptionType.SWITCH,
             },
-          ],
-        },
-        {
-          label: $t('common.others'),
-          key: 'others',
-          children: [
             {
               label: $t('common.global_style'),
               key: 'global_style',
@@ -139,28 +136,9 @@ export default defineComponent({
                 }),
               ]),
             },
-            {
-              label: '视口聚焦后自动操作',
-              subtitle: '视口聚焦后，自动点击上一次点击的按钮，以提升效率',
-              key: 'enableFocusAutoAction',
-              store: settingsStore,
-              type: StOptionType.SWITCH,
-            },
-            {
-              label: formatSiteTitle(),
-              subtitle: `Copyright © 2022-${new Date().getFullYear()} canwdev`,
-              actionRender: h(
-                'a',
-                {
-                  href: 'https://github.com/canwdev/page-craft-vite',
-                  target: '_blank',
-                  rel: 'noopener noreferrer',
-                },
-                'Github'
-              ),
-            },
           ],
         },
+        ...commonSettingsOptions.value,
       ]
     })
 

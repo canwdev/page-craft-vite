@@ -201,8 +201,8 @@ export default defineComponent({
       winElRef.value.style.height = winOptions.height = lsState.height
       isInit.value = true
 
-      if (props.initCenter && !lsVal) {
-        setTimeout(() => {
+      setTimeout(() => {
+        if (props.initCenter && !lsVal) {
           const rect = winElRef.value.getBoundingClientRect()
           console.log(rect)
           const cx = Math.round(window.innerWidth / 2 - rect.width / 2)
@@ -210,8 +210,11 @@ export default defineComponent({
 
           winOptions.left = winElRef.value.style.left = cx + 'px'
           winOptions.top = winElRef.value.style.top = cy + 'px'
-        })
-      }
+        } else {
+          // 初始化后检查窗口是否在视口外，如果在则修复
+          dWindow.value.handleResizeDebounced()
+        }
+      })
     }
 
     const handleMoveDebounced = throttle(500, false, ({top, left}) => {

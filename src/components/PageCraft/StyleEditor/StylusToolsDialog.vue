@@ -109,7 +109,7 @@ multi-line comment
               @click="handleAutoPasteCopy"
               size="small"
               type="primary"
-              title="Paste and Copy Result"
+              title="[Auto] Paste and Copy Result"
               class="focus-auto-action"
             >
               <n-icon> <ClipboardPaste20Regular /> </n-icon>+

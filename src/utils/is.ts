@@ -15,8 +15,9 @@ export function isBase64Image(str) {
 }
 
 export function isSrcHttpUrl(url) {
-  if (!url) {
-    return false
-  }
-  return /^(https?:)/.test(url)
+  return /^(https?:)/gi.test(url)
+}
+
+export function isUrlImage(url) {
+  return /\.(?:jpg|jpeg|jfif|pjpeg|pjp|gif|apng|png|webp|svg|avif)$/gi.test(url)
 }
