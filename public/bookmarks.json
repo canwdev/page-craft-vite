@@ -68,5 +68,11 @@
         "value": "https://cli.im/"
       }
     ]
+  },
+  {
+    "value": "https://gchq.github.io/CyberChef"
+  },
+  {
+    "value": "https://cloud.codegen.cc/"
   }
 ]

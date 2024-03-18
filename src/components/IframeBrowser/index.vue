@@ -83,7 +83,10 @@ export default defineComponent({
     const iframeWinRef = ref()
     const setMobileView = () => {
       console.log(iframeWinRef.value)
-      iframeWinRef.value.setSize(`${375}px`, `${668 + 52}px`)
+      iframeWinRef.value.setWindowLayout({
+        width: 375,
+        height: 668 + 52,
+      })
     }
 
     return {

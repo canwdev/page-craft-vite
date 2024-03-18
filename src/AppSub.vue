@@ -8,10 +8,13 @@ import {handleExportFile} from '@/utils/exporter'
 import QuickLaunchWindow from '@/components/QuickLaunch/QuickLaunchWindow.vue'
 import {promptGetFileName} from '@/utils/exporter'
 import {TextConvertMode} from '@/components/VueI18nEditTool/copy-enum'
+import IframeBrowser from '@/components/IframeBrowser/index.vue'
+import {useSettingsStore} from '@/store/settings'
 
 export default defineComponent({
   name: 'AppSub',
   components: {
+    IframeBrowser,
     QuickLaunchWindow,
     SystemSettings: defineAsyncComponent(
       () => import('@/components/PageCraft/Settings/SystemSettings.vue')
@@ -23,6 +26,7 @@ export default defineComponent({
   },
   setup() {
     const mainStore = useMainStore()
+    const settingsStore = useSettingsStore()
     window.$message = useMessage()
     window.$notification = useNotification()
     window.$dialog = useDialog()
@@ -41,6 +45,7 @@ export default defineComponent({
 
     return {
       mainStore,
+      settingsStore,
     }
   },
 })
@@ -51,4 +56,5 @@ export default defineComponent({
   <DialogTextTransformer v-model:visible="mainStore.isShowTextTransformer" />
   <SystemSettings v-model:visible="mainStore.isShowSettings" />
   <QuickLaunchWindow v-model:visible="mainStore.isShowQuickLaunch" />
+  <IframeBrowser v-model:visible="settingsStore.isShowIframeBrowser" />
 </template>

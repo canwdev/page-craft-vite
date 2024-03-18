@@ -609,6 +609,7 @@ export default defineComponent({
       _topLayout: settingsStore.enableTopLayout,
       _isAttached: settingsStore.isInvAttached,
     }"
+    :init-win-options="{height: '400px'}"
     :allow-move="!settingsStore.isInvAttached"
   >
     <template #titleBarLeft>

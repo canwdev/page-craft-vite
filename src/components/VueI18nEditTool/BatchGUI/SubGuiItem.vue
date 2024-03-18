@@ -374,7 +374,9 @@ export default defineComponent({
 
   .item-value-edit-wrap {
     .item-value-edit {
-      min-height: 50px;
+      &textarea {
+        min-height: 50px;
+      }
     }
   }
 }

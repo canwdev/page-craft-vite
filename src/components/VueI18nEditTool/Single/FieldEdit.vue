@@ -83,7 +83,7 @@ export default defineComponent({
       v-model:value="mValue"
       placeholder="number value"
       size="small"
-      class="item-value-edit jssl_value"
+      class="item-value-edit jssl_value font-code"
       @blur="handleValueBlur"
     />
     <button
@@ -99,7 +99,7 @@ export default defineComponent({
       ref="valueInputRef"
       type="textarea"
       rows="1"
-      class="item-value-edit vp-input"
+      class="item-value-edit vp-input font-code"
       v-model="mValue"
       placeholder="text value"
       @blur="handleValueBlur"
