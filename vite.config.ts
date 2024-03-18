@@ -5,6 +5,7 @@ import Components from 'unplugin-vue-components/vite'
 import {NaiveUiResolver} from 'unplugin-vue-components/resolvers'
 import {fileURLToPath, URL} from 'url'
 import {VitePWA} from 'vite-plugin-pwa'
+
 // https://vitejs.dev/config/
 export default defineConfig({
   base: './',
@@ -12,6 +13,10 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
+  },
+  build: {
+    minify: 'terser',
+    emptyOutDir: true,
   },
   css: {
     preprocessorOptions: {

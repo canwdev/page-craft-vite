@@ -51,6 +51,7 @@
     "naive-ui": "^2.37.3",
     "prettier": "^2.8.8",
     "sass": "^1.69.7",
+    "terser": "^5.29.2",
     "typescript": "^5.3.3",
     "unplugin-auto-import": "^0.15.3",
     "unplugin-vue-components": "^0.24.1",

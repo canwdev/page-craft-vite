@@ -74,6 +74,7 @@ export const showInputPrompt = (options: any = {}): Promise<string> => {
             NButton,
             {
               onClick: () => {
+                reject()
                 d.destroy()
               },
             },
