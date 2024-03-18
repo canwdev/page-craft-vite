@@ -36,6 +36,8 @@ export default defineComponent({
         window.$message.info('ctrl+r is disabled')
       } else if (event.altKey && key === 'r') {
         mainStore.isShowQuickLaunch = !mainStore.isShowQuickLaunch
+      } else if (event.altKey && key === 'i') {
+        settingsStore.isShowIframeBrowser = !settingsStore.isShowIframeBrowser
       }
     })
 

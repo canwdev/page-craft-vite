@@ -59,8 +59,6 @@ export default defineComponent({
         settingsStore.showStyleEditor = !settingsStore.showStyleEditor
       } else if (event.altKey && key === 'w') {
         mainStore.isShowSettings = !mainStore.isShowSettings
-      } else if (event.altKey && key === 'i') {
-        settingsStore.isShowIframeBrowser = !settingsStore.isShowIframeBrowser
       } else if (event.altKey && key === '1') {
         const el = document.querySelector('.sl-css-class-input input') as HTMLInputElement | null
         el && el.focus()
@@ -160,7 +158,6 @@ export default defineComponent({
       <template #end> </template>
     </ToolBar>
   </div>
-  <IframeBrowser v-model:visible="settingsStore.isShowIframeBrowser" />
   <StyleEditor v-model:visible="settingsStore.showStyleEditor" />
 </template>
 

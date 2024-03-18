@@ -42,7 +42,7 @@ export const useCommonTools = () => {
       },
     },
     {
-      label: '🌐 ' + $t('common.i18njson_editing_too'),
+      label: '🌐📄 ' + $t('common.i18njson_editing_too'),
       search: 'json editor',
       props: {
         onClick: async () => {
@@ -52,7 +52,7 @@ export const useCommonTools = () => {
       },
     },
     {
-      label: '🌎 ' + $t('common.i18njson_batch_tool'),
+      label: '🌐📂 ' + $t('common.i18njson_batch_tool'),
       search: 'json editor batch',
       props: {
         onClick: async () => {
@@ -66,6 +66,14 @@ export const useCommonTools = () => {
     let list: QuickOptionItem[] = [
       ...toolsMenuOptions,
       {
+        label: '🌎 Iframe Browser (alt+i)',
+        props: {
+          onClick: async () => {
+            settingsStore.isShowIframeBrowser = !settingsStore.isShowIframeBrowser
+          },
+        },
+      },
+      {
         label: '⚙️ ' + $t('common.settings'),
         search: 'settings',
         props: {
@@ -75,20 +83,7 @@ export const useCommonTools = () => {
         },
       },
     ]
-    if (route.name === 'CraftPage') {
-      list = [
-        {
-          label: '🌎 Iframe Browser (alt+i)',
-          props: {
-            onClick: async () => {
-              mainStore.isShowQuickLaunch = false
-              settingsStore.isShowIframeBrowser = !settingsStore.isShowIframeBrowser
-            },
-          },
-        },
-        ...list,
-      ]
-    } else {
+    if (route.name !== 'CraftPage') {
       list = [
         {
           label: '⛏️ ' + formatSiteTitle(),
@@ -105,7 +100,6 @@ export const useCommonTools = () => {
 
     if (route.name !== 'HomePage') {
       list = [
-        ...list,
         {
           label: '🏠 Welcome Page',
           props: {
@@ -114,6 +108,7 @@ export const useCommonTools = () => {
             },
           },
         },
+        ...list,
       ]
     }
 
