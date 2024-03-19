@@ -93,6 +93,7 @@ declare module '@vue/runtime-core' {
     SubTextItem: typeof import('./src/components/VueI18nEditTool/BatchText/SubTextItem.vue')['default']
     SystemSettings: typeof import('./src/components/PageCraft/Settings/SystemSettings.vue')['default']
     TabLayout: typeof import('./src/components/CommonUI/TabLayout.vue')['default']
+    Theme: typeof import('./src/components/CommonUI/ViewPortWindow/theme/index.vue')['default']
     ToolBar: typeof import('./src/components/PageCraft/ToolBar/index.vue')['default']
     ToolItem: typeof import('./src/components/PageCraft/ToolBar/ToolItem.vue')['default']
     TranslateItem: typeof import('./src/components/VueI18nEditTool/Single/TranslateItem.vue')['default']
