@@ -2,17 +2,13 @@ import {BlockItem, BlockType} from '@/enum/page-craft/block'
 import {TabType} from '@/enum/page-craft/inventory'
 import {FilterType, LdThemeType} from '@/enum/settings'
 import {StyleTabType} from '@/enum/page-craft/styles'
-import {CustomThemeType} from '@/components/CommonUI/ViewPortWindow/enum'
+import {DEFAULT_THEME} from '@/components/CommonUI/ViewPortWindow/utils/use-theme'
 
 interface IPageCraftSettings {
   // 明暗主题
   ldTheme: LdThemeType
   // 自定义主题类型
-  customTheme: CustomThemeType
-  // 圆角主题
-  enableRoundedTheme: boolean
-  // 开启半透明模糊UI
-  enableAeroTheme: boolean
+  customTheme: string
   // 主题色
   themeColor: string
   // 桌面壁纸url
@@ -49,9 +45,7 @@ export const useSettingsStore = defineStore('settingsStore', {
   state: (): IPageCraftSettings => {
     return {
       ldTheme: LdThemeType.SYSTEM,
-      customTheme: CustomThemeType.DEFAULT,
-      enableRoundedTheme: false,
-      enableAeroTheme: false,
+      customTheme: DEFAULT_THEME,
       themeColor: '#258292',
       desktopBgColor: '',
       desktopWallpaper: '',

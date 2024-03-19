@@ -16,7 +16,6 @@ import {useOpenCloseSound, useSfxBell} from '@/hooks/use-sfx'
 import IframeBrowser from '@/components/IframeBrowser/index.vue'
 import BackgroundLayer from '@/components/PageCraft/BackgroundLayer/index.vue'
 import {useMainStore} from '@/store/main'
-import {customThemeOptions, CustomThemeType} from '@/components/CommonUI/ViewPortWindow/enum'
 import {useEventListener} from '@vueuse/core'
 
 export default defineComponent({
@@ -122,8 +121,6 @@ export default defineComponent({
       settingsStore,
       ldThemeOptions,
       styleMenuOptions,
-      customThemeOptions,
-      CustomThemeType,
     }
   },
 })

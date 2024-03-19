@@ -1,8 +1,7 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
-import {WindowController} from '@/components/CommonUI/ViewPortWindow/window-controller'
+import {WindowController} from '@/components/CommonUI/ViewPortWindow/utils/window-controller'
 import {useContextMenu} from '@/hooks/use-context-menu'
-import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import InventoryList from '@/components/PageCraft/InventoryModal/InventoryList.vue'
 
 export default defineComponent({

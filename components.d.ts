@@ -33,7 +33,7 @@ declare module '@vue/runtime-core' {
     InventoryList: typeof import('./src/components/PageCraft/InventoryModal/InventoryList.vue')['default']
     InventoryModal: typeof import('./src/components/PageCraft/InventoryModal/index.vue')['default']
     ItemAction: typeof import('./src/components/CommonUI/OptionUI/ItemAction.vue')['default']
-    LayoutHelper: typeof import('./src/components/CommonUI/ViewPortWindow/LayoutHelper/index.vue')['default']
+    LayoutHelper: typeof import('./src/components/CommonUI/ViewPortWindow/utils/LayoutHelper.vue')['default']
     MainPlayground: typeof import('./src/components/PageCraft/MainPlayground/index.vue')['default']
     NA: typeof import('naive-ui')['NA']
     NAutoComplete: typeof import('naive-ui')['NAutoComplete']

@@ -7,7 +7,6 @@ import {getSystemIsDarkMode, hexToRgb} from '@/utils/color'
 import {GlobalThemeOverrides} from 'naive-ui'
 import {sassToCSS} from '@/utils/css'
 import {usePlaygroundStore} from '@/store/playground'
-import {CustomThemeType} from '@/components/CommonUI/ViewPortWindow/enum'
 
 export const useGlobalTheme = () => {
   const mainStore = useMainStore()
@@ -35,18 +34,6 @@ export const useGlobalTheme = () => {
   watch(() => settingsStore.ldTheme, handleThemeChange)
 
   const isAppDarkMode = computed(() => mainStore.isAppDarkMode)
-
-  const isRect = computed(() => {
-    return (
-      !settingsStore.enableRoundedTheme ||
-      settingsStore.customTheme === CustomThemeType.MINIMALISM ||
-      settingsStore.customTheme === CustomThemeType.WIN8 ||
-      settingsStore.customTheme === CustomThemeType.CLASSIC
-    )
-  })
-  const isAero = computed(() => {
-    return settingsStore.enableAeroTheme && settingsStore.customTheme === CustomThemeType.DEFAULT
-  })
 
   const updateThemeColor = () => {
     const themeColor = settingsStore.themeColor
@@ -105,8 +92,8 @@ export const useGlobalTheme = () => {
 
     return {
       common: {
-        borderRadiusSmall: isRect.value ? 0 : '2px',
-        borderRadius: isRect.value ? 0 : '4px',
+        // borderRadiusSmall: isRect.value ? 0 : '2px',
+        // borderRadius: isRect.value ? 0 : '4px',
         primaryColor,
         primaryColorHover: primaryColor,
         primaryColorPressed: primaryColor,
@@ -116,8 +103,6 @@ export const useGlobalTheme = () => {
   })
 
   return {
-    isRect,
-    isAero,
     isAppDarkMode,
     themeOverrides,
   }

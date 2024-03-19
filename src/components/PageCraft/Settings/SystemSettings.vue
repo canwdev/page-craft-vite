@@ -7,11 +7,9 @@ import {useSettingsStore} from '@/store/settings'
 import {ldThemeOptions} from '@/enum/settings'
 import {NSpace, NSwitch, NButton} from 'naive-ui'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
-import {RouterLink} from 'vue-router'
 import {Settings20Filled} from '@vicons/fluent'
-import {formatSiteTitle} from '@/router/router-utils'
-import {customThemeOptions, CustomThemeType} from '@/components/CommonUI/ViewPortWindow/enum'
 import {useCommonSettings} from '@/components/PageCraft/Settings/use-common-settings'
+import {useThemeOptions} from '@/components/CommonUI/ViewPortWindow/utils/use-theme'
 
 const getWallpaperText = () => {
   const list = [{label: 'Bing', url: 'https://api.dujin.org/bing/1920.php'}]
@@ -40,6 +38,7 @@ export default defineComponent({
     const settingsStore = useSettingsStore()
 
     const {commonSettingsOptions} = useCommonSettings()
+    const {themeOptions} = useThemeOptions()
 
     const optionList = computed((): StOptionItem[] => {
       return [
@@ -79,19 +78,7 @@ export default defineComponent({
               key: 'customTheme',
               store: settingsStore,
               type: StOptionType.SELECT,
-              selectOptions: customThemeOptions,
-            },
-            settingsStore.customTheme === CustomThemeType.DEFAULT && {
-              label: $t('common.rounded'),
-              key: 'enableRoundedTheme',
-              store: settingsStore,
-              type: StOptionType.SWITCH,
-            },
-            settingsStore.customTheme === CustomThemeType.DEFAULT && {
-              label: 'Aero',
-              key: 'enableAeroTheme',
-              store: settingsStore,
-              type: StOptionType.SWITCH,
+              selectOptions: themeOptions.value,
             },
             {
               label: $t('common.disable_animation'),

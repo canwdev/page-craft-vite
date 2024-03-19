@@ -16,7 +16,7 @@ export default defineComponent({
     const settingsStore = useSettingsStore()
     const mainStore = useMainStore()
 
-    const {isAppDarkMode, isRect, isAero, themeOverrides} = useGlobalTheme()
+    const {isAppDarkMode, themeOverrides} = useGlobalTheme()
 
     const bgStyle = computed(() => {
       const s: any = {}
@@ -48,8 +48,6 @@ export default defineComponent({
       themeOverrides,
       darkTheme,
       settingsStore,
-      isAero,
-      isRect,
       bgStyle,
     }
   },
@@ -61,9 +59,6 @@ export default defineComponent({
     :class="[
       {
         _dark: isAppDarkMode,
-        _aero: isAero,
-        _rect: isRect,
-        _rounded: !isRect,
       },
       settingsStore.customTheme,
     ]"
