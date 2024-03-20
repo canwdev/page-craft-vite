@@ -7,10 +7,12 @@ import {getSystemIsDarkMode, hexToRgb} from '@/utils/color'
 import {GlobalThemeOverrides} from 'naive-ui'
 import {sassToCSS} from '@/utils/css'
 import {usePlaygroundStore} from '@/store/playground'
+import {useThemeOptions} from '@/components/CommonUI/ViewPortWindow/utils/use-theme'
 
 export const useGlobalTheme = () => {
   const mainStore = useMainStore()
   const settingsStore = useSettingsStore()
+  useThemeOptions()
 
   const handleThemeChange = (val: LdThemeType) => {
     if (val === LdThemeType.SYSTEM) {

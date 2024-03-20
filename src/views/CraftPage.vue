@@ -52,9 +52,9 @@ export default defineComponent({
     )
     useEventListener(document, 'keydown', (event) => {
       const key = event.key.toLowerCase()
-      if (event.altKey && key === 'a') {
+      if (event.altKey && key === 'a' && !event.ctrlKey) {
         settingsStore.showInventory = !settingsStore.showInventory
-      } else if (event.altKey && key === 's') {
+      } else if (event.altKey && key === 's' && !event.ctrlKey) {
         settingsStore.showStyleEditor = !settingsStore.showStyleEditor
       } else if (event.altKey && key === 'w') {
         mainStore.isShowSettings = !mainStore.isShowSettings
