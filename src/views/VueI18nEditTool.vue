@@ -18,6 +18,7 @@ import {guid} from '@/utils'
 import {QuickOptionItem} from '@/components/CommonUI/QuickOptions/enum'
 import QuickOptions from '@/components/CommonUI/QuickOptions/index.vue'
 import {FileHandleHistory, verifyPermission} from '@/components/VueI18nEditTool/file-history'
+import moment from 'moment'
 
 const filePickerOptions = {
   types: [
@@ -203,9 +204,9 @@ export default defineComponent({
         }
         return [
           ...fileHistory.value.reverse().map((i) => {
-            const {handle} = i
+            const {handle, lastOpened} = i
             return {
-              label: handle.name,
+              label: handle.name + ` (${moment(lastOpened).format('HH:mm:ss')})`,
               props: {
                 onClick: async () => {
                   if (await verifyPermission(handle)) {
@@ -332,7 +333,7 @@ export default defineComponent({
     </transition>
 
     <div
-      class="vp-panel navbar-wrap"
+      class="vp-bg navbar-wrap"
       style="position: sticky; top: 0; z-index: 100; margin-bottom: 10px"
     >
       <n-page-header subtitle="" @back="$router.push({name: 'HomePage'})">

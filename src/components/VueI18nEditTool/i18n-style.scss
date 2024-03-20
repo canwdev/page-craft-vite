@@ -2,10 +2,8 @@
   .navbar-wrap {
     border-radius: 0;
     padding: 8px 10px;
-    border-top: 0;
-    border-left: 0;
-    border-right: 0;
     user-select: none;
+    border-bottom: 1px solid $color_border;
   }
 
   .vp-input {

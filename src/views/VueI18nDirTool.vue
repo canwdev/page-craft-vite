@@ -29,6 +29,7 @@ import TabLayout from '@/components/CommonUI/TabLayout.vue'
 import {useIDBKeyval} from '@vueuse/integrations/useIDBKeyval'
 import {FileHandleHistory, verifyPermission} from '@/components/VueI18nEditTool/file-history'
 import {LsKeys} from '@/enum/page-craft'
+import moment from 'moment/moment'
 
 const formatDirTreeItem = (data: any = {}): DirTreeItem => {
   return {
@@ -263,7 +264,7 @@ export default defineComponent({
     }
 
     const handleCloseDir = () => {
-      dirHandle.value = null
+      dirHandle.value = undefined
       currentEditEntry.value = null
       editingTextValue.value = null
       i18nMainStore.dirTree = []
@@ -386,13 +387,13 @@ export default defineComponent({
       }
       return [
         ...fileHistory.value.reverse().map((i) => {
-          const {handle} = i
+          const {handle, lastOpened} = i
           return {
-            label: handle.name,
+            label: handle.name + ` (${moment(lastOpened).format('HH:mm:ss')})`,
             props: {
               onClick: async () => {
                 if (await verifyPermission(handle)) {
-                  dirHandle.value = handle
+                  dirHandle.value = handle as unknown as FileSystemDirectoryHandle
                   await reloadPickedDir()
                 }
               },
@@ -458,7 +459,7 @@ export default defineComponent({
       <DropZone position-fixed v-show="showDropzone" :text="$t('msgs.drag_folder_here')" />
     </transition>
 
-    <div class="vp-panel navbar-wrap">
+    <div class="vp-bg navbar-wrap">
       <n-page-header subtitle="" @back="$router.push({name: 'HomePage'})">
         <template #title>{{ metaTitle }}</template>
         <template #avatar> <n-avatar :src="iconTranslate" style="background: none" /> </template>

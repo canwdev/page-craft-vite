@@ -20,6 +20,7 @@ type IStore = {
   isShowTextTransformer: boolean
   isShowSettings: boolean
   isShowQuickLaunch: boolean
+  isShowQuickLaunch: boolean
 }
 
 export const useMainStore = defineStore('main', {

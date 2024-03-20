@@ -26,6 +26,7 @@ export const useCommonSettings = () => {
             actionRender: h(
               'a',
               {
+                style: 'color: inherit;',
                 href: 'https://github.com/canwdev/page-craft-vite',
                 target: '_blank',
                 rel: 'noopener noreferrer',
