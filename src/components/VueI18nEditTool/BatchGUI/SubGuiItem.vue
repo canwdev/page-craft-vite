@@ -234,7 +234,7 @@ export default defineComponent({
       <div class="card-title-wrap">
         <span class="card-title">
           <CcFlag v-if="i18nSetStore.enableFlag" :cc="dirItem.label" />
-          <span class="text-red">{{ dirItem.label }}</span>
+          <span class="region-label">{{ dirItem.label }}</span>
           <template v-if="i18nSetStore.isFoldersMode">
             {{ '/' + subFilePathArr.join('/') }}
           </template>
@@ -347,7 +347,7 @@ export default defineComponent({
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      .text-red {
+      .region-label {
         color: #f44336;
         font-weight: 500;
       }

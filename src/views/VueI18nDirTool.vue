@@ -30,6 +30,8 @@ import {useIDBKeyval} from '@vueuse/integrations/useIDBKeyval'
 import {FileHandleHistory, verifyPermission} from '@/components/VueI18nEditTool/file-history'
 import {LsKeys} from '@/enum/page-craft'
 import moment from 'moment/moment'
+import QuickOptions from '@/components/CommonUI/QuickOptions/index.vue'
+import {useGuiToolbox} from '@/components/VueI18nEditTool/BatchGUI/use-gui-toolbox'
 
 const formatDirTreeItem = (data: any = {}): DirTreeItem => {
   return {
@@ -74,6 +76,7 @@ const editModeOptions = [
 export default defineComponent({
   name: 'VueI18nBatchTool',
   components: {
+    QuickOptions,
     TabLayout,
     BatchTextEditor,
     I18nToolSettings,
@@ -332,7 +335,7 @@ export default defineComponent({
         handleSaveFile()
         return
       }
-      globalEventBus.emit(GlobalEvents.ON_I18N_SAVE_ALL_CHANGES)
+      globalEventBus.emit(GlobalEvents.I18N_SAVE_ALL_CHANGES)
     })
 
     const vueMonacoRef = ref()
@@ -366,19 +369,6 @@ export default defineComponent({
           }
         },
       }
-    }
-
-    // 处理字段key点击的高亮效果
-    const handleKeyClick = (str, event) => {
-      // console.log(str, event)
-      const selector = '.translate-item'
-      i18nMainStore.translatePath = str
-
-      const els = Array.from(document.querySelectorAll(selector))
-      els.forEach((el) => {
-        el.classList.remove('active')
-      })
-      event.target.closest(selector).classList.add('active')
     }
 
     const historyOptions = computed(() => {
@@ -428,7 +418,6 @@ export default defineComponent({
       EditMode,
       editModeOptions,
       translateTreeRoot,
-      handleKeyClick,
       ...useFileDrop({
         cb: handleFileDrop,
       }),
@@ -438,6 +427,7 @@ export default defineComponent({
       isLoading,
       expandedKeys,
       historyOptions,
+      ...useGuiToolbox(),
     }
   },
 })
@@ -564,10 +554,17 @@ export default defineComponent({
                   class="gui-edit-gui"
                   :style="{width: editMode === EditMode.BATCH ? '500px' : '100%'}"
                 >
-                  <n-card v-if="editMode === EditMode.BATCH" class="action-row">
-                    <n-button size="tiny">Analyse</n-button>
+                  <div v-if="editMode === EditMode.BATCH" class="vp-bg action-row">
+                    <button class="vp-button" @click="isShowToolboxMenu = !isShowToolboxMenu">
+                      Gui Toolbox
+                    </button>
                     <!-- {{ i18nMainStore.filePathArr.join('/') }}-->
-                  </n-card>
+                    <QuickOptions
+                      style="top: 100%"
+                      v-model:visible="isShowToolboxMenu"
+                      :options="guiToolboxOptions"
+                    />
+                  </div>
 
                   <TranslateTreeItem
                     v-for="(item, index) in translateTreeRoot"
@@ -675,9 +672,12 @@ export default defineComponent({
       box-shadow: 0 0 5px rgba(71, 71, 71, 0.47);
       position: relative;
       z-index: 1;
-      .n-card__content {
-        border: none;
-        padding: 5px 10px;
+      gap: 4px;
+      display: flex;
+      .vp-button {
+        font-size: 12px;
+        padding: 2px 4px;
+        height: auto;
       }
     }
     .edit-content-wrap {

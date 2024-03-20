@@ -24,10 +24,10 @@ export const useBatchWrapper = (props) => {
     }
   }
   onMounted(() => {
-    globalEventBus.on(GlobalEvents.ON_I18N_SAVE_ALL_CHANGES, handleSaveChanged)
+    globalEventBus.on(GlobalEvents.I18N_SAVE_ALL_CHANGES, handleSaveChanged)
   })
   onBeforeUnmount(() => {
-    globalEventBus.off(GlobalEvents.ON_I18N_SAVE_ALL_CHANGES, handleSaveChanged)
+    globalEventBus.off(GlobalEvents.I18N_SAVE_ALL_CHANGES, handleSaveChanged)
   })
 
   const filePathArrFiltered = computed(() => {
