@@ -12,7 +12,7 @@ export default defineComponent({
       handleLanguageSelect(val) {
         setLanguage(val)
         window.$dialog.warning({
-          title: 'Refresh page?',
+          title: $t('msgs.refresh_page'),
           positiveText: $t('actions.ok'),
           negativeText: $t('actions.cancel'),
           onPositiveClick: () => {

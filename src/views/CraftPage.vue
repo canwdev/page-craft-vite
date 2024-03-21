@@ -40,7 +40,7 @@ export default defineComponent({
       () => settingsStore.enableSoundFx,
       () => {
         window.$dialog.warning({
-          title: 'Refresh page?',
+          title: $t('msgs.refresh_page'),
           positiveText: $t('actions.ok'),
           negativeText: $t('actions.cancel'),
           onPositiveClick: () => {

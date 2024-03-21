@@ -1,5 +1,6 @@
 import enUS from './locales/en-US/index.json'
 import zhCN from './locales/zh-CN/index.json'
+import jaJP from './locales/ja-JP/index.json'
 import {LsKeys} from '@/enum/page-craft'
 
 export const FALLBACK_LOCALE = 'en-US'
@@ -13,6 +14,11 @@ export const languages = [
     locale: 'zh-CN',
     name: '中文(简体)',
     messages: zhCN,
+  },
+  {
+    locale: 'ja-JP',
+    name: '日本語',
+    messages: jaJP,
   },
 ]
 

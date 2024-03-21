@@ -152,6 +152,7 @@
     "auto_paste_and_copy": "[Auto] Paste and Copy Result",
     "auto_show_image": "Auto Show image",
     "ignore_folders": "Ignore Folders",
-    "enable_flag": "Enable Flag"
+    "enable_flag": "Enable Flag",
+    "refresh_page": "Refresh the page?"
   }
 }
