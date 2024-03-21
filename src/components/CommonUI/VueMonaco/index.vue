@@ -85,6 +85,10 @@ export default defineComponent({
       editorInstance.value.onDidChangeModelContent(() => {
         handleEditorChangeDebounced()
       })
+
+      setTimeout(() => {
+        resize()
+      })
     })
 
     onBeforeUnmount(() => {

@@ -18,7 +18,7 @@ import {
   CursorClick20Regular,
   CursorHover20Regular,
   PaintBrush20Regular,
-  PaintBucket20Filled,
+  AppsAddIn20Regular,
   Wand20Regular,
 } from '@vicons/fluent'
 import {useI18n} from 'vue-i18n'
@@ -48,7 +48,7 @@ export default defineComponent({
     ViewPortWindow,
     CursorHover20Regular,
     CursorClick20Regular,
-    PaintBucket20Filled,
+    AppsAddIn20Regular,
     Copy20Regular,
     Wand20Regular,
     PaintBrush20Regular,
@@ -369,7 +369,7 @@ export default defineComponent({
         @click="isShowQuickOptions = !isShowQuickOptions"
         :title="$t('actions.add_tool_codes')"
       >
-        <n-icon size="20"><PaintBucket20Filled /></n-icon>
+        <n-icon size="20"><AppsAddIn20Regular /></n-icon>
       </button>
 
       <button
@@ -402,7 +402,7 @@ export default defineComponent({
           :options="toolOptions"
           :title="`${$t('actions.add_tool_codes')} (alt+q)`"
           class="font-code"
-          style="top: 2px; right: 2px; transform: unset"
+          style="top: 2px; right: 2px"
         />
       </div>
       <div class="code-editor-placeholder">

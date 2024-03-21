@@ -48,7 +48,9 @@ export default defineComponent({
     // 点击外部隐藏
     onClickOutside(quickRootRef, (event) => {
       if (!isStatic.value) {
-        mVisible.value = false
+        setTimeout(() => {
+          mVisible.value = false
+        })
       }
     })
 

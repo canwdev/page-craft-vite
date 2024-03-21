@@ -10,11 +10,12 @@ import {
 import {ClipboardPaste20Regular, Copy20Regular} from '@vicons/fluent'
 import {useI18n} from 'vue-i18n'
 import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
-import {useStorage} from '@vueuse/core'
+import {useDebounceFn, useStorage} from '@vueuse/core'
+import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
 
 export default defineComponent({
   name: 'DialogTextTransformer',
-  components: {VueMonaco, ClipboardPaste20Regular, Copy20Regular},
+  components: {ViewPortWindow, VueMonaco, ClipboardPaste20Regular, Copy20Regular},
   props: {
     visible: {
       type: Boolean,
@@ -74,6 +75,11 @@ export default defineComponent({
       })
     }
 
+    const monacoEditorRef = ref()
+    const resizeMonaco = useDebounceFn(() => {
+      monacoEditorRef.value.resize()
+    }, 300)
+
     return {
       mVisible,
       textInput,
@@ -87,102 +93,126 @@ export default defineComponent({
       handleAutoPasteCopy,
       handlePaste,
       handleCopy,
+      monacoEditorRef,
+      resizeMonaco,
     }
   },
 })
 </script>
 
 <template>
-  <n-modal
-    v-model:show="mVisible"
-    preset="dialog"
-    :title="$t('common.text_transformer')"
-    style="min-width: 800px"
-    :mask-closable="false"
+  <ViewPortWindow
+    v-model:visible="mVisible"
+    wid="text_converter"
+    allow-maximum
+    @resize="resizeMonaco"
+    :init-win-options="{width: '500px', height: '500px'}"
   >
-    <n-space v-if="mVisible" align="center" style="margin-bottom: 10px">
-      Convert to:
-      <n-select
-        size="small"
-        v-model:value="mMode"
-        :options="TextConvertOptions"
-        style="width: 100px"
-      />
+    <template #titleBarLeft>{{ $t('common.text_transformer') }}</template>
 
-      <n-checkbox size="small" v-model:checked="isTrimEmptyLines">{{
-        $t('msgs.trim_empty_lines')
-      }}</n-checkbox>
-
-      <n-input-group v-if="mMode === TextConvertMode.HTML">
-        <n-input v-model:value="htmlTagName" clearable placeholder="HTML Tag Name" size="small" />
-        <n-input
-          v-if="htmlTagName"
-          v-model:value="htmlAttrs"
-          clearable
-          placeholder="HTML Attrs"
+    <div v-if="mVisible" class="text-converter-wrap">
+      <div class="tool-header" align="center">
+        Convert to:
+        <n-select
           size="small"
+          v-model:value="mMode"
+          :options="TextConvertOptions"
+          style="width: 100px"
         />
-      </n-input-group>
 
-      <n-button-group>
-        <n-button
-          @click="handleAutoPasteCopy"
-          size="small"
-          type="primary"
-          title="[Auto] Paste and Copy Result"
-          class="focus-auto-action"
-        >
-          <n-icon> <ClipboardPaste20Regular /> </n-icon>+
-          <n-icon>
-            <Copy20Regular />
-          </n-icon>
-        </n-button>
-        <n-button @click="handlePaste" size="small" title="Paste">
-          <template #icon>
-            <ClipboardPaste20Regular />
-          </template>
-        </n-button>
-        <n-button @click="handleCopy" size="small" title="Copy Result">
-          <template #icon>
-            <Copy20Regular />
-          </template>
-        </n-button>
-      </n-button-group>
-    </n-space>
-    <div class="style-tools">
-      <div class="common-card">
-        <div class="main-box font-code">
-          <div class="input-wrapper">
-            <div class="input-tip">Text Input: text</div>
-            <n-input
-              class="input-text"
-              type="textarea"
-              v-model:value="textInput"
-              placeholder="Text Input"
-            ></n-input>
-          </div>
-          <div class="input-wrapper">
-            <div class="input-tip">Text Output: {{ mMode }}</div>
-            <VueMonaco v-model="textOutput" :language="mMode" class="input-text" />
-          </div>
+        <n-checkbox size="small" v-model:checked="isTrimEmptyLines">{{
+          $t('msgs.trim_empty_lines')
+        }}</n-checkbox>
+
+        <n-input-group v-if="mMode === TextConvertMode.HTML">
+          <n-input v-model:value="htmlTagName" clearable placeholder="HTML Tag Name" size="small" />
+          <n-input
+            v-if="htmlTagName"
+            v-model:value="htmlAttrs"
+            clearable
+            placeholder="HTML Attrs"
+            size="small"
+          />
+        </n-input-group>
+
+        <n-button-group>
+          <n-button
+            @click="handleAutoPasteCopy"
+            size="small"
+            type="primary"
+            title="[Auto] Paste and Copy Result"
+            class="focus-auto-action"
+          >
+            <n-icon> <ClipboardPaste20Regular /> </n-icon>+
+            <n-icon>
+              <Copy20Regular />
+            </n-icon>
+          </n-button>
+          <n-button @click="handlePaste" size="small" title="Paste">
+            <template #icon>
+              <ClipboardPaste20Regular />
+            </template>
+          </n-button>
+          <n-button @click="handleCopy" size="small" title="Copy Result">
+            <template #icon>
+              <Copy20Regular />
+            </template>
+          </n-button>
+        </n-button-group>
+      </div>
+      <div class="main-box font-code">
+        <div class="input-wrapper">
+          <div class="input-tip">Text Input: text</div>
+          <n-input
+            class="input-text"
+            type="textarea"
+            v-model:value="textInput"
+            placeholder="Text Input"
+          ></n-input>
+        </div>
+        <div class="input-wrapper">
+          <div class="input-tip">Text Output: {{ mMode }}</div>
+          <VueMonaco
+            v-model="textOutput"
+            :language="mMode"
+            class="input-text"
+            ref="monacoEditorRef"
+          />
         </div>
       </div>
     </div>
-  </n-modal>
+  </ViewPortWindow>
 </template>
 
 <style lang="scss" scoped>
-.style-tools {
+.text-converter-wrap {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  .tool-header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    padding: 8px;
+    box-sizing: border-box;
+    padding-bottom: 0;
+  }
   .main-box {
+    flex: 1;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 10px;
-    gap: 10px;
+    gap: 8px;
+    padding: 8px;
+    box-sizing: border-box;
+    overflow: hidden;
 
     .input-wrapper {
       flex: 1;
-      height: 70vh;
+      flex-shrink: 0;
+      height: 100%;
+      overflow: hidden;
       outline: 1px solid $color_border;
       display: flex;
       flex-direction: column;

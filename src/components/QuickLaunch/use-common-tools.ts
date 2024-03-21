@@ -37,7 +37,7 @@ export const useCommonTools = () => {
       search: 'text transformer',
       props: {
         onClick: async () => {
-          mainStore.isShowTextTransformer = true
+          mainStore.isShowTextTransformer = !mainStore.isShowTextTransformer
         },
       },
     },
