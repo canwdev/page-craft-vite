@@ -203,20 +203,23 @@ export const useInteractionHooks = (options) => {
     if (!targetEl) {
       return []
     }
+
+    const iEdit = {
+      label: '✏️ ' + $t('actions.edit_element'),
+      props: {
+        onClick: async () => {
+          nodeAction(targetEl, () => {
+            isShowElementEdit.value = true
+          })
+        },
+      },
+    }
+
     const blockMenu =
       targetEl === mainPlaygroundRef.value
-        ? []
+        ? [iEdit]
         : [
-            {
-              label: '✏️ ' + $t('actions.edit_element'),
-              props: {
-                onClick: async () => {
-                  nodeAction(targetEl, () => {
-                    isShowElementEdit.value = true
-                  })
-                },
-              },
-            },
+            iEdit,
             {
               label: `📄 ${$t('actions.copy')} HTML`,
               props: {

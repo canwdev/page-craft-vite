@@ -15,6 +15,9 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  server: {
+    host: '0.0.0.0',
+  },
   build: {
     minify: 'terser',
     emptyOutDir: true,
@@ -27,28 +30,28 @@ export default defineConfig({
     },
   },
   plugins: [
-    VitePWA({
-      registerType: 'autoUpdate',
-      includeAssets: ['favicon.png', 'favicon-192.png', 'favicon-512.png'],
-      manifest: {
-        name: 'PageCraft',
-        short_name: 'PageCraft',
-        description: 'Web page rapid generation tool',
-        theme_color: '#83B253',
-        icons: [
-          {
-            src: 'favicon-192.png',
-            sizes: '192x192',
-            type: 'image/png',
-          },
-          {
-            src: 'favicon-512.png',
-            sizes: '512x512',
-            type: 'image/png',
-          },
-        ],
-      },
-    }),
+    // VitePWA({
+    //   registerType: 'autoUpdate',
+    //   includeAssets: ['favicon.png', 'favicon-192.png', 'favicon-512.png'],
+    //   manifest: {
+    //     name: 'PageCraft',
+    //     short_name: 'PageCraft',
+    //     description: 'Web page rapid generation tool',
+    //     theme_color: '#83B253',
+    //     icons: [
+    //       {
+    //         src: 'favicon-192.png',
+    //         sizes: '192x192',
+    //         type: 'image/png',
+    //       },
+    //       {
+    //         src: 'favicon-512.png',
+    //         sizes: '512x512',
+    //         type: 'image/png',
+    //       },
+    //     ],
+    //   },
+    // }),
     vue(),
     VueDevTools(),
     AutoImport({

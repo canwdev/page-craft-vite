@@ -17,7 +17,11 @@ import {LsKeys} from '@/enum/page-craft'
 import {guid} from '@/utils'
 import {QuickOptionItem} from '@/components/CommonUI/QuickOptions/enum'
 import QuickOptions from '@/components/CommonUI/QuickOptions/index.vue'
-import {FileHandleHistory, verifyPermission} from '@/components/VueI18nEditTool/file-history'
+import {
+  FileHandleHistory,
+  useOpenedHistory,
+  verifyPermission,
+} from '@/components/VueI18nEditTool/file-history'
 import moment from 'moment'
 
 const filePickerOptions = {
@@ -45,9 +49,13 @@ export default defineComponent({
     const translateTreeRoot = ref<ITranslateTreeItem[]>(I18nJsonObjUtils.parseWithRoot())
     const isLoading = ref(false)
 
-    const {data: fileHistory, set: setFileHistory} = useIDBKeyval<FileHandleHistory[]>(
+    const {appendHistory, historyMenuOptions} = useOpenedHistory(
       LsKeys.I18N_FILE_HANDLE_HISTORY,
-      []
+      async (handle: FileSystemFileHandle) => {
+        fileHandle.value = handle
+        const file = await handle.getFile()
+        await handleImport(file)
+      }
     )
 
     const fileHandle = shallowRef<FileSystemFileHandle>()
@@ -63,17 +71,6 @@ export default defineComponent({
       } finally {
         isLoading.value = false
       }
-    }
-
-    const appendHistory = async (handle: FileSystemFileHandle) => {
-      console.log(handle)
-      const list = [...fileHistory.value]
-      list.push({
-        handle,
-        lastOpened: Date.now(),
-      })
-      // 最多保存5条历史记录，因为无法区分打开的文件是否为同一文件
-      await setFileHistory(list.slice(0, 5))
     }
 
     const handleSelectFile = async () => {
@@ -198,36 +195,6 @@ export default defineComponent({
     }
 
     const menuOptions = computed((): QuickOptionItem[] => {
-      const getHistoryOptions = () => {
-        if (!fileHistory.value.length) {
-          return
-        }
-        return [
-          ...fileHistory.value.reverse().map((i) => {
-            const {handle, lastOpened} = i
-            return {
-              label: handle.name + ` (${moment(lastOpened).format('HH:mm:ss')})`,
-              props: {
-                onClick: async () => {
-                  if (await verifyPermission(handle)) {
-                    fileHandle.value = handle
-                    const file = await handle.getFile()
-                    await handleImport(file)
-                  }
-                },
-              },
-            }
-          }),
-          {
-            label: '🧹 Clear History',
-            props: {
-              onClick: () => {
-                fileHistory.value = []
-              },
-            },
-          },
-        ]
-      }
       // @ts-ignore
       return [
         {
@@ -263,7 +230,7 @@ export default defineComponent({
                   handleSelectFile()
                 },
               },
-              dropdown: getHistoryOptions(),
+              dropdown: historyMenuOptions.value,
             },
 
         fileHandle.value

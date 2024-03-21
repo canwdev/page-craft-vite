@@ -38,7 +38,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="mc-vertical-tab-layout" :class="{horizontal}">
+  <div class="mc-vertical-tab-layout vp-bg" :class="{horizontal}">
     <div class="sidebar-wrap">
       <div class="mc-tab-list">
         <div
@@ -46,7 +46,7 @@ export default defineComponent({
           :key="item.value"
           :class="{active: item.value === mValue}"
           @click="mValue = item.value"
-          class="list-item vp-button"
+          class="list-item"
           :title="item.title"
         >
           <VueRender v-if="item.render" :render-fn="item.render"></VueRender>
@@ -78,6 +78,7 @@ export default defineComponent({
       .list-item {
         padding: 4px 8px;
         transition: background-color 0.3s;
+        cursor: pointer;
         &:hover {
           background-color: $color_border;
         }

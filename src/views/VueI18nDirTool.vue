@@ -27,7 +27,11 @@ import {useI18nMainStore} from '@/store/i18n-tool-main'
 import {useStorage} from '@vueuse/core'
 import TabLayout from '@/components/CommonUI/TabLayout.vue'
 import {useIDBKeyval} from '@vueuse/integrations/useIDBKeyval'
-import {FileHandleHistory, verifyPermission} from '@/components/VueI18nEditTool/file-history'
+import {
+  FileHandleHistory,
+  useOpenedHistory,
+  verifyPermission,
+} from '@/components/VueI18nEditTool/file-history'
 import {LsKeys} from '@/enum/page-craft'
 import moment from 'moment/moment'
 import QuickOptions from '@/components/CommonUI/QuickOptions/index.vue'
@@ -91,9 +95,12 @@ export default defineComponent({
     const i18nSetStore = useI18nToolSettingsStore()
     const isLoading = ref(false)
 
-    const {data: fileHistory, set: setFileHistory} = useIDBKeyval<FileHandleHistory[]>(
+    const {appendHistory, historyMenuOptions} = useOpenedHistory(
       LsKeys.I18N_FOLDER_HANDLE_HISTORY,
-      []
+      async (handle: FileSystemFileHandle) => {
+        dirHandle.value = handle as unknown as FileSystemDirectoryHandle
+        await reloadPickedDir()
+      }
     )
 
     // 保存手动展开的文件夹keys
@@ -191,17 +198,6 @@ export default defineComponent({
       }
       console.log('[readJsonFiles]', tree)
       return tree
-    }
-
-    const appendHistory = async (handle: FileSystemFileHandle) => {
-      console.log(handle)
-      const list = [...fileHistory.value]
-      list.push({
-        handle,
-        lastOpened: Date.now(),
-      })
-      // 最多保存5条历史记录，因为无法区分打开的文件是否为同一文件
-      await setFileHistory(list.slice(0, 5))
     }
 
     const dirHandle = shallowRef<FileSystemDirectoryHandle>()
@@ -371,36 +367,6 @@ export default defineComponent({
       }
     }
 
-    const historyOptions = computed(() => {
-      if (!fileHistory.value.length) {
-        return
-      }
-      return [
-        ...fileHistory.value.reverse().map((i) => {
-          const {handle, lastOpened} = i
-          return {
-            label: handle.name + ` (${moment(lastOpened).format('HH:mm:ss')})`,
-            props: {
-              onClick: async () => {
-                if (await verifyPermission(handle)) {
-                  dirHandle.value = handle as unknown as FileSystemDirectoryHandle
-                  await reloadPickedDir()
-                }
-              },
-            },
-          }
-        }),
-        {
-          label: '🧹 Clear History',
-          props: {
-            onClick: () => {
-              fileHistory.value = []
-            },
-          },
-        },
-      ]
-    })
-
     return {
       metaTitle,
       i18nMainStore,
@@ -426,7 +392,7 @@ export default defineComponent({
       isShowToolSettings,
       isLoading,
       expandedKeys,
-      historyOptions,
+      historyMenuOptions,
       ...useGuiToolbox(),
     }
   },
@@ -485,7 +451,7 @@ export default defineComponent({
               Confirm close folder? Unsaved contents will be lost.
             </n-popconfirm>
 
-            <n-dropdown v-else size="small" :options="historyOptions">
+            <n-dropdown v-else size="small" :options="historyMenuOptions">
               <n-button type="primary" size="small" @click="handlePickDir">
                 {{ $t('actions.pick_i18n_directory') }}
               </n-button>
