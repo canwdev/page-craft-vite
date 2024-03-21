@@ -1,4 +1,5 @@
 export enum LsKeys {
+  LANGUAGE = 'page_craft_language',
   GLOBAL_STYLE = 'page_craft_global_style',
   CURRENT_BLOCK = 'page_craft_current_block',
   /*组件专用 start*/

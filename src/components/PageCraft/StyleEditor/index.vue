@@ -63,9 +63,9 @@ export default defineComponent({
 
     const vueMonacoRef = ref()
     const tabList = ref([
-      {label: 'Global', value: StyleTabType.GLOBAL},
-      {label: 'Variables', value: StyleTabType.VARIABLES},
-      {label: 'Current', value: StyleTabType.CURRENT},
+      {label: $t('common.global_style'), value: StyleTabType.GLOBAL},
+      {label: $t('common.variables'), value: StyleTabType.VARIABLES},
+      {label: $t('actions.current'), value: StyleTabType.CURRENT},
     ])
 
     const isAutoSave = ref(false)

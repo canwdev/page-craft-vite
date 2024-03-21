@@ -10,6 +10,9 @@ import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {Settings20Filled} from '@vicons/fluent'
 import {useCommonSettings} from '@/components/PageCraft/Settings/use-common-settings'
 import {useThemeOptions} from '@/components/CommonUI/ViewPortWindow/utils/use-theme'
+import {formatSiteTitle} from '@/router/router-utils'
+import LanguageChooser from '@/i18n/LanguageChooser.vue'
+import {useMainStore} from '@/store/main'
 
 const getWallpaperText = () => {
   const list = [{label: 'Bing', url: 'https://api.dujin.org/bing/1920.php'}]
@@ -36,6 +39,7 @@ export default defineComponent({
     const {t: $t} = useI18n()
     const mVisible = useModelWrapper(props, emit, 'visible')
     const settingsStore = useSettingsStore()
+    const mainStore = useMainStore()
 
     const {commonSettingsOptions} = useCommonSettings()
     const {themeOptions} = useThemeOptions()
@@ -106,7 +110,7 @@ export default defineComponent({
               type: StOptionType.SWITCH,
             },
             {
-              label: $t('common.reference_map'),
+              label: $t('common.reference_map') + ' (BETA)',
               key: 'enableReferenceMap',
               store: settingsStore,
               type: StOptionType.SWITCH,
@@ -126,6 +130,38 @@ export default defineComponent({
           ],
         },
         ...commonSettingsOptions.value,
+        {
+          label: $t('common.system'),
+          key: 'system',
+          children: [
+            {
+              label: 'Language',
+              key: 'language',
+              actionRender: h(LanguageChooser),
+            },
+            {
+              label: $t('msgs.auto_check_update'),
+              key: 'autoCheckUpdate',
+              subtitle: mainStore.upgradeInfo,
+              store: settingsStore,
+              type: StOptionType.SWITCH,
+            },
+            {
+              label: formatSiteTitle(),
+              subtitle: `Copyright © 2022-${new Date().getFullYear()} canwdev`,
+              actionRender: h(
+                'a',
+                {
+                  style: 'color: inherit;',
+                  href: 'https://github.com/canwdev/page-craft-vite',
+                  target: '_blank',
+                  rel: 'noopener noreferrer',
+                },
+                'Github'
+              ),
+            },
+          ],
+        },
       ]
     })
 

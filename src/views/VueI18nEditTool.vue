@@ -218,7 +218,7 @@ export default defineComponent({
               label: '💻 ' + $t('actions.close') + ' JSON',
               children: [
                 {
-                  label: $t('Confirm close JSON? Unsaved contents will be lost.'),
+                  label: $t($t('msgs.confirm_close')),
                   props: {onClick: handleCloseFile, isBack: true},
                 },
               ],

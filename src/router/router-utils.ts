@@ -7,3 +7,5 @@ export const formatSiteTitle = (t?: string) => {
   }
   return `${t} - ${title}`
 }
+
+export const getPkg = () => pkg

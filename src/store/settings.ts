@@ -39,6 +39,8 @@ interface IPageCraftSettings {
   // selected component name
   curCompoName: string
   styleEditorTab: StyleTabType
+
+  autoCheckUpdate: boolean
 }
 
 export const useSettingsStore = defineStore('settingsStore', {
@@ -69,6 +71,8 @@ export const useSettingsStore = defineStore('settingsStore', {
       toolbarList: [],
       curCompoName: '',
       styleEditorTab: StyleTabType.CURRENT,
+
+      autoCheckUpdate: true,
     }
   },
   persist: {

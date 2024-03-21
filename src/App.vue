@@ -7,6 +7,7 @@ import {isDev} from '@/enum'
 import {useMainStore} from '@/store/main'
 import {useEventListener} from '@vueuse/core'
 import {useFocusAutoAction} from '@/hooks/use-focus-auto-action'
+import {useUpdater} from '@/components/PageCraft/MainPlayground/use-updater'
 
 export default defineComponent({
   components: {
@@ -42,6 +43,7 @@ export default defineComponent({
     })
 
     useFocusAutoAction()
+    useUpdater('canwdev', 'page-craft-vite')
 
     return {
       isAppDarkMode,
@@ -68,7 +70,7 @@ export default defineComponent({
     :style="bgStyle"
   >
     <n-loading-bar-provider>
-      <n-notification-provider>
+      <n-notification-provider placement="bottom-right">
         <n-message-provider placement="top">
           <n-dialog-provider>
             <RouterView />

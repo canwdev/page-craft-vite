@@ -32,14 +32,14 @@ export default defineComponent({
           key: 'json_editing',
           children: [
             {
-              label: '自动粘贴: 移除首尾引号',
+              label: $t('msgs.auto_paste') + ': ' + $t('msgs.remove_quotes'),
               subtitle: 'Trim: \` | \' | "',
               key: 'autoPasteTrimQuotes',
               store: i18nSetStore,
               type: StOptionType.SWITCH,
             },
             {
-              label: '自动粘贴: 文本转换器模式',
+              label: $t('msgs.auto_paste') + ': ' + $t('msgs.text_conv_mode'),
               key: 'autoPasteTextConvertMode',
               store: i18nSetStore,
               type: StOptionType.SELECT,
@@ -50,8 +50,8 @@ export default defineComponent({
               ],
             },
             {
-              label: 'Dev',
-              key: 'dev',
+              label: $t('common.tools'),
+              key: 'tools',
               actionRender: h(
                 NButton,
                 {
@@ -60,7 +60,7 @@ export default defineComponent({
                     console.log('window.$mcUtils', window.$mcUtils)
                   },
                 },
-                () => 'Print Utils Console'
+                () => $t('actions.print_to_console')
               ),
             },
           ],
@@ -76,19 +76,19 @@ export default defineComponent({
               type: StOptionType.SWITCH,
             },
             {
-              label: 'ignoreFolders',
+              label: $t('msgs.ignore_folders'),
               key: 'ignoreFolders',
               store: i18nSetStore,
               type: StOptionType.DYNAMIC_TAGS,
             },
             {
-              label: 'Auto Show image',
+              label: $t('msgs.auto_show_image'),
               key: 'isAutoShowImage',
               store: i18nSetStore,
               type: StOptionType.SWITCH,
             },
             {
-              label: 'Enable Flag (Wikipedia)',
+              label: $t('msgs.enable_flag') + ' (Wikipedia)',
               key: 'enableFlag',
               store: i18nSetStore,
               type: StOptionType.SWITCH,

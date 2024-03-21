@@ -47,7 +47,8 @@
     "edit_mode": "编辑模式",
     "folders_mode": "多文件夹模式",
     "files_mode": "多文件模式",
-    "field": "字段"
+    "field": "字段",
+    "common": "通用"
   },
   "actions": {
     "cancel": "取消",
@@ -90,7 +91,9 @@
     "reload": "重新加载",
     "save_changes": "保存更改",
     "save_as": "另存为",
-    "open": "打开"
+    "open": "打开",
+    "download": "下载",
+    "current": "当前"
   },
   "msgs": {
     "drop_files_here": "将文件拖放到此处",
@@ -131,6 +134,24 @@
     "recommended_i18n_fol": "推荐的 i18n 目录结构",
     "drag_file_here": "拖拽文件到此",
     "drag_folder_here": "拖拽文件夹到此",
-    "load_demo_this_will": "加载演示？这将会覆盖当前编辑的内容。"
+    "load_demo_this_will": "加载演示？这将会覆盖当前编辑的内容。",
+    "auto_check_update": "自动检测更新",
+    "new_version": "新版本",
+    "up_to_date": "已是最新版本",
+    "update_avail": "更新可用",
+    "focus_auto_action": "视口聚焦后自动操作",
+    "focus_auto_action_desc": "视口聚焦后，自动点击上一次点击的[Auto]按钮，以提升效率",
+    "auto_paste": "自动粘贴",
+    "remove_quotes": "移除首尾引号",
+    "text_conv_mode": "文本转换器模式",
+    "fu_zhi_you_ce_nei_ro": "复制右侧内容为JSON",
+    "zhan_tie_j_s_o_n_fu": "粘贴JSON覆盖右侧的内容",
+    "fen_xi_fan_yi_shu": "分析翻译树",
+    "action_completed_pl": "操作完成，请手动保存！",
+    "confirm_close": "确认关闭？未保存的内容将会丢失。",
+    "auto_paste_and_copy": "[Auto] 粘贴并复制结果",
+    "auto_show_image": "自动显示图片",
+    "ignore_folders": "忽略文件夹",
+    "enable_flag": "启用旗标"
   }
 }

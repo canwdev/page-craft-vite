@@ -1,26 +1,25 @@
 import {createI18n} from 'vue-i18n' // import from runtime only
+import {autoMatchLanguage, FALLBACK_LOCALE, getLanguage, languages} from './languages'
 
-import enUS from '@/i18n/locales/en-US/index.json'
-import zhCN from '@/i18n/locales/zh-CN/index.json'
+const messages = {}
+languages.forEach((item) => {
+  messages[item.locale] = item.messages
+})
 
 export const autoGetLocale = () => {
-  const locale = navigator.language
-  if (/^zh/i.test(locale)) {
-    return 'zh-CN'
+  const cookieLanguage = getLanguage()
+  if (cookieLanguage && messages[cookieLanguage]) {
+    return cookieLanguage
   }
 
-  // Default language
-  return 'en'
+  return autoMatchLanguage()
 }
 
 const i18n = createI18n({
   locale: autoGetLocale(),
-  fallbackLocale: 'en',
+  fallbackLocale: FALLBACK_LOCALE,
   legacy: false,
-  messages: {
-    en: enUS,
-    'zh-CN': zhCN,
-  },
+  messages,
 })
 
 export default i18n

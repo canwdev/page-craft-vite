@@ -140,7 +140,7 @@ export default defineComponent({
             @click="handleAutoPasteCopy"
             size="small"
             type="primary"
-            title="[Auto] Paste and Copy Result"
+            :title="$t('msgs.auto_paste_and_copy')"
             class="focus-auto-action"
           >
             <n-icon> <ClipboardPaste20Regular /> </n-icon>+

@@ -47,7 +47,8 @@
     "edit_mode": "Edit Mode",
     "folders_mode": "Folders Mode",
     "files_mode": "Files Mode",
-    "field": "Field"
+    "field": "Field",
+    "system": "System"
   },
   "actions": {
     "cancel": "Cancel",
@@ -90,7 +91,9 @@
     "reload": "Reload",
     "save_changes": "Save Changes",
     "save_as": "Save as",
-    "open": "Open"
+    "open": "Open",
+    "download": "Download",
+    "current": "Current"
   },
   "msgs": {
     "drop_files_here": "Drop files here",
@@ -131,6 +134,24 @@
     "recommended_i18n_fol": "Recommended i18n folder structure example",
     "drag_file_here": "Drag file here",
     "drag_folder_here": "Drag folder here",
-    "load_demo_this_will": "Load Demo? This will override editing content."
+    "load_demo_this_will": "Load Demo? This will override editing content.",
+    "new_version": "New version",
+    "auto_check_update": "Auto check for updates",
+    "up_to_date": "Up to date",
+    "update_avail": "Updates available",
+    "auto_paste": "Auto Paste",
+    "focus_auto_action": "Automatic operation after viewport focus",
+    "focus_auto_action_desc": "Automatically clicks the last clicked [Auto] button after the viewport is focused to improve efficiency",
+    "remove_quotes": "Remove the first and last quotes",
+    "text_conv_mode": "Text Converter Mode",
+    "fu_zhi_you_ce_nei_ro": "Copy the right-hand side as JSON",
+    "zhan_tie_j_s_o_n_fu": "Paste JSON to overwrite the right-hand side",
+    "fen_xi_fan_yi_shu": "Analyzing Translation Trees",
+    "action_completed_pl": "Action completed, please save manually!",
+    "confirm_close": "Confirm close? Unsaved contents will be lost.",
+    "auto_paste_and_copy": "[Auto] Paste and Copy Result",
+    "auto_show_image": "Auto Show image",
+    "ignore_folders": "Ignore Folders",
+    "enable_flag": "Enable Flag"
   }
 }

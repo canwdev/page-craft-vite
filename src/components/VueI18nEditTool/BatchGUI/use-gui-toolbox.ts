@@ -3,8 +3,10 @@ import {useI18nMainStore} from '@/store/i18n-tool-main'
 import {QuickOptionItem} from '@/components/CommonUI/QuickOptions/enum'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {readClipboardData} from '@/utils'
+import {useI18n} from 'vue-i18n'
 
 export const useGuiToolbox = () => {
+  const {t: $t} = useI18n()
   const i18nMainStore = useI18nMainStore()
 
   // 处理字段key点击的高亮效果
@@ -32,18 +34,18 @@ export const useGuiToolbox = () => {
     const currentPath = i18nMainStore.translatePath
     return [
       {
-        label: '分析翻译树 (TBD)',
+        label: $t('msgs.fen_xi_fan_yi_shu') + ' (TBD)',
         props: {
           onClick: () => {
             console.log('[translatePath]', i18nMainStore.translatePath)
             console.log('[dirTree]', i18nMainStore.dirTree)
             console.log('[filePathArr]', i18nMainStore.filePathArr)
-            console.log('功能待实现！')
+            console.log('TODO！')
           },
         },
       },
       {
-        label: '复制右侧内容为JSON',
+        label: $t('msgs.fu_zhi_you_ce_nei_ro'),
         disabled: !currentPath,
         props: {
           onClick: async () => {
@@ -64,7 +66,7 @@ export const useGuiToolbox = () => {
         },
       },
       {
-        label: '粘贴JSON覆盖右侧的内容',
+        label: $t('msgs.zhan_tie_j_s_o_n_fu'),
         disabled: !currentPath,
         props: {
           onClick: async () => {
@@ -92,7 +94,7 @@ export const useGuiToolbox = () => {
                   }
                 }
               }
-              window.$message.success('Action completed, please save manually!')
+              window.$message.success($t('msgs.action_completed_pl'))
             } catch (error: any) {
               window.$message.error(error.message)
             }

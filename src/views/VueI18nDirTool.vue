@@ -448,7 +448,7 @@ export default defineComponent({
                   {{ $t('actions.close') }} Folder
                 </n-button>
               </template>
-              Confirm close folder? Unsaved contents will be lost.
+              {{ $t('msgs.confirm_close') }}
             </n-popconfirm>
 
             <n-dropdown v-else size="small" :options="historyMenuOptions">
