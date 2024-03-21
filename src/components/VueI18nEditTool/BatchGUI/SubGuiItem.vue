@@ -225,23 +225,23 @@ export default defineComponent({
 </script>
 
 <template>
-  <n-card size="small" class="batch-translate-item">
+  <div class="batch-translate-item vp-panel" :data-translate-path="i18nMainStore.translatePath">
     <div class="mc-loading-container" v-if="isLoading">
       <n-spin size="small" />
     </div>
 
     <div class="card-header">
       <div class="card-title-wrap">
-        <span class="card-title">
+        <span class="card-title font-code">
           <CcFlag v-if="i18nSetStore.enableFlag" :cc="dirItem.label" />
           <span class="region-label">{{ dirItem.label }}</span>
           <template v-if="i18nSetStore.isFoldersMode">
             {{ '/' + subFilePathArr.join('/') }}
           </template>
         </span>
-        <span class="translate-path">
-          {{ i18nMainStore.translatePath }}
-        </span>
+        <!--        <span class="translate-path">-->
+        <!--          {{ i18nMainStore.translatePath }}-->
+        <!--        </span>-->
       </div>
 
       <template v-if="currentItem && fieldValue !== null">
@@ -318,17 +318,14 @@ export default defineComponent({
       :text="currentArrayString"
       @onSave="handleSaveArray"
     />
-  </n-card>
+  </div>
 </template>
 
 <style lang="scss">
 .batch-translate-item {
+  padding: 10px;
   margin-bottom: 10px;
   position: relative;
-
-  :deep(.n-card__content) {
-    padding: 10px;
-  }
 
   .card-header {
     display: flex;
@@ -374,7 +371,7 @@ export default defineComponent({
 
   .item-value-edit-wrap {
     .item-value-edit {
-      &textarea {
+      &.vp-input {
         min-height: 50px;
       }
     }

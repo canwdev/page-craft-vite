@@ -26,6 +26,7 @@ declare module '@vue/runtime-core' {
     FieldEdit: typeof import('./src/components/VueI18nEditTool/Single/FieldEdit.vue')['default']
     FileChooser: typeof import('./src/components/CommonUI/FileChooser.vue')['default']
     FileDrop: typeof import('./src/components/CommonUI/FileDrop.vue')['default']
+    GuiToolbox: typeof import('./src/components/VueI18nEditTool/BatchGUI/GuiToolbox.vue')['default']
     I18nToolSettings: typeof import('./src/components/VueI18nEditTool/I18nToolSettings.vue')['default']
     IframeBrowser: typeof import('./src/components/IframeBrowser/index.vue')['default']
     IframePlayground: typeof import('./src/components/PageCraft/MainPlayground/IframePlayground.vue')['default']

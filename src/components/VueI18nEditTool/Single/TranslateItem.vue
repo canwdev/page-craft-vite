@@ -158,7 +158,13 @@ export default defineComponent({
 </script>
 
 <template>
-  <div :data-id="item.key" v-if="item" class="translate-item" :class="{isLite, isKeyDuplicated}">
+  <div
+    :data-id="item.key"
+    v-if="item"
+    class="translate-item"
+    :class="{isLite, isKeyDuplicated}"
+    :data-translate-path="nameDisplay"
+  >
     <n-space size="small" align="center">
       <template v-if="isKeyDuplicated">
         <div class="mc-error-tip-button" title="Key duplicated, may cause bug!">!</div>
@@ -213,11 +219,8 @@ export default defineComponent({
 <style lang="scss">
 .translate-item {
   margin-left: -10px;
-  padding-left: 10px;
   margin-right: -10px;
-  padding-right: 10px;
-  padding-top: 4px;
-  padding-bottom: 4px;
+  padding: 4px 10px;
 
   &.isLite {
     padding-top: 4px;

@@ -56,5 +56,5 @@ export default defineComponent({
   <DialogTextTransformer v-model:visible="mainStore.isShowTextTransformer" />
   <SystemSettings v-model:visible="mainStore.isShowSettings" />
   <QuickLaunchWindow v-model:visible="mainStore.isShowQuickLaunch" />
-  <IframeBrowser v-model:visible="settingsStore.isShowIframeBrowser" />
+  <IframeBrowser v-model:visible="mainStore.isShowIframeBrowser" />
 </template>

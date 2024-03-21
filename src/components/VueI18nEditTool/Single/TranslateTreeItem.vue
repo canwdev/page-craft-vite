@@ -212,8 +212,8 @@ export default defineComponent({
       </div>
 
       <div v-else class="namespace-input-wrap font-code">
-        <span v-if="!isLite" class="namespace-prefix">
-          § {{ namespacePrefix + (namespacePrefix ? '.' : '') }}
+        <span class="namespace-prefix">
+          § <template v-if="!isLite">{{ namespacePrefix + (namespacePrefix ? '.' : '') }}</template>
         </span>
         <input
           ref="namespaceInputRef"
@@ -221,22 +221,24 @@ export default defineComponent({
           v-model="item.namespace"
           placeholder="namespace"
           style="flex: 1"
-          :readonly="isLite"
+          :disabled="isLite"
           @blur="checkDuplicatedGroupKey"
         />
       </div>
-      <div class="actions-buttons-wrap" v-if="!isLite">
-        <button class="vp-button" @click="handleGetJSON" :title="`${$t('actions.copy')} JSON`">
-          <Copy20Regular />
-        </button>
-        <n-popconfirm v-if="!isRoot" @positive-click="$emit('onRemove')">
-          <template #trigger>
-            <button class="vp-button danger">
-              <Delete20Regular />
-            </button>
-          </template>
-          {{ $t('msgs.remove_group') }}
-        </n-popconfirm>
+      <div class="actions-buttons-wrap">
+        <template v-if="!isLite">
+          <button class="vp-button" @click="handleGetJSON" :title="`${$t('actions.copy')} JSON`">
+            <Copy20Regular />
+          </button>
+          <n-popconfirm v-if="!isRoot" @positive-click="$emit('onRemove')">
+            <template #trigger>
+              <button class="vp-button danger">
+                <Delete20Regular />
+              </button>
+            </template>
+            {{ $t('msgs.remove_group') }}
+          </n-popconfirm>
+        </template>
         <button @click="isExpand = !isExpand" :title="`Toggle Expand`" class="vp-button">
           {{ !isExpand ? '🙈' : '👀' }}
         </button>
@@ -292,7 +294,7 @@ export default defineComponent({
       </template>
 
       <div class="actions-wrap">
-        <span class="namespace-display">
+        <span class="namespace-display font-code font-italic">
           {{ namespacePrefix ? namespacePrefix + '.' : '' }}{{ item.namespace }}</span
         >
         <button
