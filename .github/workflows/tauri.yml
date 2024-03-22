@@ -1,9 +1,14 @@
 name: Tauri Auto Build
+#on:
+#  push:
+#    branches: [ "tauri-auto-build" ]
+#  pull_request:
+#    branches: [ "tauri-auto-build" ]
+
 on:
   push:
-    branches: [ "tauri-auto-build" ]
-  pull_request:
-    branches: [ "tauri-auto-build" ]
+    tags:
+      - 'v*'
 
 jobs:
   release:
