@@ -1,7 +1,7 @@
 {
   "name": "page-craft-vite",
   "private": true,
-  "version": "1.6.0",
+  "version": "1.6.1",
   "scripts": {
     "dev": "vite --debug hmr",
     "build": "vite build --emptyOutDir",
