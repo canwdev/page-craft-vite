@@ -40,6 +40,8 @@ interface IPageCraftSettings {
   styleEditorTab: StyleTabType
 
   autoCheckUpdate: boolean
+  // 网页版推荐下载桌面客户端
+  recommendDesktopClient: boolean
 }
 
 export const useSettingsStore = defineStore('settingsStore', {
@@ -71,6 +73,7 @@ export const useSettingsStore = defineStore('settingsStore', {
       styleEditorTab: StyleTabType.CURRENT,
 
       autoCheckUpdate: true,
+      recommendDesktopClient: true,
     }
   },
   persist: {

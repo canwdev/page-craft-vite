@@ -1,3 +1,4 @@
+import {NButton} from 'naive-ui'
 import {getPkg} from '@/router/router-utils'
 import {useSettingsStore} from '@/store/settings'
 import {useMainStore} from '@/store/main'
@@ -28,10 +29,10 @@ export const useUpdater = (author, name, branch = 'master') => {
   const mainStore = useMainStore()
   const settingsStore = useSettingsStore()
 
-  const check = async () => {
-    const packageUrl = `https://raw.githubusercontent.com/${author}/${name}/${branch}/package.json`
-    const releasePage = `https://github.com/${author}/${name}/releases`
+  const packageUrl = `https://raw.githubusercontent.com/${author}/${name}/${branch}/package.json`
+  const releasePage = `https://github.com/${author}/${name}/releases`
 
+  const check = async () => {
     const localVersion = getPkg().version
 
     try {
@@ -69,7 +70,33 @@ export const useUpdater = (author, name, branch = 'master') => {
   }
 
   onMounted(async () => {
-    if (settingsStore.autoCheckUpdate) {
+    if (!window.__TAURI__ && settingsStore.recommendDesktopClient) {
+      const n = window.$notification.info({
+        title: $t('msgs.recommend_download_client_title') + ' 🖥️',
+        meta: ' ',
+        action: () =>
+          h(
+            NButton,
+            {
+              text: true,
+              type: 'primary',
+              onClick: () => {
+                window.open(releasePage)
+                n.destroy()
+                settingsStore.recommendDesktopClient = false
+              },
+            },
+            {
+              default: () => $t('actions.download'),
+            }
+          ),
+        onClose: () => {
+          settingsStore.recommendDesktopClient = false
+        },
+        content: $t('msgs.recommend_download_client_desc'),
+      })
+    }
+    if (window.__TAURI__ && settingsStore.autoCheckUpdate) {
       const {update} = await check()
       if (update) {
         window.$notification.info({

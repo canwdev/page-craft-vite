@@ -139,7 +139,7 @@ export default defineComponent({
               key: 'language',
               actionRender: h(LanguageChooser),
             },
-            {
+            window.__TAURI__ && {
               label: $t('msgs.auto_check_update'),
               key: 'autoCheckUpdate',
               subtitle: mainStore.upgradeInfo,
@@ -160,7 +160,7 @@ export default defineComponent({
                 'Github'
               ),
             },
-          ],
+          ].filter(Boolean),
         },
       ]
     })
