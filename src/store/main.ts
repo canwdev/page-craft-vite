@@ -57,7 +57,14 @@ export const useMainStore = defineStore('main', {
   },
   share: {
     // An array of fields that the plugin will ignore.
-    omit: ['isShowStylusTools', 'isShowTextTransformer', 'isShowSettings', 'isShowQuickLaunch'],
+    omit: [
+      'isShowStylusTools',
+      'isShowTextTransformer',
+      'isShowSettings',
+      'isShowQuickLaunch',
+      'isShowIframeBrowser',
+      'upgradeInfo',
+    ],
     enable: true,
     initialize: true,
   },
