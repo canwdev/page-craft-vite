@@ -83,7 +83,6 @@ export const useUpdater = (author, name, branch = 'master') => {
               onClick: () => {
                 window.open(releasePage)
                 n.destroy()
-                settingsStore.recommendDesktopClient = false
               },
             },
             {

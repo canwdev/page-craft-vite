@@ -7,7 +7,7 @@ import {isDev} from '@/enum'
 import {useMainStore} from '@/store/main'
 import {useEventListener} from '@vueuse/core'
 import {useFocusAutoAction} from '@/hooks/use-focus-auto-action'
-import {useUpdater} from '@/components/PageCraft/MainPlayground/use-updater'
+import {useUpdater} from '@/components/PageCraft/Settings/use-updater'
 
 export default defineComponent({
   components: {
