@@ -36,6 +36,7 @@ import {LsKeys} from '@/enum/page-craft'
 import moment from 'moment/moment'
 import QuickOptions from '@/components/CommonUI/QuickOptions/index.vue'
 import {useGuiToolbox} from '@/components/VueI18nEditTool/BatchGUI/use-gui-toolbox'
+import GuiToolbox from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox.vue'
 
 const formatDirTreeItem = (data: any = {}): DirTreeItem => {
   return {
@@ -80,6 +81,7 @@ const editModeOptions = [
 export default defineComponent({
   name: 'VueI18nBatchTool',
   components: {
+    GuiToolbox,
     QuickOptions,
     TabLayout,
     BatchTextEditor,
@@ -520,17 +522,7 @@ export default defineComponent({
                   class="gui-edit-gui"
                   :style="{width: editMode === EditMode.BATCH ? '500px' : '100%'}"
                 >
-                  <div v-if="editMode === EditMode.BATCH" class="vp-bg action-row">
-                    <button class="vp-button" @click="isShowToolboxMenu = !isShowToolboxMenu">
-                      Gui Toolbox
-                    </button>
-                    <!-- {{ i18nMainStore.filePathArr.join('/') }}-->
-                    <QuickOptions
-                      style="top: 100%"
-                      v-model:visible="isShowToolboxMenu"
-                      :options="guiToolboxOptions"
-                    />
-                  </div>
+                  <GuiToolbox v-if="editMode === EditMode.BATCH" />
 
                   <TranslateTreeItem
                     v-for="(item, index) in translateTreeRoot"
@@ -632,20 +624,6 @@ export default defineComponent({
     flex-direction: column;
     overflow: hidden;
     height: 100%;
-    .action-row {
-      font-size: 12px;
-      border: none;
-      box-shadow: 0 0 5px rgba(71, 71, 71, 0.47);
-      position: relative;
-      z-index: 1;
-      gap: 4px;
-      display: flex;
-      .vp-button {
-        font-size: 12px;
-        padding: 2px 4px;
-        height: auto;
-      }
-    }
     .edit-content-wrap {
       flex: 1;
       overflow: hidden;
@@ -653,13 +631,20 @@ export default defineComponent({
       display: flex;
 
       &.batch-mode {
-        .translate-item.active {
-          background-color: $primary !important;
+        .translate-item {
+          &._transition {
+            transition: all 1s;
+          }
+          &.t_selected {
+            background-color: $primary !important;
+            transition: all 0.3s;
+          }
         }
       }
 
       .gui-edit-gui {
         height: 100%;
+        border-right: 1px solid $color_border;
         .action-row {
           position: sticky;
           top: 0;

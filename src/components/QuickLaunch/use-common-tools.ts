@@ -69,7 +69,7 @@ export const useCommonTools = () => {
         label: '🌎 Iframe Browser (alt+i)',
         props: {
           onClick: async () => {
-            settingsStore.isShowIframeBrowser = !settingsStore.isShowIframeBrowser
+            mainStore.isShowIframeBrowser = !mainStore.isShowIframeBrowser
           },
         },
       },
