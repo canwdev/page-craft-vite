@@ -147,7 +147,7 @@ export default defineComponent({
           return
         }
         if (props.wid) {
-          console.log(`save ${storageKey}`, {...winOptions})
+          // console.log(`save ${storageKey}`, {...winOptions})
           localStorage.setItem(storageKey, JSON.stringify({...winOptions}))
         }
       },

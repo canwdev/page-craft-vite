@@ -52,15 +52,22 @@ export const useThemeOptions = () => {
   const {themeOptions, isInitialized} = useThemeState()
 
   const themes = ref<IOptions[]>([])
-  const addThemes = async () => {
-    const res = await fetch('./themes-dist/index.json')
+  const baseUrl = './resources/themes-dist'
+  const loadThemes = async () => {
+    if (isInitialized.value) {
+      return
+    }
+
+    const res = await fetch(`${baseUrl}/index.json`)
     themes.value = await res.json()
 
     themes.value.forEach((item) => {
-      addCssFile(`./themes-dist/${item.value}.css`)
+      addCssFile(`${baseUrl}/${item.value}.css`)
     })
 
     themeOptions.value = [...defaultThemeOptions, ...themes.value]
+
+    isInitialized.value = true
   }
 
   const removeThemes = () => {
@@ -69,17 +76,11 @@ export const useThemeOptions = () => {
     })
   }
 
-  onMounted(async () => {
-    if (isInitialized.value) {
-      return
-    }
-    await addThemes()
-    isInitialized.value = true
-  })
+  onMounted(async () => {})
 
   return {
     themeOptions,
-    addThemes,
+    loadThemes,
     removeThemes,
   }
 }
