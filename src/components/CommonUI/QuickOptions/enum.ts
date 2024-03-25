@@ -14,6 +14,8 @@ export type QuickOptionItem = {
   children?: QuickOptionItem[] | Function
   // 传入此选项以启用 n-dropdown
   dropdown?: QuickOptionItem[]
+  // dropdown item 的key
+  key?: string | number
   // 传入此选项以启用 DynamicValueDisplay 组件
   dynamicProps?: any
   subSearchable?: any

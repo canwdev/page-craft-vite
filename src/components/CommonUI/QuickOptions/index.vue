@@ -280,7 +280,13 @@ export default defineComponent({
 
     <template v-for="(item, index) in mOptions" :key="index">
       <div v-if="item.split" class="option-split"></div>
-      <n-dropdown v-else-if="item.dropdown" :options="item.dropdown" size="small">
+      <n-dropdown
+        v-else-if="item.dropdown"
+        :options="item.dropdown"
+        label-field="label"
+        key-field="key"
+        size="small"
+      >
         <QOptionItem
           :item="item"
           :index="index"

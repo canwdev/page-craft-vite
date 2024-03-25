@@ -1,10 +1,12 @@
 import {useIDBKeyval} from '@vueuse/integrations/useIDBKeyval'
 import {QuickOptionItem} from '@/components/CommonUI/QuickOptions/enum'
 import moment from 'moment/moment'
+import {showInputPrompt} from '@/components/CommonUI/input-prompt'
 
 export type FileHandleHistory = {
   handle: FileSystemFileHandle
   lastOpened: number
+  alias: string
 }
 export async function verifyPermission(fileHandle) {
   const options = {
@@ -29,14 +31,47 @@ export const useOpenedHistory = (storageKey: string, handleOpenHistory) => {
   )
 
   const appendHistory = async (handle: FileSystemFileHandle) => {
-    console.log(handle)
+    // console.log(handle)
     const list = [...openedHistory.value]
     list.push({
       handle,
       lastOpened: Date.now(),
+      alias: '',
     })
-    // 最多保存10条历史记录，因为无法区分打开的文件是否为同一文件
-    await setOpenedHistory(list.slice(0, 10))
+    // 最多保存20条历史记录，因为无法区分打开的文件是否为同一文件
+    await setOpenedHistory(list.slice(0, 20))
+  }
+
+  const handleOpen = async (handle) => {
+    if (await verifyPermission(handle)) {
+      handleOpenHistory(handle)
+    }
+  }
+  const handleRename = async (item) => {
+    const list = [...openedHistory.value]
+    const idx = list.findIndex((i) => i === item)
+    if (idx !== -1) {
+      let f = list[idx]
+      const newName = await showInputPrompt({
+        title: `Set Alias: ${f.handle.name}`,
+        value: f.alias || f.handle.name,
+        allowEmpty: true,
+      })
+      f = {
+        ...f,
+        alias: newName,
+      }
+      list.splice(idx, 1, f)
+      await setOpenedHistory(list)
+    }
+  }
+  const handleRemove = async (item: FileHandleHistory) => {
+    const list = [...openedHistory.value]
+    const idx = list.findIndex((i) => i === item)
+    if (idx !== -1) {
+      list.splice(idx, 1)
+      await setOpenedHistory(list)
+    }
   }
 
   const historyMenuOptions = computed((): QuickOptionItem[] => {
@@ -49,17 +84,30 @@ export const useOpenedHistory = (storageKey: string, handleOpenHistory) => {
           return b.lastOpened - a.lastOpened
         })
         .map((i) => {
-          const {handle, lastOpened} = i
+          const {handle, lastOpened, alias} = i
           return {
             // 由于API不支持判断文件的绝对路径，使用添加时间来区分
-            label: handle.name + ` (${moment(lastOpened).format('HH:mm:ss')})`,
+            label: alias || handle.name + ` (${moment(lastOpened).format('HH:mm:ss')})`,
+            key: `open_${lastOpened}`,
             props: {
-              onClick: async () => {
-                if (await verifyPermission(handle)) {
-                  handleOpenHistory(handle)
-                }
-              },
+              onClick: () => handleOpen(handle),
             },
+            children: [
+              {
+                label: `Set Alias`,
+                key: `alias_${lastOpened}`,
+                props: {
+                  onClick: () => handleRename(i),
+                },
+              },
+              {
+                label: `Remove`,
+                key: `remove_${lastOpened}`,
+                props: {
+                  onClick: () => handleRemove(i),
+                },
+              },
+            ],
           }
         }),
       {
