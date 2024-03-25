@@ -42,7 +42,7 @@ import DialogImageCropper from '@/components/CommonUI/DialogImageCropper.vue'
 import {showInputPrompt} from '@/components/CommonUI/input-prompt'
 import TabLayout from '@/components/CommonUI/TabLayout.vue'
 import {NIcon} from 'naive-ui'
-import {formatI18nKey} from '@/enum/vue-i18n-tool'
+import ComponentExplorer from '@/components/PageCraft/ComponentV2/index.vue'
 import * as changeCase from 'change-case'
 
 let idx = 1
@@ -65,6 +65,7 @@ export default defineComponent({
     Timeline20Regular,
     Image20Filled,
     Image20Regular,
+    ComponentExplorer,
   },
   props: {
     visible: {
@@ -640,6 +641,10 @@ export default defineComponent({
           label: $t('common.components') + ` (${componentListSorted.length})`,
           value: TabType.COMPONENTS,
         },
+        {
+          label: $t('common.components') + ` V2`,
+          value: TabType.COMPONENTS_V2,
+        },
       ]"
     >
       <InventoryList
@@ -721,6 +726,8 @@ export default defineComponent({
           </button>
         </template>
       </InventoryList>
+
+      <ComponentExplorer v-else-if="settingsStore.inventoryTab === TabType.COMPONENTS_V2" />
     </TabLayout>
 
     <PopFloat />

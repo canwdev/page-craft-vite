@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@tauri-apps/api": "^1.5.3",
+    "@viselect/vanilla": "^3.5.0",
     "@vueuse/core": "^10.9.0",
     "@vueuse/integrations": "^10.9.0",
     "@vueuse/sound": "^2.0.1",

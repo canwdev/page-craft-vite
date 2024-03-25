@@ -138,11 +138,11 @@ export function pad2Num(num: number, len = 2) {
   return num.toString().padStart(len, '0')
 }
 
-export function formatDate(d: Date) {
+export function formatDate(d: Date, format = 'YYYY-MM-DD HH:mm:ss') {
   if (!d) {
     return ''
   }
-  return moment(d).format('YYYY-MM-DD HH:mm:ss')
+  return moment(d).format(format)
 }
 
 export const formatSelectOptions = (list: string[]) => {
@@ -177,4 +177,17 @@ export const guid = (split = '-') => {
     guid_S4() +
     guid_S4()
   )
+}
+
+// 字节转换为可读的单位
+export const bytesToSize = (bytes, autoNo = '0 B') => {
+  bytes = Number(bytes)
+  if (Number.isNaN(bytes)) {
+    return '-'
+  }
+  if (bytes === 0) return autoNo
+  const k = 1024
+  const sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  return Number(bytes / Math.pow(k, i)).toFixed(2) + ' ' + sizes[i]
 }
