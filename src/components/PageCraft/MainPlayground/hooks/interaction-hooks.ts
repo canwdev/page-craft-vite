@@ -356,27 +356,31 @@ export const useInteractionHooks = (options) => {
     handleMousemoveDebounced(event)
   }
 
-  const handleMousemoveDebounced = useThrottleFn((event: Event) => {
-    const currentNode: any = event.target
-    if (currentHoveredEl.value === currentNode) {
-      return
-    }
-    currentHoveredEl.value = currentNode
-    // console.log('event', event.target)
-    removeMouseOverDomElementEffect()
-    if (!currentNode) {
-      return
-    }
-    if (currentNode === mainPlaygroundRef.value) {
-      // do nothing
-    } else {
-      const $parent = $(currentNode).parent()
-      if ($parent) {
-        $parent.addClass(TOOL_CLASSES.CLASS_MOUSE_OVER_PARENT)
+  const handleMousemoveDebounced = useThrottleFn(
+    (event: Event) => {
+      const currentNode: any = event.target
+      if (currentHoveredEl.value === currentNode) {
+        return
       }
-      $(currentNode).addClass(TOOL_CLASSES.CLASS_MOUSE_OVER)
-    }
-  }, 50)
+      currentHoveredEl.value = currentNode
+      // console.log('event', event.target)
+      removeMouseOverDomElementEffect()
+      if (!currentNode) {
+        return
+      }
+      if (currentNode === mainPlaygroundRef.value) {
+        // do nothing
+      } else {
+        const $parent = $(currentNode).parent()
+        if ($parent) {
+          $parent.addClass(TOOL_CLASSES.CLASS_MOUSE_OVER_PARENT)
+        }
+        $(currentNode).addClass(TOOL_CLASSES.CLASS_MOUSE_OVER)
+      }
+    },
+    50,
+    true
+  )
 
   const {play: playSfxPlace} = useSfxPlace()
   const {play: playSfxDestroy} = useSfxDestroy()

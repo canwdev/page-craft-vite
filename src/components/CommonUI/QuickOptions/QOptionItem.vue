@@ -8,12 +8,14 @@ interface Props {
   index: number
   curIndex: number
   itemCls: string
+  showIndex: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
   index: 0,
   curIndex: 0,
   itemCls: '',
+  showIndex: true,
 })
 </script>
 
@@ -32,11 +34,15 @@ const props = withDefaults(defineProps<Props>(), {
     :style="item.props?.style"
     :data-index="index"
   >
-    <div class="index-wrap" v-if="index < 9">
+    <div class="index-wrap" v-if="showIndex && index < 9">
       <span>{{ index + 1 }}</span>
     </div>
-    <div class="item-icon" v-if="item.icon">
-      <img :src="item.icon" alt="icon" />
+
+    <div v-if="item.iconRender" class="item-icon">
+      <VueRender :render-fn="item.iconRender" />
+    </div>
+    <div class="item-icon" v-else-if="item.icon">
+      <img :src="item.icon" />
     </div>
     <div class="item-content" v-if="item.html" v-html="item.html"></div>
     <div class="item-content" v-else-if="item.render">

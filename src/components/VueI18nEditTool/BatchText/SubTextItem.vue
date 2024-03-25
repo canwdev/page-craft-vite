@@ -70,11 +70,15 @@ export default defineComponent({
       }
     })
 
-    const handleResizeDebounced = useThrottleFn(() => {
-      nextTick(() => {
-        vueMonacoRef.value?.resize()
-      })
-    }, 500)
+    const handleResizeDebounced = useThrottleFn(
+      () => {
+        nextTick(() => {
+          vueMonacoRef.value?.resize()
+        })
+      },
+      500,
+      true
+    )
 
     const cleanup = () => {
       valueText.value = ''

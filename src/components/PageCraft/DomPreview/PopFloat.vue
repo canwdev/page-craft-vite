@@ -61,9 +61,13 @@ export default defineComponent({
       }
     })
 
-    const handleMousemoveDebounced = useThrottleFn((options) => {
-      handleCompHover(options)
-    }, 50)
+    const handleMousemoveDebounced = useThrottleFn(
+      (options) => {
+        handleCompHover(options)
+      },
+      50,
+      true
+    )
     const handleCompHover = (options) => {
       const {event, item} = options || {}
       currentItem.value = item

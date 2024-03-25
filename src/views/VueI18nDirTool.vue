@@ -453,7 +453,13 @@ export default defineComponent({
               {{ $t('msgs.confirm_close') }}
             </n-popconfirm>
 
-            <n-dropdown v-else size="small" :options="historyMenuOptions">
+            <n-dropdown
+              v-else
+              size="small"
+              :options="historyMenuOptions"
+              label-field="label"
+              key-field="key"
+            >
               <n-button type="primary" size="small" @click="handlePickDir">
                 {{ $t('actions.pick_i18n_directory') }}
               </n-button>

@@ -147,6 +147,7 @@ export default defineComponent({
           return
         }
         if (props.wid) {
+          // console.log(`save ${storageKey}`, {...winOptions})
           localStorage.setItem(storageKey, JSON.stringify({...winOptions}))
         }
       },
@@ -218,6 +219,7 @@ export default defineComponent({
         lsState = defaultValue
       } else {
         lsVal = JSON.parse(localStorage.getItem(storageKey) || 'null')
+        // console.log(`load ${storageKey}`, lsVal)
         lsState = lsVal || defaultValue
       }
 
@@ -243,20 +245,28 @@ export default defineComponent({
       })
     }
 
-    const handleMoveDebounced = useThrottleFn(({top, left}) => {
-      winOptions.top = top
-      winOptions.left = left
-    }, 500)
+    const handleMoveDebounced = useThrottleFn(
+      ({top, left}) => {
+        winOptions.top = top
+        winOptions.left = left
+      },
+      500,
+      true
+    )
 
-    const handleResizeDebounced = useThrottleFn(() => {
-      if (!mVisible.value || !rootRef.value) {
-        return
-      }
-      emit('resize')
+    const handleResizeDebounced = useThrottleFn(
+      () => {
+        if (!mVisible.value || !rootRef.value) {
+          return
+        }
+        emit('resize')
 
-      winOptions.width = getComputedStyle(rootRef.value).width
-      winOptions.height = getComputedStyle(rootRef.value).height
-    }, 50)
+        winOptions.width = getComputedStyle(rootRef.value).width
+        winOptions.height = getComputedStyle(rootRef.value).height
+      },
+      50,
+      true
+    )
 
     onBeforeUnmount(() => {
       if (dWindow.value) {

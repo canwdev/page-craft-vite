@@ -53,7 +53,7 @@ export default defineConfig({
     //   },
     // }),
     vue(),
-    VueDevTools(),
+    // VueDevTools(),
     AutoImport({
       dts: './src/auto-import.d.ts',
       imports: [

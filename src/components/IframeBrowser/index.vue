@@ -84,8 +84,8 @@ export default defineComponent({
     const setMobileView = () => {
       console.log(iframeWinRef.value)
       iframeWinRef.value.setWindowLayout({
-        width: 375,
-        height: 668 + 52,
+        width: 375 + 10,
+        height: 668 + 59,
       })
     }
 
@@ -152,6 +152,11 @@ export default defineComponent({
 </template>
 
 <style lang="scss" scoped>
+.iframe-browser-vp-window {
+  :deep(.vp-window-body) {
+    padding: 0 4px 4px !important;
+  }
+}
 .iframe-browser-inner-wrap {
   height: 100%;
   width: 100%;
@@ -177,6 +182,7 @@ export default defineComponent({
 
   .iframe-browser-inner-iframe {
     flex: 1;
+    outline: 1px dashed $primary;
   }
 }
 </style>
