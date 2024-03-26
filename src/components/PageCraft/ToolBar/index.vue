@@ -180,9 +180,9 @@ export default defineComponent({
       @onItemClick="setCurrentToolItem"
     />
 
-    <div ref="toolbarRef" class="page-craft-enhanced-toolbar vp-panel vp-window-panel _panel-bg">
-      <div class="page-craft-enhanced-toolbar-above">
-        <n-space size="small">
+    <div ref="toolbarRef" class="mc-toolbar vp-panel vp-window-panel _panel-bg">
+      <div class="mc-toolbar-above">
+        <div class="mc-toolbar-group">
           <portal-target name="indicatorBarTeleportDest">
             <!--
             This component can be located anywhere in your App.
@@ -191,8 +191,8 @@ export default defineComponent({
           </portal-target>
 
           <ClassNameInput />
-        </n-space>
-        <n-space size="small" justify="end">
+        </div>
+        <div class="mc-toolbar-group">
           <n-popconfirm @positive-click="resetToolbar">
             <template #trigger>
               <n-button secondary size="tiny">
@@ -224,9 +224,9 @@ export default defineComponent({
             </template>
             {{ $t('common.tools') }}
           </n-button>
-        </n-space>
+        </div>
       </div>
-      <div class="page-craft-enhanced-toolbar-main _scrollbar_mini">
+      <div class="mc-toolbar-main _scrollbar_mini">
         <ToolItem
           v-for="(item, index) in toolBarList"
           :key="index"
@@ -264,7 +264,7 @@ export default defineComponent({
     bottom: unset;
   }
 }
-.page-craft-enhanced-toolbar {
+.mc-toolbar {
   padding: 5px 6px 5px;
   overflow: hidden;
   box-sizing: border-box;
@@ -279,23 +279,31 @@ export default defineComponent({
     box-sizing: border-box;
   }
 
-  .page-craft-enhanced-toolbar-above {
+  .mc-toolbar-above {
     padding: 2px 0 6px;
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 4px;
     label {
       text-shadow: 0 0 10px white;
     }
-    .field-row {
+
+    .mc-toolbar-group {
       display: flex;
-      align-items: center;
-      .n-input {
-        width: 160px;
-      }
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .vp-input {
+      font-size: 12px;
+      line-height: 1;
+      padding: 2px 4px;
+      flex: 1;
     }
   }
 
-  .page-craft-enhanced-toolbar-main {
+  .mc-toolbar-main {
     width: $barWidth;
     height: 44px;
     margin-left: auto;

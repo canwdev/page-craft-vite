@@ -234,99 +234,95 @@ export default defineComponent({
     />
 
     <portal to="indicatorBarTeleportDest">
-      <div :class="{_dark: mainStore.isAppDarkMode}" class="page-craft-mc-indicator">
-        <n-space align="center" size="small">
-          <n-dropdown
-            :options="htmlMenuOptions"
-            key-field="label"
-            placement="bottom-start"
-            trigger="hover"
-          >
-            <n-button size="tiny" :title="settingsStore.curCompoName">
-              <template #icon>
-                <n-icon size="18">
-                  <Code20Filled />
-                </n-icon>
-              </template>
-              {{ settingsStore.curCompoName.slice(0, 10) || 'Default' }}</n-button
-            >
-          </n-dropdown>
+      <n-dropdown
+        :options="htmlMenuOptions"
+        key-field="label"
+        placement="bottom-start"
+        trigger="hover"
+      >
+        <n-button size="tiny" :title="settingsStore.curCompoName">
+          <template #icon>
+            <n-icon size="18">
+              <Code20Filled />
+            </n-icon>
+          </template>
+          {{ settingsStore.curCompoName.slice(0, 10) || 'Default' }}</n-button
+        >
+      </n-dropdown>
 
-          <n-popover :duration="100" :show-arrow="false" trigger="hover">
-            <template #trigger>
-              <n-button size="tiny">
-                <template #icon>
-                  <n-icon size="18">
-                    <Settings20Regular />
+      <n-popover :duration="100" :show-arrow="false" trigger="hover">
+        <template #trigger>
+          <n-button size="tiny">
+            <template #icon>
+              <n-icon size="18">
+                <Settings20Regular />
+              </n-icon>
+            </template>
+            {{ $t('common.options') }}</n-button
+          >
+        </template>
+        <template #header></template>
+        <div v-for="item in toggleList" :key="item.flag" class="toggle-list">
+          <div style="display: flex; align-items: center">
+            <n-checkbox
+              v-model:checked="indicatorOptions[item.flag]"
+              :label="item.title"
+              size="small"
+            />
+
+            <template v-if="item.desc">
+              <n-popover style="padding: 0; min-width: 200px" trigger="hover">
+                <template #trigger>
+                  <n-icon size="16">
+                    <QuestionCircle20Regular />
                   </n-icon>
                 </template>
-                {{ $t('common.options') }}</n-button
-              >
+                <span style="font-size: 14px">{{ item.desc }}</span>
+              </n-popover>
             </template>
-            <template #header></template>
-            <div v-for="item in toggleList" :key="item.flag" class="toggle-list">
-              <div style="display: flex; align-items: center">
-                <n-checkbox
-                  v-model:checked="indicatorOptions[item.flag]"
-                  :label="item.title"
-                  size="small"
-                />
+          </div>
+        </div>
+        <n-slider v-model:value="indicatorOptions.bgTransparentPercent" :step="1" />
+        <template #footer>
+          <n-space align="center" size="small">
+            <n-button title="(alt+w)" size="small" @click="mainStore.isShowSettings = true">{{
+              $t('common.settings')
+            }}</n-button>
 
-                <template v-if="item.desc">
-                  <n-popover style="padding: 0; min-width: 200px" trigger="hover">
-                    <template #trigger>
-                      <n-icon size="16">
-                        <QuestionCircle20Regular />
-                      </n-icon>
-                    </template>
-                    <span style="font-size: 14px">{{ item.desc }}</span>
-                  </n-popover>
-                </template>
-              </div>
-            </div>
-            <n-slider v-model:value="indicatorOptions.bgTransparentPercent" :step="1" />
-            <template #footer>
-              <n-space align="center" size="small">
-                <n-button title="(alt+w)" size="small" @click="mainStore.isShowSettings = true">{{
-                  $t('common.settings')
-                }}</n-button>
-
-                <n-button quaternary type="primary" size="small" @click="openPlayground">
-                  Playground
-                </n-button>
-              </n-space>
-            </template>
-          </n-popover>
-
-          <n-button-group>
-            <n-button
-              size="tiny"
-              title="Undo (ctrl+z)"
-              :disabled="!undoRedo.undoStack.length"
-              @click="handleUndo"
-            >
-              <template #icon>
-                <n-icon size="18">
-                  <ArrowUndo20Filled />
-                </n-icon>
-              </template>
+            <n-button quaternary type="primary" size="small" @click="openPlayground">
+              Playground
             </n-button>
-            <n-button
-              size="tiny"
-              title="Redo (ctrl+shift+z)"
-              :disabled="!undoRedo.redoStack.length"
-              @click="handleRedo"
-            >
-              <template #icon>
-                <n-icon size="18">
-                  <ArrowRedo20Filled />
-                </n-icon>
-              </template>
-            </n-button>
-          </n-button-group>
-          <span style="border-right: 1px solid; opacity: 0.3"></span>
-        </n-space>
-      </div>
+          </n-space>
+        </template>
+      </n-popover>
+
+      <n-button-group>
+        <n-button
+          size="tiny"
+          title="Undo (ctrl+z)"
+          :disabled="!undoRedo.undoStack.length"
+          @click="handleUndo"
+        >
+          <template #icon>
+            <n-icon size="18">
+              <ArrowUndo20Filled />
+            </n-icon>
+          </template>
+        </n-button>
+        <n-button
+          size="tiny"
+          title="Redo (ctrl+shift+z)"
+          :disabled="!undoRedo.redoStack.length"
+          @click="handleRedo"
+        >
+          <template #icon>
+            <n-icon size="18">
+              <ArrowRedo20Filled />
+            </n-icon>
+          </template>
+        </n-button>
+      </n-button-group>
+      <span style="border-right: 1px solid; opacity: 0.3"></span>
     </portal>
     <!-- Main Canvas !!! -->
     <div

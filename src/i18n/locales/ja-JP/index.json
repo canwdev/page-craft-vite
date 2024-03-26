@@ -48,7 +48,8 @@
     "folders_mode": "フォルダーモード",
     "files_mode": "ファイルモード",
     "field": "フィールド",
-    "system": "システム"
+    "system": "システム",
+    "common": "ユニバーサル"
   },
   "actions": {
     "cancel": "キャンセル",

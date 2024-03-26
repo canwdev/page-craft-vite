@@ -124,16 +124,16 @@ export default defineComponent({
           $t('msgs.trim_empty_lines')
         }}</n-checkbox>
 
-        <n-input-group v-if="mMode === TextConvertMode.HTML">
-          <n-input v-model:value="htmlTagName" clearable placeholder="HTML Tag Name" size="small" />
-          <n-input
+        <template v-if="mMode === TextConvertMode.HTML">
+          <input class="vp-input" v-model="htmlTagName" placeholder="HTML Tag Name" size="small" />
+          <input
+            class="vp-input"
             v-if="htmlTagName"
-            v-model:value="htmlAttrs"
-            clearable
+            v-model="htmlAttrs"
             placeholder="HTML Attrs"
             size="small"
           />
-        </n-input-group>
+        </template>
 
         <n-button-group>
           <n-button
@@ -197,6 +197,9 @@ export default defineComponent({
     padding: 8px;
     box-sizing: border-box;
     padding-bottom: 0;
+    .vp-input {
+      font-size: 12px;
+    }
   }
   .main-box {
     flex: 1;

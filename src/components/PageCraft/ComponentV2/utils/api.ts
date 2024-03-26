@@ -1,9 +1,10 @@
 // 前端虚拟文件系统API，仅用于测试！
-const {configure, BFSRequire} = window.BrowserFS
+const {BFSRequire} = window.BrowserFS
 
 const fs = BFSRequire('fs')
 const Path = BFSRequire('path')
 
+// 在 router.beforeEach 进行 configure初始化
 /*await configure(
   {
     fs: 'MountableFileSystem',
@@ -19,12 +20,6 @@ const Path = BFSRequire('path')
     }
   }
 )*/
-
-await configure({fs: 'LocalStorage'}, (e) => {
-  if (e) {
-    console.error(e)
-  }
-})
 
 const recursiveDelete = (path) => {
   let files = []

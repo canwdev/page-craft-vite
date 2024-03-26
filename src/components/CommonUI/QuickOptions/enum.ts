@@ -11,6 +11,7 @@ export type QuickOptionItem = {
   iconRender?: any
   // 渲染函数
   render?: any
+  // 支持传入函数以动态渲染，函数支持直接返回vue3计算属性
   children?: QuickOptionItem[] | Function
   // 传入此选项以启用 n-dropdown
   dropdown?: QuickOptionItem[]

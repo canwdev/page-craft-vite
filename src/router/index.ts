@@ -69,6 +69,16 @@ let routes = [
 ]
 const router = createRouter({history, routes})
 
+router.beforeEach(async (to, from, next) => {
+  const {configure} = window.BrowserFS
+  await configure({fs: 'LocalStorage'}, (e) => {
+    if (e) {
+      console.error(e)
+    }
+  })
+  return next()
+})
+
 router.afterEach((to, _, failure) => {
   document.title = formatSiteTitle(to?.meta?.title as string)
 

@@ -31,7 +31,7 @@ import {usePlaygroundStore} from '@/store/playground'
 import QuickOptions from '@/components/CommonUI/QuickOptions/index.vue'
 import {QuickOptionItem} from '@/components/CommonUI/QuickOptions/enum'
 import {useEventListener, useStorage} from '@vueuse/core'
-import {useRemoteOptions} from '@/components/CommonUI/QuickOptions/use-remote-options'
+import {useRemoteOptions} from '@/components/CommonUI/QuickOptions/utils/use-remote-options'
 
 export default defineComponent({
   name: 'StyleEditor',

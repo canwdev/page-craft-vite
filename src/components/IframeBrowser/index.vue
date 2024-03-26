@@ -5,7 +5,7 @@ import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {ViewDesktopMobile20Regular} from '@vicons/fluent'
 import {useRouter} from 'vue-router'
 import {useStorage} from '@vueuse/core'
-import {useRemoteOptions} from '@/components/CommonUI/QuickOptions/use-remote-options'
+import {useRemoteOptions} from '@/components/CommonUI/QuickOptions/utils/use-remote-options'
 import QuickOptions from '@/components/CommonUI/QuickOptions/index.vue'
 
 export default defineComponent({

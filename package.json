@@ -1,13 +1,14 @@
 {
   "name": "page-craft-vite",
   "private": true,
-  "version": "1.6.2",
+  "version": "1.6.3",
   "scripts": {
     "dev": "vite --debug hmr",
     "build": "vite build --emptyOutDir",
     "build:strict": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "build:tauri": "tauri build"
   },
   "dependencies": {
     "@tauri-apps/api": "^1.5.3",

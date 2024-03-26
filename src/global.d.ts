@@ -18,6 +18,7 @@ declare global {
     __TAURI__: any
     $mcUtils: any
     $qlUtils: any
+    BrowserFS: any
   }
 }
 

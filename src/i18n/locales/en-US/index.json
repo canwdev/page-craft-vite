@@ -48,7 +48,8 @@
     "folders_mode": "Folders Mode",
     "files_mode": "Files Mode",
     "field": "Field",
-    "system": "System"
+    "system": "System",
+    "common": "Common"
   },
   "actions": {
     "cancel": "Cancel",

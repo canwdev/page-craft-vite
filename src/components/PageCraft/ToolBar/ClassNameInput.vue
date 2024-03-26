@@ -3,9 +3,11 @@ import {defineComponent} from 'vue'
 import {useMainStore} from '@/store/main'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {useSettingsStore} from '@/store/settings'
+import InputAutoTips from '@/components/CommonUI/InputAutoTips.vue'
 
 export default defineComponent({
   name: 'ClassNameInput',
+  components: {InputAutoTips},
   setup(props, {emit}) {
     const mainStore = useMainStore()
     const settingsStore = useSettingsStore()
@@ -69,33 +71,20 @@ export default defineComponent({
 </script>
 
 <template>
-  <n-space size="small">
-    <div class="field-row">
-      <n-auto-complete
-        v-model:value="mainStore.className"
-        :options="autocompleteOptions"
-        size="tiny"
-        type="text"
-        placeholder="CSS class"
-        clearable
-        class="font-code sl-css-class-input"
-        title="focus shortcut: alt+1; 输入@开启自动提示; press enter to insert css class; input without dot(.)"
-        :placement="settingsStore.enableTopLayout ? 'bottom' : 'top'"
-        @blur="handleInputClassNameBlur"
-        @keyup.enter="handleAddClassName()"
-      />
-    </div>
+  <InputAutoTips
+    v-model="mainStore.className"
+    class="sl-css-class-input font-code"
+    :title="`Focus shortcut: alt+1\nPress enter to insert css class\nInput without dot(.)`"
+    hid="class"
+    @keyup.enter="handleAddClassName"
+  />
 
-    <div class="field-row">
-      <n-input
-        size="tiny"
-        type="text"
-        v-model:value="mainStore.innerText"
-        placeholder="innerHTML | src | value"
-        title="focus shortcut: alt+2"
-        class="sl-inner-html-input"
-        clearable
-      />
-    </div>
-  </n-space>
+  <input
+    type="text"
+    v-model="mainStore.innerText"
+    placeholder="innerHTML | src | value"
+    :title="`Focus shortcut: alt+2\nPress esc to clear`"
+    class="vp-input sl-inner-html-input font-code"
+    @keyup.esc="mainStore.innerText = ''"
+  />
 </template>

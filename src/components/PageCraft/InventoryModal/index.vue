@@ -642,7 +642,7 @@ export default defineComponent({
           value: TabType.COMPONENTS,
         },
         {
-          label: $t('common.components') + ` V2`,
+          label: $t('common.components') + ` V2(Beta)`,
           value: TabType.COMPONENTS_V2,
         },
       ]"

@@ -26,14 +26,8 @@ import BatchTextEditor from '@/components/VueI18nEditTool/BatchText/index.vue'
 import {useI18nMainStore} from '@/store/i18n-tool-main'
 import {useStorage} from '@vueuse/core'
 import TabLayout from '@/components/CommonUI/TabLayout.vue'
-import {useIDBKeyval} from '@vueuse/integrations/useIDBKeyval'
-import {
-  FileHandleHistory,
-  useOpenedHistory,
-  verifyPermission,
-} from '@/components/VueI18nEditTool/file-history'
+import {useOpenedHistory} from '@/components/VueI18nEditTool/file-history'
 import {LsKeys} from '@/enum/page-craft'
-import moment from 'moment/moment'
 import QuickOptions from '@/components/CommonUI/QuickOptions/index.vue'
 import {useGuiToolbox} from '@/components/VueI18nEditTool/BatchGUI/use-gui-toolbox'
 import GuiToolbox from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox.vue'
@@ -100,6 +94,11 @@ export default defineComponent({
     const {appendHistory, historyMenuOptions} = useOpenedHistory(
       LsKeys.I18N_FOLDER_HANDLE_HISTORY,
       async (handle: FileSystemFileHandle) => {
+        if (dirHandle.value) {
+          if (!confirm($t('msgs.confirm_reload_files'))) {
+            return
+          }
+        }
         dirHandle.value = handle as unknown as FileSystemDirectoryHandle
         await reloadPickedDir()
       }
@@ -422,14 +421,14 @@ export default defineComponent({
         <template #title>{{ metaTitle }}</template>
         <template #avatar> <n-avatar :src="iconTranslate" style="background: none" /> </template>
         <template #extra>
-          <n-space align="center">
-            <n-button secondary size="small" @click="isShowToolSettings = true">
+          <n-space size="small" align="center">
+            <button class="vp-button" @click="isShowToolSettings = true">
               {{ $t('common.settings') }}
-            </n-button>
+            </button>
 
-            <n-button secondary size="small" @click="mainStore.isShowQuickLaunch = true">
+            <button class="vp-button" @click="mainStore.isShowQuickLaunch = true">
               {{ $t('common.tools') }}
-            </n-button>
+            </button>
 
             <n-button
               size="small"
@@ -444,32 +443,28 @@ export default defineComponent({
             {{ $t('common.edit_mode') }}:
             <TabLayout v-model="editMode" horizontal :tab-list="editModeOptions" />
 
-            <n-popconfirm v-if="dirHandle" @positive-click="handleCloseDir()">
-              <template #trigger>
-                <n-button secondary type="primary" size="small">
-                  {{ $t('actions.close') }} Folder
-                </n-button>
-              </template>
-              {{ $t('msgs.confirm_close') }}
-            </n-popconfirm>
-
             <n-dropdown
-              v-else
               size="small"
               :options="historyMenuOptions"
               label-field="label"
               key-field="key"
             >
-              <n-button type="primary" size="small" @click="handlePickDir">
+              <n-popconfirm v-if="dirHandle" @positive-click="handleCloseDir()">
+                <template #trigger>
+                  <button class="vp-button primary">{{ $t('actions.close') }} Folder</button>
+                </template>
+                {{ $t('msgs.confirm_close') }}
+              </n-popconfirm>
+              <button v-else class="vp-button primary" @click="handlePickDir">
                 {{ $t('actions.pick_i18n_directory') }}
-              </n-button>
+              </button>
             </n-dropdown>
 
             <n-popconfirm v-if="dirHandle" @positive-click="reloadPickedDir()">
               <template #trigger>
-                <n-button secondary size="small" class="js_reload_btn">
+                <button class="vp-button js_reload_btn">
                   {{ $t('actions.reload') }}
-                </n-button>
+                </button>
               </template>
               {{ $t('msgs.confirm_reload_files') }}
             </n-popconfirm>
