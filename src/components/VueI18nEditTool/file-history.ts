@@ -114,7 +114,15 @@ export const useOpenedHistory = (storageKey: string, handleOpenHistory) => {
         label: '🧹 Clear History',
         props: {
           onClick: () => {
-            openedHistory.value = []
+            window.$dialog.warning({
+              title: 'Confirm clear history?',
+              positiveText: 'OK',
+              negativeText: 'Cancel',
+              onPositiveClick: () => {
+                openedHistory.value = []
+              },
+              onNegativeClick: () => {},
+            })
           },
         },
       },

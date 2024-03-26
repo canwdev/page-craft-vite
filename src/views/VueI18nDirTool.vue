@@ -94,13 +94,25 @@ export default defineComponent({
     const {appendHistory, historyMenuOptions} = useOpenedHistory(
       LsKeys.I18N_FOLDER_HANDLE_HISTORY,
       async (handle: FileSystemFileHandle) => {
-        if (dirHandle.value) {
-          if (!confirm($t('msgs.confirm_reload_files'))) {
-            return
-          }
+        async function doOpen() {
+          dirHandle.value = handle as unknown as FileSystemDirectoryHandle
+          await reloadPickedDir()
         }
-        dirHandle.value = handle as unknown as FileSystemDirectoryHandle
-        await reloadPickedDir()
+        if (dirHandle.value) {
+          window.$dialog.warning({
+            title: 'Confirm',
+            content: $t('msgs.confirm_reload_files'),
+            positiveText: 'OK',
+            negativeText: 'Cancel',
+            onPositiveClick: async () => {
+              await doOpen()
+            },
+            onNegativeClick: () => {},
+          })
+
+          return
+        }
+        await doOpen()
       }
     )
 

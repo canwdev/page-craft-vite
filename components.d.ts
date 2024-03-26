@@ -9,7 +9,7 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
-    AdvancedNumberInput: typeof import('./src/components/CommonUI/OptionUI/Tools/Tools/AdvancedNumberInput.vue')['default']
+    AdvancedNumberInput: typeof import('./src/components/CommonUI/OptionUI/Tools/AdvancedNumberInput.vue')['default']
     BackgroundLayer: typeof import('./src/components/PageCraft/BackgroundLayer/index.vue')['default']
     BatchGUI: typeof import('./src/components/VueI18nEditTool/BatchGUI/index.vue')['default']
     BatchText: typeof import('./src/components/VueI18nEditTool/BatchText/index.vue')['default']
@@ -43,7 +43,6 @@ declare module '@vue/runtime-core' {
     LayoutHelper: typeof import('./src/components/CommonUI/ViewPortWindow/utils/LayoutHelper.vue')['default']
     MainPlayground: typeof import('./src/components/PageCraft/MainPlayground/index.vue')['default']
     NA: typeof import('naive-ui')['NA']
-    NAutoComplete: typeof import('naive-ui')['NAutoComplete']
     NAvatar: typeof import('naive-ui')['NAvatar']
     NButton: typeof import('naive-ui')['NButton']
     NButtonGroup: typeof import('naive-ui')['NButtonGroup']
@@ -58,7 +57,6 @@ declare module '@vue/runtime-core' {
     NFormItem: typeof import('naive-ui')['NFormItem']
     NIcon: typeof import('naive-ui')['NIcon']
     NInput: typeof import('naive-ui')['NInput']
-    NInputGroup: typeof import('naive-ui')['NInputGroup']
     NInputNumber: typeof import('naive-ui')['NInputNumber']
     NLayout: typeof import('naive-ui')['NLayout']
     NLayoutContent: typeof import('naive-ui')['NLayoutContent']
