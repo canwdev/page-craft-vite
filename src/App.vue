@@ -58,12 +58,6 @@ export default defineComponent({
 
 <template>
   <n-config-provider
-    :class="[
-      {
-        _dark: isAppDarkMode,
-      },
-      settingsStore.customTheme,
-    ]"
     :theme="isAppDarkMode ? darkTheme : null"
     :theme-overrides="themeOverrides"
     class="page-craft-root _line-grid"

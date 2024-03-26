@@ -12,7 +12,11 @@ import {useThemeOptions} from '@/components/CommonUI/ViewPortWindow/utils/use-th
 export const useGlobalTheme = () => {
   const mainStore = useMainStore()
   const settingsStore = useSettingsStore()
-  useThemeOptions()
+  const {loadThemes} = useThemeOptions()
+
+  onBeforeMount(() => {
+    loadThemes()
+  })
 
   const handleThemeChange = (val: LdThemeType) => {
     if (val === LdThemeType.SYSTEM) {
@@ -36,6 +40,33 @@ export const useGlobalTheme = () => {
   watch(() => settingsStore.ldTheme, handleThemeChange)
 
   const isAppDarkMode = computed(() => mainStore.isAppDarkMode)
+
+  watch(
+    isAppDarkMode,
+    (val) => {
+      if (val) {
+        document.body.classList.add('_dark')
+      } else {
+        document.body.classList.remove('_dark')
+      }
+    },
+    {immediate: true}
+  )
+
+  const lastTheme = ref('')
+  watch(
+    () => settingsStore.customTheme,
+    (val) => {
+      if (lastTheme.value) {
+        document.body.classList.remove(lastTheme.value)
+      }
+      document.body.classList.add(val)
+      lastTheme.value = val
+    },
+    {
+      immediate: true,
+    }
+  )
 
   const updateThemeColor = () => {
     const themeColor = settingsStore.themeColor

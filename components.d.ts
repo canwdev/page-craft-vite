@@ -9,6 +9,7 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    AdvancedNumberInput: typeof import('./src/components/CommonUI/OptionUI/Tools/Tools/AdvancedNumberInput.vue')['default']
     BackgroundLayer: typeof import('./src/components/PageCraft/BackgroundLayer/index.vue')['default']
     BatchGUI: typeof import('./src/components/VueI18nEditTool/BatchGUI/index.vue')['default']
     BatchText: typeof import('./src/components/VueI18nEditTool/BatchText/index.vue')['default']
@@ -101,6 +102,7 @@ declare module '@vue/runtime-core' {
     TabLayout: typeof import('./src/components/CommonUI/TabLayout.vue')['default']
     ToolBar: typeof import('./src/components/PageCraft/ToolBar/index.vue')['default']
     ToolItem: typeof import('./src/components/PageCraft/ToolBar/ToolItem.vue')['default']
+    Tools: typeof import('./src/components/CommonUI/OptionUI/Tools/index.vue')['default']
     TranslateItem: typeof import('./src/components/VueI18nEditTool/Single/TranslateItem.vue')['default']
     TranslateTreeItem: typeof import('./src/components/VueI18nEditTool/Single/TranslateTreeItem.vue')['default']
     VFrame: typeof import('./src/components/CommonUI/VFrame.vue')['default']
