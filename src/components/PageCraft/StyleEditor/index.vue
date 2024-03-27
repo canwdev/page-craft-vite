@@ -24,7 +24,7 @@ import {
 import {useI18n} from 'vue-i18n'
 import {useOpenCloseSelect, useSfxBell, useSfxBrush, useSfxFill} from '@/hooks/use-sfx'
 import TabLayout from '@/components/CommonUI/TabLayout.vue'
-import monaco from '@/components/CommonUI/VueMonaco/monaco-helper'
+import monaco, {registerScssAutoCompletion} from '@/components/CommonUI/VueMonaco/monaco-helper'
 import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
 import {useGlobalStyle} from '@/hooks/use-global-theme'
 import {usePlaygroundStore} from '@/store/playground'
@@ -265,6 +265,8 @@ export default defineComponent({
       }, 100)
     }
 
+    // scss代码片段自动补全缓存
+    window.$monacoScssSnippets = []
     const {options: toolOptions} = useRemoteOptions({
       fetchFn: async () => {
         const res = await fetch('./scss-snippets.json')
@@ -275,17 +277,54 @@ export default defineComponent({
           label: i.label,
           props: {},
         }
-        if (i.code) {
+        if (i.code || i.snippet) {
+          if (i.snippet) {
+            // 只把snippet放入自动补全缓存，减少性能损耗
+            window.$monacoScssSnippets.push({
+              label: i.label,
+              code: i.snippet,
+            })
+          }
+
           r.props!.onClick = async () => {
-            insertStyleCode(i.code)
+            insertStyleCode(i.snippet || i.code)
           }
           r.props!.onContextmenu = async () => {
-            await copyToClipboard(i.code)
+            await copyToClipboard(i.snippet || i.code)
             window.$message.success($t('msgs.copy_success'))
           }
         }
         return r
       },
+    })
+
+    // 创建【全局、变量】编辑器的变量字段补全
+    const updateEditorAutoComplete = () => {
+      const style = globalStyleText.value + variableStyleCode.value
+
+      window.$monacoScssVariables = []
+
+      // 使用正则表达式匹配类名和 SCSS 变量名
+      let classRegex = /\.(\w|-)+/g
+      let variableRegex = /\$[\w-]+/g
+      let match
+
+      while ((match = classRegex.exec(style)) !== null) {
+        window.$monacoScssVariables.push(match[0])
+      }
+
+      while ((match = variableRegex.exec(style)) !== null) {
+        window.$monacoScssVariables.push(match[0])
+      }
+    }
+    watch(
+      () => settingsStore.styleEditorTab,
+      (val) => {
+        updateEditorAutoComplete()
+      }
+    )
+    onMounted(() => {
+      updateEditorAutoComplete()
     })
 
     useOpenCloseSelect(() => mainStore.isSelectMode)

@@ -4,47 +4,47 @@
     "children": [
       {
         "label": "Flex (row: space-between)",
-        "code": "display: flex;\nalign-items: center;\njustify-content: space-between;\ngap: 8px;"
+        "snippet": "display: flex;\nalign-items: center;\njustify-content: space-between;\ngap: 8px;"
       },
       {
         "label": "Flex (col)",
-        "code": "display: flex;\nflex-direction: column;\ngap: 8px;"
+        "snippet": "display: flex;\nflex-direction: column;\ngap: 8px;"
       },
       {
         "label": "Grid",
-        "code": "display: grid;\ngrid-template-columns: repeat(4, 1fr);\ngrid-template-rows: auto;\ngap: 10px;"
+        "snippet": "display: grid;\ngrid-template-columns: repeat(4, 1fr);\ngrid-template-rows: auto;\ngap: 10px;"
       },
       {
         "label": "Text Overflow",
-        "code": "white-space: nowrap;\noverflow: hidden;\ntext-overflow: ellipsis;"
+        "snippet": "white-space: nowrap;\noverflow: hidden;\ntext-overflow: ellipsis;"
       },
       {
         "label": "Text Overflow (Limit 3)",
-        "code": "display: -webkit-box;\n-webkit-line-clamp: 3;\n-webkit-box-orient: vertical;\noverflow: hidden;\ntext-overflow: ellipsis;"
+        "snippet": "display: -webkit-box;\n-webkit-line-clamp: 3;\n-webkit-box-orient: vertical;\noverflow: hidden;\ntext-overflow: ellipsis;"
       },
       {
         "label": "Background Cover",
-        "code": "background-image: url(\"\");\nbackground-repeat: no-repeat;\nbackground-position: center;\nbackground-size: cover;"
+        "snippet": "background-image: url(\"\");\nbackground-repeat: no-repeat;\nbackground-position: center;\nbackground-size: cover;"
       },
       {
         "label": "Absolute (Full)",
-        "code": "position: absolute;\ntop: 0;\nleft: 0;\nright: 0;\nbottom: 0;"
+        "snippet": "position: absolute;\ntop: 0;\nleft: 0;\nright: 0;\nbottom: 0;"
       },
       {
         "label": "Absolute (Center)",
-        "code": "position: absolute;\ntop: 50%;\nleft: 50%;\ntransform: translate(-50%, -50%);"
+        "snippet": "position: absolute;\ntop: 50%;\nleft: 50%;\ntransform: translate(-50%, -50%);"
       },
       {
         "label": "Margin Center",
-        "code": "max-width: 1200px;\nmargin-left: auto;\nmargin-right: auto;"
+        "snippet": "max-width: 1200px;\nmargin-left: auto;\nmargin-right: auto;"
       },
       {
         "label": "Blur (backdrop-filter)",
-        "code": "background-color: rgba(255, 255, 255, 0.6);\nbox-shadow: 0 1px 10px rgba(0, 0, 0, 0.27), inset 0 0 0.5px #fff;\nborder: 1px solid rgba(0, 0, 0, .4);\nborder-radius: 4px;\nbackdrop-filter: blur(4px);"
+        "snippet": "background-color: rgba(255, 255, 255, 0.6);\nbox-shadow: 0 1px 10px rgba(0, 0, 0, 0.27), inset 0 0 0.5px #fff;\nborder: 1px solid rgba(0, 0, 0, .4);\nborder-radius: 4px;\nbackdrop-filter: blur(4px);"
       },
       {
         "label": "drop-shadow()",
-        "code": "filter: drop-shadow(0 0 5px rgb(0, 0, 0));"
+        "snippet": "filter: drop-shadow(0 0 5px rgb(0, 0, 0));"
       }
     ]
   },
@@ -57,19 +57,19 @@
       },
       {
         "label": ".background-cover",
-        "code": ".background-cover {\n  background-repeat: no-repeat;\n  background-position: center;\n  background-size: cover;\n}"
+        "snippet": ".background-cover {\n  background-repeat: no-repeat;\n  background-position: center;\n  background-size: cover;\n}"
       },
       {
         "label": ".text-overflow",
-        "code": ".text-overflow {\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}"
+        "snippet": ".text-overflow {\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}"
       },
       {
         "label": ".absolute-center",
-        "code": ".absolute-center {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n}"
+        "snippet": ".absolute-center {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n}"
       },
       {
         "label": ".absolute-full",
-        "code": ".absolute-full {\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n}"
+        "snippet": ".absolute-full {\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n}"
       },
       {
         "label": ".flex",
@@ -90,74 +90,60 @@
       {
         "label": ".css-arrow",
         "code": ".css-arrow {\n  border: solid currentColor;\n  border-width: 0 2px 2px 0;\n  display: inline-block;\n  padding: 3px;\n\n  &.right {\n    transform: rotate(-45deg);\n  }\n\n  &.left {\n    transform: rotate(135deg);\n  }\n\n  &.up {\n    transform: rotate(-135deg);\n  }\n\n  &.down {\n    transform: rotate(45deg);\n  }\n}"
-      },
-      {
-        "label": ".win2k-frame",
-        "code": ".win2k-frame {\n  background-color: silver;\n  box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #fff, inset -2px -2px grey, inset 2px 2px #dfdfdf;\n\n  @mixin active() {\n    box-shadow: inset -1px -1px #fff, inset 1px 1px #0a0a0a, inset -2px -2px #dfdfdf, inset 2px 2px grey;\n    //text-shadow: 1px 1px #222;\n    //color: transparent;\n  }\n\n  @mixin disabled() {\n    text-shadow: 1px 1px 0 #fff;\n  }\n\n  @mixin focused() {\n    outline: 1px dotted #000000;\n    outline-offset: -4px;\n  }\n\n  &.active {\n    @include active();\n  }\n\n  &.disabled {\n    @include disabled();\n  }\n\n  &.focused {\n    @include focused();\n  }\n\n  &.btn-no-style {\n    &:active {\n      @include active();\n    }\n\n    &:disabled {\n      @include disabled();\n    }\n\n    &:focus {\n      @include focused();\n    }\n  }\n}\n\n.win2k-field {\n  box-shadow: inset -1px -1px #dfdfdf, inset 1px 1px grey;\n}"
       }
     ]
   },
   {
-    "label": "Animation",
+    "label": "@keyframes",
     "children": [
       {
-        "label": "@keyframes",
-        "children": [
-          {
-            "label": "rotating180",
-            "code": "@keyframes rotating180 {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(180deg);\n  }\n}"
-          },
-          {
-            "label": "rotating360",
-            "code": "@keyframes rotating360 {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}"
-          },
-          {
-            "label": "zoomIn",
-            "code": "@keyframes zoomIn {\n  0% {\n    transform: scale(1);\n  }\n\n  90% {\n    transform: scale(5);\n    opacity: 1;\n  }\n\n  95% {\n    opacity: 0;\n    transform: scale(5);\n  }\n\n  96% {\n    transform: scale(1);\n  }\n\n  97% {\n    opacity: 0;\n  }\n\n  100% {\n    opacity: 1;\n  }\n}"
-          },
-          {
-            "label": "textFadeInUp",
-            "code": "@keyframes textFadeInUp {\n  0% {\n    opacity: 0;\n    transform: translate3d(0, 25px, 0);\n  }\n\n  100% {\n    opacity: 1;\n    transform: translate3d(0, 0, 0);\n  }\n}"
-          },
-          {
-            "label": "airShrinkIn",
-            "code": "@keyframes airShrinkIn {\n  0% {\n    opacity: 0;\n    transform: scaleX(0.96);\n  }\n\n  100% {\n    opacity: 1;\n    transform: scale(1);\n  }\n}"
-          },
-          {
-            "label": "airShrinkInReverse",
-            "code": "@keyframes airShrinkInReverse {\n  0% {\n    opacity: 0;\n    transform: scale(1.12);\n  }\n\n  100% {\n    opacity: 1;\n    transform: scaleX(1);\n  }\n}"
-          }
-        ]
+        "label": "rotating180",
+        "snippet": "@keyframes rotating180 {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(180deg);\n  }\n}"
       },
       {
-        "label": "Vue 2 Transitions",
-        "children": [
-          {
-            "label": "fade",
-            "code": "// <transition label=\"fade\">\n.fade-enter-active, .fade-leave-active {\n  transition: opacity 0.3s;\n}\n\n.fade-enter, .fade-leave-to {\n  opacity: 0;\n}"
-          },
-          {
-            "label": "fade-up",
-            "code": ".fade-up-enter-active, .fade-up-leave-active {\n  transition: all 0.23s;\n}\n\n.fade-up-enter, .fade-up-leave-to {\n  opacity: 0;\n  transform: translate3d(0, 5%, 0);\n}"
-          },
-          {
-            "label": "slide-left",
-            "code": ".slide-left-enter-active, .slide-left-leave-active {\n  transition: all .3s;\n}\n\n.slide-left-enter, .slide-left-leave-to {\n  transform: translateX(15%);\n  opacity: 0;\n}\n"
-          }
-        ]
+        "label": "rotating360",
+        "snippet": "@keyframes rotating360 {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}"
       },
       {
-        "label": "Vue 3 Transitions",
-        "children": [
-          {
-            "label": "fade",
-            "code": ".fade-enter-active,\n.fade-leave-active {\n  transition: opacity 0.3s ease;\n}\n\n.fade-enter-from,\n.fade-leave-to {\n  opacity: 0;\n}"
-          },
-          {
-            "label": "scale",
-            "code": ".fade-scale-enter-active,\n.fade-scale-leave-active {\n  transform: scale(1);\n  transition: opacity 0.3s, transform 0.3s;\n}\n\n.fade-scale-enter-from,\n.fade-scale-leave-to {\n  opacity: 0;\n  transform: scale(0.92);\n  transition: opacity 0.3s, transform 0.3s;\n}"
-          }
-        ]
+        "label": "zoomIn",
+        "snippet": "@keyframes zoomIn {\n  0% {\n    transform: scale(1);\n  }\n\n  90% {\n    transform: scale(5);\n    opacity: 1;\n  }\n\n  95% {\n    opacity: 0;\n    transform: scale(5);\n  }\n\n  96% {\n    transform: scale(1);\n  }\n\n  97% {\n    opacity: 0;\n  }\n\n  100% {\n    opacity: 1;\n  }\n}"
+      },
+      {
+        "label": "textFadeInUp",
+        "snippet": "@keyframes textFadeInUp {\n  0% {\n    opacity: 0;\n    transform: translate3d(0, 25px, 0);\n  }\n\n  100% {\n    opacity: 1;\n    transform: translate3d(0, 0, 0);\n  }\n}"
+      },
+      {
+        "label": "airShrinkIn",
+        "snippet": "@keyframes airShrinkIn {\n  0% {\n    opacity: 0;\n    transform: scaleX(0.96);\n  }\n\n  100% {\n    opacity: 1;\n    transform: scale(1);\n  }\n}"
+      },
+      {
+        "label": "airShrinkInReverse",
+        "snippet": "@keyframes airShrinkInReverse {\n  0% {\n    opacity: 0;\n    transform: scale(1.12);\n  }\n\n  100% {\n    opacity: 1;\n    transform: scaleX(1);\n  }\n}"
+      }
+    ]
+  },
+  {
+    "label": "Vue Transitions",
+    "children": [
+      {
+        "label": "fade (Vue2)",
+        "snippet": "// <transition label=\"fade\">\n.fade-enter-active, .fade-leave-active {\n  transition: opacity 0.3s;\n}\n\n.fade-enter, .fade-leave-to {\n  opacity: 0;\n}"
+      },
+      {
+        "label": "fade-up (Vue2)",
+        "snippet": ".fade-up-enter-active, .fade-up-leave-active {\n  transition: all 0.23s;\n}\n\n.fade-up-enter, .fade-up-leave-to {\n  opacity: 0;\n  transform: translate3d(0, 5%, 0);\n}"
+      },
+      {
+        "label": "slide-left (Vue2)",
+        "snippet": ".slide-left-enter-active, .slide-left-leave-active {\n  transition: all .3s;\n}\n\n.slide-left-enter, .slide-left-leave-to {\n  transform: translateX(15%);\n  opacity: 0;\n}\n"
+      },
+      {
+        "label": "fade (Vue3)",
+        "snippet": ".fade-enter-active,\n.fade-leave-active {\n  transition: opacity 0.3s ease;\n}\n\n.fade-enter-from,\n.fade-leave-to {\n  opacity: 0;\n}"
+      },
+      {
+        "label": "scale (Vue3)",
+        "snippet": ".fade-scale-enter-active,\n.fade-scale-leave-active {\n  transform: scale(1);\n  transition: opacity 0.3s, transform 0.3s;\n}\n\n.fade-scale-enter-from,\n.fade-scale-leave-to {\n  opacity: 0;\n  transform: scale(0.92);\n  transition: opacity 0.3s, transform 0.3s;\n}"
       }
     ]
   },
@@ -166,15 +152,15 @@
     "children": [
       {
         "label": "max-width",
-        "code": "@media screen and (max-width: $mq_mobile_width) {}"
+        "snippet": "@media screen and (max-width: $mq_mobile_width) {}"
       },
       {
         "label": "min-width",
-        "code": "@media screen and (min-width: $mq_mobile_width) {}"
+        "snippet": "@media screen and (min-width: $mq_mobile_width) {}"
       },
       {
         "label": "min-width and max-width and max-height",
-        "code": "@media screen and (min-width: $mq_mobile_width) and (max-width: $mq_tablet_width) and (max-height: $mq_mobile_height_land) {}"
+        "snippet": "@media screen and (min-width: $mq_mobile_width) and (max-width: $mq_tablet_width) and (max-height: $mq_mobile_height_land) {}"
       },
       {
         "label": "Media Query Variables",
@@ -187,7 +173,7 @@
     "children": [
       {
         "label": "Theme Color",
-        "code": "$light: #fafafa;\n$dark-alt: #1b1b1b;\n$dark: #212121;\n\n:root {\n  --primary-rgb: 25, 107, 105;\n  --primary: rgb(var(--primary-rgb));\n  --aero-backdrop-filter: none;\n  --aero-light-bg: #{$light};\n  --aero-dark-bg: #{$dark};\n  &.tk-aero, .tk-aero {\n    --aero-backdrop-filter: saturate(180%) blur(20px);\n    --aero-light-bg: rgba(255, 255, 255, 0.77);\n    --aero-dark-bg: rgba(28, 28, 28, 0.77);\n  }\n}\n\n$primary: var(--primary); // #8dbb72;\n$primary-opacity: rgba(var(--primary-rgb), .25); //opacify($primary, 0.3);\n$secondary: #ffc107; // #66CCFF;\n$accent: #ec407a; // rgba(255, 128, 192);\n$border-color: rgba(204, 204, 204, .5);\n$separator-color: rgba(148, 148, 148, .3);\n$common-padding: 8px 12px;\n$common-transition: all .2s;\n$border-radius: 2px;\n$container-width: 1400px;\n$container-padding: 10px;\n$common-shadow: 0 0 6px -3px rgba(0, 0, 0, .5);\n\n$layout-border: 1px solid $border-color;\n\n@mixin lightBgMixin() {\n  background: var(--aero-light-bg);\n  backdrop-filter: var(--aero-backdrop-filter);\n  color: $color-black;\n}\n\n@mixin darkBgMixin() {\n  background: var(--aero-dark-bg);\n  backdrop-filter: var(--aero-backdrop-filter);\n  color: $color-white;\n}"
+        "code": "$light: #fafafa;\n$dark-alt: #1b1b1b;\n$dark: #212121;\n\n:root {\n  --primary-rgb: 25, 107, 105;\n  --primary: rgb(var(--primary-rgb));\n  --aero-backdrop-filter: none;\n  --aero-light-bg: #{$light};\n  --aero-dark-bg: #{$dark};\n}\n\n$primary: var(--primary); // #8dbb72;\n$primary-opacity: rgba(var(--primary-rgb), .25); //opacify($primary, 0.3);\n$secondary: #ffc107; // #66CCFF;\n$accent: #ec407a; // rgba(255, 128, 192);\n$border-color: rgba(204, 204, 204, .5);\n$separator-color: rgba(148, 148, 148, .3);\n$common-padding: 8px 12px;\n$common-transition: all .2s;\n$border-radius: 2px;\n$container-width: 1400px;\n$container-padding: 10px;\n$common-shadow: 0 0 6px -3px rgba(0, 0, 0, .5);\n\n$layout-border: 1px solid $border-color;\n\n@mixin lightBgMixin() {\n  background: var(--aero-light-bg);\n  backdrop-filter: var(--aero-backdrop-filter);\n  color: $color-black;\n}\n\n@mixin darkBgMixin() {\n  background: var(--aero-dark-bg);\n  backdrop-filter: var(--aero-backdrop-filter);\n  color: $color-white;\n}"
       },
       {
         "label": "Colors",
