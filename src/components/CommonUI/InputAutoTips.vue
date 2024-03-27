@@ -10,7 +10,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {})
-const emit = defineEmits(['update:modelValue', 'onSelectTip'])
+const emit = defineEmits(['update:modelValue', 'onSelectTip', 'historyChanged'])
 
 interface IHistoryItem {
   label: string
@@ -26,9 +26,18 @@ const historyItemsSet = computed(() => {
   })
   return set
 })
+
+watch(
+  historyItems,
+  (val) => {
+    emit('historyChanged', val)
+  },
+  {immediate: true}
+)
+
 const recordHistory = () => {
   const val = mValue.value
-  if (historyItemsSet.value.has(val)) {
+  if (!val || historyItemsSet.value.has(val)) {
     return
   }
   historyItems.value.push({
@@ -96,6 +105,7 @@ const refreshOptions = () => {
               negativeText: 'Cancel',
               onPositiveClick: () => {
                 historyItems.value = []
+                refreshOptions()
                 focusBackInput()
               },
               onNegativeClick: () => {},
@@ -162,6 +172,12 @@ const focusBackInput = () => {
     hideMenu()
   }, 100)
 }
+
+const handleBlur = () => {
+  recordHistory()
+  refreshOptions()
+  hideMenu()
+}
 </script>
 
 <template>
@@ -189,9 +205,9 @@ const focusBackInput = () => {
       v-bind="$attrs"
       @focus="showMenu"
       @click="showMenu"
-      @blur="hideMenu"
+      @blur="handleBlur"
       @keyup.esc="mValue = ''"
-      @keyup.enter="recordHistory"
+      @keyup.enter.stop="recordHistory"
       @keyup.up.prevent="showAndFocus"
       @keyup.down.prevent="showAndFocus"
       @input="showMenu"

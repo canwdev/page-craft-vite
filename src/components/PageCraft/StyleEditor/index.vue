@@ -227,6 +227,7 @@ export default defineComponent({
     const handleAddStyle = ({el, code, isAppend = false}) => {
       nextTick(() => {
         if (el) {
+          // el 是可选参数
           let className = suggestElementClass(el)
           code = `\n${className} {\n\n}\n`
         }
@@ -258,6 +259,7 @@ export default defineComponent({
           forceMoveMarkers: true,
         },
       ])
+
       setTimeout(() => {
         eIns.focus()
       }, 100)

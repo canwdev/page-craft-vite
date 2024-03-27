@@ -1,73 +1,55 @@
-<script lang="ts">
-import {defineComponent} from 'vue'
+<script setup lang="ts">
 import {useMainStore} from '@/store/main'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
-import {useSettingsStore} from '@/store/settings'
 import InputAutoTips from '@/components/CommonUI/InputAutoTips.vue'
+import monaco from '@/components/CommonUI/VueMonaco/monaco-helper'
 
-export default defineComponent({
-  name: 'ClassNameInput',
-  components: {InputAutoTips},
-  setup(props, {emit}) {
-    const mainStore = useMainStore()
-    const settingsStore = useSettingsStore()
+const mainStore = useMainStore()
 
-    /*classname autocomplete start*/
-    const autocompleteKeywordMap = ref({})
-    const autocompleteOptions = computed(() => {
-      const value = mainStore.className
-      const list = Object.keys(autocompleteKeywordMap.value)
-        .map((key) => {
+const handleAddClassName = () => {
+  const value = mainStore.className
+  if (!value) {
+    return
+  }
+  let sl = ''
+  value.split(' ').forEach((c) => {
+    sl += '.' + c
+  })
+  const code = `\n${sl} {\n}\n`
+  globalEventBus.emit(GlobalEvents.ON_ADD_STYLE, {code, isAppend: false})
+
+  mainStore.className = ''
+}
+
+// 编辑器自动提示
+const updateClassNamesSuggestions = (items) => {
+  // console.log('[updateClassNamesSuggestions]', items)
+  monaco.languages.registerCompletionItemProvider('scss', {
+    triggerCharacters: ['.'],
+    provideCompletionItems: (model, position) => {
+      return {
+        suggestions: items.map((item) => {
+          let sl = ''
+          item.label.split(' ').forEach((c) => {
+            sl += '.' + c
+          })
           return {
-            label: key,
-            value: key,
+            label: sl,
+            kind: monaco.languages.CompletionItemKind.Keyword,
+            insertText: `${sl} {\${1:}}`,
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            range: {
+              startLineNumber: position.lineNumber,
+              startColumn: position.column - 2,
+              endLineNumber: position.lineNumber,
+              endColumn: position.column,
+            },
           }
-        })
-        .filter((item) => {
-          return item.value.includes(value)
-        })
-
-      if (!autocompleteKeywordMap.value[value] && list.length) {
-        list.unshift({
-          label: value,
-          value: value,
-        })
+        }),
       }
-      return list.filter((item) => {
-        return item.value.includes(value)
-      })
-    })
-    const handleInputClassNameBlur = () => {
-      if (!mainStore.className) {
-        return
-      }
-      autocompleteKeywordMap.value[mainStore.className] = true
-    }
-    const handleAddClassName = () => {
-      const value = mainStore.className
-      console.log(value)
-      let sl = ''
-      value.split(' ').forEach((c) => {
-        sl += '.' + c
-      })
-      const code = `\n${sl} {\n}\n`
-      globalEventBus.emit(GlobalEvents.ON_ADD_STYLE, {code, isAppend: false})
-
-      autocompleteKeywordMap.value[value] = true
-
-      mainStore.className = ''
-    }
-    /*classname autocomplete end*/
-
-    return {
-      settingsStore,
-      mainStore,
-      handleAddClassName,
-      handleInputClassNameBlur,
-      autocompleteOptions,
-    }
-  },
-})
+    },
+  })
+}
 </script>
 
 <template>
@@ -77,6 +59,7 @@ export default defineComponent({
     :title="`Focus shortcut: alt+1\nPress enter to insert css class\nInput without dot(.)`"
     hid="class"
     @keyup.enter="handleAddClassName"
+    @historyChanged="updateClassNamesSuggestions"
   />
 
   <input
