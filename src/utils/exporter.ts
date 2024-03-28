@@ -1,8 +1,8 @@
 import moment from 'moment/moment'
 import FileSaver from 'file-saver'
 import {ComponentExportData} from '@/enum/page-craft/block'
-import {sassToCSS} from '@/utils/css'
-import {formatCss, formatHtml} from '@/utils/formater'
+import {sassToCSS} from '@/components/PageCraft/StyleEditor/utils/css'
+import {formatCss, formatHtml} from '@/components/PageCraft/StyleEditor/utils/formater'
 import {showInputPrompt} from '@/components/CommonUI/input-prompt'
 
 export const handleExportJson = async (exportData: ComponentExportData) => {

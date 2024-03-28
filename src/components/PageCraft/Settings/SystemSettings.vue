@@ -115,18 +115,6 @@ export default defineComponent({
               store: settingsStore,
               type: StOptionType.SWITCH,
             },
-            {
-              label: $t('common.global_style'),
-              key: 'global_style',
-              actionRender: h(NSpace, {size: 'small', align: 'center'}, () => [
-                h(NSwitch, {
-                  value: settingsStore.enableGlobalStyle,
-                  'onUpdate:value': (v) => {
-                    settingsStore.enableGlobalStyle = v
-                  },
-                }),
-              ]),
-            },
           ],
         },
         ...commonSettingsOptions.value,

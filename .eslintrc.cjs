@@ -35,6 +35,7 @@ module.exports = {
     'vue/no-unused-components': 'warn',
     'vue/no-setup-props-destructure': 'warn',
     '@typescript-eslint/no-empty-interface': 'warn',
+    'vue/multi-word-component-names': 'warn',
     'vue/component-tags-order': [
       'error',
       {

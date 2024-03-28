@@ -1,12 +1,9 @@
 import {LdThemeType} from '@/enum/settings'
 import {useSettingsStore} from '@/store/settings'
 import {useMainStore} from '@/store/main'
-import {LsKeys} from '@/enum/page-craft'
 import {createOrFindStyleNode} from '@/utils/dom'
 import {getSystemIsDarkMode, hexToRgb} from '@/utils/color'
 import {GlobalThemeOverrides} from 'naive-ui'
-import {sassToCSS} from '@/utils/css'
-import {usePlaygroundStore} from '@/store/playground'
 import {useThemeOptions} from '@/components/CommonUI/ViewPortWindow/utils/use-theme'
 
 export const useGlobalTheme = () => {
@@ -160,51 +157,5 @@ export const useHeadStyleEl = (id) => {
 
   return {
     styleEl,
-  }
-}
-
-/**
- * 使用全局样式
- */
-export const useGlobalStyle = () => {
-  const playgroundStore = usePlaygroundStore()
-
-  const globalStyleText = ref('')
-  const settingsStore = useSettingsStore()
-
-  watch(globalStyleText, (val) => {
-    applyGlobalStyle()
-  })
-
-  const applyGlobalStyle = async () => {
-    try {
-      if (settingsStore.enableGlobalStyle) {
-        const value = globalStyleText.value
-        const result = value ? await sassToCSS(value) : ''
-        // console.log(result)
-        playgroundStore.globalCSS = result
-        localStorage.setItem(LsKeys.GLOBAL_STYLE, globalStyleText.value)
-      } else {
-        playgroundStore.globalCSS = ''
-      }
-    } catch (e: any) {
-      window.$message.error(e.message)
-    }
-  }
-
-  watch(
-    () => settingsStore.enableGlobalStyle,
-    (val) => {
-      applyGlobalStyle()
-    }
-  )
-
-  onMounted(() => {
-    globalStyleText.value = localStorage.getItem(LsKeys.GLOBAL_STYLE) || ''
-  })
-
-  return {
-    globalStyleText,
-    applyGlobalStyle,
   }
 }

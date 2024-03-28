@@ -1,8 +1,8 @@
 import {BlockItem, BlockType} from '@/enum/page-craft/block'
 import {TabType} from '@/enum/page-craft/inventory'
 import {FilterType, LdThemeType} from '@/enum/settings'
-import {StyleTabType} from '@/enum/page-craft/styles'
 import {DEFAULT_THEME} from '@/components/CommonUI/ViewPortWindow/utils/use-theme'
+import {StyleTabType} from '@/components/PageCraft/StyleEditor/enum'
 
 interface IPageCraftSettings {
   // 明暗主题
@@ -20,7 +20,6 @@ interface IPageCraftSettings {
 
   enableTopLayout: boolean
   enableSoundFx: boolean
-  enableGlobalStyle: boolean
   // 是否启用参考图
   enableReferenceMap: boolean
   enableFocusAutoAction: boolean
@@ -37,7 +36,6 @@ interface IPageCraftSettings {
   toolbarList: BlockItem[]
   // selected component name
   curCompoName: string
-  styleEditorTab: StyleTabType
 
   autoCheckUpdate: boolean
   // 网页版推荐下载桌面客户端
@@ -56,7 +54,6 @@ export const useSettingsStore = defineStore('settingsStore', {
 
       enableTopLayout: false,
       enableSoundFx: true,
-      enableGlobalStyle: true,
       enableReferenceMap: false,
       enableFocusAutoAction: false,
 
@@ -70,7 +67,6 @@ export const useSettingsStore = defineStore('settingsStore', {
       toolbarIndex: 0,
       toolbarList: [],
       curCompoName: '',
-      styleEditorTab: StyleTabType.CURRENT,
 
       autoCheckUpdate: true,
       recommendDesktopClient: true,
