@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import {sassToCSS, suggestElementClass} from './utils/css'
-import {useMainStore} from '@/store/main'
-import {ActionBlockItems, BlockItem} from '@/enum/page-craft/block'
 import {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
 import {formatCss} from './utils/formater'
 import {useCompStorage} from '@/hooks/use-component-storage'
@@ -17,7 +15,7 @@ import {
   Wand20Regular,
 } from '@vicons/fluent'
 import {useI18n} from 'vue-i18n'
-import {useOpenCloseSelect, useSfxBell, useSfxBrush, useSfxFill} from '@/hooks/use-sfx'
+import {useSfxOpenCloseSelect, useSfxBell, useSfxBrush, useSfxFill} from '@/hooks/use-sfx'
 import TabLayout from '@/components/CommonUI/TabLayout.vue'
 import monaco from '@/components/CommonUI/VueMonaco/monaco-helper'
 import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
@@ -40,7 +38,6 @@ const emit = defineEmits(['update:visible'])
 
 const {t: $t} = useI18n()
 const mVisible = useVModel(props, 'visible', emit)
-const mainStore = useMainStore()
 const settingsStore = useSettingsStore()
 const playgroundStore = usePlaygroundStore()
 
@@ -190,33 +187,33 @@ const copyStyle = () => {
   playSfxBell()
 }
 
-const backupBlock = ref<BlockItem | null>(null)
-const enterSelectMode = () => {
-  if (mainStore.isSelectMode) {
-    return exitSelectMode()
-  }
-  backupBlock.value = mainStore.currentBlock
-  mainStore.isSelectMode = true
-  mainStore.currentBlock = ActionBlockItems.SELECTION
+const isSelecting = ref(false)
+
+useSfxOpenCloseSelect(() => isSelecting.value)
+const toggleSelecting = () => {
+  isSelecting.value = !isSelecting.value
 }
-const exitSelectMode = () => {
-  if (backupBlock.value) {
-    mainStore.currentBlock = backupBlock.value
+const handleSelectEl = (el) => {
+  if (!isSelecting.value) {
+    return
   }
-  mainStore.isSelectMode = false
-  backupBlock.value = null
+  handleAddStyle({el})
+  isSelecting.value = false
 }
-const handleAddStyle = ({el, code, isAppend = false}) => {
+
+const handleAddStyle = ({el, code = '', isAppend = false}) => {
   nextTick(() => {
     if (el) {
-      // el 是可选参数
+      // el 是可选参数，如果传入了el，就生成类名选择器
       let className = suggestElementClass(el)
       code = `\n${className} {\n\n}\n`
+    }
+    if (!code) {
+      return
     }
     // console.log('[handleAddStyle]', className)
     insertStyleCode(code, isAppend)
   })
-  exitSelectMode()
 }
 
 const insertStyleCode = (code, isAppend = false) => {
@@ -309,8 +306,6 @@ onMounted(() => {
   updateEditorAutoComplete()
 })
 
-useOpenCloseSelect(() => mainStore.isSelectMode)
-
 const listenShortcuts = (event) => {
   // console.log(event)
   const key = event.key.toLowerCase()
@@ -326,7 +321,7 @@ useEventListener(document, 'keydown', (event) => {
   // console.log(event)
   const key = event.key.toLowerCase()
   if (event.ctrlKey && event.shiftKey && key === 'x') {
-    enterSelectMode()
+    toggleSelecting()
   } else if (event.altKey && key === 'q') {
     isShowQuickOptions.value = !isShowQuickOptions.value
   }
@@ -338,7 +333,7 @@ useGlobalBusOn(GlobalEvents.IMPORT_SUCCESS, reloadStyle)
 </script>
 
 <template>
-  <ElementByPoint />
+  <ElementByPoint v-if="isSelecting" @select="handleSelectEl" />
   <ViewPortWindow
     class="mc-style-editor-dialog"
     v-model:visible="mVisible"
@@ -356,11 +351,11 @@ useGlobalBusOn(GlobalEvents.IMPORT_SUCCESS, reloadStyle)
     <template #titleBarRightControls>
       <button
         :title="$t('msgs.select_an_element_in') + ' (ctrl+shift+x)'"
-        :class="{active: mainStore.isSelectMode}"
-        @click="enterSelectMode"
+        :class="{active: isSelecting}"
+        @click.stop.prevent="toggleSelecting"
       >
         <n-icon size="20">
-          <CursorHover20Regular v-if="!mainStore.isSelectMode" />
+          <CursorHover20Regular v-if="!isSelecting" />
           <CursorClick20Regular v-else />
         </n-icon>
       </button>

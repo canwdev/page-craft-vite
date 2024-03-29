@@ -35,7 +35,7 @@ export const useOpenCloseSound = (watchFn) => {
     }
   })
 }
-export const useOpenCloseSelect = (watchFn) => {
+export const useSfxOpenCloseSelect = (watchFn) => {
   const settingsStore = useSettingsStore()
 
   const {play: playSfxOpen} = useSound(sfxLoading, {

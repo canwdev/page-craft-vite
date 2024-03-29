@@ -7,7 +7,6 @@ import iconRedStone from '../../assets/textures/redstone.png?url'
 
 export enum ActionType {
   CURSOR = 'CURSOR',
-  SELECTION = 'SELECTION',
   DELETE = 'DELETE',
   DEBUG = 'DEBUG',
   PASTE_REPLACE = 'PASTE_REPLACE',
@@ -108,13 +107,6 @@ export class BlockItem {
 }
 
 export const ActionBlockItems = {
-  SELECTION: new BlockItem({
-    blockType: BlockType.ACTIONS,
-    title: 'Selection',
-    icon: iconArrow,
-    actionType: ActionType.SELECTION,
-    hidden: true,
-  }),
   DEBUG: new BlockItem({
     blockType: BlockType.ACTIONS,
     title: 'Debug',

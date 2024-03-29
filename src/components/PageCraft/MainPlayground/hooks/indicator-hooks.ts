@@ -98,7 +98,7 @@ export const useIndicator = () => {
       'page-craft-mc--cursor-insert': currentBlock.blockType !== BlockType.ACTIONS,
       'page-craft-mc--cursor-pickaxe': currentBlock.actionType === ActionType.DELETE,
       // 选择元素
-      'page-craft-mc--cursor-arrow': currentBlock.actionType === ActionType.SELECTION,
+      'page-craft-mc--cursor-arrow': false,
       'page-craft-mc--cursor-sword': currentBlock.actionType === ActionType.DEBUG,
       'page-craft-mc--cursor-drag': currentBlock.actionType === ActionType.DRAG,
       'page-craft-mc--cursor-oaksign': currentBlock.actionType === ActionType.PASTE_REPLACE,

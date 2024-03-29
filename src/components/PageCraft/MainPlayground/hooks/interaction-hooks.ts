@@ -335,7 +335,6 @@ export const useInteractionHooks = (options) => {
 
   const isSelectMode = computed(() => {
     return (
-      mainStore.isSelectMode ||
       indicatorOptions.enableSelection ||
       mainStore.currentBlock.actionType === ActionType.DEBUG ||
       mainStore.currentBlock.actionType === ActionType.PASTE_REPLACE

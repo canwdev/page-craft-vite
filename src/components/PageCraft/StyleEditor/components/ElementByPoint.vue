@@ -1,6 +1,14 @@
 <script lang="ts" setup>
 import {computed, reactive} from 'vue'
-import {useElementBounding, useElementByPoint, useEventListener, useMouse} from '@vueuse/core'
+import {
+  useElementBounding,
+  useElementByPoint,
+  useEventListener,
+  useMounted,
+  useMouse,
+} from '@vueuse/core'
+
+const emit = defineEmits(['select'])
 
 const {x, y} = useMouse({type: 'client'})
 const {element} = useElementByPoint({x, y})
@@ -27,11 +35,24 @@ const boxStyles = computed(() => {
 const pointStyles = computed<Record<string, string | number>>(() => ({
   transform: `translate(calc(${x.value}px - 50%), calc(${y.value}px - 50%))`,
 }))
+
+const isMounted = useMounted()
+useEventListener('click', (event) => {
+  if (!isMounted.value) {
+    return
+  }
+  console.log('click', event)
+  event.stopPropagation()
+  event.preventDefault()
+  emit('select', element.value)
+})
 </script>
 
 <template>
-  <div :style="boxStyles" class="mc-element-by-point-box" />
-  <div :style="pointStyles" class="mc-element-by-point-pointer" />
+  <Teleport to=".page-craft-root">
+    <div :style="boxStyles" class="mc-element-by-point-box" />
+    <div :style="pointStyles" class="mc-element-by-point-pointer" />
+  </Teleport>
 </template>
 
 <style lang="scss">
