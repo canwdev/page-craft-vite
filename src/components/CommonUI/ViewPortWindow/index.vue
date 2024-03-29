@@ -165,6 +165,10 @@ export default defineComponent({
       dWindow.value.maximized = val
 
       winOptions.maximized = val
+
+      if (!val) {
+        fixWindowInScreen()
+      }
     })
 
     watch(mVisible, (val) => {
@@ -181,6 +185,10 @@ export default defineComponent({
         // opacify: 0.8,
         preventNode: titleBarButtonsRef.value,
         onMove(data) {
+          if (data.maximized) {
+            isMaximized.value = true
+            return
+          }
           handleMoveDebounced(data)
         },
         onActive(data) {
@@ -200,6 +208,10 @@ export default defineComponent({
 
       initWindowStyle()
     })
+
+    const setPos = (dir: string, value: string) => {
+      rootRef.value.style[dir] = winOptions[dir] = value
+    }
 
     const isInit = ref(false)
     const initWindowStyle = () => {
@@ -222,11 +234,10 @@ export default defineComponent({
         // console.log(`load ${storageKey}`, lsVal)
         lsState = lsVal || defaultValue
       }
-
-      rootRef.value.style.left = winOptions.left = lsState.left
-      rootRef.value.style.top = winOptions.top = lsState.top
-      rootRef.value.style.width = winOptions.width = lsState.width
-      rootRef.value.style.height = winOptions.height = lsState.height
+      setPos('left', lsState.left)
+      setPos('top', lsState.top)
+      setPos('width', lsState.width)
+      setPos('height', lsState.height)
       isInit.value = true
 
       setTimeout(() => {
@@ -245,6 +256,30 @@ export default defineComponent({
       })
     }
 
+    const fixWindowInScreen = () => {
+      setTimeout(() => {
+        const rect = rootRef.value.getBoundingClientRect()
+        console.log(rect)
+        let flagFixed = false
+        if (rect.y < 0) {
+          setPos('top', 0 + 'px')
+          flagFixed = true
+        }
+        if (rect.x < 0) {
+          setPos('left', 0 + 'px')
+          flagFixed = true
+        }
+        if (!flagFixed) {
+          if (rect.y > window.innerHeight) {
+            setPos('top', window.innerHeight - rect.height + 'px')
+          }
+          if (rect.x > window.innerWidth) {
+            setPos('left', window.innerWidth - rect.width + 'px')
+          }
+        }
+      }, 400)
+    }
+
     const handleMoveDebounced = useThrottleFn(
       ({top, left}) => {
         winOptions.top = top
@@ -261,8 +296,10 @@ export default defineComponent({
         }
         emit('resize')
 
-        winOptions.width = getComputedStyle(rootRef.value).width
-        winOptions.height = getComputedStyle(rootRef.value).height
+        const size = getComputedStyle(rootRef.value)
+
+        winOptions.width = size.width
+        winOptions.height = size.height
       },
       50,
       true
@@ -300,10 +337,10 @@ export default defineComponent({
       setIsTransition(true)
 
       setTimeout(() => {
-        rootRef.value.style.left = winOptions.left = size.left + 'px'
-        rootRef.value.style.top = winOptions.top = size.top + 'px'
-        rootRef.value.style.width = winOptions.width = size.width + 'px'
-        rootRef.value.style.height = winOptions.height = size.height + 'px'
+        setPos('left', size.left + 'px')
+        setPos('top', size.top + 'px')
+        setPos('width', size.width + 'px')
+        setPos('height', size.height + 'px')
         setIsTransition(false)
       })
     }

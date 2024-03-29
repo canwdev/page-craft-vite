@@ -314,8 +314,15 @@ export class WindowController {
   }
 
   handleDragStop(event) {
+    console.log('[handleDragStop]', event)
     const {docEl} = this
-    const {dragTargetEl, opacify} = this.options
+    const {dragTargetEl, opacify, onMove} = this.options
+
+    const {x, y} = event
+    if (y <= 0 || x <= 0 || x >= window.innerWidth) {
+      // TODO:
+      onMove && onMove({maximized: true})
+    }
 
     ;['mousemove', 'touchmove'].forEach((eventName) => {
       docEl.removeEventListener(eventName, this.handleDragMove)

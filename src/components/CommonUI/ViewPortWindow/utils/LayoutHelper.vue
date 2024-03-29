@@ -19,14 +19,6 @@ const props = withDefaults(defineProps<Props>(), {
 
 const mVisible = useVModel(props, 'visible', emit)
 
-watch(mVisible, (val) => {
-  if (!val) {
-    setTimeout(() => {
-      layoutPreview.value = null
-    }, 200)
-  }
-})
-
 const layoutList: ILayout[] = [
   // 3个一组
   {xRatio: 0, yRatio: 0, widthRatio: 0.5, heightRatio: 0.5},
@@ -71,6 +63,14 @@ const setWindowLayout = (layout: ILayout) => {
     layoutPreview.value = null
   })
 }
+
+const setLayout = (layout: ILayout) => {
+  if (mVisible.value) {
+    layoutPreview.value = layout
+  } else {
+    layoutPreview.value = null
+  }
+}
 </script>
 
 <template>
@@ -80,7 +80,7 @@ const setWindowLayout = (layout: ILayout) => {
         v-for="(layout, index) in layoutList"
         :key="index"
         class="layout-item"
-        @mouseover="layoutPreview = layout"
+        @mouseover="setLayout(layout)"
         @mouseleave="layoutPreview = null"
         @click="setWindowLayout(layout)"
       >

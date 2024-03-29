@@ -99,6 +99,7 @@ export default defineComponent({
     border-radius: 0 !important;
     max-height: 150px !important;
     scrollbar-width: none;
+    line-height: 1;
   }
   .quick-options {
     flex: 1;
