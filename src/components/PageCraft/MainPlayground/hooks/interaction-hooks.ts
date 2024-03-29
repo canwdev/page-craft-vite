@@ -1,12 +1,16 @@
 import {ActionType, BlockItem, BlockType} from '@/enum/page-craft/block'
 import {useMainStore} from '@/store/main'
-import {appendCustomBlock, autoPasteReplaceValue, createBlockElement} from '@/utils/dom'
+import {
+  appendCustomBlock,
+  autoPasteReplaceValue,
+  createBlockElement,
+} from '@/components/PageCraft/MainPlayground/utils/dom'
 import {LsKeys, TOOL_CLASSES} from '@/enum/page-craft'
 import {useThrottleFn} from '@vueuse/core'
 import $ from 'jquery'
 import {useContextMenu} from '@/hooks/use-context-menu'
 import {copyToClipboard} from '@/utils'
-import {updateHtmlElement} from '@/components/PageCraft/MainPlayground/element-edit'
+import {updateHtmlElement} from '@/components/PageCraft/MainPlayground/utils/element-edit'
 import {LineHelper} from '@/utils/line-helper'
 import {loadCompStorage} from '@/hooks/use-component-storage'
 import {NButton} from 'naive-ui'

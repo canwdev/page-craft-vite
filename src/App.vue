@@ -8,6 +8,7 @@ import {useMainStore} from '@/store/main'
 import {useEventListener} from '@vueuse/core'
 import {useFocusAutoAction} from '@/hooks/use-focus-auto-action'
 import {useUpdater} from '@/components/PageCraft/Settings/use-updater'
+import {useCssStyleTag} from '@/components/StyleEditor/utils/css-store'
 
 export default defineComponent({
   components: {
@@ -35,7 +36,7 @@ export default defineComponent({
       if (event.ctrlKey && key === 'r' && !event.shiftKey && !isDev) {
         event.preventDefault()
         window.$message.info('ctrl+r is disabled')
-      } else if (event.altKey && key === 'r') {
+      } else if (event.altKey && key === 'q') {
         mainStore.isShowQuickLaunch = !mainStore.isShowQuickLaunch
       } else if (event.altKey && key === 'i') {
         mainStore.isShowIframeBrowser = !mainStore.isShowIframeBrowser
@@ -44,6 +45,7 @@ export default defineComponent({
 
     useFocusAutoAction()
     useUpdater('canwdev', 'page-craft-vite')
+    useCssStyleTag()
 
     return {
       isAppDarkMode,

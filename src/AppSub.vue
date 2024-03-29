@@ -21,7 +21,7 @@ export default defineComponent({
     ),
     DialogTextTransformer,
     StylusToolsDialog: defineAsyncComponent(
-      () => import('@/components/PageCraft/StyleEditor/components/StylusToolsDialog.vue')
+      () => import('@/components/StyleEditor/components/StylusToolsDialog.vue')
     ),
   },
   setup() {

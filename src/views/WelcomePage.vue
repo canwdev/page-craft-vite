@@ -1,15 +1,9 @@
-<script lang="ts">
-import {defineComponent} from 'vue'
+<script setup lang="ts">
 import {useMainStore} from '@/store/main'
 
-export default defineComponent({
-  name: 'WelcomePage',
-  setup() {
-    const mainStore = useMainStore()
-    onMounted(() => {
-      mainStore.isShowQuickLaunch = true
-    })
-  },
+const mainStore = useMainStore()
+onMounted(() => {
+  mainStore.isShowQuickLaunch = true
 })
 </script>
 

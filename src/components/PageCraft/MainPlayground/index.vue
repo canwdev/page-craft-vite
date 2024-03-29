@@ -2,11 +2,11 @@
 import {useMainStore} from '@/store/main'
 import {ActionType} from '@/enum/page-craft/block'
 import FileChooser from '@/components/CommonUI/FileChooser.vue'
-import IndicatorInfo from '@/components/PageCraft/MainPlayground/IndicatorInfo.vue'
+import IndicatorInfo from '@/components/PageCraft/MainPlayground/components/IndicatorInfo.vue'
 import {useIndicator} from '@/components/PageCraft/MainPlayground/hooks/indicator-hooks'
 import {useInteractionHooks} from '@/components/PageCraft/MainPlayground/hooks/interaction-hooks'
 import {useMcMain} from '@/components/PageCraft/MainPlayground/hooks/main-hooks'
-import ElementEditDialog from '@/components/PageCraft/MainPlayground/ElementEditDialog.vue'
+import ElementEditDialog from '@/components/PageCraft/MainPlayground/components/ElementEditDialog.vue'
 import {useSettingsStore} from '@/store/settings'
 import {
   ArrowUndo20Filled,
@@ -16,7 +16,6 @@ import {
   QuestionCircle20Regular,
 } from '@vicons/fluent'
 import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
-import {usePlaygroundStyle} from '@/components/PageCraft/MainPlayground/hooks/use-playground-style'
 import {WebviewWindow} from '@tauri-apps/api/window'
 import {useRouter} from 'vue-router'
 import {useEventListener} from '@vueuse/core'
@@ -115,7 +114,6 @@ export default defineComponent({
       }
     })
 
-    usePlaygroundStyle()
     const openPlayground = () => {
       const url = router.resolve({
         name: 'CraftPlayground',

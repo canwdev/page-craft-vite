@@ -1,13 +1,9 @@
-// @ts-ignore
-import {TOOL_CLASSES} from '@/enum/page-craft'
-const Sass = window.Sass
-
 export const sassToCSS = (sassCode, options?): Promise<string> => {
   return new Promise((resolve, reject) => {
     if (!sassCode) {
       return resolve('')
     }
-    Sass.compile(sassCode, (output) => {
+    window.Sass.compile(sassCode, (output) => {
       if (output.message) {
         reject(output)
       } else {
@@ -24,7 +20,7 @@ export const suggestElementClass = (el: HTMLElement) => {
     console.warn('Element is not supported', el)
     return ''
   }
-  className = className.replace(TOOL_CLASSES.CLASS_MOUSE_OVER, '').trim()
+  className = className.trim()
   if (className) {
     return '.' + className.split(' ').join('.')
   }

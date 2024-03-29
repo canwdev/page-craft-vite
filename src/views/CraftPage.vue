@@ -1,126 +1,141 @@
-<script lang="ts">
-import {defineComponent} from 'vue'
+<script setup lang="ts">
 import ToolBar from '@/components/PageCraft/ToolBar/index.vue'
 import MainPlayground from '@/components/PageCraft/MainPlayground/index.vue'
 import {useSettingsStore} from '@/store/settings'
-import {ldThemeOptions} from '@/enum/settings'
 import {handleExportStyle} from '@/utils/exporter'
-import {formatCss} from '@/components/PageCraft/StyleEditor/utils/formater'
-import {sassToCSS} from '@/components/PageCraft/StyleEditor/utils/css'
+import {formatCss} from '@/components/StyleEditor/utils/formater'
+import {sassToCSS} from '@/components/StyleEditor/utils/css'
 import {copyToClipboard} from '@/utils'
 import {useCompStorage} from '@/hooks/use-component-storage'
 import {ComponentExportData} from '@/enum/page-craft/block'
 import {PaintBrush16Regular} from '@vicons/fluent'
 import {useI18n} from 'vue-i18n'
-import {useOpenCloseSound, useSfxBell} from '@/hooks/use-sfx'
 import BackgroundLayer from '@/components/PageCraft/BackgroundLayer/index.vue'
 import {useMainStore} from '@/store/main'
 import {useEventListener} from '@vueuse/core'
+import {useOpenCloseSound, useSfxOpenCloseSelect, useSfxBrush, useSfxFill} from '@/hooks/use-sfx'
+import {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
 
-export default defineComponent({
-  name: 'CraftPage',
-  components: {
-    ToolBar,
-    StyleEditor: defineAsyncComponent(() => import('@/components/PageCraft/StyleEditor/index.vue')),
-    MainPlayground,
-    BackgroundLayer,
-    PaintBrush16Regular,
-  },
-  setup() {
-    const {t: $t} = useI18n()
-    const settingsStore = useSettingsStore()
-    const mainStore = useMainStore()
+const StyleEditor = defineAsyncComponent(() => import('@/components/StyleEditor/index.vue'))
 
-    const {play: playSfxBell} = useSfxBell()
-    useOpenCloseSound(() => settingsStore.showStyleEditor)
+const {t: $t} = useI18n()
+const settingsStore = useSettingsStore()
+const mainStore = useMainStore()
 
-    watch(
-      () => settingsStore.enableSoundFx,
-      () => {
-        window.$dialog.warning({
-          title: $t('msgs.refresh_page'),
-          positiveText: $t('actions.ok'),
-          negativeText: $t('actions.cancel'),
-          onPositiveClick: () => {
-            location.reload()
-          },
-          onNegativeClick: () => {},
-        })
-      }
-    )
-    useEventListener(document, 'keydown', (event) => {
-      const key = event.key.toLowerCase()
-      if (event.altKey && key === 'a' && !event.ctrlKey) {
-        settingsStore.showInventory = !settingsStore.showInventory
-      } else if (event.altKey && key === 's' && !event.ctrlKey) {
-        settingsStore.showStyleEditor = !settingsStore.showStyleEditor
-      } else if (event.altKey && key === 'w') {
-        mainStore.isShowSettings = !mainStore.isShowSettings
-      } else if (event.altKey && key === '1') {
-        const el = document.querySelector('.sl-css-class-input input') as HTMLInputElement | null
-        el && el.focus()
-      } else if (event.altKey && key === '2') {
-        const el = document.querySelector('.sl-inner-html-input input') as HTMLInputElement | null
-        el && el.focus()
-      }
+const {play: playSfxBrush} = useSfxBrush()
+const {play: sfxFill} = useSfxFill()
+
+useOpenCloseSound(() => settingsStore.showStyleEditor)
+useSfxOpenCloseSelect(() => mainStore.selecting)
+
+watch(
+  () => settingsStore.enableSoundFx,
+  () => {
+    window.$dialog.warning({
+      title: $t('msgs.refresh_page'),
+      positiveText: $t('actions.ok'),
+      negativeText: $t('actions.cancel'),
+      onPositiveClick: () => {
+        location.reload()
+      },
+      onNegativeClick: () => {},
     })
+  }
+)
+useEventListener(document, 'keydown', (event) => {
+  const key = event.key.toLowerCase()
+  if (event.altKey && key === 'a' && !event.ctrlKey) {
+    settingsStore.showInventory = !settingsStore.showInventory
+  } else if (event.altKey && key === 's' && !event.ctrlKey) {
+    settingsStore.showStyleEditor = !settingsStore.showStyleEditor
+  } else if (event.altKey && key === 'w') {
+    mainStore.isShowSettings = !mainStore.isShowSettings
+  } else if (event.altKey && key === '1') {
+    const el = document.querySelector('.sl-css-class-input input') as HTMLInputElement | null
+    el && el.focus()
+  } else if (event.altKey && key === '2') {
+    const el = document.querySelector('.sl-inner-html-input input') as HTMLInputElement | null
+    el && el.focus()
+  }
+})
 
-    const {loadCurCompStyle} = useCompStorage()
-    const styleMenuOptions = [
+const {loadCurCompStyle, saveCurCompStyle} = useCompStorage()
+const styleMenuOptions = [
+  {
+    label: '📄 ' + $t('actions.copy_compiled_css'),
+    props: {
+      onClick: async () => {
+        const style = loadCurCompStyle()
+        const css = formatCss(await sassToCSS(style))
+        copyToClipboard(css)
+      },
+    },
+  },
+  {
+    label: '📤 ' + $t('actions.export'),
+    children: [
       {
-        label: '📄 ' + $t('actions.copy_compiled_css'),
+        label: `📃 ${$t('actions.export')} css`,
         props: {
           onClick: async () => {
-            const style = loadCurCompStyle()
-            const css = formatCss(await sassToCSS(style))
-            copyToClipboard(css)
-            playSfxBell()
+            await handleExportStyle(
+              new ComponentExportData({
+                name: settingsStore.curCompoName,
+                html: '',
+                style: formatCss(loadCurCompStyle()),
+              }),
+              true
+            )
           },
         },
       },
       {
-        label: '📤 ' + $t('actions.export'),
-        children: [
-          {
-            label: `📃 ${$t('actions.export')} css`,
-            props: {
-              onClick: async () => {
-                await handleExportStyle(
-                  new ComponentExportData({
-                    name: settingsStore.curCompoName,
-                    html: '',
-                    style: formatCss(loadCurCompStyle()),
-                  }),
-                  true
-                )
-              },
-            },
+        label: `📃 ${$t('actions.export')} scss`,
+        props: {
+          onClick: async () => {
+            await handleExportStyle(
+              new ComponentExportData({
+                name: settingsStore.curCompoName,
+                html: '',
+                style: formatCss(loadCurCompStyle()),
+              })
+            )
           },
-          {
-            label: `📃 ${$t('actions.export')} scss`,
-            props: {
-              onClick: async () => {
-                await handleExportStyle(
-                  new ComponentExportData({
-                    name: settingsStore.curCompoName,
-                    html: '',
-                    style: formatCss(loadCurCompStyle()),
-                  })
-                )
-              },
-            },
-          },
-        ],
+        },
       },
-    ]
-
-    return {
-      mainStore,
-      settingsStore,
-      ldThemeOptions,
-      styleMenuOptions,
-    }
+    ],
   },
+]
+
+const styleEditorRef = ref()
+const isAutoSave = ref(false)
+const styleCode = ref('')
+watch(styleCode, () => {
+  // console.log('[handleUpdateStyle]', isAutoSave.value)
+  if (isAutoSave.value) {
+    saveCurCompStyle(styleCode.value)
+  }
+})
+
+const reloadStyle = () => {
+  isAutoSave.value = false
+  styleCode.value = loadCurCompStyle()
+  setTimeout(() => {
+    isAutoSave.value = true
+  }, 100)
+}
+onMounted(() => {
+  reloadStyle()
+})
+watch(
+  () => settingsStore.curCompoName,
+  () => {
+    reloadStyle()
+  }
+)
+useGlobalBusOn(GlobalEvents.IMPORT_SUCCESS, reloadStyle)
+useGlobalBusOn(GlobalEvents.ON_ADD_STYLE, (arg) => {
+  styleEditorRef.value.handleAddStyle(arg)
 })
 </script>
 
@@ -154,9 +169,14 @@ export default defineComponent({
     </ToolBar>
   </div>
   <StyleEditor
+    ref="styleEditorRef"
     v-model:visible="settingsStore.showStyleEditor"
     v-model:selecting="mainStore.selecting"
+    v-model:styleCode="styleCode"
     :selecting-parent-class="'.page-craft-mc'"
+    @onFormat="playSfxBrush"
+    @onInsertCode="sfxFill"
+    show-tabs
   />
 </template>
 

@@ -1,10 +1,10 @@
 <script lang="ts">
 import {defineComponent, ref} from 'vue'
-import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {copyToClipboard, readClipboardData} from '@/utils'
 import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
 import {ClipboardPaste20Regular, Copy20Regular} from '@vicons/fluent'
 import {useI18n} from 'vue-i18n'
+import {useVModel} from '@vueuse/core'
 
 export default defineComponent({
   name: 'StylusToolsDialog',
@@ -18,7 +18,7 @@ export default defineComponent({
   emits: ['update:visible'],
   setup(props, {emit}) {
     const {t: $t} = useI18n()
-    const mVisible = useModelWrapper(props, emit, 'visible')
+    const mVisible = useVModel(props, 'visible', emit)
     const textInput = ref('')
     const textOutput = ref('')
     const errorText = ref('')

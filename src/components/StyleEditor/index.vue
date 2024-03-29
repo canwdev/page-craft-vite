@@ -1,11 +1,7 @@
 <script setup lang="ts">
 import {sassToCSS, suggestElementClass} from './utils/css'
-import {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
 import {formatCss} from './utils/formater'
-import {useCompStorage} from '@/hooks/use-component-storage'
 import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
-
-import {useSettingsStore} from '@/store/settings'
 import {
   Copy20Regular,
   CursorClick20Regular,
@@ -15,44 +11,62 @@ import {
   Wand20Regular,
 } from '@vicons/fluent'
 import {useI18n} from 'vue-i18n'
-import {useSfxOpenCloseSelect, useSfxBell, useSfxBrush, useSfxFill} from '@/hooks/use-sfx'
 import TabLayout from '@/components/CommonUI/TabLayout.vue'
 import monaco from '@/components/CommonUI/VueMonaco/monaco-helper'
 import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
-import {usePlaygroundStore} from '@/store/playground'
 import QuickOptions from '@/components/CommonUI/QuickOptions/index.vue'
 import {QuickOptionItem} from '@/components/CommonUI/QuickOptions/enum'
-import {useElementByPoint, useEventListener, useMouse, useStorage, useVModel} from '@vueuse/core'
+import {useEventListener, useStorage, useVModel} from '@vueuse/core'
 import {useRemoteOptions} from '@/components/CommonUI/QuickOptions/utils/use-remote-options'
 import {useGlobalStyle} from './hooks/use-global-style'
 import {StyleEditorKeys, StyleTabType} from './enum'
-import ElementByPoint from '@/components/PageCraft/StyleEditor/components/ElementByPoint.vue'
+import ElementByPoint from './components/ElementByPoint.vue'
+import {useSharedCssStore} from './utils/css-store'
 
 interface Props {
+  // 窗口是否可见
   visible: boolean
+  // 是否处于选择元素状态
   selecting?: boolean
+  // 如果传入此类名，则只在这个类以下进行选择
   selectingParentClass?: string
+  // 是否启用variable和current编辑，用于组件样式
+  // 传入false以只启用全局样式编辑
+  showTabs?: boolean
+  // current scss 代码
+  styleCode?: string
 }
 const props = withDefaults(defineProps<Props>(), {
   visible: false,
   selecting: false,
   selectingParentClass: undefined,
+  showTabs: false,
+  styleCode: '',
 })
-const emit = defineEmits(['update:visible', 'update:selecting'])
+const {showTabs} = toRefs(props)
+const emit = defineEmits([
+  'update:visible',
+  'update:selecting',
+  'onFormat',
+  'onInsertCode',
+  'update:styleCode',
+])
 
 const {t: $t} = useI18n()
 const mVisible = useVModel(props, 'visible', emit)
-const settingsStore = useSettingsStore()
-const playgroundStore = usePlaygroundStore()
+
+const cssStore = useSharedCssStore()
+
+const {globalStyleCode} = useGlobalStyle()
+const variableStyleCode = useStorage(StyleEditorKeys.VARIABLES_STYLE, '')
+const currentStyleCode = useVModel(props, 'styleCode', emit, {passive: true})
+
+watch(currentStyleCode, () => {
+  handleUpdateStyle()
+})
 
 const vueMonacoRef = ref()
-const tabList = ref([
-  {label: $t('common.global_style'), value: StyleTabType.GLOBAL},
-  {label: $t('common.variables'), value: StyleTabType.VARIABLES},
-  {label: $t('actions.current'), value: StyleTabType.CURRENT},
-])
 
-const isAutoSave = ref(false)
 const isShowQuickOptions = ref(false)
 
 const updateEditorLayout = () => {
@@ -80,38 +94,6 @@ watch(isShowQuickOptions, (val) => {
   }
 })
 
-const {loadCurCompStyle, saveCurCompStyle} = useCompStorage()
-
-watch(
-  () => settingsStore.curCompoName,
-  () => {
-    reloadStyle()
-  }
-)
-
-const reloadStyle = () => {
-  isAutoSave.value = false
-  currentStyleCode.value = loadCurCompStyle()
-  setTimeout(() => {
-    isAutoSave.value = true
-  }, 100)
-}
-
-const {globalStyleText} = useGlobalStyle()
-
-const variableStyleCode = useStorage(StyleEditorKeys.VARIABLES_STYLE, '')
-watch(variableStyleCode, () => {
-  handleUpdateStyle()
-})
-const currentStyleCode = ref('')
-watch(currentStyleCode, () => {
-  handleUpdateStyle(true)
-})
-
-onMounted(() => {
-  reloadStyle()
-})
-
 const errorTip = ref()
 const handleErrorTipClick = () => {
   console.warn(errorTip.value.message, {...errorTip.value})
@@ -126,7 +108,7 @@ const _prevStyleValue = ref('')
 /**
  * 把样式应用到页面
  */
-const handleUpdateStyle = async (doSave = false) => {
+const handleUpdateStyle = async () => {
   try {
     // combine variables and styles
     const value = variableStyleCode.value + '\n' + currentStyleCode.value
@@ -137,22 +119,21 @@ const handleUpdateStyle = async (doSave = false) => {
     _prevStyleValue.value = value
     const result = value ? await sassToCSS(value) : ''
 
-    playgroundStore.currentCSS = result
+    cssStore.currentCSS = result
 
-    // console.log('[handleUpdateStyle]', isAutoSave.value)
-    if (doSave && isAutoSave.value) {
-      saveCurCompStyle(currentStyleCode.value)
-    }
     errorTip.value = ''
   } catch (error: any) {
     // console.error(error)
     errorTip.value = error
   }
 }
-
-const {play: playSfxBrush} = useSfxBrush()
-const {play: playSfxBell} = useSfxBell()
-const {play: sfxFill} = useSfxFill()
+watch(
+  variableStyleCode,
+  () => {
+    handleUpdateStyle()
+  },
+  {immediate: true}
+)
 
 const execBeautifyCssAction = async () => {
   const eIns = vueMonacoRef.value.getInstance()
@@ -181,19 +162,17 @@ const execBeautifyCssAction = async () => {
     }
   }
   eIns.focus()
-  playSfxBrush()
+  emit('onFormat')
 }
 
 const copyStyle = () => {
   const eIns = vueMonacoRef.value.getInstance()
   const textValue = eIns.getValue()
   window.$qlUtils.copy(textValue)
-  playSfxBell()
 }
 
 const isSelecting = useVModel(props, 'selecting', emit, {passive: true})
 
-useSfxOpenCloseSelect(() => isSelecting.value)
 const handleSelectEl = (el) => {
   if (!isSelecting.value) {
     return
@@ -221,7 +200,7 @@ const handleAddStyle = ({el, code = '', isAppend = false}) => {
 }
 
 const insertStyleCode = (code, isAppend = false) => {
-  sfxFill()
+  emit('onInsertCode')
   if (isAppend) {
     currentStyleCode.value = currentStyleCode.value + '\n' + code
     return
@@ -282,7 +261,7 @@ const {options: toolOptions} = useRemoteOptions({
 
 // 创建【全局、变量】编辑器的变量字段补全
 const updateEditorAutoComplete = () => {
-  const style = globalStyleText.value + variableStyleCode.value
+  const style = globalStyleCode.value + variableStyleCode.value
 
   const set = new Set()
 
@@ -301,7 +280,22 @@ const updateEditorAutoComplete = () => {
 
   window.$monacoScssVariables = Array.from(set)
 }
+
+const tabList = ref([
+  {label: $t('common.global_style'), value: StyleTabType.GLOBAL},
+  {label: $t('common.variables'), value: StyleTabType.VARIABLES},
+  {label: $t('actions.current'), value: StyleTabType.CURRENT},
+])
 const styleEditorTab = useStorage(StyleEditorKeys.CURRENT_TAB, StyleTabType.CURRENT)
+watch(
+  showTabs,
+  (val) => {
+    if (!val) {
+      styleEditorTab.value = StyleTabType.GLOBAL
+    }
+  },
+  {immediate: true}
+)
 watch(
   () => styleEditorTab,
   (val) => {
@@ -328,14 +322,14 @@ useEventListener(document, 'keydown', (event) => {
   const key = event.key.toLowerCase()
   if (event.ctrlKey && event.shiftKey && key === 'x') {
     isSelecting.value = !isSelecting.value
-  } else if (event.altKey && key === 'q') {
+  } else if (event.altKey && key === '`') {
     isShowQuickOptions.value = !isShowQuickOptions.value
   }
 })
 
-// @ts-ignore
-useGlobalBusOn(GlobalEvents.ON_ADD_STYLE, handleAddStyle)
-useGlobalBusOn(GlobalEvents.IMPORT_SUCCESS, reloadStyle)
+defineExpose({
+  handleAddStyle,
+})
 </script>
 
 <template>
@@ -399,21 +393,21 @@ useGlobalBusOn(GlobalEvents.IMPORT_SUCCESS, reloadStyle)
     </transition>
 
     <div class="style-editor-inner">
-      <div class="style-editor-action-bar">
+      <QuickOptions
+        v-model:visible="isShowQuickOptions"
+        :options="toolOptions"
+        :title="`${$t('actions.add_tool_codes')} (alt+\`)`"
+        class="font-code"
+        style="top: 2px; right: 2px"
+      />
+      <div v-if="showTabs" class="style-editor-action-bar">
         <TabLayout v-model="styleEditorTab" :tab-list="tabList" horizontal />
-        <QuickOptions
-          v-model:visible="isShowQuickOptions"
-          :options="toolOptions"
-          :title="`${$t('actions.add_tool_codes')} (alt+q)`"
-          class="font-code"
-          style="top: 2px; right: 2px"
-        />
       </div>
       <div class="code-editor-placeholder">
         <VueMonaco
           v-if="styleEditorTab === StyleTabType.GLOBAL"
           ref="vueMonacoRef"
-          v-model="globalStyleText"
+          v-model="globalStyleCode"
           language="scss"
           :debounce-ms="500"
           show-line-numbers

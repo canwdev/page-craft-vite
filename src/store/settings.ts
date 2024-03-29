@@ -2,7 +2,7 @@ import {BlockItem, BlockType} from '@/enum/page-craft/block'
 import {TabType} from '@/enum/page-craft/inventory'
 import {FilterType, LdThemeType} from '@/enum/settings'
 import {DEFAULT_THEME} from '@/components/CommonUI/ViewPortWindow/utils/use-theme'
-import {StyleTabType} from '@/components/PageCraft/StyleEditor/enum'
+import {StyleTabType} from '@/components/StyleEditor/enum'
 
 interface IPageCraftSettings {
   // 明暗主题

@@ -52,7 +52,7 @@ export default defineComponent({
   >
     <template #titleBarLeft>
       <img src="@/assets/textures/enchanted_book.png" alt="icon" />
-      Quick Launch (alt+r)
+      Quick Launch (alt+q)
     </template>
 
     <QuickLaunch ref="qlRef" />

@@ -1,5 +1,6 @@
 import {ActionType, BlockItem, BlockType} from '@/enum/page-craft/block'
 
+// 创建style元素，如果已存在，则直接返回
 export const createOrFindStyleNode = (id, cssText?) => {
   const find = document.querySelector(id)
   if (find) {

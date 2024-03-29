@@ -1,4 +1,4 @@
-import {autoSetAttr, tagsHasSrcAttr} from '@/utils/dom'
+import {autoSetAttr, tagsHasSrcAttr} from '@/components/PageCraft/MainPlayground/utils/dom'
 import {formatSelectOptions} from '@/utils'
 
 export enum CustomFormInputType {

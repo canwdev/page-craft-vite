@@ -1,7 +1,6 @@
 import {LdThemeType} from '@/enum/settings'
 import {useSettingsStore} from '@/store/settings'
 import {useMainStore} from '@/store/main'
-import {createOrFindStyleNode} from '@/utils/dom'
 import {getSystemIsDarkMode, hexToRgb} from '@/utils/color'
 import {GlobalThemeOverrides} from 'naive-ui'
 import {useThemeOptions} from '@/components/CommonUI/ViewPortWindow/utils/use-theme'
@@ -135,27 +134,5 @@ export const useGlobalTheme = () => {
   return {
     isAppDarkMode,
     themeOverrides,
-  }
-}
-
-export const useHeadStyleEl = (id) => {
-  const styleEl = ref<HTMLElement | null>(null)
-
-  onMounted(() => {
-    styleEl.value = createOrFindStyleNode(id)
-  })
-
-  // 组件销毁时不需要移除
-  /*  onBeforeUnmount(() => {
-    const elementToRemove = document.getElementById(id)
-    if (elementToRemove) {
-      // console.log('elementToRemove', elementToRemove)
-      // 从DOM中移除元素
-      elementToRemove.parentNode?.removeChild(elementToRemove)
-    }
-  })*/
-
-  return {
-    styleEl,
   }
 }

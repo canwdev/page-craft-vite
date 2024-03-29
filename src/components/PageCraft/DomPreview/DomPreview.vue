@@ -1,7 +1,7 @@
 <script lang="ts">
 import {defineComponent, toRefs} from 'vue'
 import VStyle from './VStyle.vue'
-import {sassToCSS} from '@/components/PageCraft/StyleEditor/utils/css'
+import {sassToCSS} from '@/components/StyleEditor/utils/css'
 
 export default defineComponent({
   name: 'DomPreview',

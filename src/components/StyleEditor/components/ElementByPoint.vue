@@ -1,12 +1,6 @@
 <script lang="ts" setup>
 import {computed, reactive} from 'vue'
-import {
-  useElementBounding,
-  useElementByPoint,
-  useEventListener,
-  useMounted,
-  useMouse,
-} from '@vueuse/core'
+import {useElementBounding, useElementByPoint, useEventListener, useMouse} from '@vueuse/core'
 
 interface Props {
   // 如果传入此类名，则只在这个类以下进行选择
