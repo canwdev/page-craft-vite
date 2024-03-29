@@ -476,7 +476,7 @@ export default defineComponent({
       color: inherit;
 
       &.active {
-        background-color: rgba(255, 105, 180, 0.8) !important;
+        background-color: $primary !important;
       }
     }
   }

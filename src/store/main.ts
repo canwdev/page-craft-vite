@@ -7,7 +7,6 @@ type IStore = {
   currentBlock: BlockItem
   className: string
   innerText: string
-  isSelectMode: boolean
   isAppDarkMode: boolean
   // handleAutoAdd 专用临时id
   trAutoAddGuid: string | null
@@ -32,7 +31,6 @@ export const useMainStore = defineStore('main', {
         JSON.parse(localStorage.getItem(LsKeys.CURRENT_BLOCK) || 'null') || ActionBlockItems.EMPTY,
       className: '',
       innerText: '',
-      isSelectMode: false,
       isAppDarkMode: true,
       trAutoAddGuid: null,
       trLastCopyMode: CopyMode.ORIGINAL,
