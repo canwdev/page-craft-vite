@@ -13,7 +13,6 @@ import {ComponentExportData} from '@/enum/page-craft/block'
 import {PaintBrush16Regular} from '@vicons/fluent'
 import {useI18n} from 'vue-i18n'
 import {useOpenCloseSound, useSfxBell} from '@/hooks/use-sfx'
-import IframeBrowser from '@/components/IframeBrowser/index.vue'
 import BackgroundLayer from '@/components/PageCraft/BackgroundLayer/index.vue'
 import {useMainStore} from '@/store/main'
 import {useEventListener} from '@vueuse/core'
@@ -21,7 +20,6 @@ import {useEventListener} from '@vueuse/core'
 export default defineComponent({
   name: 'CraftPage',
   components: {
-    IframeBrowser,
     ToolBar,
     StyleEditor: defineAsyncComponent(() => import('@/components/PageCraft/StyleEditor/index.vue')),
     MainPlayground,
@@ -155,7 +153,11 @@ export default defineComponent({
       <template #end> </template>
     </ToolBar>
   </div>
-  <StyleEditor v-model:visible="settingsStore.showStyleEditor" />
+  <StyleEditor
+    v-model:visible="settingsStore.showStyleEditor"
+    v-model:selecting="mainStore.selecting"
+    :selecting-parent-class="'.page-craft-mc'"
+  />
 </template>
 
 <style lang="scss" scoped>

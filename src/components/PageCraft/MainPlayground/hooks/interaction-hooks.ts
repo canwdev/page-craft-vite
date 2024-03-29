@@ -425,6 +425,10 @@ export const useInteractionHooks = (options) => {
   const draggingEl = shallowRef<HTMLElement | null>(null)
 
   const handleMouseDown = (event: MouseEvent) => {
+    // 选择模式不进行操作
+    if (mainStore.selecting) {
+      return
+    }
     if (event.button !== 0) {
       return
     }

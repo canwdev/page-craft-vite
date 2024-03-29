@@ -8,7 +8,22 @@ import {
   useMouse,
 } from '@vueuse/core'
 
+interface Props {
+  // 如果传入此类名，则只在这个类以下进行选择
+  parentClass?: string
+}
+const props = withDefaults(defineProps<Props>(), {
+  parentClass: undefined,
+})
+const {parentClass} = toRefs(props)
 const emit = defineEmits(['select'])
+
+const parentEl = ref<Element | null>(null)
+onBeforeMount(() => {
+  if (parentClass.value) {
+    parentEl.value = document.querySelector(parentClass.value)
+  }
+})
 
 const {x, y} = useMouse({type: 'client'})
 const {element} = useElementByPoint({x, y})
@@ -16,8 +31,19 @@ const bounding = reactive(useElementBounding(element))
 
 useEventListener('scroll', bounding.update, true)
 
+// 是否在允许的范围内
+const isInParent = computed(() => {
+  if (
+    (parentEl.value && !parentEl.value.contains(element.value)) ||
+    parentEl.value === element.value
+  ) {
+    return false
+  }
+  return true
+})
+
 const boxStyles = computed(() => {
-  if (element.value) {
+  if (element.value && isInParent.value) {
     return {
       display: 'block',
       width: `${bounding.width}px`,
@@ -32,27 +58,32 @@ const boxStyles = computed(() => {
   }
 })
 
-const pointStyles = computed<Record<string, string | number>>(() => ({
-  transform: `translate(calc(${x.value}px - 50%), calc(${y.value}px - 50%))`,
-}))
-
-const isMounted = useMounted()
-useEventListener('click', (event) => {
-  if (!isMounted.value) {
-    return
+const pointStyles = computed<Record<string, string | number>>(() => {
+  return {
+    transform: `translate(calc(${x.value}px - 50%), calc(${y.value}px - 50%))`,
+    color: isInParent.value ? 'white' : 'grey',
   }
-  console.log('click', event)
-  event.stopPropagation()
-  event.preventDefault()
-  emit('select', element.value)
 })
+
+useEventListener(
+  'click',
+  (event) => {
+    if (!isInParent.value) {
+      return
+    }
+    event.stopPropagation()
+    event.preventDefault()
+    emit('select', element.value)
+  },
+  {
+    capture: true,
+  }
+)
 </script>
 
 <template>
-  <Teleport to=".page-craft-root">
-    <div :style="boxStyles" class="mc-element-by-point-box" />
-    <div :style="pointStyles" class="mc-element-by-point-pointer" />
-  </Teleport>
+  <div :style="boxStyles" class="mc-element-by-point-box" />
+  <div :style="pointStyles" class="mc-element-by-point-pointer" />
 </template>
 
 <style lang="scss">
@@ -68,8 +99,9 @@ useEventListener('click', (event) => {
   top: 0;
   left: 0;
   pointer-events: none;
-  width: 20px;
-  height: 20px;
+  width: 8px;
+  height: 8px;
+  border: 2px solid currentColor;
   border-radius: 50px;
   background-color: $primary;
   z-index: 999;

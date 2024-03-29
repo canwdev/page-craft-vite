@@ -30,11 +30,15 @@ import ElementByPoint from '@/components/PageCraft/StyleEditor/components/Elemen
 
 interface Props {
   visible: boolean
+  selecting?: boolean
+  selectingParentClass?: string
 }
 const props = withDefaults(defineProps<Props>(), {
   visible: false,
+  selecting: false,
+  selectingParentClass: undefined,
 })
-const emit = defineEmits(['update:visible'])
+const emit = defineEmits(['update:visible', 'update:selecting'])
 
 const {t: $t} = useI18n()
 const mVisible = useVModel(props, 'visible', emit)
@@ -187,12 +191,9 @@ const copyStyle = () => {
   playSfxBell()
 }
 
-const isSelecting = ref(false)
+const isSelecting = useVModel(props, 'selecting', emit, {passive: true})
 
 useSfxOpenCloseSelect(() => isSelecting.value)
-const toggleSelecting = () => {
-  isSelecting.value = !isSelecting.value
-}
 const handleSelectEl = (el) => {
   if (!isSelecting.value) {
     return
@@ -206,6 +207,9 @@ const handleAddStyle = ({el, code = '', isAppend = false}) => {
     if (el) {
       // el 是可选参数，如果传入了el，就生成类名选择器
       let className = suggestElementClass(el)
+      if (!className) {
+        return
+      }
       code = `\n${className} {\n\n}\n`
     }
     if (!code) {
@@ -280,7 +284,7 @@ const {options: toolOptions} = useRemoteOptions({
 const updateEditorAutoComplete = () => {
   const style = globalStyleText.value + variableStyleCode.value
 
-      const set = new Set()
+  const set = new Set()
 
   // 使用正则表达式匹配类名和 SCSS 变量名
   let classRegex = /\.(\w|-)+/g
@@ -288,14 +292,14 @@ const updateEditorAutoComplete = () => {
   let match
 
   while ((match = classRegex.exec(style)) !== null) {
-        set.add(match[0])
+    set.add(match[0])
   }
 
   while ((match = variableRegex.exec(style)) !== null) {
-        set.add(match[0])
+    set.add(match[0])
   }
 
-      window.$monacoScssVariables = Array.from(set)
+  window.$monacoScssVariables = Array.from(set)
 }
 const styleEditorTab = useStorage(StyleEditorKeys.CURRENT_TAB, StyleTabType.CURRENT)
 watch(
@@ -323,7 +327,7 @@ useEventListener(document, 'keydown', (event) => {
   // console.log(event)
   const key = event.key.toLowerCase()
   if (event.ctrlKey && event.shiftKey && key === 'x') {
-    toggleSelecting()
+    isSelecting.value = !isSelecting.value
   } else if (event.altKey && key === 'q') {
     isShowQuickOptions.value = !isShowQuickOptions.value
   }
@@ -335,7 +339,11 @@ useGlobalBusOn(GlobalEvents.IMPORT_SUCCESS, reloadStyle)
 </script>
 
 <template>
-  <ElementByPoint v-if="isSelecting" @select="handleSelectEl" />
+  <ElementByPoint
+    v-if="isSelecting"
+    @select="handleSelectEl"
+    :parent-class="selectingParentClass"
+  />
   <ViewPortWindow
     class="mc-style-editor-dialog"
     v-model:visible="mVisible"
@@ -354,7 +362,7 @@ useGlobalBusOn(GlobalEvents.IMPORT_SUCCESS, reloadStyle)
       <button
         :title="$t('msgs.select_an_element_in') + ' (ctrl+shift+x)'"
         :class="{active: isSelecting}"
-        @click.stop.prevent="toggleSelecting"
+        @click.stop.prevent="isSelecting = !isSelecting"
       >
         <n-icon size="20">
           <CursorHover20Regular v-if="!isSelecting" />

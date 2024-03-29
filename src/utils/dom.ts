@@ -1,5 +1,4 @@
 import {ActionType, BlockItem, BlockType} from '@/enum/page-craft/block'
-import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 
 export const createOrFindStyleNode = (id, cssText?) => {
   const find = document.querySelector(id)

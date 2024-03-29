@@ -19,6 +19,11 @@ export const sassToCSS = (sassCode, options?): Promise<string> => {
 
 export const suggestElementClass = (el: HTMLElement) => {
   let className = el.className
+  if (!className.replace) {
+    // svg 兼容
+    console.warn('Element is not supported', el)
+    return ''
+  }
   className = className.replace(TOOL_CLASSES.CLASS_MOUSE_OVER, '').trim()
   if (className) {
     return '.' + className.split(' ').join('.')

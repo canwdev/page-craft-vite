@@ -63,7 +63,6 @@ export default defineComponent({
 
     const {
       currentHoveredEl,
-      handleBlockClick,
       handleMouseDown,
       handleMouseUp,
       handleDragOver,
@@ -135,7 +134,6 @@ export default defineComponent({
       mainStore,
       settingsStore,
       mainPlaygroundRef,
-      handleBlockClick,
       indicatorOptions,
       currentHoveredEl,
       BlockType: ActionType,
