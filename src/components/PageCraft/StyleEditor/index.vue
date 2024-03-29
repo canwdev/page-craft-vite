@@ -302,7 +302,7 @@ export default defineComponent({
     const updateEditorAutoComplete = () => {
       const style = globalStyleText.value + variableStyleCode.value
 
-      window.$monacoScssVariables = []
+      const set = new Set()
 
       // 使用正则表达式匹配类名和 SCSS 变量名
       let classRegex = /\.(\w|-)+/g
@@ -310,12 +310,14 @@ export default defineComponent({
       let match
 
       while ((match = classRegex.exec(style)) !== null) {
-        window.$monacoScssVariables.push(match[0])
+        set.add(match[0])
       }
 
       while ((match = variableRegex.exec(style)) !== null) {
-        window.$monacoScssVariables.push(match[0])
+        set.add(match[0])
       }
+
+      window.$monacoScssVariables = Array.from(set)
     }
     watch(
       () => settingsStore.styleEditorTab,

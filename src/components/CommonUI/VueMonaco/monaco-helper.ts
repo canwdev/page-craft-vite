@@ -41,8 +41,7 @@ registerCustomSnippets('css', {
 
 // 编辑器:注册快捷自动补全提示
 monaco.languages.registerCompletionItemProvider('scss', {
-  // triggerCharacters: ['.', '$'],
-  triggerCharacters: ['$'],
+  triggerCharacters: ['.', '$'],
   provideCompletionItems: (model, position) => {
     const getCommonOptions = () => ({
       insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
