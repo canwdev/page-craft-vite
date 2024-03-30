@@ -163,7 +163,7 @@ export default defineComponent({
   <PreviewWindow />
 
   <InventoryModal
-    v-if="!settingsStore.isInvAttached"
+    v-if="!settingsStore.isInvDocked"
     v-model:visible="settingsStore.showInventory"
     @onItemClick="setCurrentToolItem"
   />
@@ -175,7 +175,7 @@ export default defineComponent({
     }"
   >
     <InventoryModal
-      v-if="settingsStore.isInvAttached"
+      v-if="settingsStore.isInvDocked"
       v-model:visible="settingsStore.showInventory"
       @onItemClick="setCurrentToolItem"
     />

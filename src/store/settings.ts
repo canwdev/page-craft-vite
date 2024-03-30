@@ -29,8 +29,8 @@ interface IPageCraftSettings {
   inventoryTab: TabType
   inventoryFilterType: FilterType
   inventoryIsLargeCard: boolean
-  // inventory window attached to toolbar
-  isInvAttached: boolean
+  // inventory window docked to toolbar
+  isInvDocked: boolean
   showStyleEditor: boolean
   toolbarIndex: number
   toolbarList: BlockItem[]
@@ -62,7 +62,7 @@ export const useSettingsStore = defineStore('settingsStore', {
       inventoryTab: TabType.COMPONENTS,
       inventoryFilterType: FilterType.ALL,
       inventoryIsLargeCard: false,
-      isInvAttached: true,
+      isInvDocked: true,
       showStyleEditor: false,
       toolbarIndex: 0,
       toolbarList: [],

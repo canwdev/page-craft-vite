@@ -1,24 +1,24 @@
 <script lang="ts">
 import {defineComponent, PropType, shallowRef} from 'vue'
-import {WindowController, WinOptions} from './utils/window-controller'
+import {WindowController} from './utils/window-controller'
 import {
   ArrowMaximize20Regular,
   ArrowMinimize20Regular,
   Dismiss20Regular,
   Subtract20Filled,
 } from '@vicons/fluent'
-import LayoutHelper from '@/components/CommonUI/ViewPortWindow/utils/LayoutHelper.vue'
-import {
-  useDynamicClassName,
-  useMouseOver,
-} from '@/components/CommonUI/ViewPortWindow/utils/use-utils'
-import {useThrottleFn, useVModel} from '@vueuse/core'
+import LayoutHelper from './utils/LayoutHelper.vue'
+import {useDynamicClassName, useMouseOver} from './utils/use-utils'
+import {useThrottleFn, useVModel, watchDebounced} from '@vueuse/core'
+import {checkWindowAttach, ILayout, WinOptions} from './enum'
+import LayoutPreview from './utils/LayoutPreview.vue'
 
 const LS_KEY_VP_WINDOW_OPTION = 'vp_window'
 
 export default defineComponent({
   name: 'ViewPortWindow',
   components: {
+    LayoutPreview,
     LayoutHelper,
     Subtract20Filled,
     ArrowMinimize20Regular,
@@ -129,7 +129,7 @@ export default defineComponent({
     }
 
     const winOptions = reactive<WinOptions>({...defaultWinOptions})
-    watch(
+    watchDebounced(
       winOptions,
       () => {
         if (isMaximized.value) {
@@ -151,7 +151,7 @@ export default defineComponent({
           localStorage.setItem(storageKey, JSON.stringify({...winOptions}))
         }
       },
-      {deep: Boolean(props.wid)}
+      {deep: Boolean(props.wid), debounce: 500}
     )
 
     watch(allowMove, (val) => {
@@ -165,10 +165,6 @@ export default defineComponent({
       dWindow.value.maximized = val
 
       winOptions.maximized = val
-
-      if (!val) {
-        fixWindowInScreen()
-      }
     })
 
     watch(mVisible, (val) => {
@@ -184,14 +180,8 @@ export default defineComponent({
         allowOut: true,
         // opacify: 0.8,
         preventNode: titleBarButtonsRef.value,
-        onMove(data) {
-          if (data.maximized) {
-            isMaximized.value = true
-            return
-          }
-          handleMoveDebounced(data)
-        },
-        onActive(data) {
+        onMove: handleMove,
+        onActive() {
           emit('onActive')
         },
         autoPosOnResize: true,
@@ -215,12 +205,12 @@ export default defineComponent({
 
     const isInit = ref(false)
     const initWindowStyle = () => {
-      let defaultValue = {
+      let defaultOptions = {
         ...defaultWinOptions,
       }
       if (props.initWinOptions) {
-        defaultValue = {
-          ...defaultValue,
+        defaultOptions = {
+          ...defaultOptions,
           ...props.initWinOptions,
         }
       }
@@ -228,11 +218,11 @@ export default defineComponent({
       let lsState
       let lsVal
       if (!props.wid) {
-        lsState = defaultValue
+        lsState = defaultOptions
       } else {
         lsVal = JSON.parse(localStorage.getItem(storageKey) || 'null')
         // console.log(`load ${storageKey}`, lsVal)
-        lsState = lsVal || defaultValue
+        lsState = lsVal || defaultOptions
       }
       setPos('left', lsState.left)
       setPos('top', lsState.top)
@@ -256,38 +246,61 @@ export default defineComponent({
       })
     }
 
-    const fixWindowInScreen = () => {
-      setTimeout(() => {
-        const rect = rootRef.value.getBoundingClientRect()
-        console.log(rect)
-        let flagFixed = false
-        if (rect.y < 0) {
-          setPos('top', 0 + 'px')
-          flagFixed = true
-        }
-        if (rect.x < 0) {
-          setPos('left', 0 + 'px')
-          flagFixed = true
-        }
-        if (!flagFixed) {
-          if (rect.y > window.innerHeight) {
-            setPos('top', window.innerHeight - rect.height + 'px')
+    const fixWindowInScreen = (delayMs = 400): Promise<void> => {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          const rect = rootRef.value.getBoundingClientRect()
+          // console.log(rect)
+          let flagFixed = false
+          if (rect.y < 0) {
+            setPos('top', 0 + 'px')
+            flagFixed = true
           }
-          if (rect.x > window.innerWidth) {
-            setPos('left', window.innerWidth - rect.width + 'px')
+          if (rect.x <= -rect.width) {
+            setPos('left', 0 + 'px')
+            flagFixed = true
           }
-        }
-      }, 400)
+          if (!flagFixed) {
+            if (rect.y > window.innerHeight) {
+              setPos('top', window.innerHeight - rect.height + 'px')
+            }
+            if (rect.x > window.innerWidth) {
+              setPos('left', window.innerWidth - rect.width + 'px')
+            }
+          }
+
+          resolve()
+        }, delayMs)
+      })
     }
 
-    const handleMoveDebounced = useThrottleFn(
-      ({top, left}) => {
-        winOptions.top = top
-        winOptions.left = left
+    const checkAttach = useThrottleFn(
+      (params) => {
+        layoutPreviewData.value = checkWindowAttach(params)
       },
-      500,
+      150,
       true
     )
+
+    const handleMove = async (data) => {
+      // console.log('[onMove]', data)
+      if (data.moveStop) {
+        setTimeout(() => {
+          layoutPreviewData.value = undefined
+        }, 151)
+        await fixWindowInScreen(0)
+        if (data.attachLayout) {
+          setWindowLayout(data.attachLayout)
+        }
+        return
+      }
+      const {top, left, pointerX, pointerY} = data
+
+      checkAttach({x: pointerX, y: pointerY})
+
+      winOptions.top = top
+      winOptions.left = left
+    }
 
     const handleResizeDebounced = useThrottleFn(
       () => {
@@ -330,17 +343,29 @@ export default defineComponent({
 
     const isShowLayoutHelper = ref(false)
 
-    const setWindowLayout = (size) => {
+    const setWindowLayout = (layout: ILayout) => {
+      const {xRatio, yRatio, widthRatio, heightRatio, maximize} = layout
+      if (maximize) {
+        toggleMaximized()
+        return
+      }
+
+      const {innerWidth: maxWidth, innerHeight: maxHeight} = window
+      const left = Math.ceil(maxWidth * xRatio)
+      const top = Math.ceil(maxHeight * yRatio)
+      const width = Math.ceil(maxWidth * widthRatio)
+      const height = Math.ceil(maxHeight * heightRatio)
+
       if (isMaximized.value) {
         isMaximized.value = false
       }
       setIsTransition(true)
 
       setTimeout(() => {
-        setPos('left', size.left + 'px')
-        setPos('top', size.top + 'px')
-        setPos('width', size.width + 'px')
-        setPos('height', size.height + 'px')
+        setPos('left', left + 'px')
+        setPos('top', top + 'px')
+        setPos('width', width + 'px')
+        setPos('height', height + 'px')
         setIsTransition(false)
       })
     }
@@ -353,6 +378,8 @@ export default defineComponent({
         isShowLayoutHelper.value = true
       },
     })
+
+    const layoutPreviewData = ref<ILayout | undefined>(undefined)
 
     return {
       isInit,
@@ -369,6 +396,7 @@ export default defineComponent({
       isShowLayoutHelper,
       setWindowLayout,
       mButtonRef,
+      layoutPreviewData,
     }
   },
 })
@@ -377,6 +405,7 @@ export default defineComponent({
 <template>
   <transition :name="transitionName">
     <div v-show="isInit && mVisible" class="vp-window" ref="rootRef">
+      <LayoutPreview :preview-data="layoutPreviewData" />
       <LayoutHelper v-model:visible="isShowLayoutHelper" @setWindowLayout="setWindowLayout" />
       <div class="vp-window-content">
         <div ref="titleBarRef" class="vp-window-title-bar" @dblclick="toggleMaximized">

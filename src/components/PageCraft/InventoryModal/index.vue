@@ -608,19 +608,19 @@ export default defineComponent({
     wid="inv"
     :class="{
       _topLayout: settingsStore.enableTopLayout,
-      _isAttached: settingsStore.isInvAttached,
+      _docked: settingsStore.isInvDocked,
     }"
     :init-win-options="{height: '400px'}"
-    :allow-move="!settingsStore.isInvAttached"
+    :allow-move="!settingsStore.isInvDocked"
   >
     <template #titleBarLeft>
       <n-icon class="window-icon" size="18"><Box20Regular /></n-icon
       >{{ $t('common.inventory_list') }}
     </template>
     <template #titleBarRightControls>
-      <button @click="settingsStore.isInvAttached = !settingsStore.isInvAttached">
+      <button @click="settingsStore.isInvDocked = !settingsStore.isInvDocked">
         <n-icon size="16">
-          <Window16Regular v-if="!settingsStore.isInvAttached" />
+          <Window16Regular v-if="!settingsStore.isInvDocked" />
           <WindowArrowUp16Regular v-else />
         </n-icon>
       </button>
@@ -750,7 +750,7 @@ export default defineComponent({
   height: 40vh;
   min-height: 120px;
 
-  &._isAttached {
+  &._docked {
     position: absolute !important;
     left: 0 !important;
     right: 0 !important;

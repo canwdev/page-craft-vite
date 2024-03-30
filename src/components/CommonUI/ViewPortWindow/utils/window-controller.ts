@@ -1,13 +1,5 @@
 import {useThrottleFn} from '@vueuse/core'
-
-// 初始化窗口状态
-export type WinOptions = {
-  top: string
-  left: string
-  width: string
-  height: string
-  maximized?: boolean
-}
+import {ILayout, checkWindowAttach} from '../enum'
 
 const ClassNames = {
   RESIZE_HANDLE: 'draggable-window-resize',
@@ -54,6 +46,15 @@ const getPointerXy = (e: any) => {
   return {x, y}
 }
 
+type OnMoveParams = {
+  pointerX?: number
+  pointerY?: number
+  top?: string
+  left?: string
+  attachLayout?: ILayout
+  moveStop?: boolean
+}
+
 type DraggableOptions = {
   // 被鼠标按下的 handle 元素
   dragHandleEl: HTMLElement
@@ -64,8 +65,8 @@ type DraggableOptions = {
   // 移动时是否让窗体透明，如：0.8
   opacify?: number
   // 移动中回调函数
-  onMove?: Function
-  onActive?: Function
+  onMove?: (params: OnMoveParams) => void
+  onActive?: () => void
   // 包含在这个元素下面的子元素将不会触发移动
   preventNode?: HTMLElement
   // 调整窗口大小时始终让内容显示在视口内
@@ -193,9 +194,7 @@ export class WindowController {
       })
       this.debugLog('handleResizeDebounced', {left, top})
 
-      if (typeof onMove === 'function') {
-        onMove({top, left})
-      }
+      onMove && onMove({top, left})
     }, 500)
 
     if (autoPosOnResize) {
@@ -302,9 +301,13 @@ export class WindowController {
       top = dragTargetEl.style.top = Math.round(y) * scaleY + 'px'
     }
 
-    if (typeof onMove === 'function') {
-      onMove({top, left})
-    }
+    onMove &&
+      onMove({
+        pointerX: xy.x,
+        pointerY: xy.y,
+        top,
+        left,
+      })
 
     if (opacify) {
       dragTargetEl.style.opacity = String(opacify)
@@ -314,14 +317,19 @@ export class WindowController {
   }
 
   handleDragStop(event) {
-    console.log('[handleDragStop]', event)
+    // console.log('[handleDragStop]', event)
     const {docEl} = this
     const {dragTargetEl, opacify, onMove} = this.options
 
     const {x, y} = event
-    if (y <= 0 || x <= 0 || x >= window.innerWidth) {
-      // TODO:
-      onMove && onMove({maximized: true})
+
+    if (onMove) {
+      const obj: OnMoveParams = {
+        moveStop: true,
+      }
+      obj.attachLayout = checkWindowAttach({x, y})
+
+      onMove(obj)
     }
 
     ;['mousemove', 'touchmove'].forEach((eventName) => {
@@ -483,9 +491,7 @@ export class WindowController {
     } = opt
     if (!preventOnActive) {
       const {onActive} = this.options
-      if (typeof onActive === 'function') {
-        onActive()
-      }
+      onActive && onActive()
     }
     if (!this.allowMove && !this.maximized) {
       this.debugLog('[updateZIndex] return')
