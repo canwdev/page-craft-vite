@@ -3,7 +3,7 @@ import {useVModel} from '@vueuse/core'
 import {ILayout, layoutList} from '../enum'
 import LayoutPreview from './LayoutPreview.vue'
 
-const emit = defineEmits(['setWindowLayout'])
+const emit = defineEmits(['update:visible', 'setWindowLayout'])
 interface Props {
   visible: boolean
 }
@@ -14,13 +14,13 @@ const props = withDefaults(defineProps<Props>(), {
 
 const mVisible = useVModel(props, 'visible', emit)
 
-const previewData = ref<null | ILayout>(null)
+const previewData = ref<ILayout>()
 
 const setWindowLayout = (layout: ILayout) => {
   emit('setWindowLayout', layout)
   mVisible.value = false
   setTimeout(() => {
-    previewData.value = null
+    previewData.value = undefined
   })
 }
 
@@ -28,7 +28,7 @@ const setLayout = (layout: ILayout) => {
   if (mVisible.value) {
     previewData.value = layout
   } else {
-    previewData.value = null
+    previewData.value = undefined
   }
 }
 </script>
@@ -41,7 +41,7 @@ const setLayout = (layout: ILayout) => {
         :key="index"
         class="layout-item"
         @mouseover="setLayout(layout)"
-        @mouseleave="previewData = null"
+        @mouseleave="previewData = undefined"
         @click="setWindowLayout(layout)"
       >
         <div
