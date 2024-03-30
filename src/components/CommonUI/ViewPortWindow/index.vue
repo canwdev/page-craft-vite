@@ -113,6 +113,7 @@ export default defineComponent({
     }
 
     // 请勿使用vue :class="{}" 进行类的绑定，因为vue会覆盖DOM动态添加的class
+    useDynamicClassName(rootRef, '_visible', mVisible)
     useDynamicClassName(rootRef, '_maximized', isMaximized)
     useDynamicClassName(rootRef, '_transition', isTransition)
     const isAllowMove = computed(() => {
@@ -169,6 +170,9 @@ export default defineComponent({
 
     watch(mVisible, (val) => {
       if (val) {
+        if (!isInit.value) {
+          initWindowStyle()
+        }
         dWindow.value.updateZIndex()
       }
     })
@@ -205,6 +209,10 @@ export default defineComponent({
 
     const isInit = ref(false)
     const initWindowStyle = () => {
+      if (!mVisible.value) {
+        // 防止初始化不可见时的位置错误
+        return
+      }
       let defaultOptions = {
         ...defaultWinOptions,
       }

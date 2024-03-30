@@ -520,7 +520,12 @@ export class WindowController {
       }
     })
 
-    // console.log('[updateZIndex]', els, maxZIndex)
+    if (!dragTargetEl.classList.contains('_visible')) {
+      // 不可见元素不执行更新
+      return
+    }
+
+    // console.log('[updateZIndex]', els, maxZIndex, dragTargetEl)
 
     dragTargetEl.classList.add('_active')
 

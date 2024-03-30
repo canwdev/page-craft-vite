@@ -106,7 +106,8 @@ export default defineComponent({
     wid="text_converter"
     allow-maximum
     @resize="resizeMonaco"
-    :init-win-options="{width: '500px', height: '500px'}"
+    :init-win-options="{width: '600px', height: '500px'}"
+    init-center
   >
     <template #titleBarLeft>{{ $t('common.text_transformer') }}</template>
 
