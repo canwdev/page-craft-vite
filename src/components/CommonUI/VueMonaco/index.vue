@@ -59,7 +59,7 @@ export default defineComponent({
     )
 
     onMounted(() => {
-      editorInstance.value = monaco.editor.create(editorContainerRef.value, {
+      const editor = monaco.editor.create(editorContainerRef.value, {
         value: mValue.value,
         language: props.language,
         theme: getThemeName(), // 'vs' 'hc-black' 'vs-dark'
@@ -81,8 +81,9 @@ export default defineComponent({
         cursorSmoothCaretAnimation: 'on', // 是否启用光标平滑插入动画
         tabSize: 2,
       })
+      editorInstance.value = editor
 
-      editorInstance.value.onDidChangeModelContent(() => {
+      editor.onDidChangeModelContent(() => {
         handleEditorChangeDebounced()
       })
 

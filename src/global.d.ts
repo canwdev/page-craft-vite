@@ -14,11 +14,19 @@ declare global {
     stylusSupermacyFormat: any
     $juice: any
     XLSX: any
-    pinyinUtil: any // https://github.com/sxei/pinyinjs/
+    // https://github.com/sxei/pinyinjs/
+    pinyinUtil: any
+
     __TAURI__: any
+
     $mcUtils: any
     $qlUtils: any
     BrowserFS: any
+
+    // https://www.npmjs.com/package/js-beautify
+    js_beautify: any
+    html_beautify: any
+    css_beautify: any
   }
 }
 

@@ -1,4 +1,3 @@
-import beautifier from 'js-beautify'
 const opts = {
   indent_size: '2',
   indent_char: ' ',
@@ -21,9 +20,9 @@ const opts = {
 
 // https://beautifier.io/
 export const formatHtml = (html) => {
-  return beautifier.html(html, opts)
+  return window.html_beautify(html, opts)
 }
 
 export const formatCss = (cssCode, options: any = {}) => {
-  return beautifier.css(cssCode, opts)
+  return window.css_beautify(cssCode, opts)
 }

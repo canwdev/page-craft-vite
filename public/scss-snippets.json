@@ -90,86 +90,86 @@
       {
         "label": ".css-arrow",
         "code": ".css-arrow {\n  border: solid currentColor;\n  border-width: 0 2px 2px 0;\n  display: inline-block;\n  padding: 3px;\n\n  &.right {\n    transform: rotate(-45deg);\n  }\n\n  &.left {\n    transform: rotate(135deg);\n  }\n\n  &.up {\n    transform: rotate(-135deg);\n  }\n\n  &.down {\n    transform: rotate(45deg);\n  }\n}"
+      },
+      {
+        "label": "@keyframes",
+        "children": [
+          {
+            "label": "rotating180",
+            "snippet": "@keyframes rotating180 {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(180deg);\n  }\n}"
+          },
+          {
+            "label": "rotating360",
+            "snippet": "@keyframes rotating360 {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}"
+          },
+          {
+            "label": "zoomIn",
+            "snippet": "@keyframes zoomIn {\n  0% {\n    transform: scale(1);\n  }\n\n  90% {\n    transform: scale(5);\n    opacity: 1;\n  }\n\n  95% {\n    opacity: 0;\n    transform: scale(5);\n  }\n\n  96% {\n    transform: scale(1);\n  }\n\n  97% {\n    opacity: 0;\n  }\n\n  100% {\n    opacity: 1;\n  }\n}"
+          },
+          {
+            "label": "textFadeInUp",
+            "snippet": "@keyframes textFadeInUp {\n  0% {\n    opacity: 0;\n    transform: translate3d(0, 25px, 0);\n  }\n\n  100% {\n    opacity: 1;\n    transform: translate3d(0, 0, 0);\n  }\n}"
+          },
+          {
+            "label": "airShrinkIn",
+            "snippet": "@keyframes airShrinkIn {\n  0% {\n    opacity: 0;\n    transform: scaleX(0.96);\n  }\n\n  100% {\n    opacity: 1;\n    transform: scale(1);\n  }\n}"
+          },
+          {
+            "label": "airShrinkInReverse",
+            "snippet": "@keyframes airShrinkInReverse {\n  0% {\n    opacity: 0;\n    transform: scale(1.12);\n  }\n\n  100% {\n    opacity: 1;\n    transform: scaleX(1);\n  }\n}"
+          }
+        ]
+      },
+      {
+        "label": "Vue Transitions",
+        "children": [
+          {
+            "label": "fade (Vue2)",
+            "snippet": "// <transition label=\"fade\">\n.fade-enter-active, .fade-leave-active {\n  transition: opacity 0.3s;\n}\n\n.fade-enter, .fade-leave-to {\n  opacity: 0;\n}"
+          },
+          {
+            "label": "fade-up (Vue2)",
+            "snippet": ".fade-up-enter-active, .fade-up-leave-active {\n  transition: all 0.23s;\n}\n\n.fade-up-enter, .fade-up-leave-to {\n  opacity: 0;\n  transform: translate3d(0, 5%, 0);\n}"
+          },
+          {
+            "label": "slide-left (Vue2)",
+            "snippet": ".slide-left-enter-active, .slide-left-leave-active {\n  transition: all .3s;\n}\n\n.slide-left-enter, .slide-left-leave-to {\n  transform: translateX(15%);\n  opacity: 0;\n}\n"
+          },
+          {
+            "label": "fade (Vue3)",
+            "snippet": ".fade-enter-active,\n.fade-leave-active {\n  transition: opacity 0.3s ease;\n}\n\n.fade-enter-from,\n.fade-leave-to {\n  opacity: 0;\n}"
+          },
+          {
+            "label": "scale (Vue3)",
+            "snippet": ".fade-scale-enter-active,\n.fade-scale-leave-active {\n  transform: scale(1);\n  transition: opacity 0.3s, transform 0.3s;\n}\n\n.fade-scale-enter-from,\n.fade-scale-leave-to {\n  opacity: 0;\n  transform: scale(0.92);\n  transition: opacity 0.3s, transform 0.3s;\n}"
+          }
+        ]
+      },
+      {
+        "label": "Media Query",
+        "children": [
+          {
+            "label": "max-width",
+            "snippet": "@media screen and (max-width: $mq_mobile_width) {}"
+          },
+          {
+            "label": "min-width",
+            "snippet": "@media screen and (min-width: $mq_mobile_width) {}"
+          },
+          {
+            "label": "min-width and max-width and max-height",
+            "snippet": "@media screen and (min-width: $mq_mobile_width) and (max-width: $mq_tablet_width) and (max-height: $mq_mobile_height_land) {}"
+          },
+          {
+            "label": "Media Query Variables",
+            "code": "$mq_mobile_min_width: 330px; // 618px // 426px\n$mq_mobile_width: 567px; // 618px // 426px\n$mq_mobile_height_land: 485px; // Landscape\n$mq_tablet_width: 1024px; // 768px\n$mq_pc_min_width: 1450px; // 1440px\n$mq_pc_min_height: 768px; // 768px\n$mq_pc_2k_width: 2300px; // 2560px\n$mq_pc_2k_height: 1250px; // 1328px"
+          }
+        ]
       }
     ]
   },
   {
-    "label": "@keyframes",
-    "children": [
-      {
-        "label": "rotating180",
-        "snippet": "@keyframes rotating180 {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(180deg);\n  }\n}"
-      },
-      {
-        "label": "rotating360",
-        "snippet": "@keyframes rotating360 {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}"
-      },
-      {
-        "label": "zoomIn",
-        "snippet": "@keyframes zoomIn {\n  0% {\n    transform: scale(1);\n  }\n\n  90% {\n    transform: scale(5);\n    opacity: 1;\n  }\n\n  95% {\n    opacity: 0;\n    transform: scale(5);\n  }\n\n  96% {\n    transform: scale(1);\n  }\n\n  97% {\n    opacity: 0;\n  }\n\n  100% {\n    opacity: 1;\n  }\n}"
-      },
-      {
-        "label": "textFadeInUp",
-        "snippet": "@keyframes textFadeInUp {\n  0% {\n    opacity: 0;\n    transform: translate3d(0, 25px, 0);\n  }\n\n  100% {\n    opacity: 1;\n    transform: translate3d(0, 0, 0);\n  }\n}"
-      },
-      {
-        "label": "airShrinkIn",
-        "snippet": "@keyframes airShrinkIn {\n  0% {\n    opacity: 0;\n    transform: scaleX(0.96);\n  }\n\n  100% {\n    opacity: 1;\n    transform: scale(1);\n  }\n}"
-      },
-      {
-        "label": "airShrinkInReverse",
-        "snippet": "@keyframes airShrinkInReverse {\n  0% {\n    opacity: 0;\n    transform: scale(1.12);\n  }\n\n  100% {\n    opacity: 1;\n    transform: scaleX(1);\n  }\n}"
-      }
-    ]
-  },
-  {
-    "label": "Vue Transitions",
-    "children": [
-      {
-        "label": "fade (Vue2)",
-        "snippet": "// <transition label=\"fade\">\n.fade-enter-active, .fade-leave-active {\n  transition: opacity 0.3s;\n}\n\n.fade-enter, .fade-leave-to {\n  opacity: 0;\n}"
-      },
-      {
-        "label": "fade-up (Vue2)",
-        "snippet": ".fade-up-enter-active, .fade-up-leave-active {\n  transition: all 0.23s;\n}\n\n.fade-up-enter, .fade-up-leave-to {\n  opacity: 0;\n  transform: translate3d(0, 5%, 0);\n}"
-      },
-      {
-        "label": "slide-left (Vue2)",
-        "snippet": ".slide-left-enter-active, .slide-left-leave-active {\n  transition: all .3s;\n}\n\n.slide-left-enter, .slide-left-leave-to {\n  transform: translateX(15%);\n  opacity: 0;\n}\n"
-      },
-      {
-        "label": "fade (Vue3)",
-        "snippet": ".fade-enter-active,\n.fade-leave-active {\n  transition: opacity 0.3s ease;\n}\n\n.fade-enter-from,\n.fade-leave-to {\n  opacity: 0;\n}"
-      },
-      {
-        "label": "scale (Vue3)",
-        "snippet": ".fade-scale-enter-active,\n.fade-scale-leave-active {\n  transform: scale(1);\n  transition: opacity 0.3s, transform 0.3s;\n}\n\n.fade-scale-enter-from,\n.fade-scale-leave-to {\n  opacity: 0;\n  transform: scale(0.92);\n  transition: opacity 0.3s, transform 0.3s;\n}"
-      }
-    ]
-  },
-  {
-    "label": "Media Query",
-    "children": [
-      {
-        "label": "max-width",
-        "snippet": "@media screen and (max-width: $mq_mobile_width) {}"
-      },
-      {
-        "label": "min-width",
-        "snippet": "@media screen and (min-width: $mq_mobile_width) {}"
-      },
-      {
-        "label": "min-width and max-width and max-height",
-        "snippet": "@media screen and (min-width: $mq_mobile_width) and (max-width: $mq_tablet_width) and (max-height: $mq_mobile_height_land) {}"
-      },
-      {
-        "label": "Media Query Variables",
-        "code": "$mq_mobile_min_width: 330px; // 618px // 426px\n$mq_mobile_width: 567px; // 618px // 426px\n$mq_mobile_height_land: 485px; // Landscape\n$mq_tablet_width: 1024px; // 768px\n$mq_pc_min_width: 1450px; // 1440px\n$mq_pc_min_height: 768px; // 768px\n$mq_pc_2k_width: 2300px; // 2560px\n$mq_pc_2k_height: 1250px; // 1328px"
-      }
-    ]
-  },
-  {
-    "label": "Sass Variables",
+    "label": "Others",
     "children": [
       {
         "label": "Theme Color",

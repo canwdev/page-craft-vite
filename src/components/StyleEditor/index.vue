@@ -15,13 +15,12 @@ import TabLayout from '@/components/CommonUI/TabLayout.vue'
 import monaco from '@/components/CommonUI/VueMonaco/monaco-helper'
 import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
 import QuickOptions from '@/components/CommonUI/QuickOptions/index.vue'
-import {QuickOptionItem} from '@/components/CommonUI/QuickOptions/enum'
 import {useEventListener, useStorage, useVModel} from '@vueuse/core'
-import {useRemoteOptions} from '@/components/CommonUI/QuickOptions/utils/use-remote-options'
 import {useGlobalStyle} from './hooks/use-global-style'
 import {StyleEditorKeys, StyleTabType} from './enum'
 import ElementByPoint from './components/ElementByPoint.vue'
 import {useSharedCssStore} from './utils/css-store'
+import {useSnippets} from './hooks/use-snippets'
 
 interface Props {
   // 窗口是否可见
@@ -227,59 +226,7 @@ const insertStyleCode = (code, isAppend = false) => {
   }, 100)
 }
 
-// scss代码片段自动补全缓存
-window.$monacoScssSnippets = []
-const {options: toolOptions} = useRemoteOptions({
-  fetchFn: async () => {
-    const res = await fetch('./scss-snippets.json')
-    return await res.json()
-  },
-  mapFn: (i) => {
-    const r: QuickOptionItem = {
-      label: i.label,
-      props: {},
-    }
-    if (i.code || i.snippet) {
-      if (i.snippet) {
-        // 只把snippet放入自动补全缓存，减少性能损耗
-        window.$monacoScssSnippets.push({
-          label: i.label,
-          code: i.snippet,
-        })
-      }
-
-      r.props!.onClick = async () => {
-        insertStyleCode(i.snippet || i.code)
-      }
-      r.props!.onContextmenu = async () => {
-        window.$qlUtils.copy(i.snippet || i.code)
-      }
-    }
-    return r
-  },
-})
-
-// 创建【全局、变量】编辑器的变量字段补全
-const updateEditorAutoComplete = () => {
-  const style = globalStyleCode.value + variableStyleCode.value
-
-  const set = new Set()
-
-  // 使用正则表达式匹配类名和 SCSS 变量名
-  let classRegex = /\.(\w|-)+/g
-  let variableRegex = /\$[\w-]+/g
-  let match
-
-  while ((match = classRegex.exec(style)) !== null) {
-    set.add(match[0])
-  }
-
-  while ((match = variableRegex.exec(style)) !== null) {
-    set.add(match[0])
-  }
-
-  window.$monacoScssVariables = Array.from(set)
-}
+const {snippetsOptions, updateEditorAutoComplete} = useSnippets({insertCode: insertStyleCode})
 
 const tabList = ref([
   {label: $t('common.global_style'), value: StyleTabType.GLOBAL},
@@ -299,12 +246,12 @@ watch(
 watch(
   () => styleEditorTab,
   (val) => {
-    updateEditorAutoComplete()
+    updateEditorAutoComplete(globalStyleCode.value + variableStyleCode.value)
+  },
+  {
+    immediate: true,
   }
 )
-onMounted(() => {
-  updateEditorAutoComplete()
-})
 
 const listenShortcuts = (event) => {
   // console.log(event)
@@ -395,7 +342,7 @@ defineExpose({
     <div class="style-editor-inner">
       <QuickOptions
         v-model:visible="isShowQuickOptions"
-        :options="toolOptions"
+        :options="snippetsOptions"
         :title="`${$t('actions.add_tool_codes')} (alt+\`)`"
         class="font-code"
         style="top: 2px; right: 2px"

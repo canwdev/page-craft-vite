@@ -2,7 +2,7 @@
 import {useMainStore} from '@/store/main'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import InputAutoTips from '@/components/CommonUI/InputAutoTips.vue'
-import monaco, {registerScssAutoCompletion} from '@/components/CommonUI/VueMonaco/monaco-helper'
+import {monacoStyleGlobal} from '@/components/StyleEditor/hooks/use-monaco-helper'
 
 const mainStore = useMainStore()
 
@@ -23,7 +23,7 @@ const handleAddClassName = () => {
 
 const updateWindowClassNameHistory = (val) => {
   // 类名自动补全缓存
-  window.$monacoClassNameHistory = val
+  monacoStyleGlobal.$monacoClassNameHistory = val
 }
 </script>
 

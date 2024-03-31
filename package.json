@@ -23,7 +23,6 @@
     "file-saver": "^2.0.5",
     "idb-keyval": "^6.2.1",
     "jquery": "^3.7.1",
-    "js-beautify": "^1.14.11",
     "lodash": "^4.17.21",
     "mitt": "^3.0.1",
     "moment": "^2.30.1",

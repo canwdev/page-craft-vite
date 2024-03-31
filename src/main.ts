@@ -3,17 +3,13 @@ import App from './App.vue'
 import {
   // create naive ui
   create,
-  // component
-  NButton,
 } from 'naive-ui'
 import './styles/style.scss'
 import '@/components/CommonUI/ViewPortWindow/theme/index.scss'
 import router from './router'
 import {createPinia} from 'pinia'
 import {PiniaSharedState} from 'pinia-shared-state'
-const naive = create({
-  components: [NButton],
-})
+const naive = create()
 import PortalVue from 'portal-vue'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import i18n from '@/i18n/index'
