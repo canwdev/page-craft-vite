@@ -45,12 +45,6 @@ export class LineHelper {
     this.crossX.classList.remove('visible')
   }
 
-  clearTargetOutline() {
-    if (this.preSelectTarget) {
-      // this.preSelectTarget.classList.remove(TOOL_CLASSES.CLASS_MOUSE_OVER)
-    }
-  }
-
   drawLine(event: MouseEvent) {
     const realTarget = event.target
 
@@ -73,8 +67,6 @@ export class LineHelper {
       this.currentPosition = 'top'
       this.currentTarget = realTarget as HTMLElement
 
-      this.clearTargetOutline()
-
       crossX.style.top = position.top + 'px'
       crossX.style.left = position.left + 'px'
       crossX.style.width = position.width + 'px'
@@ -90,8 +82,6 @@ export class LineHelper {
       this.currentPosition = 'bottom'
       this.currentTarget = realTarget as HTMLElement
 
-      this.clearTargetOutline()
-
       crossX.style.top = position.bottom + 'px'
       crossX.style.left = position.left + 'px'
       crossX.style.width = position.width + 'px'
@@ -102,7 +92,6 @@ export class LineHelper {
     } else {
       this.currentPosition = 'middle'
       this.currentTarget = realTarget as HTMLElement
-      // ;(realTarget as HTMLElement).classList.add(TOOL_CLASSES.CLASS_MOUSE_OVER)
       this.preSelectTarget = realTarget as HTMLElement
 
       crossX.style.top = position.top + 'px'

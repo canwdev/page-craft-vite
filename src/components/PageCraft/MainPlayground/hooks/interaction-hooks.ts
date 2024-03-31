@@ -5,9 +5,7 @@ import {
   autoPasteReplaceValue,
   createBlockElement,
 } from '@/components/PageCraft/MainPlayground/utils/dom'
-import {LsKeys, TOOL_CLASSES} from '@/enum/page-craft'
-import {useThrottleFn} from '@vueuse/core'
-import $ from 'jquery'
+import {LsKeys} from '@/enum/page-craft'
 import {useContextMenu} from '@/hooks/use-context-menu'
 import {copyToClipboard} from '@/utils'
 import {updateHtmlElement} from '@/components/PageCraft/MainPlayground/utils/element-edit'
@@ -17,18 +15,6 @@ import {NButton} from 'naive-ui'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {useI18n} from 'vue-i18n'
 import {useOpenCloseSound, useSfxDestroy, useSfxPlace} from '@/hooks/use-sfx'
-
-export const removeMouseOverDomElementEffect = () => {
-  const $el = $(TOOL_CLASSES.DOT_CLASS_MOUSE_OVER)
-  if ($el.length) {
-    $el.removeClass(TOOL_CLASSES.CLASS_MOUSE_OVER)
-  }
-  const $el2 = $(TOOL_CLASSES.DOT_CLASS_MOUSE_OVER_PARENT)
-  if ($el2.length) {
-    $el2.removeClass(TOOL_CLASSES.CLASS_MOUSE_OVER_PARENT)
-  }
-  $('*[class=""]').removeAttr('class')
-}
 
 const MAX_WAIT_TIME = 0.3 * 1000
 
@@ -40,7 +26,6 @@ export const useInteractionHooks = (options) => {
   const waitTimer = ref<any>(null)
   const cursorX = ref(0)
   const cursorY = ref(0)
-  const currentHoveredEl = shallowRef<any>(null)
   const isShowElementEdit = ref(false)
 
   useOpenCloseSound(() => isShowElementEdit.value)
@@ -48,7 +33,6 @@ export const useInteractionHooks = (options) => {
   const lineHelper = shallowRef()
 
   onMounted(() => {
-    mainPlaygroundRef.value.addEventListener('mousemove', handleMouseMove)
     mainPlaygroundRef.value.addEventListener('contextmenu', handleContextMenu)
     mainPlaygroundRef.value.addEventListener('pointerdown', handlePointerDown)
     mainPlaygroundRef.value.addEventListener('pointerup', handlePointerUp)
@@ -56,7 +40,6 @@ export const useInteractionHooks = (options) => {
     lineHelper.value = new LineHelper(mainPlaygroundRef.value)
   })
   onBeforeUnmount(() => {
-    mainPlaygroundRef.value.removeEventListener('mousemove', handleMouseMove)
     mainPlaygroundRef.value.removeEventListener('contextmenu', handleContextMenu)
     mainPlaygroundRef.value.removeEventListener('pointerdown', handlePointerDown)
     mainPlaygroundRef.value.removeEventListener('pointerup', handlePointerUp)
@@ -236,7 +219,6 @@ export const useInteractionHooks = (options) => {
               label: '✂️ ' + $t('actions.cut'),
               props: {
                 onClick: async () => {
-                  removeMouseOverDomElementEffect()
                   copyToClipboard(targetEl.outerHTML)
                   recordUndo()
                   targetEl.parentNode?.removeChild(targetEl)
@@ -317,12 +299,6 @@ export const useInteractionHooks = (options) => {
     ].filter(Boolean)
   })
 
-  watch(contextMenuEtc.showRightMenu, (val) => {
-    if (!val) {
-      removeMouseOverDomElementEffect()
-    }
-  })
-
   const handleContextMenu = (e: MouseEvent) => {
     const selectedText = selectionRef.value?.toString()
     if (!indicatorOptions.enableRightClick || selectedText || e.ctrlKey) {
@@ -332,8 +308,6 @@ export const useInteractionHooks = (options) => {
     if (mainStore.currentBlock.actionType === ActionType.DEBUG) {
       console.log('[handleContextMenu]', e)
     }
-    removeMouseOverDomElementEffect()
-    $(e.target).addClass(TOOL_CLASSES.CLASS_MOUSE_OVER)
     _handleContextmenu(e, e)
   }
 
@@ -344,46 +318,6 @@ export const useInteractionHooks = (options) => {
       mainStore.currentBlock.actionType === ActionType.PASTE_REPLACE
     )
   })
-
-  watch(isSelectMode, (val) => {
-    if (!val) {
-      currentHoveredEl.value = null
-      removeMouseOverDomElementEffect()
-    }
-  })
-
-  const handleMouseMove = (event: Event) => {
-    if (!isSelectMode.value) {
-      return
-    }
-    handleMousemoveDebounced(event)
-  }
-
-  const handleMousemoveDebounced = useThrottleFn(
-    (event: Event) => {
-      const currentNode: any = event.target
-      if (currentHoveredEl.value === currentNode) {
-        return
-      }
-      currentHoveredEl.value = currentNode
-      // console.log('event', event.target)
-      removeMouseOverDomElementEffect()
-      if (!currentNode) {
-        return
-      }
-      if (currentNode === mainPlaygroundRef.value) {
-        // do nothing
-      } else {
-        const $parent = $(currentNode).parent()
-        if ($parent) {
-          $parent.addClass(TOOL_CLASSES.CLASS_MOUSE_OVER_PARENT)
-        }
-        $(currentNode).addClass(TOOL_CLASSES.CLASS_MOUSE_OVER)
-      }
-    },
-    50,
-    true
-  )
 
   const {play: playSfxPlace} = useSfxPlace()
   const {play: playSfxDestroy} = useSfxDestroy()
@@ -415,7 +349,6 @@ export const useInteractionHooks = (options) => {
   }
 
   const clearWait = () => {
-    removeMouseOverDomElementEffect()
     clearInterval(waitTimer.value)
     waitingTime.value = 0
     cursorX.value = 0
@@ -451,8 +384,6 @@ export const useInteractionHooks = (options) => {
       }, 50)
       cursorX.value = event.x
       cursorY.value = event.y
-      removeMouseOverDomElementEffect()
-      $(event.target).addClass(TOOL_CLASSES.CLASS_MOUSE_OVER)
       event.preventDefault()
       return
     }
@@ -603,7 +534,7 @@ export const useInteractionHooks = (options) => {
   }
 
   return {
-    currentHoveredEl,
+    isSelectMode,
     handleBlockClick,
     handleMouseDown,
     handleMouseUp,

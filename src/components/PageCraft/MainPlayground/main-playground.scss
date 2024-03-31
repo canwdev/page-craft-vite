@@ -137,10 +137,6 @@ $primaryOpacity: $primary_opacity; // rgba(249, 34, 80, 0.2)
     * {
       outline: 1px dashed $debugColor;
     }
-
-    .cls_mouse_over_parent,
-    .cls_mouse_over {
-    }
   }
 
   &--expand {
@@ -166,16 +162,6 @@ $primaryOpacity: $primary_opacity; // rgba(249, 34, 80, 0.2)
   &--centered-x {
     display: flex;
     justify-content: center;
-  }
-
-  &.cls_mouse_over,
-  .cls_mouse_over {
-    outline: 1px solid $debugColor !important;
-    border-color: $debugColor !important;
-    background-color: $primaryOpacity !important; //rgba($debugColor, 0.1) !important;
-    //color: #111 !important;
-    opacity: 0.85 !important;
-    fill: $debugColor !important; /* Helps in highlighting SVG elements */
   }
 }
 

@@ -1,4 +1,4 @@
-import {LsKeys, TOOL_CLASSES} from '@/enum/page-craft'
+import {CLASS_MAIN_CANVAS_ROOT, LsKeys} from '@/enum/page-craft'
 import {ActionType, BlockType} from '@/enum/page-craft/block'
 import {useMainStore} from '@/store/main'
 import {useI18n} from 'vue-i18n'
@@ -76,7 +76,7 @@ export const useIndicator = () => {
     (val) => {
       console.log(val.actionType)
       // 禁止a链接点击跳转事件
-      const sl = `.${TOOL_CLASSES.CLASS_MAIN_CANVAS_ROOT} a`
+      const sl = `${CLASS_MAIN_CANVAS_ROOT} a`
       if (val.actionType !== ActionType.CURSOR) {
         document.querySelectorAll(sl).forEach((link) => {
           link.addEventListener('click', disableALinkClick)

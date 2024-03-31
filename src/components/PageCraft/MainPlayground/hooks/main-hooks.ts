@@ -6,7 +6,6 @@ import {
   handleReadSelectedFile,
 } from '@/utils/exporter'
 import globalEventBus, {GlobalEvents, syncStorageData} from '@/utils/global-event-bus'
-import {removeMouseOverDomElementEffect} from '@/components/PageCraft/MainPlayground/hooks/interaction-hooks'
 import {copyToClipboard} from '@/utils'
 import {formatCss, formatHtml} from '@/components/StyleEditor/utils/formater'
 import {ComponentData, ComponentExportData} from '@/enum/page-craft/block'
@@ -47,7 +46,6 @@ export const useMcMain = (options) => {
   })
 
   const copyHtml = (el?) => {
-    removeMouseOverDomElementEffect()
     const html = el ? el.outerHTML : mainPlaygroundRef.value.innerHTML
     copyToClipboard(formatHtml(html))
     window.$message.success($t('msgs.copy_success'))
@@ -71,7 +69,6 @@ export const useMcMain = (options) => {
 
   // 保存当前组件的 HTML
   const saveData = (cb?) => {
-    removeMouseOverDomElementEffect()
     const innerHTML = mainPlaygroundRef.value.innerHTML
     saveCurCompHtml(innerHTML)
     // 如果开启了多个窗口（iframe)，发送同步状态

@@ -13,7 +13,7 @@ const {parentClass} = toRefs(props)
 const emit = defineEmits(['select'])
 
 const parentEl = ref<Element | null>(null)
-onBeforeMount(() => {
+onMounted(() => {
   if (parentClass.value) {
     parentEl.value = document.querySelector(parentClass.value)
   }

@@ -61,7 +61,7 @@ export default defineComponent({
     const {indicatorOptions, mainCanvasClass, toggleList, backgroundStyle} = useIndicator()
 
     const {
-      currentHoveredEl,
+      isSelectMode,
       handleMouseDown,
       handleMouseUp,
       handleDragOver,
@@ -84,15 +84,6 @@ export default defineComponent({
       copyHtml,
       recordUndo,
     })
-
-    watch(
-      () => indicatorOptions.enableSelection,
-      (val) => {
-        if (!val) {
-          currentHoveredEl.value = null
-        }
-      }
-    )
 
     const listenShortcuts = (event) => {
       // console.log(event)
@@ -133,7 +124,6 @@ export default defineComponent({
       settingsStore,
       mainPlaygroundRef,
       indicatorOptions,
-      currentHoveredEl,
       BlockType: ActionType,
       toggleList,
       handleMouseDown,
@@ -165,6 +155,7 @@ export default defineComponent({
       backgroundStyle,
       listenShortcuts,
       openPlayground,
+      isSelectMode,
     }
   },
 })
@@ -172,7 +163,7 @@ export default defineComponent({
 
 <template>
   <div tabindex="0" @keyup="listenShortcuts" class="page-craft-mc-wrap">
-    <IndicatorInfo :current-el="currentHoveredEl" v-if="currentHoveredEl !== mainPlaygroundRef" />
+    <IndicatorInfo v-if="isSelectMode" />
 
     <transition name="mc-fade">
       <div

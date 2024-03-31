@@ -15,6 +15,7 @@ import {useMainStore} from '@/store/main'
 import {useEventListener} from '@vueuse/core'
 import {useOpenCloseSound, useSfxOpenCloseSelect, useSfxBrush, useSfxFill} from '@/hooks/use-sfx'
 import {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
+import {CLASS_MAIN_CANVAS_ROOT} from '@/enum/page-craft'
 
 const StyleEditor = defineAsyncComponent(() => import('@/components/StyleEditor/index.vue'))
 
@@ -173,7 +174,7 @@ useGlobalBusOn(GlobalEvents.ON_ADD_STYLE, (arg) => {
     v-model:visible="settingsStore.showStyleEditor"
     v-model:selecting="mainStore.selecting"
     v-model:styleCode="styleCode"
-    :selecting-parent-class="'.page-craft-mc'"
+    :selecting-parent-class="CLASS_MAIN_CANVAS_ROOT"
     @onFormat="playSfxBrush"
     @onInsertCode="sfxFill"
     show-tabs
