@@ -65,7 +65,7 @@ export default defineComponent({
       })
     }
 
-    const isRefreshing = ref(false)
+    const isRefreshing = ref(true)
     const updateValueText = async () => {
       isRefreshing.value = true
       const file = await (currentItem.value.entry as FileSystemFileHandle).getFile()

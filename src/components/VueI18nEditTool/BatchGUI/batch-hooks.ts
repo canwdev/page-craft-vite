@@ -6,9 +6,8 @@ import {useI18nMainStore} from '@/store/i18n-tool-main'
 
 /**
  * 批处理管理器hook
- * @param props
  */
-export const useBatchWrapper = (props) => {
+export const useBatchWrapper = () => {
   const i18nMainStore = useI18nMainStore()
   const i18nSetStore = useI18nToolSettingsStore()
   const itemsRef = ref()

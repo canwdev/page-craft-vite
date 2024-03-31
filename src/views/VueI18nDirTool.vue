@@ -1,5 +1,5 @@
-<script lang="ts">
-import {defineComponent, ref} from 'vue'
+<script setup lang="ts">
+import {ref} from 'vue'
 import iconTranslate from '../assets/textures/translate.svg?url'
 import {handleReadSelectedFile} from '@/utils/exporter'
 import {
@@ -9,7 +9,7 @@ import {
   I18nJsonObjUtils,
   ITranslateTreeItem,
 } from '@/enum/vue-i18n-tool'
-import BatchTranslate from '@/components/VueI18nEditTool/BatchGUI/index.vue'
+import BatchGUI from '@/components/VueI18nEditTool/BatchGUI/index.vue'
 import DropZone from '@/components/CommonUI/DropZone.vue'
 import {useFileDrop} from '@/hooks/use-file-drop'
 import {useMetaTitle} from '@/hooks/use-meta'
@@ -28,7 +28,6 @@ import {useStorage} from '@vueuse/core'
 import TabLayout from '@/components/CommonUI/TabLayout.vue'
 import {useOpenedHistory} from '@/components/VueI18nEditTool/file-history'
 import {LsKeys} from '@/enum/page-craft'
-import QuickOptions from '@/components/CommonUI/QuickOptions/index.vue'
 import {useGuiToolbox} from '@/components/VueI18nEditTool/BatchGUI/use-gui-toolbox'
 import GuiToolbox from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox.vue'
 
@@ -52,15 +51,15 @@ const formatDirTreeItem = (data: any = {}): DirTreeItem => {
 }
 
 enum EditMode {
-  TEXT = 'text',
+  JSON = 'json',
   GUI = 'gui',
   BATCH = 'batch',
 }
 
 const editModeOptions = [
   {
-    label: 'TEXT',
-    value: EditMode.TEXT,
+    label: 'JSON',
+    value: EditMode.JSON,
   },
   {
     label: 'SINGLE',
@@ -72,344 +71,302 @@ const editModeOptions = [
   },
 ]
 
-export default defineComponent({
-  name: 'VueI18nBatchTool',
-  components: {
-    GuiToolbox,
-    QuickOptions,
-    TabLayout,
-    BatchTextEditor,
-    I18nToolSettings,
-    TranslateTreeItem,
-    BatchTranslate,
-    DropZone,
-  },
-  setup() {
-    const {t: $t} = useI18n()
-    const mainStore = useMainStore()
-    const i18nMainStore = useI18nMainStore()
-    const i18nSetStore = useI18nToolSettingsStore()
-    const isLoading = ref(false)
+const {t: $t} = useI18n()
+const mainStore = useMainStore()
+const i18nMainStore = useI18nMainStore()
+const i18nSetStore = useI18nToolSettingsStore()
+const isLoading = ref(false)
 
-    const {appendHistory, historyMenuOptions} = useOpenedHistory(
-      LsKeys.I18N_FOLDER_HANDLE_HISTORY,
-      async (handle: FileSystemFileHandle) => {
-        async function doOpen() {
-          dirHandle.value = handle as unknown as FileSystemDirectoryHandle
-          await reloadPickedDir()
-        }
-        if (dirHandle.value) {
-          window.$dialog.warning({
-            title: 'Confirm',
-            content: $t('msgs.confirm_reload_files'),
-            positiveText: 'OK',
-            negativeText: 'Cancel',
-            onPositiveClick: async () => {
-              await doOpen()
-            },
-            onNegativeClick: () => {},
-          })
-
-          return
-        }
-        await doOpen()
-      }
-    )
-
-    // 保存手动展开的文件夹keys
-    const expandedKeys = useStorage('vue_i18n_dir_tool_expanded_keys', [])
-
-    const isValidDir = (name: string) => {
-      return !i18nSetStore.ignoreFoldersMap[name]
-    }
-
-    // 递归读取文件夹
-    const recursiveReadDir = async (
-      dirHandle,
-      deep = 0,
-      tree: DirTreeItem[] = [],
-      parentDirs: string[] = [],
-      parentKey: string = ''
-    ): Promise<DirTreeItem[]> => {
-      let idx = 0
-      for await (const entry of dirHandle.values()) {
-        idx++
-        let space = ''
-        for (let i = 0; i < deep; i++) {
-          space += '    '
-        }
-
-        if (entry.kind === 'directory' && isValidDir(entry.name)) {
-          // console.log(`${space}[D] ${entry.name}`, {entry})
-          let children = []
-          const key = `${parentKey}${deep}-${entry.name}`
-          tree.push(
-            formatDirTreeItem({
-              key,
-              kind: entry.kind,
-              label: entry.name,
-              entry,
-              parentDirs,
-              children,
-            })
-          )
-          await recursiveReadDir(entry, deep + 1, children, [...parentDirs, entry.name], key + '_')
-        } else {
-          // console.log(`${space}[F] ${entry.name}`, {entry})
-          const isValidFile = /\.json$/gi.test(entry.name)
-          if (isValidFile) {
-            const key = `${parentKey}${deep}-${entry.name}`
-            tree.push(
-              formatDirTreeItem({
-                key,
-                kind: entry.kind,
-                label: entry.name,
-                entry,
-                parentDirs,
-                children: null,
-              })
-            )
-          }
-        }
-      }
-
-      // 排序
-      tree.sort((a, b) => {
-        if (a.kind === 'directory' && b.kind === 'file') {
-          return -1 // 文件夹在文件的前面
-        } else if (a.kind === 'file' && b.kind === 'directory') {
-          return 1 // 文件在文件夹的后面
-        } else {
-          return 0 // 保持原有顺序
-        }
-      })
-      // console.log('[recursiveReadDir]', tree)
-      return tree
-    }
-
-    // 获取当前目录下的所有文件
-    const readJsonFiles = async (dirHandle, tree: DirTreeItem[] = []): Promise<DirTreeItem[]> => {
-      let idx = 0
-      for await (const entry of dirHandle.values()) {
-        idx++
-        if (entry.kind !== 'directory') {
-          const isValidFile = /\.json$/gi.test(entry.name)
-          if (isValidFile) {
-            const key = `${idx}-${entry.kind}-${entry.name}`
-            tree.push(
-              formatDirTreeItem({
-                key: key,
-                kind: entry.kind,
-                label: entry.name,
-                entry,
-                parentDirs: [],
-                children: null,
-              })
-            )
-          }
-        }
-      }
-      console.log('[readJsonFiles]', tree)
-      return tree
-    }
-
-    const dirHandle = shallowRef<FileSystemDirectoryHandle>()
-    const handlePickDir = async () => {
-      // https://css-tricks.com/getting-started-with-the-file-system-access-api/
-      // https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryHandle
-      // @ts-ignore
-      const handle = await window.showDirectoryPicker()
-      await appendHistory(handle)
-      dirHandle.value = handle
-      // console.log('dirHandle', dirHandle)
+const {appendHistory, historyMenuOptions} = useOpenedHistory(
+  LsKeys.I18N_FOLDER_HANDLE_HISTORY,
+  async (handle: FileSystemFileHandle) => {
+    async function doOpen() {
+      dirHandle.value = handle as unknown as FileSystemDirectoryHandle
       await reloadPickedDir()
     }
-    const reloadPickedDir = async () => {
-      try {
-        isLoading.value = true
-        const handle = dirHandle.value
-        let tree: DirTreeItem[] = []
-        if (i18nSetStore.isFoldersMode) {
-          tree = await recursiveReadDir(handle)
-        } else {
-          tree = await readJsonFiles(handle)
-        }
-        if (!tree.length) {
-          window.$message.error(
-            'The content is empty, please check the folder directory structure!'
-          )
-        }
-        i18nMainStore.dirTree = tree
-      } catch (e: any) {
-        console.error(e)
-        window.$message.error(e.message)
-      } finally {
-        isLoading.value = false
-      }
-    }
-
-    const handleFileDrop = async (e) => {
-      try {
-        isLoading.value = true
-        // Process all the items.
-        for (const item of e.dataTransfer.items) {
-          // Careful: `kind` will be 'file' for both file
-          // _and_ directory entries.
-          if (item.kind === 'file') {
-            const handle = await item.getAsFileSystemHandle()
-            if (handle.kind === 'directory') {
-              await appendHistory(handle)
-              dirHandle.value = handle
-              await reloadPickedDir()
-              break
-            } else {
-              window.$message.error('Please drag and drop a folder here!')
-            }
-          }
-        }
-      } catch (e: any) {
-        console.error(e)
-        window.$message.error(e.message)
-      } finally {
-        isLoading.value = false
-      }
-    }
-
-    const handleCloseDir = () => {
-      dirHandle.value = undefined
-      currentEditEntry.value = null
-      editingTextValue.value = null
-      i18nMainStore.dirTree = []
-      i18nMainStore.filePathArr = []
-    }
-
-    const currentEditEntry = ref<FileSystemFileHandle | null>(null)
-    const editingTextValue = ref<string | null>(null)
-
-    const handleSaveFile = async () => {
-      try {
-        isLoading.value = true
-        const fileHandle = currentEditEntry.value
-        if (!fileHandle) {
-          return
-        }
-        // @ts-ignore
-        const writable = await fileHandle.createWritable()
-
-        if (editMode.value !== EditMode.TEXT) {
-          editingTextValue.value = JSON.stringify(
-            exportI18nTreeJsonObj(translateTreeRoot.value),
-            null,
-            2
-          )
-        }
-
-        if (!editingTextValue.value) {
-          throw new Error('editingTextValue is empty!')
-        }
-        await writable.write(editingTextValue.value)
-        await writable.close()
-        await reloadPickedDir()
-        window.$message.success($t('msgs.saved'))
-      } catch (error: any) {
-        console.error(error)
-        window.$message.error('Save Failed!' + error.message)
-      } finally {
-        isLoading.value = false
-      }
-    }
-
-    const editMode = useStorage('vue_i18n_dir_tool_edit_mode', EditMode.BATCH)
-
-    const translateTreeRoot = ref<ITranslateTreeItem[]>([formatTranslateTreeItem()])
-    const updateGuiTranslateTree = () => {
-      if (editMode.value !== 'text') {
-        if (!editingTextValue.value) {
-          translateTreeRoot.value = []
-          return
-        }
-        const obj = JSON.parse(editingTextValue.value as string)
-        translateTreeRoot.value = I18nJsonObjUtils.parseWithRoot(obj)
-      }
-    }
-
-    watch(editMode, (val) => {
-      updateGuiTranslateTree()
-    })
-
-    const {metaTitle} = useMetaTitle()
-
-    useSaveShortcut(() => {
-      if (currentEditEntry.value && editMode.value === EditMode.GUI) {
-        handleSaveFile()
-        return
-      }
-      globalEventBus.emit(GlobalEvents.I18N_SAVE_ALL_CHANGES)
-    })
-
-    const vueMonacoRef = ref()
-
-    useBeforeUnload(() => {
-      return !!dirHandle.value
-    })
-
-    const isShowToolSettings = ref(false)
-
-    const nodeProps = ({option}: {option: DirTreeItem}) => {
-      return {
-        // 处理树枝的点击事件
-        async onClick() {
-          try {
-            isLoading.value = true
-            if (option.kind === 'file') {
-              const entry = option.entry as FileSystemFileHandle
-              currentEditEntry.value = entry
-              const str = await handleReadSelectedFile(await entry.getFile())
-              editingTextValue.value = str as string
-              i18nMainStore.filePathArr = [...option.parentDirs, option.label]
-              i18nMainStore.translatePath = ''
-              updateGuiTranslateTree()
-            }
-          } catch (e: any) {
-            console.error(e)
-            window.$message.error(e.message)
-          } finally {
-            isLoading.value = false
-          }
+    if (dirHandle.value) {
+      window.$dialog.warning({
+        title: 'Confirm',
+        content: $t('msgs.confirm_reload_files'),
+        positiveText: 'OK',
+        negativeText: 'Cancel',
+        onPositiveClick: async () => {
+          await doOpen()
         },
-      }
+        onNegativeClick: () => {},
+      })
+
+      return
+    }
+    await doOpen()
+  }
+)
+
+// 保存手动展开的文件夹keys
+const expandedKeys = useStorage('vue_i18n_dir_tool_expanded_keys', [])
+
+const isValidDir = (name: string) => {
+  return !i18nSetStore.ignoreFoldersMap[name]
+}
+
+// 递归读取文件夹
+const recursiveReadDir = async (
+  dirHandle,
+  deep = 0,
+  tree: DirTreeItem[] = [],
+  parentDirs: string[] = [],
+  parentKey: string = ''
+): Promise<DirTreeItem[]> => {
+  let idx = 0
+  for await (const entry of dirHandle.values()) {
+    idx++
+    let space = ''
+    for (let i = 0; i < deep; i++) {
+      space += '    '
     }
 
-    return {
-      metaTitle,
-      i18nMainStore,
-      iconTranslate,
-      handlePickDir,
-      handleCloseDir,
-      dirHandle,
-      reloadPickedDir,
-      vueMonacoRef,
-      nodeProps,
-      editingTextValue,
-      currentEditEntry,
-      handleSaveFile,
-      editMode,
-      EditMode,
-      editModeOptions,
-      translateTreeRoot,
-      ...useFileDrop({
-        cb: handleFileDrop,
-      }),
-      i18nSetStore,
-      mainStore,
-      isShowToolSettings,
-      isLoading,
-      expandedKeys,
-      historyMenuOptions,
-      ...useGuiToolbox(),
+    if (entry.kind === 'directory' && isValidDir(entry.name)) {
+      // console.log(`${space}[D] ${entry.name}`, {entry})
+      let children = []
+      const key = `${parentKey}${deep}-${entry.name}`
+      tree.push(
+        formatDirTreeItem({
+          key,
+          kind: entry.kind,
+          label: entry.name,
+          entry,
+          parentDirs,
+          children,
+        })
+      )
+      await recursiveReadDir(entry, deep + 1, children, [...parentDirs, entry.name], key + '_')
+    } else {
+      // console.log(`${space}[F] ${entry.name}`, {entry})
+      const isValidFile = /\.json$/gi.test(entry.name)
+      if (isValidFile) {
+        const key = `${parentKey}${deep}-${entry.name}`
+        tree.push(
+          formatDirTreeItem({
+            key,
+            kind: entry.kind,
+            label: entry.name,
+            entry,
+            parentDirs,
+            children: null,
+          })
+        )
+      }
     }
-  },
+  }
+
+  // 排序
+  tree.sort((a, b) => {
+    if (a.kind === 'directory' && b.kind === 'file') {
+      return -1 // 文件夹在文件的前面
+    } else if (a.kind === 'file' && b.kind === 'directory') {
+      return 1 // 文件在文件夹的后面
+    } else {
+      return 0 // 保持原有顺序
+    }
+  })
+  // console.log('[recursiveReadDir]', tree)
+  return tree
+}
+
+// 获取当前目录下的所有文件
+const readJsonFiles = async (dirHandle, tree: DirTreeItem[] = []): Promise<DirTreeItem[]> => {
+  let idx = 0
+  for await (const entry of dirHandle.values()) {
+    idx++
+    if (entry.kind !== 'directory') {
+      const isValidFile = /\.json$/gi.test(entry.name)
+      if (isValidFile) {
+        const key = `${idx}-${entry.kind}-${entry.name}`
+        tree.push(
+          formatDirTreeItem({
+            key: key,
+            kind: entry.kind,
+            label: entry.name,
+            entry,
+            parentDirs: [],
+            children: null,
+          })
+        )
+      }
+    }
+  }
+  console.log('[readJsonFiles]', tree)
+  return tree
+}
+
+const dirHandle = shallowRef<FileSystemDirectoryHandle>()
+const handlePickDir = async () => {
+  // https://css-tricks.com/getting-started-with-the-file-system-access-api/
+  // https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryHandle
+  // @ts-ignore
+  const handle = await window.showDirectoryPicker()
+  await appendHistory(handle)
+  dirHandle.value = handle
+  // console.log('dirHandle', dirHandle)
+  await reloadPickedDir()
+}
+const reloadPickedDir = async () => {
+  try {
+    isLoading.value = true
+    const handle = dirHandle.value
+    let tree: DirTreeItem[] = []
+    if (i18nSetStore.isFoldersMode) {
+      tree = await recursiveReadDir(handle)
+    } else {
+      tree = await readJsonFiles(handle)
+    }
+    if (!tree.length) {
+      window.$message.error('The content is empty, please check the folder directory structure!')
+    }
+    i18nMainStore.dirTree = tree
+  } catch (e: any) {
+    console.error(e)
+    window.$message.error(e.message)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const handleFileDrop = async (e) => {
+  try {
+    isLoading.value = true
+    // Process all the items.
+    for (const item of e.dataTransfer.items) {
+      // Careful: `kind` will be 'file' for both file
+      // _and_ directory entries.
+      if (item.kind === 'file') {
+        const handle = await item.getAsFileSystemHandle()
+        if (handle.kind === 'directory') {
+          await appendHistory(handle)
+          dirHandle.value = handle
+          await reloadPickedDir()
+          break
+        } else {
+          window.$message.error('Please drag and drop a folder here!')
+        }
+      }
+    }
+  } catch (e: any) {
+    console.error(e)
+    window.$message.error(e.message)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const handleCloseDir = () => {
+  dirHandle.value = undefined
+  currentEditEntry.value = null
+  editingTextValue.value = null
+  i18nMainStore.dirTree = []
+  i18nMainStore.filePathArr = []
+}
+
+const currentEditEntry = ref<FileSystemFileHandle | null>(null)
+const editingTextValue = ref<string | null>(null)
+
+const handleSaveFile = async () => {
+  try {
+    isLoading.value = true
+    const fileHandle = currentEditEntry.value
+    if (!fileHandle) {
+      return
+    }
+    // @ts-ignore
+    const writable = await fileHandle.createWritable()
+
+    if (editMode.value !== EditMode.JSON) {
+      editingTextValue.value = JSON.stringify(
+        exportI18nTreeJsonObj(translateTreeRoot.value),
+        null,
+        2
+      )
+    }
+
+    if (!editingTextValue.value) {
+      throw new Error('editingTextValue is empty!')
+    }
+    await writable.write(editingTextValue.value)
+    await writable.close()
+    await reloadPickedDir()
+    window.$message.success($t('msgs.saved'))
+  } catch (error: any) {
+    console.error(error)
+    window.$message.error('Save Failed!' + error.message)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const editMode = useStorage('vue_i18n_dir_tool_edit_mode', EditMode.BATCH)
+
+const translateTreeRoot = ref<ITranslateTreeItem[]>([formatTranslateTreeItem()])
+const updateGuiTranslateTree = () => {
+  if (editMode.value !== 'text') {
+    if (!editingTextValue.value) {
+      translateTreeRoot.value = []
+      return
+    }
+    const obj = JSON.parse(editingTextValue.value as string)
+    translateTreeRoot.value = I18nJsonObjUtils.parseWithRoot(obj)
+  }
+}
+
+watch(editMode, (val) => {
+  updateGuiTranslateTree()
 })
+
+const {metaTitle} = useMetaTitle()
+
+useSaveShortcut(() => {
+  if (currentEditEntry.value && editMode.value === EditMode.GUI) {
+    handleSaveFile()
+    return
+  }
+  globalEventBus.emit(GlobalEvents.I18N_SAVE_ALL_CHANGES)
+})
+
+const vueMonacoRef = ref()
+
+useBeforeUnload(() => {
+  return !!dirHandle.value
+})
+
+const isShowToolSettings = ref(false)
+
+const nodeProps = ({option}: {option: DirTreeItem}) => {
+  return {
+    // 处理树枝的点击事件
+    async onClick() {
+      try {
+        isLoading.value = true
+        if (option.kind === 'file') {
+          const entry = option.entry as FileSystemFileHandle
+          currentEditEntry.value = entry
+          const str = await handleReadSelectedFile(await entry.getFile())
+          editingTextValue.value = str as string
+          i18nMainStore.filePathArr = [...option.parentDirs, option.label]
+          i18nMainStore.translatePath = ''
+          updateGuiTranslateTree()
+        }
+      } catch (e: any) {
+        console.error(e)
+        window.$message.error(e.message)
+      } finally {
+        isLoading.value = false
+      }
+    },
+  }
+}
+const {showDropzone, fileDragover, fileDrop} = useFileDrop({
+  cb: handleFileDrop,
+})
+const {handleKeyClick} = useGuiToolbox()
 </script>
 
 <template>
@@ -514,7 +471,7 @@ export default defineComponent({
           <div class="main-edit-wrap">
             <template v-if="currentEditEntry">
               <!--文本编辑器-->
-              <!--<template v-if="editMode === EditMode.TEXT">-->
+              <!--<template v-if="editMode === EditMode.JSON">-->
               <!--  <n-card class="action-row">-->
               <!--    {{ i18nMainStore.filePathArr.join('/') }}-->
               <!--  </n-card>-->
@@ -527,9 +484,9 @@ export default defineComponent({
               <!--    />-->
               <!--  </div>-->
               <!--</template>-->
-              <BatchTextEditor v-if="editMode === EditMode.TEXT" />
+              <BatchTextEditor v-if="editMode === EditMode.JSON" />
 
-              <!--GUI模式-->
+              <!--GUI模式/批处理模式-->
               <div v-else class="edit-content-wrap batch-mode">
                 <n-scrollbar
                   class="gui-edit-gui"
@@ -550,7 +507,7 @@ export default defineComponent({
 
                 <!--批处理模式-->
                 <n-scrollbar class="gui-edit-batch" v-if="editMode === EditMode.BATCH">
-                  <BatchTranslate />
+                  <BatchGUI />
                 </n-scrollbar>
               </div>
             </template>

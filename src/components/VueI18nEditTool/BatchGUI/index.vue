@@ -1,32 +1,14 @@
-<script lang="ts">
-import {defineComponent, PropType} from 'vue'
-import {DirTreeItem} from '@/enum/vue-i18n-tool'
+<script setup lang="ts">
 import SubGuiItem from '@/components/VueI18nEditTool/BatchGUI/SubGuiItem.vue'
 import {useBatchWrapper} from '@/components/VueI18nEditTool/BatchGUI/batch-hooks'
 import {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
 import {useI18nMainStore} from '@/store/i18n-tool-main'
 
-export default defineComponent({
-  name: 'BatchTranslate',
-  components: {
-    SubGuiItem,
-  },
-  props: {},
-  setup(props, {emit}) {
-    const i18nMainStore = useI18nMainStore()
-    const {handleSaveChanged, itemsRef, filePathArrFiltered} = useBatchWrapper(props)
+const i18nMainStore = useI18nMainStore()
+const {handleSaveChanged, itemsRef, filePathArrFiltered} = useBatchWrapper()
 
-    useGlobalBusOn(GlobalEvents.I18N_BATCH_GUI_GET_SUBS, (resolve) => {
-      resolve(itemsRef.value)
-    })
-
-    return {
-      i18nMainStore,
-      handleSaveChanged,
-      itemsRef,
-      filePathArrFiltered,
-    }
-  },
+useGlobalBusOn(GlobalEvents.I18N_BATCH_GUI_GET_SUBS, (resolve) => {
+  resolve(itemsRef.value)
 })
 </script>
 

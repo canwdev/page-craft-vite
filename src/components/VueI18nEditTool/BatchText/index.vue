@@ -1,45 +1,28 @@
-<script lang="ts">
-import {defineComponent, PropType} from 'vue'
-import {DirTreeItem} from '@/enum/vue-i18n-tool'
+<script setup lang="ts">
 import SubTextItem from '@/components/VueI18nEditTool/BatchText/SubTextItem.vue'
 import {useBatchWrapper} from '@/components/VueI18nEditTool/BatchGUI/batch-hooks'
 import {useI18nMainStore} from '@/store/i18n-tool-main'
 
-export default defineComponent({
-  name: 'BatchText',
-  components: {SubTextItem},
-  props: {},
-  setup(props, {emit}) {
-    const i18nMainStore = useI18nMainStore()
-    const {handleSaveChanged, itemsRef, filePathArrFiltered} = useBatchWrapper(props)
+const i18nMainStore = useI18nMainStore()
+const {handleSaveChanged, itemsRef, filePathArrFiltered} = useBatchWrapper()
 
-    const currentTab = ref('')
+const currentTab = ref('')
 
-    watch(
-      filePathArrFiltered,
-      (val) => {
-        // 如果没有选中或切换文件，自动选中第一个文件
-        if (!currentTab.value) {
-          currentTab.value = val[0].key
-          return
-        }
-        const f = val.find((item) => item.key === currentTab.value)
-        if (!f) {
-          currentTab.value = val[0].key
-        }
-      },
-      {immediate: true}
-    )
-
-    return {
-      i18nMainStore,
-      handleSaveChanged,
-      itemsRef,
-      filePathArrFiltered,
-      currentTab,
+watch(
+  filePathArrFiltered,
+  (val) => {
+    // 如果没有选中或切换文件，自动选中第一个文件
+    if (!currentTab.value) {
+      currentTab.value = val[0].key
+      return
+    }
+    const f = val.find((item) => item.key === currentTab.value)
+    if (!f) {
+      currentTab.value = val[0].key
     }
   },
-})
+  {immediate: true}
+)
 </script>
 
 <template>
