@@ -182,8 +182,9 @@ export const useBatchItem = (props) => {
   }
 
   const isLocalCreated = ref(false)
-  const handleCreateFile = async (cb?) => {
+  const handleCreateFile = async (options: any = {}) => {
     try {
+      const {initObj = {}, cb, isReload = true} = options
       isLoading.value = true
 
       if (!dirItem.value) {
@@ -198,7 +199,7 @@ export const useBatchItem = (props) => {
       const folderPath = fullPath.substring(0, fullPath.lastIndexOf('/'))
       const folderHandle = await createFolder(dirHandle, folderPath)
 
-      const txt = JSON.stringify({}, null, 2)
+      const txt = JSON.stringify(initObj, null, 2)
       const fileHandle = await createFile(
         folderHandle,
         fullPath.substring(fullPath.lastIndexOf('/') + 1),
@@ -211,9 +212,11 @@ export const useBatchItem = (props) => {
       if (typeof cb === 'function') {
         await cb()
       }
-      setTimeout(() => {
-        handleReload()
-      })
+      if (isReload) {
+        setTimeout(() => {
+          handleReload()
+        })
+      }
     } catch (error: any) {
       console.error(error)
       window.$message.error(error.message)

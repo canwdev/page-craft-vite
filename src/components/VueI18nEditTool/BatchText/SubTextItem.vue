@@ -1,16 +1,14 @@
 <script lang="ts">
 import {defineComponent, PropType, ref} from 'vue'
-import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
 import {DirTreeItem} from '@/enum/vue-i18n-tool'
 import {useBatchItem} from '@/components/VueI18nEditTool/BatchGUI/batch-hooks'
 import {handleReadSelectedFile} from '@/utils/exporter'
-import {useThrottleFn} from '@vueuse/core'
 import {useI18nMainStore} from '@/store/i18n-tool-main'
-import TranslateTreeItem from '@/components/VueI18nEditTool/Single/TranslateTreeItem.vue'
+import VueJsonEditor from '@/components/CommonUI/VueJsonEditor.vue'
 
 export default defineComponent({
   name: 'SubTextItem',
-  components: {TranslateTreeItem, VueMonaco},
+  components: {VueJsonEditor},
   props: {
     visible: {
       type: Boolean,
@@ -34,20 +32,20 @@ export default defineComponent({
       currentItem,
       handleSaveFile,
       isLocalCreated,
-      handleCreateFile: _handleCreateFile,
+      handleCreateFile,
       handleReload,
       subFilePathArr,
     } = useBatchItem(props)
 
-    const valueText = ref('')
-    const vueMonacoRef = ref()
+    const editorRef = shallowRef()
+    const valueObj = ref({})
 
-    const focusEditor = () => {
-      setTimeout(() => {
-        const eIns = vueMonacoRef.value.getInstance()
-        eIns.focus()
-      }, 100)
+    const expandEditor = () => {
+      if (editorRef.value) {
+        editorRef.value.jsonEditor.expand((path) => true)
+      }
     }
+    onMounted(expandEditor)
 
     // 值是否发生变化
     const isChanged = computed(() => {
@@ -58,58 +56,27 @@ export default defineComponent({
       i18nMainStore.changedLabelMap[dirItem.value.label] = flag
     }
 
-    watch(valueText, () => {
-      setChanged(true)
-    })
-    watch(visible, (val) => {
-      if (val) {
-        nextTick(() => {
-          vueMonacoRef.value?.resize()
-        })
-        focusEditor()
-      }
-    })
-
-    const handleResizeDebounced = useThrottleFn(
-      () => {
-        nextTick(() => {
-          vueMonacoRef.value?.resize()
-        })
-      },
-      500,
-      true
-    )
-
     const cleanup = () => {
-      valueText.value = ''
+      isRefreshing.value = true
+      valueObj.value = {}
       nextTick(() => {
         setChanged(false)
+        isRefreshing.value = false
       })
     }
 
-    onMounted(() => {
-      window.addEventListener('resize', handleResizeDebounced)
-      nextTick(() => {
-        handleResizeDebounced()
-      })
-    })
-    onBeforeUnmount(() => {
-      cleanup()
-      window.removeEventListener('resize', handleResizeDebounced)
-    })
-
-    // const translateTreeRoot = ref<ITranslateTreeItem[]>([formatTranslateTreeItem()])
+    const isRefreshing = ref(false)
     const updateValueText = async () => {
+      isRefreshing.value = true
       const file = await (currentItem.value.entry as FileSystemFileHandle).getFile()
 
       const str = await handleReadSelectedFile(file)
-      valueText.value = str as string
-      // const obj = JSON.parse(valueText.value as string)
-      // translateTreeRoot.value = I18nJsonObjUtils.parseWithRoot(obj)
+      valueObj.value = JSON.parse(str as string)
 
       await nextTick(() => {
         setChanged(false)
-        vueMonacoRef.value?.resize()
+        expandEditor()
+        isRefreshing.value = false
       })
     }
 
@@ -129,29 +96,38 @@ export default defineComponent({
       if (!isChanged.value) {
         return
       }
-      await handleSaveFile(valueText.value)
+      console.log('[saveChange]', valueObj.value)
+
+      if (!currentItem.value) {
+        await handleCreateFile({
+          initObj: valueObj.value,
+        })
+      } else {
+        await handleSaveFile(JSON.stringify(valueObj.value, null, 2))
+      }
+
       setChanged(false)
       if (isEmit) {
         emit('saveChanged')
       }
     }
 
-    const handleCreateFile = async () => {
-      await _handleCreateFile(/*async () => {
-        await updateValueText()
-      }*/)
+    const handleChange = (v) => {
+      console.log(v)
+      valueObj.value = v.json
+      setChanged(true)
     }
 
     return {
       isLoading,
-      valueText,
+      valueObj,
       currentItem,
-      vueMonacoRef,
       saveChange,
       isChanged,
-      handleCreateFile,
       subFilePathArr,
-      // translateTreeRoot,
+      handleChange,
+      editorRef,
+      isRefreshing,
     }
   },
 })
@@ -172,25 +148,26 @@ export default defineComponent({
       >
         Save All
       </n-button>
-      {{ subFilePathArr.join('/') }}
-      {{ dirItem.label }}
+
+      <span class="path-tip">
+        <span class="_primary">{{ dirItem.label }}</span
+        >/{{ subFilePathArr.join('/') }}
+
+        <span v-if="!currentItem" class="_error">File not exist!</span>
+      </span>
     </div>
     <div class="editor-content-wrap">
-      <div class="tip-not-exist" v-if="!currentItem">
-        File does not exist, please
-        <b style="text-decoration: underline; cursor: pointer" @click="handleCreateFile">
-          create it
-        </b>
-        on your local file system
-      </div>
-      <VueMonaco v-else ref="vueMonacoRef" v-model="valueText" language="json" show-line-numbers />
-
-      <!--      <TranslateTreeItem-->
-      <!--        v-for="(item, index) in translateTreeRoot"-->
-      <!--        :key="index"-->
-      <!--        :index="index"-->
-      <!--        :item="item"-->
-      <!--      />-->
+      <VueJsonEditor
+        v-if="!isRefreshing"
+        ref="editorRef"
+        dark
+        :options="{
+          content: {
+            json: valueObj,
+          },
+          onChange: handleChange,
+        }"
+      />
     </div>
   </div>
 </template>
@@ -215,9 +192,14 @@ export default defineComponent({
     overflow: hidden;
   }
 
-  .tip-not-exist {
-    color: $primary;
-    margin: 10px;
+  .path-tip {
+    padding: 0 8px;
+    ._primary {
+      color: $primary;
+    }
+    ._error {
+      color: #f44336;
+    }
   }
 }
 </style>

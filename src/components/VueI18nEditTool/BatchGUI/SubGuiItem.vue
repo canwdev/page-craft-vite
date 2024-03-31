@@ -266,7 +266,7 @@ export default defineComponent({
       </template>
       <template v-else>
         File does not exist, please
-        <b style="text-decoration: underline; cursor: pointer" @click="handleCreateFile">
+        <b style="text-decoration: underline; cursor: pointer" @click="handleCreateFile()">
           create it
         </b>
         on your local file system

@@ -40,6 +40,7 @@ declare module '@vue/runtime-core' {
     InventoryList: typeof import('./src/components/PageCraft/InventoryModal/InventoryList.vue')['default']
     InventoryModal: typeof import('./src/components/PageCraft/InventoryModal/index.vue')['default']
     ItemAction: typeof import('./src/components/CommonUI/OptionUI/ItemAction.vue')['default']
+    JsonEditorVue: typeof import('./src/components/CommonUI/JsonEditorVue.vue')['default']
     LayoutHelper: typeof import('./src/components/CommonUI/ViewPortWindow/utils/LayoutHelper.vue')['default']
     LayoutPreview: typeof import('./src/components/CommonUI/ViewPortWindow/utils/LayoutPreview.vue')['default']
     MainPlayground: typeof import('./src/components/PageCraft/MainPlayground/index.vue')['default']
@@ -105,6 +106,7 @@ declare module '@vue/runtime-core' {
     VFrame: typeof import('./src/components/CommonUI/VFrame.vue')['default']
     ViewPortWindow: typeof import('./src/components/CommonUI/ViewPortWindow/index.vue')['default']
     VStyle: typeof import('./src/components/PageCraft/DomPreview/VStyle.vue')['default']
+    VueJsonEditor: typeof import('./src/components/CommonUI/VueJsonEditor.vue')['default']
     VueMonaco: typeof import('./src/components/CommonUI/VueMonaco/index.vue')['default']
     VueRender: typeof import('./src/components/CommonUI/OptionUI/Tools/VueRender.vue')['default']
   }

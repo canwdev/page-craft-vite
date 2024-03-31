@@ -95,7 +95,7 @@ const {
 
     <div class="explorer-actions vp-panel">
       <div class="action-group">
-        <button class="vp-button" @click="handleCreateFile" title="Create Document">
+        <button class="vp-button" @click="handleCreateFile()" title="Create Document">
           <n-icon size="16">
             <DocumentAdd16Regular />
           </n-icon>

@@ -48,7 +48,7 @@ html, body, #app {
   }
 }
 
-._scrollbar_mini {
+._scrollbar_mini, ._scrollbar_mini * {
 
   &::-webkit-scrollbar {
     width: 8px;
