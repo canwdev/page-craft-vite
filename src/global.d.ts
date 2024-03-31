@@ -6,6 +6,8 @@ import {QuickLaunchPlugin} from '@/components/QuickLaunch/q-logics/plugins'
 
 declare global {
   interface Window {
+    showOpenFilePicker: any
+
     $message: MessageApiInjection
     $notification: NotificationApiInjection
     $dialog: DialogApiInjection

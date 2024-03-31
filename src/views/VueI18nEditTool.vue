@@ -74,7 +74,6 @@ export default defineComponent({
     }
 
     const handleSelectFile = async () => {
-      // @ts-ignore
       const [handle] = await window.showOpenFilePicker(filePickerOptions)
       await appendHistory(handle)
       fileHandle.value = handle

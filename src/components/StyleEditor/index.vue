@@ -69,16 +69,16 @@ const vueMonacoRef = ref()
 const isShowQuickOptions = ref(false)
 
 const updateEditorLayout = () => {
-  const eIns = vueMonacoRef.value.getInstance()
-  eIns?.layout()
+  const editor = vueMonacoRef.value.getInstance()
+  editor?.layout()
 }
 const focusEditor = () => {
   if (isShowQuickOptions.value) {
     return
   }
   setTimeout(() => {
-    const eIns = vueMonacoRef.value.getInstance()
-    eIns.focus()
+    const editor = vueMonacoRef.value.getInstance()
+    editor.focus()
   }, 100)
 }
 watch(mVisible, (val) => {
@@ -135,24 +135,24 @@ watch(
 )
 
 const execBeautifyCssAction = async () => {
-  const eIns = vueMonacoRef.value.getInstance()
-  const textValue = eIns.getValue()
+  const editor = vueMonacoRef.value.getInstance()
+  const textValue = editor.getValue()
 
   if (textValue.trim()) {
     const beautifiedCSS = formatCss(textValue)
     if (textValue.trim() !== beautifiedCSS.trim()) {
       // Select all text
-      const fullRange = eIns.getModel()?.getFullModelRange()
+      const fullRange = editor.getModel()?.getFullModelRange()
       if (fullRange) {
         // Apply the text over the range
-        eIns.executeEdits(null, [
+        editor.executeEdits(null, [
           {
             text: beautifiedCSS,
             range: fullRange,
           },
         ])
         // Indicates the above edit is a complete undo/redo change.
-        // eIns.pushUndoStop()
+        // editor.pushUndoStop()
       } else {
         currentStyleCode.value = beautifiedCSS
       }
@@ -160,13 +160,13 @@ const execBeautifyCssAction = async () => {
       // await editor.reInitTextComponent({pleaseIgnoreCursorActivity: true})
     }
   }
-  eIns.focus()
+  editor.focus()
   emit('onFormat')
 }
 
 const copyStyle = () => {
-  const eIns = vueMonacoRef.value.getInstance()
-  const textValue = eIns.getValue()
+  const editor = vueMonacoRef.value.getInstance()
+  const textValue = editor.getValue()
   window.$qlUtils.copy(textValue)
 }
 
@@ -205,10 +205,10 @@ const insertStyleCode = (code, isAppend = false) => {
     return
   }
 
-  const eIns = vueMonacoRef.value.getInstance()
+  const editor = vueMonacoRef.value.getInstance()
 
-  const selection = eIns.getSelection()
-  eIns.executeEdits('', [
+  const selection = editor.getSelection()
+  editor.executeEdits('', [
     {
       range: new monaco.Range(
         selection?.startLineNumber || 0,
@@ -222,11 +222,14 @@ const insertStyleCode = (code, isAppend = false) => {
   ])
 
   setTimeout(() => {
-    eIns.focus()
+    editor.focus()
   }, 100)
 }
 
-const {snippetsOptions, updateEditorAutoComplete} = useSnippets({insertCode: insertStyleCode})
+const {snippetsOptions, updateEditorAutoComplete} = useSnippets({
+  insertCode: insertStyleCode,
+  vueMonacoRef,
+})
 
 const tabList = ref([
   {label: $t('common.global_style'), value: StyleTabType.GLOBAL},

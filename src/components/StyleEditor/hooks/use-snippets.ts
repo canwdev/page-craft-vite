@@ -4,23 +4,24 @@ import {ISnippetItem, monacoStyleGlobal} from './use-monaco-helper'
 import {useStorage} from '@vueuse/core'
 import {StyleEditorKeys} from '@/components/StyleEditor/enum'
 
-export const useSnippets = ({insertCode}) => {
+export const useSnippets = ({insertCode, vueMonacoRef}) => {
   const customSnippets = useStorage<ISnippetItem[]>(StyleEditorKeys.CUSTOM_SNIPPETS, [])
 
   const updateCustomSnippetsSuggestion = () => {
-    monacoStyleGlobal.$monacoScssSnippetsCustom = [...customSnippets.value]
+    monacoStyleGlobal.$monacoScssSnippetsCustom = []
+    traverseCustomOptionsWithSuggestions(customSnippets.value)
   }
   onMounted(() => {
     updateCustomSnippetsSuggestion()
   })
 
-  const getMenuItem = (item: ISnippetItem, addSnippetSuggestion) => {
+  const getMenuItem = (item: ISnippetItem, addSnippetSuggestion?) => {
     const r: QuickOptionItem = {
       label: item.label,
       props: {},
     }
     if (item.code || item.snippet) {
-      addSnippetSuggestion(item)
+      addSnippetSuggestion && addSnippetSuggestion(item)
 
       const code = item.snippet || item.code
       r.props!.onClick = async () => {
@@ -33,10 +34,13 @@ export const useSnippets = ({insertCode}) => {
     return r
   }
 
-  const traverseCustom = (list: any[] = [], result: QuickOptionItem[] = []) => {
+  const traverseCustomOptionsWithSuggestions = (
+    list: ISnippetItem[] = [],
+    result: QuickOptionItem[] = []
+  ) => {
     list.forEach((i: any) => {
-      const r: QuickOptionItem = {
-        children: i.children ? traverseCustom(i.children) : undefined,
+      result.push({
+        children: i.children ? traverseCustomOptions(i.children) : undefined,
         ...getMenuItem(i, (item) => {
           if (item.snippet) {
             // 只把snippet放入自动补全缓存，减少性能损耗
@@ -46,9 +50,17 @@ export const useSnippets = ({insertCode}) => {
             })
           }
         }),
-      }
+      })
+    })
+    return result
+  }
 
-      result.push(r)
+  const traverseCustomOptions = (list: ISnippetItem[] = [], result: QuickOptionItem[] = []) => {
+    list.forEach((i: any) => {
+      result.push({
+        children: i.children ? traverseCustomOptions(i.children) : undefined,
+        ...getMenuItem(i),
+      })
     })
     return result
   }
@@ -74,24 +86,67 @@ export const useSnippets = ({insertCode}) => {
   const snippetsOptions = computed((): QuickOptionItem[] => {
     return [
       ...toolOptions.value,
-      ...traverseCustom(customSnippets.value),
       {
         label: 'Manage',
         children: [
           {
             label: 'Add selection code to snippet',
             props: {
-              onClick: () => {
-                customSnippets.value.push({
-                  label: 'custom123',
-                  snippet: 'test',
+              onClick: async () => {
+                const editor = vueMonacoRef.value.getInstance()
+
+                const selection = editor.getSelection()
+                let snippet = editor.getModel().getValueInRange(selection).trim()
+                if (!snippet) {
+                  window.$message.error('Please select code first!')
+                  return
+                }
+                // 使用正则表达式匹配类名
+                let classRegex = /\.(\w|-)+/g
+                let match = classRegex.exec(snippet) || []
+                console.log(match)
+                let label = await window.$mcUtils.showInputPrompt({
+                  title: 'Input snippet label',
+                  value: match[0] || '',
                 })
+                if (!label) {
+                  window.$message.error('Please input label!')
+                  return
+                }
+
+                customSnippets.value.push({
+                  label,
+                  snippet,
+                })
+
                 updateCustomSnippetsSuggestion()
               },
             },
           },
           {
-            label: 'Clear All',
+            label: 'Import JSON...',
+            props: {
+              onClick: async () => {
+                const list = await window.$mcUtils.handleImportJson()
+                customSnippets.value = list || []
+                window.$message.success('Import success!')
+              },
+            },
+          },
+          {
+            label: 'Export JSON...',
+            props: {
+              onClick: async () => {
+                window.$mcUtils.handleExportFile(
+                  await window.$mcUtils.promptGetFileName('ScssSnippets'),
+                  JSON.stringify(customSnippets.value, null, 2),
+                  '.json'
+                )
+              },
+            },
+          },
+          {
+            label: 'Clear All...',
             children: [
               {
                 label: 'Confirm Clear All? OK',
@@ -106,6 +161,7 @@ export const useSnippets = ({insertCode}) => {
           },
         ],
       },
+      ...traverseCustomOptions(customSnippets.value),
     ]
   })
 

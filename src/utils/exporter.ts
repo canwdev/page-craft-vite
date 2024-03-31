@@ -128,6 +128,22 @@ export const handleExportFile = (filename, contentStr, ext) => {
   FileSaver.saveAs(blob, filename + ext)
 }
 
+export const handleImportJson = async () => {
+  const [handle] = await window.showOpenFilePicker({
+    types: [
+      {
+        description: 'JSON',
+        accept: {
+          'application/JSON': ['.json'],
+        },
+      },
+    ],
+  })
+  const file = await handle.getFile()
+  const str = await handleReadSelectedFile(file)
+  return JSON.parse(str as string)
+}
+
 export const handleReadSelectedFile = (file) => {
   // console.log(file)
   return new Promise((resolve, reject) => {

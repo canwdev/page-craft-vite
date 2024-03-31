@@ -52,8 +52,8 @@ export const showInputPrompt = (options: any = {}): Promise<string> => {
               },
               onKeydown: (event) => {
                 if (event.key === 'Enter') {
-                  handlePositiveClick()
                   event.preventDefault()
+                  handlePositiveClick()
                 }
               },
             }),

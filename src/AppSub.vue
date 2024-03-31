@@ -4,12 +4,13 @@ import {useMainStore} from '@/store/main'
 import DialogTextTransformer from '@/components/VueI18nEditTool/DialogTextTransformer.vue'
 import {formatI18nKey} from '@/enum/vue-i18n-tool'
 import {textConvertAdvanced, textConvertMultipleLine} from '@/components/VueI18nEditTool/copy-enum'
-import {handleExportFile} from '@/utils/exporter'
+import {handleExportFile, handleImportJson, handleReadSelectedFile} from '@/utils/exporter'
 import QuickLaunchWindow from '@/components/QuickLaunch/QuickLaunchWindow.vue'
 import {promptGetFileName} from '@/utils/exporter'
 import {TextConvertMode} from '@/components/VueI18nEditTool/copy-enum'
 import IframeBrowser from '@/components/IframeBrowser/index.vue'
 import {useSettingsStore} from '@/store/settings'
+import {showInputPrompt} from '@/components/CommonUI/input-prompt'
 
 export default defineComponent({
   name: 'AppSub',
@@ -37,9 +38,12 @@ export default defineComponent({
         formatI18nKey,
         textConvertAdvanced,
         handleExportFile,
+        handleImportJson,
+        handleReadSelectedFile,
         textConvertMultipleLine,
         TextConvertMode,
         promptGetFileName,
+        showInputPrompt,
       }
     })
 
