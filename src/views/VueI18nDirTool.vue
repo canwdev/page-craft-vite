@@ -339,6 +339,8 @@ useBeforeUnload(() => {
 
 const isShowToolSettings = ref(false)
 
+const {handleKeyClick, removeSelectedClass} = useGuiToolbox()
+
 const nodeProps = ({option}: {option: DirTreeItem}) => {
   return {
     // 处理树枝的点击事件
@@ -352,6 +354,7 @@ const nodeProps = ({option}: {option: DirTreeItem}) => {
           editingTextValue.value = str as string
           i18nMainStore.filePathArr = [...option.parentDirs, option.label]
           i18nMainStore.translatePath = ''
+          removeSelectedClass()
           updateGuiTranslateTree()
         }
       } catch (e: any) {
@@ -366,7 +369,6 @@ const nodeProps = ({option}: {option: DirTreeItem}) => {
 const {showDropzone, fileDragover, fileDrop} = useFileDrop({
   cb: handleFileDrop,
 })
-const {handleKeyClick} = useGuiToolbox()
 </script>
 
 <template>

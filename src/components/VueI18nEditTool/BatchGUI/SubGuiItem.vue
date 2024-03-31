@@ -12,7 +12,11 @@ import {readClipboardData} from '@/utils'
 import {textConvertAdvanced} from '@/components/VueI18nEditTool/copy-enum'
 import {useI18nToolSettingsStore} from '@/store/i18n-tool-settings'
 import FieldEdit from '@/components/VueI18nEditTool/Single/FieldEdit.vue'
-import {useBatchItem} from '@/components/VueI18nEditTool/BatchGUI/batch-hooks'
+import {
+  BatchListItem,
+  useBatchItem,
+  useBatchItemV2,
+} from '@/components/VueI18nEditTool/BatchGUI/batch-hooks'
 import {useI18nMainStore} from '@/store/i18n-tool-main'
 import CcFlag from '@/components/VueI18nEditTool/CcFlag.vue'
 
@@ -27,30 +31,29 @@ export default defineComponent({
     ClipboardPaste20Regular,
   },
   props: {
-    dirItem: {
-      type: Object as PropType<DirTreeItem>,
+    listItem: {
+      type: Object as PropType<BatchListItem>,
       required: true,
     },
   },
   emits: ['saveChanged'],
   setup(props, {emit}) {
-    const {dirItem} = toRefs(props)
+    const {listItem} = toRefs(props)
     const {t: $t} = useI18n()
     const i18nMainStore = useI18nMainStore()
     const i18nSetStore = useI18nToolSettingsStore()
 
     const {
       isLoading,
-      currentItem,
       handleSaveFile,
       isLocalCreated,
       handleCreateFile,
       handleReload,
       subFilePathArr,
-    } = useBatchItem(props)
+    } = useBatchItemV2(props)
 
     // 翻译文件的json对象
-    let translateObj = shallowRef<any | null>(null)
+    let localJson = shallowRef<any | null>(null)
 
     // 当前翻译的字段值
     const fieldValue = ref<any>(null)
@@ -59,11 +62,11 @@ export default defineComponent({
     const isChanged = ref(false)
 
     const getValue = () => {
-      return _get(translateObj.value, i18nMainStore.translatePath, null)
+      return _get(localJson.value, i18nMainStore.translatePath, null)
     }
     const setValue = (val: any) => {
       try {
-        _set(translateObj.value, i18nMainStore.translatePath, val)
+        _set(localJson.value, i18nMainStore.translatePath, val)
       } catch (e: any) {
         console.error(e)
         window.$message.error(e.message)
@@ -71,13 +74,13 @@ export default defineComponent({
       }
     }
     const deleteField = () => {
-      _unset(translateObj.value, i18nMainStore.translatePath)
+      _unset(localJson.value, i18nMainStore.translatePath)
       fieldValue.value = null
       isChanged.value = true
     }
 
     const cleanup = () => {
-      translateObj.value = null
+      localJson.value = null
       fieldValue.value = null
       nextTick(() => {
         isChanged.value = false
@@ -89,15 +92,14 @@ export default defineComponent({
     })
 
     watch(
-      currentItem,
+      listItem,
       async (value) => {
-        if (!value) {
+        if (!value.json) {
           cleanup()
           return
         }
-        const file = await (value.entry as FileSystemFileHandle).getFile()
-        const str = await handleReadSelectedFile(file)
-        translateObj.value = JSON.parse(str as string)
+
+        localJson.value = JSON.parse(JSON.stringify(value.json))
         fieldValue.value = getValue()
         nextTick(() => {
           isChanged.value = false
@@ -151,7 +153,7 @@ export default defineComponent({
       if (isSetValue) {
         setValue(fieldValue.value)
       }
-      await handleSaveFile(JSON.stringify(translateObj.value, null, 2))
+      await handleSaveFile(JSON.stringify(localJson.value, null, 2))
       isChanged.value = false
       if (isEmit) {
         emit('saveChanged')
@@ -199,8 +201,7 @@ export default defineComponent({
     return {
       i18nMainStore,
       i18nSetStore,
-      currentItem,
-      translateObj,
+      localJson,
       fieldValue,
       isChanged,
       createField,
@@ -233,8 +234,8 @@ export default defineComponent({
     <div class="card-header">
       <div class="card-title-wrap">
         <span class="card-title font-code">
-          <CcFlag v-if="i18nSetStore.enableFlag" :cc="dirItem.label" />
-          <span class="region-label">{{ dirItem.label }}</span>
+          <CcFlag v-if="i18nSetStore.enableFlag" :cc="listItem.rootDir.label" />
+          <span class="region-label">{{ listItem.rootDir.label }}</span>
           <template v-if="i18nSetStore.isFoldersMode">
             {{ '/' + subFilePathArr.join('/') }}
           </template>
@@ -244,7 +245,7 @@ export default defineComponent({
         <!--        </span>-->
       </div>
 
-      <template v-if="currentItem && fieldValue !== null">
+      <template v-if="listItem.json && fieldValue !== null">
         <n-popconfirm @positive-click="handleDeleteField">
           <template #trigger>
             <n-button size="small" tertiary type="error" title="Delete Field">
@@ -258,7 +259,7 @@ export default defineComponent({
       </template>
     </div>
 
-    <div class="tip-not-exist" v-if="!currentItem">
+    <div class="tip-not-exist" v-if="!listItem.json">
       <template v-if="isLocalCreated">
         <n-button secondary size="small" @click="handleReload">
           {{ $t('actions.reload') }}

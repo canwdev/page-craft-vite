@@ -3,13 +3,38 @@ import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {useI18n} from 'vue-i18n'
 import {useI18nToolSettingsStore} from '@/store/i18n-tool-settings'
 import {useI18nMainStore} from '@/store/i18n-tool-main'
+import {handleReadSelectedFile} from '@/utils/exporter'
+
+export interface BatchListItem {
+  dirItem: DirTreeItem
+  rootDir: DirTreeItem
+  // 翻译文件的json对象
+  json: object | null
+}
+
+const useCommon = () => {
+  const i18nMainStore = useI18nMainStore()
+  const i18nSetStore = useI18nToolSettingsStore()
+
+  const subFilePathArr = computed(() => {
+    if (i18nSetStore.isFoldersMode) {
+      return i18nMainStore.filePathArr.slice(1)
+    }
+    return i18nMainStore.filePathArr
+  })
+
+  return {
+    i18nMainStore,
+    i18nSetStore,
+    subFilePathArr,
+  }
+}
 
 /**
  * 批处理管理器hook
  */
 export const useBatchWrapper = () => {
-  const i18nMainStore = useI18nMainStore()
-  const i18nSetStore = useI18nToolSettingsStore()
+  const {i18nMainStore, i18nSetStore, subFilePathArr} = useCommon()
   const itemsRef = ref()
 
   const handleSaveChanged = async () => {
@@ -31,15 +56,81 @@ export const useBatchWrapper = () => {
 
   const filePathArrFiltered = computed(() => {
     if (i18nSetStore.isFoldersMode) {
+      // console.log(i18nMainStore.dirTree)
       return i18nMainStore.dirTree.filter((i) => i.kind === 'directory')
     }
     return i18nMainStore.dirTree
   })
 
+  const batchList = ref<BatchListItem[]>([])
+  const reloadBatchList = async () => {
+    const list: BatchListItem[] = []
+    for (let i = 0; i < filePathArrFiltered.value.length; i++) {
+      const dirItem: DirTreeItem = filePathArrFiltered.value[i]
+
+      const findNode = (): DirTreeItem | null => {
+        let find: DirTreeItem | null = null
+        const recursiveFindItem = (children: DirTreeItem[] | null, dirArr: string[], depth = 0) => {
+          const dirName = dirArr[depth]
+          if (!children) {
+            return
+          }
+          // console.log('---', depth, dirName)
+
+          for (let i = 0; i < children.length; i++) {
+            const child = children[i]
+            if (child.label === dirName) {
+              if (depth === dirArr.length - 1) {
+                find = child
+                throw new Error('item found')
+              }
+            }
+            if (child.children) {
+              recursiveFindItem(child.children, dirArr, depth + 1)
+            }
+          }
+        }
+        try {
+          recursiveFindItem(dirItem.children, subFilePathArr.value)
+        } catch (e) {
+          // console.warn(e)
+        }
+        return find
+      }
+
+      // 文件夹模式需要查找目标文件，否则 dirItem 就是单文件
+      const currentItem = i18nSetStore.isFoldersMode ? findNode() : dirItem
+
+      if (!currentItem) {
+        list.push({
+          dirItem: dirItem,
+          rootDir: dirItem,
+          json: null,
+        })
+        continue
+      }
+
+      // console.log(currentItem)
+      const file = await (currentItem.entry as FileSystemFileHandle).getFile()
+      const str = await handleReadSelectedFile(file)
+      list.push({
+        dirItem: currentItem,
+        rootDir: dirItem,
+        json: JSON.parse(str as string),
+      })
+    }
+    batchList.value = list
+    // console.log('batchList.value', batchList.value)
+  }
+  watch(subFilePathArr, reloadBatchList, {immediate: true})
+  watch(() => i18nMainStore.dirTree, reloadBatchList)
+
   return {
     handleSaveChanged,
     itemsRef,
     filePathArrFiltered,
+    subFilePathArr,
+    batchList,
   }
 }
 
@@ -95,18 +186,11 @@ async function createFile(
  * @param props
  */
 export const useBatchItem = (props) => {
-  const i18nMainStore = useI18nMainStore()
-  const i18nSetStore = useI18nToolSettingsStore()
+  const {i18nMainStore, i18nSetStore, subFilePathArr} = useCommon()
+
   const {t: $t} = useI18n()
   const isLoading = ref(false)
   const {dirItem} = toRefs(props)
-
-  const subFilePathArr = computed(() => {
-    if (i18nSetStore.isFoldersMode) {
-      return i18nMainStore.filePathArr.slice(1)
-    }
-    return i18nMainStore.filePathArr
-  })
 
   const findNode = (): DirTreeItem | null => {
     let find: DirTreeItem | null = null
@@ -227,6 +311,101 @@ export const useBatchItem = (props) => {
   return {
     isLoading,
     currentItem,
+    handleSaveFile,
+    isLocalCreated,
+    handleCreateFile,
+    handleReload,
+    subFilePathArr,
+  }
+}
+
+export const useBatchItemV2 = (props) => {
+  const {i18nMainStore, i18nSetStore, subFilePathArr} = useCommon()
+  const {t: $t} = useI18n()
+  const isLoading = ref(false)
+  const {listItem} = toRefs(props)
+
+  const handleSaveFile = async (txt: string) => {
+    try {
+      isLoading.value = true
+      if (!listItem.value.dirItem) {
+        return
+      }
+      const fileHandle = listItem.value.dirItem.entry as FileSystemFileHandle
+      if (!fileHandle) {
+        return
+      }
+      // @ts-ignore
+      const writable = await fileHandle.createWritable()
+
+      // console.log('[translateObj.value]', translateObj.value)
+
+      await writable.write(txt)
+      await writable.close()
+      const savedPath = listItem.value.dirItem.label + ': ' + fileHandle.name
+      console.log('[handleSaveFile]', savedPath)
+      window.$message.success(`${savedPath} ` + $t('msgs.saved'))
+    } catch (error: any) {
+      console.error(error)
+      window.$message.error($t('msgs.error') + error.message)
+      throw error
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  const isLocalCreated = ref(false)
+  const handleCreateFile = async (options: any = {}) => {
+    try {
+      const {initObj = {}, cb, isReload = true} = options
+      isLoading.value = true
+
+      if (!listItem.value.dirItem) {
+        return
+      }
+      const dirHandle = listItem.value.dirItem.entry as FileSystemDirectoryHandle
+      if (!dirHandle) {
+        return
+      }
+
+      const fullPath = subFilePathArr.value.join('/')
+      const folderPath = fullPath.substring(0, fullPath.lastIndexOf('/'))
+      const folderHandle = await createFolder(dirHandle, folderPath)
+
+      const txt = JSON.stringify(initObj, null, 2)
+      const fileHandle = await createFile(
+        folderHandle,
+        fullPath.substring(fullPath.lastIndexOf('/') + 1),
+        txt
+      )
+
+      window.$message.success('Created ' + fullPath)
+      isLocalCreated.value = true
+
+      if (typeof cb === 'function') {
+        await cb()
+      }
+      if (isReload) {
+        setTimeout(() => {
+          handleReload()
+        })
+      }
+    } catch (error: any) {
+      console.error(error)
+      window.$message.error(error.message)
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  const handleReload = () => {
+    const btn = document.querySelector('.js_reload_btn')
+    // @ts-ignore
+    btn && btn.click()
+  }
+
+  return {
+    isLoading,
     handleSaveFile,
     isLocalCreated,
     handleCreateFile,
