@@ -500,6 +500,13 @@ export default defineComponent({
     transition: all 0.2s !important;
   }
 
+  &._dragging {
+    .vp-window-body {
+      // 拖拽时禁用内部鼠标事件，防止鼠标陷入
+      pointer-events: none;
+    }
+  }
+
   .vp-window-content {
     height: 100%;
     display: flex;

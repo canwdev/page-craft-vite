@@ -153,9 +153,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .iframe-browser-vp-window {
-  :deep(.vp-window-body) {
-    padding: 0 4px 4px !important;
-  }
+  min-width: 100px;
+  min-height: 200px;
 }
 .iframe-browser-inner-wrap {
   height: 100%;
@@ -182,7 +181,6 @@ export default defineComponent({
 
   .iframe-browser-inner-iframe {
     flex: 1;
-    outline: 1px dashed $primary;
   }
 }
 </style>
