@@ -5,8 +5,7 @@ import {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
 import {useI18nMainStore} from '@/store/i18n-tool-main'
 
 const i18nMainStore = useI18nMainStore()
-const {handleSaveChanged, itemsRef, filePathArrFiltered, subFilePathArr, batchList} =
-  useBatchWrapper()
+const {handleSaveChanged, itemsRef, batchList} = useBatchWrapper()
 
 useGlobalBusOn(GlobalEvents.I18N_BATCH_GUI_GET_SUBS, (resolve) => {
   resolve(itemsRef.value)
@@ -19,7 +18,6 @@ useGlobalBusOn(GlobalEvents.I18N_BATCH_GUI_GET_SUBS, (resolve) => {
       <span class="font-code">
         {{ i18nMainStore.translatePath }}
       </span>
-      {{ subFilePathArr }}
     </div>
     <div class="batch-translate-list-wrap">
       <SubGuiItem

@@ -29,6 +29,7 @@ const locateSelectedPath = () => {
 }
 
 // 获取SubGuiItem组件实例
+// TODO: fix bug
 const getSubItems = () => {
   return new Promise((resolve) => {
     globalEventBus.emit(GlobalEvents.I18N_BATCH_GUI_GET_SUBS, resolve)

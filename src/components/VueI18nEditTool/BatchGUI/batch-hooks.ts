@@ -64,6 +64,7 @@ export const useBatchWrapper = () => {
 
   const batchList = ref<BatchListItem[]>([])
   const reloadBatchList = async () => {
+    // TODO: Loading
     const list: BatchListItem[] = []
     for (let i = 0; i < filePathArrFiltered.value.length; i++) {
       const dirItem: DirTreeItem = filePathArrFiltered.value[i]

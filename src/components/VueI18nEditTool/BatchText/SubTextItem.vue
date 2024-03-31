@@ -1,7 +1,11 @@
 <script lang="ts">
 import {defineComponent, PropType, ref} from 'vue'
 import {DirTreeItem} from '@/enum/vue-i18n-tool'
-import {useBatchItem} from '@/components/VueI18nEditTool/BatchGUI/batch-hooks'
+import {
+  BatchListItem,
+  useBatchItem,
+  useBatchItemV2,
+} from '@/components/VueI18nEditTool/BatchGUI/batch-hooks'
 import {handleReadSelectedFile} from '@/utils/exporter'
 import {useI18nMainStore} from '@/store/i18n-tool-main'
 import VueJsonEditor from '@/components/CommonUI/VueJsonEditor.vue'
@@ -14,8 +18,8 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
-    dirItem: {
-      type: Object as PropType<DirTreeItem>,
+    listItem: {
+      type: Object as PropType<BatchListItem>,
       required: true,
     },
     translatePath: {
@@ -25,40 +29,25 @@ export default defineComponent({
   },
   emits: ['saveChanged'],
   setup(props, {emit}) {
-    const {visible, dirItem} = toRefs(props)
+    const {listItem} = toRefs(props)
     const i18nMainStore = useI18nMainStore()
-    const {
-      isLoading,
-      currentItem,
-      handleSaveFile,
-      isLocalCreated,
-      handleCreateFile,
-      handleReload,
-      subFilePathArr,
-    } = useBatchItem(props)
+    const {isLoading, handleSaveFile, handleCreateFile, subFilePathArr} = useBatchItemV2(props)
 
     const editorRef = shallowRef()
-    const valueObj = ref({})
-
-    const expandEditor = () => {
-      if (editorRef.value) {
-        editorRef.value.jsonEditor.expand((path) => true)
-      }
-    }
-    onMounted(expandEditor)
+    const localJson = shallowRef({})
 
     // 值是否发生变化
     const isChanged = computed(() => {
-      return i18nMainStore.changedLabelMap[dirItem.value.label]
+      return i18nMainStore.changedLabelMap[listItem.value.rootDir.label]
     })
 
     const setChanged = (flag: boolean) => {
-      i18nMainStore.changedLabelMap[dirItem.value.label] = flag
+      i18nMainStore.changedLabelMap[listItem.value.rootDir.label] = flag
     }
 
     const cleanup = () => {
       isRefreshing.value = true
-      valueObj.value = {}
+      localJson.value = {}
       nextTick(() => {
         setChanged(false)
         isRefreshing.value = false
@@ -66,28 +55,25 @@ export default defineComponent({
     }
 
     const isRefreshing = ref(true)
-    const updateValueText = async () => {
+    const updateLocalJson = async () => {
       isRefreshing.value = true
-      const file = await (currentItem.value.entry as FileSystemFileHandle).getFile()
 
-      const str = await handleReadSelectedFile(file)
-      valueObj.value = JSON.parse(str as string)
+      localJson.value = JSON.parse(JSON.stringify(listItem.value.json))
 
       await nextTick(() => {
         setChanged(false)
-        expandEditor()
         isRefreshing.value = false
       })
     }
 
     watch(
-      currentItem,
+      listItem,
       async (value) => {
         if (!value) {
           cleanup()
           return
         }
-        await updateValueText()
+        await updateLocalJson()
       },
       {immediate: true}
     )
@@ -96,14 +82,14 @@ export default defineComponent({
       if (!isChanged.value) {
         return
       }
-      console.log('[saveChange]', valueObj.value)
+      console.log('[saveChange]', localJson.value)
 
-      if (!currentItem.value) {
+      if (!listItem.value.json) {
         await handleCreateFile({
-          initObj: valueObj.value,
+          initObj: localJson.value,
         })
       } else {
-        await handleSaveFile(JSON.stringify(valueObj.value, null, 2))
+        await handleSaveFile(JSON.stringify(localJson.value, null, 2))
       }
 
       setChanged(false)
@@ -114,14 +100,13 @@ export default defineComponent({
 
     const handleChange = (v) => {
       console.log(v)
-      valueObj.value = v.json
+      localJson.value = v.json
       setChanged(true)
     }
 
     return {
       isLoading,
-      valueObj,
-      currentItem,
+      localJson,
       saveChange,
       isChanged,
       subFilePathArr,
@@ -150,10 +135,10 @@ export default defineComponent({
       </n-button>
 
       <span class="path-tip">
-        <span class="_primary">{{ dirItem.label }}</span
+        <span class="_primary">{{ listItem.rootDir.label }}</span
         >/{{ subFilePathArr.join('/') }}
 
-        <span v-if="!currentItem" class="_error">File not exist!</span>
+        <span v-if="!listItem.json" class="_error">File not exist!</span>
       </span>
     </div>
     <div class="editor-content-wrap">
@@ -163,7 +148,7 @@ export default defineComponent({
         dark
         :options="{
           content: {
-            json: valueObj,
+            json: localJson,
           },
           onChange: handleChange,
         }"

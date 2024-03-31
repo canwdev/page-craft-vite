@@ -54,6 +54,8 @@ onMounted(() => {
     target: editorWrap.value,
     props: pickDefinedProps(options.value),
   })
+
+  jsonEditor.value.expand((path) => true)
 })
 onBeforeUnmount(() => {
   jsonEditor.value.destroy()
