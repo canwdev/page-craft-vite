@@ -126,12 +126,13 @@ const recursiveAnalyzeTranslateTree = (
 
       // 统计翻译数量
       let count = 0
-      const len = i18nMainStore.batchList.length
-      i18nMainStore.batchList.forEach(({json}) => {
-        if (!json) {
-          return
-        }
-
+      // 忽略未创建的文件夹
+      const filteredBatchList = i18nMainStore.batchList.filter(({json}) => {
+        return !!json
+      })
+      const len = filteredBatchList.length
+      const missingDirs: string[] = []
+      filteredBatchList.forEach(({rootDir, json}) => {
         // 获取翻译key路径（去除虚拟根节点）
         let tPath = nextParents.join('.') + '.' + i.key
         const regex = new RegExp(I18N_JSON_OBJ_ROOT_KEY_NAME + '.', 'g')
@@ -140,16 +141,20 @@ const recursiveAnalyzeTranslateTree = (
         // console.debug(tPath, json, tVal)
         if (tVal) {
           count++
+        } else {
+          missingDirs.push(rootDir.label)
         }
       })
 
       const percent = (count / len) * 100
       const bar = unicodeProgressBar(percent)
-      console.log(
-        `  ${spaces}${symbolTable}[${percent === 100 ? '✅' : '⚠️'}] ${
-          i.key
-        } ${bar} ${percent.toFixed(1)}% (${count}/${len})`
-      )
+      let tipText = `  ${spaces}${symbolTable}[${percent === 100 ? '✅' : '⚠️'}] ${
+        i.key
+      } ${bar} ${percent.toFixed(0)}% (${count}/${len})`
+      if (missingDirs.length) {
+        tipText += ` | ${missingDirs.join(',')}`
+      }
+      console.log(tipText)
       // console.debug(i, nextParents)
     })
     recursiveAnalyzeTranslateTree(t.children, depth + 1, nextParents)
