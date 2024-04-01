@@ -1,5 +1,5 @@
 ;(function () {
-  const {copy, addPlugin} = window.$qlUtils
+  const {copy, addPresetPlugin} = window.$qlUtils
   const evalCode = (val, isToast = false) => {
     try {
       return eval(val)
@@ -21,7 +21,7 @@
     return false
   }
 
-  addPlugin((valRef) => {
+  addPresetPlugin((valRef) => {
     const date = isTimestamp(valRef.value)
     if (date) {
       const label = window.$qlUtils.moment(date).format('YYYY-MM-DD HH:mm:ss')
@@ -32,7 +32,7 @@
     }
   })
 
-  addPlugin((valRef) => {
+  addPresetPlugin((valRef) => {
     return {
       label: '⚡ JavaScript Eval',
       props: {
@@ -43,7 +43,7 @@
     }
   })
 
-  addPlugin((valRef) => {
+  addPresetPlugin((valRef) => {
     return {
       label: '⚡ Realtime Eval',
       children: [

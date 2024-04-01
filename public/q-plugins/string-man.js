@@ -1,7 +1,7 @@
 ;(function () {
-  const {addPlugin, changeCase, copy} = window.$qlUtils
+  const {addPresetPlugin, changeCase, copy} = window.$qlUtils
 
-  addPlugin((valRef) => {
+  addPresetPlugin((valRef) => {
     return {
       label: '🪢 String Manipulation',
       children: [

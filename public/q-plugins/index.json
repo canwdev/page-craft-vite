@@ -1,10 +1,9 @@
 {
   "plugins": [
-    "custom.js",
     "basic.js",
     "base64.js",
-    "mc-utils.js",
     "string-man.js",
-    "system-utils.js"
+    "system-utils.js",
+    "mc-utils.js"
   ]
 }

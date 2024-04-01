@@ -1,5 +1,5 @@
 ;(function () {
-  const {addPlugin, copy} = window.$qlUtils
+  const {addPresetPlugin, copy} = window.$qlUtils
   function guid_S4() {
     return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1)
   }
@@ -48,7 +48,7 @@
     return
   }
 
-  addPlugin((valRef) => {
+  addPresetPlugin((valRef) => {
     return {
       label: '🧰 PageCraft Utils',
       children: [

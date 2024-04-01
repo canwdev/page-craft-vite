@@ -87,10 +87,10 @@ export const useSnippets = ({insertCode, vueMonacoRef}) => {
     const options: QuickOptionItem[] = [
       ...toolOptions.value,
       {
-        label: 'Manage',
+        label: '⚙️ Manage',
         children: [
           {
-            label: 'Add custom snippet',
+            label: '➕ Add custom snippet',
             props: {
               onClick: async () => {
                 const editor = vueMonacoRef.value.getInstance()
@@ -124,7 +124,7 @@ export const useSnippets = ({insertCode, vueMonacoRef}) => {
             },
           },
           {
-            label: 'Import JSON...',
+            label: '📥 Import JSON...',
             props: {
               onClick: async () => {
                 const list = await window.$mcUtils.handleImportJson()
@@ -134,7 +134,7 @@ export const useSnippets = ({insertCode, vueMonacoRef}) => {
             },
           },
           {
-            label: 'Export JSON...',
+            label: '📤 Export JSON...',
             props: {
               onClick: async () => {
                 window.$mcUtils.handleExportFile(
@@ -146,15 +146,21 @@ export const useSnippets = ({insertCode, vueMonacoRef}) => {
             },
           },
           {
-            label: 'Clear All...',
+            label: '❌ Clear All...',
             children: [
               {
-                label: 'Confirm Clear All Custom Snippets? OK',
+                label: '✅ Confirm Clear All Custom Snippets',
                 props: {
                   onClick: () => {
                     customSnippets.value = []
                     updateCustomSnippetsSuggestion()
                   },
+                },
+              },
+              {
+                label: `❎ Cancel`,
+                props: {
+                  isBack: 1,
                 },
               },
             ],
@@ -164,7 +170,7 @@ export const useSnippets = ({insertCode, vueMonacoRef}) => {
     ]
     if (customSnippets.value.length) {
       options.push({
-        label: 'Custom',
+        label: '🔮 Custom',
         children: [...traverseCustomOptions(customSnippets.value)],
       })
     }
