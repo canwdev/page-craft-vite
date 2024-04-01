@@ -1,4 +1,4 @@
-import {DirTreeItem} from '@/enum/vue-i18n-tool'
+import {DirTreeItem, formatTranslateTreeItem, ITranslateTreeItem} from '@/enum/vue-i18n-tool'
 
 // 批量处理文件（夹）列表
 export interface BatchListItem {
@@ -14,6 +14,8 @@ type ChangedLabelMap = {
 
 type IState = {
   dirTree: DirTreeItem[]
+  // 当前选中文件的翻译树
+  translateTreeRoot: ITranslateTreeItem[]
   filePathArr: string[]
   translatePath: string
   changedLabelMap: ChangedLabelMap
@@ -24,6 +26,7 @@ export const useI18nMainStore = defineStore('i18nToolMain', {
   state: (): IState => {
     return {
       dirTree: [],
+      translateTreeRoot: [],
       filePathArr: [],
       translatePath: '',
       changedLabelMap: {},

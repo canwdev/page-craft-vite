@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import SubTextItem from '@/components/VueI18nEditTool/BatchText/SubTextItem.vue'
+import SubTextItem from '@/components/VueI18nEditTool/BatchJson/SubJsonItem.vue'
 import {useBatchWrapper} from '@/components/VueI18nEditTool/BatchGUI/hooks/batch-hooks'
 import {useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
 

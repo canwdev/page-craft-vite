@@ -48,8 +48,9 @@ export default defineComponent({
     } = useBatchItemV2(props)
 
     // 翻译文件的json对象
-    // TODO: remove
-    let localJson = shallowRef<any | null>(null)
+    let localJson = computed(() => {
+      return listItem.value.json
+    })
 
     // 当前翻译的字段值
     const fieldValue = ref<any>(null)
@@ -62,7 +63,10 @@ export default defineComponent({
     }
     const setValue = (val: any) => {
       try {
-        _set(localJson.value, i18nMainStore.translatePath, val)
+        if (!listItem.value.json) {
+          throw new Error('listItem.value.json is empty!')
+        }
+        _set(listItem.value.json, i18nMainStore.translatePath, val)
       } catch (e: any) {
         console.error(e)
         window.$message.error(e.message)
@@ -76,7 +80,6 @@ export default defineComponent({
     }
 
     const cleanup = () => {
-      localJson.value = null
       fieldValue.value = null
       nextTick(() => {
         isChanged.value = false
@@ -94,8 +97,7 @@ export default defineComponent({
           cleanup()
           return
         }
-
-        localJson.value = JSON.parse(JSON.stringify(value.json))
+        // console.log('[watch listItem]', value)
         fieldValue.value = getValue()
         nextTick(() => {
           isChanged.value = false
@@ -197,7 +199,6 @@ export default defineComponent({
     return {
       i18nMainStore,
       i18nSetStore,
-      localJson,
       fieldValue,
       isChanged,
       createField,

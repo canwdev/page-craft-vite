@@ -32,6 +32,7 @@ export const showInputPrompt = (options: any = {}): Promise<string> => {
     const d = window.$dialog.info({
       title: title,
       showIcon: false,
+      autoFocus: false,
       onAfterEnter: () => {
         inputRef.value?.focus()
       },

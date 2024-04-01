@@ -22,7 +22,7 @@ import {Document20Regular, Folder20Regular} from '@vicons/fluent'
 import {NIcon} from 'naive-ui'
 import {useI18nToolSettingsStore} from '@/components/VueI18nEditTool/store/i18n-tool-settings'
 import I18nToolSettings from '@/components/VueI18nEditTool/I18nToolSettings.vue'
-import BatchTextEditor from '@/components/VueI18nEditTool/BatchText/index.vue'
+import BatchJson from '@/components/VueI18nEditTool/BatchJson/index.vue'
 import {useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
 import {useStorage} from '@vueuse/core'
 import TabLayout from '@/components/CommonUI/TabLayout.vue'
@@ -282,7 +282,7 @@ const handleSaveFile = async () => {
 
     if (editMode.value !== EditMode.JSON) {
       editingTextValue.value = JSON.stringify(
-        exportI18nTreeJsonObj(translateTreeRoot.value),
+        exportI18nTreeJsonObj(i18nMainStore.translateTreeRoot),
         null,
         2
       )
@@ -305,15 +305,14 @@ const handleSaveFile = async () => {
 
 const editMode = useStorage('vue_i18n_dir_tool_edit_mode', EditMode.BATCH)
 
-const translateTreeRoot = ref<ITranslateTreeItem[]>([formatTranslateTreeItem()])
 const updateGuiTranslateTree = () => {
   if (editMode.value !== 'text') {
     if (!editingTextValue.value) {
-      translateTreeRoot.value = []
+      i18nMainStore.translateTreeRoot = []
       return
     }
     const obj = JSON.parse(editingTextValue.value as string)
-    translateTreeRoot.value = I18nJsonObjUtils.parseWithRoot(obj)
+    i18nMainStore.translateTreeRoot = I18nJsonObjUtils.parseWithRoot(obj)
   }
 }
 
@@ -415,18 +414,28 @@ const {showDropzone, fileDragover, fileDrop} = useFileDrop({
             <TabLayout v-model="editMode" horizontal :tab-list="editModeOptions" />
 
             <n-dropdown
+              v-if="dirHandle"
               size="small"
               :options="historyMenuOptions"
               label-field="label"
               key-field="key"
             >
-              <n-popconfirm v-if="dirHandle" @positive-click="handleCloseDir()">
+              <n-popconfirm @positive-click="handleCloseDir()">
                 <template #trigger>
                   <button class="vp-button primary">{{ $t('actions.close') }} Folder</button>
                 </template>
                 {{ $t('msgs.confirm_close') }}
               </n-popconfirm>
-              <button v-else class="vp-button primary" @click="handlePickDir">
+            </n-dropdown>
+
+            <n-dropdown
+              v-else
+              size="small"
+              :options="historyMenuOptions"
+              label-field="label"
+              key-field="key"
+            >
+              <button class="vp-button primary" @click="handlePickDir">
                 {{ $t('actions.pick_i18n_directory') }}
               </button>
             </n-dropdown>
@@ -473,20 +482,7 @@ const {showDropzone, fileDragover, fileDrop} = useFileDrop({
           <div class="main-edit-wrap">
             <template v-if="currentEditEntry">
               <!--文本编辑器-->
-              <!--<template v-if="editMode === EditMode.JSON">-->
-              <!--  <n-card class="action-row">-->
-              <!--    {{ i18nMainStore.filePathArr.join('/') }}-->
-              <!--  </n-card>-->
-              <!--  <div class="edit-content-wrap">-->
-              <!--    <VueMonaco-->
-              <!--      ref="vueMonacoRef"-->
-              <!--      v-model="editingTextValue"-->
-              <!--      language="json"-->
-              <!--      show-line-numbers-->
-              <!--    />-->
-              <!--  </div>-->
-              <!--</template>-->
-              <BatchTextEditor v-if="editMode === EditMode.JSON" />
+              <BatchJson v-if="editMode === EditMode.JSON" />
 
               <!--GUI模式/批处理模式-->
               <div v-else class="edit-content-wrap batch-mode">
@@ -497,7 +493,7 @@ const {showDropzone, fileDragover, fileDrop} = useFileDrop({
                   <GuiToolbox v-if="editMode === EditMode.BATCH" />
 
                   <TranslateTreeItem
-                    v-for="(item, index) in translateTreeRoot"
+                    v-for="(item, index) in i18nMainStore.translateTreeRoot"
                     :key="index"
                     :index="index"
                     :item="item"

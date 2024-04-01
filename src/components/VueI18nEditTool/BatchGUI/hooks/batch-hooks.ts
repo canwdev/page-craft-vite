@@ -67,6 +67,7 @@ export const useBatchWrapper = () => {
       for (let i = 0; i < filePathArrFiltered.value.length; i++) {
         const dirItem: DirTreeItem = filePathArrFiltered.value[i]
 
+        // 查找 subFilePathArr 对应的目标文件
         const findNode = (): DirTreeItem | null => {
           let find: DirTreeItem | null = null
           const recursiveFindItem = (
@@ -209,9 +210,9 @@ export const useBatchItemV2 = (props) => {
 
       await writable.write(txt)
       await writable.close()
-      const savedPath = listItem.value.dirItem.label + ': ' + fileHandle.name
-      console.log('[handleSaveFile]', savedPath)
-      window.$message.success(`${savedPath} ` + $t('msgs.saved'))
+      const pathTip = listItem.value.rootDir.label + ': ' + fileHandle.name
+      console.log('[handleSaveFile]', pathTip)
+      window.$message.success(`${pathTip} ` + $t('msgs.saved'))
     } catch (error: any) {
       console.error(error)
       window.$message.error($t('msgs.error') + error.message)

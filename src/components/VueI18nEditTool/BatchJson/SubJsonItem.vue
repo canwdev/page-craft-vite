@@ -84,7 +84,9 @@ export default defineComponent({
           initObj: localJson.value,
         })
       } else {
-        await handleSaveFile(JSON.stringify(localJson.value, null, 2))
+        const text = JSON.stringify(localJson.value, null, 2)
+        await handleSaveFile(text)
+        listItem.value.json = JSON.parse(text)
       }
 
       setChanged(false)

@@ -8,6 +8,9 @@ import {ref} from 'vue'
 import {QuickOptionItem} from '@/components/CommonUI/QuickOptions/enum'
 import {useDebounceFn} from '@vueuse/core'
 import {b} from 'vite/dist/node/types.d-FdqQ54oU'
+import {I18N_JSON_OBJ_ROOT_KEY_NAME, ITranslateTreeItem} from '@/enum/vue-i18n-tool'
+import _get from 'lodash/get'
+import {unicodeProgressBar} from '@/utils/unicode-progress-bar'
 
 const tiSelector = '.translate-item'
 const {t: $t} = useI18n()
@@ -92,14 +95,73 @@ const pasteJsonOverrideRight = async () => {
   }
 }
 
-const handleAnalyse = async () => {
-  console.log('[translatePath]', i18nMainStore.translatePath)
+const printAllInfo = async () => {
+  console.warn('====== [printAllInfo] Start ======')
   console.log('[dirTree]', i18nMainStore.dirTree)
+  console.log('[translateTreeRoot]', i18nMainStore.translateTreeRoot)
+  console.log('[translatePath]', i18nMainStore.translatePath)
   console.log('[filePathArr]', i18nMainStore.filePathArr)
   console.log('[batchList]', i18nMainStore.batchList)
   const items: any = await getSubItems()
   console.log('[getSubItems]', items)
-  console.warn('TODO！')
+  console.warn('====== [printAllInfo] End ======')
+  return {items}
+}
+
+const recursiveAnalyzeTranslateTree = (
+  tree: ITranslateTreeItem[],
+  depth = 0,
+  parents: string[] = [],
+  path: string = ''
+) => {
+  if (!tree || !tree.length) {
+    return
+  }
+  tree.forEach((t, tIdx) => {
+    const spaces = '  '.repeat(depth)
+    const nextParents = [...parents, t.namespace]
+    console.log(`${spaces}[🟢] ${t.namespace}`)
+    t.translates.forEach((i, idx) => {
+      const symbolTable = idx === t.translates.length - 1 ? '└─' : '├─'
+
+      // 统计翻译数量
+      let count = 0
+      const len = i18nMainStore.batchList.length
+      i18nMainStore.batchList.forEach(({json}) => {
+        if (!json) {
+          return
+        }
+
+        // 获取翻译key路径（去除虚拟根节点）
+        let tPath = nextParents.join('.') + '.' + i.key
+        const regex = new RegExp(I18N_JSON_OBJ_ROOT_KEY_NAME + '.', 'g')
+        tPath = tPath.replace(regex, '')
+        const tVal = _get(json, tPath)
+        // console.debug(tPath, json, tVal)
+        if (tVal) {
+          count++
+        }
+      })
+
+      const percent = (count / len) * 100
+      const bar = unicodeProgressBar(percent)
+      console.log(
+        `  ${spaces}${symbolTable}[${percent === 100 ? '✅' : '⚠️'}] ${
+          i.key
+        } ${bar} ${percent.toFixed(1)}% (${count}/${len})`
+      )
+      // console.debug(i, nextParents)
+    })
+    recursiveAnalyzeTranslateTree(t.children, depth + 1, nextParents)
+  })
+}
+
+const handleAnalyse = async () => {
+  await printAllInfo()
+  console.warn('====== [recursiveAnalyzeTranslateTree] Start ======')
+  recursiveAnalyzeTranslateTree(i18nMainStore.translateTreeRoot)
+  console.warn('====== [recursiveAnalyzeTranslateTree] End ======')
+  window.$message.success('Open console to view results.')
 }
 
 const isShowToolboxMenu = ref(false)

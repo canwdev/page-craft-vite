@@ -84,13 +84,13 @@ export const useSnippets = ({insertCode, vueMonacoRef}) => {
   })
 
   const snippetsOptions = computed((): QuickOptionItem[] => {
-    return [
+    const options: QuickOptionItem[] = [
       ...toolOptions.value,
       {
         label: 'Manage',
         children: [
           {
-            label: 'Add selection code to snippet',
+            label: 'Add custom snippet',
             props: {
               onClick: async () => {
                 const editor = vueMonacoRef.value.getInstance()
@@ -149,7 +149,7 @@ export const useSnippets = ({insertCode, vueMonacoRef}) => {
             label: 'Clear All...',
             children: [
               {
-                label: 'Confirm Clear All? OK',
+                label: 'Confirm Clear All Custom Snippets? OK',
                 props: {
                   onClick: () => {
                     customSnippets.value = []
@@ -161,8 +161,15 @@ export const useSnippets = ({insertCode, vueMonacoRef}) => {
           },
         ],
       },
-      ...traverseCustomOptions(customSnippets.value),
     ]
+    if (customSnippets.value.length) {
+      options.push({
+        label: 'Custom',
+        children: [...traverseCustomOptions(customSnippets.value)],
+      })
+    }
+
+    return options
   })
 
   // 创建【全局、变量】编辑器的变量字段补全
