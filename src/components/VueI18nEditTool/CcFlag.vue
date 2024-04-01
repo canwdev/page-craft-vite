@@ -19,8 +19,11 @@ const flagSrc = computed(() => {
     return src.value
   }
   let code = cc.value
-  if (cc.value.length !== 2) {
-    code = cc.value.split('-').pop() || ''
+  if (code.includes('.')) {
+    code = code.split('.')[0] || ''
+  }
+  if (code.length !== 2) {
+    code = code.split('-').pop() || ''
   }
   return countryCodeSvg(code)
 })

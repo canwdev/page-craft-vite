@@ -3,9 +3,12 @@ import {defineComponent} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {ClipboardPaste20Regular} from '@vicons/fluent'
 import {readClipboardData} from '@/utils'
-import {textConvertAdvanced, TextConvertMode} from '@/components/VueI18nEditTool/copy-enum'
-import {useI18nToolSettingsStore} from '@/store/i18n-tool-settings'
-import {useAutoPasteConvert} from '@/components/VueI18nEditTool/Single/use-auto-paste-convert'
+import {
+  textConvertAdvanced,
+  TextConvertMode,
+} from '@/components/VueI18nEditTool/TextConverter/copy-enum'
+import {useI18nToolSettingsStore} from '@/components/VueI18nEditTool/store/i18n-tool-settings'
+import {useAutoPasteConvert} from '@/components/VueI18nEditTool/Single/hooks/use-auto-paste-convert'
 import {isBase64Image, isSrcHttpUrl, isUrlImage} from '@/utils/is'
 
 export default defineComponent({

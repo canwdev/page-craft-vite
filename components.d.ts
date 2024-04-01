@@ -20,7 +20,7 @@ declare module '@vue/runtime-core' {
     ComponentV2: typeof import('./src/components/PageCraft/ComponentV2/index.vue')['default']
     DialogImageCropper: typeof import('./src/components/CommonUI/DialogImageCropper.vue')['default']
     DialogTextEdit: typeof import('./src/components/CommonUI/DialogTextEdit.vue')['default']
-    DialogTextTransformer: typeof import('./src/components/VueI18nEditTool/DialogTextTransformer.vue')['default']
+    DialogTextTransformer: typeof import('./src/components/VueI18nEditTool/TextConverter/DialogTextTransformer.vue')['default']
     DomPreview: typeof import('./src/components/PageCraft/DomPreview/DomPreview.vue')['default']
     DropZone: typeof import('./src/components/CommonUI/DropZone.vue')['default']
     DynamicValueDisplay: typeof import('./src/components/CommonUI/QuickOptions/utils/DynamicValueDisplay.vue')['default']

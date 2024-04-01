@@ -3,8 +3,11 @@ import {defineComponent} from 'vue'
 import {useI18n} from 'vue-i18n'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {StOptionItem, StOptionType} from '@/components/CommonUI/OptionUI/enum'
-import {useI18nToolSettingsStore} from '@/store/i18n-tool-settings'
-import {TextConvertMode, TextConvertOptions} from '@/components/VueI18nEditTool/copy-enum'
+import {useI18nToolSettingsStore} from '@/components/VueI18nEditTool/store/i18n-tool-settings'
+import {
+  TextConvertMode,
+  TextConvertOptions,
+} from '@/components/VueI18nEditTool/TextConverter/copy-enum'
 import {Globe20Regular} from '@vicons/fluent'
 import {NButton} from 'naive-ui'
 import {useCommonSettings} from '@/components/PageCraft/Settings/use-common-settings'

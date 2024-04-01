@@ -1,12 +1,13 @@
 <script lang="ts" setup="">
 import QuickOptions from '@/components/CommonUI/QuickOptions/index.vue'
 import {useI18n} from 'vue-i18n'
-import {useI18nMainStore} from '@/store/i18n-tool-main'
+import {BatchListItem, useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {readClipboardData} from '@/utils'
 import {ref} from 'vue'
 import {QuickOptionItem} from '@/components/CommonUI/QuickOptions/enum'
 import {useDebounceFn} from '@vueuse/core'
+import {b} from 'vite/dist/node/types.d-FdqQ54oU'
 
 const tiSelector = '.translate-item'
 const {t: $t} = useI18n()
@@ -28,40 +29,48 @@ const locateSelectedPath = () => {
   }
 }
 
+type SubInstanceItem = {
+  listItem: BatchListItem
+  fieldValue: string
+}
+
 // 获取SubGuiItem组件实例
-// TODO: fix bug
-const getSubItems = () => {
+const getSubItems = (): Promise<SubInstanceItem[]> => {
   return new Promise((resolve) => {
     globalEventBus.emit(GlobalEvents.I18N_BATCH_GUI_GET_SUBS, resolve)
   })
 }
 
 const copyJsonFromRight = async () => {
-  const items: any = await getSubItems()
+  const items: SubInstanceItem = await getSubItems()
   console.log('[items]', items)
   const result: any = []
   for (const key in items) {
     // SubGuiItem实例
     const item = items[key]
     result.push({
-      label: item.dirItem.label,
-      // undefined 为该文件没有创建，null 为该字段内容为空。
-      value: item.currentItem ? item.fieldValue : undefined,
+      label: item.listItem.rootDir.label,
+      // null 为该文件没有创建
+      value: item.fieldValue,
     })
   }
   window.$qlUtils.copy(result)
 }
 
+type PasteResult = {
+  label: string
+  value: string
+}
 const pasteJsonOverrideRight = async () => {
   try {
     const data: any = await readClipboardData()
-    const pastedResult: any[] = JSON.parse(data)
+    const pastedResult: PasteResult[] = JSON.parse(data)
     console.log('[pastedResult]', pastedResult)
 
-    const items: any = await getSubItems()
+    const items = await getSubItems()
     const itemsLabelMap: any = {}
     items.forEach((item) => {
-      itemsLabelMap[item.dirItem.label] = item
+      itemsLabelMap[item.listItem.rootDir.label] = item
     })
 
     console.log('[itemsLabelMap]', itemsLabelMap)
@@ -87,9 +96,10 @@ const handleAnalyse = async () => {
   console.log('[translatePath]', i18nMainStore.translatePath)
   console.log('[dirTree]', i18nMainStore.dirTree)
   console.log('[filePathArr]', i18nMainStore.filePathArr)
+  console.log('[batchList]', i18nMainStore.batchList)
   const items: any = await getSubItems()
   console.log('[getSubItems]', items)
-  console.log('TODO！')
+  console.warn('TODO！')
 }
 
 const isShowToolboxMenu = ref(false)

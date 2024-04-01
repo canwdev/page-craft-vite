@@ -20,13 +20,13 @@ import {
   ClipboardPaste20Regular,
 } from '@vicons/fluent'
 import {useMainStore} from '@/store/main'
-import {useI18nToolSettingsStore} from '@/store/i18n-tool-settings'
+import {useI18nToolSettingsStore} from '@/components/VueI18nEditTool/store/i18n-tool-settings'
 import {
   textConvertMultipleLine,
   textConvertAdvanced,
   TextConvertMode,
-} from '@/components/VueI18nEditTool/copy-enum'
-import {useArrayEdit} from '@/components/VueI18nEditTool/Single/use-array-edit'
+} from '@/components/VueI18nEditTool/TextConverter/copy-enum'
+import {useArrayEdit} from '@/components/VueI18nEditTool/Single/hooks/use-array-edit'
 import CcFlag from '@/components/VueI18nEditTool/CcFlag.vue'
 
 export default defineComponent({

@@ -4,20 +4,15 @@ import {DirTreeItem} from '@/enum/vue-i18n-tool'
 import _get from 'lodash/get'
 import _set from 'lodash/set'
 import _unset from 'lodash/unset'
-import {handleReadSelectedFile} from '@/utils/exporter'
 import {ClipboardPaste20Regular, Delete20Regular, SaveMultiple20Regular} from '@vicons/fluent'
 import DialogTextEdit from '@/components/CommonUI/DialogTextEdit.vue'
 import {useI18n} from 'vue-i18n'
 import {readClipboardData} from '@/utils'
-import {textConvertAdvanced} from '@/components/VueI18nEditTool/copy-enum'
-import {useI18nToolSettingsStore} from '@/store/i18n-tool-settings'
+import {textConvertAdvanced} from '@/components/VueI18nEditTool/TextConverter/copy-enum'
+import {useI18nToolSettingsStore} from '@/components/VueI18nEditTool/store/i18n-tool-settings'
 import FieldEdit from '@/components/VueI18nEditTool/Single/FieldEdit.vue'
-import {
-  BatchListItem,
-  useBatchItem,
-  useBatchItemV2,
-} from '@/components/VueI18nEditTool/BatchGUI/batch-hooks'
-import {useI18nMainStore} from '@/store/i18n-tool-main'
+import {useBatchItemV2} from '@/components/VueI18nEditTool/BatchGUI/hooks/batch-hooks'
+import {BatchListItem, useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
 import CcFlag from '@/components/VueI18nEditTool/CcFlag.vue'
 
 export default defineComponent({
@@ -53,6 +48,7 @@ export default defineComponent({
     } = useBatchItemV2(props)
 
     // 翻译文件的json对象
+    // TODO: remove
     let localJson = shallowRef<any | null>(null)
 
     // 当前翻译的字段值

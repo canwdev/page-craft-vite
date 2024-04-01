@@ -1,13 +1,8 @@
 <script lang="ts">
 import {defineComponent, PropType, ref} from 'vue'
 import {DirTreeItem} from '@/enum/vue-i18n-tool'
-import {
-  BatchListItem,
-  useBatchItem,
-  useBatchItemV2,
-} from '@/components/VueI18nEditTool/BatchGUI/batch-hooks'
-import {handleReadSelectedFile} from '@/utils/exporter'
-import {useI18nMainStore} from '@/store/i18n-tool-main'
+import {useBatchItemV2} from '@/components/VueI18nEditTool/BatchGUI/hooks/batch-hooks'
+import {BatchListItem, useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
 import VueJsonEditor from '@/components/CommonUI/VueJsonEditor.vue'
 
 export default defineComponent({

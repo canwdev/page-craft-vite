@@ -13,7 +13,7 @@ import {
   TextConvertOptions,
   textConvertMultipleLine,
   textConvertAdvanced,
-} from '@/components/VueI18nEditTool/copy-enum'
+} from '@/components/VueI18nEditTool/TextConverter/copy-enum'
 import {useSaveShortcut} from '@/hooks/use-beforeunload'
 import {useMainStore} from '@/store/main'
 import {useI18n} from 'vue-i18n'

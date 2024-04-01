@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import SubGuiItem from '@/components/VueI18nEditTool/BatchGUI/SubGuiItem.vue'
-import {useBatchWrapper} from '@/components/VueI18nEditTool/BatchGUI/batch-hooks'
+import {useBatchWrapper} from '@/components/VueI18nEditTool/BatchGUI/hooks/batch-hooks'
 import {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
-import {useI18nMainStore} from '@/store/i18n-tool-main'
+import {useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
 
 const i18nMainStore = useI18nMainStore()
-const {handleSaveChanged, itemsRef, batchList} = useBatchWrapper()
+const {isLoading, handleSaveChanged, itemsRef} = useBatchWrapper()
 
 useGlobalBusOn(GlobalEvents.I18N_BATCH_GUI_GET_SUBS, (resolve) => {
   resolve(itemsRef.value)
@@ -14,6 +14,12 @@ useGlobalBusOn(GlobalEvents.I18N_BATCH_GUI_GET_SUBS, (resolve) => {
 
 <template>
   <div class="batch-translate">
+    <transition name="fade">
+      <div class="os-loading-container _absolute" v-if="isLoading">
+        <n-spin />
+      </div>
+    </transition>
+
     <div class="vp-bg t-action-row">
       <span class="font-code">
         {{ i18nMainStore.translatePath }}
@@ -22,7 +28,7 @@ useGlobalBusOn(GlobalEvents.I18N_BATCH_GUI_GET_SUBS, (resolve) => {
     <div class="batch-translate-list-wrap">
       <SubGuiItem
         ref="itemsRef"
-        v-for="item in batchList"
+        v-for="item in i18nMainStore.batchList"
         :key="item.dirItem.key"
         :list-item="item"
         @saveChanged="handleSaveChanged"
@@ -33,6 +39,7 @@ useGlobalBusOn(GlobalEvents.I18N_BATCH_GUI_GET_SUBS, (resolve) => {
 
 <style lang="scss" scoped>
 .batch-translate {
+  position: relative;
   .t-action-row {
     position: sticky;
     top: 0;

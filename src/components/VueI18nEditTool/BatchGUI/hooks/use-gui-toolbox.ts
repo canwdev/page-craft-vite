@@ -1,4 +1,4 @@
-import {useI18nMainStore} from '@/store/i18n-tool-main'
+import {useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
 
 const tiSelector = '.translate-item'
 export const useGuiToolbox = () => {

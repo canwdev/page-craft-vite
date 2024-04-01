@@ -6,7 +6,7 @@ import {
   TextConvertMode,
   TextConvertOptions,
   textConvertMultipleLine,
-} from '@/components/VueI18nEditTool/copy-enum'
+} from '@/components/VueI18nEditTool/TextConverter/copy-enum'
 import {ClipboardPaste20Regular, Copy20Regular} from '@vicons/fluent'
 import {useI18n} from 'vue-i18n'
 import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
