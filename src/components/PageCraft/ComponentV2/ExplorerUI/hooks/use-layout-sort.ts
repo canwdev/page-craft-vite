@@ -1,8 +1,9 @@
 import {QuickOptionItem} from '@/components/CommonUI/QuickOptions/enum'
 import {sortMethodMap} from '../../utils/sort'
-import {SortType} from '../../types/filesystem'
+import {IEntry, SortType} from '../../types/filesystem'
+import {Ref} from 'vue'
 
-export const useLayoutSort = (files) => {
+export const useLayoutSort = (files: Ref<IEntry[]>) => {
   const isGridView = ref(false)
   const sortMode = ref(SortType.default)
   const showSortMenu = ref(false)

@@ -91,14 +91,14 @@ const copyEntry = (fromPath: string, toPath: string, isMove = false) => {
 }
 
 export const fsWebApi = {
-  getDrives(params) {
+  async getDrives(params) {
     return [
       {label: 'LocalStorage FS', path: '/home'},
       {label: 'RAM FS', path: '/tmp'},
       // {label: 'IndexedDB FS', path: '/idbfs'},
     ]
   },
-  getList({path}) {
+  async getList({path}) {
     const files = fs.readdirSync(path)
     return files.map((entryName: string) => {
       const entryPath = Path.join(path, entryName)
@@ -133,7 +133,7 @@ export const fsWebApi = {
     console.log(r)
     return r
   },
-  createDir(params) {
+  async createDir(params) {
     const {path, ignoreExisted = false} = params
     if (ignoreExisted) {
       if (fs.existsSync(path)) {
@@ -143,27 +143,27 @@ export const fsWebApi = {
     fs.mkdirSync(path, {recursive: true})
     return {path}
   },
-  createFile(params, config: any = {}) {
+  async createFile(params, config: any = {}) {
     const {path, file} = params
 
     if (fs.existsSync(path)) {
       throw new Error(`file ${path} already exist!`)
     }
-    this.createDir({path: Path.dirname(path), ignoreExisted: true})
-    fs.writeFileSync(path, '123')
+    await this.createDir({path: Path.dirname(path), ignoreExisted: true})
+    fs.writeFileSync(path, file)
   },
-  renameEntry(params) {
+  async renameEntry(params) {
     const {fromPath, toPath} = params
     fs.renameSync(fromPath, toPath)
   },
-  copyPaste(params) {
+  async copyPaste(params) {
     const {fromPaths, toPath, isMove} = params
     for (let i = 0; i < fromPaths.length; i++) {
       const path = fromPaths[i]
       copyEntry(path, toPath, isMove)
     }
   },
-  deleteEntry(params) {
+  async deleteEntry(params) {
     const {path} = params
     if (Array.isArray(path)) {
       for (let i = 0; i < path.length; i++) {

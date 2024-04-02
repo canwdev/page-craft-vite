@@ -20,6 +20,7 @@ import {
   Cut20Regular,
   Copy20Regular,
   ClipboardPaste20Regular,
+  Add24Regular,
 } from '@vicons/fluent'
 import QuickOptions from '@/components/CommonUI/QuickOptions/index.vue'
 import QuickContextMenu from '@/components/CommonUI/QuickOptions/utils/QuickContextMenu.vue'
@@ -27,6 +28,7 @@ import {useCopyPaste} from './hooks/use-copy-paste'
 import {useSelection} from './hooks/use-selection'
 import {useLayoutSort} from './hooks/use-layout-sort'
 import {useFileActions} from '@/components/PageCraft/ComponentV2/ExplorerUI/hooks/use-file-actions'
+import {useComponentManage} from '@/components/PageCraft/ComponentV2/ExplorerUI/hooks/use-component-manage'
 
 const emit = defineEmits(['open', 'update:isLoading', 'refresh'])
 
@@ -83,6 +85,8 @@ const {
   selectedItemsSet,
   emit,
 })
+
+const {handleCreateComponent} = useComponentManage({files, basePath, isLoading, emit})
 </script>
 
 <template>
@@ -206,6 +210,10 @@ const {
       </div>
 
       <QuickContextMenu :options="ctxMenuOptions" ref="ctxMenuRef" />
+
+      <button @click="handleCreateComponent" class="mc-btn-add">
+        <n-icon size="24"> <Add24Regular /></n-icon>
+      </button>
     </div>
   </div>
 </template>
@@ -344,6 +352,29 @@ const {
     padding: 10px;
     flex-wrap: wrap;
     gap: 4px;
+  }
+}
+
+.mc-btn-add {
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  border-radius: 50%;
+  background-color: $primary; // #e91e63;
+  color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  border: none;
+  outline: none;
+
+  &:hover {
+    filter: contrast(200%) brightness(1.5);
   }
 }
 </style>

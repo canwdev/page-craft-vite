@@ -17,8 +17,11 @@ export const getLastDirName = (path) => {
   return path.split('/').pop()
 }
 
-export const generateTextFile = (text: string, name: string) => {
-  const blob = new Blob([text], {type: 'text/plain;charset=utf-8'})
+export const generateTextFile = (value: string | object, name: string) => {
+  if (typeof value === 'object') {
+    value = JSON.stringify(value)
+  }
+  const blob = new Blob([value], {type: 'text/plain;charset=utf-8'})
   return new File([blob], name)
 }
 
