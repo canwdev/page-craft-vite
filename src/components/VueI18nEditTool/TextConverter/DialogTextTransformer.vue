@@ -28,7 +28,9 @@ export default defineComponent({
     const mVisible = useModelWrapper(props, emit, 'visible')
     const textInput = ref('')
     const textOutput = ref('')
-    const mMode = useStorage('text_converter_copy_mode', TextConvertMode.JSON)
+    const mMode = useStorage('text_converter_copy_mode', TextConvertMode.JSON, localStorage, {
+      listenToStorageChanges: false,
+    })
     const isTrimEmptyLines = ref(true)
     const htmlTagName = ref('')
     const htmlAttrs = ref('')

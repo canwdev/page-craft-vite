@@ -37,8 +37,8 @@ export const useI18nToolSettingsStore = defineStore('i18nToolSettings', {
   persist: {
     key: 'ls_key_i18n_tool_settings',
   },
-  // share: {
-  //   enable: false,
-  //   initialize: false,
-  // },
+  share: {
+    enable: false,
+    initialize: false,
+  },
 })

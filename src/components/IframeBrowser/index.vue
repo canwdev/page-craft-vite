@@ -30,7 +30,9 @@ export default defineComponent({
       name: 'CraftPlayground',
     }).href
 
-    const addressBarUrl = useStorage('pagecraft_iframe_browser_url', defUrl)
+    const addressBarUrl = useStorage('pagecraft_iframe_browser_url', defUrl, localStorage, {
+      listenToStorageChanges: false,
+    })
 
     const titleText = computed(() => {
       if (isLoading.value) {

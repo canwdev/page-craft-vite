@@ -209,7 +209,7 @@ const guiToolboxOptions = computed((): QuickOptionItem[] => {
 const toolboxFilterKey = ref('')
 const toolboxFilterKeyChange = useDebounceFn(() => {
   const els = document.querySelectorAll(
-    `${tiSelector}[data-translate-path*="${toolboxFilterKey.value}"]`
+    `${tiSelector}[data-translate-path*="${toolboxFilterKey.value.trim()}"]`
   )
   Array.from(els).forEach((el, index) => {
     const key = el.getAttribute('data-translate-path')
