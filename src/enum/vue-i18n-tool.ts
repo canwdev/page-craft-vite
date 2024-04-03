@@ -1,3 +1,5 @@
+import {pinyin} from 'pinyin-pro'
+
 export interface ITranslateItem {
   key: string
   value: string
@@ -129,11 +131,10 @@ export const formatI18nKey = (
     return ''
   }
   let str = String(val)
-  const {pinyinUtil} = window
   // 中文转换拼音
-  if (pinyinUtil && containsChinese(str)) {
+  if (containsChinese(str)) {
     try {
-      str = pinyinUtil.getPinyin(str, replace, false, true)
+      str = pinyin(str, {toneType: 'none', nonZh: 'consecutive'})
     } catch (e) {
       console.warn(e)
     }

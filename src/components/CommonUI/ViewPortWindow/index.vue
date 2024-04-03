@@ -315,12 +315,12 @@ export default defineComponent({
         if (!mVisible.value || !rootRef.value) {
           return
         }
-        emit('resize')
 
         const size = getComputedStyle(rootRef.value)
 
         winOptions.width = size.width
         winOptions.height = size.height
+        emit('resize', winOptions)
       },
       50,
       true

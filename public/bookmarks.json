@@ -66,6 +66,10 @@
       {
         "label": "二维码生成 cli.im",
         "value": "https://cli.im/"
+      },
+      {
+        "label": "",
+        "value": "https://t.mwm.moe/"
       }
     ]
   },

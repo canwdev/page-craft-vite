@@ -187,7 +187,8 @@ export default defineComponent({
             '': "Blur this input and it'll generate the key automatically!",
           },
           section_c: {
-            '': '中文 is Supported',
+            '': '平行、行列',
+            '': '中English混合',
           },
         },
       })
