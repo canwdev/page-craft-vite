@@ -5,6 +5,7 @@ import {useSettingsStore} from '@/store/settings'
 import i18n from '@/i18n/index'
 import {window as tauriWin} from '@tauri-apps/api'
 import {formatSiteTitle} from '@/router/router-utils'
+import {initFs} from '@/components/PageCraft/ComponentV2/utils/api'
 
 let history = createWebHashHistory()
 let routes = [
@@ -70,12 +71,6 @@ let routes = [
 const router = createRouter({history, routes})
 
 router.beforeEach(async (to, from, next) => {
-  const {configure} = window.BrowserFS
-  await configure({fs: 'LocalStorage'}, (e) => {
-    if (e) {
-      console.error(e)
-    }
-  })
   return next()
 })
 

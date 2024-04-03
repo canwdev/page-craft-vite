@@ -354,27 +354,4 @@ const {handleCreateComponent} = useComponentManage({files, basePath, isLoading, 
     gap: 4px;
   }
 }
-
-.mc-btn-add {
-  width: 40px;
-  height: 40px;
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  border-radius: 50%;
-  background-color: $primary; // #e91e63;
-  color: white;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
-  border: none;
-  outline: none;
-
-  &:hover {
-    filter: contrast(200%) brightness(1.5);
-  }
-}
 </style>

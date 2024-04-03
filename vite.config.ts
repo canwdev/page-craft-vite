@@ -70,6 +70,7 @@ export default defineConfig({
   ],
   // 强制预构建插件包
   optimizeDeps: {
+    exclude: ['@humanfs/web'],
     include: [
       `monaco-editor/esm/vs/language/json/json.worker`,
       `monaco-editor/esm/vs/language/css/css.worker`,

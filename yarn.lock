@@ -1779,6 +1779,18 @@
   dependencies:
     "@fortawesome/fontawesome-common-types" "6.5.1"
 
+"@humanfs/core@^0.17.0":
+  version "0.17.0"
+  resolved "https://registry.npmmirror.com/@humanfs/core/-/core-0.17.0.tgz#8b7b788b2a2f58c482acfedcb7be9d3c623e26ce"
+  integrity sha512-ZAK7jtcVRwPiRZdT+W2ZaGV1oxVQK8IXvKrdpRkrDCVniKXNmqL+k+r0NhWKk9k9Nwm1yrCqr8utaa24CVK1OQ==
+
+"@humanfs/web@^0.13.0":
+  version "0.13.0"
+  resolved "https://registry.npmmirror.com/@humanfs/web/-/web-0.13.0.tgz#74a9e8822b15674bbf896323e10eb4e63f5b21df"
+  integrity sha512-iwkx657y2QvA4EPi1HObEjooLl7nrojI0+lDclbr4eC3etZ3ynPuT3vlaNiKUoF5SPGAsUK8G5oS5+tntk5N7w==
+  dependencies:
+    "@humanfs/core" "^0.17.0"
+
 "@humanwhocodes/config-array@^0.11.13":
   version "0.11.14"
   resolved "https://registry.npmmirror.com/@humanwhocodes/config-array/-/config-array-0.11.14.tgz#d78e481a039f7566ecc9660b4ea7fe6b1fec442b"

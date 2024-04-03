@@ -5,21 +5,29 @@ const fs = BFSRequire('fs')
 const Path = BFSRequire('path')
 
 // 在 router.beforeEach 进行 configure初始化
-/*await configure(
-  {
-    fs: 'MountableFileSystem',
-    options: {
-      '/home': {fs: 'LocalStorage'},
-      '/tmp': {fs: 'InMemory'},
-      // '/idbfs': {fs: 'IndexedDB'},
-    },
-  },
-  (e) => {
+export const initFs = async () => {
+  const {configure} = window.BrowserFS
+  await configure({fs: 'LocalStorage'}, (e) => {
     if (e) {
       console.error(e)
     }
-  }
-)*/
+  })
+
+  // await configure(
+  //   {
+  //     fs: 'MountableFileSystem',
+  //     options: {
+  //       '/home': {fs: 'LocalStorage'},
+  //       '/tmp': {fs: 'InMemory'},
+  //     },
+  //   },
+  //   (e) => {
+  //     if (e) {
+  //       console.error(e)
+  //     }
+  //   }
+  // )
+}
 
 const recursiveDelete = (path) => {
   let files = []
@@ -90,7 +98,9 @@ const copyEntry = (fromPath: string, toPath: string, isMove = false) => {
   }
 }
 
-export const fsWebApi = {
+export {fsWebApi} from './humanfs-api'
+
+export const fsWebApi000 = {
   async getDrives(params) {
     return [
       {label: 'LocalStorage FS', path: '/home'},
