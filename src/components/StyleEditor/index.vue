@@ -236,7 +236,9 @@ const tabList = ref([
   {label: $t('common.variables'), value: StyleTabType.VARIABLES},
   {label: $t('actions.current'), value: StyleTabType.CURRENT},
 ])
-const styleEditorTab = useStorage(StyleEditorKeys.CURRENT_TAB, StyleTabType.CURRENT)
+const styleEditorTab = useStorage(StyleEditorKeys.CURRENT_TAB, StyleTabType.CURRENT, localStorage, {
+  listenToStorageChanges: false,
+})
 watch(
   showTabs,
   (val) => {

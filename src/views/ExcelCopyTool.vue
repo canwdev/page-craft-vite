@@ -113,7 +113,9 @@ export default defineComponent({
       await initXLSX()
     })
 
-    const copyMode = useStorage('excel_copy_tool_copy_mode', TextConvertMode.HTML)
+    const copyMode = useStorage('excel_copy_tool_copy_mode', TextConvertMode.HTML, localStorage, {
+      listenToStorageChanges: false,
+    })
     const handleClick = (event: MouseEvent) => {
       let el = event.target as HTMLElement
       if (!isAllowedElement(el) || !copyMode.value || copyMode.value === TextConvertMode.DISABLED) {

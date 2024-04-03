@@ -303,7 +303,9 @@ const handleSaveFile = async () => {
   }
 }
 
-const editMode = useStorage('vue_i18n_dir_tool_edit_mode', EditMode.BATCH)
+const editMode = useStorage('vue_i18n_dir_tool_edit_mode', EditMode.BATCH, localStorage, {
+  listenToStorageChanges: false,
+})
 
 const updateGuiTranslateTree = () => {
   if (editMode.value !== 'text') {
