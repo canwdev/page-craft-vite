@@ -8,17 +8,37 @@ import {normalizePath} from '@/components/FileManager/utils'
 import {useSettingsStore} from '@/store/settings'
 import {
   IComponentExportData,
+  IComponentInStore,
   IComponentItem,
   IComponentMeta,
+  regComponentV2,
 } from '@/components/PageCraft/ComponentV2/enum'
 import {guid} from '@/utils'
 import {useStorage} from '@vueuse/core'
 import {LsKeys} from '@/enum/page-craft'
-import {loadCompStorage} from '@/hooks/use-component-storage'
-import {BlockItem, createComponentBlockItem} from '@/enum/page-craft/block'
+import {BlockItem, BlockType, ComponentData} from '@/enum/page-craft/block'
 import {promptGetFileName} from '@/utils/exporter'
 
 let idx = 1
+const SPLIT_SIGN_V1 = '__'
+// 读写组件存储
+export const loadCompV1Storage = (lsKey: LsKeys, name: string) => {
+  return localStorage.getItem(lsKey + SPLIT_SIGN_V1 + name) || ''
+}
+export const saveCompV1Storage = (lsKey: LsKeys, name: string, value: string) => {
+  return localStorage.setItem(lsKey + SPLIT_SIGN_V1 + name, value)
+}
+
+const getCompInStore = (item: IComponentItem, path): IComponentInStore => {
+  if (!item.meta) {
+    throw new Error('item has no meta')
+  }
+  return {
+    id: item.meta.id,
+    title: item.name.replace(regComponentV2, ''),
+    path: path,
+  }
+}
 
 const createFile = async (basePath, name, content) => {
   await fsWebApi.createFile({
@@ -72,18 +92,28 @@ export const useComponentManage = (options: Opts) => {
 
       // 设置默认HTML、SCSS代码
       const className = changeCase.paramCase(name || 'my-component')
+      const id = guid()
       await importComponentJson({
+        id,
         name,
         timestamp: Date.now(),
         html: `<div class="${className}"></div>`,
         style: `.${className} {\n}\n`,
       })
 
-      // 设置当前选中的组件名
-      // settingsStore.curCompPath = name
+      const folderName = `${name}.comp`
       idx++
 
       emit('refresh')
+
+      setTimeout(() => {
+        // 设置当前选中的组件
+        settingsStore.curCompInStore = {
+          id,
+          title: name,
+          path: normalizePath(basePath.value + '/' + folderName),
+        }
+      }, 100)
     } finally {
       isLoading.value = false
     }
@@ -97,7 +127,6 @@ export const useComponentManage = (options: Opts) => {
     const meta: IComponentMeta = {
       id: item.id || guid(),
       timeCreated: item.timestamp,
-      timeUpdated: item.timestampUpdated || item.timestamp,
     }
 
     await createFile(subDirPath, 'index.json', JSON.stringify(meta))
@@ -125,9 +154,8 @@ export const useComponentManage = (options: Opts) => {
 
     const json: IComponentExportData = {
       id: item.meta.id,
-      name: item.name,
+      name: item.name.replace(regComponentV2, ''),
       timestamp: item.meta.timeCreated,
-      timestampUpdated: item.meta.timeUpdated,
       html,
       style,
       cover: item.meta.cover,
@@ -148,36 +176,37 @@ export const useComponentManage = (options: Opts) => {
     }
 
     window.$mcUtils.handleExportFile(exportFileName, JSON.stringify(res, null, 2), '.json')
-    window.$message.success('Export success!')
   }
 
   return {
     handleCreateComponent,
     importComponentAllJson,
     exportComponentAllJson,
+    importComponentJson,
+    exportComponentJson,
   }
 }
 
 export const useComponentStorageV2 = () => {
   const settingsStore = useSettingsStore()
 
-  const openComponent = (path: string) => {
-    settingsStore.curCompPath = path
+  const openComponent = (item: IComponentItem, path: string) => {
+    settingsStore.curCompInStore = getCompInStore(item, path)
   }
 
   const loadCurFile = async (filename: string) => {
-    if (!settingsStore.curCompPath) {
-      throw new Error('[loadCurFile] component not opened!')
+    if (!settingsStore.curCompInStore) {
+      return loadCompV1Storage(LsKeys.DEFAULT_CANVAS, filename)
     }
-    const path = settingsStore.curCompPath
+    const {path} = settingsStore.curCompInStore
     return await loadFile(path, filename)
   }
 
   const saveCurFile = async (filename: string, content) => {
-    if (!settingsStore.curCompPath) {
-      throw new Error('[saveCurFile] component not opened!')
+    if (!settingsStore.curCompInStore) {
+      return saveCompV1Storage(LsKeys.DEFAULT_CANVAS, filename, content)
     }
-    const path = settingsStore.curCompPath
+    const {path} = settingsStore.curCompInStore
     return await fsWebApi.writeFile({path: normalizePath(path + '/' + filename), file: content})
   }
 
@@ -203,10 +232,20 @@ export const useComponentStorageV2 = () => {
   }
 }
 
+// 旧版组件迁移到V2新版文件系统
 export const useComponentMigrationToV2 = () => {
-  // 旧版组件迁移到V2新版文件系统
   const isMigrated = useStorage('component_is_migrated_v2', false)
   const isMigrating = ref(false)
+
+  const createComponentBlockItem = (name: string, data = {}) => {
+    // console.log('[createComponentBlockItem]', name, data)
+    return new BlockItem({
+      blockType: BlockType.COMPONENT,
+      title: name,
+      data: new ComponentData(data),
+    })
+  }
+
   const migrateToV2 = async () => {
     if (isMigrated.value || isMigrating.value) {
       return
@@ -218,7 +257,7 @@ export const useComponentMigrationToV2 = () => {
       // 读取详细信息并组成组件列表
       return createComponentBlockItem(
         name,
-        JSON.parse(loadCompStorage(LsKeys.COMP_META, name) || '{}')
+        JSON.parse(loadCompV1Storage(LsKeys.COMP_META, name) || '{}')
       )
     })
 
@@ -236,13 +275,12 @@ export const useComponentMigrationToV2 = () => {
       const meta: IComponentMeta = {
         id: guid(),
         timeCreated: timestamp,
-        timeUpdated: timestamp,
       }
 
       await createFile(subDirPath, 'index.json', JSON.stringify(meta))
       // 还原HTML、SCSS代码
-      await createFile(subDirPath, 'index.html', loadCompStorage(LsKeys.COMP_HTML, title))
-      await createFile(subDirPath, 'index.scss', loadCompStorage(LsKeys.COMP_STYLE, title))
+      await createFile(subDirPath, 'index.html', loadCompV1Storage(LsKeys.COMP_HTML, title))
+      await createFile(subDirPath, 'index.scss', loadCompV1Storage(LsKeys.COMP_STYLE, title))
       if (cover) {
         await createFile(subDirPath, 'cover.base64', cover)
       }

@@ -54,27 +54,6 @@ export class ComponentData {
   }
 }
 
-// 导出专用类型
-export interface ComponentExportData {
-  name: string
-  timestamp: number
-  stared: boolean // 是否为星标组件
-  html: string
-  style: string
-  cover: string // base64编码的封面
-}
-
-export class ComponentExportData {
-  constructor(prop: any = {}) {
-    this.timestamp = prop.timestamp || Date.now()
-    this.stared = prop.stared || false
-    this.name = prop.name
-    this.html = prop.html
-    this.style = prop.style
-    this.cover = prop.cover
-  }
-}
-
 export interface BlockItem {
   id: string
   blockType: BlockType
@@ -155,12 +134,3 @@ export const initToolbarList: BlockItem[] = [
   ...presetHtmlTags.map((tag) => createHtmlBlockItem(tag)),
   ActionBlockItems.EMPTY,
 ]
-
-export const createComponentBlockItem = (name: string, data = {}) => {
-  // console.log('[createComponentBlockItem]', name, data)
-  return new BlockItem({
-    blockType: BlockType.COMPONENT,
-    title: name,
-    data: new ComponentData(data),
-  })
-}

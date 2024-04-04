@@ -90,7 +90,7 @@ const handleOpen = (item) => {
   const path = normalizePath(basePath.value + '/' + item.name)
   // 打开.comp为后缀的组件文件夹
   if (regComponentV2.test(path)) {
-    openComponent(path)
+    openComponent(item, path)
     return
   }
   emit('open', item)
@@ -188,7 +188,7 @@ const handleOpen = (item) => {
           v-for="item in filteredFiles"
           :key="item.name"
           :data-name="item.name"
-          :active="selectedItemsSet.has(item)"
+          :checked="selectedItemsSet.has(item)"
           @open="handleOpen"
           @select="toggleSelect"
           @contextmenu.prevent.stop="handleShowCtxMenu(item, $event)"

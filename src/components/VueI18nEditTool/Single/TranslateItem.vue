@@ -13,6 +13,7 @@ import {Delete20Regular} from '@vicons/fluent'
 import {useI18n} from 'vue-i18n'
 import {useMainStore} from '@/store/main'
 import FieldEdit from '@/components/VueI18nEditTool/Single/FieldEdit.vue'
+import {useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
 
 export default defineComponent({
   name: 'TranslateItem',
@@ -41,7 +42,7 @@ export default defineComponent({
   emits: ['onRemove', 'previewArray', 'onKeyClick'],
   setup(props, {emit}) {
     const {t: $t} = useI18n()
-    const mainStore = useMainStore()
+    const i18nMainStore = useI18nMainStore()
     const {item, treeItem, index} = toRefs(props)
 
     const namespacePrefix = computed(() => {
@@ -100,7 +101,7 @@ export default defineComponent({
       }
 
       highlightCopyMode.value = mode
-      mainStore.trLastCopyMode = mode
+      i18nMainStore.trLastCopyMode = mode
 
       copyToClipboard(text)
       window.$message.success($t('msgs.copy_success') + text)
@@ -121,19 +122,19 @@ export default defineComponent({
       }
 
       // 如果相同，说明正在执行 handleAutoAdd 操作
-      if (mainStore.trAutoAddGuid !== null && item.value.key === mainStore.trAutoAddGuid) {
-        mainStore.trAutoAddGuid = null
+      if (i18nMainStore.trAutoAddGuid !== null && item.value.key === i18nMainStore.trAutoAddGuid) {
+        i18nMainStore.trAutoAddGuid = null
         item.value.key = ''
         handleValueBlur()
         setTimeout(() => {
-          handleCopy(mainStore.trLastCopyMode)
+          handleCopy(i18nMainStore.trLastCopyMode)
         })
-      } else if (mainStore.trIsManualAdd) {
+      } else if (i18nMainStore.trIsManualAdd) {
         // 自动选择value输入框
         if (valueInputRef.value) {
           valueInputRef.value.focus()
         }
-        mainStore.trIsManualAdd = false
+        i18nMainStore.trIsManualAdd = false
       }
     })
 

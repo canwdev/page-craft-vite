@@ -1,27 +1,11 @@
 import moment from 'moment/moment'
 import FileSaver from 'file-saver'
-import {ComponentExportData} from '@/enum/page-craft/block'
 import {sassToCSS} from '@/components/StyleEditor/utils/css'
 import {formatCss, formatHtml} from '@/components/StyleEditor/utils/formater'
 import {showInputPrompt} from '@/components/CommonUI/input-prompt'
+import {IComponentExportData} from '@/components/PageCraft/ComponentV2/enum'
 
-export const handleExportJson = async (exportData: ComponentExportData) => {
-  handleExportFile(
-    await promptGetFileName(exportData.name),
-    JSON.stringify(exportData, null, 2),
-    '.json'
-  )
-}
-
-export const handleExportStyle = async (exportData: ComponentExportData, isCss = false) => {
-  let style = exportData.style
-  if (isCss) {
-    style = formatCss(await sassToCSS(style))
-  }
-  handleExportFile(await promptGetFileName(exportData.name), style, isCss ? '.css' : '.scss')
-}
-
-export const handleExportHtml = async (exportData: ComponentExportData, options?) => {
+export const handleExportHtml = async (exportData: IComponentExportData, options?) => {
   const {html, style} = exportData
   const {isInline = false, inlineWithStyleTag = false} = options || {}
 
@@ -66,7 +50,7 @@ ${html}
 
   handleExportFile(name, htmlStr, '.html')
 }
-export const handleExportVue = async (exportData: ComponentExportData, version = 2) => {
+export const handleExportVue = async (exportData: IComponentExportData, version = 2) => {
   const {html, style} = exportData
   const name = await promptGetFileName(exportData.name)
 

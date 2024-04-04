@@ -8,7 +8,12 @@ import {useComponentManage} from '@/components/PageCraft/ComponentV2/hooks/use-c
 import {useI18n} from 'vue-i18n'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {useSettingsStore} from '@/store/settings'
-import {IComponentItem, regComponentV2} from '@/components/PageCraft/ComponentV2/enum'
+import {
+  IComponentExportData,
+  IComponentItem,
+  regComponentV2,
+} from '@/components/PageCraft/ComponentV2/enum'
+import {promptGetFileName} from '@/utils/exporter'
 
 export const useComponentFileActions = ({
   isLoading,
@@ -26,13 +31,18 @@ export const useComponentFileActions = ({
   const {t: $t} = useI18n()
   const settingsStore = useSettingsStore()
 
-  const {handleCreateComponent, importComponentAllJson, exportComponentAllJson} =
-    useComponentManage({
-      isLoading,
-      files,
-      basePath,
-      emit,
-    })
+  const {
+    handleCreateComponent,
+    importComponentAllJson,
+    exportComponentAllJson,
+    importComponentJson,
+    exportComponentJson,
+  } = useComponentManage({
+    isLoading,
+    files,
+    basePath,
+    emit,
+  })
 
   const handleCreateFolder = async () => {
     try {
@@ -92,7 +102,7 @@ export const useComponentFileActions = ({
 
   // 取消选择当前组件（回到默认画板）
   const cancelSelectComponent = () => {
-    settingsStore.curCompPath = ''
+    settingsStore.curCompInStore = null
   }
 
   // 导入预设组件
@@ -159,6 +169,17 @@ export const useComponentFileActions = ({
     }
   }
 
+  const exportSingleComponent = async (item: IComponentItem) => {
+    const exportFileName = await promptGetFileName('', item.name)
+    if (!exportFileName) {
+      return
+    }
+
+    const res: IComponentExportData[] = [await exportComponentJson(item)]
+
+    window.$mcUtils.handleExportFile(exportFileName, JSON.stringify(res, null, 2), '.json')
+  }
+
   const ctxMenuOptions = computed((): QuickOptionItem[] => {
     if (!selectedItems.value.length) {
       return [
@@ -176,7 +197,7 @@ export const useComponentFileActions = ({
           },
         },
         {
-          label: `📃 ${$t('actions.export')} ${$t('common.all_components')} (JSON)`,
+          label: `📤 ${$t('actions.export')} ${$t('common.all_components')} (JSON)`,
           props: {
             onClick: async () => {
               const list = files.value.filter((item: IComponentItem) => {
@@ -241,10 +262,19 @@ export const useComponentFileActions = ({
         props: {onClick: handleCopy},
       },
       isComponent && {
-        label: '📄 ' + $t('actions.duplicate'),
+        label: `📄 ${$t('actions.duplicate')}`,
         props: {
           onClick: () => {
             duplicateComponent(selectedItems.value[0])
+          },
+        },
+      },
+      // 导出单个组件
+      isComponent && {
+        label: `📤 ${$t('actions.export')} JSON`,
+        props: {
+          onClick: () => {
+            exportSingleComponent(selectedItems.value[0])
           },
         },
       },

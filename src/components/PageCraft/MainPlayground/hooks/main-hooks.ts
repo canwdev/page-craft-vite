@@ -1,13 +1,7 @@
-import {
-  handleExportHtml,
-  handleExportJson,
-  handleExportVue,
-  handleReadSelectedFile,
-} from '@/utils/exporter'
+import {handleExportHtml, handleExportVue, handleReadSelectedFile} from '@/utils/exporter'
 import globalEventBus, {GlobalEvents, syncStorageData} from '@/utils/global-event-bus'
 import {copyToClipboard} from '@/utils'
 import {formatCss, formatHtml} from '@/components/StyleEditor/utils/formater'
-import {ComponentExportData} from '@/enum/page-craft/block'
 import {useMainStore} from '@/store/main'
 import {UndoRedo} from '@/utils/undo-redo'
 import {useSettingsStore} from '@/store/settings'
@@ -16,13 +10,13 @@ import {useBeforeUnload, useSaveShortcut} from '@/hooks/use-beforeunload'
 import {useSfxBass, useSfxBell, useSfxFill, useSfxGuitar} from '@/hooks/use-sfx'
 import {useBroadcastMessage} from '@/hooks/use-broadcast-messae'
 import {useComponentStorageV2} from '@/components/PageCraft/ComponentV2/hooks/use-component-manage'
+import {IComponentExportData} from '@/components/PageCraft/ComponentV2/enum'
 
 export const useMcMain = (options) => {
   const {t: $t} = useI18n()
   const {mainPlaygroundRef, emit} = options
   const mainStore = useMainStore()
   const settingsStore = useSettingsStore()
-  const fileChooserRef = ref()
   const isShowImportDialog = ref(false)
   const {loadCurCompHtml, saveCurCompHtml, saveCurCompStyle, loadCurCompStyle} =
     useComponentStorageV2()
@@ -53,17 +47,6 @@ export const useMcMain = (options) => {
     playSfxBell()
   }
 
-  const handleImportJson = async (data) => {
-    const {html = '', style = ''} = new ComponentExportData(data)
-    await saveCurCompHtml(html)
-    await saveCurCompStyle(style)
-    globalEventBus.emit(GlobalEvents.IMPORT_SUCCESS, style)
-    window.$message.success($t('msgs.import_success'))
-  }
-  const handleImportJsonSelected = async (file) => {
-    const str = await handleReadSelectedFile(file)
-    handleImportJson(JSON.parse(str as string))
-  }
   const pasteHtmlText = ref('')
 
   // 保存当前组件的 HTML
@@ -93,7 +76,7 @@ export const useMcMain = (options) => {
   })
 
   watch(
-    () => settingsStore.curCompPath,
+    () => settingsStore.curCompInStore,
     () => {
       if (isSelfUpdating.value) {
         console.warn('isSelfUpdating')
@@ -118,16 +101,19 @@ export const useMcMain = (options) => {
     sfxFill()
   }
 
-  const getEntityData = async (): Promise<ComponentExportData> => {
+  const getEntityData = async () => {
     await syncStorageData()
     const html = (await loadCurCompHtml()) || ''
     const style = await loadCurCompStyle()
 
-    return new ComponentExportData({
-      name: settingsStore.curCompPath,
+    const res: IComponentExportData = {
+      name: settingsStore.curCompInStore?.title || '',
       html: formatHtml(html),
       style: formatCss(style),
-    })
+      timestamp: Date.now(),
+    }
+
+    return res
   }
 
   const handleImportHtml = (html: string) => {
@@ -138,22 +124,6 @@ export const useMcMain = (options) => {
   }
 
   const htmlMenuOptions = [
-    {
-      label: `📥 ${$t('actions.import')} JSON`,
-      props: {
-        onClick: async () => {
-          fileChooserRef.value.chooseFile()
-        },
-      },
-    },
-    {
-      label: `📃 ${$t('actions.export')} JSON`,
-      props: {
-        onClick: async () => {
-          await handleExportJson(await getEntityData())
-        },
-      },
-    },
     {
       label: `📤 ${$t('actions.export')}`,
       children: [
@@ -279,12 +249,10 @@ export const useMcMain = (options) => {
 
   return {
     htmlMenuOptions,
-    fileChooserRef,
     isShowImportDialog,
     setPlaygroundHtml,
     pasteHtmlText,
     handleImportHtml,
-    handleImportJsonSelected,
     saveData,
     copyHtml,
     undoRedo,

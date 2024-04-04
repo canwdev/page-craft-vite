@@ -1,15 +1,18 @@
 <script setup lang="ts">
 import {colorHash, formatDate} from '@/utils'
 import {IComponentItem} from '@/components/PageCraft/ComponentV2/enum'
+import {useSettingsStore} from '@/store/settings'
 
 const emit = defineEmits(['open', 'select'])
 
 interface Props {
   item: IComponentItem
-  active: boolean
+  checked: boolean
 }
 const props = withDefaults(defineProps<Props>(), {})
 const {item} = toRefs(props)
+
+const settingsStore = useSettingsStore()
 
 const openItem = () => {
   emit('open', item.value)
@@ -30,7 +33,14 @@ const color = computed(() => {
   <div
     tabindex="0"
     class="mc-comp-item btn-no-style"
-    :class="{active, hidden: item.hidden}"
+    :class="{
+      checked,
+      active:
+        item.meta &&
+        settingsStore.curCompInStore &&
+        item.meta.id === settingsStore.curCompInStore.id,
+      hidden: item.hidden,
+    }"
     @click.stop="openItem"
     @keyup.enter="openItem"
     :style="{
@@ -47,7 +57,7 @@ const color = computed(() => {
     <input
       class="file-checkbox"
       type="checkbox"
-      :checked="active"
+      :checked="checked"
       @click.stop="$emit('select', {item, event: $event, toggle: true})"
       @dblclick.stop
     />
@@ -127,17 +137,20 @@ const color = computed(() => {
   }
 
   &.active {
-    background-color: rgba(var(--block-color-rgb), 0.29);
     outline: 3px solid rgb(var(--block-color-rgb));
-    .file-checkbox {
-      visibility: visible;
-    }
-
     .title-wrap {
       .item-text-c {
         font-weight: bold;
         text-decoration: underline;
       }
+    }
+  }
+
+  &.checked {
+    background-color: rgba(var(--block-color-rgb), 0.29);
+    outline: 3px solid rgb(var(--block-color-rgb));
+    .file-checkbox {
+      visibility: visible;
     }
   }
 

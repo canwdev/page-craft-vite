@@ -7,7 +7,6 @@ import {sassToCSS} from '@/components/StyleEditor/utils/css'
 import {copyToClipboard} from '@/utils'
 import {PaintBrush16Regular} from '@vicons/fluent'
 import {useI18n} from 'vue-i18n'
-import BackgroundLayer from '@/components/PageCraft/BackgroundLayer/index.vue'
 import {useMainStore} from '@/store/main'
 import {useEventListener} from '@vueuse/core'
 import {useOpenCloseSound, useSfxOpenCloseSelect, useSfxBrush, useSfxFill} from '@/hooks/use-sfx'
@@ -93,7 +92,7 @@ onMounted(async () => {
   await reloadStyle()
 })
 watch(
-  () => settingsStore.curCompPath,
+  () => settingsStore.curCompInStore,
   async () => {
     await reloadStyle()
   }
@@ -106,8 +105,6 @@ useGlobalBusOn(GlobalEvents.ON_ADD_STYLE, (arg) => {
 
 <template>
   <div class="page-craft-home-view" :class="{_topLayout: settingsStore.enableTopLayout}">
-    <BackgroundLayer v-if="settingsStore.enableReferenceMap" />
-
     <MainPlayground />
 
     <ToolBar>

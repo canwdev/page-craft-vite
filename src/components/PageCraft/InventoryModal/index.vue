@@ -1,23 +1,16 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
-import {
-  actionBlockItemList,
-  BlockItem,
-  BlockType,
-  ComponentExportData,
-} from '@/enum/page-craft/block'
+import {actionBlockItemList, BlockItem, BlockType} from '@/enum/page-craft/block'
 import {htmlBlockItemList, TabType} from '@/enum/page-craft/inventory'
 import InventoryList from '@/components/PageCraft/InventoryModal/InventoryList.vue'
 import {useMainStore} from '@/store/main'
-import {useCompImportExport, useCompStorage} from '@/hooks/use-component-storage'
 import FileChooser from '@/components/CommonUI/FileChooser.vue'
 import {colorHash} from '@/utils'
 import {useSettingsStore} from '@/store/settings'
 import {Box20Regular, Window16Regular, WindowArrowUp16Regular} from '@vicons/fluent'
 import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
 import {useI18n} from 'vue-i18n'
-import {handleReadSelectedFile} from '@/utils/exporter'
 import {useSfxPop} from '@/hooks/use-sfx'
 import PopFloat from '@/components/PageCraft/DomPreview/PopFloat.vue'
 import DialogImageCropper from '@/components/CommonUI/DialogImageCropper.vue'
@@ -33,7 +26,6 @@ export default defineComponent({
     PopFloat,
     ViewPortWindow,
     InventoryList,
-    FileChooser,
     Window16Regular,
     WindowArrowUp16Regular,
     Box20Regular,
@@ -59,24 +51,6 @@ export default defineComponent({
         playSfxPop()
       }
     )
-
-    const handleItemClick = (item: BlockItem) => {
-      mainStore.setCurrentBlock(item)
-    }
-
-    const {handleImportAllJson, componentList} = useCompImportExport()
-    const importFileChooserRef = ref()
-    const handleImportJsonFileSelected = async (file) => {
-      const str = await handleReadSelectedFile(file)
-      const importList: ComponentExportData[] = JSON.parse(str as string)
-      return await handleImportAllJson(importList)
-    }
-
-    const isSortByName = ref(false)
-
-    const handleComponentItemClick = (item: BlockItem) => {
-      settingsStore.curCompPath = item.title
-    }
 
     /*image cropper start*/
     const isShowImageCropper = ref(false)
@@ -119,13 +93,7 @@ export default defineComponent({
       TabType,
       actionBlockItemList,
       htmlBlockItemList,
-      handleItemClick,
-      handleComponentItemClick,
-      componentList,
-      importFileChooserRef,
-      handleImportJsonFileSelected,
       colorHash,
-      isSortByName,
       playSfxPop,
       isShowImageCropper,
       editingImageSrc: cropperEditingSrc,
@@ -193,11 +161,7 @@ export default defineComponent({
     </TabLayout>
 
     <PopFloat />
-    <FileChooser
-      ref="importFileChooserRef"
-      accept="application/JSON"
-      @selected="handleImportJsonFileSelected"
-    />
+
     <DialogImageCropper
       v-model:visible="isShowImageCropper"
       :src="editingImageSrc"

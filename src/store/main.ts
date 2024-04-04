@@ -4,19 +4,16 @@ import {LsKeys} from '@/enum/page-craft'
 import {CopyMode} from '@/enum/vue-i18n-tool'
 
 type IStore = {
+  isAppDarkMode: boolean
+
+  // PageCraft 专用
   currentBlock: BlockItem
   className: string
   innerText: string
   // 是否处于元素选择状态
   selecting: boolean
-  isAppDarkMode: boolean
-  // handleAutoAdd 专用临时id
-  trAutoAddGuid: string | null
-  // 上一个复制模式
-  trLastCopyMode: CopyMode
-  // 是否手动添加翻译项目（用于自动focus输入框）
-  trIsManualAdd: boolean
 
+  // 窗口打开状态
   isShowStylusTools: boolean
   isShowTextTransformer: boolean
   isShowSettings: boolean
@@ -29,15 +26,13 @@ type IStore = {
 export const useMainStore = defineStore('main', {
   state: (): IStore => {
     return {
+      isAppDarkMode: true,
+
       currentBlock:
         JSON.parse(localStorage.getItem(LsKeys.CURRENT_BLOCK) || 'null') || ActionBlockItems.EMPTY,
       className: '',
       innerText: '',
       selecting: false,
-      isAppDarkMode: true,
-      trAutoAddGuid: null,
-      trLastCopyMode: CopyMode.ORIGINAL,
-      trIsManualAdd: false,
 
       isShowStylusTools: false,
       isShowTextTransformer: false,
@@ -48,8 +43,6 @@ export const useMainStore = defineStore('main', {
       upgradeInfo: '',
     }
   },
-  // could also be defined as
-  // state: () => ({ count: 0 })
   actions: {
     setCurrentBlock(block: BlockItem) {
       this.currentBlock = block
@@ -57,6 +50,7 @@ export const useMainStore = defineStore('main', {
     },
   },
   share: {
+    // 这些变量不参与多页面数据共享
     // An array of fields that the plugin will ignore.
     omit: [
       'isShowStylusTools',

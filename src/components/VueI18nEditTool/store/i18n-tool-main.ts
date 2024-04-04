@@ -1,4 +1,9 @@
-import {DirTreeItem, formatTranslateTreeItem, ITranslateTreeItem} from '@/enum/vue-i18n-tool'
+import {
+  CopyMode,
+  DirTreeItem,
+  formatTranslateTreeItem,
+  ITranslateTreeItem,
+} from '@/enum/vue-i18n-tool'
 
 // 批量处理文件（夹）列表
 export interface BatchListItem {
@@ -20,6 +25,14 @@ type IState = {
   translatePath: string
   changedLabelMap: ChangedLabelMap
   batchList: BatchListItem[]
+
+  // 自动粘贴功能全局变量
+  // handleAutoAdd 专用临时id
+  trAutoAddGuid: string | null
+  // 上一个复制模式
+  trLastCopyMode: CopyMode
+  // 是否手动添加翻译项目（用于自动focus输入框）
+  trIsManualAdd: boolean
 }
 
 export const useI18nMainStore = defineStore('i18nToolMain', {
@@ -31,6 +44,11 @@ export const useI18nMainStore = defineStore('i18nToolMain', {
       translatePath: '',
       changedLabelMap: {},
       batchList: [],
+
+      // 自动粘贴功能全局变量
+      trAutoAddGuid: null,
+      trLastCopyMode: CopyMode.ORIGINAL,
+      trIsManualAdd: false,
     }
   },
 })

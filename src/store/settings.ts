@@ -3,6 +3,7 @@ import {TabType} from '@/enum/page-craft/inventory'
 import {LdThemeType} from '@/enum/settings'
 import {DEFAULT_THEME} from '@/components/CommonUI/ViewPortWindow/utils/use-theme'
 import {StyleTabType} from '@/components/StyleEditor/enum'
+import {IComponentInStore} from '@/components/PageCraft/ComponentV2/enum'
 
 interface IPageCraftSettings {
   // 明暗主题
@@ -20,20 +21,17 @@ interface IPageCraftSettings {
 
   enableTopLayout: boolean
   enableSoundFx: boolean
-  // 是否启用参考图
-  enableReferenceMap: boolean
   enableFocusAutoAction: boolean
 
   showInventory: boolean
   inventoryTab: TabType
-  inventoryIsLargeCard: boolean
   // inventory window docked to toolbar
   isInvDocked: boolean
   showStyleEditor: boolean
   toolbarIndex: number
   toolbarList: BlockItem[]
-  // selected component dir path
-  curCompPath: string
+  // 当前正在编辑的组件，如果为空则显示默认画布
+  curCompInStore: IComponentInStore | null
 
   autoCheckUpdate: boolean
   // 网页版推荐下载桌面客户端
@@ -52,17 +50,15 @@ export const useSettingsStore = defineStore('settingsStore', {
 
       enableTopLayout: false,
       enableSoundFx: true,
-      enableReferenceMap: false,
       enableFocusAutoAction: false,
 
       showInventory: false,
       inventoryTab: TabType.COMPONENTS,
-      inventoryIsLargeCard: false,
       isInvDocked: true,
       showStyleEditor: false,
       toolbarIndex: 0,
       toolbarList: [],
-      curCompPath: '',
+      curCompInStore: null,
 
       autoCheckUpdate: true,
       recommendDesktopClient: true,
