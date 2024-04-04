@@ -16,7 +16,7 @@ declare module '@vue/runtime-core' {
     BlockItemCard: typeof import('./src/components/PageCraft/InventoryModal/BlockItemCard.vue')['default']
     CcFlag: typeof import('./src/components/VueI18nEditTool/CcFlag.vue')['default']
     ClassNameInput: typeof import('./src/components/PageCraft/ToolBar/ClassNameInput.vue')['default']
-    ComponentCard: typeof import('./src/components/PageCraft/InventoryModal/ComponentCard.vue')['default']
+    ComponentCard: typeof import('./src/components/PageCraft/ComponentV2/ComponentCard.vue')['default']
     ComponentExplorer: typeof import('./src/components/PageCraft/ComponentV2/ComponentExplorer.vue')['default']
     ComponentList: typeof import('./src/components/PageCraft/ComponentV2/ComponentList.vue')['default']
     ComponentV2: typeof import('./src/components/PageCraft/ComponentV2/index.vue')['default']

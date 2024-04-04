@@ -1,6 +1,6 @@
 import {BlockItem, BlockType} from '@/enum/page-craft/block'
 import {TabType} from '@/enum/page-craft/inventory'
-import {FilterType, LdThemeType} from '@/enum/settings'
+import {LdThemeType} from '@/enum/settings'
 import {DEFAULT_THEME} from '@/components/CommonUI/ViewPortWindow/utils/use-theme'
 import {StyleTabType} from '@/components/StyleEditor/enum'
 
@@ -24,10 +24,8 @@ interface IPageCraftSettings {
   enableReferenceMap: boolean
   enableFocusAutoAction: boolean
 
-  isInitialized: boolean
   showInventory: boolean
   inventoryTab: TabType
-  inventoryFilterType: FilterType
   inventoryIsLargeCard: boolean
   // inventory window docked to toolbar
   isInvDocked: boolean
@@ -57,10 +55,8 @@ export const useSettingsStore = defineStore('settingsStore', {
       enableReferenceMap: false,
       enableFocusAutoAction: false,
 
-      isInitialized: false,
       showInventory: false,
       inventoryTab: TabType.COMPONENTS,
-      inventoryFilterType: FilterType.ALL,
       inventoryIsLargeCard: false,
       isInvDocked: true,
       showStyleEditor: false,

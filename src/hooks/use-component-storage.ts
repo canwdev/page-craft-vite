@@ -6,7 +6,7 @@ import {
   createComponentBlockItem,
 } from '@/enum/page-craft/block'
 import globalEventBus, {GlobalEvents, syncStorageData} from '@/utils/global-event-bus'
-import {promptGetFileName, handleExportFile, handleReadSelectedFile} from '@/utils/exporter'
+import {handleExportFile, promptGetFileName} from '@/utils/exporter'
 import {useSettingsStore} from '@/store/settings'
 
 const SPLIT_SIGN = '__'

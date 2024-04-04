@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import {
-  Add24Regular,
   ArrowLeft20Regular,
   ArrowRight20Regular,
   ArrowSync20Filled,
@@ -10,8 +9,13 @@ import {
 } from '@vicons/fluent'
 import {useNavigation} from '@/components/FileManager/ExplorerUI/hooks/use-navigation'
 import {fsWebApi} from '@/components/FileManager/utils/providers/humanfs-api'
-import {getLastDirName} from '@/components/FileManager/utils'
+import {getLastDirName, normalizePath} from '@/components/FileManager/utils'
 import ComponentList from '@/components/PageCraft/ComponentV2/ComponentList.vue'
+import {
+  IComponentItem,
+  IComponentMeta,
+  regComponentV2,
+} from '@/components/PageCraft/ComponentV2/enum'
 
 const {
   isLoading,
@@ -33,12 +37,32 @@ const {
   filterText,
 } = useNavigation({
   getListFn: async () => {
-    const res = await fsWebApi.getList({
+    const entries = await fsWebApi.getList({
       path: basePath.value,
     })
-    console.log(res)
 
-    return res
+    const cEntries: IComponentItem[] = []
+    for (const key in entries) {
+      const entry = entries[key]
+      let meta: IComponentMeta | undefined
+      if (regComponentV2.test(entry.name)) {
+        meta =
+          (await fsWebApi.getFile({
+            path: normalizePath(basePath.value + '/' + entry.name + '/index.json'),
+            mode: 'json',
+          })) || {}
+        meta!.cover = await fsWebApi.getFile({
+          path: normalizePath(basePath.value + '/' + entry.name + '/cover.base64'),
+        })
+      }
+      cEntries.push({
+        ...entry,
+        meta,
+      })
+    }
+
+    console.log(cEntries)
+    return cEntries
   },
   openEntryFn: async ({path}) => {
     const res = await fsWebApi.getFile({

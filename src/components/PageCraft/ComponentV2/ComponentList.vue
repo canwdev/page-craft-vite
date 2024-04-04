@@ -6,8 +6,6 @@ import {
   Rename16Regular,
   Delete16Regular,
   SelectAllOn24Regular,
-  Grid16Regular,
-  AppsList20Regular,
   ArrowSortDownLines16Regular,
   Cut20Regular,
   Copy20Regular,
@@ -17,23 +15,21 @@ import {
 import QuickOptions from '@/components/CommonUI/QuickOptions/index.vue'
 import QuickContextMenu from '@/components/CommonUI/QuickOptions/utils/QuickContextMenu.vue'
 import {
-  regComponentDir,
-  useComponentManage,
+  useComponentMigrationToV2,
   useComponentStorageV2,
 } from '@/components/PageCraft/ComponentV2/hooks/use-component-manage'
-import {useFileActions} from '@/components/FileManager/ExplorerUI/hooks/use-file-actions'
-import {IEntry} from '@/components/FileManager/types/filesystem'
 import {useLayoutSort} from '@/components/FileManager/ExplorerUI/hooks/use-layout-sort'
 import {useSelection} from '@/components/FileManager/ExplorerUI/hooks/use-selection'
 import {useCopyPaste} from '@/components/FileManager/ExplorerUI/hooks/use-copy-paste'
 import ComponentCard from './ComponentCard.vue'
-import FileGridItem from '@/components/FileManager/ExplorerUI/FileGridItem.vue'
 import {normalizePath} from '@/components/FileManager/utils'
+import {IComponentItem, regComponentV2} from '@/components/PageCraft/ComponentV2/enum'
+import {useComponentFileActions} from '@/components/PageCraft/ComponentV2/hooks/use-file-actions'
 
 const emit = defineEmits(['open', 'update:isLoading', 'refresh'])
 
 interface Props {
-  files: IEntry[]
+  files: IComponentItem[]
   isLoading: boolean
   basePath: string
 }
@@ -65,7 +61,6 @@ const {enablePaste, handleCut, handleCopy, handlePaste} = useCopyPaste({
 
 // 文件操作功能
 const {
-  handleCreateFile,
   handleCreateFolder,
   handleRename,
   confirmDelete,
@@ -73,7 +68,8 @@ const {
   ctxMenuRef,
   handleShowCtxMenu,
   enableAction,
-} = useFileActions({
+  handleCreateComponent,
+} = useComponentFileActions({
   isLoading,
   selectedPaths,
   basePath,
@@ -83,21 +79,17 @@ const {
   handleCut,
   handleCopy,
   selectedItemsSet,
+  files,
   emit,
 })
 
-const {handleCreateComponent} = useComponentManage({
-  isLoading,
-  files,
-  basePath,
-  emit,
-})
+useComponentMigrationToV2()
 
 const {openComponent} = useComponentStorageV2()
 const handleOpen = (item) => {
   const path = normalizePath(basePath.value + '/' + item.name)
   // 打开.comp为后缀的组件文件夹
-  if (/\.comp$/i.test(path)) {
+  if (regComponentV2.test(path)) {
     openComponent(path)
     return
   }
@@ -115,7 +107,11 @@ const handleOpen = (item) => {
 
     <div class="explorer-actions vp-panel">
       <div class="action-group">
-        <button class="vp-button" @click="handleCreateComponent()" title="Create Component">
+        <button
+          class="vp-button"
+          @click="handleCreateComponent()"
+          :title="$t('actions.add_component')"
+        >
           <n-icon size="16">
             <DocumentAdd16Regular />
           </n-icon>
@@ -201,10 +197,6 @@ const handleOpen = (item) => {
 
       <QuickContextMenu :options="ctxMenuOptions" ref="ctxMenuRef" />
     </div>
-
-    <button @click="handleCreateComponent" class="mc-btn-add">
-      <n-icon size="24"> <Add24Regular /></n-icon>
-    </button>
   </div>
 </template>
 

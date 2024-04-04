@@ -20,9 +20,11 @@ export const fsWebApi = {
         ext,
         isDirectory: entry.isDirectory,
         hidden: entry.name.startsWith('.'),
-        lastModified: (await hfs.lastModified(basePath + path))?.getTime() || 0,
+        // 不准确，并且消耗性能，所以不读取
+        // lastModified: (await hfs.lastModified(basePath + path))?.getTime() || 0,
+        lastModified: 0,
         birthtime: 0,
-        size: await hfs.size(basePath + path),
+        // size: await hfs.size(basePath + path),
       })
     }
     return list
@@ -51,9 +53,9 @@ export const fsWebApi = {
     return {path}
   },
   async createFile(params, config: any = {}) {
-    const {path, file} = params
+    const {path, file, isOverride = false} = params
 
-    if (await hfs.isFile(basePath + path)) {
+    if (!isOverride && (await hfs.isFile(basePath + path))) {
       throw new Error(`file ${path} already exist!`)
     }
 
@@ -79,26 +81,31 @@ export const fsWebApi = {
   },
   async copyPaste(params) {
     const {fromPaths, toPath, isMove} = params
+    let {toPathAbs} = params
 
     for (let i = 0; i < fromPaths.length; i++) {
       const path = fromPaths[i]
 
       const absPath = basePath + path
       const entryName = Path.basename(absPath)
-      const absToPath = basePath + Path.join(toPath, entryName)
+      if (toPathAbs) {
+        toPathAbs = basePath + toPathAbs
+      } else {
+        toPathAbs = basePath + Path.join(toPath, entryName)
+      }
 
       // console.log(absPath, absToPath)
       if (isMove) {
         if (await hfs.isDirectory(absPath)) {
-          await hfs.moveAll(absPath, absToPath)
+          await hfs.moveAll(absPath, toPathAbs)
         } else {
-          await hfs.move(absPath, absToPath)
+          await hfs.move(absPath, toPathAbs)
         }
       } else {
         if (await hfs.isDirectory(absPath)) {
-          await hfs.copyAll(absPath, absToPath)
+          await hfs.copyAll(absPath, toPathAbs)
         } else {
-          await hfs.copy(absPath, absToPath)
+          await hfs.copy(absPath, toPathAbs)
         }
       }
     }

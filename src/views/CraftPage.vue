@@ -2,12 +2,9 @@
 import ToolBar from '@/components/PageCraft/ToolBar/index.vue'
 import MainPlayground from '@/components/PageCraft/MainPlayground/index.vue'
 import {useSettingsStore} from '@/store/settings'
-import {handleExportStyle} from '@/utils/exporter'
 import {formatCss} from '@/components/StyleEditor/utils/formater'
 import {sassToCSS} from '@/components/StyleEditor/utils/css'
 import {copyToClipboard} from '@/utils'
-import {useCompStorage} from '@/hooks/use-component-storage'
-import {ComponentExportData} from '@/enum/page-craft/block'
 import {PaintBrush16Regular} from '@vicons/fluent'
 import {useI18n} from 'vue-i18n'
 import BackgroundLayer from '@/components/PageCraft/BackgroundLayer/index.vue'
@@ -72,40 +69,6 @@ const styleMenuOptions = [
         await copyToClipboard(css)
       },
     },
-  },
-  {
-    label: '📤 ' + $t('actions.export'),
-    children: [
-      {
-        label: `📃 ${$t('actions.export')} css`,
-        props: {
-          onClick: async () => {
-            await handleExportStyle(
-              new ComponentExportData({
-                name: settingsStore.curCompPath,
-                html: '',
-                style: formatCss(await loadCurCompStyle()),
-              }),
-              true
-            )
-          },
-        },
-      },
-      {
-        label: `📃 ${$t('actions.export')} scss`,
-        props: {
-          onClick: async () => {
-            await handleExportStyle(
-              new ComponentExportData({
-                name: settingsStore.curCompPath,
-                html: '',
-                style: formatCss(loadCurCompStyle()),
-              })
-            )
-          },
-        },
-      },
-    ],
   },
 ]
 

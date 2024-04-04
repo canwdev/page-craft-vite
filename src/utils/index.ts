@@ -138,7 +138,7 @@ export function pad2Num(num: number, len = 2) {
   return num.toString().padStart(len, '0')
 }
 
-export function formatDate(d: Date, format = 'YYYY-MM-DD HH:mm:ss') {
+export function formatDate(d: any, format = 'YYYY-MM-DD HH:mm:ss') {
   if (!d) {
     return ''
   }

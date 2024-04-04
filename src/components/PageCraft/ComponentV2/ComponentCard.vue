@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import {IEntry} from '@/components/FileManager/types/filesystem'
-import {formatDate} from '@/utils'
+import {colorHash, formatDate} from '@/utils'
+import {IComponentItem} from '@/components/PageCraft/ComponentV2/enum'
 
 const emit = defineEmits(['open', 'select'])
 
 interface Props {
-  item: IEntry
+  item: IComponentItem
   active: boolean
 }
 const props = withDefaults(defineProps<Props>(), {})
@@ -14,16 +14,36 @@ const {item} = toRefs(props)
 const openItem = () => {
   emit('open', item.value)
 }
+
+const nameDisplay = computed(() => {
+  return item.value.name.replace(item.value.ext, '')
+})
+
+const color = computed(() => {
+  if (item.value.meta) {
+    return colorHash.rgb(item.value.name).join(', ')
+  }
+})
 </script>
 
 <template>
   <div
     tabindex="0"
-    class="file-grid-item btn-no-style"
+    class="mc-comp-item btn-no-style"
     :class="{active, hidden: item.hidden}"
     @click.stop="openItem"
     @keyup.enter="openItem"
+    :style="{
+      '--block-color-rgb': color,
+    }"
   >
+    <div
+      :style="{
+        backgroundColor: `rgb(${color}, 0.24)`,
+      }"
+      class="mc-comp-item-bg"
+    ></div>
+
     <input
       class="file-checkbox"
       type="checkbox"
@@ -37,20 +57,24 @@ const openItem = () => {
     </div>
     <div class="title-wrap">
       <!--<img v-if="item.icon" :src="item.icon" alt="icon" style="margin-right: 5px" />-->
-      <span v-if="item.name" class="item-text-c"> {{ item.name }}</span>
+      <span v-if="nameDisplay" class="item-text-c"> {{ nameDisplay }}</span>
     </div>
 
-    <!--<div class="component-cover" :style="{backgroundImage: `url(${item.meta.image})`}"></div>-->
+    <div
+      v-if="item.meta?.cover"
+      class="component-cover"
+      :style="{backgroundImage: `url(${item.meta?.cover})`}"
+    ></div>
     <div class="meta-info">
-      <span class="timestamp" v-if="item.lastModified">{{
-        formatDate(new Date(item.lastModified))
+      <span class="timestamp" v-if="item.meta?.timeCreated">{{
+        formatDate(item.meta?.timeCreated)
       }}</span>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.file-grid-item {
+.mc-comp-item {
   --block-color-rgb: 204, 204, 204;
   padding: 0 !important;
   width: 180px;
@@ -61,7 +85,15 @@ const openItem = () => {
   font-weight: 600;
   position: relative;
   outline: 1px solid rgb(var(--block-color-rgb));
-  $bracket_color: rgb(var(--block-color-rgb));
+
+  .mc-comp-item-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 0;
+  }
 
   &:active {
     opacity: 0.7;
