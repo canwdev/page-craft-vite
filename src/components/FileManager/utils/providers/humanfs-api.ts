@@ -56,6 +56,13 @@ export const fsWebApi = {
     if (await hfs.isFile(basePath + path)) {
       throw new Error(`file ${path} already exist!`)
     }
+
+    // console.log('createFile', params)
+    // This method will create any necessary parent directories that are missing in order to write the file
+    await hfs.write(basePath + path, file)
+  },
+  async writeFile(params, config: any = {}) {
+    const {path, file} = params
     // This method will create any necessary parent directories that are missing in order to write the file
     await hfs.write(basePath + path, file)
   },

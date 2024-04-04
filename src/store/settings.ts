@@ -34,8 +34,8 @@ interface IPageCraftSettings {
   showStyleEditor: boolean
   toolbarIndex: number
   toolbarList: BlockItem[]
-  // selected component name
-  curCompoName: string
+  // selected component dir path
+  curCompPath: string
 
   autoCheckUpdate: boolean
   // 网页版推荐下载桌面客户端
@@ -66,7 +66,7 @@ export const useSettingsStore = defineStore('settingsStore', {
       showStyleEditor: false,
       toolbarIndex: 0,
       toolbarList: [],
-      curCompoName: '',
+      curCompPath: '',
 
       autoCheckUpdate: true,
       recommendDesktopClient: true,

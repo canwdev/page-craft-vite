@@ -33,7 +33,7 @@ export const saveCompStorage = (lsKey: LsKeys, name: string, value: string) => {
 export const useCompStorage = () => {
   const settingsStore = useSettingsStore()
 
-  const getKeyWithSuffix = (key: string, suffix = settingsStore.curCompoName) => {
+  const getKeyWithSuffix = (key: string, suffix = settingsStore.curCompPath) => {
     if (suffix) {
       return key + SPLIT_SIGN + suffix
     } else {

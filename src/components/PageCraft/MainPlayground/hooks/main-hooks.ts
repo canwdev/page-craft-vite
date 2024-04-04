@@ -1,23 +1,21 @@
 import {
   handleExportHtml,
   handleExportJson,
-  handleExportStyle,
   handleExportVue,
   handleReadSelectedFile,
 } from '@/utils/exporter'
 import globalEventBus, {GlobalEvents, syncStorageData} from '@/utils/global-event-bus'
 import {copyToClipboard} from '@/utils'
 import {formatCss, formatHtml} from '@/components/StyleEditor/utils/formater'
-import {ComponentData, ComponentExportData} from '@/enum/page-craft/block'
-import {useCompStorage} from '@/hooks/use-component-storage'
+import {ComponentExportData} from '@/enum/page-craft/block'
 import {useMainStore} from '@/store/main'
 import {UndoRedo} from '@/utils/undo-redo'
-import {sassToCSS} from '@/components/StyleEditor/utils/css'
 import {useSettingsStore} from '@/store/settings'
 import {useI18n} from 'vue-i18n'
 import {useBeforeUnload, useSaveShortcut} from '@/hooks/use-beforeunload'
 import {useSfxBass, useSfxBell, useSfxFill, useSfxGuitar} from '@/hooks/use-sfx'
 import {useBroadcastMessage} from '@/hooks/use-broadcast-messae'
+import {useComponentStorageV2} from '@/components/PageCraft/ComponentV2/hooks/use-component-manage'
 
 export const useMcMain = (options) => {
   const {t: $t} = useI18n()
@@ -26,7 +24,8 @@ export const useMcMain = (options) => {
   const settingsStore = useSettingsStore()
   const fileChooserRef = ref()
   const isShowImportDialog = ref(false)
-  const {loadCurCompHtml, saveCurCompHtml, saveCurCompStyle, loadCurCompStyle} = useCompStorage()
+  const {loadCurCompHtml, saveCurCompHtml, saveCurCompStyle, loadCurCompStyle} =
+    useComponentStorageV2()
   const undoRedo = ref(new UndoRedo(10))
 
   useBeforeUnload(() => {
@@ -54,10 +53,10 @@ export const useMcMain = (options) => {
     playSfxBell()
   }
 
-  const handleImportJson = (data) => {
+  const handleImportJson = async (data) => {
     const {html = '', style = ''} = new ComponentExportData(data)
-    saveCurCompHtml(html)
-    saveCurCompStyle(style)
+    await saveCurCompHtml(html)
+    await saveCurCompStyle(style)
     globalEventBus.emit(GlobalEvents.IMPORT_SUCCESS, style)
     window.$message.success($t('msgs.import_success'))
   }
@@ -68,9 +67,9 @@ export const useMcMain = (options) => {
   const pasteHtmlText = ref('')
 
   // 保存当前组件的 HTML
-  const saveData = (cb?) => {
+  const saveData = async (cb?) => {
     const innerHTML = mainPlaygroundRef.value.innerHTML
-    saveCurCompHtml(innerHTML)
+    await saveCurCompHtml(innerHTML)
     // 如果开启了多个窗口（iframe)，发送同步状态
     channelRef.value?.postMessage(null)
     if (cb) {
@@ -94,7 +93,7 @@ export const useMcMain = (options) => {
   })
 
   watch(
-    () => settingsStore.curCompoName,
+    () => settingsStore.curCompPath,
     () => {
       if (isSelfUpdating.value) {
         console.warn('isSelfUpdating')
@@ -112,8 +111,8 @@ export const useMcMain = (options) => {
     }
   }
 
-  const reloadHtml = () => {
-    const html = loadCurCompHtml()
+  const reloadHtml = async () => {
+    const html = await loadCurCompHtml()
     setPlaygroundHtml(html)
     undoRedo.value.clear()
     sfxFill()
@@ -121,11 +120,11 @@ export const useMcMain = (options) => {
 
   const getEntityData = async (): Promise<ComponentExportData> => {
     await syncStorageData()
-    const html = loadCurCompHtml() || ''
-    const style = loadCurCompStyle()
+    const html = (await loadCurCompHtml()) || ''
+    const style = await loadCurCompStyle()
 
     return new ComponentExportData({
-      name: settingsStore.curCompoName,
+      name: settingsStore.curCompPath,
       html: formatHtml(html),
       style: formatCss(style),
     })

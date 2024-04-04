@@ -14,7 +14,7 @@ export const toggleArrayElement = (arr: any[], value: any) => {
 
 export const getLastDirName = (path) => {
   path = path.replace(/\/$/gi, '')
-  return path.split('/').pop()
+  return path.split('/').pop() || '/'
 }
 
 export const generateTextFile = (value: string | object, name: string) => {

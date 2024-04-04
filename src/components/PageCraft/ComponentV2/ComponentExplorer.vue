@@ -1,16 +1,17 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import {
-  ArrowSync20Filled,
-  ArrowUp20Regular,
+  Add24Regular,
   ArrowLeft20Regular,
   ArrowRight20Regular,
+  ArrowSync20Filled,
+  ArrowUp20Regular,
   Star20Filled,
   Star20Regular,
 } from '@vicons/fluent'
-import FileList from './ExplorerUI/FileList.vue'
-import {getLastDirName} from './utils'
-import {useNavigation} from '@/components/PageCraft/ComponentV2/ExplorerUI/hooks/use-navigation'
-import {fsWebApi} from './utils/api'
+import {useNavigation} from '@/components/FileManager/ExplorerUI/hooks/use-navigation'
+import {fsWebApi} from '@/components/FileManager/utils/providers/humanfs-api'
+import {getLastDirName} from '@/components/FileManager/utils'
+import ComponentList from '@/components/PageCraft/ComponentV2/ComponentList.vue'
 
 const {
   isLoading,
@@ -53,7 +54,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="explorer-wrap">
+  <div class="mc-component-explorer">
     <div class="explorer-header vp-panel">
       <div class="nav-address">
         <div class="nav-wrap">
@@ -85,11 +86,11 @@ onMounted(() => {
         </div>
         <div class="input-wrap">
           <input
-            placeholder="Path"
-            v-model="basePath"
+            :placeholder="`Filter name in ${basePath}`"
+            v-model="filterText"
             class="input-addr vp-input"
-            @change="handleRefresh"
           />
+
           <button class="vp-button btn-action" @click="handleRefresh">
             <n-icon size="16"><ArrowSync20Filled /> </n-icon>
           </button>
@@ -99,21 +100,20 @@ onMounted(() => {
               <Star20Regular v-else />
             </n-icon>
           </button>
-
-          <input placeholder="Filter name" v-model="filterText" class="input-filter vp-input" />
         </div>
-      </div>
 
-      <div v-if="starList.length" class="star-list">
-        <div v-for="path in starList" :key="path">
-          <button @click="handleOpenPath(path)" class="vp-button" :title="path">
-            {{ getLastDirName(path) }}
-          </button>
+        <div v-if="starList.length" class="star-list">
+          <div v-for="path in starList" :key="path">
+            <button @click="handleOpenPath(path)" class="vp-button" :title="path">
+              {{ getLastDirName(path) }}
+            </button>
+          </div>
         </div>
       </div>
     </div>
+
     <div class="explorer-content-wrap _scrollbar_mini">
-      <FileList
+      <ComponentList
         v-model:is-loading="isLoading"
         :files="filteredFiles"
         @open="handleOpen"
@@ -125,7 +125,7 @@ onMounted(() => {
 </template>
 
 <style lang="scss">
-.explorer-wrap {
+.mc-component-explorer {
   min-width: 300px;
   height: 100%;
   display: flex;
@@ -183,14 +183,6 @@ onMounted(() => {
     flex: 1;
     overflow: auto;
     display: flex;
-  }
-
-  .btn-action {
-    display: inline-flex;
-    cursor: pointer;
-    &:disabled {
-      cursor: not-allowed;
-    }
   }
 }
 </style>

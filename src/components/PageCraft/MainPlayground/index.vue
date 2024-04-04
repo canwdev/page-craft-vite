@@ -227,13 +227,13 @@ export default defineComponent({
         placement="bottom-start"
         trigger="hover"
       >
-        <n-button size="tiny" :title="settingsStore.curCompoName">
+        <n-button size="tiny" :title="settingsStore.curCompPath">
           <template #icon>
             <n-icon size="18">
               <Code20Filled />
             </n-icon>
           </template>
-          {{ settingsStore.curCompoName.slice(0, 10) || 'Default' }}</n-button
+          {{ settingsStore.curCompPath.slice(0, 10) || 'Default' }}</n-button
         >
       </n-dropdown>
 

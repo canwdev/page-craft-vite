@@ -16,6 +16,7 @@ import {useEventListener} from '@vueuse/core'
 import {useOpenCloseSound, useSfxOpenCloseSelect, useSfxBrush, useSfxFill} from '@/hooks/use-sfx'
 import {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
 import {CLASS_MAIN_CANVAS_ROOT} from '@/enum/page-craft'
+import {useComponentStorageV2} from '@/components/PageCraft/ComponentV2/hooks/use-component-manage'
 
 const StyleEditor = defineAsyncComponent(() => import('@/components/StyleEditor/index.vue'))
 
@@ -60,15 +61,15 @@ useEventListener(document, 'keydown', (event) => {
   }
 })
 
-const {loadCurCompStyle, saveCurCompStyle} = useCompStorage()
+const {loadCurCompStyle, saveCurCompStyle} = useComponentStorageV2()
 const styleMenuOptions = [
   {
     label: '📄 ' + $t('actions.copy_compiled_css'),
     props: {
       onClick: async () => {
-        const style = loadCurCompStyle()
+        const style = await loadCurCompStyle()
         const css = formatCss(await sassToCSS(style))
-        copyToClipboard(css)
+        await copyToClipboard(css)
       },
     },
   },
@@ -81,9 +82,9 @@ const styleMenuOptions = [
           onClick: async () => {
             await handleExportStyle(
               new ComponentExportData({
-                name: settingsStore.curCompoName,
+                name: settingsStore.curCompPath,
                 html: '',
-                style: formatCss(loadCurCompStyle()),
+                style: formatCss(await loadCurCompStyle()),
               }),
               true
             )
@@ -96,7 +97,7 @@ const styleMenuOptions = [
           onClick: async () => {
             await handleExportStyle(
               new ComponentExportData({
-                name: settingsStore.curCompoName,
+                name: settingsStore.curCompPath,
                 html: '',
                 style: formatCss(loadCurCompStyle()),
               })
@@ -111,27 +112,27 @@ const styleMenuOptions = [
 const styleEditorRef = ref()
 const isAutoSave = ref(false)
 const styleCode = ref('')
-watch(styleCode, () => {
+watch(styleCode, async () => {
   // console.log('[handleUpdateStyle]', isAutoSave.value)
   if (isAutoSave.value) {
-    saveCurCompStyle(styleCode.value)
+    await saveCurCompStyle(styleCode.value)
   }
 })
 
-const reloadStyle = () => {
+const reloadStyle = async () => {
   isAutoSave.value = false
-  styleCode.value = loadCurCompStyle()
+  styleCode.value = await loadCurCompStyle()
   setTimeout(() => {
     isAutoSave.value = true
   }, 100)
 }
-onMounted(() => {
-  reloadStyle()
+onMounted(async () => {
+  await reloadStyle()
 })
 watch(
-  () => settingsStore.curCompoName,
-  () => {
-    reloadStyle()
+  () => settingsStore.curCompPath,
+  async () => {
+    await reloadStyle()
   }
 )
 useGlobalBusOn(GlobalEvents.IMPORT_SUCCESS, reloadStyle)

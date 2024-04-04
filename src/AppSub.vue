@@ -15,10 +15,12 @@ import IframeBrowser from '@/components/IframeBrowser/index.vue'
 import {useSettingsStore} from '@/store/settings'
 import {showInputPrompt} from '@/components/CommonUI/input-prompt'
 import {pinyin} from 'pinyin-pro'
+import FileManagerWindow from '@/components/FileManager/FileManagerWindow.vue'
 
 export default defineComponent({
   name: 'AppSub',
   components: {
+    FileManagerWindow,
     IframeBrowser,
     QuickLaunchWindow,
     SystemSettings: defineAsyncComponent(
@@ -66,4 +68,5 @@ export default defineComponent({
   <SystemSettings v-model:visible="mainStore.isShowSettings" />
   <QuickLaunchWindow v-model:visible="mainStore.isShowQuickLaunch" />
   <IframeBrowser v-model:visible="mainStore.isShowIframeBrowser" />
+  <FileManagerWindow visible />
 </template>

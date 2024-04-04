@@ -1,7 +1,10 @@
 import {IEntry} from '../../types/filesystem'
 import {normalizePath, toggleArrayElement} from '../../utils'
 import {useStorage} from '@vueuse/core'
-
+import {
+  regComponentDir,
+  useComponentStorageV2,
+} from '@/components/PageCraft/ComponentV2/hooks/use-component-manage'
 export const useNavigation = ({getListFn, openEntryFn}) => {
   const files = ref<IEntry[]>([])
   const basePath = ref('/')
@@ -98,6 +101,7 @@ export const useNavigation = ({getListFn, openEntryFn}) => {
   // 打开文件或文件夹
   const handleOpen = async (item: IEntry) => {
     const path = normalizePath(basePath.value + '/' + item.name)
+
     if (item.isDirectory) {
       await handleOpenPath(path)
       return

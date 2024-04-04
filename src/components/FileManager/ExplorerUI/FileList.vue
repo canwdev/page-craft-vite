@@ -27,8 +27,7 @@ import QuickContextMenu from '@/components/CommonUI/QuickOptions/utils/QuickCont
 import {useCopyPaste} from './hooks/use-copy-paste'
 import {useSelection} from './hooks/use-selection'
 import {useLayoutSort} from './hooks/use-layout-sort'
-import {useFileActions} from '@/components/PageCraft/ComponentV2/ExplorerUI/hooks/use-file-actions'
-import {useComponentManage} from '@/components/PageCraft/ComponentV2/ExplorerUI/hooks/use-component-manage'
+import {useFileActions} from './hooks/use-file-actions'
 
 const emit = defineEmits(['open', 'update:isLoading', 'refresh'])
 
@@ -85,8 +84,6 @@ const {
   selectedItemsSet,
   emit,
 })
-
-const {handleCreateComponent} = useComponentManage({files, basePath, isLoading, emit})
 </script>
 
 <template>
@@ -210,10 +207,6 @@ const {handleCreateComponent} = useComponentManage({files, basePath, isLoading, 
       </div>
 
       <QuickContextMenu :options="ctxMenuOptions" ref="ctxMenuRef" />
-
-      <button @click="handleCreateComponent" class="mc-btn-add">
-        <n-icon size="24"> <Add24Regular /></n-icon>
-      </button>
     </div>
   </div>
 </template>

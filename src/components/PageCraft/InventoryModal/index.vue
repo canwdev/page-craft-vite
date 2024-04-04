@@ -42,7 +42,7 @@ import DialogImageCropper from '@/components/CommonUI/DialogImageCropper.vue'
 import {showInputPrompt} from '@/components/CommonUI/input-prompt'
 import TabLayout from '@/components/CommonUI/TabLayout.vue'
 import {NIcon} from 'naive-ui'
-import ComponentExplorer from '@/components/PageCraft/ComponentV2/index.vue'
+import ComponentExplorer from '@/components/PageCraft/ComponentV2/ComponentExplorer.vue'
 import * as changeCase from 'change-case'
 
 let idx = 1
@@ -128,11 +128,11 @@ export default defineComponent({
     })
 
     const handleComponentItemClick = (item: BlockItem) => {
-      settingsStore.curCompoName = item.title
+      settingsStore.curCompPath = item.title
     }
 
     const cancelSelectComponent = () => {
-      settingsStore.curCompoName = ''
+      settingsStore.curCompPath = ''
     }
 
     const inputPrompt = (title = '', value = '') => {
@@ -166,7 +166,7 @@ export default defineComponent({
       saveCompStyle(name, `.${className} {\n}\n`)
 
       // 设置当前选中的组件名
-      settingsStore.curCompoName = name
+      settingsStore.curCompPath = name
       idx++
     }
 
@@ -187,8 +187,8 @@ export default defineComponent({
           clearCompStorage(item.title)
 
           // reset current component name
-          if (settingsStore.curCompoName === item.title) {
-            settingsStore.curCompoName = ''
+          if (settingsStore.curCompPath === item.title) {
+            settingsStore.curCompPath = ''
           }
         },
         onNegativeClick: () => {},
@@ -202,7 +202,7 @@ export default defineComponent({
         positiveText: $t('actions.ok'),
         negativeText: $t('actions.cancel'),
         onPositiveClick: () => {
-          settingsStore.curCompoName = ''
+          settingsStore.curCompPath = ''
           const list = [...componentList.value]
           // 只对当前过滤的列表项进行删除
           componentListSorted.value.forEach((item) => {
@@ -237,7 +237,7 @@ export default defineComponent({
           setTimeout(() => {
             length = componentList.value.length
             if (componentList.value[length - 1]?.title) {
-              settingsStore.curCompoName = componentList.value[length - 1].title
+              settingsStore.curCompPath = componentList.value[length - 1].title
             }
           })
         }
@@ -272,8 +272,8 @@ export default defineComponent({
       list.splice(index, 1, item)
       componentList.value = list
 
-      if (item.title === settingsStore.curCompoName) {
-        settingsStore.curCompoName = name
+      if (item.title === settingsStore.curCompPath) {
+        settingsStore.curCompPath = name
       }
 
       // rename local storage
@@ -294,7 +294,7 @@ export default defineComponent({
       componentList.value = [newItem, ...componentList.value]
 
       updateCompMeta(newItem.title, newItem.data)
-      settingsStore.curCompoName = newName
+      settingsStore.curCompPath = newName
       idx++
     }
 

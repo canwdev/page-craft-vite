@@ -35,7 +35,7 @@ export default defineComponent({
     })
 
     const isActive = computed(() => {
-      return item.value.title === settingsStore.curCompoName
+      return item.value.title === settingsStore.curCompPath
     })
 
     const isHover = ref(false)
@@ -256,16 +256,6 @@ export default defineComponent({
     .timestamp {
       opacity: 0.3;
       transition: all 0.5s;
-      //&::before {
-      //  content: '<';
-      //  color: $bracket_color;
-      //  opacity: 0.5;
-      //}
-      //&::after {
-      //  content: '/>';
-      //  color: $bracket_color;
-      //  opacity: 0.5;
-      //}
     }
   }
 }
