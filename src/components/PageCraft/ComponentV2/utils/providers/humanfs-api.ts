@@ -1,14 +1,11 @@
-import {IEntry} from '../types/filesystem'
-
-const {BFSRequire} = window.BrowserFS
-const Path = BFSRequire('path')
-
+import {IEntry} from '../../types/filesystem'
 import {WebHfs} from '@humanfs/web'
+import {path as Path} from '../path'
 
 const hfs = new WebHfs({
   root: await navigator.storage.getDirectory(),
 })
-console.log('hfs', hfs)
+console.log('[hfs]', hfs)
 
 // 必须设置基础路径，否则报错
 const basePath = '/page-craft'
@@ -17,12 +14,7 @@ export const fsWebApi = {
   async getList({path}) {
     const list: IEntry[] = []
     for await (const entry of hfs.list(basePath + path)) {
-      if (entry.isFile) {
-        console.log(entry)
-      } else if (entry.isDirectory) {
-        console.log(entry)
-      }
-      const ext = Path.extname(entry.name) || ''
+      const ext = Path.extname(entry.name || '') || ''
       list.push({
         name: entry.name,
         ext,
@@ -35,9 +27,20 @@ export const fsWebApi = {
     }
     return list
   },
+  async getFile(params) {
+    const {path, mode = 'text'} = params
+    const absPath = basePath + path
+    if (mode === 'text') {
+      return await hfs.text(absPath)
+    } else if (mode === 'json') {
+      return await hfs.json(absPath)
+    } else {
+      return await hfs.bytes(absPath)
+    }
+  },
   async createDir(params) {
     const {path, ignoreExisted = false} = params
-    console.log('createDir', path)
+    // console.log('createDir', path)
     if (ignoreExisted) {
       if (await hfs.isDirectory(basePath + path)) {
         return {path}
@@ -53,14 +56,14 @@ export const fsWebApi = {
     if (await hfs.isFile(basePath + path)) {
       throw new Error(`file ${path} already exist!`)
     }
-    await this.createDir({path: Path.dirname(path), ignoreExisted: true})
+    // This method will create any necessary parent directories that are missing in order to write the file
     await hfs.write(basePath + path, file)
   },
   async renameEntry(params) {
     const {fromPath, toPath} = params
     const absPath = basePath + fromPath
     const absToPath = basePath + toPath
-    console.log('renameEntry', absPath, absToPath)
+    // console.log('renameEntry', absPath, absToPath)
     if (await hfs.isDirectory(absPath)) {
       await hfs.moveAll(absPath, absToPath)
     } else {
@@ -77,7 +80,7 @@ export const fsWebApi = {
       const entryName = Path.basename(absPath)
       const absToPath = basePath + Path.join(toPath, entryName)
 
-      console.log(absPath, absToPath)
+      // console.log(absPath, absToPath)
       if (isMove) {
         if (await hfs.isDirectory(absPath)) {
           await hfs.moveAll(absPath, absToPath)
@@ -95,13 +98,21 @@ export const fsWebApi = {
   },
   async deleteEntry(params) {
     const {path} = params
+    const dpDelete = async (path) => {
+      const absPath = basePath + path
+      if (await hfs.isDirectory(absPath)) {
+        await hfs.deleteAll(absPath)
+      } else {
+        await hfs.delete(absPath)
+      }
+    }
     if (Array.isArray(path)) {
       for (let i = 0; i < path.length; i++) {
         const p = path[i]
-        recursiveDelete(p)
+        await dpDelete(p)
       }
     } else {
-      recursiveDelete(path)
+      await dpDelete(path)
     }
   },
 }
