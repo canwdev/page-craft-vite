@@ -26,6 +26,7 @@ import {normalizePath} from '@/components/FileManager/utils'
 import {IComponentItem, regComponentV2} from '@/components/PageCraft/ComponentExplorer/enum'
 import {useComponentFileActions} from '@/components/PageCraft/ComponentExplorer/hooks/use-file-actions'
 import PopFloat from '@/components/PageCraft/ComponentExplorer/PopFloat.vue'
+import DialogImageCropper from '@/components/CommonUI/DialogImageCropper.vue'
 
 const emit = defineEmits(['open', 'update:isLoading', 'refresh'])
 
@@ -80,6 +81,12 @@ const {
   enableAction,
   handleCreateComponent,
   handleDragStart,
+
+  // cover params
+  isShowImageCropper,
+  cropperEditingSrc,
+  handleCropperSave,
+  handleCropperCancel,
 } = useComponentFileActions({
   isLoading,
   selectedPaths,
@@ -214,6 +221,13 @@ const handleOpen = (item) => {
       </Teleport>
     </div>
     <PopFloat />
+
+    <DialogImageCropper
+      v-model:visible="isShowImageCropper"
+      :src="cropperEditingSrc"
+      @onSave="handleCropperSave"
+      @onCancel="handleCropperCancel"
+    />
   </div>
 </template>
 

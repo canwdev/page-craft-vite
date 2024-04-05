@@ -1,11 +1,11 @@
 import {QuickOptionItem} from '@/components/CommonUI/QuickOptions/enum'
 
 import {Ref} from 'vue'
-import {IEntry} from '@/components/FileManager/types/filesystem'
 import {sortMethodMap, SortType} from '@/components/PageCraft/ComponentExplorer/utils/sort'
 import {useStorage} from '@vueuse/core'
+import {IComponentItem} from '@/components/PageCraft/ComponentExplorer/enum'
 
-export const useLayoutSort = (files: Ref<IEntry[]>) => {
+export const useLayoutSort = (files: Ref<IComponentItem[]>) => {
   const isGridView = ref(false)
   const sortMode = useStorage(
     'mc_explorer_component_sort_type',

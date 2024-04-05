@@ -97,8 +97,9 @@ const handleDragStart = (event) => {
       <slot name="actionMenu" :item="item"></slot>
     </div>
     <div class="title-wrap">
-      <!--<img v-if="item.icon" :src="item.icon" alt="icon" style="margin-right: 5px" />-->
-      <span v-if="nameDisplay" class="item-text-c"> {{ nameDisplay }}</span>
+      <span v-if="nameDisplay" class="item-text-c">
+        {{ !isComp && item.isDirectory ? '📁' : '' }} {{ nameDisplay }}
+      </span>
     </div>
 
     <div

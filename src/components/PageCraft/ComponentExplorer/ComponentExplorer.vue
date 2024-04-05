@@ -58,6 +58,7 @@ const {
       cEntries.push({
         ...entry,
         meta,
+        basePath: basePath.value,
       })
     }
 

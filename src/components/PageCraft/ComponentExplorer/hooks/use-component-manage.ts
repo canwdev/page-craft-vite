@@ -40,7 +40,7 @@ const getCompInStore = (item: IComponentItem, path): IComponentInStore => {
   }
 }
 
-const createFile = async (basePath, name, content) => {
+export const createFile = async (basePath, name, content) => {
   await fsWebApi.createFile({
     path: normalizePath(basePath + '/' + name),
     file: content,

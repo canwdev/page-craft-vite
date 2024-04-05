@@ -5,12 +5,10 @@ import {
   autoPasteReplaceValue,
   createBlockElement,
 } from '@/components/PageCraft/MainPlayground/utils/dom'
-import {LsKeys} from '@/enum/page-craft'
 import {useContextMenu} from '@/hooks/use-context-menu'
 import {copyToClipboard} from '@/utils'
 import {updateHtmlElement} from '@/components/PageCraft/MainPlayground/utils/element-edit'
 import {LineHelper} from '@/utils/line-helper'
-import {loadCompStorage} from '@/hooks/use-component-storage'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {useI18n} from 'vue-i18n'
 import {useOpenCloseSound, useSfxDestroy, useSfxPlace} from '@/hooks/use-sfx'

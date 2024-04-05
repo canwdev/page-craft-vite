@@ -52,39 +52,6 @@ export default defineComponent({
       }
     )
 
-    /*image cropper start*/
-    const isShowImageCropper = ref(false)
-    const cropperEditingSrc = ref('')
-    const cropperCompleteCb = ref<any>(null) // 裁剪完成回调函数
-    const cropperCancelCb = ref<any>(null) // 裁剪完成回调函数
-    const startCropImage = (options) => {
-      const {src = '', onComplete, onCancel} = options
-
-      cropperEditingSrc.value = src
-      cropperCompleteCb.value = onComplete
-      cropperCancelCb.value = onCancel
-      isShowImageCropper.value = true
-    }
-    const handleCropperSave = (base64url: string) => {
-      if (typeof cropperCompleteCb.value === 'function') {
-        cropperCompleteCb.value(base64url)
-      }
-      cropperCleanup()
-    }
-    const handleCropperCancel = () => {
-      if (typeof cropperCancelCb.value === 'function') {
-        cropperCompleteCb.value()
-      }
-      cropperCleanup()
-    }
-    const cropperCleanup = () => {
-      isShowImageCropper.value = false
-      cropperEditingSrc.value = ''
-      cropperCancelCb.value = null
-      cropperCompleteCb.value = null
-    }
-    /*image cropper end*/
-
     return {
       mainStore,
       settingsStore,
@@ -95,10 +62,6 @@ export default defineComponent({
       htmlBlockItemList,
       colorHash,
       playSfxPop,
-      isShowImageCropper,
-      editingImageSrc: cropperEditingSrc,
-      handleCropperSave,
-      handleCropperCancel,
     }
   },
 })
@@ -159,13 +122,6 @@ export default defineComponent({
 
       <ComponentExplorer v-else-if="settingsStore.inventoryTab === TabType.COMPONENTS" />
     </TabLayout>
-
-    <DialogImageCropper
-      v-model:visible="isShowImageCropper"
-      :src="editingImageSrc"
-      @onSave="handleCropperSave"
-      @onCancel="handleCropperCancel"
-    />
   </ViewPortWindow>
 </template>
 

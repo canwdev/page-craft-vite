@@ -3,6 +3,7 @@ import {IEntry} from '@/components/FileManager/types/filesystem'
 export const regComponentV2 = /\.comp$/i
 
 export interface IComponentMeta {
+  // 每个文件夹下的id不应该相同
   id: string
   timeCreated: number
   cover?: string
@@ -10,6 +11,7 @@ export interface IComponentMeta {
 
 export interface IComponentItem extends IEntry {
   meta?: IComponentMeta
+  basePath: string
 }
 
 // 导出专用类型
