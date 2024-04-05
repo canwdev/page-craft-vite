@@ -128,8 +128,13 @@ onMounted(() => {
         </div>
 
         <div v-if="starList.length" class="star-list">
-          <div v-for="path in starList" :key="path">
-            <button @click="handleOpenPath(path)" class="vp-button" :title="path">
+          <div v-for="(path, index) in starList" :key="path">
+            <button
+              @click="handleOpenPath(path)"
+              class="vp-button"
+              :title="path"
+              @contextmenu.prevent="() => starList.splice(index, 1)"
+            >
               {{ getLastDirName(path) }}
             </button>
           </div>
@@ -201,7 +206,6 @@ onMounted(() => {
       display: flex;
       flex-wrap: wrap;
       gap: 4px;
-      margin-top: 4px;
     }
   }
   .explorer-content-wrap {

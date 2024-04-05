@@ -11,6 +11,7 @@ import {
   Copy20Regular,
   ClipboardPaste20Regular,
   Add24Regular,
+  MoreHorizontal20Regular,
 } from '@vicons/fluent'
 import QuickOptions from '@/components/CommonUI/QuickOptions/index.vue'
 import QuickContextMenu from '@/components/CommonUI/QuickOptions/utils/QuickContextMenu.vue'
@@ -27,6 +28,7 @@ import {IComponentItem, regComponentV2} from '@/components/PageCraft/ComponentEx
 import {useComponentFileActions} from '@/components/PageCraft/ComponentExplorer/hooks/use-file-actions'
 import PopFloat from '@/components/PageCraft/ComponentExplorer/PopFloat.vue'
 import DialogImageCropper from '@/components/CommonUI/DialogImageCropper.vue'
+import {useSettingsStore} from '@/store/settings'
 
 const emit = defineEmits(['open', 'update:isLoading', 'refresh'])
 
@@ -39,6 +41,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {})
 const {basePath, files} = toRefs(props)
 const isLoading = useVModel(props, 'isLoading', emit)
+const settingsStore = useSettingsStore()
 
 // 布局和排序方式
 const {showSortMenu, sortOptions, filteredFiles} = useLayoutSort(files)
@@ -108,7 +111,9 @@ const handleOpen = (item) => {
   const path = normalizePath(basePath.value + '/' + item.name)
   // 打开.comp为后缀的组件文件夹
   if (regComponentV2.test(path)) {
-    openComponent(item, path)
+    if (item.meta.id !== settingsStore.curCompInStore?.id) {
+      openComponent(item, path)
+    }
     return
   }
   emit('open', item)
@@ -131,7 +136,7 @@ const handleOpen = (item) => {
           :title="$t('actions.add_component')"
         >
           <n-icon size="16">
-            <DocumentAdd16Regular />
+            <Add24Regular />
           </n-icon>
         </button>
         <button class="vp-button" @click="handleCreateFolder" title="Create Folder">
@@ -191,13 +196,19 @@ const handleOpen = (item) => {
             <SelectAllOn24Regular />
           </n-icon>
         </button>
+
+        <button class="vp-button" @click="($event) => handleShowCtxMenu(null, $event)" title="Menu">
+          <n-icon size="16">
+            <MoreHorizontal20Regular />
+          </n-icon>
+        </button>
       </div>
     </div>
     <div
       ref="explorerContentRef"
       class="explorer-content"
       @click="selectedItems = []"
-      @contextmenu.prevent.stop="handleShowCtxMenu(null, $event)"
+      @contextmenu.prevent.stop="handleShowCtxMenu(undefined, $event)"
     >
       <div class="explorer-grid-view">
         <ComponentCard

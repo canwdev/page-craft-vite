@@ -220,9 +220,9 @@ export const useComponentFileActions = ({
     if (!selectedItems.value.length) {
       return [
         {label: `➕ ${$t('actions.add_component')}`, props: {onClick: handleCreateComponent}},
-        {label: `➕ Create Folder`, props: {onClick: handleCreateFolder}},
-        {label: 'Refresh', props: {onClick: () => emit('refresh')}},
-        {label: 'Paste', props: {onClick: handlePaste}, disabled: !enablePaste.value},
+        {label: `📁 Create Folder`, props: {onClick: handleCreateFolder}},
+        {label: '🔃 Refresh', props: {onClick: () => emit('refresh')}},
+        {label: '📋 Paste', props: {onClick: handlePaste}, disabled: !enablePaste.value},
         {split: true},
         {
           label: `📥 ${$t('actions.import')} ${$t('common.all_components')} (JSON)`,
@@ -253,6 +253,7 @@ export const useComponentFileActions = ({
         {
           label: '🔰 ' + $t('common.default_board'),
           props: {
+            class: !settingsStore.curCompInStore ? 'active' : '',
             onClick: async () => {
               cancelSelectComponent()
             },
@@ -264,15 +265,18 @@ export const useComponentFileActions = ({
     const isSingle = selectedItems.value.length === 1
     const item = isSingle ? selectedItems.value[0] : null
     const isComponent = isSingle && !!item.meta
-    const isCurrentComp =
-      (isComponent && item.meta.id === settingsStore.curCompInStore?.id) ||
-      components.find((i) => i.meta.id === settingsStore.curCompInStore?.id)
+    let isCurrentComp = false
+    if (settingsStore.curCompInStore) {
+      const sid = settingsStore.curCompInStore.id
+      isCurrentComp =
+        (isComponent && item.meta.id === sid) || !!components.find((i) => i.meta.id === sid)
+    }
 
     // 选择文件菜单项
     // @ts-ignore
     return [
       isSingle && {
-        label: 'Open',
+        label: '📂 Open',
         props: {
           onClick: () => {
             return emit('open', item)
@@ -346,12 +350,14 @@ export const useComponentFileActions = ({
     ].filter(Boolean)
   })
   const ctxMenuRef = ref()
-  const handleShowCtxMenu = (item: IEntry | null, event: MouseEvent) => {
-    if (!item) {
-      selectedItems.value = []
-    } else {
-      if (!selectedItemsSet.value.has(item)) {
-        selectedItems.value = [item]
+  const handleShowCtxMenu = (item: IEntry | undefined | null, event: MouseEvent) => {
+    if (item !== null) {
+      if (item === undefined) {
+        selectedItems.value = []
+      } else {
+        if (!selectedItemsSet.value.has(item)) {
+          selectedItems.value = [item]
+        }
       }
     }
     ctxMenuRef.value.isShow = false

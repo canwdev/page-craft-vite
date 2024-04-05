@@ -21,7 +21,7 @@ const openItem = () => {
 }
 
 const nameDisplay = computed(() => {
-  return item.value.name.replace(item.value.ext, '')
+  return item.value.name.replace(regComponentV2, '')
 })
 
 const isComp = computed(() => {
@@ -98,7 +98,7 @@ const handleDragStart = (event) => {
     </div>
     <div class="title-wrap">
       <span v-if="nameDisplay" class="item-text-c">
-        {{ !isComp && item.isDirectory ? '📁' : '' }} {{ nameDisplay }}
+        {{ isComp ? '' : item.isDirectory ? '📁' : '📄' }} {{ nameDisplay }}
       </span>
     </div>
 

@@ -104,7 +104,7 @@ export default defineComponent({
           value: TabType.HTML_ELEMENTS,
         },
         {
-          label: $t('common.components') + ` (V2)`,
+          label: $t('common.components'),
           value: TabType.COMPONENTS,
         },
       ]"
