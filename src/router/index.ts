@@ -70,7 +70,7 @@ let routes = [
         name: 'FileExplorer',
         component: () => import('@/components/FileManager/FileManagerWindow.vue'),
         meta: {
-          title: 'FileExplorer',
+          title: '🗃️ File Explorer',
         },
       },
     ],

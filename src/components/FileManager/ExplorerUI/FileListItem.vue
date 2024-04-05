@@ -34,7 +34,7 @@ const {iconName, titleDesc} = useFileItem(props)
       />
 
       <span class="text-overflow filename-text" @click.stop="$emit('open', item)" @dblclick.stop>
-        {{ item.name }}
+        {{ item.isDirectory ? '📁' : '📄' }} {{ item.name }}
       </span>
     </div>
     <div class="list-col c-size">{{ bytesToSize(item.size) }}</div>

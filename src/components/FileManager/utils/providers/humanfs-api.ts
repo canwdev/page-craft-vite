@@ -2,13 +2,21 @@ import {IEntry} from '../../types/filesystem'
 import {WebHfs} from '@humanfs/web'
 import {path as Path} from '../path'
 
-const hfs = new WebHfs({
+let hfs = new WebHfs({
   root: await navigator.storage.getDirectory(),
 })
-console.log('[hfs]', hfs)
-
 // 必须设置基础路径，否则报错
-const basePath = '/page-craft'
+let basePath = '/page-craft'
+
+const p = async () => {
+  const handle = await window.showDirectoryPicker()
+  hfs = new WebHfs({
+    root: handle,
+  })
+  basePath = ''
+}
+window._p = p
+console.log('[hfs]', hfs)
 
 export const fsWebApi = {
   async getList({path}) {

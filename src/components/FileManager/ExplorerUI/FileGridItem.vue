@@ -29,6 +29,9 @@ const {iconName, titleDesc} = useFileItem(props)
       @click.stop="$emit('select', {item, event: $event, toggle: true})"
       @dblclick.stop
     />
+    <span class="desktop-icon-image">
+      {{ item.isDirectory ? '📁' : '📄' }}
+    </span>
     <span class="desktop-icon-name" @click.stop="$emit('open', item)" @dblclick.stop>{{
       item.name
     }}</span>
@@ -84,6 +87,10 @@ const {iconName, titleDesc} = useFileItem(props)
     width: 48px;
     height: 48px;
     pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
   }
 
   .desktop-icon-name {

@@ -206,7 +206,11 @@ const {
         />
       </div>
 
-      <QuickContextMenu :options="ctxMenuOptions" ref="ctxMenuRef" />
+      <Teleport to="body">
+        <transition name="fade">
+          <QuickContextMenu :options="ctxMenuOptions" ref="ctxMenuRef" />
+        </transition>
+      </Teleport>
     </div>
   </div>
 </template>

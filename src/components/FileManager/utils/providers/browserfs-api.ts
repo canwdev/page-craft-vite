@@ -1,4 +1,5 @@
 // 前端虚拟文件系统API，仅用于测试！
+// 此API已弃用！请使用humanfs！
 const {BFSRequire} = window.BrowserFS
 
 const fs = BFSRequire('fs')
