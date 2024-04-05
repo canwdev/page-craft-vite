@@ -12,7 +12,7 @@ import {
   IComponentItem,
   IComponentMeta,
   regComponentV2,
-} from '@/components/PageCraft/ComponentV2/enum'
+} from '@/components/PageCraft/ComponentExplorer/enum'
 import {guid} from '@/utils'
 import {useStorage} from '@vueuse/core'
 import {LsKeys} from '@/enum/page-craft'

@@ -4,7 +4,7 @@ import {QuickOptionItem} from '@/components/CommonUI/QuickOptions/enum'
 import {IEntry} from '@/components/FileManager/types/filesystem'
 import {normalizePath} from '@/components/FileManager/utils'
 import {fsWebApi} from '@/components/FileManager/utils/api'
-import {useComponentManage} from '@/components/PageCraft/ComponentV2/hooks/use-component-manage'
+import {useComponentManage} from '@/components/PageCraft/ComponentExplorer/hooks/use-component-manage'
 import {useI18n} from 'vue-i18n'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {useSettingsStore} from '@/store/settings'
@@ -12,7 +12,7 @@ import {
   IComponentExportData,
   IComponentItem,
   regComponentV2,
-} from '@/components/PageCraft/ComponentV2/enum'
+} from '@/components/PageCraft/ComponentExplorer/enum'
 import {promptGetFileName} from '@/utils/exporter'
 
 export const useComponentFileActions = ({
@@ -35,7 +35,6 @@ export const useComponentFileActions = ({
     handleCreateComponent,
     importComponentAllJson,
     exportComponentAllJson,
-    importComponentJson,
     exportComponentJson,
   } = useComponentManage({
     isLoading,
@@ -297,9 +296,21 @@ export const useComponentFileActions = ({
       ctxMenuRef.value.showMenu(event)
     })
   }
+
   const enableAction = computed(() => {
     return selectedItems.value.length > 0
   })
+
+  // 拖拽组件开始
+  const handleDragStart = async ({item, event}) => {
+    if (!regComponentV2.test(item.name)) {
+      return false
+    }
+    // 不支持异步方法，所以使用全局变量
+    // event.dataTransfer.setData('data-component', '111')
+    window.$draggingComponentExportData = await exportComponentJson(item)
+  }
+
   return {
     handleCreateFolder,
     handleRename,
@@ -310,5 +321,6 @@ export const useComponentFileActions = ({
     handleShowCtxMenu,
     enableAction,
     handleCreateComponent,
+    handleDragStart,
   }
 }

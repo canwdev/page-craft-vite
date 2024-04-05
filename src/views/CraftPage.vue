@@ -12,7 +12,7 @@ import {useEventListener} from '@vueuse/core'
 import {useOpenCloseSound, useSfxOpenCloseSelect, useSfxBrush, useSfxFill} from '@/hooks/use-sfx'
 import {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
 import {CLASS_MAIN_CANVAS_ROOT} from '@/enum/page-craft'
-import {useComponentStorageV2} from '@/components/PageCraft/ComponentV2/hooks/use-component-manage'
+import {useComponentStorageV2} from '@/components/PageCraft/ComponentExplorer/hooks/use-component-manage'
 
 const StyleEditor = defineAsyncComponent(() => import('@/components/StyleEditor/index.vue'))
 

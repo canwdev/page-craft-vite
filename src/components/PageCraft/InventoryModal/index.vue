@@ -12,11 +12,11 @@ import {Box20Regular, Window16Regular, WindowArrowUp16Regular} from '@vicons/flu
 import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
 import {useI18n} from 'vue-i18n'
 import {useSfxPop} from '@/hooks/use-sfx'
-import PopFloat from '@/components/PageCraft/DomPreview/PopFloat.vue'
+import PopFloat from '@/components/PageCraft/ComponentExplorer/PopFloat.vue'
 import DialogImageCropper from '@/components/CommonUI/DialogImageCropper.vue'
 import TabLayout from '@/components/CommonUI/TabLayout.vue'
 import {NIcon} from 'naive-ui'
-import ComponentExplorer from '@/components/PageCraft/ComponentV2/ComponentExplorer.vue'
+import ComponentExplorer from '@/components/PageCraft/ComponentExplorer/ComponentExplorer.vue'
 
 export default defineComponent({
   name: 'InventoryModal',
@@ -159,8 +159,6 @@ export default defineComponent({
 
       <ComponentExplorer v-else-if="settingsStore.inventoryTab === TabType.COMPONENTS" />
     </TabLayout>
-
-    <PopFloat />
 
     <DialogImageCropper
       v-model:visible="isShowImageCropper"

@@ -3,7 +3,7 @@ import {TabType} from '@/enum/page-craft/inventory'
 import {LdThemeType} from '@/enum/settings'
 import {DEFAULT_THEME} from '@/components/CommonUI/ViewPortWindow/utils/use-theme'
 import {StyleTabType} from '@/components/StyleEditor/enum'
-import {IComponentInStore} from '@/components/PageCraft/ComponentV2/enum'
+import {IComponentInStore} from '@/components/PageCraft/ComponentExplorer/enum'
 
 interface IPageCraftSettings {
   // 明暗主题

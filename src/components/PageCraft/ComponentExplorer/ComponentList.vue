@@ -17,14 +17,15 @@ import QuickContextMenu from '@/components/CommonUI/QuickOptions/utils/QuickCont
 import {
   useComponentMigrationToV2,
   useComponentStorageV2,
-} from '@/components/PageCraft/ComponentV2/hooks/use-component-manage'
-import {useLayoutSort} from '@/components/FileManager/ExplorerUI/hooks/use-layout-sort'
+} from '@/components/PageCraft/ComponentExplorer/hooks/use-component-manage'
+import {useLayoutSort} from './hooks/use-layout-sort'
 import {useSelection} from '@/components/FileManager/ExplorerUI/hooks/use-selection'
 import {useCopyPaste} from '@/components/FileManager/ExplorerUI/hooks/use-copy-paste'
 import ComponentCard from './ComponentCard.vue'
 import {normalizePath} from '@/components/FileManager/utils'
-import {IComponentItem, regComponentV2} from '@/components/PageCraft/ComponentV2/enum'
-import {useComponentFileActions} from '@/components/PageCraft/ComponentV2/hooks/use-file-actions'
+import {IComponentItem, regComponentV2} from '@/components/PageCraft/ComponentExplorer/enum'
+import {useComponentFileActions} from '@/components/PageCraft/ComponentExplorer/hooks/use-file-actions'
+import PopFloat from '@/components/PageCraft/ComponentExplorer/PopFloat.vue'
 
 const emit = defineEmits(['open', 'update:isLoading', 'refresh'])
 
@@ -49,7 +50,16 @@ const {
   toggleSelect,
   toggleSelectAll,
   selectedPaths,
+  selectionArea,
 } = useSelection({filteredFiles, basePath})
+
+onMounted(() => {
+  {
+    selectionArea.value.on('beforestart', ({event}) => {
+      return !event.target?.closest('.mc-comp-item')
+    })
+  }
+})
 
 // 复制粘贴功能
 const {enablePaste, handleCut, handleCopy, handlePaste} = useCopyPaste({
@@ -69,6 +79,7 @@ const {
   handleShowCtxMenu,
   enableAction,
   handleCreateComponent,
+  handleDragStart,
 } = useComponentFileActions({
   isLoading,
   selectedPaths,
@@ -192,11 +203,17 @@ const handleOpen = (item) => {
           @open="handleOpen"
           @select="toggleSelect"
           @contextmenu.prevent.stop="handleShowCtxMenu(item, $event)"
+          @handleDragStart="(event) => handleDragStart({item, event})"
         />
       </div>
 
-      <QuickContextMenu :options="ctxMenuOptions" ref="ctxMenuRef" />
+      <Teleport to="body">
+        <transition name="fade">
+          <QuickContextMenu :options="ctxMenuOptions" ref="ctxMenuRef" />
+        </transition>
+      </Teleport>
     </div>
+    <PopFloat />
   </div>
 </template>
 

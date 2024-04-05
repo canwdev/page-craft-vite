@@ -3,7 +3,7 @@ import FileSaver from 'file-saver'
 import {sassToCSS} from '@/components/StyleEditor/utils/css'
 import {formatCss, formatHtml} from '@/components/StyleEditor/utils/formater'
 import {showInputPrompt} from '@/components/CommonUI/input-prompt'
-import {IComponentExportData} from '@/components/PageCraft/ComponentV2/enum'
+import {IComponentExportData} from '@/components/PageCraft/ComponentExplorer/enum'
 
 export const handleExportHtml = async (exportData: IComponentExportData, options?) => {
   const {html, style} = exportData

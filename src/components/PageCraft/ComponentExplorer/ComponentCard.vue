@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import {colorHash, formatDate} from '@/utils'
-import {IComponentItem} from '@/components/PageCraft/ComponentV2/enum'
+import {IComponentItem, regComponentV2} from '@/components/PageCraft/ComponentExplorer/enum'
 import {useSettingsStore} from '@/store/settings'
+import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
+import {useThrottleFn} from '@vueuse/core'
 
-const emit = defineEmits(['open', 'select'])
+const emit = defineEmits(['open', 'select', 'handleDragStart'])
 
 interface Props {
   item: IComponentItem
@@ -22,11 +24,36 @@ const nameDisplay = computed(() => {
   return item.value.name.replace(item.value.ext, '')
 })
 
+const isComp = computed(() => {
+  return regComponentV2.test(item.value.name)
+})
+
 const color = computed(() => {
-  if (item.value.meta) {
+  if (isComp.value) {
     return colorHash.rgb(item.value.name).join(', ')
   }
 })
+
+let currentEvent: any
+const emitMouseMove = () => {
+  globalEventBus.emit(GlobalEvents.ON_COMP_HOVER, {event: currentEvent, item: item.value})
+}
+
+const handleMouseMove = useThrottleFn((event) => {
+  if (!item.value.meta || !item.value.meta.cover) {
+    return
+  }
+  currentEvent = event
+  emitMouseMove()
+}, 70)
+const handleMouseLeave = () => {
+  globalEventBus.emit(GlobalEvents.ON_COMP_HOVER_OUT)
+}
+
+const handleDragStart = (event) => {
+  emit('handleDragStart', event)
+  handleMouseLeave()
+}
 </script>
 
 <template>
@@ -46,6 +73,10 @@ const color = computed(() => {
     :style="{
       '--block-color-rgb': color,
     }"
+    @mousemove="handleMouseMove"
+    @mouseleave="handleMouseLeave"
+    :draggable="isComp"
+    @dragstart="handleDragStart"
   >
     <div
       :style="{

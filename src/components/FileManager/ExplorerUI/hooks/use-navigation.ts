@@ -4,10 +4,12 @@ import {useStorage} from '@vueuse/core'
 import {
   regComponentDir,
   useComponentStorageV2,
-} from '@/components/PageCraft/ComponentV2/hooks/use-component-manage'
+} from '@/components/PageCraft/ComponentExplorer/hooks/use-component-manage'
 export const useNavigation = ({getListFn, openEntryFn}) => {
   const files = ref<IEntry[]>([])
-  const basePath = ref('/')
+  const basePath = useStorage('mc_explorer_base_path', '/', localStorage, {
+    listenToStorageChanges: false,
+  })
   const basePathNormalized = computed(() => {
     let path = normalizePath(basePath.value)
     if (!/\/$/gi.test(path)) {
@@ -111,7 +113,7 @@ export const useNavigation = ({getListFn, openEntryFn}) => {
     }
   }
 
-  const starList = useStorage<string[]>('component_dir_star_list', [])
+  const starList = useStorage<string[]>('mc_explorer_component_dir_star_list', [])
   const isStared = computed(() => {
     return starList.value.includes(basePathNormalized.value)
   })

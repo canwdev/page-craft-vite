@@ -7,7 +7,7 @@ interface Props {
   visible: boolean
 }
 const props = withDefaults(defineProps<Props>(), {
-  visible: false,
+  visible: true,
 })
 const emit = defineEmits(['update:visible'])
 const mVisible = useVModel(props, 'visible', emit)

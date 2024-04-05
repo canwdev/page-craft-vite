@@ -10,12 +10,12 @@ import {
 import {useNavigation} from '@/components/FileManager/ExplorerUI/hooks/use-navigation'
 import {fsWebApi} from '@/components/FileManager/utils/providers/humanfs-api'
 import {getLastDirName, normalizePath} from '@/components/FileManager/utils'
-import ComponentList from '@/components/PageCraft/ComponentV2/ComponentList.vue'
+import ComponentList from '@/components/PageCraft/ComponentExplorer/ComponentList.vue'
 import {
   IComponentItem,
   IComponentMeta,
   regComponentV2,
-} from '@/components/PageCraft/ComponentV2/enum'
+} from '@/components/PageCraft/ComponentExplorer/enum'
 
 const {
   isLoading,

@@ -5,7 +5,7 @@ import {useSettingsStore} from '@/store/settings'
 import i18n from '@/i18n/index'
 import {window as tauriWin} from '@tauri-apps/api'
 import {formatSiteTitle} from '@/router/router-utils'
-import {initFs} from '@/components/PageCraft/ComponentV2/utils/api'
+import {initFs} from '@/components/PageCraft/ComponentExplorer/utils/api'
 
 let history = createWebHashHistory()
 let routes = [
@@ -63,6 +63,14 @@ let routes = [
         component: () => import('@/views/VueI18nDirTool.vue'),
         meta: {
           title: i18n.global.t('common.i18njson_batch_tool'),
+        },
+      },
+      {
+        path: 'explorer',
+        name: 'FileExplorer',
+        component: () => import('@/components/FileManager/FileManagerWindow.vue'),
+        meta: {
+          title: 'FileExplorer',
         },
       },
     ],

@@ -9,8 +9,8 @@ import {useI18n} from 'vue-i18n'
 import {useBeforeUnload, useSaveShortcut} from '@/hooks/use-beforeunload'
 import {useSfxBass, useSfxBell, useSfxFill, useSfxGuitar} from '@/hooks/use-sfx'
 import {useBroadcastMessage} from '@/hooks/use-broadcast-messae'
-import {useComponentStorageV2} from '@/components/PageCraft/ComponentV2/hooks/use-component-manage'
-import {IComponentExportData} from '@/components/PageCraft/ComponentV2/enum'
+import {useComponentStorageV2} from '@/components/PageCraft/ComponentExplorer/hooks/use-component-manage'
+import {IComponentExportData} from '@/components/PageCraft/ComponentExplorer/enum'
 
 export const useMcMain = (options) => {
   const {t: $t} = useI18n()
