@@ -16,8 +16,6 @@ declare global {
     stylusSupermacyFormat: any
     $juice: any
     XLSX: any
-    // https://github.com/sxei/pinyinjs/
-    pinyinUtil: any
 
     __TAURI__: any
 

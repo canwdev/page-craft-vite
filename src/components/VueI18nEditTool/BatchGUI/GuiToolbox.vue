@@ -108,65 +108,92 @@ const printAllInfo = async () => {
   return {items}
 }
 
-const recursiveAnalyzeTranslateTree = (
-  tree: ITranslateTreeItem[],
-  depth = 0,
-  parents: string[] = [],
-  path: string = ''
-) => {
-  if (!tree || !tree.length) {
-    return
+const printAnalytics = () => {
+  let log = ``
+  const printLog = (...args) => {
+    log += args.join(' ') + '\n'
+    console.log(...args)
   }
-  tree.forEach((t, tIdx) => {
-    const spaces = '  '.repeat(depth)
-    const nextParents = [...parents, t.namespace]
-    console.log(`${spaces}[🟢] ${t.namespace}`)
-    t.translates.forEach((i, idx) => {
-      const symbolTable = idx === t.translates.length - 1 ? '└─' : '├─'
+  const recursiveAnalyzeTranslateTree = (
+    tree: ITranslateTreeItem[],
+    depth = 0,
+    parents: string[] = [],
+    path: string = ''
+  ) => {
+    if (!tree || !tree.length) {
+      return
+    }
+    tree.forEach((t, tIdx) => {
+      const spaces = '  '.repeat(depth)
+      const nextParents = [...parents, t.namespace]
+      printLog(`${spaces}[🟢] ${t.namespace}`)
+      t.translates.forEach((i, idx) => {
+        const symbolTable = idx === t.translates.length - 1 ? '└─' : '├─'
 
-      // 统计翻译数量
-      let count = 0
-      // 忽略未创建的文件夹
-      const filteredBatchList = i18nMainStore.batchList.filter(({json}) => {
-        return !!json
-      })
-      const len = filteredBatchList.length
-      const missingDirs: string[] = []
-      filteredBatchList.forEach(({rootDir, json}) => {
-        // 获取翻译key路径（去除虚拟根节点）
-        let tPath = nextParents.join('.') + '.' + i.key
-        const regex = new RegExp(I18N_JSON_OBJ_ROOT_KEY_NAME + '.', 'g')
-        tPath = tPath.replace(regex, '')
-        const tVal = _get(json, tPath)
-        // console.debug(tPath, json, tVal)
-        if (tVal) {
-          count++
-        } else {
-          missingDirs.push(rootDir.label)
+        // 统计翻译数量
+        let count = 0
+        // 忽略未创建的文件夹
+        const filteredBatchList = i18nMainStore.batchList.filter(({json}) => {
+          return !!json
+        })
+        const len = filteredBatchList.length
+        const missingDirs: string[] = []
+        filteredBatchList.forEach(({rootDir, json}) => {
+          // 获取翻译key路径（去除虚拟根节点）
+          let tPath = nextParents.join('.') + '.' + i.key
+          const regex = new RegExp(I18N_JSON_OBJ_ROOT_KEY_NAME + '.', 'g')
+          tPath = tPath.replace(regex, '')
+          const tVal = _get(json, tPath)
+          // console.debug(tPath, json, tVal)
+          if (tVal) {
+            count++
+          } else {
+            missingDirs.push(rootDir.label)
+          }
+        })
+
+        const percent = (count / len) * 100
+        const bar = unicodeProgressBar(percent)
+        let tipText = `  ${spaces}${symbolTable}[${percent === 100 ? '✅' : '⚠️'}] ${
+          i.key
+        } ${bar} ${percent.toFixed(0)}% (${count}/${len})`
+        if (missingDirs.length) {
+          tipText += ` | ${missingDirs.join(',')}`
         }
+        printLog(tipText)
+        // console.debug(i, nextParents)
       })
-
-      const percent = (count / len) * 100
-      const bar = unicodeProgressBar(percent)
-      let tipText = `  ${spaces}${symbolTable}[${percent === 100 ? '✅' : '⚠️'}] ${
-        i.key
-      } ${bar} ${percent.toFixed(0)}% (${count}/${len})`
-      if (missingDirs.length) {
-        tipText += ` | ${missingDirs.join(',')}`
-      }
-      console.log(tipText)
-      // console.debug(i, nextParents)
+      recursiveAnalyzeTranslateTree(t.children, depth + 1, nextParents)
     })
-    recursiveAnalyzeTranslateTree(t.children, depth + 1, nextParents)
-  })
+
+    return log
+  }
+
+  console.warn('====== [recursiveAnalyzeTranslateTree] Start ======')
+  recursiveAnalyzeTranslateTree(i18nMainStore.translateTreeRoot)
+  console.warn('====== [recursiveAnalyzeTranslateTree] End ======')
+  return log
 }
 
 const handleAnalyse = async () => {
   await printAllInfo()
-  console.warn('====== [recursiveAnalyzeTranslateTree] Start ======')
-  recursiveAnalyzeTranslateTree(i18nMainStore.translateTreeRoot)
-  console.warn('====== [recursiveAnalyzeTranslateTree] End ======')
+  const log = printAnalytics()
   window.$message.success('Open console to view results.')
+
+  window.$dialog.info({
+    title: 'Analytics',
+    content: () =>
+      h('textarea', {
+        value: log,
+        rows: 20,
+        class: 'font-code vp-bg',
+        style: `width: 100%;
+box-sizing: border-box;
+font-size: 12px;
+scrollbar-width: thin;
+height: 495px;`,
+      }),
+  })
 }
 
 const isShowToolboxMenu = ref(false)

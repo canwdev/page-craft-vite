@@ -11,6 +11,7 @@
     "build:tauri": "tauri build"
   },
   "dependencies": {
+    "@humanfs/web": "^0.13.0",
     "@tauri-apps/api": "^1.5.3",
     "@viselect/vanilla": "^3.5.0",
     "@vueuse/core": "^10.9.0",
@@ -30,6 +31,7 @@
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.1",
     "pinia-shared-state": "^0.5.1",
+    "pinyin-pro": "^3.19.6",
     "portal-vue": "^3.0.0",
     "qrcode": "^1.5.3",
     "vanilla-jsoneditor": "^0.23.1",

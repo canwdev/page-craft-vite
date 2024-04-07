@@ -288,7 +288,7 @@ defineExpose({
   <ElementByPoint
     v-if="isSelecting"
     @select="handleSelectEl"
-    :parent-class="selectingParentClass"
+    :parent-class="styleEditorTab === StyleTabType.CURRENT ? selectingParentClass : undefined"
   />
   <ViewPortWindow
     class="mc-style-editor-dialog"

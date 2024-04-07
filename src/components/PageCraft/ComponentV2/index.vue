@@ -9,7 +9,7 @@ import {
 } from '@vicons/fluent'
 import FileList from './ExplorerUI/FileList.vue'
 import {getLastDirName} from './utils'
-import {useNavigation} from '@/components/PageCraft/ComponentV2/utils/use-navigation'
+import {useNavigation} from '@/components/PageCraft/ComponentV2/ExplorerUI/hooks/use-navigation'
 import {fsWebApi} from './utils/api'
 
 const {
@@ -38,6 +38,12 @@ const {
     console.log(res)
 
     return res
+  },
+  openEntryFn: async ({path}) => {
+    const res = await fsWebApi.getFile({
+      path,
+    })
+    console.log(res)
   },
 })
 

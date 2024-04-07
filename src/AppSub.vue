@@ -14,6 +14,7 @@ import {TextConvertMode} from '@/components/VueI18nEditTool/TextConverter/copy-e
 import IframeBrowser from '@/components/IframeBrowser/index.vue'
 import {useSettingsStore} from '@/store/settings'
 import {showInputPrompt} from '@/components/CommonUI/input-prompt'
+import {pinyin} from 'pinyin-pro'
 
 export default defineComponent({
   name: 'AppSub',
@@ -47,6 +48,7 @@ export default defineComponent({
         TextConvertMode,
         promptGetFileName,
         showInputPrompt,
+        pinyin,
       }
     })
 
