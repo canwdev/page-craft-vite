@@ -277,7 +277,7 @@ export default defineComponent({
         <n-button-group v-if="isChanged">
           <n-button
             size="small"
-            type="primary"
+            type="warning"
             @click="saveChange({isEmit: true, isSetValue: true})"
             title="Batch Save"
           >
