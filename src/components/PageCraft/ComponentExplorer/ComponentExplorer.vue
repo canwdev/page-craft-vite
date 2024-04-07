@@ -176,6 +176,7 @@ onMounted(() => {
       gap: 4px;
       .btn-action {
         padding: 4px;
+        display: flex;
       }
 
       .nav-wrap {
@@ -194,6 +195,7 @@ onMounted(() => {
         .input-addr {
           flex: 1;
           line-height: 1;
+          padding: 4px 6px;
         }
         .input-filter {
           width: 100px;

@@ -233,7 +233,7 @@ export const useComponentStorageV2 = () => {
 }
 
 // 旧版组件迁移到V2新版文件系统
-export const useComponentMigrationToV2 = () => {
+export const useComponentMigrationToV2 = (emit) => {
   const isMigrated = useStorage('component_is_migrated_v2', false)
   const isMigrating = ref(false)
 
@@ -287,6 +287,7 @@ export const useComponentMigrationToV2 = () => {
     }
 
     isMigrated.value = true
+    emit('refresh')
   }
 
   onMounted(async () => {

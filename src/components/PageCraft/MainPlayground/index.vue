@@ -70,6 +70,7 @@ export default defineComponent({
       cursorY,
       contextMenuEtc,
       selectionActionStyle,
+      selectionElRef,
       isShowSelectionAction,
       selectionPopupOptions,
       isShowElementEdit,
@@ -139,6 +140,7 @@ export default defineComponent({
       pasteHtmlText,
       handleImportHtml,
       selectionActionStyle,
+      selectionElRef,
       isShowSelectionAction,
       selectionPopupOptions,
       ...contextMenuEtc,
@@ -163,6 +165,7 @@ export default defineComponent({
 
     <transition name="mc-fade">
       <div
+        ref="selectionElRef"
         class="selection-action"
         v-if="isShowSelectionAction"
         :style="selectionActionStyle"

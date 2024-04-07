@@ -12,6 +12,7 @@ import {LineHelper} from '@/utils/line-helper'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {useI18n} from 'vue-i18n'
 import {useOpenCloseSound, useSfxDestroy, useSfxPlace} from '@/hooks/use-sfx'
+import {onClickOutside} from '@vueuse/core'
 
 const MAX_WAIT_TIME = 0.3 * 1000
 
@@ -45,6 +46,15 @@ export const useInteractionHooks = (options) => {
   const selectionRef = ref<Selection | null>(null)
   const selectionActionStyle = ref<any>(null)
   const isShowSelectionAction = ref(false)
+  const selectionElRef = ref()
+  // 点击外部隐藏
+  onClickOutside(selectionElRef, (event) => {
+    if (isShowSelectionAction.value) {
+      setTimeout(() => {
+        isShowSelectionAction.value = false
+      })
+    }
+  })
 
   const isPointerInCanvas = ref(false)
   const handlePointerDown = (e: MouseEvent) => {
@@ -54,11 +64,9 @@ export const useInteractionHooks = (options) => {
     isPointerInCanvas.value = true
     // @ts-ignore
     window.getSelection().removeAllRanges()
-    isShowSelectionAction.value = false
   }
   const handlePointerUp = (e) => {
     if (!isPointerInCanvas.value) {
-      isShowSelectionAction.value = false
       return
     }
     const selection = window.getSelection()
@@ -519,6 +527,7 @@ export const useInteractionHooks = (options) => {
     cursorY,
     contextMenuEtc,
     selectionActionStyle,
+    selectionElRef,
     isShowSelectionAction,
     selectionPopupOptions,
     isShowElementEdit,

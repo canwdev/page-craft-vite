@@ -104,7 +104,7 @@ const {
   emit,
 })
 
-useComponentMigrationToV2()
+useComponentMigrationToV2(emit)
 
 const {openComponent} = useComponentStorageV2()
 const handleOpen = (item) => {
