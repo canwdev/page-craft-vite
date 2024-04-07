@@ -28,6 +28,7 @@ import {
 } from '@/components/VueI18nEditTool/TextConverter/copy-enum'
 import {useArrayEdit} from '@/components/VueI18nEditTool/Single/hooks/use-array-edit'
 import CcFlag from '@/components/VueI18nEditTool/CcFlag.vue'
+import {useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
 
 export default defineComponent({
   name: 'TranslateTreeItem',
@@ -67,15 +68,15 @@ export default defineComponent({
   emits: ['onRemove', 'onKeyClick'],
   setup(props) {
     const {item, index, title} = toRefs(props)
-    const mainStore = useMainStore()
+    const i18nMainStore = useI18nMainStore()
     const i18nSetStore = useI18nToolSettingsStore()
 
     const handleAddChildren = () => {
-      mainStore.trIsManualAdd = true
+      i18nMainStore.trIsManualAdd = true
       item.value.children.push(formatTranslateTreeItem({parent: item.value}))
     }
     const handleAddTranslate = () => {
-      mainStore.trIsManualAdd = true
+      i18nMainStore.trIsManualAdd = true
       item.value.translates.push(formatTranslateItem())
     }
 
@@ -88,10 +89,10 @@ export default defineComponent({
       })
 
       // 生成guid用来区分
-      mainStore.trAutoAddGuid = guid()
+      i18nMainStore.trAutoAddGuid = guid()
       item.value.translates.push(
         formatTranslateItem({
-          key: mainStore.trAutoAddGuid,
+          key: i18nMainStore.trAutoAddGuid,
           value: val,
         })
       )
@@ -131,12 +132,12 @@ export default defineComponent({
 
     const namespaceInputRef = ref()
     onMounted(() => {
-      if (mainStore.trIsManualAdd) {
+      if (i18nMainStore.trIsManualAdd) {
         // 自动选择value输入框
         if (namespaceInputRef.value) {
           namespaceInputRef.value.focus()
         }
-        mainStore.trIsManualAdd = false
+        i18nMainStore.trIsManualAdd = false
       }
     })
 

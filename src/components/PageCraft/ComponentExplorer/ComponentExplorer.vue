@@ -1,16 +1,21 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import {
-  ArrowSync20Filled,
-  ArrowUp20Regular,
   ArrowLeft20Regular,
   ArrowRight20Regular,
+  ArrowSync20Filled,
+  ArrowUp20Regular,
   Star20Filled,
   Star20Regular,
 } from '@vicons/fluent'
-import FileList from './ExplorerUI/FileList.vue'
-import {getLastDirName} from './utils'
-import {useNavigation} from '@/components/PageCraft/ComponentV2/ExplorerUI/hooks/use-navigation'
-import {fsWebApi} from './utils/api'
+import {useNavigation} from '@/components/FileManager/ExplorerUI/hooks/use-navigation'
+import {fsWebApi} from '@/components/FileManager/utils/providers/humanfs-api'
+import {getLastDirName, normalizePath} from '@/components/FileManager/utils'
+import ComponentList from '@/components/PageCraft/ComponentExplorer/ComponentList.vue'
+import {
+  IComponentItem,
+  IComponentMeta,
+  regComponentV2,
+} from '@/components/PageCraft/ComponentExplorer/enum'
 
 const {
   isLoading,
@@ -32,12 +37,33 @@ const {
   filterText,
 } = useNavigation({
   getListFn: async () => {
-    const res = await fsWebApi.getList({
+    const entries = await fsWebApi.getList({
       path: basePath.value,
     })
-    console.log(res)
 
-    return res
+    const cEntries: IComponentItem[] = []
+    for (const key in entries) {
+      const entry = entries[key]
+      let meta: IComponentMeta | undefined
+      if (regComponentV2.test(entry.name)) {
+        meta =
+          (await fsWebApi.getFile({
+            path: normalizePath(basePath.value + '/' + entry.name + '/index.json'),
+            mode: 'json',
+          })) || {}
+        meta!.cover = await fsWebApi.getFile({
+          path: normalizePath(basePath.value + '/' + entry.name + '/cover.base64'),
+        })
+      }
+      cEntries.push({
+        ...entry,
+        meta,
+        basePath: basePath.value,
+      })
+    }
+
+    console.log(cEntries)
+    return cEntries
   },
   openEntryFn: async ({path}) => {
     const res = await fsWebApi.getFile({
@@ -53,7 +79,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="explorer-wrap">
+  <div class="mc-component-explorer">
     <div class="explorer-header vp-panel">
       <div class="nav-address">
         <div class="nav-wrap">
@@ -85,11 +111,11 @@ onMounted(() => {
         </div>
         <div class="input-wrap">
           <input
-            placeholder="Path"
-            v-model="basePath"
+            :placeholder="`Filter name in ${basePath}`"
+            v-model="filterText"
             class="input-addr vp-input"
-            @change="handleRefresh"
           />
+
           <button class="vp-button btn-action" @click="handleRefresh">
             <n-icon size="16"><ArrowSync20Filled /> </n-icon>
           </button>
@@ -99,21 +125,25 @@ onMounted(() => {
               <Star20Regular v-else />
             </n-icon>
           </button>
-
-          <input placeholder="Filter name" v-model="filterText" class="input-filter vp-input" />
         </div>
-      </div>
 
-      <div v-if="starList.length" class="star-list">
-        <div v-for="path in starList" :key="path">
-          <button @click="handleOpenPath(path)" class="vp-button" :title="path">
-            {{ getLastDirName(path) }}
-          </button>
+        <div v-if="starList.length" class="star-list">
+          <div v-for="(path, index) in starList" :key="path">
+            <button
+              @click="handleOpenPath(path)"
+              class="vp-button"
+              :title="path"
+              @contextmenu.prevent="() => starList.splice(index, 1)"
+            >
+              {{ getLastDirName(path) }}
+            </button>
+          </div>
         </div>
       </div>
     </div>
+
     <div class="explorer-content-wrap _scrollbar_mini">
-      <FileList
+      <ComponentList
         v-model:is-loading="isLoading"
         :files="filteredFiles"
         @open="handleOpen"
@@ -125,7 +155,7 @@ onMounted(() => {
 </template>
 
 <style lang="scss">
-.explorer-wrap {
+.mc-component-explorer {
   min-width: 300px;
   height: 100%;
   display: flex;
@@ -176,21 +206,12 @@ onMounted(() => {
       display: flex;
       flex-wrap: wrap;
       gap: 4px;
-      margin-top: 4px;
     }
   }
   .explorer-content-wrap {
     flex: 1;
     overflow: auto;
     display: flex;
-  }
-
-  .btn-action {
-    display: inline-flex;
-    cursor: pointer;
-    &:disabled {
-      cursor: not-allowed;
-    }
   }
 }
 </style>

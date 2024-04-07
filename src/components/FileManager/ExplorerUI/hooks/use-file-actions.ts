@@ -26,7 +26,7 @@ export const useFileActions = ({
       isLoading.value = true
       await fsWebApi.createFile({
         path: normalizePath(basePath.value + '/' + name),
-        file: 'Hello world', //generateTextFile('', name),
+        file: '', //generateTextFile('', name),
       })
       emit('refresh')
     } finally {

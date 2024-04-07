@@ -12,7 +12,7 @@ export const useSelection = ({filteredFiles, basePath}) => {
   })
 
   const explorerContentRef = ref()
-  useSelectionArea({
+  const {selectionArea} = useSelectionArea({
     containerRef: explorerContentRef,
     onStart: () => {
       selectedItems.value = []
@@ -80,5 +80,6 @@ export const useSelection = ({filteredFiles, basePath}) => {
     toggleSelect,
     toggleSelectAll,
     selectedPaths,
+    selectionArea,
   }
 }

@@ -1,39 +1,39 @@
 <script lang="ts" setup>
-import {IEntry} from '../types/filesystem'
-import FileListItem from './FileListItem.vue'
 import {useVModel} from '@vueuse/core'
-import FileGridItem from './FileGridItem.vue'
 import {
   DocumentAdd16Regular,
   FolderAdd16Regular,
-  DocumentArrowUp16Regular,
-  FolderArrowUp16Regular,
-  DocumentArrowDown16Regular,
   Rename16Regular,
   Delete16Regular,
   SelectAllOn24Regular,
-  Eye16Filled,
-  EyeOff16Filled,
-  Grid16Regular,
-  AppsList20Regular,
   ArrowSortDownLines16Regular,
   Cut20Regular,
   Copy20Regular,
   ClipboardPaste20Regular,
   Add24Regular,
+  MoreHorizontal20Regular,
 } from '@vicons/fluent'
 import QuickOptions from '@/components/CommonUI/QuickOptions/index.vue'
 import QuickContextMenu from '@/components/CommonUI/QuickOptions/utils/QuickContextMenu.vue'
-import {useCopyPaste} from './hooks/use-copy-paste'
-import {useSelection} from './hooks/use-selection'
+import {
+  useComponentMigrationToV2,
+  useComponentStorageV2,
+} from '@/components/PageCraft/ComponentExplorer/hooks/use-component-manage'
 import {useLayoutSort} from './hooks/use-layout-sort'
-import {useFileActions} from '@/components/PageCraft/ComponentV2/ExplorerUI/hooks/use-file-actions'
-import {useComponentManage} from '@/components/PageCraft/ComponentV2/ExplorerUI/hooks/use-component-manage'
+import {useSelection} from '@/components/FileManager/ExplorerUI/hooks/use-selection'
+import {useCopyPaste} from '@/components/FileManager/ExplorerUI/hooks/use-copy-paste'
+import ComponentCard from './ComponentCard.vue'
+import {normalizePath} from '@/components/FileManager/utils'
+import {IComponentItem, regComponentV2} from '@/components/PageCraft/ComponentExplorer/enum'
+import {useComponentFileActions} from '@/components/PageCraft/ComponentExplorer/hooks/use-file-actions'
+import PopFloat from '@/components/PageCraft/ComponentExplorer/PopFloat.vue'
+import DialogImageCropper from '@/components/CommonUI/DialogImageCropper.vue'
+import {useSettingsStore} from '@/store/settings'
 
 const emit = defineEmits(['open', 'update:isLoading', 'refresh'])
 
 interface Props {
-  files: IEntry[]
+  files: IComponentItem[]
   isLoading: boolean
   basePath: string
 }
@@ -41,9 +41,10 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {})
 const {basePath, files} = toRefs(props)
 const isLoading = useVModel(props, 'isLoading', emit)
+const settingsStore = useSettingsStore()
 
 // 布局和排序方式
-const {isGridView, showSortMenu, sortOptions, filteredFiles} = useLayoutSort(files)
+const {showSortMenu, sortOptions, filteredFiles} = useLayoutSort(files)
 
 // 文件选择功能
 const {
@@ -53,7 +54,16 @@ const {
   toggleSelect,
   toggleSelectAll,
   selectedPaths,
+  selectionArea,
 } = useSelection({filteredFiles, basePath})
+
+onMounted(() => {
+  {
+    selectionArea.value.on('beforestart', ({event}) => {
+      return !event.target?.closest('.mc-comp-item')
+    })
+  }
+})
 
 // 复制粘贴功能
 const {enablePaste, handleCut, handleCopy, handlePaste} = useCopyPaste({
@@ -65,7 +75,6 @@ const {enablePaste, handleCut, handleCopy, handlePaste} = useCopyPaste({
 
 // 文件操作功能
 const {
-  handleCreateFile,
   handleCreateFolder,
   handleRename,
   confirmDelete,
@@ -73,7 +82,15 @@ const {
   ctxMenuRef,
   handleShowCtxMenu,
   enableAction,
-} = useFileActions({
+  handleCreateComponent,
+  handleDragStart,
+
+  // cover params
+  isShowImageCropper,
+  cropperEditingSrc,
+  handleCropperSave,
+  handleCropperCancel,
+} = useComponentFileActions({
   isLoading,
   selectedPaths,
   basePath,
@@ -83,14 +100,28 @@ const {
   handleCut,
   handleCopy,
   selectedItemsSet,
+  files,
   emit,
 })
 
-const {handleCreateComponent} = useComponentManage({files, basePath, isLoading, emit})
+useComponentMigrationToV2()
+
+const {openComponent} = useComponentStorageV2()
+const handleOpen = (item) => {
+  const path = normalizePath(basePath.value + '/' + item.name)
+  // 打开.comp为后缀的组件文件夹
+  if (regComponentV2.test(path)) {
+    if (item.meta.id !== settingsStore.curCompInStore?.id) {
+      openComponent(item, path)
+    }
+    return
+  }
+  emit('open', item)
+}
 </script>
 
 <template>
-  <div class="explorer-list-wrap" @contextmenu.prevent>
+  <div class="comp-list-wrap" @contextmenu.prevent>
     <transition name="fade">
       <div class="os-loading-container _absolute" v-if="isLoading">
         <n-spin />
@@ -99,9 +130,13 @@ const {handleCreateComponent} = useComponentManage({files, basePath, isLoading, 
 
     <div class="explorer-actions vp-panel">
       <div class="action-group">
-        <button class="vp-button" @click="handleCreateFile()" title="Create Document">
+        <button
+          class="vp-button"
+          @click="handleCreateComponent()"
+          :title="$t('actions.add_component')"
+        >
           <n-icon size="16">
-            <DocumentAdd16Regular />
+            <Add24Regular />
           </n-icon>
         </button>
         <button class="vp-button" @click="handleCreateFolder" title="Create Folder">
@@ -147,12 +182,6 @@ const {handleCreateComponent} = useComponentManage({files, basePath, isLoading, 
         <div class="split-line"></div>
       </div>
       <div class="action-group">
-        <button @click="isGridView = !isGridView" class="vp-button" title="Toggle grid view">
-          <n-icon size="16">
-            <Grid16Regular v-if="isGridView" />
-            <AppsList20Regular v-else />
-          </n-icon>
-        </button>
         <div class="action-button-wrap">
           <button class="vp-button" title="Toggle Sort" @click="showSortMenu = true">
             <n-icon size="16">
@@ -167,59 +196,54 @@ const {handleCreateComponent} = useComponentManage({files, basePath, isLoading, 
             <SelectAllOn24Regular />
           </n-icon>
         </button>
+
+        <button class="vp-button" @click="($event) => handleShowCtxMenu(null, $event)" title="Menu">
+          <n-icon size="16">
+            <MoreHorizontal20Regular />
+          </n-icon>
+        </button>
       </div>
     </div>
     <div
       ref="explorerContentRef"
       class="explorer-content"
       @click="selectedItems = []"
-      @contextmenu.prevent.stop="handleShowCtxMenu(null, $event)"
+      @contextmenu.prevent.stop="handleShowCtxMenu(undefined, $event)"
     >
-      <div v-if="!isGridView" class="explorer-list-view">
-        <div class="vp-bg file-list-header file-list-row">
-          <div class="list-col c-filename" style="padding-left: 24px">Name</div>
-          <div class="list-col c-size">Size</div>
-          <div class="list-col c-time">Last Modified</div>
-          <div class="list-col c-time">Created</div>
-        </div>
-
-        <FileListItem
+      <div class="explorer-grid-view">
+        <ComponentCard
           class="selectable"
           :item="item"
           v-for="item in filteredFiles"
           :key="item.name"
           :data-name="item.name"
-          :active="selectedItemsSet.has(item)"
-          @open="(i) => emit('open', i)"
+          :checked="selectedItemsSet.has(item)"
+          @open="handleOpen"
           @select="toggleSelect"
           @contextmenu.prevent.stop="handleShowCtxMenu(item, $event)"
-        />
-      </div>
-      <div v-else class="explorer-grid-view">
-        <FileGridItem
-          class="selectable"
-          :item="item"
-          v-for="item in filteredFiles"
-          :key="item.name"
-          :data-name="item.name"
-          :active="selectedItemsSet.has(item)"
-          @open="(i) => emit('open', i)"
-          @select="toggleSelect"
-          @contextmenu.prevent.stop="handleShowCtxMenu(item, $event)"
+          @handleDragStart="(event) => handleDragStart({item, event})"
         />
       </div>
 
-      <QuickContextMenu :options="ctxMenuOptions" ref="ctxMenuRef" />
-
-      <button @click="handleCreateComponent" class="mc-btn-add">
-        <n-icon size="24"> <Add24Regular /></n-icon>
-      </button>
+      <Teleport to="body">
+        <transition name="fade">
+          <QuickContextMenu :options="ctxMenuOptions" ref="ctxMenuRef" />
+        </transition>
+      </Teleport>
     </div>
+    <PopFloat />
+
+    <DialogImageCropper
+      v-model:visible="isShowImageCropper"
+      :src="cropperEditingSrc"
+      @onSave="handleCropperSave"
+      @onCancel="handleCropperCancel"
+    />
   </div>
 </template>
 
 <style lang="scss" scoped>
-.explorer-list-wrap {
+.comp-list-wrap {
   height: 100%;
   flex: 1;
   overflow: hidden;
@@ -275,64 +299,6 @@ const {handleCreateComponent} = useComponentManage({files, basePath, isLoading, 
     user-select: none;
   }
 
-  .explorer-list-view {
-    .file-list-header {
-      font-weight: 500;
-      text-transform: capitalize;
-      border: 1px solid $color_border;
-      border-left: 0;
-      border-right: 0;
-      position: sticky;
-      top: 0;
-      padding: 0 !important;
-      z-index: 1;
-    }
-
-    :deep(.file-list-row) {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-
-      .list-col {
-        padding: 0 5px;
-        flex-shrink: 0;
-        box-sizing: border-box;
-        &.c-icon {
-          padding-left: 10px;
-          width: 50px;
-        }
-
-        &.c-filename {
-          flex: 1;
-          display: flex;
-          align-items: center;
-          gap: 4px;
-          min-width: 200px;
-        }
-
-        &.c-type {
-          width: 100px;
-        }
-
-        &.c-size {
-          width: 80px;
-        }
-
-        &.c-time {
-          width: 140px;
-        }
-
-        &.c-actions {
-          padding-right: 10px;
-          display: flex;
-          justify-content: flex-end;
-          gap: 4px;
-          width: 100px;
-        }
-      }
-    }
-  }
-
   :deep(.file-checkbox) {
     &::before {
       // 扩大点击范围
@@ -346,12 +312,16 @@ const {handleCreateComponent} = useComponentManage({files, basePath, isLoading, 
   }
 
   .explorer-grid-view {
-    display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
-    padding: 10px;
-    flex-wrap: wrap;
-    gap: 4px;
+    overflow: auto;
+    padding: 8px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 8px;
+    grid-template-rows: auto;
+
+    * {
+      box-sizing: border-box;
+    }
   }
 }
 </style>

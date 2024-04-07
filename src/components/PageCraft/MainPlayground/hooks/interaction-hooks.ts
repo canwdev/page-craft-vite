@@ -5,13 +5,10 @@ import {
   autoPasteReplaceValue,
   createBlockElement,
 } from '@/components/PageCraft/MainPlayground/utils/dom'
-import {LsKeys} from '@/enum/page-craft'
 import {useContextMenu} from '@/hooks/use-context-menu'
 import {copyToClipboard} from '@/utils'
 import {updateHtmlElement} from '@/components/PageCraft/MainPlayground/utils/element-edit'
 import {LineHelper} from '@/utils/line-helper'
-import {loadCompStorage} from '@/hooks/use-component-storage'
-import {NButton} from 'naive-ui'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {useI18n} from 'vue-i18n'
 import {useOpenCloseSound, useSfxDestroy, useSfxPlace} from '@/hooks/use-sfx'
@@ -451,51 +448,27 @@ export const useInteractionHooks = (options) => {
       return
     }
 
+    // 拖拽组件到画布
+    const comp = window.$draggingComponentExportData
+    if (comp) {
+      window.$draggingComponentExportData = null
+      await dropHTML(comp.html)
+      globalEventBus.emit(GlobalEvents.ON_ADD_STYLE, {code: comp.style, isAppend: true})
+      return
+    }
+
+    // 拖拽block到画布
     const transferData = event.dataTransfer.getData('data-block')
 
     if (!transferData) {
       console.warn('drag item must be a BlockItem', event)
+      window.$message.warning('drag item not supported')
       return
     }
 
     const block = JSON.parse(transferData)
 
-    if (block.blockType === BlockType.COMPONENT) {
-      // console.log(block)
-      const html = loadCompStorage(LsKeys.COMP_HTML, block.title)
-
-      await dropHTML(html)
-
-      const appendStyle = () => {
-        const code = loadCompStorage(LsKeys.COMP_STYLE, block.title)
-        globalEventBus.emit(GlobalEvents.ON_ADD_STYLE, {code, isAppend: true})
-      }
-      if (block.data.stared) {
-        appendStyle()
-      } else {
-        const n = window.$notification.create({
-          title: `${$t('actions.insert_at')} ${currentPosition}`,
-          content: $t('msgs.component_insert_com'),
-          meta: block.title,
-          duration: 4000,
-          action: () =>
-            h(
-              NButton,
-              {
-                text: true,
-                type: 'primary',
-                onClick: () => {
-                  appendStyle()
-                  n.destroy()
-                },
-              },
-              {
-                default: () => $t('actions.append_style'),
-              }
-            ),
-        })
-      }
-    } else if (block.blockType === BlockType.HTML_ELEMENT) {
+    if (block.blockType === BlockType.HTML_ELEMENT) {
       const addEl = createBlockElement(block, mainStore)
       if (currentPosition === 'top') {
         insertCurrentBlock(targetEl, 'before', addEl)

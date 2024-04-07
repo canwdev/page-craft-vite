@@ -41,12 +41,10 @@ export default defineComponent({
 
     const {
       htmlMenuOptions,
-      fileChooserRef,
       isShowImportDialog,
       setPlaygroundHtml,
       pasteHtmlText,
       handleImportHtml,
-      handleImportJsonSelected,
       saveData,
       copyHtml,
       undoRedo,
@@ -136,12 +134,10 @@ export default defineComponent({
       cursorY,
       mainCanvasClass,
       htmlMenuOptions,
-      fileChooserRef,
       isShowImportDialog,
       setPlaygroundHtml,
       pasteHtmlText,
       handleImportHtml,
-      handleImportJsonSelected,
       selectionActionStyle,
       isShowSelectionAction,
       selectionPopupOptions,
@@ -214,12 +210,6 @@ export default defineComponent({
       @onSave="updateEditingElement"
     />
 
-    <FileChooser
-      ref="fileChooserRef"
-      accept="application/JSON"
-      @selected="handleImportJsonSelected"
-    />
-
     <portal to="indicatorBarTeleportDest">
       <n-dropdown
         :options="htmlMenuOptions"
@@ -227,13 +217,13 @@ export default defineComponent({
         placement="bottom-start"
         trigger="hover"
       >
-        <n-button size="tiny" :title="settingsStore.curCompoName">
+        <n-button size="tiny" :title="settingsStore.curCompInStore?.path">
           <template #icon>
             <n-icon size="18">
               <Code20Filled />
             </n-icon>
           </template>
-          {{ settingsStore.curCompoName.slice(0, 10) || 'Default' }}</n-button
+          {{ settingsStore.curCompInStore?.title?.slice(0, 10) || 'Default' }}</n-button
         >
       </n-dropdown>
 

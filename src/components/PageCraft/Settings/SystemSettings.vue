@@ -109,12 +109,6 @@ export default defineComponent({
               store: settingsStore,
               type: StOptionType.SWITCH,
             },
-            {
-              label: $t('common.reference_map') + ' (BETA)',
-              key: 'enableReferenceMap',
-              store: settingsStore,
-              type: StOptionType.SWITCH,
-            },
           ],
         },
         ...commonSettingsOptions.value,

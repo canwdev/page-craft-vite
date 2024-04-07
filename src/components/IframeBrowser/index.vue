@@ -1,112 +1,87 @@
-<script lang="ts">
-import {defineComponent} from 'vue'
+<script setup lang="ts">
 import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
-import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {ViewDesktopMobile20Regular} from '@vicons/fluent'
 import {useRouter} from 'vue-router'
-import {useStorage} from '@vueuse/core'
+import {useStorage, useVModel} from '@vueuse/core'
 import {useRemoteOptions} from '@/components/CommonUI/QuickOptions/utils/use-remote-options'
 import QuickOptions from '@/components/CommonUI/QuickOptions/index.vue'
 
-export default defineComponent({
-  name: 'IframeBrowser',
-  components: {ViewPortWindow, ViewDesktopMobile20Regular, QuickOptions},
-  props: {
-    visible: {
-      type: Boolean,
-      default: false,
-    },
+interface Props {
+  visible: boolean
+}
+const props = withDefaults(defineProps<Props>(), {
+  visible: false,
+})
+const emit = defineEmits(['update:visible'])
+const mVisible = useVModel(props, 'visible', emit)
+
+const router = useRouter()
+const isLoading = ref(false)
+
+const iframeRef = ref()
+const iframeSrc = ref('')
+
+const defUrl = router.resolve({
+  name: 'CraftPlayground',
+}).href
+
+const addressBarUrl = useStorage('pagecraft_iframe_browser_url', defUrl, localStorage, {
+  listenToStorageChanges: false,
+})
+
+const titleText = computed(() => {
+  if (isLoading.value) {
+    return '(Loading...)'
+  }
+  return ''
+})
+
+onMounted(() => {
+  if (addressBarUrl.value) {
+    handleGo()
+  }
+})
+
+const handleGo = () => {
+  iframeSrc.value = ''
+  iframeSrc.value = addressBarUrl.value
+  isLoading.value = true
+}
+const handleIframeLoad = () => {
+  isLoading.value = false
+}
+const handleIframeError = (e) => {
+  isLoading.value = false
+  console.error('[handleIframeError]', e)
+}
+
+const {options: shortcutList} = useRemoteOptions({
+  fetchFn: async () => {
+    const res = await fetch('./bookmarks.json')
+    return await res.json()
   },
-  emits: ['update:visible'],
-  setup(props, {emit}) {
-    const router = useRouter()
-    const mVisible = useModelWrapper(props, emit, 'visible')
-    const isLoading = ref(false)
-
-    const iframeRef = ref()
-    const iframeSrc = ref('')
-
-    const defUrl = router.resolve({
-      name: 'CraftPlayground',
-    }).href
-
-    const addressBarUrl = useStorage('pagecraft_iframe_browser_url', defUrl, localStorage, {
-      listenToStorageChanges: false,
-    })
-
-    const titleText = computed(() => {
-      if (isLoading.value) {
-        return '(Loading...)'
-      }
-      return ''
-    })
-
-    onMounted(() => {
-      if (addressBarUrl.value) {
-        handleGo()
-      }
-    })
-
-    const handleGo = () => {
-      iframeSrc.value = ''
-      iframeSrc.value = addressBarUrl.value
-      isLoading.value = true
-    }
-    const handleIframeLoad = () => {
-      isLoading.value = false
-    }
-    const handleIframeError = (e) => {
-      isLoading.value = false
-      console.error('[handleIframeError]', e)
-    }
-
-    const {options: shortcutList} = useRemoteOptions({
-      fetchFn: async () => {
-        const res = await fetch('./bookmarks.json')
-        return await res.json()
-      },
-      mapFn: (item) => {
-        return {
-          label: '🌎 ' + (item.label || item.value),
-          value: item.value,
-          props: {
-            onClick: !item.children
-              ? () => {
-                  addressBarUrl.value = item.value
-                  handleGo()
-                }
-              : undefined,
-          },
-        }
-      },
-    })
-    const showShortcuts = ref(false)
-
-    const iframeWinRef = ref()
-    const setMobileView = () => {
-      console.log(iframeWinRef.value)
-      iframeWinRef.value.setWindowLayout({
-        width: 375 + 10,
-        height: 668 + 59,
-      })
-    }
-
+  mapFn: (item) => {
     return {
-      mVisible,
-      iframeWinRef,
-      setMobileView,
-      iframeRef,
-      iframeSrc,
-      addressBarUrl,
-      handleGo,
-      handleIframeLoad,
-      handleIframeError,
-      titleText,
-      shortcutList,
-      showShortcuts,
+      label: '🌎 ' + (item.label || item.value),
+      value: item.value,
+      props: {
+        onClick: !item.children
+          ? () => {
+              addressBarUrl.value = item.value
+              handleGo()
+            }
+          : undefined,
+      },
     }
   },
 })
+const showShortcuts = ref(false)
+
+const iframeWinRef = ref()
+const setMobileView = () => {
+  iframeWinRef.value.setPos('width', 375 + 10 + 'px')
+  iframeWinRef.value.setPos('height', 668 + 59 + 'px')
+}
 </script>
 
 <template>

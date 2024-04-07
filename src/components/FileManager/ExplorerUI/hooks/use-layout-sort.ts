@@ -1,6 +1,6 @@
 import {QuickOptionItem} from '@/components/CommonUI/QuickOptions/enum'
-import {sortMethodMap} from '../../utils/sort'
-import {IEntry, SortType} from '../../types/filesystem'
+import {sortMethodMap, SortType} from '../../utils/sort'
+import {IEntry} from '../../types/filesystem'
 import {Ref} from 'vue'
 
 export const useLayoutSort = (files: Ref<IEntry[]>) => {

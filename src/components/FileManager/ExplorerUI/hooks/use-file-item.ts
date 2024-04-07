@@ -1,4 +1,4 @@
-import {bytesToSize, formatDate} from '@/utils'
+import {bytesToSize, formatDate} from '../../../../utils'
 
 export const useFileItem = (props) => {
   const {item} = toRefs(props)

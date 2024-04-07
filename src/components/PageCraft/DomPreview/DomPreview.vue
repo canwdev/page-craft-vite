@@ -11,23 +11,30 @@ export default defineComponent({
   props: {
     id: {
       type: String,
-      required: true,
+      default: '',
     },
-    css: {
+    style: {
       type: String,
       default: '',
     },
   },
   emits: ['styleCompiled'],
   setup(props, {emit}) {
-    const {css, id} = toRefs(props)
+    const {style, id} = toRefs(props)
     const styleRewrote = ref('')
 
+    const mId = computed(() => {
+      if (!id.value) {
+        return 'dom_preview_temp_id'
+      }
+      return id.value
+    })
+
     watch(
-      css,
+      style,
       async (val) => {
         try {
-          styleRewrote.value = await sassToCSS(`div[data-app-name="${id.value}"] { ${val} }`)
+          styleRewrote.value = await sassToCSS(`div[data-app-name="${mId.value}"] { ${val} }`)
         } catch (e) {
           console.error(e)
           styleRewrote.value = ''
@@ -41,14 +48,15 @@ export default defineComponent({
 
     return {
       styleRewrote,
+      mId,
     }
   },
 })
 </script>
 
 <template>
-  <div :data-app-name="id">
-    <VStyle :id="id">{{ styleRewrote }}</VStyle>
+  <div :data-app-name="mId">
+    <VStyle :id="mId">{{ styleRewrote }}</VStyle>
     <slot></slot>
   </div>
 </template>

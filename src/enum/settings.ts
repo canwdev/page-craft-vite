@@ -18,9 +18,3 @@ export const ldThemeOptions = [
     value: LdThemeType.DARK,
   },
 ]
-
-export enum FilterType {
-  ALL = 'all',
-  STARED = 'stared',
-  NOT_STARED = 'not_starred',
-}

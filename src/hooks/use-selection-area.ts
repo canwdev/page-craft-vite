@@ -7,10 +7,10 @@ export const useSelectionArea = ({
   toggleClass = 'active',
   selectables = ['.selectable'],
 }) => {
-  const selectionRef = ref()
+  const selectionArea = ref()
   onMounted(() => {
     // https://github.com/simonwep/selection/tree/master/packages/vanilla
-    selectionRef.value = new SelectionArea({
+    selectionArea.value = new SelectionArea({
       selectables,
       boundaries: [containerRef.value],
       features: {
@@ -23,7 +23,7 @@ export const useSelectionArea = ({
     })
       .on('start', ({store, event}) => {
         if (!(event as MouseEvent).ctrlKey && !(event as MouseEvent).metaKey) {
-          selectionRef.value.clearSelection()
+          selectionArea.value.clearSelection()
           setTimeout(() => {
             onStart && onStart()
           })
@@ -52,12 +52,12 @@ export const useSelectionArea = ({
       })
   })
   onBeforeUnmount(() => {
-    if (selectionRef.value) {
-      selectionRef.value.destroy()
+    if (selectionArea.value) {
+      selectionArea.value.destroy()
     }
   })
 
   return {
-    selectionRef,
+    selectionArea,
   }
 }

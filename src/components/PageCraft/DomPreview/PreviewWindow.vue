@@ -1,11 +1,9 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
-import {BlockItem} from '@/enum/page-craft/block'
 import DomPreview from '@/components/PageCraft/DomPreview/DomPreview.vue'
-import {loadCompStorage} from '@/hooks/use-component-storage'
 import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
-import {LsKeys} from '@/enum/page-craft'
+import {IComponentExportData} from '@/components/PageCraft/ComponentExplorer/enum'
 
 export default defineComponent({
   name: 'PopWindow',
@@ -16,10 +14,7 @@ export default defineComponent({
   emits: ['update:visible'],
   setup(props, {emit}) {
     const mVisible = ref(false)
-    const currentItem = ref<BlockItem | null>(null)
-
-    const previewHtml = ref('')
-    const previewCss = ref('')
+    const previewData = ref<IComponentExportData | null>(null)
 
     onMounted(() => {
       globalEventBus.on(GlobalEvents.ON_COMP_PREVIEW, handleCompPreview)
@@ -30,24 +25,11 @@ export default defineComponent({
       globalEventBus.off(GlobalEvents.ON_COMP_PREVIEW_CLOSE, handleClosePreview)
     })
 
-    watch(mVisible, (val) => {
-      if (!val) {
-        return
-      }
-      if (!currentItem.value) {
-        previewHtml.value = ''
-        previewCss.value = ''
-        return
-      }
-      previewHtml.value = loadCompStorage(LsKeys.COMP_HTML, currentItem.value.title)
-      previewCss.value = loadCompStorage(LsKeys.COMP_STYLE, currentItem.value.title)
-    })
-
     const previewWinRef = ref()
 
     const handleCompPreview = (options) => {
       const {item, maximum = false} = options || {}
-      currentItem.value = item
+      previewData.value = item
       previewWinRef.value.isMaximized = maximum
       mVisible.value = true
     }
@@ -61,9 +43,7 @@ export default defineComponent({
     return {
       previewWinRef,
       mVisible,
-      currentItem,
-      previewHtml,
-      previewCss,
+      previewData,
     }
   },
 })
@@ -77,10 +57,10 @@ export default defineComponent({
     wid="preview"
     allow-maximum
   >
-    <template #titleBarLeft> {{ $t('actions.preview') }}: {{ currentItem?.title }} </template>
-    <template v-if="currentItem">
-      <DomPreview :id="currentItem.id" :css="previewCss">
-        <div v-html="previewHtml"></div>
+    <template #titleBarLeft> {{ $t('actions.preview') }}: {{ previewData?.name }} </template>
+    <template v-if="previewData && mVisible">
+      <DomPreview :id="previewData.id" :style="previewData.style">
+        <div v-html="previewData.html"></div>
       </DomPreview>
     </template>
   </ViewPortWindow>

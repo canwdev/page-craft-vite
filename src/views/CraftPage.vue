@@ -2,20 +2,17 @@
 import ToolBar from '@/components/PageCraft/ToolBar/index.vue'
 import MainPlayground from '@/components/PageCraft/MainPlayground/index.vue'
 import {useSettingsStore} from '@/store/settings'
-import {handleExportStyle} from '@/utils/exporter'
 import {formatCss} from '@/components/StyleEditor/utils/formater'
 import {sassToCSS} from '@/components/StyleEditor/utils/css'
 import {copyToClipboard} from '@/utils'
-import {useCompStorage} from '@/hooks/use-component-storage'
-import {ComponentExportData} from '@/enum/page-craft/block'
 import {PaintBrush16Regular} from '@vicons/fluent'
 import {useI18n} from 'vue-i18n'
-import BackgroundLayer from '@/components/PageCraft/BackgroundLayer/index.vue'
 import {useMainStore} from '@/store/main'
 import {useEventListener} from '@vueuse/core'
 import {useOpenCloseSound, useSfxOpenCloseSelect, useSfxBrush, useSfxFill} from '@/hooks/use-sfx'
 import {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
 import {CLASS_MAIN_CANVAS_ROOT} from '@/enum/page-craft'
+import {useComponentStorageV2} from '@/components/PageCraft/ComponentExplorer/hooks/use-component-manage'
 
 const StyleEditor = defineAsyncComponent(() => import('@/components/StyleEditor/index.vue'))
 
@@ -60,78 +57,44 @@ useEventListener(document, 'keydown', (event) => {
   }
 })
 
-const {loadCurCompStyle, saveCurCompStyle} = useCompStorage()
+const {loadCurCompStyle, saveCurCompStyle} = useComponentStorageV2()
 const styleMenuOptions = [
   {
     label: '📄 ' + $t('actions.copy_compiled_css'),
     props: {
       onClick: async () => {
-        const style = loadCurCompStyle()
+        const style = await loadCurCompStyle()
         const css = formatCss(await sassToCSS(style))
-        copyToClipboard(css)
+        await copyToClipboard(css)
       },
     },
-  },
-  {
-    label: '📤 ' + $t('actions.export'),
-    children: [
-      {
-        label: `📃 ${$t('actions.export')} css`,
-        props: {
-          onClick: async () => {
-            await handleExportStyle(
-              new ComponentExportData({
-                name: settingsStore.curCompoName,
-                html: '',
-                style: formatCss(loadCurCompStyle()),
-              }),
-              true
-            )
-          },
-        },
-      },
-      {
-        label: `📃 ${$t('actions.export')} scss`,
-        props: {
-          onClick: async () => {
-            await handleExportStyle(
-              new ComponentExportData({
-                name: settingsStore.curCompoName,
-                html: '',
-                style: formatCss(loadCurCompStyle()),
-              })
-            )
-          },
-        },
-      },
-    ],
   },
 ]
 
 const styleEditorRef = ref()
 const isAutoSave = ref(false)
 const styleCode = ref('')
-watch(styleCode, () => {
+watch(styleCode, async () => {
   // console.log('[handleUpdateStyle]', isAutoSave.value)
   if (isAutoSave.value) {
-    saveCurCompStyle(styleCode.value)
+    await saveCurCompStyle(styleCode.value)
   }
 })
 
-const reloadStyle = () => {
+const reloadStyle = async () => {
   isAutoSave.value = false
-  styleCode.value = loadCurCompStyle()
+  styleCode.value = await loadCurCompStyle()
   setTimeout(() => {
     isAutoSave.value = true
   }, 100)
 }
-onMounted(() => {
-  reloadStyle()
+onMounted(async () => {
+  await reloadStyle()
 })
 watch(
-  () => settingsStore.curCompoName,
-  () => {
-    reloadStyle()
+  () => settingsStore.curCompInStore,
+  async () => {
+    await reloadStyle()
   }
 )
 useGlobalBusOn(GlobalEvents.IMPORT_SUCCESS, reloadStyle)
@@ -142,8 +105,6 @@ useGlobalBusOn(GlobalEvents.ON_ADD_STYLE, (arg) => {
 
 <template>
   <div class="page-craft-home-view" :class="{_topLayout: settingsStore.enableTopLayout}">
-    <BackgroundLayer v-if="settingsStore.enableReferenceMap" />
-
     <MainPlayground />
 
     <ToolBar>

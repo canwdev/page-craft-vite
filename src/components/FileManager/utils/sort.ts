@@ -1,4 +1,4 @@
-import {SortType, IEntry} from '../types/filesystem'
+import {IEntry} from '../types/filesystem'
 
 export const defaultSorter = (a: IEntry, b: IEntry) => {
   const aVal = a.isDirectory ? 1 : 2
@@ -46,6 +46,20 @@ export const birthTimeSorter = (a: IEntry, b: IEntry) => {
 
 export const birthTimeDescSorter = (a: IEntry, b: IEntry) => {
   return -(a.birthtime - b.birthtime)
+}
+
+export enum SortType {
+  default = 'default',
+  name = 'name',
+  nameDesc = 'nameDesc',
+  size = 'size',
+  sizeDesc = 'sizeDesc',
+  extension = 'extension',
+  extensionDesc = 'extensionDesc',
+  lastModified = 'lastModified',
+  lastModifiedDesc = 'lastModifiedDesc',
+  birthTime = 'birthTime',
+  birthTimeDesc = 'birthTimeDesc',
 }
 
 export const sortMethodMap = {

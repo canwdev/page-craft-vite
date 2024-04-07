@@ -19,6 +19,9 @@ declare global {
 
     __TAURI__: any
 
+    // 拖拽组件到画布
+    $draggingComponentExportData: any
+
     $mcUtils: any
     $qlUtils: any
     BrowserFS: any

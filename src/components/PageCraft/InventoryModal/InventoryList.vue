@@ -1,7 +1,6 @@
 <script lang="ts">
 import {defineComponent, PropType} from 'vue'
 import BlockItemCard from '@/components/PageCraft/InventoryModal/BlockItemCard.vue'
-import ComponentCard from '@/components/PageCraft/InventoryModal/ComponentCard.vue'
 import {BlockItem} from '@/enum/page-craft/block'
 import {BoxMultipleSearch20Regular} from '@vicons/fluent'
 
@@ -9,7 +8,6 @@ export default defineComponent({
   name: 'InventoryList',
   components: {
     BlockItemCard,
-    ComponentCard,
     BoxMultipleSearch20Regular,
   },
   props: {
@@ -22,10 +20,6 @@ export default defineComponent({
     showFilter: {
       type: Boolean,
       default: true,
-    },
-    isComponentBlock: {
-      type: Boolean,
-      default: false,
     },
     largeCard: {
       type: Boolean,
@@ -75,20 +69,9 @@ export default defineComponent({
     <div v-if="!itemListFiltered.length" style="padding: 40px; text-align: center; font-size: 20px">
       {{ $t('msgs.no_items') }}
     </div>
-    <div v-else class="inventory-list _scrollbar_mini" :class="{_big: isComponentBlock}">
-      <template v-for="(item, index) in itemListFiltered" :key="item.id">
-        <ComponentCard
-          :large-card="largeCard"
-          v-if="isComponentBlock"
-          :item="item"
-          @click="$emit('onItemClick', item, index)"
-          @contextmenu="(...args) => $emit('contextmenu', ...args)"
-        >
-          <template #actionMenu="{item}">
-            <slot name="actionMenu" :item="item"></slot>
-          </template>
-        </ComponentCard>
-        <BlockItemCard v-else class="list-item" :item="item" @click="$emit('onItemClick', item)" />
+    <div v-else class="inventory-list _scrollbar_mini" :class="{_big: false}">
+      <template v-for="item in itemListFiltered" :key="item.id">
+        <BlockItemCard class="list-item" :item="item" @click="$emit('onItemClick', item)" />
       </template>
     </div>
 

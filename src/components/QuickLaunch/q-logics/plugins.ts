@@ -60,7 +60,7 @@ export const useQuickLaunchPlugins = (update) => {
     const res = await fetch(`${basePath}/index.json`)
     const data = await res.json()
     const {plugins} = data
-    console.log('[reloadPlugins] loading plugins...', plugins)
+    // console.log('[reloadPlugins] loading plugins...', plugins)
     // 逐个加载js文件
     for (const pluginsKey in plugins) {
       let url = plugins[pluginsKey]
@@ -201,7 +201,7 @@ ${code}
     customDynamicPlugins.value = []
     customPluginsStorage.value.forEach((p) => {
       if (p.code) {
-        console.log(`Registering custom plugin: ${p.name}`)
+        // console.log(`Registering custom plugin: ${p.name}`)
         evalPluginCode(p.code)
       }
     })

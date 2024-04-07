@@ -7,6 +7,8 @@ export enum LsKeys {
   COMP_META = 'page_craft_comp_meta',
   // 组件名目录
   COMP_INDEX_LIST = 'page_craft_component_index',
+  // 默认画布
+  DEFAULT_CANVAS = 'page_craft_default_canvas',
   /*组件专用 end*/
   INDICATOR_OPTIONS = 'page_craft_indicator_options',
   TOOL_BAR_LIST = 'page_craft_tool_bar_list',
