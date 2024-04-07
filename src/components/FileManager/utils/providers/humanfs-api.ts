@@ -3,19 +3,20 @@ import {WebHfs} from '@humanfs/web'
 import {path as Path} from '../path'
 
 let hfs = new WebHfs({
+  // 必须使用安全域名访问，如https或localhost，否则启动报错
   root: await navigator.storage.getDirectory(),
 })
 // 必须设置基础路径，否则报错
 let basePath = '/page-craft'
 
-const p = async () => {
-  const handle = await window.showDirectoryPicker()
-  hfs = new WebHfs({
-    root: handle,
-  })
-  basePath = ''
-}
-window._p = p
+// const p = async () => {
+//   const handle = await window.showDirectoryPicker()
+//   hfs = new WebHfs({
+//     root: handle,
+//   })
+//   basePath = ''
+// }
+// window._p = p
 console.log('[hfs]', hfs)
 
 export const fsWebApi = {

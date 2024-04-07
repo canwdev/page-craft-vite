@@ -182,13 +182,13 @@ export default defineComponent({
             test_str: 'This is a test string',
             test_arr: ['line 1', 'line 2', 'line 3'],
             test_number: 114514,
+            '': '中English混合',
           },
           section_b: {
             '': "Blur this input and it'll generate the key automatically!",
           },
           section_c: {
             '': '平行、行列',
-            '': '中English混合',
           },
         },
       })

@@ -21,6 +21,12 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
   },
+  esbuild: {
+    supported: {
+      // https://stackoverflow.com/questions/72618944/get-error-to-build-my-project-in-vite-top-level-await-is-not-available-in-the
+      'top-level-await': true, //browsers can handle top-level-await features
+    },
+  },
   build: {
     minify: 'terser',
     emptyOutDir: true,

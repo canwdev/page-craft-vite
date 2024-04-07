@@ -19,7 +19,6 @@ declare module '@vue/runtime-core' {
     ComponentCard: typeof import('./src/components/PageCraft/ComponentExplorer/ComponentCard.vue')['default']
     ComponentExplorer: typeof import('./src/components/PageCraft/ComponentExplorer/ComponentExplorer.vue')['default']
     ComponentList: typeof import('./src/components/PageCraft/ComponentExplorer/ComponentList.vue')['default']
-    ComponentV2: typeof import('./src/components/PageCraft/ComponentExplorer/index.vue')['default']
     DialogImageCropper: typeof import('./src/components/CommonUI/DialogImageCropper.vue')['default']
     DialogTextEdit: typeof import('./src/components/CommonUI/DialogTextEdit.vue')['default']
     DialogTextTransformer: typeof import('./src/components/VueI18nEditTool/TextConverter/DialogTextTransformer.vue')['default']
