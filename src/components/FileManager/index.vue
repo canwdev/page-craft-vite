@@ -34,12 +34,19 @@ const {
   getListFn: async () => {
     const res = await fsWebApi.getList({
       path: basePath.value,
+      isStat: true,
     })
     // console.log(res)
 
     return res
   },
-  openEntryFn: async ({path}) => {
+  openEntryFn: async ({item, path}) => {
+    console.log({item, path})
+
+    if (Number(item.size) > 1 * 1024 * 1024) {
+      console.error('文件大于1MB，不支持预览')
+      return
+    }
     const res = await fsWebApi.getFile({
       path,
     })
@@ -151,6 +158,7 @@ onMounted(() => {
       gap: 4px;
       .btn-action {
         padding: 4px;
+        display: flex;
       }
 
       .nav-wrap {
@@ -169,10 +177,12 @@ onMounted(() => {
         .input-addr {
           flex: 1;
           line-height: 1;
+          padding: 4px 6px;
         }
         .input-filter {
           width: 100px;
           line-height: 1;
+          padding: 4px 6px;
         }
       }
     }

@@ -4,16 +4,21 @@ import {path as Path} from '../path'
 
 let hfs = new WebHfs({
   // 必须使用安全域名访问，如https或localhost，否则启动报错
+  // 必须启用配置 top-level-await
   root: await navigator.storage.getDirectory(),
 })
 
-// const p = async () => {
-//   const handle = await window.showDirectoryPicker()
-//   hfs = new WebHfs({
-//     root: handle,
-//   })
-// }
-// window._p = p
+/**
+ * 动态设置hfs实例
+ * 可以传入以下实例，必须要有点击交互
+ * const handle = await window.showDirectoryPicker()
+ */
+export const setHfsInstance = (handle: FileSystemDirectoryHandle) => {
+  hfs = new WebHfs({
+    root: handle,
+  })
+}
+
 console.log('[hfs]', hfs)
 
 const fixPath = (path: string) => {
@@ -25,21 +30,25 @@ const fixPath = (path: string) => {
 }
 
 export const fsWebApi = {
-  async getList({path}) {
+  async getList({
+    path,
+    // 消耗性能，所以默认关闭
+    isStat = false,
+  }) {
     const list: IEntry[] = []
     path = fixPath(path)
     for await (const entry of hfs.list(path)) {
       const ext = Path.extname(entry.name || '') || ''
+      const entryPath = Path.normalize(path + '/' + entry.name)
       list.push({
         name: entry.name,
         ext,
         isDirectory: entry.isDirectory,
         hidden: entry.name.startsWith('.'),
-        // 不准确，并且消耗性能，所以不读取
-        // lastModified: (await hfs.lastModified(path))?.getTime() || 0,
-        lastModified: 0,
+
+        lastModified: isStat ? (await hfs.lastModified(entryPath))?.getTime() || 0 : 0,
         birthtime: 0,
-        // size: await hfs.size(path),
+        size: isStat ? await hfs.size(entryPath) : undefined,
       })
     }
     return list

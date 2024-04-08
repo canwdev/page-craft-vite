@@ -12,6 +12,7 @@ import {
   ClipboardPaste20Regular,
   Add24Regular,
   MoreHorizontal20Regular,
+  Folder16Regular,
 } from '@vicons/fluent'
 import QuickOptions from '@/components/CommonUI/QuickOptions/index.vue'
 import QuickContextMenu from '@/components/CommonUI/QuickOptions/utils/QuickContextMenu.vue'
@@ -29,6 +30,7 @@ import {useComponentFileActions} from '@/components/PageCraft/ComponentExplorer/
 import PopFloat from '@/components/PageCraft/ComponentExplorer/PopFloat.vue'
 import DialogImageCropper from '@/components/CommonUI/DialogImageCropper.vue'
 import {useSettingsStore} from '@/store/settings'
+import {useLocalDir} from '@/components/PageCraft/ComponentExplorer/hooks/use-local-dir'
 
 const emit = defineEmits(['open', 'update:isLoading', 'refresh'])
 
@@ -121,6 +123,8 @@ const handleOpen = (item) => {
   }
   emit('open', item)
 }
+
+const {handleOpenLocalDir, localDirHistory, isShowDirHistory} = useLocalDir({emit})
 </script>
 
 <template>
@@ -183,6 +187,26 @@ const handleOpen = (item) => {
         </button>
 
         <div class="split-line"></div>
+
+        <div class="action-button-wrap">
+          <button
+            class="vp-button"
+            title="Toggle Sort"
+            @click="handleOpenLocalDir"
+            @mouseover="isShowDirHistory = true"
+          >
+            <n-icon size="16">
+              <Folder16Regular />
+            </n-icon>
+          </button>
+          <transition name="fade-scale">
+            <QuickOptions
+              v-model:visible="isShowDirHistory"
+              :options="localDirHistory"
+              @mouseleave="isShowDirHistory = false"
+            />
+          </transition>
+        </div>
       </div>
       <div class="action-group">
         <div class="action-button-wrap">
@@ -191,7 +215,9 @@ const handleOpen = (item) => {
               <ArrowSortDownLines16Regular />
             </n-icon>
           </button>
-          <QuickOptions v-model:visible="showSortMenu" :options="sortOptions" />
+          <transition name="fade-scale">
+            <QuickOptions v-model:visible="showSortMenu" :options="sortOptions" />
+          </transition>
         </div>
 
         <button class="vp-button" @click="toggleSelectAll" title="Toggle Select All">

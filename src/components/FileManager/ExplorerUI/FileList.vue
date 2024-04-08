@@ -21,6 +21,7 @@ import {
   Copy20Regular,
   ClipboardPaste20Regular,
   Add24Regular,
+  Folder16Regular,
 } from '@vicons/fluent'
 import QuickOptions from '@/components/CommonUI/QuickOptions/index.vue'
 import QuickContextMenu from '@/components/CommonUI/QuickOptions/utils/QuickContextMenu.vue'
@@ -28,6 +29,8 @@ import {useCopyPaste} from './hooks/use-copy-paste'
 import {useSelection} from './hooks/use-selection'
 import {useLayoutSort} from './hooks/use-layout-sort'
 import {useFileActions} from './hooks/use-file-actions'
+import {setHfsInstance} from '@/components/FileManager/utils/providers/humanfs-api'
+import {useLocalDir} from '@/components/PageCraft/ComponentExplorer/hooks/use-local-dir'
 
 const emit = defineEmits(['open', 'update:isLoading', 'refresh'])
 
@@ -84,6 +87,8 @@ const {
   selectedItemsSet,
   emit,
 })
+
+const {handleOpenLocalDir, localDirHistory, isShowDirHistory} = useLocalDir({emit})
 </script>
 
 <template>
@@ -142,6 +147,26 @@ const {
         </button>
 
         <div class="split-line"></div>
+
+        <div class="action-button-wrap">
+          <button
+            class="vp-button"
+            title="Toggle Sort"
+            @click="handleOpenLocalDir"
+            @mouseover="isShowDirHistory = true"
+          >
+            <n-icon size="16">
+              <Folder16Regular />
+            </n-icon>
+          </button>
+          <transition name="fade-scale">
+            <QuickOptions
+              v-model:visible="isShowDirHistory"
+              :options="localDirHistory"
+              @mouseleave="isShowDirHistory = false"
+            />
+          </transition>
+        </div>
       </div>
       <div class="action-group">
         <button @click="isGridView = !isGridView" class="vp-button" title="Toggle grid view">
@@ -156,7 +181,9 @@ const {
               <ArrowSortDownLines16Regular />
             </n-icon>
           </button>
-          <QuickOptions v-model:visible="showSortMenu" :options="sortOptions" />
+          <transition name="fade-scale">
+            <QuickOptions v-model:visible="showSortMenu" :options="sortOptions" />
+          </transition>
         </div>
 
         <button class="vp-button" @click="toggleSelectAll" title="Toggle Select All">
