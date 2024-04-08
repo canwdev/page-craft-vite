@@ -220,7 +220,7 @@ export default defineComponent({
         placement="bottom-start"
         trigger="hover"
       >
-        <n-button size="tiny" :title="settingsStore.curCompInStore?.path">
+        <n-button size="tiny" :title="settingsStore.curCompInStore?.basePath">
           <template #icon>
             <n-icon size="18">
               <Code20Filled />

@@ -6,23 +6,29 @@ let hfs = new WebHfs({
   // 必须使用安全域名访问，如https或localhost，否则启动报错
   root: await navigator.storage.getDirectory(),
 })
-// 必须设置基础路径，否则报错
-let basePath = '/page-craft'
 
 // const p = async () => {
 //   const handle = await window.showDirectoryPicker()
 //   hfs = new WebHfs({
 //     root: handle,
 //   })
-//   basePath = ''
 // }
 // window._p = p
 console.log('[hfs]', hfs)
 
+const fixPath = (path: string) => {
+  // humanfs 必须用点代替根目录的斜杠
+  if (path === '/' || !path) {
+    return '.'
+  }
+  return path
+}
+
 export const fsWebApi = {
   async getList({path}) {
     const list: IEntry[] = []
-    for await (const entry of hfs.list(basePath + path)) {
+    path = fixPath(path)
+    for await (const entry of hfs.list(path)) {
       const ext = Path.extname(entry.name || '') || ''
       list.push({
         name: entry.name,
@@ -30,17 +36,17 @@ export const fsWebApi = {
         isDirectory: entry.isDirectory,
         hidden: entry.name.startsWith('.'),
         // 不准确，并且消耗性能，所以不读取
-        // lastModified: (await hfs.lastModified(basePath + path))?.getTime() || 0,
+        // lastModified: (await hfs.lastModified(path))?.getTime() || 0,
         lastModified: 0,
         birthtime: 0,
-        // size: await hfs.size(basePath + path),
+        // size: await hfs.size(path),
       })
     }
     return list
   },
   async getFile(params) {
     const {path, mode = 'text'} = params
-    const absPath = basePath + path
+    const absPath = fixPath(path)
     if (mode === 'text') {
       return await hfs.text(absPath)
     } else if (mode === 'json') {
@@ -50,37 +56,39 @@ export const fsWebApi = {
     }
   },
   async createDir(params) {
-    const {path, ignoreExisted = false} = params
+    let {path, ignoreExisted = false} = params
+    path = fixPath(path)
     // console.log('createDir', path)
     if (ignoreExisted) {
-      if (await hfs.isDirectory(basePath + path)) {
+      if (await hfs.isDirectory(path)) {
         return {path}
       }
     }
-    await hfs.createDirectory(basePath + path)
+    await hfs.createDirectory(path)
 
     return {path}
   },
   async createFile(params, config: any = {}) {
-    const {path, file, isOverride = false} = params
-
-    if (!isOverride && (await hfs.isFile(basePath + path))) {
+    let {path, file, isOverride = false} = params
+    path = fixPath(path)
+    if (!isOverride && (await hfs.isFile(path))) {
       throw new Error(`file ${path} already exist!`)
     }
 
     // console.log('createFile', params)
     // This method will create any necessary parent directories that are missing in order to write the file
-    await hfs.write(basePath + path, file)
+    await hfs.write(path, file)
   },
   async writeFile(params, config: any = {}) {
-    const {path, file} = params
+    let {path, file} = params
+    path = fixPath(path)
     // This method will create any necessary parent directories that are missing in order to write the file
-    await hfs.write(basePath + path, file)
+    await hfs.write(path, file)
   },
   async renameEntry(params) {
     const {fromPath, toPath} = params
-    const absPath = basePath + fromPath
-    const absToPath = basePath + toPath
+    const absPath = fixPath(fromPath)
+    const absToPath = fixPath(toPath)
     // console.log('renameEntry', absPath, absToPath)
     if (await hfs.isDirectory(absPath)) {
       await hfs.moveAll(absPath, absToPath)
@@ -89,32 +97,33 @@ export const fsWebApi = {
     }
   },
   async copyPaste(params) {
-    const {fromPaths, toPath, isMove} = params
-    let {toPathAbs} = params
+    const {fromPaths, toPath, isMove, toPathAbs} = params
 
     for (let i = 0; i < fromPaths.length; i++) {
       const path = fromPaths[i]
 
-      const absPath = basePath + path
-      const entryName = Path.basename(absPath)
+      const absPath = fixPath(path)
+      // 完整目标路径=toPath+文件夹（名）
+      let targetAbsPath: string
+      // 如果传入了目标文件（夹）名，则不进行后续的拼接
       if (toPathAbs) {
-        toPathAbs = basePath + toPathAbs
+        targetAbsPath = fixPath(toPathAbs)
       } else {
-        toPathAbs = basePath + Path.join(toPath, entryName)
+        const entryName = Path.basename(absPath)
+        targetAbsPath = fixPath(Path.join(toPath, entryName))
       }
 
-      // console.log(absPath, absToPath)
       if (isMove) {
         if (await hfs.isDirectory(absPath)) {
-          await hfs.moveAll(absPath, toPathAbs)
+          await hfs.moveAll(absPath, targetAbsPath)
         } else {
-          await hfs.move(absPath, toPathAbs)
+          await hfs.move(absPath, targetAbsPath)
         }
       } else {
         if (await hfs.isDirectory(absPath)) {
-          await hfs.copyAll(absPath, toPathAbs)
+          await hfs.copyAll(absPath, targetAbsPath)
         } else {
-          await hfs.copy(absPath, toPathAbs)
+          await hfs.copy(absPath, targetAbsPath)
         }
       }
     }
@@ -122,7 +131,7 @@ export const fsWebApi = {
   async deleteEntry(params) {
     const {path} = params
     const dpDelete = async (path) => {
-      const absPath = basePath + path
+      const absPath = fixPath(path)
       if (await hfs.isDirectory(absPath)) {
         await hfs.deleteAll(absPath)
       } else {

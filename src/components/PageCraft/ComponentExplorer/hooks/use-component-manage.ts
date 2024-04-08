@@ -37,6 +37,7 @@ const getCompInStore = (item: IComponentItem, path): IComponentInStore => {
     id: item.meta.id,
     title: item.name.replace(regComponentV2, ''),
     path: path,
+    basePath: item.basePath,
   }
 }
 

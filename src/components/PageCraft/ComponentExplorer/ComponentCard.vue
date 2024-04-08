@@ -65,7 +65,8 @@ const handleDragStart = (event) => {
       active:
         item.meta &&
         settingsStore.curCompInStore &&
-        item.meta.id === settingsStore.curCompInStore.id,
+        item.meta.id === settingsStore.curCompInStore.id &&
+        settingsStore.curCompInStore.basePath === item.basePath,
       hidden: item.hidden,
     }"
     @click.stop="openItem"

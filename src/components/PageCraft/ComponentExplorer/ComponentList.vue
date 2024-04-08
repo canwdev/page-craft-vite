@@ -111,7 +111,10 @@ const handleOpen = (item) => {
   const path = normalizePath(basePath.value + '/' + item.name)
   // 打开.comp为后缀的组件文件夹
   if (regComponentV2.test(path)) {
-    if (item.meta.id !== settingsStore.curCompInStore?.id) {
+    if (
+      item.meta.id !== settingsStore.curCompInStore?.id ||
+      item.basePath !== settingsStore.curCompInStore?.basePath
+    ) {
       openComponent(item, path)
     }
     return

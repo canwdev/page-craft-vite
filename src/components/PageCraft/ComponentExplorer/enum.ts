@@ -31,4 +31,5 @@ export interface IComponentInStore {
   title: string
   // 在文件系统里的路径（包括组件文件夹的名字）
   path: string
+  basePath: string
 }
