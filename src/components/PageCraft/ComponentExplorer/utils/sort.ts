@@ -26,7 +26,8 @@ export const birthTimeDescSorter = (a: IComponentItem, b: IComponentItem) => {
   const bVal = isNormalDir(b) ? 1 : 2
   const typeDirection = aVal - bVal
   if (typeDirection !== 0) return typeDirection
-  return -(a.meta?.timeCreated || 0) - (b.meta?.timeCreated || 0)
+
+  return (b.meta?.timeCreated || 0) - (a.meta?.timeCreated || 0)
 }
 
 export enum SortType {

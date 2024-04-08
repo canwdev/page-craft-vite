@@ -62,7 +62,7 @@ const {
       })
     }
 
-    console.log(cEntries)
+    // console.log(cEntries)
     return cEntries
   },
   openEntryFn: async ({path}) => {
