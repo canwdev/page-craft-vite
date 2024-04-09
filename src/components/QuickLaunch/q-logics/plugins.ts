@@ -140,15 +140,31 @@ export interface ICustomPluginItem {
   code: string
 }
 
-const demoPluginTpl = `const {addPresetPlugin, copy} = window.$qlUtils
+const demoPluginTpl = `const {addPlugin, copy} = window.$qlUtils
 addPlugin({
-  label: '🧩 Demo Plugin!',
+  label: '⚠️ Demo Plugin ⚠️',
   props: {
     onClick() {
       copy('Hello world!', true)
     }
   }
-})`
+})
+addPlugin((valRef) => {
+  return {
+    label: '⚠️ Demo Plugin (Input) ⚠️',
+    children: [
+      {
+        label: '📋 Copy Input Value',
+        props: {
+          onClick: async () => {
+            await copy(valRef.value, true)
+          },
+        },
+      },
+    ],
+  }
+})
+`
 
 // 自定义插件系统
 export const useQuickLaunchCustomPlugins = (update) => {
@@ -184,9 +200,13 @@ export const useQuickLaunchCustomPlugins = (update) => {
 
   // 使用闭包执行自定义代码
   const evalPluginCode = (code) => {
-    eval(`;(function () {
+    try {
+      eval(`;(function () {
 ${code}  
 })()`)
+    } catch (e) {
+      window.$message.error(e.message)
+    }
   }
   const runCustomPlugin = () => {
     if (!editingCustomPlugin.value) {
@@ -214,7 +234,7 @@ ${code}
 
   // 插件管理器
   const qLogicManage = {
-    label: '🧩 Plugins Manager',
+    label: '🔌 Plugins Manager 🧩',
     children: () => {
       // 支持直接返回vue3计算属性
       return computed(() => {
@@ -311,12 +331,13 @@ ${code}
               },
             ],
           },
+          {split: true},
           ...customPluginsStorage.value.map((p) => {
             return {
               label: '🧩 ' + p.name,
               children: [
                 {
-                  label: `✏️ Edit ${p.name}`,
+                  label: `✏️ [${p.name}] Edit Code`,
                   props: {
                     onClick: () => {
                       const result = findCustomPlugin(p.name)
@@ -327,7 +348,7 @@ ${code}
                   },
                 },
                 {
-                  label: `📝 Rename`,
+                  label: `📝 Rename Plugin`,
                   props: {
                     isBack: 1,
                     onClick: async () => {
@@ -354,7 +375,7 @@ ${code}
                   },
                 },
                 {
-                  label: '❌ Delete',
+                  label: '❌ Delete Plugin',
                   children: [
                     {
                       label: `✅ Confirm Delete ${p.name}`,

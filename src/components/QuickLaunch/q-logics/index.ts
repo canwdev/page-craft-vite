@@ -38,7 +38,7 @@ export const useQLogics = (qlOptionsRef, update) => {
 
     // 没有输入，显示默认内容
     if (!val) {
-      filteredOptions.value = [...qlOptionsRef.value, ...filterableOptions]
+      filteredOptions.value = [...qlOptionsRef.value, {split: true}, ...filterableOptions]
       return
     }
 
