@@ -45,9 +45,9 @@
     })
   }
 
-  const {copy, useFileDialog, addPlugin} = window.$qlUtils
+  const {copy, useFileDialog, addPresetPlugin} = window.$qlUtils
 
-  addPlugin((valRef) => {
+  addPresetPlugin((valRef) => {
     return {
       label: '🔤 Base64 Toolbox',
       children: [

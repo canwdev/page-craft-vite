@@ -1,7 +1,7 @@
 ;(function () {
-  const {addPlugin, copy, ref, computed, watch} = window.$qlUtils
+  const {addPresetPlugin, copy, ref, computed, watch} = window.$qlUtils
 
-  addPlugin({
+  addPresetPlugin({
     label: '💧 Eye Drop',
     search: 'eyedrop',
     props: {
@@ -18,8 +18,8 @@
     },
   })
 
-  let fonts = []
-  addPlugin((valRef) => {
+  /*  let fonts = []
+  addPresetPlugin((valRef) => {
     return {
       label: '🔠 System Fonts',
       children: async () => {
@@ -58,7 +58,7 @@
   if (!synth) {
     console.warn('window.speechSynthesis is not supported')
   } else {
-    addPlugin((valRef) => {
+    addPresetPlugin((valRef) => {
       return {
         label: '🗣 Speech Synthesis',
         children: async () => {
@@ -85,5 +85,5 @@
         },
       }
     })
-  }
+  }*/
 })()
