@@ -73,15 +73,15 @@ export const useCommonTools = () => {
           },
         },
       },
-      {
-        label: '🗃️ File Explorer',
-        props: {
-          onClick: async () => {
-            mainStore.isShowQuickLaunch = false
-            await router.push({name: 'FileExplorer'})
-          },
-        },
-      },
+      // {
+      //   label: '🗃️ File Explorer',
+      //   props: {
+      //     onClick: async () => {
+      //       mainStore.isShowQuickLaunch = false
+      //       await router.push({name: 'FileExplorer'})
+      //     },
+      //   },
+      // },
       {
         label: '⚙️ ' + $t('common.settings'),
         search: 'settings',

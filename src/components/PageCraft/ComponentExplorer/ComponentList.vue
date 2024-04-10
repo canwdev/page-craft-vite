@@ -124,7 +124,7 @@ const handleOpen = (item) => {
   emit('open', item)
 }
 
-const {handleOpenLocalDir, localDirHistory, isShowDirHistory} = useLocalDir({emit})
+const {handleOpenLocalDir, localDirHistoryOptions, isShowDirHistory} = useLocalDir({emit})
 </script>
 
 <template>
@@ -191,9 +191,10 @@ const {handleOpenLocalDir, localDirHistory, isShowDirHistory} = useLocalDir({emi
         <div class="action-button-wrap">
           <button
             class="vp-button"
-            title="Toggle Sort"
+            title="Open Local Folder"
             @click="handleOpenLocalDir"
             @mouseover="isShowDirHistory = true"
+            @contextmenu.prevent="$router.push({name: 'FileExplorer'})"
           >
             <n-icon size="16">
               <Folder16Regular />
@@ -201,8 +202,9 @@ const {handleOpenLocalDir, localDirHistory, isShowDirHistory} = useLocalDir({emi
           </button>
           <transition name="fade-scale">
             <QuickOptions
+              v-if="localDirHistoryOptions.length"
               v-model:visible="isShowDirHistory"
-              :options="localDirHistory"
+              :options="localDirHistoryOptions"
               @mouseleave="isShowDirHistory = false"
             />
           </transition>

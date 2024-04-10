@@ -88,7 +88,7 @@ const {
   emit,
 })
 
-const {handleOpenLocalDir, localDirHistory, isShowDirHistory} = useLocalDir({emit})
+const {handleOpenLocalDir, localDirHistoryOptions, isShowDirHistory} = useLocalDir({emit})
 </script>
 
 <template>
@@ -162,7 +162,7 @@ const {handleOpenLocalDir, localDirHistory, isShowDirHistory} = useLocalDir({emi
           <transition name="fade-scale">
             <QuickOptions
               v-model:visible="isShowDirHistory"
-              :options="localDirHistory"
+              :options="localDirHistoryOptions"
               @mouseleave="isShowDirHistory = false"
             />
           </transition>

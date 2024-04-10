@@ -13,9 +13,9 @@ let hfs = new WebHfs({
  * 可以传入以下实例，必须要有点击交互
  * const handle = await window.showDirectoryPicker()
  */
-export const setHfsInstance = (handle: FileSystemDirectoryHandle) => {
+export const setHfsInstance = async (handle?: FileSystemDirectoryHandle) => {
   hfs = new WebHfs({
-    root: handle,
+    root: handle || (await navigator.storage.getDirectory()),
   })
 }
 
