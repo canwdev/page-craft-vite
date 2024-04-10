@@ -1,4 +1,4 @@
-import {TextConvertMode} from '@/components/VueI18nEditTool/TextConverter/copy-enum'
+import {TextConvertMode} from '@/utils/mc-utils/text-convert'
 
 type IState = {
   // 文件夹编辑器:是否为文件夹模式

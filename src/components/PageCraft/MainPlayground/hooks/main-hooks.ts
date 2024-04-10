@@ -1,4 +1,4 @@
-import {handleExportHtml, handleExportVue, handleReadSelectedFile} from '@/utils/exporter'
+import {handleExportHtml, handleExportVue} from '@/utils/exporter'
 import globalEventBus, {GlobalEvents, syncStorageData} from '@/utils/global-event-bus'
 import {copyToClipboard} from '@/utils'
 import {formatCss, formatHtml} from '@/components/StyleEditor/utils/formater'
@@ -11,6 +11,7 @@ import {useSfxBass, useSfxBell, useSfxFill, useSfxGuitar} from '@/hooks/use-sfx'
 import {useBroadcastMessage} from '@/hooks/use-broadcast-messae'
 import {useComponentStorageV2} from '@/components/PageCraft/ComponentExplorer/hooks/use-component-manage'
 import {IComponentExportData} from '@/components/PageCraft/ComponentExplorer/enum'
+import {handleReadSelectedFile} from '@/utils/mc-utils/io'
 
 export const useMcMain = (options) => {
   const {t: $t} = useI18n()

@@ -2,7 +2,6 @@
 import {defineComponent, ref} from 'vue'
 import TranslateTreeItem from '@/components/VueI18nEditTool/Single/TranslateTreeItem.vue'
 import {exportI18nTreeJsonObj, I18nJsonObjUtils, ITranslateTreeItem} from '@/enum/vue-i18n-tool'
-import {handleReadSelectedFile} from '@/utils/exporter'
 import iconTranslate from '../assets/textures/translate.svg?url'
 import DropZone from '@/components/CommonUI/DropZone.vue'
 import {useFileDrop} from '@/hooks/use-file-drop'
@@ -23,6 +22,7 @@ import {
   verifyPermission,
 } from '@/components/VueI18nEditTool/file-history'
 import moment from 'moment'
+import {handleReadSelectedFile} from '@/utils/mc-utils/io'
 
 const filePickerOptions = {
   types: [

@@ -25,7 +25,7 @@ import {
   textConvertMultipleLine,
   textConvertAdvanced,
   TextConvertMode,
-} from '@/components/VueI18nEditTool/TextConverter/copy-enum'
+} from '@/utils/mc-utils/text-convert'
 import {useArrayEdit} from '@/components/VueI18nEditTool/Single/hooks/use-array-edit'
 import CcFlag from '@/components/VueI18nEditTool/CcFlag.vue'
 import {useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'

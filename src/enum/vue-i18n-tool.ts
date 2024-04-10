@@ -150,7 +150,7 @@ export const formatI18nKey = (
   // 移除重复的 "_"
   str = str.replace(new RegExp(`${replace}{1,}`, 'gi'), replace)
   str = str.slice(0, limitLength)
-  // 移除首位的 "_"
+  // 移除首尾的 "_"
   str = str.replace(new RegExp(`${replace}$|^${replace}`, 'g'), '')
   return str
 }

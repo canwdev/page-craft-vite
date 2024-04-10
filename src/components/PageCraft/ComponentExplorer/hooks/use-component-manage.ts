@@ -17,7 +17,8 @@ import {guid} from '@/utils'
 import {useStorage} from '@vueuse/core'
 import {LsKeys} from '@/enum/page-craft'
 import {BlockItem, BlockType, ComponentData} from '@/enum/page-craft/block'
-import {promptGetFileName} from '@/utils/exporter'
+
+import {promptGetFileName} from '@/utils/mc-utils/io'
 
 let idx = 1
 const SPLIT_SIGN_V1 = '__'

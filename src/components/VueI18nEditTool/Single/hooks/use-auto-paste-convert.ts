@@ -1,4 +1,4 @@
-import {TextConvertMode} from '@/components/VueI18nEditTool/TextConverter/copy-enum'
+import {TextConvertMode} from '@/utils/mc-utils/text-convert'
 import {useI18nToolSettingsStore} from '@/components/VueI18nEditTool/store/i18n-tool-settings'
 
 export const useAutoPasteConvert = (valueRef) => {

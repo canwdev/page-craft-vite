@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {ref} from 'vue'
 import iconTranslate from '../assets/textures/translate.svg?url'
-import {handleReadSelectedFile} from '@/utils/exporter'
 import {
   DirTreeItem,
   exportI18nTreeJsonObj,
@@ -30,6 +29,7 @@ import {useOpenedHistory} from '@/components/VueI18nEditTool/file-history'
 import {LsKeys} from '@/enum/page-craft'
 import {useGuiToolbox} from '@/components/VueI18nEditTool/BatchGUI/hooks/use-gui-toolbox'
 import GuiToolbox from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox.vue'
+import {handleReadSelectedFile} from '@/utils/mc-utils/io'
 
 const formatDirTreeItem = (data: any = {}): DirTreeItem => {
   return {

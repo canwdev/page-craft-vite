@@ -3,7 +3,8 @@ import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {useI18n} from 'vue-i18n'
 import {useI18nToolSettingsStore} from '@/components/VueI18nEditTool/store/i18n-tool-settings'
 import {BatchListItem, useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
-import {handleReadSelectedFile} from '@/utils/exporter'
+
+import {handleReadSelectedFile} from '@/utils/mc-utils/io'
 
 const useCommon = () => {
   const i18nMainStore = useI18nMainStore()

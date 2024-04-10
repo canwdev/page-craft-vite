@@ -4,6 +4,7 @@ import moment from 'moment/moment'
 import {QuickOptionItem} from '@/components/CommonUI/QuickOptions/enum'
 import * as changeCase from 'change-case'
 import {filterLabel} from './utils'
+import {guid} from '@/utils'
 
 export type DynamicPlugin = (key: any) => QuickOptionItem
 
@@ -134,7 +135,7 @@ export const useQuickLaunchPlugins = (update) => {
 }
 
 export interface ICustomPluginItem {
-  // 插件名称
+  // 插件名称(不可重复)
   name: string
   // 插件可执行代码
   code: string
@@ -201,10 +202,12 @@ export const useQuickLaunchCustomPlugins = (update) => {
   // 使用闭包执行自定义代码
   const evalPluginCode = (code) => {
     try {
+      customStaticPlugins.value = []
+      customDynamicPlugins.value = []
       eval(`;(function () {
 ${code}  
 })()`)
-    } catch (e) {
+    } catch (e: any) {
       window.$message.error(e.message)
     }
   }
@@ -337,8 +340,9 @@ ${code}
               label: '🧩 ' + p.name,
               children: [
                 {
-                  label: `✏️ [${p.name}] Edit Code`,
+                  label: `📝 [${p.name}] Edit Plugin Code`,
                   props: {
+                    isBack: 2,
                     onClick: () => {
                       const result = findCustomPlugin(p.name)
                       if (result) {
@@ -348,7 +352,7 @@ ${code}
                   },
                 },
                 {
-                  label: `📝 Rename Plugin`,
+                  label: `🪶 Rename Plugin`,
                   props: {
                     isBack: 1,
                     onClick: async () => {

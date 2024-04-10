@@ -4,7 +4,6 @@ import FileChooser from '@/components/CommonUI/FileChooser.vue'
 import dynamicLoadScript from '@/utils/dynamic-load-script'
 import iconExcel from '../assets/textures/excel.svg?url'
 import {copyToClipboard} from '@/utils'
-import {promptGetFileName, handleExportFile} from '@/utils/exporter'
 import DropZone from '@/components/CommonUI/DropZone.vue'
 import {useFileDrop} from '@/hooks/use-file-drop'
 import {useMetaTitle} from '@/hooks/use-meta'
@@ -13,11 +12,12 @@ import {
   TextConvertOptions,
   textConvertMultipleLine,
   textConvertAdvanced,
-} from '@/components/VueI18nEditTool/TextConverter/copy-enum'
+} from '@/utils/mc-utils/text-convert'
 import {useSaveShortcut} from '@/hooks/use-beforeunload'
 import {useMainStore} from '@/store/main'
 import {useI18n} from 'vue-i18n'
 import {useStorage} from '@vueuse/core'
+import {handleExportFile, promptGetFileName} from '@/utils/mc-utils/io'
 
 const isAllowedElement = (el) => {
   return el.tagName.toLowerCase() === 'td'

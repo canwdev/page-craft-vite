@@ -17,9 +17,9 @@ import {
   IComponentMeta,
   regComponentV2,
 } from '@/components/PageCraft/ComponentExplorer/enum'
-import {promptGetFileName} from '@/utils/exporter'
 import {useComponentCover} from '@/components/PageCraft/ComponentExplorer/hooks/use-cover'
 import {guid} from '@/utils'
+import {promptGetFileName} from '@/utils/mc-utils/io'
 
 export const useComponentFileActions = ({
   isLoading,
