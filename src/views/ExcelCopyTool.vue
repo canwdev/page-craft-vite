@@ -23,6 +23,35 @@ const isAllowedElement = (el) => {
   return el.tagName.toLowerCase() === 'td'
 }
 
+window.demo_aoa_to_sheet = [
+  ['Name', 'Value', 'Num', 'Time', '✨Tips'],
+  [
+    'test001',
+    'line1\nline2',
+    123,
+    new Date(),
+    'You can set window.json_to_sheet = [] to generate table!',
+  ],
+  ['test001', 'line1\n\nline3', -1, new Date(), 'window.json_to_sheet'],
+]
+
+window.demo_json_to_sheet = [
+  {
+    region: 'DE',
+    product_name: 'Test1',
+    code: '123456',
+    url: 'http://localhost:8080',
+    tips: '✨ You can set window.demo_json_to_sheet = [] to generate table!',
+  },
+  {
+    region: 'FR',
+    product_name: 'Test2',
+    code: '7890',
+    url: 'https://example.com',
+    tips: 'window.demo_json_to_sheet',
+  },
+]
+
 export default defineComponent({
   name: 'ExcelCopyTool',
   components: {
@@ -212,15 +241,11 @@ export default defineComponent({
 
     const loadDemo = () => {
       checkPlugin()
-      const sheet1 = window.XLSX.utils.aoa_to_sheet([
-        ['Name', 'Value', 'Num', 'Time'],
-        ['test001', 'line1\nline2', 123, new Date()],
-        ['test001', 'line1\n\nline3', -1, new Date()],
-      ])
-      const sheet2 = window.XLSX.utils.aoa_to_sheet([['Name'], ['test002'], ['test002']])
+      const sheet1 = window.XLSX.utils.aoa_to_sheet(window.demo_aoa_to_sheet)
+      const sheet2 = window.XLSX.utils.json_to_sheet(window.demo_json_to_sheet)
       const wb = window.XLSX.utils.book_new()
-      window.XLSX.utils.book_append_sheet(wb, sheet1, 'Sheet1')
-      window.XLSX.utils.book_append_sheet(wb, sheet2, 'Sheet2')
+      window.XLSX.utils.book_append_sheet(wb, sheet1, 'aoa_to_sheet')
+      window.XLSX.utils.book_append_sheet(wb, sheet2, 'json_to_sheet')
 
       sheetNameIndex.value = 0
       workbookRef.value = wb
