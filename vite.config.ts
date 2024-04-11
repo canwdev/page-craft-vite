@@ -7,6 +7,12 @@ import {fileURLToPath, URL} from 'url'
 import {VitePWA} from 'vite-plugin-pwa'
 import VueDevTools from 'vite-plugin-vue-devtools'
 
+// 不扫描这些文件夹
+const filesNeedToExclude = ['src-tauri']
+const filesPathToExclude = filesNeedToExclude.map((src) => {
+  return fileURLToPath(new URL(src, import.meta.url))
+})
+
 // https://vitejs.dev/config/
 export default defineConfig({
   define: {
@@ -30,6 +36,9 @@ export default defineConfig({
   build: {
     minify: 'terser',
     emptyOutDir: true,
+    rollupOptions: {
+      external: [...filesPathToExclude],
+    },
   },
   css: {
     preprocessorOptions: {
@@ -67,13 +76,16 @@ export default defineConfig({
       dts: './src/auto-import.d.ts',
       imports: [
         'vue',
+        'pinia',
         {
           'naive-ui': ['useDialog', 'useMessage', 'useNotification', 'useLoadingBar'],
         },
-        'pinia',
       ],
+      resolvers: [NaiveUiResolver()],
     }),
     Components({
+      // 传入空数组表示不要自动添加开发中的组件，所有自定义组件需要手动引入
+      dirs: [],
       resolvers: [NaiveUiResolver()],
     }),
   ],
