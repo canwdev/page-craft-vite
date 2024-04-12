@@ -1,5 +1,6 @@
 import {showInputPrompt} from '@/components/CommonUI/input-prompt'
 import moment from 'moment'
+import FileSaver from 'file-saver'
 
 export const promptGetFileName = async (name?, fallbackPrefix = 'PageCraft') => {
   return await showInputPrompt({
