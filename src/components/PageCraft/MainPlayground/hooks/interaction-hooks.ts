@@ -25,6 +25,7 @@ export const useInteractionHooks = (options) => {
   const cursorX = ref(0)
   const cursorY = ref(0)
   const isShowElementEdit = ref(false)
+  const isEditingRoot = ref(false)
 
   useOpenCloseSound(() => isShowElementEdit.value)
 
@@ -195,6 +196,7 @@ export const useInteractionHooks = (options) => {
     if (!targetEl) {
       return []
     }
+    const isRoot = targetEl === mainPlaygroundRef.value
 
     const iEdit = {
       label: '✏️ ' + $t('actions.edit_element'),
@@ -202,48 +204,48 @@ export const useInteractionHooks = (options) => {
         onClick: async () => {
           nodeAction(targetEl, () => {
             isShowElementEdit.value = true
+            isEditingRoot.value = isRoot
           })
         },
       },
     }
 
-    const blockMenu =
-      targetEl === mainPlaygroundRef.value
-        ? [iEdit]
-        : [
-            iEdit,
-            {
-              label: `📄 ${$t('actions.copy')} HTML`,
-              props: {
-                onClick: async () => {
-                  copyHtml(targetEl)
-                },
+    const blockMenu = isRoot
+      ? [iEdit]
+      : [
+          iEdit,
+          {
+            label: `📄 ${$t('actions.copy')} HTML`,
+            props: {
+              onClick: async () => {
+                copyHtml(targetEl)
               },
             },
-            {
-              label: '✂️ ' + $t('actions.cut'),
-              props: {
-                onClick: async () => {
-                  copyToClipboard(targetEl.outerHTML)
-                  recordUndo()
-                  targetEl.parentNode?.removeChild(targetEl)
-                  saveData()
-                  playSfxDestroy()
-                },
+          },
+          {
+            label: '✂️ ' + $t('actions.cut'),
+            props: {
+              onClick: async () => {
+                copyToClipboard(targetEl.outerHTML)
+                recordUndo()
+                targetEl.parentNode?.removeChild(targetEl)
+                saveData()
+                playSfxDestroy()
               },
             },
-            {
-              label: '❌ ' + $t('actions.remove_element'),
-              props: {
-                onClick: async () => {
-                  recordUndo()
-                  targetEl.parentNode?.removeChild(targetEl)
-                  saveData()
-                  playSfxDestroy()
-                },
+          },
+          {
+            label: '❌ ' + $t('actions.remove_element'),
+            props: {
+              onClick: async () => {
+                recordUndo()
+                targetEl.parentNode?.removeChild(targetEl)
+                saveData()
+                playSfxDestroy()
               },
             },
-          ]
+          },
+        ]
     return [
       mainStore.currentBlock.blockType === BlockType.HTML_ELEMENT && {
         label: `➕ ${$t('actions.insert')} ${mainStore.currentBlock.title}`,
@@ -265,14 +267,16 @@ export const useInteractionHooks = (options) => {
       ...blockMenu,
       {
         label: `📃 ${$t('actions.paste')} outerHTML`,
-        children: ['beforebegin', 'afterbegin', 'beforeend', 'afterend'].map((position) => ({
-          label: `${$t('actions.paste_at')} ${position}`,
-          props: {
-            onClick: async () => {
-              await pasteHtml(targetEl, position)
-            },
-          },
-        })),
+        children: isRoot
+          ? undefined
+          : ['beforebegin', 'afterbegin', 'beforeend', 'afterend'].map((position) => ({
+              label: `${$t('actions.paste_at')} ${position}`,
+              props: {
+                onClick: async () => {
+                  await pasteHtml(targetEl, position)
+                },
+              },
+            })),
         props: {
           onClick: async () => {
             await pasteHtml(targetEl)
@@ -532,6 +536,7 @@ export const useInteractionHooks = (options) => {
     selectionPopupOptions,
     isShowElementEdit,
     editingNode,
+    isEditingRoot,
     updateEditingElement,
   }
 }

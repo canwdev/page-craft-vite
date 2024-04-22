@@ -75,6 +75,7 @@ export default defineComponent({
       selectionPopupOptions,
       isShowElementEdit,
       editingNode,
+      isEditingRoot,
       updateEditingElement,
     } = useInteractionHooks({
       mainPlaygroundRef,
@@ -149,6 +150,7 @@ export default defineComponent({
       handleRedo,
       isShowElementEdit,
       editingNode,
+      isEditingRoot,
       updateEditingElement,
       backgroundStyle,
       listenShortcuts,
@@ -210,6 +212,7 @@ export default defineComponent({
     <ElementEditDialog
       v-model:visible="isShowElementEdit"
       :editing-node="editingNode"
+      :is-root="isEditingRoot"
       @onSave="updateEditingElement"
     />
 
