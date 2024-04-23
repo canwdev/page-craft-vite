@@ -33,6 +33,15 @@ export const useCommonTools = () => {
       },
     },
     {
+      label: '📑 RichText Tool',
+      props: {
+        onClick: async () => {
+          mainStore.isShowQuickLaunch = false
+          await router.push({name: 'RichTextTool'})
+        },
+      },
+    },
+    {
       label: '🧬 ' + $t('common.text_transformer'),
       search: 'text transformer',
       props: {

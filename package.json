@@ -13,6 +13,7 @@
   "dependencies": {
     "@humanfs/web": "^0.13.0",
     "@tauri-apps/api": "^1.5.3",
+    "@tinymce/tinymce-vue": "^5.0.0",
     "@viselect/vanilla": "^3.5.0",
     "@vueuse/core": "^10.9.0",
     "@vueuse/integrations": "^10.9.0",
@@ -40,8 +41,8 @@
     "vue-router": "^4.2.5"
   },
   "devDependencies": {
-    "@types/file-saver": "^2.0.7",
     "@tauri-apps/cli": "^1.5.10",
+    "@types/file-saver": "^2.0.7",
     "@typescript-eslint/eslint-plugin": "^6.18.1",
     "@typescript-eslint/parser": "^6.18.1",
     "@vicons/fluent": "^0.12.0",

@@ -50,6 +50,14 @@ let routes = [
         },
       },
       {
+        path: 'richtext',
+        name: 'RichTextTool',
+        component: () => import('@/views/RichTextTool.vue'),
+        meta: {
+          title: `RichText Tool`,
+        },
+      },
+      {
         path: 'vue-i18n-edit',
         name: 'VueI18nEditTool',
         component: () => import('@/views/VueI18nEditTool.vue'),
