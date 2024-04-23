@@ -249,14 +249,16 @@ export const useInteractionHooks = (options) => {
     return [
       mainStore.currentBlock.blockType === BlockType.HTML_ELEMENT && {
         label: `➕ ${$t('actions.insert')} ${mainStore.currentBlock.title}`,
-        children: ['before', 'prepend', 'append', 'after'].map((position) => ({
-          label: `${$t('actions.insert')} ${position}`,
-          props: {
-            onClick: async () => {
-              insertCurrentBlock(targetEl, position)
-            },
-          },
-        })),
+        children: isRoot
+          ? undefined
+          : ['before', 'prepend', 'append', 'after'].map((position) => ({
+              label: `${$t('actions.insert')} ${position}`,
+              props: {
+                onClick: async () => {
+                  insertCurrentBlock(targetEl, position)
+                },
+              },
+            })),
         props: {
           onClick: async () => {
             insertCurrentBlock(targetEl)
