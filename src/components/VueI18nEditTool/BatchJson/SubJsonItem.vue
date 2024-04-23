@@ -4,14 +4,20 @@ import {DirTreeItem} from '@/enum/vue-i18n-tool'
 import {useBatchItemV2} from '@/components/VueI18nEditTool/BatchGUI/hooks/batch-hooks'
 import {BatchListItem, useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
 import VueJsonEditor from '@/components/CommonUI/VueJsonEditor.vue'
+import {useMainStore} from '@/store/main'
+import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
 
 export default defineComponent({
   name: 'SubTextItem',
-  components: {VueJsonEditor},
+  components: {VueMonaco, VueJsonEditor},
   props: {
     visible: {
       type: Boolean,
       default: true,
+    },
+    isMonacoEditor: {
+      type: Boolean,
+      default: false,
     },
     listItem: {
       type: Object as PropType<BatchListItem>,
@@ -24,12 +30,28 @@ export default defineComponent({
   },
   emits: ['saveChanged'],
   setup(props, {emit}) {
-    const {listItem} = toRefs(props)
+    const {visible, listItem} = toRefs(props)
     const i18nMainStore = useI18nMainStore()
     const {isLoading, handleSaveFile, handleCreateFile, subFilePathArr} = useBatchItemV2(props)
+    const mainStore = useMainStore()
 
-    const editorRef = shallowRef()
-    const localJson = shallowRef({})
+    const vueMonacoRef = ref()
+    const autoFocusEditor = () => {
+      if (vueMonacoRef.value) {
+        setTimeout(() => {
+          vueMonacoRef.value.resize()
+          vueMonacoRef.value.focus()
+        })
+      }
+    }
+
+    watch(visible, (val) => {
+      if (val) {
+        autoFocusEditor()
+      }
+    })
+
+    const localText = shallowRef('')
 
     // 值是否发生变化
     const isChanged = computed(() => {
@@ -42,7 +64,7 @@ export default defineComponent({
 
     const cleanup = () => {
       isRefreshing.value = true
-      localJson.value = {}
+      localText.value = ''
       nextTick(() => {
         setChanged(false)
         isRefreshing.value = false
@@ -53,11 +75,12 @@ export default defineComponent({
     const updateLocalJson = async () => {
       isRefreshing.value = true
 
-      localJson.value = JSON.parse(JSON.stringify(listItem.value.json))
+      localText.value = JSON.stringify(listItem.value.json, null, 2)
 
       await nextTick(() => {
         setChanged(false)
         isRefreshing.value = false
+        autoFocusEditor()
       })
     }
 
@@ -77,14 +100,14 @@ export default defineComponent({
       if (!isChanged.value) {
         return
       }
-      console.log('[saveChange]', localJson.value)
+      console.log('[saveChange]', localText.value)
 
       if (!listItem.value.json) {
         await handleCreateFile({
-          initObj: localJson.value,
+          initText: localText.value,
         })
       } else {
-        const text = JSON.stringify(localJson.value, null, 2)
+        const text = localText.value
         await handleSaveFile(text)
         listItem.value.json = JSON.parse(text)
       }
@@ -95,21 +118,21 @@ export default defineComponent({
       }
     }
 
-    const handleChange = (v) => {
-      console.log(v)
-      localJson.value = v.json
+    const handleChange = (text) => {
+      localText.value = text
       setChanged(true)
     }
 
     return {
       isLoading,
-      localJson,
+      localText,
       saveChange,
       isChanged,
       subFilePathArr,
       handleChange,
-      editorRef,
       isRefreshing,
+      mainStore,
+      vueMonacoRef,
     }
   },
 })
@@ -138,16 +161,24 @@ export default defineComponent({
         <span v-if="!listItem.json" class="_error">File not exist!</span>
       </span>
     </div>
-    <div class="editor-content-wrap">
+    <div v-if="!isRefreshing" class="editor-content-wrap">
+      <VueMonaco
+        v-if="isMonacoEditor"
+        ref="vueMonacoRef"
+        :model-value="localText"
+        @update:model-value="handleChange"
+        language="json"
+        show-line-numbers
+      />
       <VueJsonEditor
-        v-if="!isRefreshing"
+        v-else
         ref="editorRef"
-        dark
+        :dark="mainStore.isAppDarkMode"
         :options="{
           content: {
-            json: localJson,
+            text: localText,
           },
-          onChange: handleChange,
+          onChange: (val) => handleChange(val.text),
         }"
       />
     </div>

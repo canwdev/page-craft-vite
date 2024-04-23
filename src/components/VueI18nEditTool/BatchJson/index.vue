@@ -2,8 +2,10 @@
 import SubTextItem from '@/components/VueI18nEditTool/BatchJson/SubJsonItem.vue'
 import {useBatchWrapper} from '@/components/VueI18nEditTool/BatchGUI/hooks/batch-hooks'
 import {useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
+import {useI18nToolSettingsStore} from '@/components/VueI18nEditTool/store/i18n-tool-settings'
 
 const i18nMainStore = useI18nMainStore()
+const i18nSetStore = useI18nToolSettingsStore()
 const {isLoading, handleSaveChanged, itemsRef} = useBatchWrapper()
 
 const currentTab = ref('')
@@ -59,6 +61,7 @@ watch(
         :list-item="item"
         :visible="item.rootDir.key === currentTab"
         @saveChanged="handleSaveChanged"
+        :is-monaco-editor="i18nSetStore.isJsonMonacoEditor"
       />
     </div>
   </div>

@@ -226,7 +226,7 @@ export const useBatchItemV2 = (props) => {
   const isLocalCreated = ref(false)
   const handleCreateFile = async (options: any = {}) => {
     try {
-      const {initObj = {}, cb, isReload = true} = options
+      const {initText = '', initObj = {}, cb, isReload = true} = options
       isLoading.value = true
 
       if (!listItem.value.dirItem) {
@@ -241,7 +241,7 @@ export const useBatchItemV2 = (props) => {
       const folderPath = fullPath.substring(0, fullPath.lastIndexOf('/'))
       const folderHandle = await createFolder(dirHandle, folderPath)
 
-      const txt = JSON.stringify(initObj, null, 2)
+      const txt = initText || JSON.stringify(initObj, null, 2)
       const fileHandle = await createFile(
         folderHandle,
         fullPath.substring(fullPath.lastIndexOf('/') + 1),
