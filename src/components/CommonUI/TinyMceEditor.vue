@@ -18,18 +18,23 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
-    contentCssPath: {
+    dark: {
+      type: Boolean,
+      default: false,
+    },
+    contentCss: {
       type: String,
-      default: '',
+      default: 'dark',
     },
   },
   emits: ['update:modelValue', 'valueChange'],
   setup(props, {emit}) {
-    const {contentCssPath, minimal} = toRefs(props)
+    const {contentCss, minimal, dark} = toRefs(props)
     // https://www.tiny.cloud/docs/tinymce/s6/basic-setup/
     const initOptions = ref({
       body_class: 'detail-rich-text',
-      content_css: contentCssPath.value,
+      skin: dark.value ? 'oxide-dark' : 'oxide',
+      content_css: contentCss.value,
       verify_html: false, // 防止消除空标签
       plugins: [
         'advlist',
