@@ -97,30 +97,48 @@ export default defineComponent({
     )
 
     const saveChange = async ({isEmit = false} = {}) => {
-      if (!isChanged.value) {
+      if (isLoading.value) {
         return
       }
-      console.log('[saveChange]', localText.value)
+      try {
+        isLoading.value = true
+        console.log('[saveChange]', localText.value)
 
-      if (!listItem.value.json) {
-        await handleCreateFile({
-          initText: localText.value,
-        })
-      } else {
-        const text = localText.value
-        await handleSaveFile(text)
-        listItem.value.json = JSON.parse(text)
+        if (!listItem.value.json) {
+          await handleCreateFile({
+            initText: localText.value,
+          })
+        } else {
+          const text = localText.value
+          await handleSaveFile(text)
+          listItem.value.json = JSON.parse(text)
+        }
+
+        setChanged(false)
+        if (isEmit) {
+          emit('saveChanged')
+        }
+      } finally {
+        isLoading.value = false
       }
-
-      setChanged(false)
-      if (isEmit) {
-        emit('saveChanged')
+      if (!isChanged.value) {
+        return
       }
     }
 
     const handleChange = (text) => {
       localText.value = text
+      // console.log('[handleChange]', localText.value)
       setChanged(true)
+    }
+
+    const handleJsonEditorChange = (data) => {
+      // console.log('[handleChange]', data)
+      if (data.text) {
+        handleChange(data.text)
+      } else if (data.json) {
+        handleChange(JSON.stringify(data.json))
+      }
     }
 
     return {
@@ -133,6 +151,7 @@ export default defineComponent({
       isRefreshing,
       mainStore,
       vueMonacoRef,
+      handleJsonEditorChange,
     }
   },
 })
@@ -178,7 +197,7 @@ export default defineComponent({
           content: {
             text: localText,
           },
-          onChange: (val) => handleChange(val.text),
+          onChange: handleJsonEditorChange,
         }"
       />
     </div>

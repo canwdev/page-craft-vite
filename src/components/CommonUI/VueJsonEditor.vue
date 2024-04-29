@@ -62,9 +62,9 @@ onBeforeUnmount(() => {
   jsonEditor.value = null
 })
 
-onUpdated(() => {
-  jsonEditor.value.updateProps(pickDefinedProps(options.value))
-})
+// onUpdated(() => {
+//   jsonEditor.value.updateProps(pickDefinedProps(options.value))
+// })
 
 defineExpose({
   jsonEditor,
