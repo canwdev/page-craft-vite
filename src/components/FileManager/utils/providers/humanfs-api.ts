@@ -33,10 +33,8 @@ const fixPath = (path: string) => {
 }
 
 export const fsWebApi = {
-  async findHandleByPath(path: string, type: 'file' | 'directory') {
-    const directoryHandle: FileSystemDirectoryHandle = root
-    console.log(directoryHandle)
-    return await findHandleByPath(directoryHandle, path, type)
+  getRoot() {
+    return root
   },
   async getList({
     path,

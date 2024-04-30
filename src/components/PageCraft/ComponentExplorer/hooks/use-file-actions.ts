@@ -20,7 +20,13 @@ import {
 import {useComponentCover} from '@/components/PageCraft/ComponentExplorer/hooks/use-cover'
 import {guid} from '@/utils'
 import {promptGetFileName} from '@/utils/mc-utils/io'
-import {exportZip} from '@/components/PageCraft/ComponentExplorer/utils/zip-export'
+import {
+  chooseDirectoryAndImport,
+  chooseFilesAndImport,
+  chooseZipFileAndImport,
+  exportZip,
+} from '@/components/PageCraft/ComponentExplorer/utils/zip-export'
+import {findHandleByPath} from '@/components/FileManager/utils/providers/opfs-utils'
 
 export const useComponentFileActions = ({
   isLoading,
@@ -226,35 +232,90 @@ export const useComponentFileActions = ({
         {label: '📋 Paste', props: {onClick: handlePaste}, disabled: !enablePaste.value},
         {split: true},
         {
-          label: `📥 ${$t('actions.import')} ${$t('common.all_components')} (JSON)`,
-          props: {
-            onClick: () => {
-              doImportAll()
+          label: `🗃️ ${$t('actions.import')}/${$t('actions.export')}`,
+          children: [
+            {
+              label: `📥 ${$t('actions.import')} ${$t('common.all_components')} Json (Flat)`,
+              props: {
+                onClick: () => {
+                  doImportAll()
+                },
+              },
             },
-          },
-        },
-        {
-          label: `📤 ${$t('actions.export')} ${$t('common.all_components')} (JSON)`,
-          props: {
-            onClick: async () => {
-              await exportComponentAllJson(components)
+            {
+              label: `📤 ${$t('actions.export')} ${$t('common.all_components')} Json (Flat)`,
+              props: {
+                onClick: async () => {
+                  await exportComponentAllJson(components)
+                },
+              },
+              disabled: !components.length,
             },
-          },
-          disabled: !components.length,
-        },
-        {
-          label: `🗜️ ${$t('actions.export')} Current Folder to zip`,
-          props: {
-            onClick: async () => {
-              const handle = await fsWebApi.findHandleByPath(basePath.value, 'directory')
-              if (!handle) {
-                console.error('handle not found')
-                return
-              }
-              console.log(handle)
-              await exportZip(handle)
+            {split: true},
+            {
+              label: `🗜️ ${$t('actions.import')} Current Folder Zip (Recursive)`,
+              props: {
+                onClick: async () => {
+                  try {
+                    isLoading.value = true
+                    await chooseZipFileAndImport(fsWebApi.getRoot(), basePath.value)
+                    emit('refresh')
+                  } finally {
+                    isLoading.value = false
+                  }
+                },
+              },
             },
-          },
+            {
+              label: `📂 ${$t('actions.import')} Folder (Recursive)`,
+              props: {
+                onClick: async () => {
+                  try {
+                    isLoading.value = true
+                    await chooseDirectoryAndImport(fsWebApi.getRoot(), basePath.value)
+                    emit('refresh')
+                  } finally {
+                    isLoading.value = false
+                  }
+                },
+              },
+            },
+            {
+              label: `📄 ${$t('actions.import')} Files`,
+              props: {
+                onClick: async () => {
+                  try {
+                    isLoading.value = true
+                    await chooseFilesAndImport(fsWebApi.getRoot(), basePath.value)
+                    emit('refresh')
+                  } finally {
+                    isLoading.value = false
+                  }
+                },
+              },
+            },
+            {
+              label: `🗜️ ${$t('actions.export')} Current Folder Zip (Recursive)`,
+              props: {
+                onClick: async () => {
+                  try {
+                    const handle = await findHandleByPath(
+                      fsWebApi.getRoot(),
+                      basePath.value,
+                      'directory'
+                    )
+                    if (!handle) {
+                      console.error('handle not found')
+                      return
+                    }
+                    await exportZip(handle as FileSystemDirectoryHandle)
+                  } finally {
+                    isLoading.value = false
+                  }
+                },
+              },
+            },
+          ],
         },
         {split: true},
         {
