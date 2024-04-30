@@ -17,8 +17,6 @@ import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import TranslateTreeItem from '@/components/VueI18nEditTool/Single/TranslateTreeItem.vue'
 import {useMainStore} from '@/store/main'
 import {useI18n} from 'vue-i18n'
-import {Document20Regular, Folder20Regular} from '@vicons/fluent'
-import {NIcon} from 'naive-ui'
 import {useI18nToolSettingsStore} from '@/components/VueI18nEditTool/store/i18n-tool-settings'
 import I18nToolSettings from '@/components/VueI18nEditTool/I18nToolSettings.vue'
 import BatchJson from '@/components/VueI18nEditTool/BatchJson/index.vue'
@@ -40,13 +38,14 @@ const formatDirTreeItem = (data: any = {}): DirTreeItem => {
     parentDirs: data.parentDirs,
     children: data.children || null,
     prefix: () =>
-      h(
+      /*      h(
         NIcon,
         {size: 18},
         {
           default: () => h(data.kind === 'directory' ? Folder20Regular : Document20Regular),
         }
-      ),
+      ),*/
+      h('span', {}, data.kind === 'directory' ? '📁' : '📄'),
   }
 }
 

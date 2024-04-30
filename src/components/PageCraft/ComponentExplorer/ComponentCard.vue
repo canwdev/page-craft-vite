@@ -78,6 +78,7 @@ const handleDragStart = (event) => {
     @mouseleave="handleMouseLeave"
     :draggable="isComp"
     @dragstart="handleDragStart"
+    :title="nameDisplay"
   >
     <div
       :style="{

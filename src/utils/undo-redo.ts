@@ -1,7 +1,7 @@
 export class UndoRedo {
   undoStack: any[] = []
   redoStack: any[] = []
-  maxStackSize = 10
+  maxStackSize = 100
 
   constructor(maxStackSize: number = 10) {
     this.maxStackSize = maxStackSize
