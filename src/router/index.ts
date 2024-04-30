@@ -30,8 +30,8 @@ let routes = [
   },
   {
     path: '/craft/playground',
-    name: 'CraftPlayground',
-    component: () => import('@/views/CraftPlayground.vue'),
+    name: 'PlaygroundPage',
+    component: () => import('@/views/PlaygroundPage.vue'),
     meta: {
       title: `Playground`,
     },

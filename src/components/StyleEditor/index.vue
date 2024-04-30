@@ -21,6 +21,7 @@ import {StyleEditorKeys, StyleTabType} from './enum'
 import ElementByPoint from './components/ElementByPoint.vue'
 import {useSharedCssStore} from './utils/css-store'
 import {useSnippets} from './hooks/use-snippets'
+import {useBroadcastMessage} from '@/hooks/use-broadcast-messae'
 
 interface Props {
   // 窗口是否可见
@@ -107,17 +108,18 @@ const _prevStyleValue = ref('')
 /**
  * 把样式应用到页面
  */
-const handleUpdateStyle = async () => {
+const handleUpdateStyle = async (forceUpdate = false) => {
   try {
     // combine variables and styles
     const value = variableStyleCode.value + '\n' + currentStyleCode.value
-    if (_prevStyleValue.value === value) {
+    if (_prevStyleValue.value === value && !forceUpdate) {
       // console.log('prevent update')
       return
     }
     _prevStyleValue.value = value
     const result = value ? await sassToCSS(value) : ''
 
+    // console.log('[handleUpdateStyle]', result)
     cssStore.currentCSS = result
 
     errorTip.value = ''
@@ -133,6 +135,11 @@ watch(
   },
   {immediate: true}
 )
+// 初始化时同步浏览器不同窗口间的组件样式
+useBroadcastMessage('PlaygroundPageStyleSync', () => {
+  // console.log('[PlaygroundPageStyleSync] 2')
+  handleUpdateStyle(true)
+})
 
 const execBeautifyCssAction = async () => {
   const editor = vueMonacoRef.value.getInstance()

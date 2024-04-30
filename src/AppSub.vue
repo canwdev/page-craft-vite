@@ -8,6 +8,7 @@ import {useSettingsStore} from '@/store/settings'
 
 import {mcUtils} from '@/utils/mc-utils'
 import {useRoute} from 'vue-router'
+import {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
 
 export default defineComponent({
   name: 'AppSub',
@@ -32,12 +33,14 @@ export default defineComponent({
     window.$loadingBar = useLoadingBar()
 
     const isLitePage = computed(() => {
-      return route.name === 'CraftPlayground'
+      return route.name === 'PlaygroundPage'
     })
 
     onMounted(() => {
       window.$mcUtils = mcUtils
     })
+
+    useGlobalBusOn(GlobalEvents.SYNC_STORAGE_DATA, () => {})
 
     return {
       mainStore,

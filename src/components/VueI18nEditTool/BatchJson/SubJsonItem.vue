@@ -97,6 +97,9 @@ export default defineComponent({
     )
 
     const saveChange = async ({isEmit = false} = {}) => {
+      if (!isChanged.value) {
+        return
+      }
       if (isLoading.value) {
         return
       }
@@ -137,7 +140,7 @@ export default defineComponent({
       if (data.text) {
         handleChange(data.text)
       } else if (data.json) {
-        handleChange(JSON.stringify(data.json))
+        handleChange(JSON.stringify(data.json, null, 2))
       }
     }
 
@@ -164,14 +167,9 @@ export default defineComponent({
     </div>
 
     <div class="editor-action-row">
-      <n-button
-        size="small"
-        type="primary"
-        :disabled="!isChanged"
-        @click="saveChange({isEmit: true})"
-      >
+      <button class="vp-button primary" :disabled="!isChanged" @click="saveChange({isEmit: true})">
         Save All
-      </n-button>
+      </button>
 
       <span class="path-tip">
         <span class="_primary">{{ listItem.rootDir.label }}</span

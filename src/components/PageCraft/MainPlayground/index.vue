@@ -41,7 +41,7 @@ export default defineComponent({
     const settingsStore = useSettingsStore()
 
     const isLitePage = computed(() => {
-      return route.name === 'CraftPlayground'
+      return route.name === 'PlaygroundPage'
     })
 
     const {
@@ -112,7 +112,7 @@ export default defineComponent({
 
     const openPlayground = () => {
       const url = router.resolve({
-        name: 'CraftPlayground',
+        name: 'PlaygroundPage',
       }).href
       console.log(url)
       if (window.__TAURI__) {
@@ -316,7 +316,8 @@ export default defineComponent({
 
       <span v-if="!isLitePage" style="border-right: 1px solid; opacity: 0.3"></span>
     </portal>
-    <!-- Main Canvas !!! -->
+
+    <!-- Main Canvas -->
     <div
       ref="mainPlaygroundRef"
       :class="mainCanvasClass"
@@ -334,6 +335,7 @@ export default defineComponent({
     <!-- 辅助定位线 -->
     <div class="line-helper-x"></div>
 
+    <!-- 删除元素的动画 -->
     <div
       v-if="cursorX"
       class="mc-digging-wrap"
