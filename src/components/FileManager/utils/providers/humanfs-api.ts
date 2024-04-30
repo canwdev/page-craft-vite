@@ -1,11 +1,13 @@
 import {IEntry} from '../../types/filesystem'
 import {WebHfs} from '@humanfs/web'
 import {path as Path} from '../path'
+import {findHandleByPath} from '@/components/FileManager/utils/providers/opfs-utils'
 
+// 必须使用安全域名访问，如https或localhost，否则启动报错
+// 必须启用配置 top-level-await
+let root = await navigator.storage.getDirectory()
 let hfs = new WebHfs({
-  // 必须使用安全域名访问，如https或localhost，否则启动报错
-  // 必须启用配置 top-level-await
-  root: await navigator.storage.getDirectory(),
+  root,
 })
 
 /**
@@ -14,8 +16,9 @@ let hfs = new WebHfs({
  * const handle = await window.showDirectoryPicker()
  */
 export const setHfsInstance = async (handle?: FileSystemDirectoryHandle) => {
+  root = handle || (await navigator.storage.getDirectory())
   hfs = new WebHfs({
-    root: handle || (await navigator.storage.getDirectory()),
+    root,
   })
 }
 
@@ -30,6 +33,11 @@ const fixPath = (path: string) => {
 }
 
 export const fsWebApi = {
+  async findHandleByPath(path: string, type: 'file' | 'directory') {
+    const directoryHandle: FileSystemDirectoryHandle = root
+    console.log(directoryHandle)
+    return await findHandleByPath(directoryHandle, path, type)
+  },
   async getList({
     path,
     // 消耗性能，所以默认关闭

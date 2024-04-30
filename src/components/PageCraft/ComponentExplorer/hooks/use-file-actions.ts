@@ -20,6 +20,7 @@ import {
 import {useComponentCover} from '@/components/PageCraft/ComponentExplorer/hooks/use-cover'
 import {guid} from '@/utils'
 import {promptGetFileName} from '@/utils/mc-utils/io'
+import {exportZip} from '@/components/PageCraft/ComponentExplorer/utils/zip-export'
 
 export const useComponentFileActions = ({
   isLoading,
@@ -240,6 +241,20 @@ export const useComponentFileActions = ({
             },
           },
           disabled: !components.length,
+        },
+        {
+          label: `🗜️ ${$t('actions.export')} Current Folder to zip`,
+          props: {
+            onClick: async () => {
+              const handle = await fsWebApi.findHandleByPath(basePath.value, 'directory')
+              if (!handle) {
+                console.error('handle not found')
+                return
+              }
+              console.log(handle)
+              await exportZip(handle)
+            },
+          },
         },
         {split: true},
         {
