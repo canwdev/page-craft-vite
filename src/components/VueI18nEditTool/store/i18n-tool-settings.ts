@@ -11,6 +11,8 @@ type IState = {
   // 是否检测链接自动渲染图片
   isAutoShowImage: boolean
   enableFlag: boolean
+  // JSON 编辑器是否为 Monaco 编辑器
+  isJsonMonacoEditor: boolean
 }
 
 export const useI18nToolSettingsStore = defineStore('i18nToolSettings', {
@@ -22,6 +24,7 @@ export const useI18nToolSettingsStore = defineStore('i18nToolSettings', {
       ignoreFolders: ['node_modules', '.git', '.idea', '.vscode', '.DS_Store'],
       isAutoShowImage: true,
       enableFlag: false,
+      isJsonMonacoEditor: false,
     }
   },
   getters: {

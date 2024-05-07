@@ -3,7 +3,7 @@ import {JSONEditor} from 'vanilla-jsoneditor'
 import 'vanilla-jsoneditor/themes/jse-theme-dark.css'
 interface Props {
   options: any
-  dark: boolean
+  dark?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {})

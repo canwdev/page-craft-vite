@@ -22,7 +22,7 @@ const iframeRef = ref()
 const iframeSrc = ref('')
 
 const defUrl = router.resolve({
-  name: 'CraftPlayground',
+  name: 'PlaygroundPage',
 }).href
 
 const addressBarUrl = useStorage('pagecraft_iframe_browser_url', defUrl, localStorage, {

@@ -8,7 +8,7 @@
   },
   "package": {
     "productName": "page-craft-vite",
-    "version": "1.6.5"
+    "version": "1.6.6"
   },
   "tauri": {
     "allowlist": {

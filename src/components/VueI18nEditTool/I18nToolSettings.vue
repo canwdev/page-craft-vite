@@ -8,9 +8,11 @@ import {TextConvertMode, TextConvertOptions} from '@/utils/mc-utils/text-convert
 import {Globe20Regular} from '@vicons/fluent'
 import {NButton} from 'naive-ui'
 import {useCommonSettings} from '@/components/PageCraft/Settings/use-common-settings'
+import OptionUI from '@/components/CommonUI/OptionUI/index.vue'
 
 export default defineComponent({
   name: 'I18nToolSettings',
+  components: {OptionUI},
   props: {
     visible: {
       type: Boolean,
@@ -90,6 +92,12 @@ export default defineComponent({
             {
               label: $t('msgs.enable_flag') + ' (Wikipedia)',
               key: 'enableFlag',
+              store: i18nSetStore,
+              type: StOptionType.SWITCH,
+            },
+            {
+              label: 'JSON Editor use Monaco Editor',
+              key: 'isJsonMonacoEditor',
               store: i18nSetStore,
               type: StOptionType.SWITCH,
             },

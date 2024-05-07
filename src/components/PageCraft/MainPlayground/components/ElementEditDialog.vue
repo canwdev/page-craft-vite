@@ -22,9 +22,14 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    isRoot: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: ['onSave', 'update:visible'],
   setup(props, {emit}) {
+    const {isRoot} = toRefs(props)
     const mVisible = useModelWrapper(props, emit, 'visible')
     const isEditInnerHTML = ref(true)
 
@@ -45,6 +50,9 @@ export default defineComponent({
       if (val) {
         formValueRef.value = formatForm(props.editingNode)
         customFormItems.value = getCustomFormItems(props.editingNode)
+        if (isRoot.value) {
+          isEditInnerHTML.value = true
+        }
       } else {
         formValueRef.value = formatForm(null)
         customFormItems.value = []
@@ -91,6 +99,7 @@ export default defineComponent({
     <n-form ref="formRef" :label-width="80" :model="formValueRef" :rules="formRules" size="small">
       <n-form-item label="class" path="className">
         <n-input
+          :disabled="isRoot"
           v-model:value="formValueRef.className"
           placeholder="class"
           class="font-code"
@@ -137,6 +146,7 @@ export default defineComponent({
           <n-switch
             v-model:value="isEditInnerHTML"
             :title="`${$t('actions.toggle')} innerHTML/outerHTML`"
+            :disabled="isRoot"
           >
             <template #checked> innerHTML </template>
             <template #unchecked> outerHTML </template>

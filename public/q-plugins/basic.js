@@ -1,27 +1,27 @@
-;(function () {
-  const {copy, addPresetPlugin} = window.$qlUtils
-  const evalCode = (val, isToast = false) => {
-    try {
-      return eval(val)
-    } catch (error) {
-      console.log(error)
-      if (isToast) {
-        window.$message.error(error.message)
-      } else {
-        return error.message
-      }
+const {copy, addPlugin} = window.$qlUtils
+const evalCode = (val, isToast = false) => {
+  try {
+    return eval(val)
+  } catch (error) {
+    console.log(error)
+    if (isToast) {
+      window.$message.error(error.message)
+    } else {
+      return error.message
     }
   }
-  const isTimestamp = (val) => {
-    val = Number(val)
-    const d = new Date(val)
-    if (d.getTime() > 0) {
-      return d
-    }
-    return false
+}
+const isTimestamp = (val) => {
+  val = Number(val)
+  const d = new Date(val)
+  if (d.getTime() > 0) {
+    return d
   }
+  return false
+}
 
-  addPresetPlugin((valRef) => {
+addPlugin(
+  (valRef) => {
     const date = isTimestamp(valRef.value)
     if (date) {
       const label = window.$qlUtils.moment(date).format('YYYY-MM-DD HH:mm:ss')
@@ -30,9 +30,14 @@
         props: {onClick: () => copy(label, true)},
       }
     }
-  })
+  },
+  {
+    isPresetPlugin: true,
+  }
+)
 
-  addPresetPlugin((valRef) => {
+addPlugin(
+  (valRef) => {
     return {
       label: '⚡ JavaScript Eval',
       props: {
@@ -41,11 +46,16 @@
         },
       },
     }
-  })
+  },
+  {
+    isPresetPlugin: true,
+  }
+)
 
-  addPresetPlugin((valRef) => {
+addPlugin(
+  (valRef) => {
     return {
-      label: '⚡ Realtime Eval',
+      label: '⚡ Realtime JavaScript Eval',
       children: [
         {
           label: '',
@@ -65,5 +75,9 @@
         },
       ],
     }
-  })
-})()
+  },
+  {
+    isStaticPlugin: true,
+    isPresetPlugin: true,
+  }
+)

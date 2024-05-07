@@ -1,6 +1,7 @@
 import {useStyleTag} from '@vueuse/core'
 import {StyleEditorKeys} from '../enum'
 import {sassToCSS} from './css'
+import {useRoute} from 'vue-router'
 
 type IStore = {
   globalCSS: string
@@ -24,6 +25,7 @@ export const useSharedCssStore = defineStore('playground', {
 // 注册 head style 标签同步，每个页面只能注册一次
 export const useCssStyleTag = () => {
   const cssStore = useSharedCssStore()
+  const route = useRoute()
   const {css: globalCssTag} = useStyleTag('', {id: StyleEditorKeys.GLOBAL_STYLE})
   const {css: currentCssTag} = useStyleTag('', {id: StyleEditorKeys.CURRENT_STYLE})
 
@@ -37,9 +39,10 @@ export const useCssStyleTag = () => {
   watch(
     () => cssStore.currentCSS,
     (val) => {
+      // console.log('[cssStore.currentCSS]', val)
       currentCssTag.value = val
     },
-    {immediate: true}
+    {immediate: false}
   )
 
   // 初始化时先应用全局样式

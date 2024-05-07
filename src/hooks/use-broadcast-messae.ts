@@ -9,7 +9,7 @@ export const useBroadcastMessage = (name = 'my_channel', cb?: (event: MessageEve
   onMounted(() => {
     // 创建一个 Broadcast Channel
     const channel = new BroadcastChannel(name)
-    if (typeof cb === 'function') {
+    if (cb) {
       channel.onmessage = (event) => {
         cb(event)
       }

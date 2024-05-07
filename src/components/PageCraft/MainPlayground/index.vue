@@ -17,7 +17,7 @@ import {
 } from '@vicons/fluent'
 import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
 import {WebviewWindow} from '@tauri-apps/api/window'
-import {useRouter} from 'vue-router'
+import {useRoute, useRouter} from 'vue-router'
 import {useEventListener} from '@vueuse/core'
 
 export default defineComponent({
@@ -35,9 +35,14 @@ export default defineComponent({
   },
   setup(props, {emit}) {
     const router = useRouter()
+    const route = useRoute()
     const mainPlaygroundRef = ref()
     const mainStore = useMainStore()
     const settingsStore = useSettingsStore()
+
+    const isLitePage = computed(() => {
+      return route.name === 'PlaygroundPage'
+    })
 
     const {
       htmlMenuOptions,
@@ -75,6 +80,7 @@ export default defineComponent({
       selectionPopupOptions,
       isShowElementEdit,
       editingNode,
+      isEditingRoot,
       updateEditingElement,
     } = useInteractionHooks({
       mainPlaygroundRef,
@@ -106,7 +112,7 @@ export default defineComponent({
 
     const openPlayground = () => {
       const url = router.resolve({
-        name: 'CraftPlayground',
+        name: 'PlaygroundPage',
       }).href
       console.log(url)
       if (window.__TAURI__) {
@@ -149,11 +155,13 @@ export default defineComponent({
       handleRedo,
       isShowElementEdit,
       editingNode,
+      isEditingRoot,
       updateEditingElement,
       backgroundStyle,
       listenShortcuts,
       openPlayground,
       isSelectMode,
+      isLitePage,
     }
   },
 })
@@ -210,71 +218,78 @@ export default defineComponent({
     <ElementEditDialog
       v-model:visible="isShowElementEdit"
       :editing-node="editingNode"
+      :is-root="isEditingRoot"
       @onSave="updateEditingElement"
     />
 
     <portal to="indicatorBarTeleportDest">
-      <n-dropdown
-        :options="htmlMenuOptions"
-        key-field="label"
-        placement="bottom-start"
-        trigger="hover"
-      >
-        <n-button size="tiny" :title="settingsStore.curCompInStore?.basePath">
-          <template #icon>
-            <n-icon size="18">
-              <Code20Filled />
-            </n-icon>
-          </template>
-          {{ settingsStore.curCompInStore?.title?.slice(0, 10) || 'Default' }}</n-button
+      <template v-if="!isLitePage">
+        <n-dropdown
+          :options="htmlMenuOptions"
+          key-field="label"
+          placement="bottom-start"
+          trigger="hover"
         >
-      </n-dropdown>
-
-      <n-popover :duration="100" :show-arrow="false" trigger="hover">
-        <template #trigger>
-          <n-button size="tiny">
+          <n-button
+            size="tiny"
+            :title="`${settingsStore.curCompInStore?.basePath}
+${settingsStore.curCompInStore?.title}`"
+          >
             <template #icon>
               <n-icon size="18">
-                <Settings20Regular />
+                <Code20Filled />
               </n-icon>
             </template>
-            {{ $t('common.options') }}</n-button
+            {{ settingsStore.curCompInStore?.title?.slice(0, 10) || 'Default' }}</n-button
           >
-        </template>
-        <template #header></template>
-        <div v-for="item in toggleList" :key="item.flag" class="toggle-list">
-          <div style="display: flex; align-items: center">
-            <n-checkbox
-              v-model:checked="indicatorOptions[item.flag]"
-              :label="item.title"
-              size="small"
-            />
+        </n-dropdown>
 
-            <template v-if="item.desc">
-              <n-popover style="padding: 0; min-width: 200px" trigger="hover">
-                <template #trigger>
-                  <n-icon size="16">
-                    <QuestionCircle20Regular />
-                  </n-icon>
-                </template>
-                <span style="font-size: 14px">{{ item.desc }}</span>
-              </n-popover>
-            </template>
+        <n-popover :duration="100" :show-arrow="false" trigger="hover">
+          <template #trigger>
+            <n-button size="tiny">
+              <template #icon>
+                <n-icon size="18">
+                  <Settings20Regular />
+                </n-icon>
+              </template>
+              {{ $t('common.options') }}</n-button
+            >
+          </template>
+          <template #header></template>
+          <div v-for="item in toggleList" :key="item.flag" class="toggle-list">
+            <div style="display: flex; align-items: center">
+              <n-checkbox
+                v-model:checked="indicatorOptions[item.flag]"
+                :label="item.title"
+                size="small"
+              />
+
+              <template v-if="item.desc">
+                <n-popover style="padding: 0; min-width: 200px" trigger="hover">
+                  <template #trigger>
+                    <n-icon size="16">
+                      <QuestionCircle20Regular />
+                    </n-icon>
+                  </template>
+                  <span style="font-size: 14px">{{ item.desc }}</span>
+                </n-popover>
+              </template>
+            </div>
           </div>
-        </div>
-        <n-slider v-model:value="indicatorOptions.bgTransparentPercent" :step="1" />
-        <template #footer>
-          <n-space align="center" size="small">
-            <n-button title="(alt+w)" size="small" @click="mainStore.isShowSettings = true">{{
-              $t('common.settings')
-            }}</n-button>
+          <n-slider v-model:value="indicatorOptions.bgTransparentPercent" :step="1" />
+          <template #footer>
+            <n-space align="center" size="small">
+              <n-button title="(alt+w)" size="small" @click="mainStore.isShowSettings = true">{{
+                $t('common.settings')
+              }}</n-button>
 
-            <n-button quaternary type="primary" size="small" @click="openPlayground">
-              Playground
-            </n-button>
-          </n-space>
-        </template>
-      </n-popover>
+              <n-button quaternary type="primary" size="small" @click="openPlayground">
+                Playground
+              </n-button>
+            </n-space>
+          </template>
+        </n-popover>
+      </template>
 
       <n-button-group>
         <n-button
@@ -302,9 +317,11 @@ export default defineComponent({
           </template>
         </n-button>
       </n-button-group>
-      <span style="border-right: 1px solid; opacity: 0.3"></span>
+
+      <span v-if="!isLitePage" style="border-right: 1px solid; opacity: 0.3"></span>
     </portal>
-    <!-- Main Canvas !!! -->
+
+    <!-- Main Canvas -->
     <div
       ref="mainPlaygroundRef"
       :class="mainCanvasClass"
@@ -322,6 +339,7 @@ export default defineComponent({
     <!-- 辅助定位线 -->
     <div class="line-helper-x"></div>
 
+    <!-- 删除元素的动画 -->
     <div
       v-if="cursorX"
       class="mc-digging-wrap"

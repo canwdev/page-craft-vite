@@ -29,7 +29,7 @@ const update = () => {
 }
 const {filteredOptions, handleSearch, editingCustomPlugin, saveCustomPlugin, runCustomPlugin} =
   useQLogics(qlOptions, update)
-useQuickLaunchPlugins(update)
+useQuickLaunchPlugins(update, anyText)
 
 watch(route, () => {
   update()
@@ -110,6 +110,7 @@ defineExpose({
     box-sizing: border-box;
     width: 100% !important;
     border-radius: 0 !important;
+    min-height: 28px;
     max-height: 150px !important;
     scrollbar-width: none;
     line-height: 1;

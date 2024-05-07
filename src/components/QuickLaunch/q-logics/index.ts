@@ -32,8 +32,8 @@ export const useQLogics = (qlOptionsRef, update) => {
     const filterableOptions = [
       qLogicManage,
       ...customStaticPlugins.value,
-      ...staticPlugins.value,
       qLogicQrCode(valRef),
+      ...staticPlugins.value,
     ]
 
     // 没有输入，显示默认内容
@@ -46,16 +46,29 @@ export const useQLogics = (qlOptionsRef, update) => {
       filteredOptions.value = [qLogicHelp]
       return
     }
+    const labelMap: {[key: string]: boolean} = {}
     // 过滤列表功能
     filteredOptions.value = [
       // 函数式插件，通过输入值来显示
       ...filterableOptions.filter((i) => filterLabel(i, val)),
       ...dynamicPlugins.value.map((f) => f(valRef)),
       ...customDynamicPlugins.value.map((f) => f(valRef)),
-    ].filter((val) => !!val)
+    ].filter((val) => {
+      if (!val) {
+        return false
+      }
+      // 去除重复标题
+      if (val.label) {
+        if (labelMap[val.label]) {
+          return false
+        }
+        labelMap[val.label] = true
+      }
+      return true
+    })
   }
 
-  const handleSearch = useDebounceFn(_handleSearch, 100)
+  const handleSearch = useDebounceFn(_handleSearch, 300)
 
   return {
     handleSearch,

@@ -27,10 +27,6 @@
         "value": "https://win11.blueedge.me/"
       },
       {
-        "label": "Win12网页版",
-        "value": "https://tjy-gitnub.github.io/win12/desktop.html"
-      },
-      {
         "label": "Win11 in Vue",
         "value": "https://win11.keep-silence.com/#/home"
       }
@@ -70,13 +66,13 @@
       {
         "label": "",
         "value": "https://t.mwm.moe/"
+      },
+      {
+        "value": "https://cloud.codegen.cc/"
+      },
+      {
+        "value": "https://gchq.github.io/CyberChef"
       }
     ]
-  },
-  {
-    "value": "https://gchq.github.io/CyberChef"
-  },
-  {
-    "value": "https://cloud.codegen.cc/"
   }
 ]

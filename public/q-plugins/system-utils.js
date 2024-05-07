@@ -1,7 +1,7 @@
-;(function () {
-  const {addPresetPlugin, copy, ref, computed, watch} = window.$qlUtils
+const {addPlugin, copy, ref, computed, watch} = window.$qlUtils
 
-  addPresetPlugin({
+addPlugin(
+  {
     label: '💧 Eye Drop',
     search: 'eyedrop',
     props: {
@@ -16,10 +16,15 @@
         }
       },
     },
-  })
+  },
+  {
+    isPresetPlugin: true,
+  }
+)
 
-  /*  let fonts = []
-  addPresetPlugin((valRef) => {
+let fonts = []
+addPlugin(
+  (valRef) => {
     return {
       label: '🔠 System Fonts',
       children: async () => {
@@ -33,6 +38,9 @@
           return [
             ...fonts
               .filter((v) => {
+                if (!valRef.value) {
+                  return true
+                }
                 const sVal = valRef.value.trim().toLowerCase()
                 return v.fullName.toLowerCase().includes(sVal)
               })
@@ -51,14 +59,20 @@
         })
       },
     }
-  })
+  },
+  {
+    isStaticPlugin: true,
+    isPresetPlugin: true,
+  }
+)
 
-  // https://eeejay.github.io/webspeechdemos/
-  const synth = window.speechSynthesis
-  if (!synth) {
-    console.warn('window.speechSynthesis is not supported')
-  } else {
-    addPresetPlugin((valRef) => {
+// https://eeejay.github.io/webspeechdemos/
+const synth = window.speechSynthesis
+if (!synth) {
+  console.warn('window.speechSynthesis is not supported')
+} else {
+  addPlugin(
+    (valRef) => {
       return {
         label: '🗣 Speech Synthesis',
         children: async () => {
@@ -84,6 +98,10 @@
           ]
         },
       }
-    })
-  }*/
-})()
+    },
+    {
+      isStaticPlugin: true,
+      isPresetPlugin: true,
+    }
+  )
+}

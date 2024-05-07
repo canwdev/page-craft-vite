@@ -30,8 +30,8 @@ let routes = [
   },
   {
     path: '/craft/playground',
-    name: 'CraftPlayground',
-    component: () => import('@/views/CraftPlayground.vue'),
+    name: 'PlaygroundPage',
+    component: () => import('@/views/PlaygroundPage.vue'),
     meta: {
       title: `Playground`,
     },
@@ -47,6 +47,14 @@ let routes = [
         component: () => import('@/views/ExcelCopyTool.vue'),
         meta: {
           title: i18n.global.t('common.excel_copy_tool'),
+        },
+      },
+      {
+        path: 'richtext',
+        name: 'RichTextTool',
+        component: () => import('@/views/RichTextTool.vue'),
+        meta: {
+          title: `RichText Tool`,
         },
       },
       {

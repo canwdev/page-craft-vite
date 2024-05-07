@@ -1,4 +1,4 @@
-import {createGlobalState, useFetch, useScriptTag, useFileDialog, useStorage} from '@vueuse/core'
+import {createGlobalState, useFileDialog, useStorage} from '@vueuse/core'
 import {copy} from './utils'
 import moment from 'moment/moment'
 import {QuickOptionItem} from '@/components/CommonUI/QuickOptions/enum'
@@ -32,7 +32,7 @@ export const usePluginState = createGlobalState(() => {
 })
 
 // 自带插件
-export const useQuickLaunchPlugins = (update) => {
+export const useQuickLaunchPlugins = (update, textRef) => {
   const {
     staticPlugins,
     dynamicPlugins,
@@ -42,20 +42,11 @@ export const useQuickLaunchPlugins = (update) => {
   } = usePluginState()
 
   const basePath = `q-plugins`
-  const unloadFns = ref<any[]>([])
 
   // 重新加载所有插件
   const reloadPlugins = async () => {
     dynamicPlugins.value = []
     staticPlugins.value = []
-    if (unloadFns.value.length) {
-      console.log('[reloadPlugins] unloading plugin scripts...')
-      for (const key in unloadFns.value) {
-        const unload = unloadFns.value[key]
-        await unload()
-      }
-      unloadFns.value = []
-    }
 
     // 获取插件json
     const res = await fetch(`${basePath}/index.json`)
@@ -71,35 +62,40 @@ export const useQuickLaunchPlugins = (update) => {
       if (!outboundUrlRegex.test(url)) {
         url = basePath + '/' + url
       }
-      const {load, unload} = useScriptTag(
-        url,
-        () => {
-          // do something
-        },
-        {manual: true}
-      )
-      unloadFns.value.push(unload)
-      await load()
+
+      const response = await fetch(url)
+      const code = await response.text()
+
+      // 使用闭包执行预设插件代码
+      eval(`;(function () {
+${code}  
+})()`)
     }
   }
 
-  // 添加一个预制插件
-  const addPresetPlugin = (plugin: QuickOptionItem | DynamicPlugin) => {
-    // console.log('[addPresetPlugin]', plugin)
-    if (typeof plugin === 'function') {
-      dynamicPlugins.value.push(plugin)
-    } else {
-      staticPlugins.value.push(plugin)
+  // 添加一个插件
+  const addPlugin = (
+    plugin: QuickOptionItem | DynamicPlugin,
+    {
+      // 如果传入此参数，则这个插件可以是静态的（直接展示在列表中而不用输入文字）
+      isStaticPlugin = false,
+      // 是否为预制插件
+      isPresetPlugin = false,
+    } = {}
+  ) => {
+    // 区分预制和自定义插件，提升自定义插件刷新性能
+    const dp = isPresetPlugin ? dynamicPlugins.value : customDynamicPlugins.value
+    const sp = isPresetPlugin ? staticPlugins.value : customStaticPlugins.value
+
+    // console.log('[addPlugin]', plugin)
+    if (isStaticPlugin && typeof plugin === 'function') {
+      sp.push(plugin(textRef))
     }
-    // 由于update函数使用了防抖，这里可以直接执行
-    update()
-  }
-  // 添加一个自定义插件
-  const addPlugin = (plugin: QuickOptionItem | DynamicPlugin) => {
+
     if (typeof plugin === 'function') {
-      customDynamicPlugins.value.push(plugin)
+      dp.push(plugin)
     } else {
-      customStaticPlugins.value.push(plugin)
+      sp.push(plugin)
     }
     // 由于update函数使用了防抖，这里可以直接执行
     update()
@@ -124,9 +120,7 @@ export const useQuickLaunchPlugins = (update) => {
       update,
       // 重新加载所有插件
       reloadPlugins,
-      // 添加一个预制插件
-      addPresetPlugin,
-      // 添加一个自定义插件
+      // 添加一个插件
       addPlugin,
     }
 
@@ -141,7 +135,7 @@ export interface ICustomPluginItem {
   code: string
 }
 
-const demoPluginTpl = `const {addPlugin, copy} = window.$qlUtils
+const demoPluginTpl = `const { addPlugin, copy } = window.$qlUtils
 addPlugin({
   label: '⚠️ Demo Plugin ⚠️',
   props: {
@@ -164,6 +158,9 @@ addPlugin((valRef) => {
       },
     ],
   }
+}, {
+  // If this parameter is passed in, the plug-in can be static (displayed directly in the list without entering text)
+  isStaticPlugin: true,
 })
 `
 
