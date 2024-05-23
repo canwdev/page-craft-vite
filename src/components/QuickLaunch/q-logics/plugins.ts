@@ -4,7 +4,7 @@ import moment from 'moment/moment'
 import {QuickOptionItem} from '@/components/CommonUI/QuickOptions/enum'
 import * as changeCase from 'change-case'
 import {filterLabel} from './utils'
-import {guid} from '@/utils'
+import {demoPluginTpl} from './demo.json'
 
 export type DynamicPlugin = (key: any) => QuickOptionItem
 
@@ -84,18 +84,30 @@ ${code}
     } = {}
   ) => {
     // 区分预制和自定义插件，提升自定义插件刷新性能
-    const dp = isPresetPlugin ? dynamicPlugins.value : customDynamicPlugins.value
-    const sp = isPresetPlugin ? staticPlugins.value : customStaticPlugins.value
+    const addStaticPlugin = (plugin: QuickOptionItem) => {
+      if (isPresetPlugin) {
+        staticPlugins.value.push(plugin)
+      } else {
+        customStaticPlugins.value.push(plugin)
+      }
+    }
+    const addDynamicPlugin = (plugin: DynamicPlugin) => {
+      if (isPresetPlugin) {
+        dynamicPlugins.value.push(plugin)
+      } else {
+        customDynamicPlugins.value.push(plugin)
+      }
+    }
 
     // console.log('[addPlugin]', plugin)
     if (isStaticPlugin && typeof plugin === 'function') {
-      sp.push(plugin(textRef))
+      addStaticPlugin(plugin(textRef))
     }
 
     if (typeof plugin === 'function') {
-      dp.push(plugin)
+      addDynamicPlugin(plugin)
     } else {
-      sp.push(plugin)
+      addStaticPlugin(plugin)
     }
     // 由于update函数使用了防抖，这里可以直接执行
     update()
@@ -135,35 +147,6 @@ export interface ICustomPluginItem {
   code: string
 }
 
-const demoPluginTpl = `const { addPlugin, copy } = window.$qlUtils
-addPlugin({
-  label: '⚠️ Demo Plugin ⚠️',
-  props: {
-    onClick() {
-      copy('Hello world!', true)
-    }
-  }
-})
-addPlugin((valRef) => {
-  return {
-    label: '⚠️ Demo Plugin (Input) ⚠️',
-    children: [
-      {
-        label: '📋 Copy Input Value',
-        props: {
-          onClick: async () => {
-            await copy(valRef.value, true)
-          },
-        },
-      },
-    ],
-  }
-}, {
-  // If this parameter is passed in, the plug-in can be static (displayed directly in the list without entering text)
-  isStaticPlugin: true,
-})
-`
-
 // 自定义插件系统
 export const useQuickLaunchCustomPlugins = (update) => {
   // 自定义插件
@@ -193,14 +176,12 @@ export const useQuickLaunchCustomPlugins = (update) => {
       customPluginsStorage.value.push(editingCustomPlugin.value)
     }
     editingCustomPlugin.value = null
-    loadCustomPlugins()
+    reloadCustomPlugins()
   }
 
   // 使用闭包执行自定义代码
   const evalPluginCode = (code) => {
     try {
-      customStaticPlugins.value = []
-      customDynamicPlugins.value = []
       eval(`;(function () {
 ${code}  
 })()`)
@@ -212,11 +193,13 @@ ${code}
     if (!editingCustomPlugin.value) {
       return
     }
+    customStaticPlugins.value = []
+    customDynamicPlugins.value = []
     evalPluginCode(editingCustomPlugin.value.code)
   }
 
   const {customStaticPlugins, customDynamicPlugins} = usePluginState()
-  const loadCustomPlugins = () => {
+  const reloadCustomPlugins = () => {
     customStaticPlugins.value = []
     customDynamicPlugins.value = []
     customPluginsStorage.value.forEach((p) => {
@@ -229,7 +212,7 @@ ${code}
   }
 
   onMounted(() => {
-    loadCustomPlugins()
+    reloadCustomPlugins()
   })
 
   // 插件管理器
@@ -244,7 +227,7 @@ ${code}
             props: {
               isBack: 1,
               onClick: async () => {
-                loadCustomPlugins()
+                reloadCustomPlugins()
                 await window.$qlUtils.reloadPlugins()
                 window.$message.success('Plugins reloaded!')
               },
@@ -255,13 +238,13 @@ ${code}
             props: {
               isBack: 1,
               onClick: async () => {
-                loadCustomPlugins()
+                reloadCustomPlugins()
                 window.$message.success('Custom plugins reloaded!')
               },
             },
           },
           {
-            label: '➕ Add Plugin',
+            label: '✨ Add Plugin',
             props: {
               onClick: async () => {
                 const name = await window.$mcUtils.showInputPrompt({
@@ -309,20 +292,20 @@ ${code}
                 },
               },
               {
-                label: '❌ Delete all custom plugins',
+                label: '🗑️ Delete all custom plugins',
                 children: [
                   {
-                    label: '✅ Confirm Delete All Custom Plugins',
+                    label: '☑️ Confirm Delete All Custom Plugins',
                     props: {
                       isBack: 2,
                       onClick: () => {
                         customPluginsStorage.value = []
-                        loadCustomPlugins()
+                        reloadCustomPlugins()
                       },
                     },
                   },
                   {
-                    label: `❎ Cancel`,
+                    label: `🔙 Cancel`,
                     props: {
                       isBack: 1,
                     },
@@ -337,7 +320,7 @@ ${code}
               label: '🧩 ' + p.name,
               children: [
                 {
-                  label: `📝 [${p.name}] Edit Plugin Code`,
+                  label: `📝 Edit Code [${p.name}]`,
                   props: {
                     isBack: 2,
                     onClick: () => {
@@ -349,7 +332,7 @@ ${code}
                   },
                 },
                 {
-                  label: `🪶 Rename Plugin`,
+                  label: `✍️ Rename`,
                   props: {
                     isBack: 1,
                     onClick: async () => {
@@ -376,10 +359,10 @@ ${code}
                   },
                 },
                 {
-                  label: '❌ Delete Plugin',
+                  label: '🗑️ Delete',
                   children: [
                     {
-                      label: `✅ Confirm Delete ${p.name}`,
+                      label: `☑️ Confirm Delete [${p.name}]`,
                       props: {
                         isBack: 2,
                         onClick: () => {
@@ -391,7 +374,7 @@ ${code}
                       },
                     },
                     {
-                      label: `❎ Cancel`,
+                      label: `🔙 Cancel`,
                       props: {
                         isBack: 1,
                       },

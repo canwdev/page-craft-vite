@@ -28,7 +28,6 @@ export const useQLogics = (qlOptionsRef, update) => {
   const _handleSearch = (valRef: Ref<string>) => {
     // console.log(valRef.value)
     const val = valRef.value
-
     const filterableOptions = [
       qLogicManage,
       ...customStaticPlugins.value,
