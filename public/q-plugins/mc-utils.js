@@ -48,7 +48,7 @@ if (!window.$mcUtils) {
   addPlugin(
     (valRef) => {
       return {
-        label: '🧰 PageCraft Utils',
+        html: '🧰 <span style="color: #f8312f;">PageCraft Utils</span>',
         children: [
           {
             label: '📋 Copy i18n key',

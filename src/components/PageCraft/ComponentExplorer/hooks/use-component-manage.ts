@@ -114,6 +114,7 @@ export const useComponentManage = (options: Opts) => {
           id,
           title: name,
           path: normalizePath(basePath.value + '/' + folderName),
+          basePath: basePath.value,
         }
       }, 100)
     } finally {
