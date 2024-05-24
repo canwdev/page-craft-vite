@@ -269,18 +269,19 @@ ${code}
             label: '🗃️ Import/Export',
             children: [
               {
-                label: '📥 Import all',
+                label: '📥 Import Plugins',
                 props: {
                   isBack: 1,
                   onClick: async () => {
                     const list = await window.$mcUtils.handleImportJson()
                     customPluginsStorage.value = list || []
                     window.$message.success('Import success!')
+                    reloadCustomPlugins()
                   },
                 },
               },
               {
-                label: '📤 Export all',
+                label: '📤 Export Plugins',
                 props: {
                   onClick: async () => {
                     window.$mcUtils.handleExportFile(
