@@ -421,6 +421,7 @@ export default defineComponent({
       right: 8px;
       top: 50%;
       transform: translateY(-50%);
+      display: flex;
       &:hover {
         color: $primary;
       }

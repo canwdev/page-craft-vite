@@ -270,8 +270,8 @@ const toolboxFilterKeyChange = useDebounceFn(() => {
     </button>
 
     <input
-      class="vp-input"
-      style="flex: 1"
+      class="vp-input font-code"
+      style="flex: 1; line-height: 1"
       v-model="toolboxFilterKey"
       placeholder="Locate Translate Path"
       @input="toolboxFilterKeyChange"

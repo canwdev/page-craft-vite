@@ -12,6 +12,8 @@ import {useBroadcastMessage} from '@/hooks/use-broadcast-messae'
 import {useComponentStorageV2} from '@/components/PageCraft/ComponentExplorer/hooks/use-component-manage'
 import {IComponentExportData} from '@/components/PageCraft/ComponentExplorer/enum'
 import {handleReadSelectedFile} from '@/utils/mc-utils/io'
+import {useStorage} from '@vueuse/core'
+import {StyleEditorKeys} from '@/components/StyleEditor/enum'
 
 export const useMcMain = (options) => {
   const {t: $t} = useI18n()
@@ -102,10 +104,11 @@ export const useMcMain = (options) => {
     sfxFill()
   }
 
+  const variableStyleCode = useStorage(StyleEditorKeys.VARIABLES_STYLE, '')
   const getEntityData = async () => {
     await syncStorageData()
     const html = (await loadCurCompHtml()) || ''
-    const style = await loadCurCompStyle()
+    const style = variableStyleCode.value + (await loadCurCompStyle())
 
     const res: IComponentExportData = {
       name: settingsStore.curCompInStore?.title || '',

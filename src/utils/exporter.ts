@@ -2,6 +2,8 @@ import {sassToCSS} from '@/components/StyleEditor/utils/css'
 import {formatCss, formatHtml} from '@/components/StyleEditor/utils/formater'
 import {IComponentExportData} from '@/components/PageCraft/ComponentExplorer/enum'
 import {handleExportFile, promptGetFileName} from '@/utils/mc-utils/io'
+import {useStorage} from '@vueuse/core'
+import {StyleEditorKeys} from '@/components/StyleEditor/enum'
 
 export const handleExportHtml = async (exportData: IComponentExportData, options?) => {
   const {html, style} = exportData

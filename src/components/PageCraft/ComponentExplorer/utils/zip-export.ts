@@ -33,7 +33,7 @@ export async function exportZip(directoryHandle: FileSystemDirectoryHandle) {
   console.log('[exportZip]', directoryHandle)
   const zip = await zipDirectory(directoryHandle)
   zip.generateAsync({type: 'blob'}).then((blob) => {
-    FileSaver.saveAs(blob, 'archive.zip')
+    FileSaver.saveAs(blob, 'page_craft_all_components_export.zip')
   })
 }
 

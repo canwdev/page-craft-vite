@@ -1,5 +1,12 @@
 # Release Notes
 
+## v1.6.7
+
+- [x] 修复：自定义Plugin刷新时清除之前的自定义插件 bug
+- [x] 优化：插件系统、UI细节优化
+- [x] 修复：PageCraft 导出组件为HTML时如果有scss变量会报错
+- [x] 修复：PageCraft 创建组件后不自动高亮组件卡片
+
 ## v1.6.6
 
 - [x] 修复一些 bug
