@@ -39,7 +39,7 @@ addPlugin(
 addPlugin(
   (valRef) => {
     return {
-      label: '⚡ JavaScript Eval',
+      html: '⚡ <span style="color: #ff822d;">JavaScript Eval</span>',
       props: {
         onClick: async () => {
           await copy(evalCode(valRef.value, true), true)
@@ -55,7 +55,7 @@ addPlugin(
 addPlugin(
   (valRef) => {
     return {
-      label: '⚡ Realtime JavaScript Eval',
+      html: '⚡ <span style="color: #ff822d;">Realtime JavaScript Eval</span>',
       children: [
         {
           label: '',
