@@ -117,6 +117,7 @@ const _inputProp = {
   },
 }
 
+// TODO: 重构
 export const elementCustomPropsMap = {
   a: {
     getCustomProps: (el) => {
@@ -153,11 +154,40 @@ export const elementCustomPropsMap = {
   },
   input: _inputProp,
   textarea: _inputProp,
+  video: {
+    isHideHTMLEdit: true,
+    getCustomProps: (el) => {
+      return {
+        src: el.getAttribute('src'),
+        poster: el.getAttribute('poster'),
+      }
+    },
+    customFormItems: [
+      {
+        label: 'src',
+        key: 'src',
+        type: CustomFormInputType.TEXT,
+      },
+      {
+        label: 'poster',
+        key: 'poster',
+        type: CustomFormInputType.TEXT,
+      },
+    ],
+    updateElement(el, formData: ElementEditForm) {
+      autoSetAttr(el, 'src', formData.customProps.src)
+      autoSetAttr(el, 'poster', formData.customProps.poster)
+    },
+  },
 }
 
 // 生成所有具有src属性的标签的自定义属性
 tagsHasSrcAttr.forEach((tag) => {
-  elementCustomPropsMap[tag] = srcProp
+  if (elementCustomPropsMap[tag]) {
+    elementCustomPropsMap[tag] = {...elementCustomPropsMap[tag]}
+  } else {
+    elementCustomPropsMap[tag] = {...srcProp}
+  }
 })
 
 export const formatForm = (el: HTMLElement | null): ElementEditForm => {
@@ -173,7 +203,10 @@ export const formatForm = (el: HTMLElement | null): ElementEditForm => {
   }
 }
 
-// get element specific form items
+/**
+ * 获取元素对应的表单内容
+ * @param el
+ */
 export const getCustomFormItems = (el: HTMLElement | null): CustomFormItem[] => {
   if (!el) {
     return []
