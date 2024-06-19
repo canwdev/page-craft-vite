@@ -1,20 +1,9 @@
 import {autoSetAttr, tagsHasSrcAttr} from '@/components/PageCraft/MainPlayground/utils/dom'
 import {formatSelectOptions} from '@/utils'
+import {AutoFormItemType, MixedFormItems} from '@/components/CommonUI/AutoFormNaive/enum'
 
-export enum CustomFormInputType {
-  TEXT = 'text',
-  SWITCH = 'switch',
-  SELECT = 'select',
-}
-
-export type CustomFormItem = {
-  label: string
-  key: string
-  type: CustomFormInputType
-  options?: []
-}
-
-export type ElementEditForm = {
+// 元素编辑中的表单数据
+export interface ElementEditData {
   tagName: string
   className: string
   innerHTML: string
@@ -22,35 +11,45 @@ export type ElementEditForm = {
   customProps: any
 }
 
-const srcProp = {
+export interface IElCustomProp {
   // 获取表单自定义属性，放置于 `customProps` 对象内
+  getCustomProps: (el: HTMLElement) => any
+  // 更新元素的函数
+  updateElement: (el: HTMLElement, formData: ElementEditData) => any
+  // 表单UI属性
+  customFormItems: MixedFormItems[]
+}
+
+export interface IElCustomPropMap {
+  [key: string]: IElCustomProp
+}
+
+const srcProp: IElCustomProp = {
   getCustomProps: (el) => {
     return {
       src: el.getAttribute('src'),
       alt: el.getAttribute('alt'),
     }
   },
-  // 表单UI属性
   customFormItems: [
     {
       label: 'src',
       key: 'src',
-      type: CustomFormInputType.TEXT,
+      type: AutoFormItemType.INPUT,
     },
     {
       label: 'alt',
       key: 'alt',
-      type: CustomFormInputType.TEXT,
+      type: AutoFormItemType.INPUT,
     },
   ],
-  // 更新元素的函数
-  updateElement(el, formData: ElementEditForm) {
+  updateElement(el, formData) {
     autoSetAttr(el, 'src', formData.customProps.src)
     autoSetAttr(el, 'alt', formData.customProps.alt)
   },
 }
 
-const _inputProp = {
+const _inputProp: IElCustomProp = {
   getCustomProps: (el) => {
     return {
       type: el.getAttribute('type'),
@@ -63,7 +62,7 @@ const _inputProp = {
     {
       label: 'type (for <input/> only)',
       key: 'type',
-      type: CustomFormInputType.SELECT,
+      type: AutoFormItemType.SELECT,
       options: formatSelectOptions([
         'text',
         'email',
@@ -94,20 +93,20 @@ const _inputProp = {
     {
       label: 'placeholder',
       key: 'placeholder',
-      type: CustomFormInputType.TEXT,
+      type: AutoFormItemType.INPUT,
     },
     {
       label: 'disabled',
       key: 'disabled',
-      type: CustomFormInputType.SWITCH,
+      type: AutoFormItemType.SWITCH,
     },
     {
       label: 'readonly',
       key: 'readonly',
-      type: CustomFormInputType.SWITCH,
+      type: AutoFormItemType.SWITCH,
     },
   ],
-  updateElement(el, formData: ElementEditForm) {
+  updateElement(el, formData: ElementEditData) {
     if (el.tagName === 'INPUT') {
       autoSetAttr(el, 'type', formData.customProps.type)
     }
@@ -118,7 +117,7 @@ const _inputProp = {
 }
 
 // TODO: 重构
-export const elementCustomPropsMap = {
+export const elementCustomPropsMap: IElCustomPropMap = {
   a: {
     getCustomProps: (el) => {
       return {
@@ -131,22 +130,22 @@ export const elementCustomPropsMap = {
       {
         label: 'href',
         key: 'href',
-        type: CustomFormInputType.TEXT,
+        type: AutoFormItemType.INPUT,
       },
       {
         label: 'target',
         key: 'target',
-        type: CustomFormInputType.SELECT,
+        type: AutoFormItemType.SELECT,
         options: formatSelectOptions(['', '_blank', '_self', '_parent', '_top']),
       },
       {
         label: 'rel',
         key: 'rel',
-        type: CustomFormInputType.SELECT,
+        type: AutoFormItemType.SELECT,
         options: formatSelectOptions(['', 'nofollow noopener noreferrer']),
       },
     ],
-    updateElement(el, formData: ElementEditForm) {
+    updateElement(el, formData: ElementEditData) {
       autoSetAttr(el, 'href', formData.customProps.href)
       autoSetAttr(el, 'target', formData.customProps.target)
       autoSetAttr(el, 'rel', formData.customProps.rel)
@@ -155,7 +154,6 @@ export const elementCustomPropsMap = {
   input: _inputProp,
   textarea: _inputProp,
   video: {
-    isHideHTMLEdit: true,
     getCustomProps: (el) => {
       return {
         src: el.getAttribute('src'),
@@ -166,15 +164,15 @@ export const elementCustomPropsMap = {
       {
         label: 'src',
         key: 'src',
-        type: CustomFormInputType.TEXT,
+        type: AutoFormItemType.INPUT,
       },
       {
         label: 'poster',
         key: 'poster',
-        type: CustomFormInputType.TEXT,
+        type: AutoFormItemType.INPUT,
       },
     ],
-    updateElement(el, formData: ElementEditForm) {
+    updateElement(el, formData: ElementEditData) {
       autoSetAttr(el, 'src', formData.customProps.src)
       autoSetAttr(el, 'poster', formData.customProps.poster)
     },
@@ -190,7 +188,7 @@ tagsHasSrcAttr.forEach((tag) => {
   }
 })
 
-export const formatForm = (el: HTMLElement | null): ElementEditForm => {
+export const formatForm = (el: HTMLElement | null): ElementEditData => {
   const options: any = el || {}
   const customProps = el && elementCustomPropsMap[el?.tagName.toLowerCase()]
   return {
@@ -205,9 +203,9 @@ export const formatForm = (el: HTMLElement | null): ElementEditForm => {
 
 /**
  * 获取元素对应的表单内容
- * @param el
+ * @param el HTML DOM元素
  */
-export const getCustomFormItems = (el: HTMLElement | null): CustomFormItem[] => {
+export const getCustomFormItems = (el: HTMLElement | null): MixedFormItems[] => {
   if (!el) {
     return []
   }

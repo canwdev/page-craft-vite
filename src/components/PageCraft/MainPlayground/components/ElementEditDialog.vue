@@ -2,29 +2,16 @@
 import {computed, defineComponent, PropType, ref} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {FormInst, FormRules} from 'naive-ui'
-import {
-  CustomFormInputType,
-  CustomFormItem,
-  formatForm,
-  getCustomFormItems,
-} from '../utils/element-edit'
+import {formatForm, getCustomFormItems} from '../utils/element-edit'
 import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
 import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
-import AdvancedInput from '@/components/CommonUI/OptionUI/Tools/AdvancedInput.vue'
-import AutoFormNaiveTest from '@/components/CommonUI/AutoFormNaive/AutoFormNaiveTest.vue'
+import {AutoFormItemType, MixedFormItems} from '@/components/CommonUI/AutoFormNaive/enum'
 import AutoFormNaive from '@/components/CommonUI/AutoFormNaive/index.vue'
-import {
-  AutoFormItemType,
-  AutoFormSchema,
-  MixedFormItems,
-} from '@/components/CommonUI/AutoFormNaive/enum'
 
 export default defineComponent({
   name: 'ElementEditDialog',
   components: {
     AutoFormNaive,
-    AutoFormNaiveTest,
-    AdvancedInput,
     ViewPortWindow,
     VueMonaco,
   },
@@ -44,7 +31,7 @@ export default defineComponent({
   },
   emits: ['onSave', 'update:visible'],
   setup(props, {emit}) {
-    const {isRoot} = toRefs(props)
+    const {isRoot, editingNode} = toRefs(props)
     const mVisible = useModelWrapper(props, emit, 'visible')
     const isEditInnerHTML = ref(true)
 
@@ -53,20 +40,26 @@ export default defineComponent({
     const formRules = ref<FormRules>({})
 
     // add element specific form items
-    const customFormItems = ref<CustomFormItem[]>([])
+    const customFormItems = ref<MixedFormItems[]>([])
 
     watch(mVisible, (val) => {
-      if (val) {
-        dataForm.value = formatForm(props.editingNode)
-        customFormItems.value = getCustomFormItems(props.editingNode)
-        if (isRoot.value) {
-          isEditInnerHTML.value = true
-        }
-      } else {
+      if (!val) {
         dataForm.value = formatForm(null)
         customFormItems.value = []
       }
     })
+
+    watch(editingNode, (val) => {
+      initEditingNode()
+    })
+
+    const initEditingNode = () => {
+      dataForm.value = formatForm(editingNode.value)
+      customFormItems.value = getCustomFormItems(editingNode.value)
+      if (isRoot.value) {
+        isEditInnerHTML.value = true
+      }
+    }
 
     const vueMonacoRef = ref()
 
@@ -76,7 +69,7 @@ export default defineComponent({
 
     const handleSubmit = () => {
       emit('onSave', {
-        el: props.editingNode,
+        el: editingNode.value,
         dataForm,
       })
     }
@@ -95,6 +88,7 @@ export default defineComponent({
 
       return [
         ...commonItems,
+        ...customFormItems.value,
         isEditInnerHTML.value
           ? {
               type: AutoFormItemType.INPUT,
@@ -119,8 +113,6 @@ export default defineComponent({
       vueMonacoRef,
       handleSubmit,
       handleCancel,
-      customFormItems,
-      CustomFormInputType,
       isEditInnerHTML,
     }
   },
