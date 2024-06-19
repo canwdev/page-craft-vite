@@ -3,7 +3,7 @@
 ## v1.6.8
 
 - [x] optimize: 标签属性编辑优化
-- [x] add: Naive UI 表单生成组件
+- [x] add: 表单生成组件(Naive UI)
 
 ## v1.6.7
 

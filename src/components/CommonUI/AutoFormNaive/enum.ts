@@ -7,6 +7,8 @@ export type OptionItem = {
 
 export enum AutoFormItemType {
   INPUT = 'input',
+  ADVANCED_INPUT = 'advanced_input',
+  MONACO_EDITOR = 'monaco_editor',
   INPUT_NUMBER = 'input_number',
   SELECT = 'select',
   COLOR_PICKER = 'color_picker',

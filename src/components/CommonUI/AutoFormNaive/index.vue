@@ -28,7 +28,7 @@ export default defineComponent({
           emit('onInvalidForm')
           return
         }
-        console.log('onSubmit', formSchema.value.model)
+        // console.log('onSubmit', formSchema.value.model)
         emit('onSubmit', formSchema.value.model)
       })
     }

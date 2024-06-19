@@ -113,7 +113,7 @@ export default defineComponent({
       size="small"
     />
 
-    <!--      高级的数字输入框-->
+    <!-- 高级的数字输入框-->
     <AdvancedNumberInput
       v-else-if="item.type === StOptionType.INPUT_NUMBER"
       v-model="dynamicValue"

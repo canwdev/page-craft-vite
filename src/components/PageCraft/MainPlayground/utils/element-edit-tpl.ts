@@ -1,0 +1,234 @@
+// 通用表单item模板
+import {
+  AutoFormItem,
+  AutoFormItemType,
+  MixedFormItems,
+} from '@/components/CommonUI/AutoFormNaive/enum'
+import {formatSelectOptions} from '@/utils'
+import {autoSetAttr} from '@/components/PageCraft/MainPlayground/utils/dom'
+import {IElCustomProp} from '@/components/PageCraft/MainPlayground/utils/element-edit'
+
+export const tplFormItem: {[key: string]: AutoFormItem} = {
+  src: {
+    label: 'src',
+    key: 'src',
+    type: AutoFormItemType.ADVANCED_INPUT,
+    props: {
+      clearable: true,
+    },
+  },
+  alt: {
+    label: 'alt',
+    key: 'alt',
+    type: AutoFormItemType.INPUT,
+    props: {
+      clearable: true,
+    },
+  },
+  href: {
+    label: 'href',
+    key: 'href',
+    type: AutoFormItemType.ADVANCED_INPUT,
+    props: {
+      clearable: true,
+    },
+  },
+  target: {
+    label: 'target',
+    key: 'target',
+    type: AutoFormItemType.SELECT,
+    options: formatSelectOptions(['_blank', '_self', '_parent', '_top']),
+    props: {
+      clearable: true,
+    },
+  },
+  rel: {
+    label: 'rel',
+    key: 'rel',
+    type: AutoFormItemType.SELECT,
+    options: formatSelectOptions(['nofollow noopener noreferrer', 'nofollow']),
+    props: {
+      clearable: true,
+    },
+  },
+  poster: {
+    label: 'poster',
+    key: 'poster',
+    type: AutoFormItemType.ADVANCED_INPUT,
+    props: {
+      clearable: true,
+    },
+  },
+  placeholder: {
+    label: 'placeholder',
+    key: 'placeholder',
+    type: AutoFormItemType.INPUT,
+    props: {
+      clearable: true,
+      type: 'textarea',
+      rows: 1,
+    },
+  },
+  inputType: {
+    label: 'type',
+    key: 'type',
+    type: AutoFormItemType.SELECT,
+    options: formatSelectOptions([
+      'text',
+      'email',
+      'number',
+      'password',
+      'tel',
+      'button',
+      'submit',
+      'checkbox',
+      'radio',
+      'color',
+      'date',
+      'datetime',
+      'time',
+      'datetime-local',
+      'month',
+      'week',
+      'file',
+      'image',
+      'range',
+      'reset',
+      'search',
+      'url',
+      'hidden',
+      '',
+    ]),
+    props: {
+      filterable: true,
+    },
+  },
+  frameborder: {
+    label: 'frameborder',
+    key: 'frameborder',
+    type: AutoFormItemType.SELECT,
+    options: formatSelectOptions(['0']),
+    props: {
+      clearable: true,
+    },
+  },
+  disabled: {
+    label: 'disabled',
+    key: 'disabled',
+    type: AutoFormItemType.SWITCH,
+  },
+  readonly: {
+    label: 'readonly',
+    key: 'readonly',
+    type: AutoFormItemType.SWITCH,
+  },
+  /**
+   * HTML 全局属性
+   * https://www.runoob.com/tags/ref-standardattributes.html
+   */
+  title: {
+    label: 'title',
+    key: 'title',
+    type: AutoFormItemType.INPUT,
+    props: {
+      clearable: true,
+      type: 'textarea',
+      rows: 1,
+    },
+  },
+  tabindex: {
+    label: 'tabindex',
+    key: 'tabindex',
+    type: AutoFormItemType.INPUT_NUMBER,
+  },
+  id: {
+    label: 'id',
+    key: 'id',
+    type: AutoFormItemType.INPUT,
+    props: {
+      clearable: true,
+    },
+  },
+  className: {
+    label: 'class',
+    key: 'class',
+    type: AutoFormItemType.INPUT,
+    props: {
+      clearable: true,
+    },
+  },
+  dir: {
+    label: 'dir',
+    key: 'dir',
+    type: AutoFormItemType.SELECT,
+    options: formatSelectOptions(['ltr', 'rtl', 'auto']),
+    props: {
+      clearable: true,
+    },
+  },
+  style: {
+    label: 'style',
+    key: 'style',
+    type: AutoFormItemType.INPUT,
+    props: {
+      clearable: true,
+      type: 'textarea',
+      rows: 1,
+    },
+  },
+}
+
+// 自动给key添加前缀
+export const mapCustomPropsKeys = (item: MixedFormItems) => {
+  if ('cols' in item) {
+    item.children = item.children.map(mapCustomPropsKeys)
+    return item
+  }
+  if (Array.isArray(item)) {
+    item = item.map(mapCustomPropsKeys)
+    return item
+  }
+  return {
+    ...item,
+    key: `customProps.${item.key}`,
+  }
+}
+
+// 根据表单数据生成 IElCustomProp
+export const genProp = (items: MixedFormItems[] = []): IElCustomProp => {
+  // console.log('[genProp]', items)
+  items = [
+    tplFormItem.className,
+    ...items,
+    // 添加通用属性
+    [tplFormItem.title, tplFormItem.id, tplFormItem.dir],
+    tplFormItem.style,
+  ]
+  const attrKeys: string[] = []
+  const traverseItem = (item: MixedFormItems) => {
+    if ('cols' in item) {
+      item.children.forEach((i) => traverseItem(i))
+    } else if (Array.isArray(item)) {
+      item.forEach((i) => traverseItem(i))
+    } else {
+      attrKeys.push(item.key)
+    }
+  }
+  items.forEach(traverseItem)
+  console.log(attrKeys)
+  return {
+    getCustomProps: (el) => {
+      const obj = {}
+      attrKeys.forEach((key) => {
+        obj[key] = el.getAttribute(key)
+      })
+      return obj
+    },
+    updateElement(el, formData) {
+      attrKeys.forEach((key) => {
+        autoSetAttr(el, key, formData.customProps[key])
+      })
+    },
+    customFormItems: items,
+  }
+}

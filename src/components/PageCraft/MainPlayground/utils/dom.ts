@@ -17,6 +17,7 @@ export const createOrFindStyleNode = (id, cssText?) => {
   return styleNode
 }
 
+// 有src属性的HTML标签
 export const tagsHasSrcAttr = [
   'img',
   'iframe',

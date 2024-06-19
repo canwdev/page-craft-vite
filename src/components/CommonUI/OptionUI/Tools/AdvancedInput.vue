@@ -16,7 +16,7 @@ const mValue = useVModel(props, 'modelValue', emit)
 
 <template>
   <div class="advanced-input-wrap">
-    <textarea class="vp-input" type="textarea" v-model="mValue" placeholder="" rows="2"></textarea>
+    <n-input v-model:value="mValue" placeholder="" rows="2" v-bind="$attrs"></n-input>
     <div class="action-row" v-if="showTools">
       <button class="vp-button" @click="mValue = encodeURI(mValue)">encodeURI</button>
       <button class="vp-button" @click="mValue = decodeURI(mValue)">decodeURI</button>
@@ -36,6 +36,7 @@ const mValue = useVModel(props, 'modelValue', emit)
     flex-wrap: wrap;
     gap: 4px;
     justify-content: flex-end;
+    margin-top: 4px;
     .vp-button {
       font-size: 12px;
       padding: 4px;

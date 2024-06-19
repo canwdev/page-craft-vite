@@ -5,10 +5,12 @@ import _get from 'lodash/get'
 import _set from 'lodash/set'
 import AdvancedNumberInput from '@/components/CommonUI/OptionUI/Tools/AdvancedNumberInput.vue'
 import VueRender from '@/components/CommonUI/OptionUI/Tools/VueRender.vue'
+import AdvancedInput from '@/components/CommonUI/OptionUI/Tools/AdvancedInput.vue'
+import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
 
 export default defineComponent({
   name: 'AutoFormItem',
-  components: {AdvancedNumberInput, VueRender},
+  components: {VueMonaco, AdvancedInput, AdvancedNumberInput, VueRender},
   props: {
     item: {
       type: Object as PropType<AutoFormItem>,
@@ -73,6 +75,23 @@ export default defineComponent({
       :placeholder="item.placeholder"
       :disabled="item.disabled"
       size="small"
+      v-bind="item.props"
+    />
+    <AdvancedInput
+      v-if="item.type === AutoFormItemType.ADVANCED_INPUT"
+      v-model="dynamicValue"
+      :placeholder="item.placeholder"
+      :disabled="item.disabled"
+      size="small"
+      type="textarea"
+      v-bind="item.props"
+    />
+    <VueMonaco
+      v-if="item.type === AutoFormItemType.MONACO_EDITOR"
+      v-model="dynamicValue"
+      :placeholder="item.placeholder"
+      :disabled="item.disabled"
+      show-line-numbers
       v-bind="item.props"
     />
     <AdvancedNumberInput
