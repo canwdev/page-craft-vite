@@ -36,13 +36,26 @@ export const elCustomPropsMap: IElCustomPropMap = {
   a: genProp([tplFormItem.href, [tplFormItem.target, tplFormItem.rel]]),
   input: genProp([
     tplFormItem.placeholder,
-    [tplFormItem.inputType, tplFormItem.disabled, tplFormItem.readonly],
+    [
+      tplFormItem.inputType,
+      tplFormItem.name,
+      tplFormItem.required,
+      tplFormItem.disabled,
+      tplFormItem.readonly,
+    ],
+    [tplFormItem.minlength, tplFormItem.maxlength, tplFormItem.size],
   ]),
-  textarea: genProp([tplFormItem.placeholder, [tplFormItem.disabled, tplFormItem.readonly]]),
+  textarea: genProp([
+    tplFormItem.inputType,
+    tplFormItem.name,
+    tplFormItem.required,
+    tplFormItem.disabled,
+    tplFormItem.readonly,
+  ]),
   button: genProp([[tplFormItem.disabled, tplFormItem.tabindex]]),
   video: genProp([tplFormItem.src, tplFormItem.poster]),
   img: genProp([tplFormItem.src, tplFormItem.alt]),
-  iframe: genProp([tplFormItem.src, tplFormItem.frameborder]),
+  iframe: genProp([tplFormItem.src, tplFormItem.frameborder, tplFormItem.srcdoc]),
 }
 
 const defaultCustomProps = genProp()

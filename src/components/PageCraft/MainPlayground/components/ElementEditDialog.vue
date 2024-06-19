@@ -79,9 +79,8 @@ export default defineComponent({
     }
 
     const formItems = computed((): MixedFormItems[] => {
-      if (isEditInnerHTML.value) {
+      if (isRoot.value) {
         return [
-          ...customFormItems.value,
           {
             type: AutoFormItemType.MONACO_EDITOR,
             key: 'innerHTML',
@@ -89,11 +88,21 @@ export default defineComponent({
           },
         ]
       }
+      if (isEditInnerHTML.value) {
+        return [
+          ...customFormItems.value,
+          {
+            label: 'innerHTML',
+            key: 'innerHTML',
+            type: AutoFormItemType.MONACO_EDITOR,
+          },
+        ]
+      }
       return [
         {
-          type: AutoFormItemType.MONACO_EDITOR,
-          key: 'outerHTML',
           label: 'outerHTML',
+          key: 'outerHTML',
+          type: AutoFormItemType.MONACO_EDITOR,
         },
       ]
     })
@@ -141,6 +150,7 @@ export default defineComponent({
       @onSubmit="handleSubmit"
       class="element-edit-form font-code"
     >
+      {{ dataForm }}
       <div class="action-row vp-bg">
         <n-switch
           v-model:value="isEditInnerHTML"

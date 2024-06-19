@@ -8,6 +8,30 @@ import {formatSelectOptions} from '@/utils'
 import {autoSetAttr} from '@/components/PageCraft/MainPlayground/utils/dom'
 import {IElCustomProp} from '@/components/PageCraft/MainPlayground/utils/element-edit'
 
+const genInputFormItem = (key: string, rows = 0) => {
+  return {
+    label: key,
+    key: key,
+    type: AutoFormItemType.INPUT,
+    props: {
+      clearable: true,
+      type: rows > 0 ? 'textarea' : undefined,
+      rows: rows,
+    },
+  }
+}
+
+const genSwitchFormItem = (key: string) => {
+  return {
+    label: key,
+    key: key,
+    type: AutoFormItemType.SWITCH,
+    props: {
+      checkedValue: 'true',
+    },
+  }
+}
+
 export const tplFormItem: {[key: string]: AutoFormItem} = {
   src: {
     label: 'src',
@@ -17,14 +41,7 @@ export const tplFormItem: {[key: string]: AutoFormItem} = {
       clearable: true,
     },
   },
-  alt: {
-    label: 'alt',
-    key: 'alt',
-    type: AutoFormItemType.INPUT,
-    props: {
-      clearable: true,
-    },
-  },
+  alt: genInputFormItem('alt'),
   href: {
     label: 'href',
     key: 'href',
@@ -59,16 +76,9 @@ export const tplFormItem: {[key: string]: AutoFormItem} = {
       clearable: true,
     },
   },
-  placeholder: {
-    label: 'placeholder',
-    key: 'placeholder',
-    type: AutoFormItemType.INPUT,
-    props: {
-      clearable: true,
-      type: 'textarea',
-      rows: 1,
-    },
-  },
+  placeholder: genInputFormItem('placeholder', 1),
+  name: genInputFormItem('name'),
+  // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input
   inputType: {
     label: 'type',
     key: 'type',
@@ -97,10 +107,10 @@ export const tplFormItem: {[key: string]: AutoFormItem} = {
       'search',
       'url',
       'hidden',
-      '',
     ]),
     props: {
       filterable: true,
+      clearable: true,
     },
   },
   frameborder: {
@@ -112,51 +122,37 @@ export const tplFormItem: {[key: string]: AutoFormItem} = {
       clearable: true,
     },
   },
-  disabled: {
-    label: 'disabled',
-    key: 'disabled',
-    type: AutoFormItemType.SWITCH,
+  srcdoc: genInputFormItem('srcdoc', 2),
+  required: genSwitchFormItem('required'),
+  disabled: genSwitchFormItem('disabled'),
+  readonly: genSwitchFormItem('readonly'),
+  minlength: {
+    label: 'minlength',
+    key: 'minlength',
+    type: AutoFormItemType.INPUT_NUMBER,
   },
-  readonly: {
-    label: 'readonly',
-    key: 'readonly',
-    type: AutoFormItemType.SWITCH,
+  maxlength: {
+    label: 'maxlength',
+    key: 'maxlength',
+    type: AutoFormItemType.INPUT_NUMBER,
+  },
+  size: {
+    label: 'size',
+    key: 'size',
+    type: AutoFormItemType.INPUT_NUMBER,
   },
   /**
    * HTML 全局属性
    * https://www.runoob.com/tags/ref-standardattributes.html
    */
-  title: {
-    label: 'title',
-    key: 'title',
-    type: AutoFormItemType.INPUT,
-    props: {
-      clearable: true,
-      type: 'textarea',
-      rows: 1,
-    },
-  },
+  title: genInputFormItem('title', 1),
   tabindex: {
     label: 'tabindex',
     key: 'tabindex',
     type: AutoFormItemType.INPUT_NUMBER,
   },
-  id: {
-    label: 'id',
-    key: 'id',
-    type: AutoFormItemType.INPUT,
-    props: {
-      clearable: true,
-    },
-  },
-  className: {
-    label: 'class',
-    key: 'class',
-    type: AutoFormItemType.INPUT,
-    props: {
-      clearable: true,
-    },
-  },
+  id: genInputFormItem('id'),
+  className: genInputFormItem('class'),
   dir: {
     label: 'dir',
     key: 'dir',
@@ -166,16 +162,7 @@ export const tplFormItem: {[key: string]: AutoFormItem} = {
       clearable: true,
     },
   },
-  style: {
-    label: 'style',
-    key: 'style',
-    type: AutoFormItemType.INPUT,
-    props: {
-      clearable: true,
-      type: 'textarea',
-      rows: 1,
-    },
-  },
+  style: genInputFormItem('style', 1),
 }
 
 // 自动给key添加前缀
@@ -215,7 +202,7 @@ export const genProp = (items: MixedFormItems[] = []): IElCustomProp => {
     }
   }
   items.forEach(traverseItem)
-  console.log(attrKeys)
+  // console.log(attrKeys)
   return {
     getCustomProps: (el) => {
       const obj = {}
