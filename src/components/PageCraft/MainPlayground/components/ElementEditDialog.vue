@@ -150,7 +150,6 @@ export default defineComponent({
       @onSubmit="handleSubmit"
       class="element-edit-form font-code"
     >
-      {{ dataForm }}
       <div class="action-row vp-bg">
         <n-switch
           v-model:value="isEditInnerHTML"
@@ -198,6 +197,7 @@ export default defineComponent({
     z-index: 100;
     gap: 8px;
     flex-wrap: wrap;
+    align-items: center;
   }
 }
 </style>

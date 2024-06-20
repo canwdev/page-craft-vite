@@ -126,21 +126,6 @@ export const tplFormItem: {[key: string]: AutoFormItem} = {
   required: genSwitchFormItem('required'),
   disabled: genSwitchFormItem('disabled'),
   readonly: genSwitchFormItem('readonly'),
-  minlength: {
-    label: 'minlength',
-    key: 'minlength',
-    type: AutoFormItemType.INPUT_NUMBER,
-  },
-  maxlength: {
-    label: 'maxlength',
-    key: 'maxlength',
-    type: AutoFormItemType.INPUT_NUMBER,
-  },
-  size: {
-    label: 'size',
-    key: 'size',
-    type: AutoFormItemType.INPUT_NUMBER,
-  },
   /**
    * HTML 全局属性
    * https://www.runoob.com/tags/ref-standardattributes.html
