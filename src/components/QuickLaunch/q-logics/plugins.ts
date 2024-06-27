@@ -321,7 +321,7 @@ ${code}
               label: '🧩 ' + p.name,
               children: [
                 {
-                  label: `📝 Edit Code [${p.name}]`,
+                  label: `📝 Edit Code`,
                   props: {
                     isBack: 2,
                     onClick: () => {
@@ -360,10 +360,10 @@ ${code}
                   },
                 },
                 {
-                  label: '🗑️ Delete',
+                  label: `🗑️ Delete [${p.name}]`,
                   children: [
                     {
-                      label: `☑️ Confirm Delete [${p.name}]`,
+                      label: `☑️ Confirm Delete`,
                       props: {
                         isBack: 2,
                         onClick: () => {
