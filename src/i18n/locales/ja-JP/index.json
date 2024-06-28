@@ -49,7 +49,10 @@
     "files_mode": "ファイルモード",
     "field": "フィールド",
     "system": "システム",
-    "common": "ユニバーサル"
+    "common": "ユニバーサル",
+    "page_craft": "ページクラフト",
+    "toolbox": "工具箱",
+    "code": "コード"
   },
   "actions": {
     "cancel": "キャンセル",

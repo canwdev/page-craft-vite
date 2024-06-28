@@ -16,7 +16,7 @@ export default defineComponent({
     IframeBrowser,
     QuickLaunchWindow,
     SystemSettings: defineAsyncComponent(
-      () => import('@/components/PageCraft/Settings/SystemSettings.vue')
+      () => import('@/components/SystemSettings/SystemSettings.vue')
     ),
     DialogTextTransformer,
     StylusToolsDialog: defineAsyncComponent(

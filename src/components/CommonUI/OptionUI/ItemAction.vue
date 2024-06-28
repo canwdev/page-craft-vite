@@ -63,16 +63,21 @@ export default defineComponent({
 
 <template>
   <n-space class="option-item-action" size="small" align="center">
-    <n-switch v-if="item.type === StOptionType.SWITCH" v-model:value="dynamicValue" />
+    <n-switch
+      v-if="item.type === StOptionType.SWITCH"
+      v-model:value="dynamicValue"
+      v-bind="item.props"
+    />
 
     <RectSwitch
       v-else-if="item.type === StOptionType.MULTIPLE_SWITCH"
       :options="item.selectOptions"
       v-model="dynamicValue"
+      v-bind="item.props"
     />
 
     <div class="option-slider-wrap" v-else-if="item.type === StOptionType.SLIDER">
-      <n-slider class="option-slider" v-model:value="dynamicValue" />
+      <n-slider class="option-slider" v-model:value="dynamicValue" v-bind="item.props" />
     </div>
 
     <n-select
@@ -83,6 +88,7 @@ export default defineComponent({
       value-field="value"
       label-field="label"
       size="small"
+      v-bind="item.props"
     />
 
     <n-input
@@ -93,6 +99,7 @@ export default defineComponent({
       type="text"
       clearable
       :placeholder="item.placeholder || ''"
+      v-bind="item.props"
     />
 
     <n-color-picker
@@ -104,6 +111,7 @@ export default defineComponent({
       :show-alpha="false"
       :actions="['clear']"
       :modes="['hex']"
+      v-bind="item.props"
     />
 
     <n-dynamic-tags
@@ -111,6 +119,7 @@ export default defineComponent({
       v-else-if="item.type === StOptionType.DYNAMIC_TAGS"
       v-model:value="dynamicValue"
       size="small"
+      v-bind="item.props"
     />
 
     <!-- 高级的数字输入框-->
@@ -124,6 +133,7 @@ export default defineComponent({
       :parse="item.parseFn"
       :marks="item.marks"
       :disabled="item.disabled"
+      v-bind="item.props"
     />
 
     <VueRender v-if="item.actionRender" :render-fn="item.actionRender" />

@@ -51,8 +51,8 @@ export default defineComponent({
     allow-maximum
   >
     <template #titleBarLeft>
-      <img src="@/assets/textures/enchanted_book.png" alt="icon" />
-      Quick Launch (alt+q)
+      <img src="@/assets/textures/crafting_table_top.png" alt="icon" />
+      PageCraft {{ $t('common.toolbox') }} (alt+q)
     </template>
 
     <QuickLaunch ref="qlRef" />

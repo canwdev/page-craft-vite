@@ -21,7 +21,7 @@ const mVisible = useVModel(props, 'visible', emit)
     wid="iframe_browser"
     allow-maximum
   >
-    <template #titleBarLeft>🗃️ File Explorer</template>
+    <template #titleBarLeft>🗃️ {{ $t('common.file_explorer') }}</template>
     <FileManager v-if="mVisible" />
   </ViewPortWindow>
 </template>

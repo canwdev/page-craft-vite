@@ -8,11 +8,12 @@ import {ldThemeOptions} from '@/enum/settings'
 import {NSpace, NSwitch, NButton} from 'naive-ui'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {Settings20Filled} from '@vicons/fluent'
-import {useCommonSettings} from '@/components/PageCraft/Settings/use-common-settings'
+import {useCommonSettings} from '@/components/SystemSettings/use-common-settings'
 import {useThemeOptions} from '@/components/CommonUI/ViewPortWindow/utils/use-theme'
 import {formatSiteTitle} from '@/router/router-utils'
 import LanguageChooser from '@/i18n/LanguageChooser.vue'
 import {useMainStore} from '@/store/main'
+import {useAiSettings} from '@/components/SystemSettings/use-ai-settings'
 
 const getWallpaperText = () => {
   const list = [{label: 'Bing', url: 'https://api.dujin.org/bing/1920.php'}]
@@ -42,6 +43,7 @@ export default defineComponent({
     const mainStore = useMainStore()
 
     const {commonSettingsOptions} = useCommonSettings()
+    const {aiSettingsOptions} = useAiSettings()
     const {themeOptions} = useThemeOptions()
 
     const optionList = computed((): StOptionItem[] => {
@@ -112,6 +114,7 @@ export default defineComponent({
           ],
         },
         ...commonSettingsOptions.value,
+        ...aiSettingsOptions.value,
         {
           label: $t('common.system'),
           key: 'system',

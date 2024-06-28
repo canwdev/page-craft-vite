@@ -1,5 +1,5 @@
 import {createRouter, createWebHashHistory} from 'vue-router'
-import WelcomePage from '@/views/WelcomePage.vue'
+import WelcomePage from '@/views/HomePage.vue'
 import CraftPage from '@/views/CraftPage.vue'
 import {useSettingsStore} from '@/store/settings'
 import i18n from '@/i18n/index'
@@ -74,11 +74,11 @@ let routes = [
         },
       },
       {
-        path: 'explorer',
-        name: 'FileExplorer',
-        component: () => import('@/components/FileManager/FileManagerWindow.vue'),
+        path: 'dev',
+        name: 'DevPage',
+        component: () => import('@/views/DevPage.vue'),
         meta: {
-          title: '🗃️ File Explorer',
+          title: `Dev Page`,
         },
       },
     ],

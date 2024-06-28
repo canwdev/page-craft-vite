@@ -181,7 +181,7 @@ const handleAnalyse = async () => {
   window.$message.success('Open console to view results.')
 
   window.$dialog.info({
-    title: 'Analytics',
+    title: $t('msgs.fen_xi_fan_yi_shu'),
     content: () =>
       h('textarea', {
         value: log,
@@ -201,13 +201,13 @@ const guiToolboxOptions = computed((): QuickOptionItem[] => {
   const currentPath = i18nMainStore.translatePath
   return [
     {
-      label: $t('msgs.fen_xi_fan_yi_shu') + ' (TBD)',
+      label: $t('msgs.fen_xi_fan_yi_shu'),
       props: {
         onClick: handleAnalyse,
       },
     },
     {
-      label: 'Locate',
+      label: $t('msgs.locate_translate_pa'),
       disabled: !currentPath,
       props: {
         onClick: () => {
@@ -266,14 +266,14 @@ const toolboxFilterKeyChange = useDebounceFn(() => {
       @click="isShowToolboxMenu = !isShowToolboxMenu"
       @mouseover="isShowToolboxMenu = true"
     >
-      Gui Toolbox
+      {{ $t('common.tools') }}
     </button>
 
     <input
       class="vp-input font-code"
       style="flex: 1; line-height: 1"
       v-model="toolboxFilterKey"
-      placeholder="Locate Translate Path"
+      :placeholder="$t('msgs.locate_translate_pa')"
       @input="toolboxFilterKeyChange"
       @keyup.enter="toolboxFilterKeyChange"
       @keyup.esc="toolboxFilterKey = ''"

@@ -49,7 +49,15 @@
     "files_mode": "Files Mode",
     "field": "Field",
     "system": "System",
-    "common": "Common"
+    "common": "Common",
+    "rich_text_tool": "RichText Tool",
+    "iframe_browser": "Iframe Browser",
+    "file_explorer": "File Explorer",
+    "home_page": "Home Page",
+    "plugins_manager": "Plugins Manager",
+    "code": "Code",
+    "toolbox": "Toolbox",
+    "page_craft": "Page Craft"
   },
   "actions": {
     "cancel": "Cancel",
@@ -94,7 +102,10 @@
     "save_as": "Save as",
     "open": "Open",
     "download": "Download",
-    "current": "Current"
+    "current": "Current",
+    "import_export": "Import/Export",
+    "plugins": "Plugins",
+    "add_plugin": "Add Plugin"
   },
   "msgs": {
     "drop_files_here": "Drop files here",
@@ -156,6 +167,14 @@
     "enable_flag": "Enable Flag",
     "refresh_page": "Refresh the page?",
     "recommend_download_client_desc": "⚡ Fully open source, offline available\n💡 Built using Tauri technology, lightweighted to just 10MB\n🚀 Invokes the system's native WebView2, faster and more stable\n💽 The exe installation package can be extracted directly run, no need to install",
-    "recommend_download_client_title": "Recommended for downloading the desktop client"
+    "recommend_download_client_title": "Recommended for downloading the desktop client",
+    "delete_all_custom_p": "Delete all custom plugins",
+    "error_name_duplicat": "Error: Name duplicated!",
+    "reload_custom_plugi": "Reload Custom Plugins",
+    "plugins_reloaded": "Plugins reloaded!",
+    "reload_all_plugins": "Reload All Plugins",
+    "input_plugin_name": "Input plugin name",
+    "input_demo_to_creat": "Input `demo` to create a demo plugin!",
+    "locate_translate_pa": "Locate Translate Path"
   }
 }

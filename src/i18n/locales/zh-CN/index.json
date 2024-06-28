@@ -49,7 +49,10 @@
     "files_mode": "多文件模式",
     "field": "字段",
     "common": "通用",
-    "system": "系统"
+    "system": "系统",
+    "page_craft": "页面工艺",
+    "toolbox": "工具箱",
+    "code": "代码"
   },
   "actions": {
     "cancel": "取消",

@@ -9,6 +9,8 @@ export interface StOptionItem {
   // 选项实际值
   value?: boolean | string | number
   type?: StOptionType
+  // 传递给组件的自定义属性
+  props?: any
   // 当type为 SELECT | MULTIPLE_SWITCH 时，选项的下拉数据
   selectOptions?: any[]
   // 是否已禁用
@@ -20,6 +22,8 @@ export interface StOptionItem {
   iconRender?: any
   // 小标题
   subtitle?: string
+  // 提示
+  tips?: string
   placeholder?: string
   // 自定义类名
   cls?: string

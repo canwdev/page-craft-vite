@@ -206,7 +206,7 @@ export default defineComponent({
           },
         },
         {
-          label: $t('common.tools'),
+          label: $t('common.toolbox'),
           props: {
             onClick: () => {
               mainStore.isShowQuickLaunch = true

@@ -2,8 +2,11 @@
 
 ## v1.6.8
 
-- [x] optimize: 标签属性编辑优化
+- [x] add: AI 整合 ChatGPT
+- [x] add: QuickOptions 显示当前菜单的标题
 - [x] add: 表单生成组件(Naive UI)
+- [x] optimize: 标签属性编辑优化
+- [x] optimize: 多语言文案更新
 
 ## v1.6.7
 

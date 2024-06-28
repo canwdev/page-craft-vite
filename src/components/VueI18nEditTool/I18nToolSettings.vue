@@ -7,7 +7,7 @@ import {useI18nToolSettingsStore} from '@/components/VueI18nEditTool/store/i18n-
 import {TextConvertMode, TextConvertOptions} from '@/utils/mc-utils/text-convert'
 import {Globe20Regular} from '@vicons/fluent'
 import {NButton} from 'naive-ui'
-import {useCommonSettings} from '@/components/PageCraft/Settings/use-common-settings'
+import {useCommonSettings} from '@/components/SystemSettings/use-common-settings'
 import OptionUI from '@/components/CommonUI/OptionUI/index.vue'
 
 export default defineComponent({

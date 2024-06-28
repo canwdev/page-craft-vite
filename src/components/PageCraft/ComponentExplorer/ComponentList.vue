@@ -194,7 +194,7 @@ const {handleOpenLocalDir, localDirHistoryOptions, isShowDirHistory} = useLocalD
             title="Open Local Folder"
             @click="handleOpenLocalDir"
             @mouseover="isShowDirHistory = true"
-            @contextmenu.prevent="$router.push({name: 'FileExplorer'})"
+            @contextmenu.prevent="$router.push({name: 'DevPage'})"
           >
             <n-icon size="16">
               <Folder16Regular />

@@ -222,7 +222,7 @@ export default defineComponent({
             <template #icon>
               <n-icon size="18"><Toolbox20Regular /></n-icon>
             </template>
-            {{ $t('common.tools') }}
+            {{ $t('common.toolbox') }}
           </n-button>
         </div>
       </div>

@@ -398,7 +398,7 @@ const {showDropzone, fileDragover, fileDrop} = useFileDrop({
             </button>
 
             <button class="vp-button" @click="mainStore.isShowQuickLaunch = true">
-              {{ $t('common.tools') }}
+              {{ $t('common.toolbox') }}
             </button>
 
             <n-button
