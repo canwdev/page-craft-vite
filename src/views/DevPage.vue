@@ -3,12 +3,12 @@ import {useMetaTitle} from '@/hooks/use-meta'
 import FileManagerWindow from '@/components/FileManager/FileManagerWindow.vue'
 import OptionUI from '@/components/CommonUI/OptionUI/index.vue'
 import {StOptionItem, StOptionType} from '@/components/CommonUI/OptionUI/enum'
-import AiTest from '@/components/AiTools/AiTest.vue'
-import SystemSettings from '@/components/SystemSettings/SystemSettings.vue'
+import ChatWindow from '@/components/AiTools/ChatWindow.vue'
 const {metaTitle} = useMetaTitle()
 
 const configStore = reactive({
   isShowFileManager: false,
+  isShowChatWindow: true,
 })
 
 const optionList = computed((): StOptionItem[] => {
@@ -16,6 +16,12 @@ const optionList = computed((): StOptionItem[] => {
     {
       label: 'isShowFileManager',
       key: 'isShowFileManager',
+      store: configStore,
+      type: StOptionType.SWITCH,
+    },
+    {
+      label: 'isShowChatWindow',
+      key: 'isShowChatWindow',
       store: configStore,
       type: StOptionType.SWITCH,
     },
@@ -36,7 +42,7 @@ const optionList = computed((): StOptionItem[] => {
     </div>
 
     <FileManagerWindow v-model:visible="configStore.isShowFileManager" />
-    <AiTest />
+    <ChatWindow v-model:visible="configStore.isShowChatWindow" />
   </div>
 </template>
 

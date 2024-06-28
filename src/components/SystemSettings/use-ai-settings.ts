@@ -17,7 +17,7 @@ export const useAiSettings = () => {
             key: 'openAiApiKey',
             store: settingsStore,
             type: StOptionType.INPUT,
-            props: {type: 'password'},
+            props: {type: 'password', showPasswordOn: 'click'},
           },
           {
             label: 'API 代理地址',
