@@ -1,15 +1,14 @@
 <script setup lang="ts">
 import OptionUI from '@/components/CommonUI/OptionUI/index.vue'
-import {useSettingsStore} from '@/store/settings'
-import {ChatCompletion, OpenAIApiErrorCodeMessage} from '@/components/AiTools/types/openai'
 import {IChatItem} from '@/components/AiTools/types/ai'
 import '@/styles/markdown/github-markdown.css'
 import '@/styles/markdown/github-markdown-dark.css'
 import {useMainStore} from '@/store/main'
 import ChatItem from '@/components/AiTools/ChatItem.vue'
-import {useStorage} from '@vueuse/core'
+import {useStorage, useThrottleFn} from '@vueuse/core'
 import {useAiSettings} from '@/components/SystemSettings/use-ai-settings'
 import {useAiSettingsStore} from '@/store/ai-settings'
+import {useGpt} from '@/components/AiTools/use-gpt'
 
 const aisStore = useAiSettingsStore()
 
@@ -29,6 +28,25 @@ const resetChatHistory = () => {
   ]
   tempResponseChat.value = null
 }
+
+const respContainerRef = ref()
+const inputRef = ref()
+
+// 滚动到底部
+const scrollBottom = useThrottleFn(
+  () => {
+    setTimeout(() => {
+      respContainerRef.value.scrollTop = respContainerRef.value.scrollHeight
+    })
+  },
+  200,
+  true
+)
+const focusInput = () => {
+  setTimeout(() => {
+    inputRef.value.focus()
+  })
+}
 onMounted(() => {
   if (!chatHistory.value.length) {
     resetChatHistory()
@@ -37,22 +55,9 @@ onMounted(() => {
   scrollBottom()
 })
 
-const respContainerRef = ref()
-const inputRef = ref()
-
-// 滚动到底部
-const scrollBottom = () => {
-  setTimeout(() => {
-    respContainerRef.value.scrollTop = respContainerRef.value.scrollHeight
-  })
-}
-const focusInput = () => {
-  setTimeout(() => {
-    inputRef.value.focus()
-  })
-}
-
 const tempResponseChat = ref<IChatItem | null>(null)
+
+const {requestChatCompletion} = useGpt()
 const sendAiRequest = async () => {
   if (!userInputContent.value) {
     return
@@ -62,7 +67,6 @@ const sendAiRequest = async () => {
     tempResponseChat.value = {
       role: 'assistant',
       content: '',
-      timestamp: -1,
     }
 
     chatHistory.value.push({
@@ -73,93 +77,44 @@ const sendAiRequest = async () => {
     userInputContent.value = ''
     scrollBottom()
 
-    const apiProxy = aisStore.openAiApiProxy || 'https://api.openai.com/v1'
-    // https://platform.openai.com/docs/api-reference/chat/create
-    const response = await fetch(`${apiProxy}/chat/completions`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${aisStore.openAiApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: aisStore.model,
-        // 启用流式响应
-        stream: aisStore.stream,
+    const chatCompletion = await requestChatCompletion(
+      {
         messages: chatHistory.value.map((i) => {
           return {
             content: i.content,
             role: i.role,
           }
         }),
-      }),
-    })
-    const errorMessage = OpenAIApiErrorCodeMessage[response.status]
-    if (errorMessage) {
-      const data = await response.json()
-      tempResponseChat.value = {
-        role: 'assistant',
-        content: `${errorMessage}\n\n${data.error.message}`,
+      },
+      (text: string) => {
+        tempResponseChat.value!.content += text
+        scrollBottom()
       }
-      return
-    }
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
-    }
+    )
 
-    if (aisStore.stream) {
-      // 处理流式响应
-      const reader = response!.body!.getReader()
-      const decoder = new TextDecoder('utf-8')
-      let result = ''
-
-      while (true) {
-        const {done, value} = await reader.read()
-        if (done) break
-
-        const chunk = decoder.decode(value, {stream: true})
-        const lines = chunk.split('\n').filter((line) => line.trim() !== '')
-
-        for (const line of lines) {
-          if (line.startsWith('data: ')) {
-            const jsonStr = line.replace('data: ', '')
-            if (jsonStr !== '[DONE]') {
-              try {
-                const json = JSON.parse(jsonStr)
-                const text = json.choices[0]?.delta?.content
-                if (text) {
-                  tempResponseChat.value.content += text
-                  // console.log(text) // 实时打印每段文字到控制台
-                }
-              } catch (e) {
-                console.error('Error parsing JSON:', e)
-                console.error('JSON:', jsonStr)
-              }
-            }
-          }
-        }
-      }
-
-      // console.log('Final result:', tempResponseChat.value.content) // 打印最终结果
+    if (typeof chatCompletion === 'string') {
+      // 流式返回完整字符串
       const chatItem = tempResponseChat.value
       tempResponseChat.value = null
       chatItem.timestamp = Date.now()
       chatHistory.value.push(chatItem)
-
-      return
+    } else {
+      // 正常POST返回 ChatCompletion
+      tempResponseChat.value = null
+      const message = chatCompletion.choices[0]?.message || {}
+      chatHistory.value.push({
+        role: 'assistant',
+        content: message.content || '',
+        timestamp: chatCompletion.created * 1000,
+      })
     }
-
-    // 正常POST返回
-    const data = await response.json()
-    const chatCompletion = data as ChatCompletion
-    const message = chatCompletion.choices[0]?.message || {}
-
-    const chatItem = tempResponseChat.value
-    tempResponseChat.value = null
-    chatItem.content = message.content || ''
-    chatItem.timestamp = chatCompletion.created * 1000
-    chatHistory.value.push(chatItem)
   } catch (error: any) {
     console.error(error)
+    tempResponseChat.value = {
+      role: 'assistant',
+      content: error.message,
+      timestamp: Date.now(),
+    }
   } finally {
     isLoading.value = false
     scrollBottom()
