@@ -1,6 +1,7 @@
 import {StOptionItem, StOptionType} from '@/components/CommonUI/OptionUI/enum'
 import {useI18n} from 'vue-i18n'
 import {useAiSettingsStore} from '@/store/ai-settings'
+import {chatModels} from '@/components/AiTools/types/openai'
 
 export const useAiSettings = () => {
   const {t: $t} = useI18n()
@@ -25,6 +26,13 @@ export const useAiSettings = () => {
             key: 'openAiApiProxy',
             store: aisStore,
             type: StOptionType.INPUT,
+          },
+          {
+            label: '模型',
+            key: 'model',
+            store: aisStore,
+            type: StOptionType.SELECT,
+            selectOptions: chatModels,
           },
           {
             label: '启用流式响应',

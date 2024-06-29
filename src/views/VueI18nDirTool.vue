@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import {ref} from 'vue'
-import iconTranslate from '../assets/textures/translate.svg?url'
 import {
   DirTreeItem,
   exportI18nTreeJsonObj,
@@ -11,7 +10,6 @@ import {
 import BatchGUI from '@/components/VueI18nEditTool/BatchGUI/index.vue'
 import DropZone from '@/components/CommonUI/DropZone.vue'
 import {useFileDrop} from '@/hooks/use-file-drop'
-import {useMetaTitle} from '@/hooks/use-meta'
 import {useBeforeUnload, useSaveShortcut} from '@/hooks/use-beforeunload'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import TranslateTreeItem from '@/components/VueI18nEditTool/Single/TranslateTreeItem.vue'
@@ -28,6 +26,7 @@ import {LsKeys} from '@/enum/page-craft'
 import {useGuiToolbox} from '@/components/VueI18nEditTool/BatchGUI/hooks/use-gui-toolbox'
 import GuiToolbox from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox.vue'
 import {handleReadSelectedFile} from '@/utils/mc-utils/io'
+import CommonNavbar from '@/components/CommonUI/CommonNavbar.vue'
 
 const formatDirTreeItem = (data: any = {}): DirTreeItem => {
   return {
@@ -321,8 +320,6 @@ watch(editMode, (val) => {
   updateGuiTranslateTree()
 })
 
-const {metaTitle} = useMetaTitle()
-
 useSaveShortcut(() => {
   if (currentEditEntry.value && editMode.value === EditMode.GUI) {
     handleSaveFile()
@@ -387,72 +384,68 @@ const {showDropzone, fileDragover, fileDrop} = useFileDrop({
       <DropZone position-fixed v-show="showDropzone" :text="$t('msgs.drag_folder_here')" />
     </transition>
 
-    <div class="vp-bg navbar-wrap">
-      <n-page-header subtitle="" @back="$router.push({name: 'HomePage'})">
-        <template #title>{{ metaTitle }}</template>
-        <template #avatar> <n-avatar :src="iconTranslate" style="background: none" /> </template>
-        <template #extra>
-          <n-space size="small" align="center">
-            <button class="vp-button" @click="isShowToolSettings = true">
-              {{ $t('common.settings') }}
-            </button>
+    <CommonNavbar>
+      <template #extra>
+        <n-space size="small" align="center">
+          <button class="vp-button" @click="isShowToolSettings = true">
+            {{ $t('common.settings') }}
+          </button>
 
-            <button class="vp-button" @click="mainStore.isShowQuickLaunch = true">
-              {{ $t('common.toolbox') }}
-            </button>
+          <button class="vp-button" @click="mainStore.isShowQuickLaunch = true">
+            {{ $t('common.toolbox') }}
+          </button>
 
-            <n-button
-              size="small"
-              secondary
-              v-if="currentEditEntry && editMode === EditMode.GUI"
-              type="primary"
-              @click="handleSaveFile"
-            >
-              {{ $t('actions.save_changes') }}
-            </n-button>
+          <n-button
+            size="small"
+            secondary
+            v-if="currentEditEntry && editMode === EditMode.GUI"
+            type="primary"
+            @click="handleSaveFile"
+          >
+            {{ $t('actions.save_changes') }}
+          </n-button>
 
-            {{ $t('common.edit_mode') }}:
-            <TabLayout v-model="editMode" horizontal :tab-list="editModeOptions" />
+          {{ $t('common.edit_mode') }}:
+          <TabLayout v-model="editMode" horizontal :tab-list="editModeOptions" />
 
-            <n-dropdown
-              v-if="dirHandle"
-              size="small"
-              :options="historyMenuOptions"
-              label-field="label"
-              key-field="key"
-            >
-              <n-popconfirm @positive-click="handleCloseDir()">
-                <template #trigger>
-                  <button class="vp-button primary">{{ $t('actions.close') }} Folder</button>
-                </template>
-                {{ $t('msgs.confirm_close') }}
-              </n-popconfirm>
-            </n-dropdown>
-
-            <n-dropdown
-              v-else
-              size="small"
-              :options="historyMenuOptions"
-              label-field="label"
-              key-field="key"
-            >
-              <button class="vp-button primary" @click="handlePickDir">
-                {{ $t('actions.pick_i18n_directory') }}
-              </button>
-            </n-dropdown>
-
-            <n-popconfirm v-if="dirHandle" @positive-click="reloadPickedDir()">
+          <n-dropdown
+            v-if="dirHandle"
+            size="small"
+            :options="historyMenuOptions"
+            label-field="label"
+            key-field="key"
+          >
+            <n-popconfirm @positive-click="handleCloseDir()">
               <template #trigger>
-                <button class="vp-button js_reload_btn">
-                  {{ $t('actions.reload') }}
-                </button>
+                <button class="vp-button primary">{{ $t('actions.close') }} Folder</button>
               </template>
-              {{ $t('msgs.confirm_reload_files') }}
+              {{ $t('msgs.confirm_close') }}
             </n-popconfirm>
-          </n-space>
-        </template>
-      </n-page-header>
-    </div>
+          </n-dropdown>
+
+          <n-dropdown
+            v-else
+            size="small"
+            :options="historyMenuOptions"
+            label-field="label"
+            key-field="key"
+          >
+            <button class="vp-button primary" @click="handlePickDir">
+              {{ $t('actions.pick_i18n_directory') }}
+            </button>
+          </n-dropdown>
+
+          <n-popconfirm v-if="dirHandle" @positive-click="reloadPickedDir()">
+            <template #trigger>
+              <button class="vp-button js_reload_btn">
+                {{ $t('actions.reload') }}
+              </button>
+            </template>
+            {{ $t('msgs.confirm_reload_files') }}
+          </n-popconfirm>
+        </n-space>
+      </template>
+    </CommonNavbar>
 
     <div class="_container">
       <n-layout style="height: 100%" has-sider>

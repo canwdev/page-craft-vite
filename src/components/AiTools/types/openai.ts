@@ -4,7 +4,6 @@
  */
 export enum ChatModel {
   GPT35Turbo = 'gpt-3.5-turbo',
-  GPT4 = 'gpt-4',
   GPT4Turbo = 'gpt-4-turbo',
   GPT4o = 'gpt-4o',
 }
@@ -24,11 +23,6 @@ export const chatModels = [
     label: 'GPT-3.5 Turbo',
     value: ChatModel.GPT35Turbo,
     tokens: 16_385,
-  },
-  {
-    label: 'GPT-4',
-    value: ChatModel.GPT4,
-    tokens: 8192,
   },
   {
     label: 'GPT-4 Turbo',

@@ -2,10 +2,8 @@
 import {defineComponent, ref} from 'vue'
 import TranslateTreeItem from '@/components/VueI18nEditTool/Single/TranslateTreeItem.vue'
 import {exportI18nTreeJsonObj, I18nJsonObjUtils, ITranslateTreeItem} from '@/enum/vue-i18n-tool'
-import iconTranslate from '../assets/textures/translate.svg?url'
 import DropZone from '@/components/CommonUI/DropZone.vue'
 import {useFileDrop} from '@/hooks/use-file-drop'
-import {useMetaTitle} from '@/hooks/use-meta'
 import {Save20Regular} from '@vicons/fluent'
 import {useBeforeUnload, useSaveShortcut} from '@/hooks/use-beforeunload'
 import {useMainStore} from '@/store/main'
@@ -23,6 +21,7 @@ import {
 } from '@/components/VueI18nEditTool/file-history'
 import moment from 'moment'
 import {handleReadSelectedFile} from '@/utils/mc-utils/io'
+import CommonNavbar from '@/components/CommonUI/CommonNavbar.vue'
 
 const filePickerOptions = {
   types: [
@@ -37,6 +36,7 @@ const filePickerOptions = {
 export default defineComponent({
   name: 'VueI18nEditTool',
   components: {
+    CommonNavbar,
     QuickOptions,
     I18nToolSettings,
     TranslateTreeItem,
@@ -159,8 +159,6 @@ export default defineComponent({
       }
     }
 
-    const {metaTitle} = useMetaTitle()
-
     useSaveShortcut(() => {
       if (fileHandle.value) {
         handleSaveFile()
@@ -261,7 +259,6 @@ export default defineComponent({
     })
 
     return {
-      metaTitle,
       translateTreeRoot,
       fileHandle,
       handleImport,
@@ -270,7 +267,6 @@ export default defineComponent({
       handleSaveFile,
       handleExport,
       loadDemo,
-      iconTranslate,
       ...useFileDrop({
         cb: handleFileDrop,
       }),
@@ -299,24 +295,17 @@ export default defineComponent({
       <DropZone position-fixed v-show="showDropzone" :text="$t('msgs.drag_file_here')" />
     </transition>
 
-    <div
-      class="vp-bg navbar-wrap"
-      style="position: sticky; top: 0; z-index: 100; margin-bottom: 10px"
-    >
-      <n-page-header subtitle="" @back="$router.push({name: 'HomePage'})">
-        <template #title>{{ metaTitle }}</template>
-        <template #avatar> <n-avatar :src="iconTranslate" style="background: none" /> </template>
-        <template #extra>
-          <QuickOptions
-            is-static
-            :options="menuOptions"
-            horizontal
-            :auto-focus="false"
-            item-cls="vp-button"
-          />
-        </template>
-      </n-page-header>
-    </div>
+    <CommonNavbar style="position: sticky; top: 0; z-index: 100; margin-bottom: 10px">
+      <template #extra>
+        <QuickOptions
+          is-static
+          :options="menuOptions"
+          horizontal
+          :auto-focus="false"
+          item-cls="vp-button"
+        />
+      </template>
+    </CommonNavbar>
 
     <div class="_container">
       <TranslateTreeItem

@@ -94,6 +94,15 @@ export const useCommonTools = () => {
             },
           },
           {
+            label: '🤯 AI Page',
+            props: {
+              onClick: async () => {
+                mainStore.isShowQuickLaunch = false
+                await router.push({name: 'AiPage'})
+              },
+            },
+          },
+          {
             label: '🔧 Dev Page',
             props: {
               onClick: async () => {

@@ -18,15 +18,31 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const isEditing = ref(false)
+const editInputRef = ref()
+watch(isEditing, () => {
+  setTimeout(() => {
+    editInputRef.value.focus()
+  })
+})
 </script>
 
 <template>
   <div class="chat-item-system" v-if="item.role === 'system'">
+    <textarea
+      ref="editInputRef"
+      v-if="isEditing"
+      class="vp-input"
+      v-model="item.content"
+      rows="2"
+      cols="30"
+      @blur="isEditing = false"
+    />
     <div
+      v-else-if="item.content"
       class="chat-content markdown-body"
       :class="{'markdown-body-dark': isDark}"
-      v-if="item.content"
       v-html="marked(`[${item.role}] ${item.content}`)"
+      @click="isEditing = true"
     ></div>
   </div>
   <div v-else class="chat-item" :class="{'is-reply': item.role === 'assistant'}">
@@ -38,7 +54,7 @@ const isEditing = ref(false)
 
     <div class="chat-body">
       <div class="chat-content vp-bg" :class="{'markdown-body-dark': isDark}" v-if="isEditing">
-        <textarea class="vp-input" v-model="item.content" rows="4" cols="30" />
+        <textarea class="vp-input" v-model="item.content" rows="4" cols="30" ref="editInputRef" />
       </div>
       <template v-else>
         <div
@@ -110,7 +126,7 @@ const isEditing = ref(false)
     }
     .chat-content {
       border-radius: 0 10px 10px;
-      background-color: #e8e8e8;
+      background-color: #f1f1f1;
 
       &.markdown-body-dark {
         background-color: #2f2f2f;

@@ -2,11 +2,9 @@
 import {defineComponent, ref} from 'vue'
 import FileChooser from '@/components/CommonUI/FileChooser.vue'
 import dynamicLoadScript from '@/utils/dynamic-load-script'
-import iconExcel from '../assets/textures/excel.svg?url'
 import {copyToClipboard} from '@/utils'
 import DropZone from '@/components/CommonUI/DropZone.vue'
 import {useFileDrop} from '@/hooks/use-file-drop'
-import {useMetaTitle} from '@/hooks/use-meta'
 import {
   TextConvertMode,
   TextConvertOptions,
@@ -18,6 +16,7 @@ import {useMainStore} from '@/store/main'
 import {useI18n} from 'vue-i18n'
 import {useStorage} from '@vueuse/core'
 import {handleExportFile, promptGetFileName} from '@/utils/mc-utils/io'
+import CommonNavbar from '@/components/CommonUI/CommonNavbar.vue'
 
 const isAllowedElement = (el) => {
   return el.tagName.toLowerCase() === 'td'
@@ -55,6 +54,7 @@ window.demo_json_to_sheet = [
 export default defineComponent({
   name: 'ExcelCopyTool',
   components: {
+    CommonNavbar,
     FileChooser,
     DropZone,
   },
@@ -70,8 +70,6 @@ export default defineComponent({
     const workbookRef = shallowRef()
     const sheetNames = ref<string[]>([])
     const sheetNameIndex = ref(0)
-
-    const {metaTitle} = useMetaTitle()
 
     watch(sheetNameIndex, () => {
       renderWorkbook()
@@ -333,8 +331,6 @@ export default defineComponent({
     })
 
     return {
-      metaTitle,
-      iconExcel,
       sheetNames,
       sheetNameIndex,
       handleImport,
@@ -379,60 +375,54 @@ export default defineComponent({
     </transition>
 
     <div>
-      <n-card size="small">
-        <n-page-header subtitle="" @back="$router.push({name: 'HomePage'})">
-          <template #title> {{ metaTitle }} </template>
-          <template #avatar>
-            <n-avatar :src="iconExcel" style="background: none" />
-          </template>
-          <template #extra>
-            <n-space>
-              <n-space size="small" align="center">
-                <n-checkbox size="small" v-model:checked="isTrimEmptyLines">
-                  {{ $t('msgs.trim_empty_lines') }}
-                </n-checkbox>
-                <n-button text @click="mainStore.isShowTextTransformer = true"
-                  >{{ $t('common.text_transformer') }}:</n-button
-                >
-                <n-select
-                  size="small"
-                  v-model:value="copyMode"
-                  :options="modTextConvertOptions"
-                  style="width: 100px"
-                />
-              </n-space>
-
-              <n-dropdown
-                v-if="workbookRef"
-                :options="dropdownMenuOptions"
-                placement="bottom-start"
-                key-field="label"
-                :disabled="!isReady"
+      <CommonNavbar>
+        <template #extra>
+          <n-space>
+            <n-space size="small" align="center">
+              <n-checkbox size="small" v-model:checked="isTrimEmptyLines">
+                {{ $t('msgs.trim_empty_lines') }}
+              </n-checkbox>
+              <n-button text @click="mainStore.isShowTextTransformer = true"
+                >{{ $t('common.text_transformer') }}:</n-button
               >
-                <n-button size="small">💻 {{ $t('actions.export') }}</n-button>
-              </n-dropdown>
-
-              <n-button
-                v-if="!fileRef"
-                type="primary"
-                :disabled="!isReady"
-                @click="importFileChooserRef.chooseFile()"
+              <n-select
                 size="small"
-              >
-                {{ $t('actions.open') + ' Excel' }}
-              </n-button>
-
-              <n-button v-else type="primary" size="small" @click="handleCloseFile">
-                {{ $t('actions.close') }}
-              </n-button>
-
-              <n-button v-if="!fileRef" @click="loadDemo" size="small" :disabled="!isReady">{{
-                $t('common.demo')
-              }}</n-button>
+                v-model:value="copyMode"
+                :options="modTextConvertOptions"
+                style="width: 100px"
+              />
             </n-space>
-          </template>
-        </n-page-header>
-      </n-card>
+
+            <n-dropdown
+              v-if="workbookRef"
+              :options="dropdownMenuOptions"
+              placement="bottom-start"
+              key-field="label"
+              :disabled="!isReady"
+            >
+              <n-button size="small">💻 {{ $t('actions.export') }}</n-button>
+            </n-dropdown>
+
+            <n-button
+              v-if="!fileRef"
+              type="primary"
+              :disabled="!isReady"
+              @click="importFileChooserRef.chooseFile()"
+              size="small"
+            >
+              {{ $t('actions.open') + ' Excel' }}
+            </n-button>
+
+            <n-button v-else type="primary" size="small" @click="handleCloseFile">
+              {{ $t('actions.close') }}
+            </n-button>
+
+            <n-button v-if="!fileRef" @click="loadDemo" size="small" :disabled="!isReady">{{
+              $t('common.demo')
+            }}</n-button>
+          </n-space>
+        </template>
+      </CommonNavbar>
 
       <transition name="mc-fade">
         <div class="mc-loading-container" v-if="!isReady">

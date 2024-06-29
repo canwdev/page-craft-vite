@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import {useMetaTitle} from '@/hooks/use-meta'
 import FileManagerWindow from '@/components/FileManager/FileManagerWindow.vue'
 import OptionUI from '@/components/CommonUI/OptionUI/index.vue'
 import {StOptionItem, StOptionType} from '@/components/CommonUI/OptionUI/enum'
-const {metaTitle} = useMetaTitle()
+import CommonNavbar from '@/components/CommonUI/CommonNavbar.vue'
 
 const configStore = reactive({
   isShowFileManager: false,
@@ -22,12 +21,8 @@ const optionList = computed((): StOptionItem[] => {
 </script>
 
 <template>
-  <div class="dev-page i18n-style _scrollbar_mini">
-    <div class="vp-bg navbar-wrap">
-      <n-page-header subtitle="" @back="$router.push({name: 'HomePage'})">
-        <template #title> {{ metaTitle }} </template>
-      </n-page-header>
-    </div>
+  <div class="dev-page _scrollbar_mini">
+    <CommonNavbar />
 
     <div class="container">
       <OptionUI :option-list="optionList" />

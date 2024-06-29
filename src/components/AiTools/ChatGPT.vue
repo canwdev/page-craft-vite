@@ -82,7 +82,7 @@ const sendAiRequest = async () => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
+        model: aisStore.model,
         // 启用流式响应
         stream: aisStore.stream,
         messages: chatHistory.value.map((i) => {
