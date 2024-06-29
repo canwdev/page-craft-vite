@@ -73,7 +73,6 @@ const {t: $t} = useI18n()
 const mainStore = useMainStore()
 const i18nMainStore = useI18nMainStore()
 const i18nSetStore = useI18nToolSettingsStore()
-const isLoading = ref(false)
 
 const {appendHistory, historyMenuOptions} = useOpenedHistory(
   LsKeys.I18N_FOLDER_HANDLE_HISTORY,
@@ -210,7 +209,7 @@ const handlePickDir = async () => {
 }
 const reloadPickedDir = async () => {
   try {
-    isLoading.value = true
+    i18nMainStore.isLoading = true
     const handle = dirHandle.value
     let tree: DirTreeItem[] = []
     if (i18nSetStore.isFoldersMode) {
@@ -226,13 +225,13 @@ const reloadPickedDir = async () => {
     console.error(e)
     window.$message.error(e.message)
   } finally {
-    isLoading.value = false
+    i18nMainStore.isLoading = false
   }
 }
 
 const handleFileDrop = async (e) => {
   try {
-    isLoading.value = true
+    i18nMainStore.isLoading = true
     // Process all the items.
     for (const item of e.dataTransfer.items) {
       // Careful: `kind` will be 'file' for both file
@@ -253,7 +252,7 @@ const handleFileDrop = async (e) => {
     console.error(e)
     window.$message.error(e.message)
   } finally {
-    isLoading.value = false
+    i18nMainStore.isLoading = false
   }
 }
 
@@ -270,7 +269,7 @@ const editingTextValue = ref<string | null>(null)
 
 const handleSaveFile = async () => {
   try {
-    isLoading.value = true
+    i18nMainStore.isLoading = true
     const fileHandle = currentEditEntry.value
     if (!fileHandle) {
       return
@@ -297,7 +296,7 @@ const handleSaveFile = async () => {
     console.error(error)
     window.$message.error('Save Failed!' + error.message)
   } finally {
-    isLoading.value = false
+    i18nMainStore.isLoading = false
   }
 }
 
@@ -328,8 +327,6 @@ useSaveShortcut(() => {
   globalEventBus.emit(GlobalEvents.I18N_SAVE_ALL_CHANGES)
 })
 
-const vueMonacoRef = ref()
-
 useBeforeUnload(() => {
   return !!dirHandle.value
 })
@@ -343,7 +340,7 @@ const nodeProps = ({option}: {option: DirTreeItem}) => {
     // 处理树枝的点击事件
     async onClick() {
       try {
-        isLoading.value = true
+        i18nMainStore.isLoading = true
         if (option.kind === 'file') {
           const entry = option.entry as FileSystemFileHandle
           currentEditEntry.value = entry
@@ -358,7 +355,7 @@ const nodeProps = ({option}: {option: DirTreeItem}) => {
         console.error(e)
         window.$message.error(e.message)
       } finally {
-        isLoading.value = false
+        i18nMainStore.isLoading = false
       }
     },
   }
@@ -376,7 +373,7 @@ const {showDropzone, fileDragover, fileDrop} = useFileDrop({
     @drop.prevent.stop="fileDrop"
   >
     <transition name="mc-fade">
-      <div class="mc-loading-container position-fixed" v-if="isLoading">
+      <div class="mc-loading-container position-fixed" v-if="i18nMainStore.isLoading">
         <n-spin />
       </div>
     </transition>

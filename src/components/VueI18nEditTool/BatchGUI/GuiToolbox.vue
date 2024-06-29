@@ -11,10 +11,16 @@ import {b} from 'vite/dist/node/types.d-FdqQ54oU'
 import {I18N_JSON_OBJ_ROOT_KEY_NAME, ITranslateTreeItem} from '@/enum/vue-i18n-tool'
 import _get from 'lodash/get'
 import {unicodeProgressBar} from '@/utils/unicode-progress-bar'
+import {useGpt} from '@/components/AiTools/use-gpt'
+import {ChatCompletion, GptMessage} from '@/components/AiTools/types/openai'
+import {useGuiToolbox} from '@/components/VueI18nEditTool/BatchGUI/hooks/use-gui-toolbox'
+import {blinkPanel} from '@/utils/anim'
 
 const tiSelector = '.translate-item'
 const {t: $t} = useI18n()
 const i18nMainStore = useI18nMainStore()
+
+const {getSubItems, getArrayFromRight, pasteJsonOverrideRight, handleGptTranslate} = useGuiToolbox()
 
 onMounted(() => {
   locateSelectedPath()
@@ -32,69 +38,7 @@ const locateSelectedPath = () => {
   }
 }
 
-type SubInstanceItem = {
-  listItem: BatchListItem
-  fieldValue: string
-}
-
-// 获取SubGuiItem组件实例
-const getSubItems = (): Promise<SubInstanceItem[]> => {
-  return new Promise((resolve) => {
-    globalEventBus.emit(GlobalEvents.I18N_BATCH_GUI_GET_SUBS, resolve)
-  })
-}
-
-const copyJsonFromRight = async () => {
-  const items: SubInstanceItem = await getSubItems()
-  console.log('[items]', items)
-  const result: any = []
-  for (const key in items) {
-    // SubGuiItem实例
-    const item = items[key]
-    result.push({
-      label: item.listItem.rootDir.label,
-      // null 为该文件没有创建
-      value: item.fieldValue,
-    })
-  }
-  window.$qlUtils.copy(result)
-}
-
-type PasteResult = {
-  label: string
-  value: string
-}
-const pasteJsonOverrideRight = async () => {
-  try {
-    const data: any = await readClipboardData()
-    const pastedResult: PasteResult[] = JSON.parse(data)
-    console.log('[pastedResult]', pastedResult)
-
-    const items = await getSubItems()
-    const itemsLabelMap: any = {}
-    items.forEach((item) => {
-      itemsLabelMap[item.listItem.rootDir.label] = item
-    })
-
-    console.log('[itemsLabelMap]', itemsLabelMap)
-    for (const key in pastedResult) {
-      // SubGuiItem实例
-      const result = pastedResult[key]
-      const {label, value} = result
-
-      if (value !== undefined && value !== null) {
-        const item = itemsLabelMap[label]
-        if (item) {
-          item.fieldValue = value
-        }
-      }
-    }
-    window.$message.success($t('msgs.action_completed_pl'))
-  } catch (error: any) {
-    window.$message.error(error.message)
-  }
-}
-
+// 打印所有数据
 const printAllInfo = async () => {
   console.warn('====== [printAllInfo] Start ======')
   console.log('[dirTree]', i18nMainStore.dirTree)
@@ -108,6 +52,7 @@ const printAllInfo = async () => {
   return {items}
 }
 
+// 打印分析数据
 const printAnalytics = () => {
   let log = ``
   const printLog = (...args) => {
@@ -176,7 +121,6 @@ const printAnalytics = () => {
 }
 
 const handleAnalyse = async () => {
-  await printAllInfo()
   const log = printAnalytics()
   window.$message.success('Open console to view results.')
 
@@ -194,6 +138,7 @@ scrollbar-width: thin;
 height: 495px;`,
       }),
   })
+  await printAllInfo()
 }
 
 const isShowToolboxMenu = ref(false)
@@ -203,30 +148,38 @@ const guiToolboxOptions = computed((): QuickOptionItem[] => {
     {
       label: $t('msgs.fen_xi_fan_yi_shu'),
       props: {
-        onClick: handleAnalyse,
+        onClick: () => handleAnalyse(),
       },
     },
     {
       label: $t('msgs.locate_translate_pa'),
       disabled: !currentPath,
       props: {
-        onClick: () => {
-          locateSelectedPath()
-        },
+        onClick: () => locateSelectedPath(),
       },
     },
+    {
+      label: 'GPT Translate',
+      disabled: !currentPath,
+      props: {
+        onClick: () => handleGptTranslate(),
+      },
+    },
+    {split: true},
     {
       label: $t('msgs.copy_json_from_right'),
       disabled: !currentPath,
       props: {
-        onClick: copyJsonFromRight,
+        onClick: async () => {
+          window.$qlUtils.copy(await getArrayFromRight())
+        },
       },
     },
     {
       label: $t('msgs.paste_json_override_right'),
       disabled: !currentPath,
       props: {
-        onClick: pasteJsonOverrideRight,
+        onClick: () => pasteJsonOverrideRight(),
       },
     },
   ]
@@ -240,20 +193,13 @@ const toolboxFilterKeyChange = useDebounceFn(() => {
   )
   Array.from(els).forEach((el, index) => {
     const key = el.getAttribute('data-translate-path')
-    el.classList.add('t_selected')
     if (index === 0) {
       el.scrollIntoView({behavior: 'smooth', block: 'center'})
     }
 
-    // 高亮动画，1s后取消
+    // 高亮动画
     if (key !== i18nMainStore.translatePath) {
-      el.classList.add('_transition')
-      setTimeout(() => {
-        el.classList.remove('t_selected')
-        setTimeout(() => {
-          el.classList.remove('_transition')
-        }, 1000)
-      }, 1000)
+      blinkPanel(el as HTMLElement)
     }
   })
 }, 500)

@@ -52,7 +52,12 @@
     "common": "ユニバーサル",
     "page_craft": "ページクラフト",
     "toolbox": "工具箱",
-    "code": "コード"
+    "code": "コード",
+    "file_explorer": "ファイルエクスプローラ",
+    "home_page": "ホームページ",
+    "plugins_manager": "プラグインマネージャー",
+    "rich_text_tool": "リッチテキストツール",
+    "iframe_browser": "iframe ブラウザ"
   },
   "actions": {
     "cancel": "キャンセル",
@@ -159,6 +164,11 @@
     "enable_flag": "フラグを有効にする",
     "refresh_page": "ページをリフレッシュする？",
     "recommend_download_client_desc": "⚡ 完全オープンソース、オフライン利用可能\n💡 Tauriテクノロジーを使用して構築され、10MB以下の軽量化\n🚀 システムのネイティブWebview2を呼び出し、高速で安定したもの\n💽 exeインストールパッケージは、直接実行可能、インストール不要",
-    "recommend_download_client_title": "デスクトップクライアントをダウンロードすることをおすすめします"
+    "recommend_download_client_title": "デスクトップクライアントをダウンロードすることをおすすめします",
+    "delete_all_custom_p": "すべてのカスタムプラグインを削除",
+    "locate_translate_pa": "翻訳パスを特定する",
+    "input_demo_to_creat": "デモプラグインを作成するには、'demo'を入力してください！",
+    "input_plugin_name": "インプットプラグイン名",
+    "reload_all_plugins": "すべてのプラグインをリロード"
   }
 }

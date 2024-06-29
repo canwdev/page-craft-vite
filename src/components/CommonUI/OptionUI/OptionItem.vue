@@ -42,7 +42,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="c-panel-item" :class="[item.cls]">
+  <div class="c-panel-item" :data-key="item.key" :class="[item.cls]">
     <div class="panel-header vp-bg">
       <div class="p-left">
         <div class="item-label">{{ item.label }}</div>

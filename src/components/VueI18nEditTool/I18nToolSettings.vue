@@ -31,7 +31,7 @@ export default defineComponent({
       return [
         {
           label: $t('common.i18njson_editing_too'),
-          key: 'json_editing',
+          key: 'i18njson_editing_too',
           children: [
             {
               label: $t('msgs.auto_paste') + ': ' + $t('msgs.remove_quotes'),
@@ -69,7 +69,7 @@ export default defineComponent({
         },
         {
           label: $t('common.i18njson_batch_tool'),
-          key: 'json_editing',
+          key: 'i18njson_batch_tool',
           children: [
             {
               label: $t('common.folders_mode'),

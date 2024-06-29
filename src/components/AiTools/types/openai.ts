@@ -44,12 +44,14 @@ export type ChatUsage = {
   total_tokens: number
 }
 
+export type GptMessage = {
+  role: 'assistant' | 'user' | 'system'
+  content: string
+}
+
 export type ChatChoices = {
   index: number
-  message: {
-    role: 'assistant' | 'user' | 'system'
-    content: string
-  }
+  message: GptMessage
   logprobs: number | null
   finish_reason: 'stop' | 'length' | null
 }

@@ -52,7 +52,12 @@
     "system": "系统",
     "page_craft": "页面工艺",
     "toolbox": "工具箱",
-    "code": "代码"
+    "code": "代码",
+    "file_explorer": "文件资源管理器",
+    "home_page": "主页",
+    "plugins_manager": "插件管理器",
+    "rich_text_tool": "富文本工具",
+    "iframe_browser": "iframe 浏览器"
   },
   "actions": {
     "cancel": "取消",
@@ -159,6 +164,11 @@
     "enable_flag": "启用旗标",
     "refresh_page": "刷新页面？",
     "recommend_download_client_title": "推荐下载桌面客户端",
-    "recommend_download_client_desc": "⚡ 完全开源、离线可用\n💡 使用Tauri技术构建，轻量化不到10MB\n🚀 调用系统原生WebView2，更快更稳定\n💽 exe安装包可解压后直接运行，无需安装"
+    "recommend_download_client_desc": "⚡ 完全开源、离线可用\n💡 使用Tauri技术构建，轻量化不到10MB\n🚀 调用系统原生WebView2，更快更稳定\n💽 exe安装包可解压后直接运行，无需安装",
+    "delete_all_custom_p": "删除所有自定义插件",
+    "locate_translate_pa": "定位翻译路径",
+    "input_demo_to_creat": "输入'demo'来创建一个演示插件！",
+    "input_plugin_name": "输入插件名称",
+    "reload_all_plugins": "重新加载所有插件"
   }
 }

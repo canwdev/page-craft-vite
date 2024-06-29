@@ -1,8 +1,23 @@
 import {useAiSettingsStore} from '@/store/ai-settings'
 import {ChatCompletion, OpenAIApiErrorCodeMessage} from '@/components/AiTools/types/openai'
+import {useMainStore} from '@/store/main'
+import {blinkPanel} from '@/utils/anim'
 
 export const useGpt = () => {
   const aisStore = useAiSettingsStore()
+  const mainStore = useMainStore()
+
+  const openAiSettings = () => {
+    mainStore.isShowSettings = true
+    setTimeout(() => {
+      const aiPanel = document.querySelector('.system-settings .c-panel-item[data-key="ai"]')
+      if (!aiPanel) {
+        return
+      }
+      aiPanel.scrollIntoView({behavior: 'smooth'})
+      blinkPanel(aiPanel as HTMLElement)
+    }, 800)
+  }
 
   /**
    * https://platform.openai.com/docs/api-reference/chat/create
@@ -33,6 +48,9 @@ export const useGpt = () => {
 
     const errorMessage = OpenAIApiErrorCodeMessage[response.status]
     if (errorMessage) {
+      if (response.status === 401) {
+        openAiSettings()
+      }
       const data = await response.json()
       throw new Error(`${errorMessage}\n\n${data.error.message}`)
     }
