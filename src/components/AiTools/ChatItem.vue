@@ -106,7 +106,7 @@ const isEditing = ref(false)
   &.is-reply {
     flex-direction: row;
     .chat-avatar {
-      background-color: hotpink;
+      background-color: #74aa9c;
     }
     .chat-content {
       border-radius: 0 10px 10px;

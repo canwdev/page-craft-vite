@@ -1,27 +1,19 @@
 <script setup lang="ts">
 import OptionUI from '@/components/CommonUI/OptionUI/index.vue'
-import {StOptionItem, StOptionType} from '@/components/CommonUI/OptionUI/enum'
 import {useSettingsStore} from '@/store/settings'
-import {marked} from 'marked'
-import {copy} from '@/components/QuickLaunch/q-logics/utils'
-import {
-  ChatCompletion,
-  ChatUsage,
-  OpenAIApiErrorCodeMessage,
-} from '@/components/AiTools/types/openai'
+import {ChatCompletion, OpenAIApiErrorCodeMessage} from '@/components/AiTools/types/openai'
 import {IChatItem} from '@/components/AiTools/types/ai'
-import {formatDate} from '@/utils'
 import '@/styles/markdown/github-markdown.css'
 import '@/styles/markdown/github-markdown-dark.css'
 import {useMainStore} from '@/store/main'
 import ChatItem from '@/components/AiTools/ChatItem.vue'
 import {useStorage} from '@vueuse/core'
+import {useAiSettings} from '@/components/SystemSettings/use-ai-settings'
+import {useAiSettingsStore} from '@/store/ai-settings'
 
-const settingsStore = useSettingsStore()
+const aisStore = useAiSettingsStore()
 
-const optionList = computed((): StOptionItem[] => {
-  return []
-})
+const {aiSettingsOptions} = useAiSettings()
 const mainStore = useMainStore()
 const isLoading = ref(false)
 const userInputContent = ref('')
@@ -35,12 +27,14 @@ const resetChatHistory = () => {
       timestamp: Date.now(),
     },
   ]
+  tempResponseChat.value = null
 }
 onMounted(() => {
   if (!chatHistory.value.length) {
     resetChatHistory()
   }
   focusInput()
+  scrollBottom()
 })
 
 const respContainerRef = ref()
@@ -79,18 +73,18 @@ const sendAiRequest = async () => {
     userInputContent.value = ''
     scrollBottom()
 
-    const apiProxy = settingsStore.openAiApiProxy || 'https://api.openai.com/v1'
+    const apiProxy = aisStore.openAiApiProxy || 'https://api.openai.com/v1'
     // https://platform.openai.com/docs/api-reference/chat/create
     const response = await fetch(`${apiProxy}/chat/completions`, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${settingsStore.openAiApiKey}`,
+        Authorization: `Bearer ${aisStore.openAiApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         model: 'gpt-3.5-turbo',
         // 启用流式响应
-        stream: true,
+        stream: aisStore.stream,
         messages: chatHistory.value.map((i) => {
           return {
             content: i.content,
@@ -112,49 +106,57 @@ const sendAiRequest = async () => {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
 
-    // const data = await response.json()
-    // const chatCompletion = data as ChatCompletion
-    // const message = chatCompletion.choices[0]?.message || {}
-    // chatHistory.value.push({
-    //   timestamp: chatCompletion.created * 1000,
-    //   ...message,
-    // })
+    if (aisStore.stream) {
+      // 处理流式响应
+      const reader = response!.body!.getReader()
+      const decoder = new TextDecoder('utf-8')
+      let result = ''
 
-    const reader = response!.body!.getReader()
-    const decoder = new TextDecoder('utf-8')
-    let result = ''
+      while (true) {
+        const {done, value} = await reader.read()
+        if (done) break
 
-    while (true) {
-      const {done, value} = await reader.read()
-      if (done) break
+        const chunk = decoder.decode(value, {stream: true})
+        const lines = chunk.split('\n').filter((line) => line.trim() !== '')
 
-      const chunk = decoder.decode(value, {stream: true})
-      const lines = chunk.split('\n').filter((line) => line.trim() !== '')
-
-      for (const line of lines) {
-        if (line.startsWith('data: ')) {
-          const jsonStr = line.replace('data: ', '')
-          if (jsonStr !== '[DONE]') {
-            try {
-              const json = JSON.parse(jsonStr)
-              const text = json.choices[0]?.delta?.content
-              if (text) {
-                tempResponseChat.value.content += text
-                // console.log(text) // 实时打印每段文字到控制台
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            const jsonStr = line.replace('data: ', '')
+            if (jsonStr !== '[DONE]') {
+              try {
+                const json = JSON.parse(jsonStr)
+                const text = json.choices[0]?.delta?.content
+                if (text) {
+                  tempResponseChat.value.content += text
+                  // console.log(text) // 实时打印每段文字到控制台
+                }
+              } catch (e) {
+                console.error('Error parsing JSON:', e)
+                console.error('JSON:', jsonStr)
               }
-            } catch (e) {
-              console.error('Error parsing JSON:', e)
-              console.error('JSON:', jsonStr)
             }
           }
         }
       }
+
+      // console.log('Final result:', tempResponseChat.value.content) // 打印最终结果
+      const chatItem = tempResponseChat.value
+      tempResponseChat.value = null
+      chatItem.timestamp = Date.now()
+      chatHistory.value.push(chatItem)
+
+      return
     }
 
-    // console.log('Final result:', tempResponseChat.value.content) // 打印最终结果
+    // 正常POST返回
+    const data = await response.json()
+    const chatCompletion = data as ChatCompletion
+    const message = chatCompletion.choices[0]?.message || {}
+
     const chatItem = tempResponseChat.value
-    tempResponseChat.value.timestamp = Date.now()
     tempResponseChat.value = null
+    chatItem.content = message.content || ''
+    chatItem.timestamp = chatCompletion.created * 1000
     chatHistory.value.push(chatItem)
   } catch (error: any) {
     console.error(error)
@@ -179,7 +181,6 @@ const handleKeyInput = (event) => {
 
 <template>
   <div class="chat-gpt-wrap vp-bg">
-    <OptionUI style="max-width: 500px" :option-list="optionList" />
     <div ref="respContainerRef" class="response-container _scrollbar_mini">
       <ChatItem
         v-for="(item, index) in chatHistory"
@@ -208,13 +209,18 @@ const handleKeyInput = (event) => {
       />
       <div class="request-actions">
         <div class="action-side">
-          <span class="font-code"></span>
+          <n-popover trigger="click">
+            <template #trigger>
+              <button class="vp-button">⚙️</button>
+            </template>
+            <OptionUI style="max-width: 400px" :option-list="aiSettingsOptions" />
+          </n-popover>
         </div>
 
         <div class="action-side">
           <n-popconfirm @positive-click="resetChatHistory">
             <template #trigger>
-              <button class="vp-button" tabindex="-1">Clear</button>
+              <button class="vp-button">Clear</button>
             </template>
             Clear chat history?
           </n-popconfirm>
@@ -222,7 +228,6 @@ const handleKeyInput = (event) => {
             class="vp-button"
             :disabled="isLoading || !userInputContent"
             @click="sendAiRequest"
-            tabindex="0"
           >
             Send
           </button>

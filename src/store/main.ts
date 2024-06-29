@@ -19,6 +19,7 @@ type IStore = {
   isShowSettings: boolean
   isShowQuickLaunch: boolean
   isShowIframeBrowser: boolean
+  isShowAiChat: boolean
 
   upgradeInfo: string
 }
@@ -39,6 +40,7 @@ export const useMainStore = defineStore('main', {
       isShowSettings: false,
       isShowQuickLaunch: false,
       isShowIframeBrowser: false,
+      isShowAiChat: false,
 
       upgradeInfo: '',
     }

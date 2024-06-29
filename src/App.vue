@@ -40,6 +40,8 @@ export default defineComponent({
         mainStore.isShowQuickLaunch = !mainStore.isShowQuickLaunch
       } else if (event.altKey && key === 'i') {
         mainStore.isShowIframeBrowser = !mainStore.isShowIframeBrowser
+      } else if (event.altKey && key === 'g') {
+        mainStore.isShowAiChat = !mainStore.isShowAiChat
       }
     })
 

@@ -61,6 +61,14 @@ export const useCommonTools = () => {
         },
       },
     },
+    {
+      label: `🤯 ChatGPT (alt+g)`,
+      props: {
+        onClick: async () => {
+          mainStore.isShowAiChat = !mainStore.isShowAiChat
+        },
+      },
+    },
   ]
   const qlOptions = computed((): QuickOptionItem[] => {
     let list: QuickOptionItem[] = [

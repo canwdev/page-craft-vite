@@ -17,8 +17,11 @@ const mVisible = useVModel(props, 'visible', emit)
 
 <template>
   <ViewPortWindow v-model:visible="mVisible" class="chat-window" wid="chat" allow-maximum>
-    <template #titleBarLeft>🤯 ChatGPT</template>
-    <ChatGPT />
+    <template #titleBarLeft>
+      <img src="@/assets/textures/chat-gpt-logo.svg" alt="icon" class="chat-gpt-logo" />
+      ChatGPT</template
+    >
+    <ChatGPT v-if="mVisible" />
   </ViewPortWindow>
 </template>
 
@@ -26,5 +29,10 @@ const mVisible = useVModel(props, 'visible', emit)
 .chat-window {
   min-width: 250px;
   min-height: 250px;
+  .chat-gpt-logo {
+    width: 16px;
+    height: 16px;
+    pointer-events: none;
+  }
 }
 </style>
