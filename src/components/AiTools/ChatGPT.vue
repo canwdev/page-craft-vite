@@ -4,12 +4,18 @@ import {StOptionItem, StOptionType} from '@/components/CommonUI/OptionUI/enum'
 import {useSettingsStore} from '@/store/settings'
 import {marked} from 'marked'
 import {copy} from '@/components/QuickLaunch/q-logics/utils'
-import {ChatCompletion, ChatUsage, OpenAIApiErrorCodeMessage} from '@/enum/ai/openai'
-import {IChatItem} from '@/enum/ai'
+import {
+  ChatCompletion,
+  ChatUsage,
+  OpenAIApiErrorCodeMessage,
+} from '@/components/AiTools/types/openai'
+import {IChatItem} from '@/components/AiTools/types/ai'
 import {formatDate} from '@/utils'
 import '@/styles/markdown/github-markdown.css'
 import '@/styles/markdown/github-markdown-dark.css'
 import {useMainStore} from '@/store/main'
+import ChatItem from '@/components/AiTools/ChatItem.vue'
+import {useStorage} from '@vueuse/core'
 
 const settingsStore = useSettingsStore()
 
@@ -18,8 +24,8 @@ const optionList = computed((): StOptionItem[] => {
 })
 const mainStore = useMainStore()
 const isLoading = ref(false)
-const questionContent = ref('Hello!')
-const chatHistory = ref<IChatItem[]>([])
+const userInputContent = ref('')
+const chatHistory = useStorage<IChatItem[]>('page_craft_ai_chat_history', [])
 
 const resetChatHistory = () => {
   chatHistory.value = [
@@ -31,17 +37,15 @@ const resetChatHistory = () => {
   ]
 }
 onMounted(() => {
-  resetChatHistory()
+  if (!chatHistory.value.length) {
+    resetChatHistory()
+  }
   focusInput()
 })
 
 const respContainerRef = ref()
 const inputRef = ref()
-const usageData = ref<ChatUsage>({
-  prompt_tokens: 0,
-  completion_tokens: 0,
-  total_tokens: 0,
-})
+
 // 滚动到底部
 const scrollBottom = () => {
   setTimeout(() => {
@@ -54,16 +58,25 @@ const focusInput = () => {
   })
 }
 
+const tempResponseChat = ref<IChatItem | null>(null)
 const sendAiRequest = async () => {
+  if (!userInputContent.value) {
+    return
+  }
   try {
     isLoading.value = true
+    tempResponseChat.value = {
+      role: 'assistant',
+      content: '',
+      timestamp: -1,
+    }
 
     chatHistory.value.push({
       role: 'user',
-      content: questionContent.value,
+      content: userInputContent.value,
       timestamp: Date.now(),
     })
-    questionContent.value = ''
+    userInputContent.value = ''
     scrollBottom()
 
     const apiProxy = settingsStore.openAiApiProxy || 'https://api.openai.com/v1'
@@ -76,33 +89,90 @@ const sendAiRequest = async () => {
       },
       body: JSON.stringify({
         model: 'gpt-3.5-turbo',
-        messages: chatHistory.value,
+        // 启用流式响应
+        stream: true,
+        messages: chatHistory.value.map((i) => {
+          return {
+            content: i.content,
+            role: i.role,
+          }
+        }),
       }),
     })
-    const data = await response.json()
     const errorMessage = OpenAIApiErrorCodeMessage[response.status]
     if (errorMessage) {
-      chatHistory.value.push({
+      const data = await response.json()
+      tempResponseChat.value = {
         role: 'assistant',
         content: `${errorMessage}\n\n${data.error.message}`,
-        timestamp: Date.now(),
-      })
-    } else {
-      const chatCompletion = data as ChatCompletion
-      const message = chatCompletion.choices[0]?.message || {}
-      chatHistory.value.push({
-        timestamp: chatCompletion.created * 1000,
-        ...message,
-      })
-      usageData.value = chatCompletion.usage
+      }
+      return
+    }
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
     }
 
-    scrollBottom()
-    focusInput()
+    // const data = await response.json()
+    // const chatCompletion = data as ChatCompletion
+    // const message = chatCompletion.choices[0]?.message || {}
+    // chatHistory.value.push({
+    //   timestamp: chatCompletion.created * 1000,
+    //   ...message,
+    // })
+
+    const reader = response!.body!.getReader()
+    const decoder = new TextDecoder('utf-8')
+    let result = ''
+
+    while (true) {
+      const {done, value} = await reader.read()
+      if (done) break
+
+      const chunk = decoder.decode(value, {stream: true})
+      const lines = chunk.split('\n').filter((line) => line.trim() !== '')
+
+      for (const line of lines) {
+        if (line.startsWith('data: ')) {
+          const jsonStr = line.replace('data: ', '')
+          if (jsonStr !== '[DONE]') {
+            try {
+              const json = JSON.parse(jsonStr)
+              const text = json.choices[0]?.delta?.content
+              if (text) {
+                tempResponseChat.value.content += text
+                // console.log(text) // 实时打印每段文字到控制台
+              }
+            } catch (e) {
+              console.error('Error parsing JSON:', e)
+              console.error('JSON:', jsonStr)
+            }
+          }
+        }
+      }
+    }
+
+    // console.log('Final result:', tempResponseChat.value.content) // 打印最终结果
+    const chatItem = tempResponseChat.value
+    tempResponseChat.value.timestamp = Date.now()
+    tempResponseChat.value = null
+    chatHistory.value.push(chatItem)
   } catch (error: any) {
     console.error(error)
   } finally {
     isLoading.value = false
+    scrollBottom()
+    focusInput()
+  }
+}
+
+const handleKeyInput = (event) => {
+  if (event.key === 'Enter') {
+    if (!event.shiftKey) {
+      // 如果是回车且没有按 Shift，阻止默认操作并提交
+      event.preventDefault()
+      sendAiRequest()
+    }
+    // 如果同时按下了 Shift，允许默认行为，即换行
   }
 }
 </script>
@@ -111,53 +181,48 @@ const sendAiRequest = async () => {
   <div class="chat-gpt-wrap vp-bg">
     <OptionUI style="max-width: 500px" :option-list="optionList" />
     <div ref="respContainerRef" class="response-container _scrollbar_mini">
-      <div
-        class="chat-item"
+      <ChatItem
         v-for="(item, index) in chatHistory"
         :key="index"
-        :class="{'is-reply': item.role === 'assistant'}"
-      >
-        <div class="chat-header">
-          <div class="chat-avatar" :title="item.role">
-            {{ item.role }}
-          </div>
-        </div>
-
-        <div class="chat-body">
-          <div
-            class="chat-content markdown-body vp-bg"
-            :class="{'markdown-body-dark': mainStore.isAppDarkMode}"
-            v-if="item.content"
-            v-html="marked(item.content)"
-          ></div>
-          <div class="chat-actions">
-            <div class="chat-date">{{ formatDate(item.timestamp) }}</div>
-            <button class="btn-no-style" @click="copy(item.content)">Copy</button>
-          </div>
-        </div>
-      </div>
+        :item="item"
+        :is-dark="mainStore.isAppDarkMode"
+        @delete="chatHistory.splice(index, 1)"
+        allow-delete
+        allow-edit
+      />
+      <ChatItem
+        :item="tempResponseChat"
+        v-if="tempResponseChat"
+        :is-dark="mainStore.isAppDarkMode"
+      />
     </div>
     <div class="request-below">
       <textarea
         ref="inputRef"
         class="vp-input question-input"
-        v-model="questionContent"
+        v-model="userInputContent"
         type="textarea"
-        rows="3"
+        rows="4"
+        placeholder="回车键提交，shift+回车换行"
+        @keydown="handleKeyInput"
       />
       <div class="request-actions">
         <div class="action-side">
-          <span class="font-code">{{
-            `Prompt: ${usageData.prompt_tokens} | Completion: ${usageData.completion_tokens} | Total: ${usageData.total_tokens}`
-          }}</span>
+          <span class="font-code"></span>
         </div>
 
         <div class="action-side">
-          <button class="vp-button" @click="resetChatHistory" tabindex="-1">Reset</button>
+          <n-popconfirm @positive-click="resetChatHistory">
+            <template #trigger>
+              <button class="vp-button" tabindex="-1">Clear</button>
+            </template>
+            Clear chat history?
+          </n-popconfirm>
           <button
             class="vp-button"
-            :disabled="isLoading || !questionContent"
+            :disabled="isLoading || !userInputContent"
             @click="sendAiRequest"
+            tabindex="0"
           >
             Send
           </button>
@@ -178,83 +243,6 @@ const sendAiRequest = async () => {
     flex: 1;
     overflow-y: auto;
     padding: 8px;
-
-    .chat-item {
-      margin-bottom: 4px;
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      flex-direction: row-reverse;
-
-      &.is-reply {
-        flex-direction: row;
-        .chat-content {
-          border-radius: 0 10px 10px;
-        }
-      }
-
-      .chat-header {
-        margin-bottom: 4px;
-      }
-      .chat-avatar {
-        width: 32px;
-        height: 32px;
-        background-color: $primary;
-        color: white;
-        border-radius: 50%;
-        overflow: hidden;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 12px;
-        user-select: none;
-        box-shadow: 0 1px 1px $color_border;
-      }
-      .chat-date {
-        font-size: 12px;
-        opacity: 0.6;
-      }
-
-      .chat-body {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-      }
-
-      .chat-content {
-        line-height: 26px;
-        display: inline-block;
-        padding: 6px 12px;
-        border-radius: 10px 0 10px 10px;
-        max-width: 800px;
-        font-size: 14px;
-        background-color: $primary_opacity;
-        box-shadow: 0 1px 1px $color_border;
-      }
-
-      .chat-actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        font-size: 12px;
-        padding: 0 8px;
-        opacity: 0;
-        visibility: hidden;
-        transition: all 0.2s;
-
-        button {
-          opacity: 0.6;
-          font-size: 12px;
-        }
-      }
-
-      &:hover {
-        .chat-actions {
-          opacity: 1;
-          visibility: visible;
-        }
-      }
-    }
   }
   .request-below {
     display: flex;

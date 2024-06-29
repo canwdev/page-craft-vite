@@ -5,7 +5,6 @@ import {useSettingsStore} from '@/store/settings'
 import i18n from '@/i18n/index'
 import {window as tauriWin} from '@tauri-apps/api'
 import {formatSiteTitle} from '@/router/router-utils'
-import {initFs} from '@/components/PageCraft/ComponentExplorer/utils/api'
 
 let history = createWebHashHistory()
 let routes = [
@@ -16,9 +15,9 @@ let routes = [
     meta: {
       title: i18n.global.t('common.welcome'),
     },
-    beforeEnter: (to, from, next) => {
-      return next()
-    },
+    // beforeEnter: (to, from, next) => {
+    //   return next()
+    // },
   },
   {
     path: '/craft',
@@ -83,6 +82,8 @@ let routes = [
       },
     ],
   },
+  // catch all route for 404
+  {path: '/:catchAll(.*)', component: () => import('@/views/404.vue')},
 ]
 const router = createRouter({history, routes})
 

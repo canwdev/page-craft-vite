@@ -10,6 +10,7 @@ export enum ChatModel {
 }
 
 export const OpenAIApiErrorCodeMessage: Record<string, string> = {
+  400: '[400] Bad Request',
   401: '[401] 提供错误的API密钥 | Incorrect API key provided',
   403: '[403] 服务器拒绝访问，请稍后再试 | Server refused to access, please try again later',
   502: '[502] 错误的网关 |  Bad Gateway',
