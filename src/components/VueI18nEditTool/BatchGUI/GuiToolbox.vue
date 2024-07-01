@@ -141,7 +141,6 @@ height: 495px;`,
   await printAllInfo()
 }
 
-const isShowToolboxMenu = ref(false)
 const guiToolboxOptions = computed((): QuickOptionItem[] => {
   const currentPath = i18nMainStore.translatePath
   return [
@@ -207,13 +206,15 @@ const toolboxFilterKeyChange = useDebounceFn(() => {
 
 <template>
   <div class="vp-bg action-row">
-    <button
-      class="vp-button"
-      @click="isShowToolboxMenu = !isShowToolboxMenu"
-      @mouseover="isShowToolboxMenu = true"
-    >
-      {{ $t('common.tools') }}
-    </button>
+    <n-popover trigger="hover" placement="bottom-start" :arrow="true" style="padding: 0">
+      <template #trigger>
+        <button class="vp-button">
+          {{ $t('common.tools') }}
+        </button>
+      </template>
+
+      <QuickOptions is-static :options="guiToolboxOptions" class="vp-panel" />
+    </n-popover>
 
     <input
       class="vp-input font-code"
@@ -226,14 +227,6 @@ const toolboxFilterKeyChange = useDebounceFn(() => {
     />
 
     <!-- {{ i18nMainStore.filePathArr.join('/') }}-->
-    <transition name="fade-scale">
-      <QuickOptions
-        style="top: 100%"
-        v-model:visible="isShowToolboxMenu"
-        :options="guiToolboxOptions"
-        @mouseleave="isShowToolboxMenu = false"
-      />
-    </transition>
   </div>
 </template>
 

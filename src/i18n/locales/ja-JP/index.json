@@ -43,7 +43,6 @@
     "others": "その他",
     "sound_fx": "サウンドFX",
     "reference_map": "参照マップ",
-    "welcome": "ようこそ",
     "edit_mode": "編集モード",
     "folders_mode": "フォルダーモード",
     "files_mode": "ファイルモード",
@@ -57,7 +56,9 @@
     "home_page": "ホームページ",
     "plugins_manager": "プラグインマネージャー",
     "rich_text_tool": "リッチテキストツール",
-    "iframe_browser": "iframe ブラウザ"
+    "iframe_browser": "iframe ブラウザ",
+    "welcome": "ホーム",
+    "more": "もっと"
   },
   "actions": {
     "cancel": "キャンセル",

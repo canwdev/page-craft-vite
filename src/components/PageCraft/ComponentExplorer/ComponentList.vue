@@ -124,7 +124,7 @@ const handleOpen = (item) => {
   emit('open', item)
 }
 
-const {handleOpenLocalDir, localDirHistoryOptions, isShowDirHistory} = useLocalDir({emit})
+const {handleOpenLocalDir, localDirHistoryOptions} = useLocalDir({emit})
 </script>
 
 <template>
@@ -188,27 +188,21 @@ const {handleOpenLocalDir, localDirHistoryOptions, isShowDirHistory} = useLocalD
 
         <div class="split-line"></div>
 
-        <div class="action-button-wrap">
-          <button
-            class="vp-button"
-            title="Open Local Folder"
-            @click="handleOpenLocalDir"
-            @mouseover="isShowDirHistory = true"
-            @contextmenu.prevent="$router.push({name: 'DevPage'})"
-          >
-            <n-icon size="16">
-              <Folder16Regular />
-            </n-icon>
-          </button>
-          <transition name="fade-scale">
-            <QuickOptions
-              v-if="localDirHistoryOptions.length"
-              v-model:visible="isShowDirHistory"
-              :options="localDirHistoryOptions"
-              @mouseleave="isShowDirHistory = false"
-            />
-          </transition>
-        </div>
+        <n-popover trigger="hover" placement="bottom-start" :arrow="true" style="padding: 0">
+          <template #trigger>
+            <button class="vp-button" title="Open Local Folder" @click="handleOpenLocalDir">
+              <n-icon size="16">
+                <Folder16Regular />
+              </n-icon>
+            </button>
+          </template>
+          <QuickOptions
+            v-if="localDirHistoryOptions.length"
+            :options="localDirHistoryOptions"
+            is-static
+            class="vp-panel"
+          />
+        </n-popover>
       </div>
       <div class="action-group">
         <div class="action-button-wrap">

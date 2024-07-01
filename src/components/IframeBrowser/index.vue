@@ -91,6 +91,10 @@ const setMobileView = () => {
     v-model:visible="mVisible"
     wid="iframe_browser"
     allow-maximum
+    :init-win-options="{
+      width: '350px',
+      height: '500px',
+    }"
   >
     <template #titleBarLeft>Iframe Browser {{ titleText }}</template>
     <template #titleBarRightControls>

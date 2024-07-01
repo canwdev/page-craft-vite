@@ -16,7 +16,16 @@ const mVisible = useVModel(props, 'visible', emit)
 </script>
 
 <template>
-  <ViewPortWindow v-model:visible="mVisible" class="chat-window" wid="chat" allow-maximum>
+  <ViewPortWindow
+    v-model:visible="mVisible"
+    class="chat-window"
+    wid="chat"
+    allow-maximum
+    :init-win-options="{
+      width: '400px',
+      height: '500px',
+    }"
+  >
     <template #titleBarLeft>
       <img src="@/assets/textures/chat-gpt-logo.svg" alt="icon" class="chat-gpt-logo" />
       ChatGPT</template

@@ -305,6 +305,10 @@ defineExpose({
     @keyup="listenShortcuts"
     @onActive="focusEditor"
     allow-maximum
+    :init-win-options="{
+      width: '400px',
+      height: '500px',
+    }"
   >
     <template #titleBarLeft>
       <n-icon class="window-icon" size="18"><PaintBrush20Regular /></n-icon

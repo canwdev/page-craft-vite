@@ -127,6 +127,10 @@ export default defineComponent({
     allow-maximum
     wid="element_editor"
     @resize="handleResize"
+    :init-win-options="{
+      width: '400px',
+      height: '500px',
+    }"
   >
     <template #titleBarLeft>
       {{ `${$t('actions.edit_element')} <${dataForm.tagName}>` }}

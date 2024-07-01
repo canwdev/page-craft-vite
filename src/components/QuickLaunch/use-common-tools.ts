@@ -74,7 +74,7 @@ export const useCommonTools = () => {
     let list: QuickOptionItem[] = [
       ...toolsMenuOptions,
       {
-        label: '✨ More...',
+        label: `✨ ${$t('common.more')}...`,
         children: [
           {
             label: `🌏 ${$t('common.iframe_browser')} (alt+i)`,

@@ -148,25 +148,21 @@ const {handleOpenLocalDir, localDirHistoryOptions, isShowDirHistory} = useLocalD
 
         <div class="split-line"></div>
 
-        <div class="action-button-wrap">
-          <button
-            class="vp-button"
-            title="Toggle Sort"
-            @click="handleOpenLocalDir"
-            @mouseover="isShowDirHistory = true"
-          >
-            <n-icon size="16">
-              <Folder16Regular />
-            </n-icon>
-          </button>
-          <transition name="fade-scale">
-            <QuickOptions
-              v-model:visible="isShowDirHistory"
-              :options="localDirHistoryOptions"
-              @mouseleave="isShowDirHistory = false"
-            />
-          </transition>
-        </div>
+        <n-popover trigger="hover" placement="bottom-start" :arrow="true" style="padding: 0">
+          <template #trigger>
+            <button class="vp-button" title="Open Local Folder" @click="handleOpenLocalDir">
+              <n-icon size="16">
+                <Folder16Regular />
+              </n-icon>
+            </button>
+          </template>
+          <QuickOptions
+            v-if="localDirHistoryOptions.length"
+            :options="localDirHistoryOptions"
+            is-static
+            class="vp-panel"
+          />
+        </n-popover>
       </div>
       <div class="action-group">
         <button @click="isGridView = !isGridView" class="vp-button" title="Toggle grid view">

@@ -56,6 +56,10 @@ export default defineComponent({
     v-model:visible="mVisible"
     wid="preview"
     allow-maximum
+    :init-win-options="{
+      width: '500px',
+      height: '500px',
+    }"
   >
     <template #titleBarLeft> {{ $t('actions.preview') }}: {{ previewData?.name }} </template>
     <template v-if="previewData && mVisible">

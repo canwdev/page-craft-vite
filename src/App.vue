@@ -68,7 +68,7 @@ export default defineComponent({
     :style="bgStyle"
   >
     <n-loading-bar-provider>
-      <n-notification-provider placement="bottom-right">
+      <n-notification-provider placement="top-right">
         <n-message-provider placement="top">
           <n-dialog-provider>
             <RouterView />
@@ -92,30 +92,11 @@ export default defineComponent({
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
+}
 
-  //&::before {
-  //  content: '';
-  //  position: absolute;
-  //  top: 0;
-  //  left: 0;
-  //  right: 0;
-  //  bottom: 0;
-  //  pointer-events: none;
-  //  background-image: url('@/assets/bg/grid-light.png');
-  //  background-size: 100px;
-  //  opacity: 0.4;
-  //}
-  &._dark {
+._dark {
+  .page-craft-root {
     background-color: #181818;
-    //background-color: #5480d3;
-    //background-image: linear-gradient(#5480d3, #3256a7);
-    //&::before {
-    //  background-image: url('@/assets/bg/grid.png');
-    //}
-    &::after {
-      color: white;
-      text-shadow: 0 0 2px #000;
-    }
   }
 }
 </style>

@@ -49,6 +49,10 @@ export default defineComponent({
     wid="ql"
     class="quick-launch-window"
     allow-maximum
+    :init-win-options="{
+      width: '350px',
+      height: '500px',
+    }"
   >
     <template #titleBarLeft>
       <img src="@/assets/textures/crafting_table_top.png" alt="icon" />

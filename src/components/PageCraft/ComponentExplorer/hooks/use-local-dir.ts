@@ -12,7 +12,6 @@ export const useLocalDir = ({emit}) => {
       handleRef.value = handle
     }
   )
-  const isShowDirHistory = ref(false)
 
   const handleOpenLocalDir = async () => {
     const handle = await window.showDirectoryPicker()
@@ -44,6 +43,5 @@ export const useLocalDir = ({emit}) => {
   return {
     handleOpenLocalDir,
     localDirHistoryOptions,
-    isShowDirHistory,
   }
 }

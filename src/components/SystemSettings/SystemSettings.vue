@@ -151,7 +151,15 @@ const optionList = computed((): StOptionItem[] => {
 </script>
 
 <template>
-  <ViewPortWindow v-model:visible="mVisible" class="system-settings-window" wid="settings">
+  <ViewPortWindow
+    v-model:visible="mVisible"
+    class="system-settings-window"
+    wid="settings"
+    :init-win-options="{
+      width: '380px',
+      height: '500px',
+    }"
+  >
     <template #titleBarLeft>⚙️ {{ $t('common.settings') }}</template>
     <OptionUI class="system-settings" :option-list="optionList" />
   </ViewPortWindow>

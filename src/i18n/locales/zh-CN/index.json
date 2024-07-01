@@ -43,7 +43,6 @@
     "others": "其他",
     "sound_fx": "交互音效",
     "reference_map": "参考图",
-    "welcome": "欢迎使用",
     "edit_mode": "编辑模式",
     "folders_mode": "多文件夹模式",
     "files_mode": "多文件模式",
@@ -57,7 +56,9 @@
     "home_page": "主页",
     "plugins_manager": "插件管理器",
     "rich_text_tool": "富文本工具",
-    "iframe_browser": "iframe 浏览器"
+    "iframe_browser": "iframe 浏览器",
+    "welcome": "首页",
+    "more": "更多"
   },
   "actions": {
     "cancel": "取消",

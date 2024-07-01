@@ -201,6 +201,7 @@ export default defineComponent({
       @select="handleSelectContextmenu"
       key-field="label"
       :on-clickoutside="handleClickOutside"
+      :animated="false"
     />
 
     <n-modal
