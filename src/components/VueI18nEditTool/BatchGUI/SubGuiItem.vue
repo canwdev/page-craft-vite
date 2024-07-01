@@ -11,7 +11,7 @@ import {readClipboardData} from '@/utils'
 import {textConvertAdvanced} from '@/utils/mc-utils/text-convert'
 import {useI18nToolSettingsStore} from '@/components/VueI18nEditTool/store/i18n-tool-settings'
 import FieldEdit from '@/components/VueI18nEditTool/Single/FieldEdit.vue'
-import {useBatchItemV2} from '@/components/VueI18nEditTool/BatchGUI/hooks/batch-hooks'
+import {useBatchItemV2} from '@/components/VueI18nEditTool/BatchGUI/batch-hooks'
 import {BatchListItem, useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
 import CcFlag from '@/components/VueI18nEditTool/CcFlag.vue'
 

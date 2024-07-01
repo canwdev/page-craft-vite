@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import SubGuiItem from '@/components/VueI18nEditTool/BatchGUI/SubGuiItem.vue'
-import {useBatchWrapper} from '@/components/VueI18nEditTool/BatchGUI/hooks/batch-hooks'
+import {useBatchWrapper} from '@/components/VueI18nEditTool/BatchGUI/batch-hooks'
 import {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
 import {useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
 

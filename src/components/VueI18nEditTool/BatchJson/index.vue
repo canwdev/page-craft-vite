@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import SubTextItem from '@/components/VueI18nEditTool/BatchJson/SubJsonItem.vue'
-import {useBatchWrapper} from '@/components/VueI18nEditTool/BatchGUI/hooks/batch-hooks'
+import {useBatchWrapper} from '@/components/VueI18nEditTool/BatchGUI/batch-hooks'
 import {useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
 import {useI18nToolSettingsStore} from '@/components/VueI18nEditTool/store/i18n-tool-settings'
 
@@ -12,19 +12,18 @@ const currentTab = ref('')
 
 watch(
   () => i18nMainStore.batchList,
-  (val) => {
-    if (!val[0]) {
+  (batchList) => {
+    if (!batchList[0]) {
       return
     }
-    // 如果没有选中或切换文件，自动选中第一个文件
-    if (!currentTab.value) {
-      currentTab.value = val[0].rootDir.key
-      return
-    }
-    const f = val.find((item) => item.rootDir.key === currentTab.value)
+    // 自动选中当前json文件夹对应的tab
+    const f = batchList.find((item) => item.rootDir.label === i18nMainStore.currentIso)
     if (!f) {
-      currentTab.value = val[0].rootDir.key
+      // 回退默认
+      currentTab.value = batchList[0].rootDir.key
+      return
     }
+    currentTab.value = f.rootDir.key
   },
   {immediate: true}
 )

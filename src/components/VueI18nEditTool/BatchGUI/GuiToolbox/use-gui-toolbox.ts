@@ -4,6 +4,7 @@ import {ChatCompletion, GptMessage} from '@/components/AiTools/types/openai'
 import {readClipboardData} from '@/utils'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {useI18n} from 'vue-i18n'
+import {useBatchTranslateAnalyser} from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox/use-analyser'
 
 export type PasteResult = {
   // iso，如 en-US
@@ -112,81 +113,11 @@ export const useGuiToolbox = () => {
     }
   }
 
-  const {requestChatCompletion} = useGpt()
-  /**
-   * 自动翻译右侧空缺的字段
-   */
-  const handleGptTranslate = async () => {
-    try {
-      i18nMainStore.isLoading = true
-      const sourceList = await getArrayFromRight()
-      const iso = i18nMainStore.filePathArr[0] || ''
-      if (!iso) {
-        throw new Error('iso is missing')
-      }
-      const find = sourceList.find((item) => item.label === iso)
-      if (!find) {
-        throw new Error('iso item not found')
-      }
-      console.log({find, sourceList})
-      /**
-       * 构建AI提示词
-       */
-      const buildAiPrompt = () => {
-        // 生成示例对象
-        const arr: PasteResult[] = []
-        sourceList.forEach((item) => {
-          if (item.label !== iso && !item.value) {
-            arr.push({
-              label: item.label,
-              value: '',
-            })
-          }
-        })
-        if (!arr.length) {
-          throw new Error('No need translate')
-        }
-
-        const ret: GptMessage[] = [
-          {
-            role: 'system',
-            content: `你是一个后台翻译服务，负责翻译多语言文案，帮我翻译并只返回json。json格式为：\`${JSON.stringify(
-              arr
-            )}\``,
-          },
-          {
-            role: 'user',
-            content: `翻译内容(${iso}):
-\`${find.value}\``,
-          },
-        ]
-
-        console.log('[buildAiPrompt]', ret)
-        return ret
-      }
-
-      const completion = (await requestChatCompletion({
-        stream: false,
-        messages: buildAiPrompt(),
-      })) as ChatCompletion
-      const message: GptMessage = completion.choices[0]?.message || {}
-      console.log('message', message)
-      const content = JSON.parse(message.content)
-      await pasteJsonOverrideRight(content)
-    } catch (error: any) {
-      console.error(error)
-      window.$message.error(error.message)
-    } finally {
-      i18nMainStore.isLoading = false
-    }
-  }
-
   return {
     removeSelectedClass,
     handleKeyClick,
     getSubItems,
     getArrayFromRight,
     pasteJsonOverrideRight,
-    handleGptTranslate,
   }
 }

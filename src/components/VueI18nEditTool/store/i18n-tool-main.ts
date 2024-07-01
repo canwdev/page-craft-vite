@@ -54,4 +54,9 @@ export const useI18nMainStore = defineStore('i18nToolMain', {
       isLoading: false,
     }
   },
+  getters: {
+    currentIso(): string {
+      return this.filePathArr[0] || ''
+    },
+  },
 })

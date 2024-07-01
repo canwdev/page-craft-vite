@@ -68,7 +68,7 @@ export default defineComponent({
     :style="bgStyle"
   >
     <n-loading-bar-provider>
-      <n-notification-provider placement="top-right">
+      <n-notification-provider placement="bottom-right">
         <n-message-provider placement="top">
           <n-dialog-provider>
             <RouterView />

@@ -103,7 +103,10 @@
     "save_as": "另存为",
     "open": "打开",
     "download": "下载",
-    "current": "当前"
+    "current": "当前",
+    "add_plugin": "添加插件",
+    "plugins": "插件",
+    "import_export": "导入/导出"
   },
   "msgs": {
     "drop_files_here": "将文件拖放到此处",
@@ -170,6 +173,9 @@
     "locate_translate_pa": "定位翻译路径",
     "input_demo_to_creat": "输入'demo'来创建一个演示插件！",
     "input_plugin_name": "输入插件名称",
-    "reload_all_plugins": "重新加载所有插件"
+    "reload_all_plugins": "重新加载所有插件",
+    "error_name_duplicat": "错误：名称重复！",
+    "reload_custom_plugi": "重新加载自定义插件",
+    "plugins_reloaded": "插件已重新加载！"
   }
 }

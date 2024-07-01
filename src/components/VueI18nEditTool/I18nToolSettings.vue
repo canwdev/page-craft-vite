@@ -122,7 +122,7 @@ export default defineComponent({
   <n-modal
     v-model:show="mVisible"
     preset="dialog"
-    :title="$t('common.settings')"
+    :title="$t('common.i18njson_batch_tool') + ' ' + $t('common.settings')"
     style="padding-left: 10px; padding-right: 10px"
     :icon="dialogIconRender"
   >

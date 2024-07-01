@@ -188,7 +188,7 @@ const {handleOpenLocalDir, localDirHistoryOptions} = useLocalDir({emit})
 
         <div class="split-line"></div>
 
-        <n-popover trigger="hover" placement="bottom-start" :arrow="true" style="padding: 0">
+        <n-popover trigger="hover" placement="bottom-start" style="padding: 0">
           <template #trigger>
             <button class="vp-button" title="Open Local Folder" @click="handleOpenLocalDir">
               <n-icon size="16">

@@ -23,8 +23,8 @@ import {useStorage} from '@vueuse/core'
 import TabLayout from '@/components/CommonUI/TabLayout.vue'
 import {useOpenedHistory} from '@/components/VueI18nEditTool/file-history'
 import {LsKeys} from '@/enum/page-craft'
-import {useGuiToolbox} from '@/components/VueI18nEditTool/BatchGUI/hooks/use-gui-toolbox'
-import GuiToolbox from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox.vue'
+import {useGuiToolbox} from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox/use-gui-toolbox'
+import GuiToolbox from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox/GuiToolbox.vue'
 import {handleReadSelectedFile} from '@/utils/mc-utils/io'
 import CommonNavbar from '@/components/CommonUI/CommonNavbar.vue'
 
@@ -388,7 +388,10 @@ const {showDropzone, fileDragover, fileDrop} = useFileDrop({
             {{ $t('common.settings') }}
           </button>
 
-          <button class="vp-button" @click="mainStore.isShowQuickLaunch = true">
+          <button
+            class="vp-button"
+            @click="mainStore.isShowQuickLaunch = !mainStore.isShowQuickLaunch"
+          >
             {{ $t('common.toolbox') }}
           </button>
 
@@ -481,7 +484,7 @@ const {showDropzone, fileDragover, fileDrop} = useFileDrop({
                   class="gui-edit-gui"
                   :style="{width: editMode === EditMode.BATCH ? '500px' : '100%'}"
                 >
-                  <GuiToolbox v-if="editMode === EditMode.BATCH" />
+                  <GuiToolbox v-if="editMode !== EditMode.JSON" />
 
                   <TranslateTreeItem
                     v-for="(item, index) in i18nMainStore.translateTreeRoot"
@@ -597,6 +600,13 @@ const {showDropzone, fileDragover, fileDrop} = useFileDrop({
           &.t_selected {
             background-color: $primary !important;
             transition: all 0.3s;
+          }
+          &.t_highlight {
+            outline-offset: -1px;
+            outline: 1px dashed #ffeb3b !important;
+            &.t_highlight_current {
+              outline: 2px solid #ff9800 !important;
+            }
           }
         }
       }

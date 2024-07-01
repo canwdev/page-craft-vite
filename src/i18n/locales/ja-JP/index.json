@@ -103,7 +103,10 @@
     "save_as": "名前を付けて保存",
     "open": "開く",
     "download": "ダウンロード",
-    "current": "現在の"
+    "current": "現在の",
+    "add_plugin": "プラグインを追加",
+    "plugins": "プラグイン",
+    "import_export": "輸入/エクスポート"
   },
   "msgs": {
     "drop_files_here": "ここにファイルをドロップ",
@@ -170,6 +173,9 @@
     "locate_translate_pa": "翻訳パスを特定する",
     "input_demo_to_creat": "デモプラグインを作成するには、'demo'を入力してください！",
     "input_plugin_name": "インプットプラグイン名",
-    "reload_all_plugins": "すべてのプラグインをリロード"
+    "reload_all_plugins": "すべてのプラグインをリロード",
+    "error_name_duplicat": "エラー：名前が重複しています！",
+    "reload_custom_plugi": "カスタムプラグインを再読み込み",
+    "plugins_reloaded": "プラグインが再読み込みされました！"
   }
 }
