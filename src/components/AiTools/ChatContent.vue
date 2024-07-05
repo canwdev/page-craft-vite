@@ -159,7 +159,7 @@ const handleKeyInput = (event) => {
         v-model="userInputContent"
         type="textarea"
         rows="4"
-        placeholder="回车键提交，shift+回车换行"
+        :placeholder="$t('ai.hui_che_jian_ti_jiao')"
         @keydown="handleKeyInput"
       />
       <div class="request-actions">

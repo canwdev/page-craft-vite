@@ -15,6 +15,10 @@ export default defineComponent({
       type: Object as PropType<AutoFormSchema>,
       required: true,
     },
+    hideActions: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: ['onInvalidForm', 'onSubmit', 'onMounted', 'onBeforeUnmount'],
   setup(props, {emit}) {
@@ -95,8 +99,10 @@ export default defineComponent({
     </template>
 
     <!-- 操作按钮-->
-    <div v-if="formSchema.actionButtons" class="auto-form-actions">
-      <n-button type="primary" size="small" @click="submitForm()">Submit</n-button>
+    <div v-if="!hideActions" class="auto-form-actions">
+      <slot name="actions" :submit-form="submitForm">
+        <n-button type="primary" size="small" @click="submitForm()">Submit</n-button>
+      </slot>
     </div>
 
     <slot></slot>

@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import ChatGPT from '@/components/AiTools/ChatGPT.vue'
 import CommonNavbar from '@/components/CommonUI/CommonNavbar.vue'
+import ChatRoot from '@/components/AiTools/ChatRoot.vue'
 </script>
 
 <template>
   <div class="ai-page _scrollbar_mini">
     <CommonNavbar />
-    <ChatGPT class="gpt-wrap" />
+    <ChatRoot />
   </div>
 </template>
 
@@ -16,7 +16,8 @@ import CommonNavbar from '@/components/CommonUI/CommonNavbar.vue'
   display: flex;
   flex-direction: column;
 
-  .gpt-wrap {
+  .chat-root {
+    width: 100%;
     flex: 1;
     overflow: hidden;
   }

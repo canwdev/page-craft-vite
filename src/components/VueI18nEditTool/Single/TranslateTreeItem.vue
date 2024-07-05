@@ -309,7 +309,7 @@ export default defineComponent({
         />
       </template>
 
-      <div class="actions-wrap vp-bg">
+      <div class="actions-wrap">
         <span class="namespace-display font-code font-italic">
           {{ namespacePrefix ? namespacePrefix + '.' : '' }}{{ item.namespace }}</span
         >
@@ -403,14 +403,6 @@ export default defineComponent({
     display: flex;
     justify-content: space-between;
     align-items: center;
-
-    //position: sticky;
-    //bottom: 0;
-    //z-index: 1;
-    margin-left: -$padding;
-    margin-right: -$padding;
-    margin-bottom: -$padding;
-    padding: $padding;
 
     .namespace-display {
       opacity: 0.5;

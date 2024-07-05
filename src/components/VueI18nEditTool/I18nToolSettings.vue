@@ -45,7 +45,7 @@ export default defineComponent({
               key: 'autoPasteTextConvertMode',
               store: i18nSetStore,
               type: StOptionType.SELECT,
-              selectOptions: [
+              options: [
                 {label: 'Disabled', value: TextConvertMode.DISABLED},
                 {label: 'Number', value: TextConvertMode.NUMBER},
                 ...TextConvertOptions,

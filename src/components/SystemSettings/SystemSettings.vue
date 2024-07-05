@@ -76,14 +76,14 @@ const optionList = computed((): StOptionItem[] => {
           key: 'ldTheme',
           store: settingsStore,
           type: StOptionType.MULTIPLE_SWITCH,
-          selectOptions: ldThemeOptions,
+          options: ldThemeOptions,
         },
         {
           label: $t('common.theme'),
           key: 'customTheme',
           store: settingsStore,
           type: StOptionType.SELECT,
-          selectOptions: themeOptions.value,
+          options: themeOptions.value,
         },
         {
           label: $t('common.disable_animation'),

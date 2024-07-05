@@ -68,7 +68,7 @@ export default defineComponent({
             </g>
           </svg>
         </div>
-        <ItemAction v-else :item="item" />
+        <ItemAction :item="item" />
       </div>
     </div>
 
@@ -77,7 +77,8 @@ export default defineComponent({
         v-for="sItem in item.children"
         :key="sItem.key"
         class="sub-item"
-        :class="{clickable: sItem.clickFn}"
+        :class="[{clickable: sItem.clickFn}, sItem.cls]"
+        :data-key="sItem.key"
         @click="handleItemClick($event, sItem.clickFn)"
       >
         <div class="o-left">
@@ -138,7 +139,7 @@ export default defineComponent({
     .p-right {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
     }
 
     .btn-reset,
@@ -176,11 +177,12 @@ export default defineComponent({
       .o-left {
         display: flex;
         align-items: center;
+        gap: 8px;
         .item-icon {
-          width: 48px;
-          height: 48px;
+          flex-shrink: 0;
+          width: 32px;
+          height: 32px;
           border-radius: 4px;
-          margin-right: 16px;
           display: inline-flex;
           img {
             width: 100%;

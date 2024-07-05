@@ -191,6 +191,11 @@
     "delete_all_custom_p": "Delete all custom plugins"
   },
   "ai": {
-    "clear_chat_history": "Clear chat history?"
+    "clear_chat_history": "Clear chat history?",
+    "dai_li_di_zhi": "Proxy Address",
+    "model": "Model",
+    "qi_yong_liu_shi_xian": "Enable streaming response",
+    "kuai_su_xiang_ying_d": "Quick response, but may lose packets with poor network connectivity",
+    "hui_che_jian_ti_jiao": "Press Enter to submit, Shift+Enter to newline"
   }
 }

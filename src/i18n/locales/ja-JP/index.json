@@ -107,7 +107,8 @@
     "plugins": "プラグイン",
     "import_export": "輸入/エクスポート",
     "refactor": "リファクタリング",
-    "save_all": "すべて保存"
+    "save_all": "すべて保存",
+    "send": "送信"
   },
   "msgs": {
     "drop_files_here": "ここにファイルをドロップ",
@@ -188,5 +189,13 @@
     "plugins_reloaded": "プラグインが再読み込みされました！",
     "reload_custom_plugi": "カスタムプラグインを再読み込み",
     "delete_all_custom_p": "すべてのカスタムプラグインを削除"
+  },
+  "ai": {
+    "clear_chat_history": "チャット履歴を削除しますか？",
+    "dai_li_di_zhi": "プロキシアドレス",
+    "model": "モデル",
+    "qi_yong_liu_shi_xian": "ストリーミングレスポンスを有効にする",
+    "kuai_su_xiang_ying_d": "迅速な応答ですが、ネットワークが不良品でパケットが落ちる可能性があります",
+    "hui_che_jian_ti_jiao": "Enterで送信、Shift+Enterで改行"
   }
 }

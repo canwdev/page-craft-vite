@@ -153,6 +153,7 @@ export default defineComponent({
       }"
       @onSubmit="handleSubmit"
       class="element-edit-form font-code"
+      hide-actions
     >
       <div class="action-row vp-bg">
         <n-switch

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
-import ChatGPT from '@/components/AiTools/ChatGPT.vue'
+import ChatGPT from '@/components/AiTools/ChatContent.vue'
 import {useVModel} from '@vueuse/core'
+import ChatRoot from '@/components/AiTools/ChatRoot.vue'
 
 const emit = defineEmits(['update:visible'])
 interface Props {
@@ -30,7 +31,7 @@ const mVisible = useVModel(props, 'visible', emit)
       <img src="@/assets/textures/chat-gpt-logo.svg" alt="icon" class="chat-gpt-logo" />
       ChatGPT</template
     >
-    <ChatGPT v-if="mVisible" />
+    <ChatRoot v-if="mVisible" />
   </ViewPortWindow>
 </template>
 

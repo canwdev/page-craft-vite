@@ -59,7 +59,6 @@ export type AutoFormSchema = {
   model: any
   rules?: FormRules
   props?: any
-  actionButtons?: boolean
   labelWidth?: string
   labelPosition?: string
 }

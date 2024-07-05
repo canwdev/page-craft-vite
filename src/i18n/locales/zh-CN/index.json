@@ -107,7 +107,9 @@
     "plugins": "插件",
     "import_export": "导入/导出",
     "refactor": "重构",
-    "save_all": "全部保存"
+    "save_all": "全部保存",
+    "send": "发送",
+    "create": "Create"
   },
   "msgs": {
     "drop_files_here": "将文件拖放到此处",
@@ -169,7 +171,8 @@
     "refresh_page": "刷新页面？",
     "recommend_download_client_title": "推荐下载桌面客户端",
     "recommend_download_client_desc": "⚡ 完全开源、离线可用\n💡 使用Tauri技术构建，轻量化不到10MB\n🚀 调用系统原生WebView2，更快更稳定\n💽 exe安装包可解压后直接运行，无需安装",
-    "error_name_duplicat": "错误：名称重复！"
+    "error_name_duplicat": "错误：名称重复！",
+    "que_ren_shan_chu_ci": "确认删除？此操作不可撤销"
   },
   "i18n_tools": {
     "locate_translate_pa": "定位翻译路径",
@@ -188,5 +191,13 @@
     "plugins_reloaded": "插件已重新加载！",
     "reload_custom_plugi": "重新加载自定义插件",
     "delete_all_custom_p": "删除所有自定义插件"
+  },
+  "ai": {
+    "clear_chat_history": "清除聊天记录？",
+    "dai_li_di_zhi": "代理地址",
+    "model": "模型",
+    "qi_yong_liu_shi_xian": "启用流式响应",
+    "kuai_su_xiang_ying_d": "快速响应，但网络不好可能丢包",
+    "hui_che_jian_ti_jiao": "回车键提交，shift+回车换行"
   }
 }

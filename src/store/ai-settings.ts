@@ -7,6 +7,8 @@ interface IStore {
   // 启用流式响应
   stream: boolean
   model: ChatModel
+  // 助手
+  currentCharacterId: string
 }
 
 export const useAiSettingsStore = defineStore('aiSettingsStore', {
@@ -16,6 +18,7 @@ export const useAiSettingsStore = defineStore('aiSettingsStore', {
       openAiApiProxy: '',
       stream: true,
       model: ChatModel.GPT35Turbo,
+      currentCharacterId: 'default',
     }
   },
   persist: {

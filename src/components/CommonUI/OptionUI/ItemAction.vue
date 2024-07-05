@@ -1,30 +1,9 @@
 <script lang="ts">
 import {defineComponent, PropType} from 'vue'
 import RectSwitch from './Tools/RectSwitch.vue'
-import {StOptionItem, StOptionType} from './enum'
+import {StOptionItem, StOptionType, swatches} from './enum'
 import VueRender from './Tools/VueRender.vue'
 import AdvancedNumberInput from './Tools/AdvancedNumberInput.vue'
-
-const swatches = [
-  '#258292',
-  '#3A6EA5',
-  '#F0C869',
-  '#E81123',
-  '#e91e63',
-  '#FFFFFF',
-  '#000000',
-  '#007aff',
-  '#a2845e',
-  '#8e8e93',
-  '#28cd41',
-  '#5856d6',
-  '#ff9500',
-  '#ff2d55',
-  '#af52de',
-  '#ff3b30',
-  '#5ac8fa',
-  '#ffcc00',
-]
 
 export default defineComponent({
   name: 'ItemAction',
@@ -71,7 +50,7 @@ export default defineComponent({
 
     <RectSwitch
       v-else-if="item.type === StOptionType.MULTIPLE_SWITCH"
-      :options="item.selectOptions"
+      :options="item.options"
       v-model="dynamicValue"
       v-bind="item.props"
     />
@@ -84,7 +63,7 @@ export default defineComponent({
       class="option-select"
       v-else-if="item.type === StOptionType.SELECT"
       v-model:value="dynamicValue"
-      :options="item.selectOptions"
+      :options="item.options"
       value-field="value"
       label-field="label"
       size="small"
@@ -126,12 +105,6 @@ export default defineComponent({
     <AdvancedNumberInput
       v-else-if="item.type === StOptionType.INPUT_NUMBER"
       v-model="dynamicValue"
-      :max="item.max"
-      :min="item.min"
-      :step="item.step"
-      :format="item.formatFn"
-      :parse="item.parseFn"
-      :marks="item.marks"
       :disabled="item.disabled"
       v-bind="item.props"
     />
