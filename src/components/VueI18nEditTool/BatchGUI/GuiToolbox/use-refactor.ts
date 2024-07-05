@@ -22,7 +22,9 @@ export const useBatchTranslateRefactor = (emit) => {
   }
   const handleDeleteKeys = () => {
     window.$dialog.warning({
-      title: `Delete Keys in all languages? ${i18nMainStore.translatePath}`,
+      title: `${$t('i18n_tools.delete_keys')} (${$t('i18n_tools.in_all_languages')}): ${
+        i18nMainStore.translatePath
+      }`,
       positiveText: $t('actions.ok'),
       negativeText: $t('actions.cancel'),
       onPositiveClick: () => {
@@ -44,9 +46,11 @@ export const useBatchTranslateRefactor = (emit) => {
   const handleRenameKeys = async () => {
     const oldTranslatePath = i18nMainStore.translatePath
     const newTranslatePath = await window.$mcUtils.showInputPrompt({
-      title: `Rename keys in all languages: ${oldTranslatePath}`,
+      title: `${$t('i18n_tools.rename_keys')} (${$t(
+        'i18n_tools.in_all_languages'
+      )}): ${oldTranslatePath}`,
       value: oldTranslatePath,
-      positiveText: `Save All`,
+      positiveText: $t('actions.save_all'),
       negativeText: $t('actions.cancel'),
     })
     if (newTranslatePath === oldTranslatePath) {
@@ -88,7 +92,7 @@ export const useBatchTranslateRefactor = (emit) => {
           }
         })
         if (!arr.length) {
-          throw new Error('No need for translation')
+          throw new Error($t('i18n_tools.no_need_for_transla'))
         }
 
         const ret: GptMessage[] = [

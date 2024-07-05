@@ -225,23 +225,23 @@ ${code}
       return computed(() => {
         return [
           {
-            label: `🔄 ${$t('msgs.reload_all_plugins')}`,
+            label: `🔄 ${$t('plugins.reload_all_plugins')}`,
             props: {
               isBack: 1,
               onClick: async () => {
                 reloadCustomPlugins()
                 await window.$qlUtils.reloadPlugins()
-                window.$message.success($t('msgs.plugins_reloaded'))
+                window.$message.success($t('plugins.plugins_reloaded'))
               },
             },
           },
           {
-            label: `🔄 ${$t('msgs.reload_custom_plugi')}`,
+            label: `🔄 ${$t('plugins.reload_custom_plugi')}`,
             props: {
               isBack: 1,
               onClick: async () => {
                 reloadCustomPlugins()
-                window.$message.success($t('msgs.plugins_reloaded'))
+                window.$message.success($t('plugins.plugins_reloaded'))
               },
             },
           },
@@ -250,9 +250,9 @@ ${code}
             props: {
               onClick: async () => {
                 const name = await window.$mcUtils.showInputPrompt({
-                  title: $t('msgs.input_plugin_name'),
+                  title: $t('plugins.input_plugin_name'),
                   value: '',
-                  placeholder: $t('msgs.input_demo_to_creat'),
+                  placeholder: $t('plugins.input_demo_to_creat'),
                   validateFn(val) {
                     if (findCustomPlugin(val)) {
                       return $t('msgs.error_name_duplicat')
@@ -295,7 +295,7 @@ ${code}
                 },
               },
               {
-                label: `🗑️ ${$t('msgs.delete_all_custom_p')}`,
+                label: `🗑️ ${$t('plugins.delete_all_custom_p')}`,
                 children: [
                   {
                     label: `☑️ ${$t('actions.confirm')}`,

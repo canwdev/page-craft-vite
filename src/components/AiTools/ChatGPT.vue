@@ -175,16 +175,16 @@ const handleKeyInput = (event) => {
         <div class="action-side">
           <n-popconfirm @positive-click="resetChatHistory">
             <template #trigger>
-              <button class="vp-button">Clear</button>
+              <button class="vp-button">{{ $t('actions.clear') }}</button>
             </template>
-            Clear chat history?
+            {{ $t('ai.clear_chat_history') }}
           </n-popconfirm>
           <button
             class="vp-button"
             :disabled="isLoading || !userInputContent"
             @click="sendAiRequest"
           >
-            Send
+            {{ $t('actions.send') }}
           </button>
         </div>
       </div>

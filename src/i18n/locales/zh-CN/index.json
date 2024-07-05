@@ -105,7 +105,9 @@
     "current": "当前",
     "add_plugin": "添加插件",
     "plugins": "插件",
-    "import_export": "导入/导出"
+    "import_export": "导入/导出",
+    "refactor": "重构",
+    "save_all": "全部保存"
   },
   "msgs": {
     "drop_files_here": "将文件拖放到此处",
@@ -158,7 +160,6 @@
     "text_conv_mode": "文本转换器模式",
     "copy_json_from_right": "复制右侧内容为JSON",
     "paste_json_override_right": "粘贴JSON覆盖右侧的内容",
-    "fen_xi_fan_yi_shu": "分析翻译树",
     "action_completed_pl": "操作完成，请手动保存！",
     "confirm_close": "确认关闭？未保存的内容将会丢失。",
     "auto_paste_and_copy": "[Auto] 粘贴并复制结果",
@@ -168,13 +169,24 @@
     "refresh_page": "刷新页面？",
     "recommend_download_client_title": "推荐下载桌面客户端",
     "recommend_download_client_desc": "⚡ 完全开源、离线可用\n💡 使用Tauri技术构建，轻量化不到10MB\n🚀 调用系统原生WebView2，更快更稳定\n💽 exe安装包可解压后直接运行，无需安装",
-    "delete_all_custom_p": "删除所有自定义插件",
+    "error_name_duplicat": "错误：名称重复！"
+  },
+  "i18n_tools": {
     "locate_translate_pa": "定位翻译路径",
+    "filter_translate_ke": "过滤翻译key",
+    "a_i_translate": "AI翻译",
+    "delete_keys": "删除Keys",
+    "rename_keys": "重命名Keys",
+    "no_need_for_transla": "不需要翻译",
+    "in_all_languages": "所有语言",
+    "fen_xi_fan_yi_shu": "分析翻译树"
+  },
+  "plugins": {
     "input_demo_to_creat": "输入'demo'来创建一个演示插件！",
     "input_plugin_name": "输入插件名称",
     "reload_all_plugins": "重新加载所有插件",
-    "error_name_duplicat": "错误：名称重复！",
+    "plugins_reloaded": "插件已重新加载！",
     "reload_custom_plugi": "重新加载自定义插件",
-    "plugins_reloaded": "插件已重新加载！"
+    "delete_all_custom_p": "删除所有自定义插件"
   }
 }

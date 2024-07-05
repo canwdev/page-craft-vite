@@ -493,6 +493,7 @@ const {showDropzone, fileDragover, fileDrop} = useFileDrop({
                   <GuiToolbox
                     @reloadTranslates="reloadPickedDir"
                     v-if="editMode !== EditMode.JSON"
+                    :is-batch-mode="editMode === EditMode.BATCH"
                   />
 
                   <TranslateTreeItem

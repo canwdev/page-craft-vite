@@ -105,7 +105,9 @@
     "current": "現在の",
     "add_plugin": "プラグインを追加",
     "plugins": "プラグイン",
-    "import_export": "輸入/エクスポート"
+    "import_export": "輸入/エクスポート",
+    "refactor": "リファクタリング",
+    "save_all": "すべて保存"
   },
   "msgs": {
     "drop_files_here": "ここにファイルをドロップ",
@@ -158,7 +160,6 @@
     "text_conv_mode": "テキスト変換モード",
     "copy_json_from_right": "右側をJSONとしてコピー",
     "paste_json_override_right": "JSONを貼り付けて右側を上書き",
-    "fen_xi_fan_yi_shu": "翻訳ツリーの解析",
     "action_completed_pl": "アクションが完了しました、手動で保存してください！",
     "confirm_close": "閉じますか？ 保存されていない内容は失われます。",
     "auto_paste_and_copy": "[Auto] 貼り付けとコピーの結果",
@@ -168,13 +169,24 @@
     "refresh_page": "ページをリフレッシュする？",
     "recommend_download_client_desc": "⚡ 完全オープンソース、オフライン利用可能\n💡 Tauriテクノロジーを使用して構築され、10MB以下の軽量化\n🚀 システムのネイティブWebview2を呼び出し、高速で安定したもの\n💽 exeインストールパッケージは、直接実行可能、インストール不要",
     "recommend_download_client_title": "デスクトップクライアントをダウンロードすることをおすすめします",
-    "delete_all_custom_p": "すべてのカスタムプラグインを削除",
+    "error_name_duplicat": "エラー：名前が重複しています！"
+  },
+  "i18n_tools": {
     "locate_translate_pa": "翻訳パスを特定する",
+    "filter_translate_ke": "フィルター翻訳key",
+    "a_i_translate": "AI翻訳",
+    "delete_keys": "Keysを削除する",
+    "rename_keys": "Keysの名前を変更する",
+    "no_need_for_transla": "翻訳は不要です",
+    "in_all_languages": "すべての言語",
+    "fen_xi_fan_yi_shu": "翻訳ツリーの解析"
+  },
+  "plugins": {
     "input_demo_to_creat": "デモプラグインを作成するには、'demo'を入力してください！",
     "input_plugin_name": "インプットプラグイン名",
     "reload_all_plugins": "すべてのプラグインをリロード",
-    "error_name_duplicat": "エラー：名前が重複しています！",
+    "plugins_reloaded": "プラグインが再読み込みされました！",
     "reload_custom_plugi": "カスタムプラグインを再読み込み",
-    "plugins_reloaded": "プラグインが再読み込みされました！"
+    "delete_all_custom_p": "すべてのカスタムプラグインを削除"
   }
 }

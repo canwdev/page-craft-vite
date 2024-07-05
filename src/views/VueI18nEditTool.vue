@@ -295,7 +295,7 @@ export default defineComponent({
       <DropZone position-fixed v-show="showDropzone" :text="$t('msgs.drag_file_here')" />
     </transition>
 
-    <CommonNavbar style="position: sticky; top: 0; z-index: 100; margin-bottom: 10px">
+    <CommonNavbar>
       <template #extra>
         <QuickOptions
           is-static
@@ -307,16 +307,18 @@ export default defineComponent({
       </template>
     </CommonNavbar>
 
-    <div class="_container">
-      <TranslateTreeItem
-        v-for="(item, index) in translateTreeRoot"
-        :key="index"
-        :item="item"
-        :index="index"
-        :title="fileHandle?.name"
-      />
+    <div class="scroll-content _scrollbar_mini">
+      <div class="i18n-container">
+        <TranslateTreeItem
+          v-for="(item, index) in translateTreeRoot"
+          :key="index"
+          :item="item"
+          :index="index"
+          :title="fileHandle?.name"
+        />
+        <div class="height-placeholder"></div>
+      </div>
     </div>
-    <div class="height-placeholder"></div>
 
     <I18nToolSettings v-model:visible="isShowToolSettings" />
   </div>
@@ -327,9 +329,10 @@ export default defineComponent({
 .vue-i18n-edit-tool {
   width: 100%;
   height: 100%;
-  overflow: auto;
+  overflow: hidden;
   position: relative;
-  scrollbar-width: thin;
+  display: flex;
+  flex-direction: column;
 
   .n-page-header__extra {
     .quick-options {
@@ -345,10 +348,22 @@ export default defineComponent({
     padding: 10px;
   }
 
-  ._container {
-    max-width: 1000px;
-    margin-left: auto;
-    margin-right: auto;
+  .scroll-content {
+    flex: 1;
+    overflow: auto;
+
+    .i18n-container {
+      max-width: 1000px;
+      margin-left: auto;
+      margin-right: auto;
+      min-width: auto;
+    }
+
+    .translate-tree-item {
+      .group-header {
+        top: 0px;
+      }
+    }
   }
 }
 </style>

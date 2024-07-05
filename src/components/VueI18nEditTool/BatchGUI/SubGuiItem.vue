@@ -317,7 +317,7 @@ export default defineComponent({
           size="small"
           @click="pasteCreateField()"
           type="primary"
-          :title="`Auto Paste Create (${i18nSetStore.autoPasteTextConvertMode})`"
+          :title="`${$t('msgs.auto_paste')} Create (${i18nSetStore.autoPasteTextConvertMode})`"
         >
           <template #icon>
             <ClipboardPaste20Regular />

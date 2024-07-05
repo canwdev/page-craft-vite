@@ -105,7 +105,10 @@
     "current": "Current",
     "import_export": "Import/Export",
     "plugins": "Plugins",
-    "add_plugin": "Add Plugin"
+    "add_plugin": "Add Plugin",
+    "refactor": "Refactor",
+    "save_all": "Save All",
+    "send": "Send"
   },
   "msgs": {
     "drop_files_here": "Drop files here",
@@ -158,7 +161,6 @@
     "text_conv_mode": "Text Converter Mode",
     "copy_json_from_right": "Copy the right-hand side as JSON",
     "paste_json_override_right": "Paste JSON to overwrite the right-hand side",
-    "fen_xi_fan_yi_shu": "Analyzing Translation Trees",
     "action_completed_pl": "Action completed, please save manually!",
     "confirm_close": "Confirm close? Unsaved contents will be lost.",
     "auto_paste_and_copy": "[Auto] Paste and Copy Result",
@@ -168,13 +170,27 @@
     "refresh_page": "Refresh the page?",
     "recommend_download_client_desc": "⚡ Fully open source, offline available\n💡 Built using Tauri technology, lightweighted to just 10MB\n🚀 Invokes the system's native WebView2, faster and more stable\n💽 The exe installation package can be extracted directly run, no need to install",
     "recommend_download_client_title": "Recommended for downloading the desktop client",
-    "delete_all_custom_p": "Delete all custom plugins",
-    "error_name_duplicat": "Error: Name duplicated!",
-    "reload_custom_plugi": "Reload Custom Plugins",
-    "plugins_reloaded": "Plugins reloaded!",
-    "reload_all_plugins": "Reload All Plugins",
-    "input_plugin_name": "Input plugin name",
+    "error_name_duplicat": "Error: Name duplicated!"
+  },
+  "i18n_tools": {
+    "locate_translate_pa": "Locate Translate Path",
+    "filter_translate_ke": "Filter Translate Key",
+    "a_i_translate": "AI Translate",
+    "delete_keys": "Delete Keys",
+    "rename_keys": "Rename Keys",
+    "no_need_for_transla": "No need for translation",
+    "in_all_languages": "In all languages",
+    "fen_xi_fan_yi_shu": "Analyzing Translation Trees"
+  },
+  "plugins": {
     "input_demo_to_creat": "Input `demo` to create a demo plugin!",
-    "locate_translate_pa": "Locate Translate Path"
+    "input_plugin_name": "Input plugin name",
+    "reload_all_plugins": "Reload All Plugins",
+    "plugins_reloaded": "Plugins reloaded!",
+    "reload_custom_plugi": "Reload Custom Plugins",
+    "delete_all_custom_p": "Delete all custom plugins"
+  },
+  "ai": {
+    "clear_chat_history": "Clear chat history?"
   }
 }

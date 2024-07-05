@@ -152,6 +152,14 @@ export default defineComponent({
       }
     })
 
+    const rootRef = ref()
+    const toggleExpand = () => {
+      isExpand.value = !isExpand.value
+      setTimeout(() => {
+        rootRef.value.scrollIntoView({behavior: 'smooth', block: 'center'})
+      })
+    }
+
     return {
       i18nSetStore,
       handleAddChildren,
@@ -174,6 +182,8 @@ export default defineComponent({
         item.value.translates = list
       },
       isExpand,
+      toggleExpand,
+      rootRef,
       isKeyDuplicated,
       checkDuplicatedGroupKey,
       namespacePrefix,
@@ -186,8 +196,13 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="vp-panel vp-window-panel translate-tree-item" v-if="item" :class="{isKeyDuplicated}">
-    <div class="group-header">
+  <div
+    ref="rootRef"
+    class="vp-panel vp-window-panel translate-tree-item"
+    v-if="item"
+    :class="{isKeyDuplicated}"
+  >
+    <div class="group-header vp-bg">
       <template v-if="isKeyDuplicated">
         <n-tooltip trigger="hover">
           <template #trigger>
@@ -240,8 +255,8 @@ export default defineComponent({
             {{ $t('msgs.remove_group') }}
           </n-popconfirm>
         </template>
-        <button @click="isExpand = !isExpand" :title="`Toggle Expand`" class="vp-button">
-          {{ !isExpand ? '🙈' : '👀' }}
+        <button @click="toggleExpand" :title="`Toggle Expand`" class="vp-button">
+          {{ !isExpand ? '▼' : '▲' }}
         </button>
       </div>
     </div>
@@ -273,7 +288,7 @@ export default defineComponent({
             class="vp-button primary focus-auto-action"
           >
             <ClipboardPaste20Regular />
-            Auto Paste
+            {{ $t('msgs.auto_paste') }}
           </button>
         </div>
       </div>
@@ -294,19 +309,22 @@ export default defineComponent({
         />
       </template>
 
-      <div class="actions-wrap">
+      <div class="actions-wrap vp-bg">
         <span class="namespace-display font-code font-italic">
           {{ namespacePrefix ? namespacePrefix + '.' : '' }}{{ item.namespace }}</span
         >
-        <button
-          v-if="!isLite"
-          @click="handleAddChildren"
-          title="Add translate children group"
-          class="vp-button primary"
-        >
-          <AddSquare20Regular />
-          {{ $t('common.group') }}
-        </button>
+
+        <div class="actions-wrap-side">
+          <button
+            v-if="!isLite"
+            @click="handleAddChildren"
+            title="Add translate children group"
+            class="vp-button primary"
+          >
+            <AddSquare20Regular />
+            {{ $t('common.group') }}
+          </button>
+        </div>
       </div>
     </div>
 
@@ -326,12 +344,17 @@ export default defineComponent({
 .translate-tree-item {
   margin-top: 10px;
   margin-bottom: 10px;
-  padding: 10px;
   box-shadow: none !important;
+  position: relative;
+  $padding: 8px;
+  padding: $padding;
 
   &:hover {
     transition: none;
     border: 1px solid $primary; //darkseagreen;
+    & > .group-header {
+      outline: 1px solid $primary;
+    }
   }
   &.isKeyDuplicated {
     background-color: rgba(244, 67, 54, 0.1) !important;
@@ -351,6 +374,14 @@ export default defineComponent({
     display: flex;
     align-items: center;
     gap: 8px;
+    position: sticky;
+    top: 33px;
+    z-index: 1;
+    margin-left: -$padding;
+    margin-right: -$padding;
+    margin-top: -$padding;
+    padding: $padding;
+    outline: 1px solid $color_border;
 
     .mc-error-tip-button {
       margin-right: 8px;
@@ -369,14 +400,27 @@ export default defineComponent({
   }
 
   .actions-wrap {
-    margin-top: 5px;
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
+    align-items: center;
+
+    //position: sticky;
+    //bottom: 0;
+    //z-index: 1;
+    margin-left: -$padding;
+    margin-right: -$padding;
+    margin-bottom: -$padding;
+    padding: $padding;
 
     .namespace-display {
       opacity: 0.5;
       font-size: 12px;
+    }
+
+    .actions-wrap-side {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
     }
   }
 }

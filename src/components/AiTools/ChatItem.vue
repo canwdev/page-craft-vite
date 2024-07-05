@@ -78,17 +78,19 @@ watch(isEditing, () => {
         </div>
 
         <template v-if="isEditing">
-          <button class="btn-no-style" @click="isEditing = false">Done</button>
+          <button class="btn-no-style" @click="isEditing = false">{{ $t('actions.done') }}</button>
         </template>
         <template v-else>
-          <button class="btn-no-style" @click="copy(item.content)">Copy</button>
+          <button class="btn-no-style" @click="copy(item.content)">{{ $t('actions.copy') }}</button>
 
-          <button class="btn-no-style" v-if="allowEdit" @click="isEditing = true">Edit</button>
+          <button class="btn-no-style" v-if="allowEdit" @click="isEditing = true">
+            {{ $t('actions.edit') }}
+          </button>
           <n-popconfirm v-if="allowDelete" @positive-click="$emit('delete', item)">
             <template #trigger>
-              <button class="btn-no-style">Delete</button>
+              <button class="btn-no-style">{{ $t('actions.delete') }}</button>
             </template>
-            Delete this history?
+            {{ $t('actions.confirm') }}
           </n-popconfirm>
         </template>
       </div>

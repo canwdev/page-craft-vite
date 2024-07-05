@@ -126,7 +126,7 @@ export const useCommonTools = () => {
     if (route.name !== 'CraftPage') {
       list = [
         {
-          label: `⛏️ ${$t('common.page_craft')}`,
+          label: `⛏️ Page Craft`,
           props: {
             onClick: async () => {
               mainStore.isShowQuickLaunch = false

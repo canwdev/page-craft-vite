@@ -10,7 +10,14 @@ import {blinkPanel} from '@/utils/anim'
 import {useBatchTranslateAnalyser} from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox/use-analyser'
 import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
 import {useBatchTranslateRefactor} from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox/use-refactor'
+interface Props {
+  isBatchMode?: boolean
+}
 
+const props = withDefaults(defineProps<Props>(), {
+  text: '',
+  isBatchMode: false,
+})
 const emit = defineEmits(['reloadTranslates'])
 const tiSelector = '.translate-item'
 const {t: $t} = useI18n()
@@ -41,13 +48,13 @@ const guiToolboxOptions = computed((): QuickOptionItem[] => {
   const currentPath = i18nMainStore.translatePath
   return [
     {
-      label: $t('msgs.fen_xi_fan_yi_shu'),
+      label: $t('i18n_tools.fen_xi_fan_yi_shu'),
       props: {
         onClick: () => handleAnalyse(),
       },
     },
     {
-      label: 'AI Translate',
+      label: $t('i18n_tools.a_i_translate'),
       disabled: !currentPath,
       props: {
         onClick: () => handleGptTranslate(),
@@ -72,14 +79,14 @@ const guiToolboxOptions = computed((): QuickOptionItem[] => {
     },
     {split: true},
     {
-      label: 'Refactor: Delete Keys',
+      label: `${$t('actions.refactor')}: ${$t('i18n_tools.delete_keys')}`,
       disabled: !currentPath,
       props: {
         onClick: () => handleDeleteKeys(),
       },
     },
     {
-      label: 'Refactor: Rename Keys',
+      label: `${$t('actions.refactor')}: ${$t('i18n_tools.rename_keys')}`,
       disabled: !currentPath,
       props: {
         onClick: async () => {
@@ -113,6 +120,7 @@ const toolboxFilterKeyChange = () => {
   }
   const els = toolboxFilterEls.value
 
+  // 循环定位高亮项目
   if (toolboxFilterIndex.value >= els.length) {
     toolboxFilterIndex.value = 0
   }
@@ -142,24 +150,31 @@ watch(toolboxFilterKey, () => {
 
 <template>
   <div class="vp-bg action-row">
-    <n-popover trigger="hover" placement="bottom-start" style="padding: 0">
-      <template #trigger>
-        <button class="vp-button">
-          {{ $t('common.tools') }}
-        </button>
-      </template>
+    <template v-if="isBatchMode">
+      <n-popover trigger="hover" placement="bottom-start" style="padding: 0">
+        <template #trigger>
+          <button class="vp-button">
+            {{ $t('common.tools') }}
+          </button>
+        </template>
 
-      <QuickOptions is-static :options="guiToolboxOptions" class="vp-panel" />
-    </n-popover>
-    <button class="vp-button" @click="locateSelectedPath()" :title="$t('msgs.locate_translate_pa')">
-      ⨁
-    </button>
+        <QuickOptions is-static :options="guiToolboxOptions" class="vp-panel" />
+      </n-popover>
+      <button
+        v-if="i18nMainStore.translatePath"
+        class="vp-button"
+        @click="locateSelectedPath()"
+        :title="$t('i18n_tools.locate_translate_pa')"
+      >
+        ⨁
+      </button>
+    </template>
 
     <input
       class="vp-input font-code"
       style="flex: 1; line-height: 1"
       v-model="toolboxFilterKey"
-      :placeholder="$t('msgs.locate_translate_pa')"
+      :placeholder="$t('i18n_tools.filter_translate_ke')"
       @keyup.enter="toolboxFilterKeyChange"
       @keyup.esc="toolboxFilterKey = ''"
     />
@@ -177,7 +192,7 @@ watch(toolboxFilterKey, () => {
         height: '500px',
       }"
     >
-      <template #titleBarLeft>{{ $t('msgs.fen_xi_fan_yi_shu') }}</template>
+      <template #titleBarLeft>{{ $t('i18n_tools.fen_xi_fan_yi_shu') }}</template>
       <textarea class="analyse-textarea vp-input font-code" :value="analyseMessage" readonly />
     </ViewPortWindow>
   </div>

@@ -168,7 +168,7 @@ export default defineComponent({
 
     <div class="editor-action-row">
       <button class="vp-button primary" :disabled="!isChanged" @click="saveChange({isEmit: true})">
-        Save All
+        {{ $t('actions.save_all') }}
       </button>
 
       <span class="path-tip">
