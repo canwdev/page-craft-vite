@@ -7,18 +7,53 @@ import {
 import {useI18n} from 'vue-i18n'
 import {useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
 
-export const useBatchTranslateRefactor = () => {
+export const useBatchTranslateRefactor = (emit) => {
   const {t: $t} = useI18n()
   const i18nMainStore = useI18nMainStore()
-  const {getArrayFromRight, pasteJsonOverrideRight} = useGuiToolbox()
+  const {getSubItems, getArrayFromRight, pasteJsonOverrideRight} = useGuiToolbox()
 
+  const doDelete = async () => {
+    const items = await getSubItems()
+    for (const itemsKey in items) {
+      const item = items[itemsKey]
+      await item.handleDeleteField()
+    }
+    emit('reloadTranslates')
+  }
+  const handleDeleteKeys = () => {
+    window.$dialog.warning({
+      title: `Delete Keys in all languages? ${i18nMainStore.translatePath}`,
+      positiveText: $t('actions.ok'),
+      negativeText: $t('actions.cancel'),
+      onPositiveClick: () => {
+        doDelete()
+      },
+      onNegativeClick: () => {},
+    })
+  }
+
+  const doRename = async (newPath) => {
+    const items = await getSubItems()
+    for (const itemsKey in items) {
+      const item = items[itemsKey]
+      await item.handleRenameField(newPath)
+    }
+    i18nMainStore.translatePath = newPath
+    emit('reloadTranslates')
+  }
   const handleRenameKeys = async () => {
-    const name = await window.$mcUtils.showInputPrompt({
-      title: `Rename key: ${i18nMainStore.translatePath}`,
-      value: i18nMainStore.translatePath,
+    const oldTranslatePath = i18nMainStore.translatePath
+    const newTranslatePath = await window.$mcUtils.showInputPrompt({
+      title: `Rename keys in all languages: ${oldTranslatePath}`,
+      value: oldTranslatePath,
       positiveText: `Save All`,
       negativeText: $t('actions.cancel'),
     })
+    if (newTranslatePath === oldTranslatePath) {
+      return
+    }
+    console.log(`${oldTranslatePath} -> ${newTranslatePath}`)
+    await doRename(newTranslatePath)
   }
 
   const {requestChatCompletion} = useGpt()
@@ -91,6 +126,7 @@ export const useBatchTranslateRefactor = () => {
   }
 
   return {
+    handleDeleteKeys,
     handleRenameKeys,
     handleGptTranslate,
   }

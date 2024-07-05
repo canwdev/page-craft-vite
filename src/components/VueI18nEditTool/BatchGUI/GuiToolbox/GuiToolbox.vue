@@ -11,6 +11,7 @@ import {useBatchTranslateAnalyser} from '@/components/VueI18nEditTool/BatchGUI/G
 import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
 import {useBatchTranslateRefactor} from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox/use-refactor'
 
+const emit = defineEmits(['reloadTranslates'])
 const tiSelector = '.translate-item'
 const {t: $t} = useI18n()
 const i18nMainStore = useI18nMainStore()
@@ -34,7 +35,7 @@ const locateSelectedPath = () => {
 }
 
 const {handleAnalyse, analyseMessage} = useBatchTranslateAnalyser()
-const {handleRenameKeys, handleGptTranslate} = useBatchTranslateRefactor()
+const {handleDeleteKeys, handleRenameKeys, handleGptTranslate} = useBatchTranslateRefactor(emit)
 
 const guiToolboxOptions = computed((): QuickOptionItem[] => {
   const currentPath = i18nMainStore.translatePath
@@ -44,21 +45,6 @@ const guiToolboxOptions = computed((): QuickOptionItem[] => {
       props: {
         onClick: () => handleAnalyse(),
       },
-    },
-    {
-      label: 'Refactor (All Locales)',
-      disabled: !currentPath,
-      children: [
-        {
-          label: 'Delete Keys',
-        },
-        {
-          label: 'Rename Keys',
-          props: {
-            onClick: () => handleRenameKeys(),
-          },
-        },
-      ],
     },
     {
       label: 'AI Translate',
@@ -85,6 +71,25 @@ const guiToolboxOptions = computed((): QuickOptionItem[] => {
       },
     },
     {split: true},
+    {
+      label: 'Refactor: Delete Keys',
+      disabled: !currentPath,
+      props: {
+        onClick: () => handleDeleteKeys(),
+      },
+    },
+    {
+      label: 'Refactor: Rename Keys',
+      disabled: !currentPath,
+      props: {
+        onClick: async () => {
+          await handleRenameKeys()
+          setTimeout(() => {
+            locateSelectedPath()
+          }, 500)
+        },
+      },
+    },
   ]
 })
 

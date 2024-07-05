@@ -212,6 +212,7 @@ const reloadPickedDir = async () => {
     i18nMainStore.isLoading = true
     const handle = dirHandle.value
     let tree: DirTreeItem[] = []
+    await reloadCurrentEditEntry()
     if (i18nSetStore.isFoldersMode) {
       tree = await recursiveReadDir(handle)
     } else {
@@ -335,6 +336,14 @@ const isShowToolSettings = ref(false)
 
 const {handleKeyClick, removeSelectedClass} = useGuiToolbox()
 
+const reloadCurrentEditEntry = async () => {
+  if (currentEditEntry.value) {
+    const str = await handleReadSelectedFile(await currentEditEntry.value.getFile())
+    editingTextValue.value = str as string
+    removeSelectedClass()
+    updateGuiTranslateTree()
+  }
+}
 const nodeProps = ({option}: {option: DirTreeItem}) => {
   return {
     // 处理树枝的点击事件
@@ -344,12 +353,9 @@ const nodeProps = ({option}: {option: DirTreeItem}) => {
         if (option.kind === 'file') {
           const entry = option.entry as FileSystemFileHandle
           currentEditEntry.value = entry
-          const str = await handleReadSelectedFile(await entry.getFile())
-          editingTextValue.value = str as string
           i18nMainStore.filePathArr = [...option.parentDirs, option.label]
           i18nMainStore.translatePath = ''
-          removeSelectedClass()
-          updateGuiTranslateTree()
+          await reloadCurrentEditEntry()
         }
       } catch (e: any) {
         console.error(e)
@@ -395,6 +401,9 @@ const {showDropzone, fileDragover, fileDrop} = useFileDrop({
             {{ $t('common.toolbox') }}
           </button>
 
+          {{ $t('common.edit_mode') }}:
+          <TabLayout v-model="editMode" horizontal :tab-list="editModeOptions" />
+
           <n-button
             size="small"
             secondary
@@ -404,9 +413,6 @@ const {showDropzone, fileDragover, fileDrop} = useFileDrop({
           >
             {{ $t('actions.save_changes') }}
           </n-button>
-
-          {{ $t('common.edit_mode') }}:
-          <TabLayout v-model="editMode" horizontal :tab-list="editModeOptions" />
 
           <n-dropdown
             v-if="dirHandle"
@@ -484,7 +490,10 @@ const {showDropzone, fileDragover, fileDrop} = useFileDrop({
                   class="gui-edit-gui"
                   :style="{width: editMode === EditMode.BATCH ? '500px' : '100%'}"
                 >
-                  <GuiToolbox v-if="editMode !== EditMode.JSON" />
+                  <GuiToolbox
+                    @reloadTranslates="reloadPickedDir"
+                    v-if="editMode !== EditMode.JSON"
+                  />
 
                   <TranslateTreeItem
                     v-for="(item, index) in i18nMainStore.translateTreeRoot"

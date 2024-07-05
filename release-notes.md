@@ -4,7 +4,7 @@
 
 - [x] add: AI 整合 ChatGPT
 - [x] add: 表单生成组件(Naive UI)
-- [ ] add: 多语言(json)文件夹编辑器 新增重构key功能
+- [x] add: 多语言(json)文件夹编辑器 新增重构key功能
 - [x] add: QuickOptions 显示当前菜单的标题
 - [x] optimize: 多语言(json)文件夹编辑器 键名定位功能优化
 - [x] optimize: 部分窗口初始化尺寸优化

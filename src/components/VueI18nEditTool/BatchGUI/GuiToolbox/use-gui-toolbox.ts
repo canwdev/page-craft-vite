@@ -12,9 +12,14 @@ export type PasteResult = {
   // 翻译内容
   value: string
 }
+
+// SubGuiItem 组件实例内容
 export type SubInstanceItem = {
   listItem: BatchListItem
   fieldValue: string
+  handleDeleteField: any
+  handleRenameField: any
+  getIsJsonCreated: any
 }
 
 const tiSelector = '.translate-item'
@@ -26,6 +31,8 @@ export const useGuiToolbox = () => {
     const els = Array.from(document.querySelectorAll(tiSelector))
     els.forEach((el) => {
       el.classList.remove('t_selected')
+      el.classList.remove('t_highlight')
+      el.classList.remove('t_highlight_current')
     })
   }
 
@@ -37,11 +44,18 @@ export const useGuiToolbox = () => {
     event.target.closest(tiSelector).classList.add('t_selected')
   }
 
-  // 获取SubGuiItem组件实例
-  const getSubItems = (): Promise<SubInstanceItem[]> => {
+  // 获取 SubGuiItem 组件实例
+  const _getAllSubItems = (): Promise<SubInstanceItem[]> => {
     return new Promise((resolve) => {
       globalEventBus.emit(GlobalEvents.I18N_BATCH_GUI_GET_SUBS, resolve)
     })
+  }
+
+  // 获取有json文件的 SubGuiItem 组件实例
+  const getSubItems = async () => {
+    let items: SubInstanceItem[] = await _getAllSubItems()
+    items = items.filter((item) => item.getIsJsonCreated())
+    return items
   }
 
   /**

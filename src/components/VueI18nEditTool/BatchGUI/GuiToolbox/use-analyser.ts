@@ -3,7 +3,10 @@ import _get from 'lodash/get'
 import {unicodeProgressBar} from '@/utils/unicode-progress-bar'
 import {useI18n} from 'vue-i18n'
 import {useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
-import {useGuiToolbox} from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox/use-gui-toolbox'
+import {
+  SubInstanceItem,
+  useGuiToolbox,
+} from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox/use-gui-toolbox'
 
 export const useBatchTranslateAnalyser = () => {
   const {t: $t} = useI18n()
@@ -18,7 +21,7 @@ export const useBatchTranslateAnalyser = () => {
     console.log('[translatePath]', i18nMainStore.translatePath)
     console.log('[filePathArr]', i18nMainStore.filePathArr)
     console.log('[batchList]', i18nMainStore.batchList)
-    const items: any = await getSubItems()
+    const items = await getSubItems()
     console.log('[getSubItems]', items)
     console.warn('====== [printAllInfo] End ======')
     return {items}

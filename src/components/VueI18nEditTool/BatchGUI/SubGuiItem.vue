@@ -58,15 +58,20 @@ export default defineComponent({
     // 字段值是否发生变化
     const isChanged = ref(false)
 
+    // 是否存在json文件
+    const getIsJsonCreated = () => {
+      return !!listItem.value.json
+    }
+
     const getValue = () => {
       return _get(localJson.value, i18nMainStore.translatePath, null)
     }
-    const setValue = (val: any) => {
+    const setValue = (val: any, path = i18nMainStore.translatePath) => {
       try {
-        if (!listItem.value.json) {
-          throw new Error('listItem.value.json is empty!')
+        if (!getIsJsonCreated()) {
+          throw new Error('json file not exist!')
         }
-        _set(listItem.value.json, i18nMainStore.translatePath, val)
+        _set(listItem.value.json as any, path, val)
       } catch (e: any) {
         console.error(e)
         window.$message.error(e.message)
@@ -76,6 +81,12 @@ export default defineComponent({
     const deleteField = () => {
       _unset(localJson.value, i18nMainStore.translatePath)
       fieldValue.value = null
+      isChanged.value = true
+    }
+    const renameField = (newPath) => {
+      const value = getValue()
+      _unset(localJson.value, i18nMainStore.translatePath)
+      setValue(value, newPath)
       isChanged.value = true
     }
 
@@ -191,9 +202,20 @@ export default defineComponent({
         window.$message.error(e.message)
       }
     }
-    const handleDeleteField = () => {
+    const handleDeleteField = async () => {
+      if (!getIsJsonCreated()) {
+        return
+      }
       deleteField()
-      saveChange()
+      await saveChange()
+    }
+    // 外部调用批量重命名
+    const handleRenameField = async (newPath) => {
+      if (!getIsJsonCreated()) {
+        return
+      }
+      renameField(newPath)
+      await saveChange()
     }
 
     return {
@@ -215,6 +237,8 @@ export default defineComponent({
       handlePreviewArrayText,
       handleSaveArray,
       handleDeleteField,
+      handleRenameField,
+      getIsJsonCreated,
       isLoading,
       subFilePathArr,
     }
