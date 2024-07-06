@@ -108,7 +108,8 @@
     "add_plugin": "Add Plugin",
     "refactor": "Refactor",
     "save_all": "Save All",
-    "send": "Send"
+    "send": "Send",
+    "create": "Create"
   },
   "msgs": {
     "drop_files_here": "Drop files here",

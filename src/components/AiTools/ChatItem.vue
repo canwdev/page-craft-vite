@@ -2,12 +2,13 @@
 import {marked} from 'marked'
 import {copy} from '@/components/QuickLaunch/q-logics/utils'
 import {formatDate} from '@/utils'
-import {IChatItem} from '@/components/AiTools/types/ai'
+import {IAiCharacter, IChatItem} from '@/components/AiTools/types/ai'
 
 interface Props {
   isDark?: boolean
   allowDelete?: boolean
   allowEdit?: boolean
+  character?: IAiCharacter
   item: IChatItem
 }
 
@@ -16,6 +17,7 @@ const props = withDefaults(defineProps<Props>(), {
   isDark: false,
   allowDelete: false,
 })
+const {item} = toRefs(props)
 
 const isEditing = ref(false)
 const editInputRef = ref()
@@ -23,6 +25,10 @@ watch(isEditing, () => {
   setTimeout(() => {
     editInputRef.value.focus()
   })
+})
+
+const isReply = computed(() => {
+  return item.value.role === 'assistant'
 })
 </script>
 
@@ -45,10 +51,18 @@ watch(isEditing, () => {
       @click="isEditing = true"
     ></div>
   </div>
-  <div v-else class="chat-item" :class="{'is-reply': item.role === 'assistant'}">
+  <div v-else class="chat-item" :class="{'is-reply': isReply}">
     <div class="chat-header">
       <div class="chat-avatar" :title="item.role">
-        {{ item.role }}
+        <img
+          v-if="character?.avatar"
+          :src="character.avatar"
+          :alt="item.role"
+          :title="character.name"
+        />
+        <template v-else>
+          {{ item.role }}
+        </template>
       </div>
     </div>
 
@@ -157,6 +171,11 @@ watch(isEditing, () => {
     font-size: 12px;
     user-select: none;
     box-shadow: 0 1px 1px $color_border;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
   }
   .chat-date {
     font-size: 12px;

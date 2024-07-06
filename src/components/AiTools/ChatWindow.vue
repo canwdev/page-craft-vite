@@ -23,8 +23,8 @@ const mVisible = useVModel(props, 'visible', emit)
     wid="chat"
     allow-maximum
     :init-win-options="{
-      width: '400px',
-      height: '500px',
+      width: '800px',
+      height: '600px',
     }"
   >
     <template #titleBarLeft>

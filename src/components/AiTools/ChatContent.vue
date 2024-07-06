@@ -8,21 +8,29 @@ import ChatItem from '@/components/AiTools/ChatItem.vue'
 import {useStorage, useThrottleFn} from '@vueuse/core'
 import {useAiSettings} from '@/components/SystemSettings/use-ai-settings'
 import {useAiSettingsStore} from '@/store/ai-settings'
-import {useGpt} from '@/components/AiTools/use-gpt'
+import {useAiCharacters, useGpt} from '@/components/AiTools/use-gpt'
+import {useI18n} from 'vue-i18n'
 
+const {t: $t, locale} = useI18n()
 const aisStore = useAiSettingsStore()
+const {currentCharacter, currentHistory} = useAiCharacters()
 
 const {aiSettingsOptions} = useAiSettings()
 const mainStore = useMainStore()
 const isLoading = ref(false)
 const userInputContent = ref('')
-const chatHistory = useStorage<IChatItem[]>('page_craft_ai_chat_history', [])
 
+const tempResponseChat = ref<IChatItem | null>(null)
+
+// 重置聊天
 const resetChatHistory = () => {
-  chatHistory.value = [
+  if (!currentCharacter.value || !currentHistory.value) {
+    return
+  }
+  currentHistory.value.history = [
     {
       role: 'system',
-      content: 'You are a helpful assistant.',
+      content: currentCharacter.value.systemPrompt,
       timestamp: Date.now(),
     },
   ]
@@ -35,6 +43,9 @@ const inputRef = ref()
 // 滚动到底部
 const scrollBottom = useThrottleFn(
   () => {
+    if (!respContainerRef.value) {
+      return
+    }
     setTimeout(() => {
       respContainerRef.value.scrollTop = respContainerRef.value.scrollHeight
     })
@@ -44,21 +55,68 @@ const scrollBottom = useThrottleFn(
 )
 const focusInput = () => {
   setTimeout(() => {
-    inputRef.value.focus()
+    inputRef.value?.focus()
   })
 }
-onMounted(() => {
-  if (!chatHistory.value.length) {
-    resetChatHistory()
-  }
+
+// DOM 加载完成，自动滚动
+const handleLoad = () => {
   focusInput()
   scrollBottom()
-})
+  return 'ok'
+}
 
-const tempResponseChat = ref<IChatItem | null>(null)
+watch(
+  currentHistory,
+  () => {
+    if (!currentHistory.value) {
+      return
+    }
+    if (!currentHistory.value.history.length) {
+      resetChatHistory()
+    }
+    handleLoad()
+  },
+  {immediate: true}
+)
 
-const {requestChatCompletion} = useGpt()
+const {requestChatCompletion, requestAiChatMessage} = useGpt()
+
+// 自动生成聊天标题
+const generateChatTitle = async () => {
+  if (!currentHistory.value || !currentHistory.value.history.length) {
+    return
+  }
+  if (currentHistory.value.title) {
+    return
+  }
+  try {
+    const history = [...currentHistory.value.history]
+    // 移除系统提示词
+    history.shift()
+
+    currentHistory.value.title = await requestAiChatMessage([
+      {
+        content: '你是一名擅长会话的助理，你需要将用户的会话总结为 10 个字以内的标题',
+        role: 'system',
+      },
+      {
+        content: `${history.map((i) => `${i.role}:${i.content}`).join('\n')}
+
+请总结上述对话为10个字以内的标题，不需要包含标点符号，输出语言为：${locale.value}`,
+        role: 'user',
+      },
+    ])
+  } catch (error: any) {
+    console.error(error)
+  }
+}
+
+// 发送1次聊天请求
 const sendAiRequest = async () => {
+  if (!currentCharacter.value || !currentHistory.value) {
+    return
+  }
   if (!userInputContent.value) {
     return
   }
@@ -69,7 +127,7 @@ const sendAiRequest = async () => {
       content: '',
     }
 
-    chatHistory.value.push({
+    currentHistory.value.history.push({
       role: 'user',
       content: userInputContent.value,
       timestamp: Date.now(),
@@ -79,7 +137,8 @@ const sendAiRequest = async () => {
 
     const chatCompletion = await requestChatCompletion(
       {
-        messages: chatHistory.value.map((i) => {
+        model: currentCharacter.value.model,
+        messages: currentHistory.value.history.map((i) => {
           return {
             content: i.content,
             role: i.role,
@@ -97,17 +156,19 @@ const sendAiRequest = async () => {
       const chatItem = tempResponseChat.value
       tempResponseChat.value = null
       chatItem.timestamp = Date.now()
-      chatHistory.value.push(chatItem)
+      currentHistory.value.history.push(chatItem)
     } else {
       // 正常POST返回 ChatCompletion
       tempResponseChat.value = null
       const message = chatCompletion.choices[0]?.message || {}
-      chatHistory.value.push({
+      currentHistory.value.history.push({
         role: 'assistant',
         content: message.content || '',
         timestamp: chatCompletion.created * 1000,
       })
     }
+
+    generateChatTitle()
   } catch (error: any) {
     console.error(error)
     tempResponseChat.value = {
@@ -135,21 +196,27 @@ const handleKeyInput = (event) => {
 </script>
 
 <template>
-  <div class="chat-gpt-wrap vp-bg">
+  <div
+    class="chat-gpt-wrap vp-bg"
+    :data-load="handleLoad()"
+    v-if="currentHistory && currentCharacter"
+  >
     <div ref="respContainerRef" class="response-container _scrollbar_mini">
       <ChatItem
-        v-for="(item, index) in chatHistory"
+        v-for="(item, index) in currentHistory.history"
         :key="index"
         :item="item"
         :is-dark="mainStore.isAppDarkMode"
-        @delete="chatHistory.splice(index, 1)"
+        @delete="currentHistory.history.splice(index, 1)"
         allow-delete
         allow-edit
+        :character="item.role === 'assistant' ? currentCharacter : undefined"
       />
       <ChatItem
         :item="tempResponseChat"
         v-if="tempResponseChat"
         :is-dark="mainStore.isAppDarkMode"
+        :character="currentCharacter"
       />
     </div>
     <div class="request-below">

@@ -31,6 +31,8 @@ export interface StOptionItem {
   actionRender?: any
   // 点击item执行函数
   clickFn?: any
+  // 隐藏展开按钮图标
+  hideExpandIcon?: boolean
 }
 
 // 选项的类型

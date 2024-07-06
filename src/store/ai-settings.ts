@@ -9,6 +9,8 @@ interface IStore {
   model: ChatModel
   // 助手
   currentCharacterId: string
+  // 当前聊天历史记录id
+  currentChatHistoryId: string
 }
 
 export const useAiSettingsStore = defineStore('aiSettingsStore', {
@@ -19,6 +21,7 @@ export const useAiSettingsStore = defineStore('aiSettingsStore', {
       stream: true,
       model: ChatModel.GPT35Turbo,
       currentCharacterId: 'default',
+      currentChatHistoryId: '',
     }
   },
   persist: {

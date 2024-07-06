@@ -60,7 +60,7 @@ export const useBatchTranslateRefactor = (emit) => {
     await doRename(newTranslatePath)
   }
 
-  const {requestChatCompletion} = useGpt()
+  const {requestAiChatMessage} = useGpt()
   /**
    * 自动翻译右侧空缺的字段
    */
@@ -113,13 +113,9 @@ export const useBatchTranslateRefactor = (emit) => {
         return ret
       }
 
-      const completion = (await requestChatCompletion({
-        stream: false,
-        messages: buildAiPrompt(),
-      })) as ChatCompletion
-      const message: GptMessage = completion.choices[0]?.message || {}
+      const message = await requestAiChatMessage(buildAiPrompt())
       console.log('message', message)
-      const content = JSON.parse(message.content)
+      const content = JSON.parse(message)
       await pasteJsonOverrideRight(content)
     } catch (error: any) {
       console.error(error)

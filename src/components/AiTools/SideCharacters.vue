@@ -11,23 +11,14 @@ import {guid} from '@/utils'
 import {useI18n} from 'vue-i18n'
 import AutoFormNaive from '@/components/CommonUI/AutoFormNaive/index.vue'
 import {computed, ref} from 'vue'
-import {FormRules} from 'naive-ui'
 import {AutoFormItemType, MixedFormItems} from '@/components/CommonUI/AutoFormNaive/enum'
+import {FormRules, NDropdown} from 'naive-ui'
+import {renderNDropdownMenu} from '@/components/CommonUI/renders'
+import {useAiCharacters} from '@/components/AiTools/use-gpt'
 
 const {t: $t} = useI18n()
 const aisStore = useAiSettingsStore()
-const {data: characterList, set: setCharacterList} = useIDBKeyval<IAiCharacter[]>(
-  'page_craft_ai_characters',
-  [
-    {
-      id: 'default',
-      name: '默认助手',
-      desc: '原始设定的助手',
-      model: ChatModel.GPT35Turbo,
-      systemPrompt: 'You are a helpful assistant.',
-    },
-  ]
-)
+const {characterList, allChatHistory} = useAiCharacters()
 
 const isCreate = ref(false)
 const isShowEditDialog = ref(false)
@@ -36,6 +27,7 @@ const formatEditingData = (data: any = {}) => {
     id: data.id || guid(),
     name: data.name || '',
     desc: data.desc || '',
+    avatar: data.avatar || '',
     model: data.model || ChatModel.GPT35Turbo,
     systemPrompt: data.systemPrompt || '',
   }
@@ -47,64 +39,108 @@ const optionList = computed((): StOptionItem[] => {
     {
       label: '角色列表',
       key: 'characters',
+      hideExpandIcon: true,
+      actionRender: () =>
+        renderNDropdownMenu([
+          {
+            label: `➕ ${$t('actions.create')}`,
+            props: {
+              onClick: () => {
+                isCreate.value = true
+                editingItem.value = formatEditingData()
+                isShowEditDialog.value = true
+              },
+            },
+          },
+          {
+            label: `📤 ${$t('actions.export')} JSON...`,
+            props: {
+              onClick: async () => {
+                window.$mcUtils.handleExportFile(
+                  await window.$mcUtils.promptGetFileName('AICharacters'),
+                  JSON.stringify(characterList.value, null, 2),
+                  '.json'
+                )
+              },
+            },
+          },
+          {
+            label: `📥 ${$t('actions.import')} JSON...`,
+            props: {
+              onClick: async () => {
+                const list = await window.$mcUtils.handleImportJson()
+                characterList.value = list || []
+                window.$message.success('Import success!')
+              },
+            },
+          },
+          {
+            label: `🗑️ ${$t('actions.delete_all')}`,
+            props: {
+              onClick: () => {
+                window.$dialog.warning({
+                  title: $t('actions.delete_all'),
+                  content: $t('msgs.que_ren_shan_chu_ci'),
+                  positiveText: $t('actions.ok'),
+                  negativeText: $t('actions.cancel'),
+                  onPositiveClick: () => {
+                    characterList.value = []
+                    allChatHistory.value = []
+                  },
+                  onNegativeClick: () => {},
+                })
+              },
+            },
+          },
+        ]),
       children: characterList.value.map((item, index) => {
         return {
           key: item.id,
           label: `${item.name} [${item.model}]`,
           subtitle: `${item.desc}`,
-          icon: iconUser,
+          icon: item.avatar || iconUser,
+          cls: aisStore.currentCharacterId === item.id ? 'active' : '',
           clickFn: () => {
-            console.log(item)
             aisStore.currentCharacterId = item.id
           },
-          cls: aisStore.currentCharacterId === item.id ? 'active' : '',
-          actionRender: [
-            h(
-              'button',
+          actionRender: () =>
+            renderNDropdownMenu([
               {
-                class: 'vp-button',
-                onClick: () => {
-                  isCreate.value = false
-                  editingItem.value = formatEditingData(item)
-                  isShowEditDialog.value = true
+                label: `✏️ ${$t('actions.edit_element')}`,
+                props: {
+                  onClick: () => {
+                    isCreate.value = false
+                    editingItem.value = formatEditingData(item)
+                    isShowEditDialog.value = true
+                  },
                 },
               },
-              'Edit'
-            ),
-            h(
-              'button',
               {
-                class: 'vp-button',
-                onClick: () => {
-                  window.$dialog.warning({
-                    title: $t('actions.confirm'),
-                    content: $t('msgs.que_ren_shan_chu_ci'),
-                    positiveText: $t('actions.ok'),
-                    negativeText: $t('actions.cancel'),
-                    onPositiveClick: () => {
-                      characterList.value.splice(index, 1)
-                    },
-                    onNegativeClick: () => {},
-                  })
+                label: `🗑️ ${$t('actions.delete')}`,
+                props: {
+                  onClick: () => {
+                    window.$dialog.warning({
+                      title: $t('actions.confirm'),
+                      content: $t('msgs.que_ren_shan_chu_ci'),
+                      positiveText: $t('actions.ok'),
+                      negativeText: $t('actions.cancel'),
+                      onPositiveClick: () => {
+                        // 删除与当前角色的全部聊天记录
+                        allChatHistory.value = allChatHistory.value
+                          .filter((i) => i.cid !== item.id)
+                          // 转换成原始对象，否则设值报错
+                          .map(toRaw)
+
+                        characterList.value.splice(index, 1)
+                      },
+                      onNegativeClick: () => {},
+                    })
+                  },
                 },
               },
-              'Del'
-            ),
-          ],
+            ]),
         }
       }),
-      actionRender: h(
-        'button',
-        {
-          class: 'vp-button',
-          onClick: () => {
-            isCreate.value = true
-            editingItem.value = formatEditingData()
-            isShowEditDialog.value = true
-          },
-        },
-        '+'
-      ),
     },
   ]
 })
@@ -143,11 +179,18 @@ const formItems = computed((): MixedFormItems[] => {
         label: $t('ai.model'),
       },
     ],
-    {
-      type: AutoFormItemType.INPUT,
-      key: 'name',
-      label: '角色名称',
-    },
+    [
+      {
+        type: AutoFormItemType.INPUT,
+        key: 'avatar',
+        label: '头像 URL',
+      },
+      {
+        type: AutoFormItemType.INPUT,
+        key: 'name',
+        label: '角色名称',
+      },
+    ],
     {
       type: AutoFormItemType.INPUT,
       key: 'desc',
@@ -204,11 +247,13 @@ const handleSubmit = () => {
 <style lang="scss">
 .ai-side-characters {
   height: 100%;
+  overflow: auto;
   .c-panel-item {
     .panel-header {
       z-index: 0;
     }
     .panel-body .sub-item {
+      padding: 4px 8px;
       &.active {
         background-color: $primary_opacity;
       }

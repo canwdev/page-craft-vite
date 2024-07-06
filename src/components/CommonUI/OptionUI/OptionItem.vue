@@ -51,7 +51,7 @@ export default defineComponent({
         <div
           class="btn-no-style btn-toggle-expand"
           :class="{expanded: isExpanded}"
-          v-if="item.children && item.children.length"
+          v-if="!item.hideExpandIcon && item.children && item.children.length"
           @click="$emit('onToggleExpand', item)"
         >
           <svg
