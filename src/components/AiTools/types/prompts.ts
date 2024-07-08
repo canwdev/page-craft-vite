@@ -1,5 +1,5 @@
 import {GptMessage} from '@/components/AiTools/types/openai'
-import {IChatItem} from '@/components/AiTools/types/ai'
+import {IMessageItem} from '@/components/AiTools/types/ai'
 
 /**
  * 批量翻译服务
@@ -32,7 +32,7 @@ export const tplBatchTranslator = (
  * @param history 聊天历史记录
  * @param iso 目标语言
  */
-export const tplConversationAssistant = (history: IChatItem[], iso: string): GptMessage[] => {
+export const tplConversationAssistant = (history: IMessageItem[], iso: string): GptMessage[] => {
   return [
     {
       content: '你是一名擅长会话的助理，你需要将用户的会话总结为 10 个字以内的标题',

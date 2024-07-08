@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {copy} from '@/components/QuickLaunch/q-logics/utils'
 import {formatDate} from '@/utils'
-import {IAiCharacter, IChatItem} from '@/components/AiTools/types/ai'
+import {IAiCharacter, IMessageItem} from '@/components/AiTools/types/ai'
 
 import markdown from '@/utils/markdown'
 import {useThrottleFn, watchThrottled} from '@vueuse/core'
@@ -12,7 +12,7 @@ interface Props {
   allowEdit?: boolean
   allowRetry?: boolean
   character?: IAiCharacter
-  item: IChatItem
+  item: IMessageItem
 }
 
 const emit = defineEmits(['delete', 'retry'])
@@ -57,21 +57,20 @@ const handleClick = (event) => {
 </script>
 
 <template>
-  <div class="chat-item-system" v-if="item.role === 'system'">
+  <div class="chat-item-system" :class="{isEditing}" v-if="item.role === 'system'">
     <textarea
       ref="editInputRef"
       v-if="isEditing"
       class="vp-input"
       v-model="item.content"
-      rows="2"
-      cols="30"
+      rows="5"
       @blur="isEditing = false"
     />
     <div
       v-else-if="item.content"
-      class="chat-content markdown-body"
+      class="chat-content"
       :class="{'markdown-body-dark': isDark}"
-      v-html="`[${item.role}] ${renderedContent}`"
+      v-html="`[${item.role}] ${item.content}`"
       @click="isEditing = true"
     ></div>
   </div>
@@ -150,8 +149,21 @@ const handleClick = (event) => {
   border-radius: 10px;
   margin-left: auto;
   margin-right: auto;
+  box-sizing: border-box;
+  &.isEditing {
+    width: 100%;
+  }
+  .vp-input {
+    width: 100%;
+    box-sizing: border-box;
+  }
   .chat-content {
     font-size: 12px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 

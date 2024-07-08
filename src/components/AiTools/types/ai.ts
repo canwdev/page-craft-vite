@@ -1,7 +1,16 @@
 import {ChatModel} from '@/components/AiTools/types/openai'
 
-export interface IChatItem {
-  content: string
+export interface IMessageContent {
+  type: 'text' | 'image_url'
+  text?: string
+  image_url?: {
+    detail: string
+    url: string
+  }
+}
+
+export interface IMessageItem {
+  content: string | IMessageContent[]
   role: 'assistant' | 'user' | 'system'
   timestamp?: number
 }
@@ -26,5 +35,5 @@ export interface IChatHistoryItem {
   title: string
   // 对话创建时间
   timestamp: number
-  history: IChatItem[]
+  history: IMessageItem[]
 }

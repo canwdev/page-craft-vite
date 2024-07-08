@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import OptionUI from '@/components/CommonUI/OptionUI/index.vue'
-import {IChatItem} from '@/components/AiTools/types/ai'
+import {IMessageItem} from '@/components/AiTools/types/ai'
 import '@/styles/markdown/github-markdown.css'
 import '@/styles/markdown/github-markdown-dark.css'
 import {useMainStore} from '@/store/main'
-import ChatItem from '@/components/AiTools/ChatItem.vue'
+import ChatItem from '@/components/AiTools/ChatBubble/ChatBubble.vue'
 import {useStorage, useThrottleFn} from '@vueuse/core'
 import {useAiSettings} from '@/components/SystemSettings/use-ai-settings'
 import {useAiSettingsStore} from '@/store/ai-settings'
@@ -23,7 +23,7 @@ const mainStore = useMainStore()
 const isLoading = ref(false)
 const userInputContent = ref('')
 
-const tempResponseChat = ref<IChatItem | null>(null)
+const tempResponseChat = ref<IMessageItem | null>(null)
 
 // 重置聊天
 const resetChatHistory = () => {
@@ -199,7 +199,7 @@ const handleKeyInput = (event) => {
   }
 }
 
-const handleRetry = (item: IChatItem, index) => {
+const handleRetry = (item: IMessageItem, index) => {
   if (!currentHistory.value) {
     return
   }
