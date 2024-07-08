@@ -5,10 +5,14 @@ export const copy = async (val, isShowVal = false) => {
     return
   }
   if (typeof val === 'object') {
-    console.info('object', val)
+    if (isShowVal) {
+      console.info('object', val)
+    }
     val = JSON.stringify(val, null, 2)
   }
-  console.info('copy:', val)
+  if (isShowVal) {
+    console.info('copy:', val)
+  }
   await copyToClipboard(val)
   let showVal = ''
   if (isShowVal) {

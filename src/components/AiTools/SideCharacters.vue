@@ -97,7 +97,7 @@ const optionList = computed((): StOptionItem[] => {
         return {
           key: item.id,
           label: `${item.name}`,
-          subtitle: `${item.desc}`,
+          subtitle: `${item.desc} [${item.model}]`,
           icon: item.avatar || iconUser,
           cls: aisStore.currentCharacterId === item.id ? 'active' : '',
           clickFn: () => {

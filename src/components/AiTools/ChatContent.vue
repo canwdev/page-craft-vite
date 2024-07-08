@@ -116,11 +116,11 @@ const generateChatTitle = async () => {
 }
 
 // 发送1次聊天请求
-const sendAiRequest = async () => {
+const sendAiRequest = async (isRetry = false) => {
   if (!currentCharacter.value || !currentHistory.value) {
     return
   }
-  if (!userInputContent.value) {
+  if (!isRetry && !userInputContent.value) {
     return
   }
   try {
@@ -130,12 +130,14 @@ const sendAiRequest = async () => {
       content: '',
     }
 
-    currentHistory.value.history.push({
-      role: 'user',
-      content: userInputContent.value,
-      timestamp: Date.now(),
-    })
-    userInputContent.value = ''
+    if (!isRetry) {
+      currentHistory.value.history.push({
+        role: 'user',
+        content: userInputContent.value,
+        timestamp: Date.now(),
+      })
+      userInputContent.value = ''
+    }
     scrollBottom()
 
     const chatCompletion = await requestChatCompletion(
@@ -196,6 +198,16 @@ const handleKeyInput = (event) => {
     // 如果同时按下了 Shift，允许默认行为，即换行
   }
 }
+
+const handleRetry = (item: IChatItem, index) => {
+  if (!currentHistory.value) {
+    return
+  }
+  if (item.role === 'assistant') {
+    currentHistory.value.history.splice(index, 1)
+  }
+  sendAiRequest(true)
+}
 </script>
 
 <template>
@@ -211,8 +223,10 @@ const handleKeyInput = (event) => {
         :item="item"
         :is-dark="mainStore.isAppDarkMode"
         @delete="currentHistory.history.splice(index, 1)"
+        @retry="handleRetry(item, index)"
         allow-delete
         allow-edit
+        :allow-retry="index === currentHistory.history.length - 1"
         :character="item.role === 'assistant' ? currentCharacter : undefined"
       />
       <ChatItem
@@ -254,7 +268,7 @@ const handleKeyInput = (event) => {
           <button
             class="vp-button"
             :disabled="isLoading || !userInputContent"
-            @click="sendAiRequest"
+            @click="sendAiRequest()"
           >
             {{ $t('actions.send') }}
           </button>

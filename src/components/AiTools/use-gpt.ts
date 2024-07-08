@@ -34,9 +34,11 @@ export const useGpt = () => {
   ) => {
     const apiProxy = aisStore.openAiApiProxy || 'https://api.openai.com/v1'
 
+    // 全局默认参数（可覆盖）
     options = {
-      // 全局默认参数（可覆盖）
+      // 指定要使用的模型
       model: aisStore.model,
+      // 是否启用流式数据输出
       stream: aisStore.stream,
       ...options,
     }

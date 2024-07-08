@@ -1,20 +1,24 @@
-<script lang="ts" setup="">
-import {marked} from 'marked'
+<script lang="ts" setup>
 import {copy} from '@/components/QuickLaunch/q-logics/utils'
 import {formatDate} from '@/utils'
 import {IAiCharacter, IChatItem} from '@/components/AiTools/types/ai'
+
+import markdown from '@/utils/markdown'
+import {useThrottleFn, watchThrottled} from '@vueuse/core'
 
 interface Props {
   isDark?: boolean
   allowDelete?: boolean
   allowEdit?: boolean
+  allowRetry?: boolean
   character?: IAiCharacter
   item: IChatItem
 }
 
-const emit = defineEmits(['delete'])
+const emit = defineEmits(['delete', 'retry'])
 const props = withDefaults(defineProps<Props>(), {
   isDark: false,
+  allowRetry: false,
   allowDelete: false,
 })
 const {item} = toRefs(props)
@@ -30,6 +34,26 @@ watch(isEditing, () => {
 const isReply = computed(() => {
   return item.value.role === 'assistant'
 })
+
+const renderedContent = ref('')
+watchThrottled(
+  () => item.value.content,
+  (val) => {
+    renderedContent.value = markdown.render(val)
+  },
+  {throttle: 100, trailing: true, immediate: true}
+)
+const handleClick = (event) => {
+  const el = event.target
+  if (el) {
+    // 处理代码块复制
+    const isCopyButton = el.classList.contains('hljs-copy-button')
+    if (isCopyButton) {
+      const code = el.parentElement.nextSibling.textContent
+      window.$qlUtils.copy(code)
+    }
+  }
+}
 </script>
 
 <template>
@@ -47,7 +71,7 @@ const isReply = computed(() => {
       v-else-if="item.content"
       class="chat-content markdown-body"
       :class="{'markdown-body-dark': isDark}"
-      v-html="marked(`[${item.role}] ${item.content}`)"
+      v-html="`[${item.role}] ${renderedContent}`"
       @click="isEditing = true"
     ></div>
   </div>
@@ -72,10 +96,11 @@ const isReply = computed(() => {
       </div>
       <template v-else>
         <div
+          @click="handleClick"
           class="chat-content markdown-body vp-bg"
           :class="{'markdown-body-dark': isDark}"
           v-if="item.content"
-          v-html="marked(item.content)"
+          v-html="renderedContent"
         ></div>
         <div
           v-else
@@ -96,6 +121,8 @@ const isReply = computed(() => {
         </template>
         <template v-else>
           <button class="btn-no-style" @click="copy(item.content)">{{ $t('actions.copy') }}</button>
+
+          <button class="btn-no-style" v-if="allowRetry" @click="$emit('retry')">Retry</button>
 
           <button class="btn-no-style" v-if="allowEdit" @click="isEditing = true">
             {{ $t('actions.edit') }}
@@ -134,6 +161,7 @@ const isReply = computed(() => {
   align-items: flex-start;
   gap: 8px;
   flex-direction: row-reverse;
+  position: relative;
 
   &.is-reply {
     flex-direction: row;
@@ -194,10 +222,10 @@ const isReply = computed(() => {
     padding: 6px 12px;
     border-radius: 10px 0 10px 10px;
     max-width: 800px;
-    font-size: 14px;
+    font-size: 16px;
     background-color: $primary_opacity;
     box-shadow: 0 1px 1px $color_border;
-    transition: all 1s;
+    //transition: all 1s;
   }
 
   .chat-actions {
