@@ -8,8 +8,11 @@ import ChatItem from '@/components/AiTools/ChatItem.vue'
 import {useStorage, useThrottleFn} from '@vueuse/core'
 import {useAiSettings} from '@/components/SystemSettings/use-ai-settings'
 import {useAiSettingsStore} from '@/store/ai-settings'
-import {useAiCharacters, useGpt} from '@/components/AiTools/use-gpt'
+import {useGpt} from '@/components/AiTools/use-gpt'
 import {useI18n} from 'vue-i18n'
+import {useAiCharacters} from '@/components/AiTools/use-ai-characters'
+import {tplConversationAssistant} from '@/components/AiTools/types/prompts'
+import {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
 
 const {t: $t, locale} = useI18n()
 const aisStore = useAiSettingsStore()
@@ -79,6 +82,15 @@ watch(
   },
   {immediate: true}
 )
+useGlobalBusOn(GlobalEvents.ON_AI_CHARACTER_UPDATE, () => {
+  if (!currentHistory.value) {
+    return
+  }
+  // 如果只有一条记录，说明是system，直接重置
+  if (currentHistory.value.history.length === 1) {
+    resetChatHistory()
+  }
+})
 
 const {requestChatCompletion, requestAiChatMessage} = useGpt()
 
@@ -95,18 +107,9 @@ const generateChatTitle = async () => {
     // 移除系统提示词
     history.shift()
 
-    currentHistory.value.title = await requestAiChatMessage([
-      {
-        content: '你是一名擅长会话的助理，你需要将用户的会话总结为 10 个字以内的标题',
-        role: 'system',
-      },
-      {
-        content: `${history.map((i) => `${i.role}:${i.content}`).join('\n')}
-
-请总结上述对话为10个字以内的标题，不需要包含标点符号，输出语言为：${locale.value}`,
-        role: 'user',
-      },
-    ])
+    currentHistory.value.title = await requestAiChatMessage(
+      tplConversationAssistant(history, locale.value)
+    )
   } catch (error: any) {
     console.error(error)
   }
@@ -237,6 +240,8 @@ const handleKeyInput = (event) => {
             </template>
             <OptionUI style="max-width: 400px" :option-list="aiSettingsOptions" />
           </n-popover>
+
+          {{ currentCharacter.model }}
         </div>
 
         <div class="action-side">
@@ -286,6 +291,8 @@ const handleKeyInput = (event) => {
 
       .action-side {
         display: flex;
+        align-items: center;
+        flex-wrap: wrap;
         gap: 8px;
         font-size: 12px;
       }

@@ -60,6 +60,7 @@ export const useMainStore = defineStore('main', {
       'isShowSettings',
       'isShowQuickLaunch',
       'isShowIframeBrowser',
+      'isShowAiChat',
       'upgradeInfo',
     ],
     enable: true,

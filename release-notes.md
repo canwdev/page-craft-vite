@@ -1,6 +1,6 @@
 # Release Notes
 
-## v1.6.8
+## v1.7.0
 
 - [x] add: AI 整合 ChatGPT
 - [x] add: 表单生成组件(Naive UI)

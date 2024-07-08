@@ -86,7 +86,7 @@ let routes = [
         name: 'AiPage',
         component: () => import('@/views/AiPage.vue'),
         meta: {
-          title: `Chat GPT`,
+          title: `AI Chat`,
           icon: iconAi,
         },
       },

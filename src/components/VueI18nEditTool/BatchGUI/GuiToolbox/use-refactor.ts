@@ -6,6 +6,7 @@ import {
 } from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox/use-gui-toolbox'
 import {useI18n} from 'vue-i18n'
 import {useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
+import {tplBatchTranslator} from '@/components/AiTools/types/prompts'
 
 export const useBatchTranslateRefactor = (emit) => {
   const {t: $t} = useI18n()
@@ -95,19 +96,7 @@ export const useBatchTranslateRefactor = (emit) => {
           throw new Error($t('i18n_tools.no_need_for_transla'))
         }
 
-        const ret: GptMessage[] = [
-          {
-            role: 'system',
-            content: `你是一个后台翻译服务，负责翻译多语言文案，帮我翻译并只返回json内容，不需要markdown格式。json格式为：\`${JSON.stringify(
-              arr
-            )}\``,
-          },
-          {
-            role: 'user',
-            content: `翻译内容(${iso}):
-\`${find.value}\``,
-          },
-        ]
+        const ret: GptMessage[] = tplBatchTranslator(arr, iso, find.value)
 
         console.log('[buildAiPrompt]', ret)
         return ret

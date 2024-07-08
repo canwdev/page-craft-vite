@@ -159,6 +159,11 @@ export default defineComponent({
         rootRef.value.scrollIntoView({behavior: 'smooth', block: 'center'})
       })
     }
+    const scrollToItemTop = () => {
+      if (rootRef.value) {
+        rootRef.value.scrollIntoView({behavior: 'smooth'})
+      }
+    }
 
     return {
       i18nSetStore,
@@ -189,6 +194,7 @@ export default defineComponent({
       namespacePrefix,
       namespaceInputRef,
       ccName,
+      scrollToItemTop,
       ...useArrayEdit(),
     }
   },
@@ -213,8 +219,10 @@ export default defineComponent({
       </template>
 
       <div v-if="isRoot" class="namespace-input-wrap font-code">
-        <CcFlag v-if="i18nSetStore.enableFlag" :cc="ccName" />
-        <span v-else style="color: #f44336" class="namespace-prefix"> § </span>
+        <CcFlag @click="scrollToItemTop" v-if="i18nSetStore.enableFlag" :cc="ccName" />
+        <span @click="scrollToItemTop" v-else style="color: #f44336" class="namespace-prefix">
+          §
+        </span>
         <input
           ref="namespaceInputRef"
           class="font-code vp-input"
@@ -228,7 +236,7 @@ export default defineComponent({
       </div>
 
       <div v-else class="namespace-input-wrap font-code">
-        <span class="namespace-prefix">
+        <span @click="scrollToItemTop" class="namespace-prefix">
           § <template v-if="!isLite">{{ namespacePrefix + (namespacePrefix ? '.' : '') }}</template>
         </span>
         <input
@@ -261,7 +269,7 @@ export default defineComponent({
       </div>
     </div>
 
-    <div v-if="isExpand">
+    <div class="group-content" v-if="isExpand">
       <div class="tr-list" v-if="item.translates && item.translates.length">
         <TranslateItem
           v-for="(vi, vIndex) in item.translates"
@@ -348,12 +356,13 @@ export default defineComponent({
   position: relative;
   $padding: 8px;
   padding: $padding;
+  // scrollIntoView 滚动偏移量
+  scroll-margin-top: 50px;
 
   &:hover {
     transition: none;
-    border: 1px solid $primary; //darkseagreen;
+    border: 1px solid $primary;
     & > .group-header {
-      outline: 1px solid $primary;
     }
   }
   &.isKeyDuplicated {
@@ -367,6 +376,8 @@ export default defineComponent({
     gap: 4px;
     .namespace-prefix {
       color: $primary;
+      cursor: pointer;
+      user-select: none;
     }
   }
 
@@ -381,7 +392,7 @@ export default defineComponent({
     margin-right: -$padding;
     margin-top: -$padding;
     padding: $padding;
-    outline: 1px solid $color_border;
+    outline: 1px solid $primary;
 
     .mc-error-tip-button {
       margin-right: 8px;
@@ -403,6 +414,7 @@ export default defineComponent({
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-top: 8px;
 
     .namespace-display {
       opacity: 0.5;

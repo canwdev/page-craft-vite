@@ -95,6 +95,7 @@ export default defineComponent({
 }
 
 ._dark {
+  color: white;
   .page-craft-root {
     background-color: #181818;
   }

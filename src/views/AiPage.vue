@@ -16,7 +16,7 @@ import ChatRoot from '@/components/AiTools/ChatRoot.vue'
   display: flex;
   flex-direction: column;
 
-  .chat-root {
+  .ai-chat-root {
     width: 100%;
     flex: 1;
     overflow: hidden;

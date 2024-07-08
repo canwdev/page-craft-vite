@@ -2,12 +2,12 @@
 import {StOptionItem} from '@/components/CommonUI/OptionUI/enum'
 import OptionUI from '@/components/CommonUI/OptionUI/index.vue'
 import {useAiSettingsStore} from '@/store/ai-settings'
-import {useAiCharacters} from '@/components/AiTools/use-gpt'
 import {formatDate, guid} from '@/utils'
 import {renderNDropdownMenu} from '@/components/CommonUI/renders'
 import {useI18n} from 'vue-i18n'
 import {IChatHistoryItem} from '@/components/AiTools/types/ai'
 import {useMounted} from '@vueuse/core'
+import {mergeIdData, useAiCharacters} from '@/components/AiTools/use-ai-characters'
 
 const {t: $t} = useI18n()
 const aisStore = useAiSettingsStore()
@@ -87,14 +87,6 @@ const optionList = computed((): StOptionItem[] => {
       actionRender: () =>
         renderNDropdownMenu([
           {
-            label: `➕ ${$t('actions.create')}`,
-            props: {
-              onClick: () => {
-                createChat()
-              },
-            },
-          },
-          {
             label: `📤 ${$t('actions.export')} JSON...`,
             props: {
               onClick: async () => {
@@ -118,32 +110,10 @@ const optionList = computed((): StOptionItem[] => {
                 const list = await window.$mcUtils.handleImportJson()
                 allChatHistory.value = list || []
 
-                /**
-                 * 自动覆盖相同id的数据，如果id不存在则添加
-                 */
-                const importData = (
-                  existingData: IChatHistoryItem[],
-                  newData: IChatHistoryItem[]
-                ) => {
-                  // Create a Map from existing data for quick lookup and update
-                  const dataMap = new Map<string, IChatHistoryItem>(
-                    existingData.map((item) => [item.id, item])
-                  )
-
-                  // Process new data items
-                  newData.forEach((item) => {
-                    // Update or add the data item in the Map
-                    dataMap.set(item.id, item)
-                  })
-
-                  // Convert the Map back to an array
-                  return Array.from(dataMap.values())
-                }
-
                 const oList = allChatHistory.value.filter(
                   (i) => i.cid === currentCharacter.value!.id
                 )
-                const mergedList = importData(oList, list)
+                const mergedList = mergeIdData(oList, list)
 
                 deleteCurrentAllHistory()
                 allChatHistory.value = mergedList.map(toRaw)
@@ -171,43 +141,51 @@ const optionList = computed((): StOptionItem[] => {
             },
           },
         ]),
-      children: currentHistoryGroup.value.map((item, index) => {
-        return {
-          key: item.id,
-          label: item.title || `New Chat with ${currentCharacter.value!.name}`,
-          subtitle: formatDate(item.timestamp),
-          cls: aisStore.currentChatHistoryId === item.id ? 'active' : '',
+      children: [
+        {
+          label: `➕ ${$t('actions.create')} 聊天`,
           clickFn: () => {
-            aisStore.currentChatHistoryId = item.id
+            createChat()
           },
-          actionRender: () =>
-            renderNDropdownMenu([
-              {
-                label: `✍️ ${$t('actions.rename')}`,
-                props: {
-                  onClick: async () => {
-                    const title = await window.$mcUtils.showInputPrompt({
-                      title: `${$t('actions.rename')}: ${item.title}`,
-                      value: item.title,
-                    })
-                    item.title = title
+        },
+        ...currentHistoryGroup.value.map((item, index) => {
+          return {
+            key: item.id,
+            label: item.title || `New Chat with ${currentCharacter.value!.name}`,
+            subtitle: formatDate(item.timestamp),
+            cls: aisStore.currentChatHistoryId === item.id ? 'active' : '',
+            clickFn: () => {
+              aisStore.currentChatHistoryId = item.id
+            },
+            actionRender: () =>
+              renderNDropdownMenu([
+                {
+                  label: `✍️ ${$t('actions.rename')}`,
+                  props: {
+                    onClick: async () => {
+                      const title = await window.$mcUtils.showInputPrompt({
+                        title: `${$t('actions.rename')}: ${item.title}`,
+                        value: item.title,
+                      })
+                      item.title = title
+                    },
                   },
                 },
-              },
-              {
-                label: `🗑️ ${$t('actions.delete')}`,
-                props: {
-                  onClick: () => {
-                    const idx = allChatHistory.value.findIndex((i) => i.id === item.id)
-                    if (idx > -1) {
-                      allChatHistory.value.splice(idx, 1)
-                    }
+                {
+                  label: `🗑️ ${$t('actions.delete')}`,
+                  props: {
+                    onClick: () => {
+                      const idx = allChatHistory.value.findIndex((i) => i.id === item.id)
+                      if (idx > -1) {
+                        allChatHistory.value.splice(idx, 1)
+                      }
+                    },
                   },
                 },
-              },
-            ]),
-        }
-      }),
+              ]),
+          }
+        }),
+      ],
     },
   ]
 })
@@ -215,7 +193,7 @@ const optionList = computed((): StOptionItem[] => {
 
 <template>
   <div class="ai-side-history">
-    <OptionUI :option-list="optionList" />
+    <OptionUI class="ai-option-ui" :option-list="optionList" />
   </div>
 </template>
 
@@ -223,16 +201,5 @@ const optionList = computed((): StOptionItem[] => {
 .ai-side-history {
   height: 100%;
   overflow: auto;
-  .c-panel-item {
-    .panel-header {
-      z-index: 0;
-    }
-    .panel-body .sub-item {
-      padding: 4px 8px;
-      &.active {
-        background-color: $primary_opacity;
-      }
-    }
-  }
 }
 </style>

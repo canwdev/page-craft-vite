@@ -5,17 +5,15 @@ import SideHistory from '@/components/AiTools/SideHistory.vue'
 </script>
 
 <template>
-  <div class="chat-root">
-    <n-layout has-sider>
-      <n-layout-sider
-        collapse-mode="width"
-        :collapsed-width="0"
-        :width="240"
-        show-trigger="arrow-circle"
-        content-style=""
-        bordered
-      >
-        <n-split direction="vertical" style="height: 100%">
+  <div class="ai-chat-root">
+    <n-split
+      direction="horizontal"
+      :default-size="0.2"
+      style="height: 100%"
+      :resize-trigger-size="2"
+    >
+      <template #1>
+        <n-split direction="vertical" style="height: 100%" :resize-trigger-size="2">
           <template #1>
             <SideCharacters />
           </template>
@@ -23,19 +21,39 @@ import SideHistory from '@/components/AiTools/SideHistory.vue'
             <SideHistory />
           </template>
         </n-split>
-      </n-layout-sider>
-      <n-layout-content content-style="">
+      </template>
+      <template #2>
         <ChatContent />
-      </n-layout-content>
-    </n-layout>
+      </template>
+    </n-split>
   </div>
 </template>
 
-<style lang="scss" scoped>
-.chat-root {
+<style lang="scss">
+.ai-chat-root {
   height: 100%;
-  .n-layout {
-    height: 100%;
+  color: inherit;
+
+  .ai-option-ui {
+    .panel-header {
+      padding-right: 8px;
+    }
+    .c-panel-item {
+      .panel-body {
+        padding: 0;
+
+        .sub-item {
+          padding: 4px 8px;
+          &.active {
+            background-color: $primary_opacity;
+          }
+          .o-left .item-icon {
+            border-radius: 50%;
+            overflow: hidden;
+          }
+        }
+      }
+    }
   }
 }
 </style>

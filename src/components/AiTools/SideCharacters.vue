@@ -1,20 +1,20 @@
 <script lang="ts" setup>
-import {StOptionItem, StOptionType} from '@/components/CommonUI/OptionUI/enum'
+import {StOptionItem} from '@/components/CommonUI/OptionUI/enum'
 import OptionUI from '@/components/CommonUI/OptionUI/index.vue'
-import {useIDBKeyval} from '@vueuse/integrations/useIDBKeyval'
 import {IAiCharacter} from '@/components/AiTools/types/ai'
 import {ChatModel, chatModels} from '@/components/AiTools/types/openai'
 
 import iconUser from '@/assets/textures/user.png?url'
 import {useAiSettingsStore} from '@/store/ai-settings'
-import {guid} from '@/utils'
 import {useI18n} from 'vue-i18n'
 import AutoFormNaive from '@/components/CommonUI/AutoFormNaive/index.vue'
 import {computed, ref} from 'vue'
 import {AutoFormItemType, MixedFormItems} from '@/components/CommonUI/AutoFormNaive/enum'
-import {FormRules, NDropdown} from 'naive-ui'
+import {FormItemRule, FormRules} from 'naive-ui'
 import {renderNDropdownMenu} from '@/components/CommonUI/renders'
-import {useAiCharacters} from '@/components/AiTools/use-gpt'
+
+import {mergeIdData, useAiCharacters} from '@/components/AiTools/use-ai-characters'
+import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 
 const {t: $t} = useI18n()
 const aisStore = useAiSettingsStore()
@@ -24,7 +24,7 @@ const isCreate = ref(false)
 const isShowEditDialog = ref(false)
 const formatEditingData = (data: any = {}) => {
   return {
-    id: data.id || guid(),
+    id: data.id || '',
     name: data.name || '',
     desc: data.desc || '',
     avatar: data.avatar || '',
@@ -69,7 +69,7 @@ const optionList = computed((): StOptionItem[] => {
             props: {
               onClick: async () => {
                 const list = await window.$mcUtils.handleImportJson()
-                characterList.value = list || []
+                characterList.value = mergeIdData(characterList.value, list || [])
                 window.$message.success('Import success!')
               },
             },
@@ -96,7 +96,7 @@ const optionList = computed((): StOptionItem[] => {
       children: characterList.value.map((item, index) => {
         return {
           key: item.id,
-          label: `${item.name} [${item.model}]`,
+          label: `${item.name}`,
           subtitle: `${item.desc}`,
           icon: item.avatar || iconUser,
           cls: aisStore.currentCharacterId === item.id ? 'active' : '',
@@ -106,10 +106,20 @@ const optionList = computed((): StOptionItem[] => {
           actionRender: () =>
             renderNDropdownMenu([
               {
-                label: `✏️ ${$t('actions.edit_element')}`,
+                label: `✏️ ${$t('actions.edit')}`,
                 props: {
                   onClick: () => {
                     isCreate.value = false
+                    editingItem.value = formatEditingData(item)
+                    isShowEditDialog.value = true
+                  },
+                },
+              },
+              {
+                label: `📄 ${$t('actions.duplicate')}...`,
+                props: {
+                  onClick: async () => {
+                    isCreate.value = true
                     editingItem.value = formatEditingData(item)
                     isShowEditDialog.value = true
                   },
@@ -148,6 +158,18 @@ const formRules = ref<FormRules>({
   id: {
     required: true,
     trigger: 'blur',
+    validator: (rule: FormItemRule, value: string) => {
+      if (!value) {
+        return new Error('id is required')
+      }
+      if (isCreate.value) {
+        const idx = characterList.value.findIndex((i) => i.id === value)
+        if (idx > -1) {
+          return new Error('id can not be same')
+        }
+      }
+      return true
+    },
   },
   model: {
     required: true,
@@ -168,6 +190,30 @@ const formItems = computed((): MixedFormItems[] => {
     [
       {
         type: AutoFormItemType.INPUT,
+        key: 'name',
+        label: '角色名称',
+        props: {
+          onChange: () => {
+            if (isCreate.value) {
+              const name = editingItem.value.name.trim()
+              editingItem.value.name = name
+              // 自动生成id
+              if (!editingItem.value.id && name) {
+                editingItem.value.id = window.$mcUtils.formatI18nKey(name)
+              }
+            }
+          },
+        },
+      },
+      {
+        type: AutoFormItemType.INPUT,
+        key: 'avatar',
+        label: '头像 URL',
+      },
+    ],
+    [
+      {
+        type: AutoFormItemType.INPUT,
         key: 'id',
         label: 'ID (创建后不可修改)',
         disabled: !isCreate.value,
@@ -177,18 +223,6 @@ const formItems = computed((): MixedFormItems[] => {
         options: chatModels,
         key: 'model',
         label: $t('ai.model'),
-      },
-    ],
-    [
-      {
-        type: AutoFormItemType.INPUT,
-        key: 'avatar',
-        label: '头像 URL',
-      },
-      {
-        type: AutoFormItemType.INPUT,
-        key: 'name',
-        label: '角色名称',
       },
     ],
     {
@@ -202,6 +236,7 @@ const formItems = computed((): MixedFormItems[] => {
       label: 'System Prompt',
       props: {
         type: 'textarea',
+        rows: 8,
       },
     },
   ]
@@ -209,6 +244,7 @@ const formItems = computed((): MixedFormItems[] => {
 
 const handleSubmit = () => {
   isShowEditDialog.value = false
+  // 添加或更新角色
   if (isCreate.value) {
     characterList.value.push(editingItem.value)
     return
@@ -217,12 +253,13 @@ const handleSubmit = () => {
   if (idx > -1) {
     characterList.value.splice(idx, 1, editingItem.value)
   }
+  globalEventBus.emit(GlobalEvents.ON_AI_CHARACTER_UPDATE)
 }
 </script>
 
 <template>
   <div class="ai-side-characters">
-    <OptionUI :option-list="optionList" />
+    <OptionUI class="ai-option-ui" :option-list="optionList" />
 
     <n-modal
       v-model:show="isShowEditDialog"
@@ -248,20 +285,5 @@ const handleSubmit = () => {
 .ai-side-characters {
   height: 100%;
   overflow: auto;
-  .c-panel-item {
-    .panel-header {
-      z-index: 0;
-    }
-    .panel-body .sub-item {
-      padding: 4px 8px;
-      &.active {
-        background-color: $primary_opacity;
-      }
-      .o-left .item-icon {
-        border-radius: 50%;
-        overflow: hidden;
-      }
-    }
-  }
 }
 </style>
