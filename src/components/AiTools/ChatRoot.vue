@@ -8,7 +8,9 @@ import SideHistory from '@/components/AiTools/SideHistory.vue'
   <div class="ai-chat-root">
     <n-split
       direction="horizontal"
-      :default-size="0.2"
+      default-size="256px"
+      max="456px"
+      min="56px"
       style="height: 100%"
       :resize-trigger-size="2"
     >

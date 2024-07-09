@@ -1,6 +1,8 @@
 import {useAiSettingsStore} from '@/store/ai-settings'
 import {
   ChatCompletion,
+  ChatModel,
+  chatModels,
   GptMessage,
   OpenAIApiErrorCodeMessage,
 } from '@/components/AiTools/types/openai'
@@ -120,8 +122,13 @@ export const useGpt = () => {
     return message.content || ''
   }
 
+  const canUseVision = (model) => {
+    return chatModels.find((i) => i.value === model)?.vision || false
+  }
+
   return {
     requestChatCompletion,
     requestAiChatMessage,
+    canUseVision,
   }
 }

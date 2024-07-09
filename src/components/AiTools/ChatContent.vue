@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import OptionUI from '@/components/CommonUI/OptionUI/index.vue'
-import {IMessageItem} from '@/components/AiTools/types/ai'
+import {IMessageContent, IMessageItem} from '@/components/AiTools/types/ai'
 import '@/styles/markdown/github-markdown.css'
 import '@/styles/markdown/github-markdown-dark.css'
 import {useMainStore} from '@/store/main'
@@ -13,6 +13,7 @@ import {useI18n} from 'vue-i18n'
 import {useAiCharacters} from '@/components/AiTools/use-ai-characters'
 import {tplConversationAssistant} from '@/components/AiTools/types/prompts'
 import {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
+import ImagePicker from '@/components/AiTools/ChatBubble/ImagePicker.vue'
 
 const {t: $t, locale} = useI18n()
 const aisStore = useAiSettingsStore()
@@ -25,18 +26,19 @@ const userInputContent = ref('')
 
 const tempResponseChat = ref<IMessageItem | null>(null)
 
+const getSystemMessage = (): IMessageItem => {
+  return {
+    role: 'system',
+    content: currentCharacter.value!.systemPrompt,
+    timestamp: Date.now(),
+  }
+}
 // 重置聊天
 const resetChatHistory = () => {
   if (!currentCharacter.value || !currentHistory.value) {
     return
   }
-  currentHistory.value.history = [
-    {
-      role: 'system',
-      content: currentCharacter.value.systemPrompt,
-      timestamp: Date.now(),
-    },
-  ]
+  currentHistory.value.history = [getSystemMessage()]
   tempResponseChat.value = null
 }
 
@@ -86,13 +88,12 @@ useGlobalBusOn(GlobalEvents.ON_AI_CHARACTER_UPDATE, () => {
   if (!currentHistory.value) {
     return
   }
-  // 如果只有一条记录，说明是system，直接重置
-  if (currentHistory.value.history.length === 1) {
-    resetChatHistory()
-  }
+  // 更新当前聊天的system提示词
+  currentHistory.value.history.shift()
+  currentHistory.value.history.unshift(getSystemMessage())
 })
 
-const {requestChatCompletion, requestAiChatMessage} = useGpt()
+const {requestChatCompletion, requestAiChatMessage, canUseVision} = useGpt()
 
 // 自动生成聊天标题
 const generateChatTitle = async () => {
@@ -115,7 +116,16 @@ const generateChatTitle = async () => {
   }
 }
 
-// 发送1次聊天请求
+// GPT4 以上支持vision图像识别
+const isEnableVision = computed(() => {
+  return canUseVision(currentCharacter.value?.model)
+})
+const imageList = ref<string[]>([])
+
+/**
+ * 发送1次聊天请求
+ * @param isRetry 是否重新生成
+ */
 const sendAiRequest = async (isRetry = false) => {
   if (!currentCharacter.value || !currentHistory.value) {
     return
@@ -131,12 +141,37 @@ const sendAiRequest = async (isRetry = false) => {
     }
 
     if (!isRetry) {
+      // 添加用户的对话框输入内容
+      let content
+
+      if (isEnableVision && imageList.value.length) {
+        content = [
+          {
+            text: userInputContent.value,
+            type: 'text',
+          },
+          // 传入图像
+          ...imageList.value.map((i) => {
+            return {
+              type: 'image_url',
+              image_url: {
+                detail: 'auto',
+                url: i,
+              },
+            }
+          }),
+        ]
+      } else {
+        content = userInputContent.value
+      }
+
       currentHistory.value.history.push({
         role: 'user',
-        content: userInputContent.value,
+        content,
         timestamp: Date.now(),
       })
       userInputContent.value = ''
+      imageList.value.length = []
     }
     scrollBottom()
 
@@ -256,6 +291,10 @@ const handleRetry = (item: IMessageItem, index) => {
           </n-popover>
 
           {{ currentCharacter.model }}
+
+          <template v-if="isEnableVision">
+            <ImagePicker v-model:images="imageList" />
+          </template>
         </div>
 
         <div class="action-side">

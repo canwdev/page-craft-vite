@@ -6,6 +6,7 @@ import * as changeCase from 'change-case'
 import {filterLabel} from './utils'
 import {demoPluginTpl} from './demo.json'
 import {useI18n} from 'vue-i18n'
+import {base64Utils} from '@/utils/base64-utils'
 
 export type DynamicPlugin = (key: any) => QuickOptionItem
 
@@ -121,6 +122,7 @@ ${code}
       moment,
       useFileDialog,
       changeCase,
+      base64Utils,
 
       // Vue3功能
       ref,

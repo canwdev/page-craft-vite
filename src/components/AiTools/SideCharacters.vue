@@ -15,6 +15,7 @@ import {renderNDropdownMenu} from '@/components/CommonUI/renders'
 
 import {mergeIdData, useAiCharacters} from '@/components/AiTools/use-ai-characters'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
+import {base64Utils} from '@/utils/base64-utils'
 
 const {t: $t} = useI18n()
 const aisStore = useAiSettingsStore()
@@ -209,6 +210,23 @@ const formItems = computed((): MixedFormItems[] => {
         type: AutoFormItemType.INPUT,
         key: 'avatar',
         label: '头像 URL',
+        props: {
+          clearable: true,
+        },
+        render: () =>
+          h(
+            'button',
+            {
+              class: 'btn-no-style',
+              onClick: async () => {
+                const url = await base64Utils.chooseFileToBase64({accept: 'image/*'})
+                if (typeof url === 'string') {
+                  editingItem.value.avatar = url
+                }
+              },
+            },
+            '🖼️'
+          ),
       },
     ],
     [

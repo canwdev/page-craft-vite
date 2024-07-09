@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 import {copy} from '@/components/QuickLaunch/q-logics/utils'
 import {formatDate} from '@/utils'
-import {IAiCharacter, IMessageItem} from '@/components/AiTools/types/ai'
+import {IAiCharacter, IMessageContent, IMessageItem} from '@/components/AiTools/types/ai'
 
-import markdown from '@/utils/markdown'
-import {useThrottleFn, watchThrottled} from '@vueuse/core'
+import MessageContent from '@/components/AiTools/ChatBubble/TextContent.vue'
 
 interface Props {
   isDark?: boolean
@@ -27,42 +26,24 @@ const isEditing = ref(false)
 const editInputRef = ref()
 watch(isEditing, () => {
   setTimeout(() => {
-    editInputRef.value.focus()
+    if (editInputRef.value) {
+      editInputRef.value.focus()
+    }
   })
 })
 
 const isReply = computed(() => {
   return item.value.role === 'assistant'
 })
-
-const renderedContent = ref('')
-watchThrottled(
-  () => item.value.content,
-  (val) => {
-    renderedContent.value = markdown.render(val)
-  },
-  {throttle: 100, trailing: true, immediate: true}
-)
-const handleClick = (event) => {
-  const el = event.target
-  if (el) {
-    // 处理代码块复制
-    const isCopyButton = el.classList.contains('hljs-copy-button')
-    if (isCopyButton) {
-      const code = el.parentElement.nextSibling.textContent
-      window.$qlUtils.copy(code)
-    }
-  }
-}
 </script>
 
 <template>
-  <div class="chat-item-system" :class="{isEditing}" v-if="item.role === 'system'">
+  <div class="ai-chat-bubble-system" :class="{isEditing}" v-if="item.role === 'system'">
     <textarea
       ref="editInputRef"
       v-if="isEditing"
       class="vp-input"
-      v-model="item.content"
+      v-model="item.content as string"
       rows="5"
       @blur="isEditing = false"
     />
@@ -74,7 +55,7 @@ const handleClick = (event) => {
       @click="isEditing = true"
     ></div>
   </div>
-  <div v-else class="chat-item" :class="{'is-reply': isReply}">
+  <div v-else class="ai-chat-bubble" :class="{isReply, isEditing}">
     <div class="chat-header">
       <div class="chat-avatar" :title="item.role">
         <img
@@ -89,26 +70,29 @@ const handleClick = (event) => {
       </div>
     </div>
 
-    <div class="chat-body">
-      <div class="chat-content vp-bg" :class="{'markdown-body-dark': isDark}" v-if="isEditing">
-        <textarea class="vp-input" v-model="item.content" rows="4" cols="30" ref="editInputRef" />
-      </div>
-      <template v-else>
-        <div
-          @click="handleClick"
-          class="chat-content markdown-body vp-bg"
-          :class="{'markdown-body-dark': isDark}"
-          v-if="item.content"
-          v-html="renderedContent"
-        ></div>
-        <div
-          v-else
-          class="chat-content markdown-body vp-bg"
-          :class="{'markdown-body-dark': isDark}"
-        >
-          <n-spin size="small"></n-spin>
-        </div>
+    <div class="chat-body" :class="{isEditing}">
+      <MessageContent
+        v-if="item.content && typeof item.content === 'string'"
+        v-model:text="item.content"
+        :is-dark="isDark"
+        :is-editing="isEditing"
+      />
+      <template v-else-if="item.content && typeof Array.isArray(item.content)">
+        <template v-for="(sub, subIndex) in item.content as IMessageContent[]" :key="subIndex">
+          <MessageContent
+            v-if="sub.type === 'text'"
+            v-model:text="sub.text"
+            :is-dark="isDark"
+            :is-editing="isEditing"
+          />
+          <div class="chat-images" v-else-if="sub.type === 'image_url' && sub.image_url">
+            <img :src="sub.image_url.url" :alt="sub.image_url.detail" />
+          </div>
+        </template>
       </template>
+      <div v-else class="chat-content markdown-body vp-bg" :class="{'markdown-body-dark': isDark}">
+        <n-spin size="small"></n-spin>
+      </div>
 
       <div class="chat-actions">
         <div class="chat-date font-code" v-if="item.timestamp">
@@ -139,7 +123,7 @@ const handleClick = (event) => {
 </template>
 
 <style lang="scss" scoped>
-.chat-item-system {
+.ai-chat-bubble-system {
   margin-bottom: 8px;
   opacity: 0.6;
   background-color: $primary_opacity;
@@ -167,7 +151,7 @@ const handleClick = (event) => {
   }
 }
 
-.chat-item {
+.ai-chat-bubble {
   margin-bottom: 4px;
   display: flex;
   align-items: flex-start;
@@ -175,7 +159,13 @@ const handleClick = (event) => {
   flex-direction: row-reverse;
   position: relative;
 
-  &.is-reply {
+  &.isEditing {
+    .chat-actions {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+  &.isReply {
     flex-direction: row;
     .chat-avatar {
       background-color: #74aa9c;
@@ -238,6 +228,15 @@ const handleClick = (event) => {
     background-color: $primary_opacity;
     box-shadow: 0 1px 1px $color_border;
     //transition: all 1s;
+  }
+
+  .chat-images {
+    display: flex;
+    gap: 4px;
+    img {
+      max-width: 100px;
+      max-height: 100px;
+    }
   }
 
   .chat-actions {
