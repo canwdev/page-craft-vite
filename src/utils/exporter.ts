@@ -1,5 +1,5 @@
 import {sassToCSS} from '@/components/StyleEditor/utils/css'
-import {formatCss, formatHtml} from '@/components/StyleEditor/utils/formater'
+import {beautifyCss, beautifyHtml} from '@/components/StyleEditor/utils/formater'
 import {IComponentExportData} from '@/components/PageCraft/ComponentExplorer/enum'
 import {handleExportFile, promptGetFileName} from '@/utils/mc-utils/io'
 import {useStorage} from '@vueuse/core'
@@ -19,7 +19,7 @@ export const handleExportHtml = async (exportData: IComponentExportData, options
 
   let name = await promptGetFileName(exportData.name ? exportData.name + nameSuffix : '')
 
-  const cssCode = style ? formatCss(await sassToCSS(style)) : ''
+  const cssCode = style ? beautifyCss(await sassToCSS(style)) : ''
   let htmlStr
   if (isInline) {
     htmlStr = window.$juice(`<style>${cssCode}</style>
@@ -27,7 +27,7 @@ ${html}`)
     if (inlineWithStyleTag) {
       htmlStr = `<style>${cssCode}</style>${htmlStr}`
     }
-    htmlStr = formatHtml(htmlStr)
+    htmlStr = beautifyHtml(htmlStr)
   } else {
     htmlStr = `<!doctype html>
 <html>

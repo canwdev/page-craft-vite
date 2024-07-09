@@ -71,6 +71,7 @@ $primaryOpacity: $primary_opacity; // rgba(249, 34, 80, 0.2)
   width: 1200px;
   margin-left: auto;
   margin-right: auto;
+  color: initial;
 
   &._dark {
     background-color: #1e1e1e;

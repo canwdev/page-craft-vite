@@ -232,10 +232,13 @@ const isReply = computed(() => {
 
   .chat-images {
     display: flex;
-    gap: 4px;
+    & + .chat-images {
+      margin-top: 4px;
+    }
     img {
-      max-width: 100px;
-      max-height: 100px;
+      max-width: 200px;
+      max-height: 300px;
+      object-fit: contain;
     }
   }
 

@@ -2,7 +2,7 @@
 import ToolBar from '@/components/PageCraft/ToolBar/index.vue'
 import MainPlayground from '@/components/PageCraft/MainPlayground/index.vue'
 import {useSettingsStore} from '@/store/settings'
-import {formatCss} from '@/components/StyleEditor/utils/formater'
+import {beautifyCss} from '@/components/StyleEditor/utils/formater'
 import {sassToCSS} from '@/components/StyleEditor/utils/css'
 import {copyToClipboard} from '@/utils'
 import {PaintBrush16Regular} from '@vicons/fluent'
@@ -64,7 +64,7 @@ const styleMenuOptions = [
     props: {
       onClick: async () => {
         const style = await loadCurCompStyle()
-        const css = formatCss(await sassToCSS(style))
+        const css = beautifyCss(await sassToCSS(style))
         await copyToClipboard(css)
       },
     },

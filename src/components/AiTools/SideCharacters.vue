@@ -155,6 +155,15 @@ const optionList = computed((): StOptionItem[] => {
     },
   ]
 })
+
+onMounted(() => {
+  setTimeout(() => {
+    document.querySelectorAll('.ai-option-ui .sub-item.active').forEach((el) => {
+      el.scrollIntoView({behavior: 'smooth', block: 'center'})
+    })
+  }, 100)
+})
+
 const formRules = ref<FormRules>({
   id: {
     required: true,
