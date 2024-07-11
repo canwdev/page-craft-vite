@@ -33,15 +33,6 @@ export const useCommonTools = () => {
       },
     },
     {
-      label: '📑 RichText Tool',
-      props: {
-        onClick: async () => {
-          mainStore.isShowQuickLaunch = false
-          await router.push({name: 'RichTextTool'})
-        },
-      },
-    },
-    {
       label: '🧬 ' + $t('common.text_transformer'),
       search: 'text transformer',
       props: {
@@ -51,7 +42,7 @@ export const useCommonTools = () => {
       },
     },
     {
-      label: '🌐📄 ' + $t('common.i18njson_editing_too'),
+      label: `🌐 ${$t('common.i18njson_editing_too')} 📄`,
       search: 'json editor',
       props: {
         onClick: async () => {
@@ -61,7 +52,7 @@ export const useCommonTools = () => {
       },
     },
     {
-      label: '🌐📂 ' + $t('common.i18njson_batch_tool'),
+      label: `🌐 ${$t('common.i18njson_batch_tool')} 📂`,
       search: 'json editor batch',
       props: {
         onClick: async () => {
@@ -70,27 +61,58 @@ export const useCommonTools = () => {
         },
       },
     },
+    {
+      label: '🤯 ChatGPT',
+      props: {
+        onClick: async () => {
+          mainStore.isShowQuickLaunch = false
+          await router.push({name: 'AiPage'})
+        },
+      },
+    },
   ]
   const qlOptions = computed((): QuickOptionItem[] => {
     let list: QuickOptionItem[] = [
       ...toolsMenuOptions,
       {
-        label: '🌎 Iframe Browser (alt+i)',
-        props: {
-          onClick: async () => {
-            mainStore.isShowIframeBrowser = !mainStore.isShowIframeBrowser
+        label: `✨ ${$t('common.more')}...`,
+        children: [
+          {
+            label: `🌏 ${$t('common.iframe_browser')} (alt+i)`,
+            props: {
+              onClick: async () => {
+                mainStore.isShowIframeBrowser = !mainStore.isShowIframeBrowser
+              },
+            },
           },
-        },
+          {
+            label: '📑 ' + $t('common.rich_text_tool'),
+            props: {
+              onClick: async () => {
+                mainStore.isShowQuickLaunch = false
+                await router.push({name: 'RichTextTool'})
+              },
+            },
+          },
+          {
+            label: `🤯 ChatGPT Window (alt+g)`,
+            props: {
+              onClick: async () => {
+                mainStore.isShowAiChat = !mainStore.isShowAiChat
+              },
+            },
+          },
+          {
+            label: '🔧 Dev Page',
+            props: {
+              onClick: async () => {
+                mainStore.isShowQuickLaunch = false
+                await router.push({name: 'DevPage'})
+              },
+            },
+          },
+        ],
       },
-      // {
-      //   label: '🗃️ File Explorer',
-      //   props: {
-      //     onClick: async () => {
-      //       mainStore.isShowQuickLaunch = false
-      //       await router.push({name: 'FileExplorer'})
-      //     },
-      //   },
-      // },
       {
         label: '⚙️ ' + $t('common.settings'),
         search: 'settings',
@@ -104,7 +126,7 @@ export const useCommonTools = () => {
     if (route.name !== 'CraftPage') {
       list = [
         {
-          label: '⛏️ ' + formatSiteTitle(),
+          label: `⛏️ Page Craft`,
           props: {
             onClick: async () => {
               mainStore.isShowQuickLaunch = false
@@ -119,7 +141,7 @@ export const useCommonTools = () => {
     if (route.name !== 'HomePage') {
       list = [
         {
-          label: '🏠 Welcome Page',
+          label: '🏠 ' + $t('common.home_page'),
           props: {
             onClick: async () => {
               await router.push({name: 'HomePage'})

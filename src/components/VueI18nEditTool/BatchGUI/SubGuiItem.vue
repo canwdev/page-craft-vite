@@ -11,7 +11,7 @@ import {readClipboardData} from '@/utils'
 import {textConvertAdvanced} from '@/utils/mc-utils/text-convert'
 import {useI18nToolSettingsStore} from '@/components/VueI18nEditTool/store/i18n-tool-settings'
 import FieldEdit from '@/components/VueI18nEditTool/Single/FieldEdit.vue'
-import {useBatchItemV2} from '@/components/VueI18nEditTool/BatchGUI/hooks/batch-hooks'
+import {useBatchItemV2} from '@/components/VueI18nEditTool/BatchGUI/batch-hooks'
 import {BatchListItem, useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
 import CcFlag from '@/components/VueI18nEditTool/CcFlag.vue'
 
@@ -58,15 +58,20 @@ export default defineComponent({
     // 字段值是否发生变化
     const isChanged = ref(false)
 
+    // 是否存在json文件
+    const getIsJsonCreated = () => {
+      return !!listItem.value.json
+    }
+
     const getValue = () => {
       return _get(localJson.value, i18nMainStore.translatePath, null)
     }
-    const setValue = (val: any) => {
+    const setValue = (val: any, path = i18nMainStore.translatePath) => {
       try {
-        if (!listItem.value.json) {
-          throw new Error('listItem.value.json is empty!')
+        if (!getIsJsonCreated()) {
+          throw new Error('json file not exist!')
         }
-        _set(listItem.value.json, i18nMainStore.translatePath, val)
+        _set(listItem.value.json as any, path, val)
       } catch (e: any) {
         console.error(e)
         window.$message.error(e.message)
@@ -76,6 +81,12 @@ export default defineComponent({
     const deleteField = () => {
       _unset(localJson.value, i18nMainStore.translatePath)
       fieldValue.value = null
+      isChanged.value = true
+    }
+    const renameField = (newPath) => {
+      const value = getValue()
+      _unset(localJson.value, i18nMainStore.translatePath)
+      setValue(value, newPath)
       isChanged.value = true
     }
 
@@ -191,9 +202,20 @@ export default defineComponent({
         window.$message.error(e.message)
       }
     }
-    const handleDeleteField = () => {
+    const handleDeleteField = async () => {
+      if (!getIsJsonCreated()) {
+        return
+      }
       deleteField()
-      saveChange()
+      await saveChange()
+    }
+    // 外部调用批量重命名
+    const handleRenameField = async (newPath) => {
+      if (!getIsJsonCreated()) {
+        return
+      }
+      renameField(newPath)
+      await saveChange()
     }
 
     return {
@@ -215,6 +237,8 @@ export default defineComponent({
       handlePreviewArrayText,
       handleSaveArray,
       handleDeleteField,
+      handleRenameField,
+      getIsJsonCreated,
       isLoading,
       subFilePathArr,
     }
@@ -293,7 +317,7 @@ export default defineComponent({
           size="small"
           @click="pasteCreateField()"
           type="primary"
-          :title="`Auto Paste Create (${i18nSetStore.autoPasteTextConvertMode})`"
+          :title="`${$t('msgs.auto_paste')} Create (${i18nSetStore.autoPasteTextConvertMode})`"
         >
           <template #icon>
             <ClipboardPaste20Regular />

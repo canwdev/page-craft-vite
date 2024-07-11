@@ -2,6 +2,7 @@
 import TinyMceEditor from '@/components/CommonUI/TinyMceEditor.vue'
 import {useScriptTag, useStorage} from '@vueuse/core'
 import {useMainStore} from '@/store/main'
+import CommonNavbar from '@/components/CommonUI/CommonNavbar.vue'
 
 const isLoaded = ref(false)
 useScriptTag('lib/tinymce-6.0.3/tinymce.min.js', (el: HTMLScriptElement) => {
@@ -14,6 +15,8 @@ const mainStore = useMainStore()
 
 <template>
   <div class="rich-text-tool-wrap _scrollbar_mini">
+    <CommonNavbar />
+
     <TinyMceEditor
       :dark="mainStore.isAppDarkMode"
       :content-css="mainStore.isAppDarkMode ? 'dark' : ''"

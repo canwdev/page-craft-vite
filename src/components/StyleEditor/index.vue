@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {sassToCSS, suggestElementClass} from './utils/css'
-import {formatCss} from './utils/formater'
+import {beautifyCss} from './utils/formater'
 import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
 import {
   Copy20Regular,
@@ -146,7 +146,7 @@ const execBeautifyCssAction = async () => {
   const textValue = editor.getValue()
 
   if (textValue.trim()) {
-    const beautifiedCSS = formatCss(textValue)
+    const beautifiedCSS = beautifyCss(textValue)
     if (textValue.trim() !== beautifiedCSS.trim()) {
       // Select all text
       const fullRange = editor.getModel()?.getFullModelRange()
@@ -305,6 +305,10 @@ defineExpose({
     @keyup="listenShortcuts"
     @onActive="focusEditor"
     allow-maximum
+    :init-win-options="{
+      width: '400px',
+      height: '500px',
+    }"
   >
     <template #titleBarLeft>
       <n-icon class="window-icon" size="18"><PaintBrush20Regular /></n-icon

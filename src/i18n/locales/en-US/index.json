@@ -49,7 +49,15 @@
     "files_mode": "Files Mode",
     "field": "Field",
     "system": "System",
-    "common": "Common"
+    "common": "Common",
+    "rich_text_tool": "RichText Tool",
+    "iframe_browser": "Iframe Browser",
+    "file_explorer": "File Explorer",
+    "home_page": "Home Page",
+    "plugins_manager": "Plugins Manager",
+    "code": "Code",
+    "toolbox": "Toolbox",
+    "more": "More"
   },
   "actions": {
     "cancel": "Cancel",
@@ -94,7 +102,15 @@
     "save_as": "Save as",
     "open": "Open",
     "download": "Download",
-    "current": "Current"
+    "current": "Current",
+    "import_export": "Import/Export",
+    "plugins": "Plugins",
+    "add_plugin": "Add Plugin",
+    "refactor": "Refactor",
+    "save_all": "Save All",
+    "send": "Send",
+    "create": "Create",
+    "retry": "Retry"
   },
   "msgs": {
     "drop_files_here": "Drop files here",
@@ -147,7 +163,6 @@
     "text_conv_mode": "Text Converter Mode",
     "copy_json_from_right": "Copy the right-hand side as JSON",
     "paste_json_override_right": "Paste JSON to overwrite the right-hand side",
-    "fen_xi_fan_yi_shu": "Analyzing Translation Trees",
     "action_completed_pl": "Action completed, please save manually!",
     "confirm_close": "Confirm close? Unsaved contents will be lost.",
     "auto_paste_and_copy": "[Auto] Paste and Copy Result",
@@ -156,6 +171,42 @@
     "enable_flag": "Enable Flag",
     "refresh_page": "Refresh the page?",
     "recommend_download_client_desc": "⚡ Fully open source, offline available\n💡 Built using Tauri technology, lightweighted to just 10MB\n🚀 Invokes the system's native WebView2, faster and more stable\n💽 The exe installation package can be extracted directly run, no need to install",
-    "recommend_download_client_title": "Recommended for downloading the desktop client"
+    "recommend_download_client_title": "Recommended for downloading the desktop client",
+    "error_name_duplicat": "Error: Name duplicated!"
+  },
+  "i18n_tools": {
+    "locate_translate_pa": "Locate Translate Path",
+    "filter_translate_ke": "Filter Translate Key",
+    "a_i_translate": "AI Translate",
+    "delete_keys": "Delete Keys",
+    "rename_keys": "Rename Keys",
+    "no_need_for_transla": "No need for translation",
+    "in_all_languages": "In all languages",
+    "fen_xi_fan_yi_shu": "Analyzing Translation Trees"
+  },
+  "plugins": {
+    "input_demo_to_creat": "Input `demo` to create a demo plugin!",
+    "input_plugin_name": "Input plugin name",
+    "reload_all_plugins": "Reload All Plugins",
+    "plugins_reloaded": "Plugins reloaded!",
+    "reload_custom_plugi": "Reload Custom Plugins",
+    "delete_all_custom_p": "Delete all custom plugins"
+  },
+  "ai": {
+    "clear_chat_history": "Clear chat history?",
+    "dai_li_di_zhi": "Proxy Address",
+    "model": "Model",
+    "qi_yong_liu_shi_xian": "Enable streaming response",
+    "kuai_su_xiang_ying_d": "Quick response, but may lose packets with poor network connectivity",
+    "hui_che_jian_ti_jiao": "Press Enter to submit, Shift+Enter to newline",
+    "characters": "Characters",
+    "name": "Name",
+    "avatar": "Avatar",
+    "desc": "Description",
+    "system_prompt": "System Prompt",
+    "yu_current_character": "Chat with {0}",
+    "new_chat": "New Chat",
+    "chuang_jian_hou_bu_k": "Cannot be modified after creation",
+    "quan_ju_mo_ren_mo_xi": "Global Default Model"
   }
 }

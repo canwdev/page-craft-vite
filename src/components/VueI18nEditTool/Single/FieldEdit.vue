@@ -109,7 +109,7 @@ export default defineComponent({
       v-if="valType !== 'object'"
       @click="handlePaste"
       class="vp-button primary"
-      :title="`Auto Paste [${autoPasteConvertMode}]`"
+      :title="`${$t('msgs.auto_paste')} [${autoPasteConvertMode}]`"
     >
       <ClipboardPaste20Regular />
     </button>

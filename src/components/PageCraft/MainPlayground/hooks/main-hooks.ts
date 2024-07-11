@@ -1,7 +1,7 @@
 import {handleExportHtml, handleExportVue} from '@/utils/exporter'
 import globalEventBus, {GlobalEvents, syncStorageData} from '@/utils/global-event-bus'
 import {copyToClipboard} from '@/utils'
-import {formatCss, formatHtml} from '@/components/StyleEditor/utils/formater'
+import {beautifyCss, beautifyHtml} from '@/components/StyleEditor/utils/formater'
 import {useMainStore} from '@/store/main'
 import {UndoRedo} from '@/utils/undo-redo'
 import {useSettingsStore} from '@/store/settings'
@@ -43,7 +43,7 @@ export const useMcMain = (options) => {
 
   const copyHtml = (el?) => {
     const html = el ? el.outerHTML : mainPlaygroundRef.value.innerHTML
-    copyToClipboard(formatHtml(html))
+    copyToClipboard(beautifyHtml(html))
     window.$message.success($t('msgs.copy_success'))
 
     saveData()
@@ -105,15 +105,21 @@ export const useMcMain = (options) => {
   }
 
   const variableStyleCode = useStorage(StyleEditorKeys.VARIABLES_STYLE, '')
-  const getEntityData = async () => {
+  const getEntityData = async ({
+    // 是否插入scss变量代码
+    insertVariableCode = true,
+  } = {}) => {
     await syncStorageData()
     const html = (await loadCurCompHtml()) || ''
-    const style = variableStyleCode.value + (await loadCurCompStyle())
+    let style = await loadCurCompStyle()
+    if (insertVariableCode) {
+      style = variableStyleCode.value + style
+    }
 
     const res: IComponentExportData = {
       name: settingsStore.curCompInStore?.title || '',
-      html: formatHtml(html),
-      style: formatCss(style),
+      html: beautifyHtml(html),
+      style: beautifyCss(style),
       timestamp: Date.now(),
     }
 
@@ -135,7 +141,7 @@ export const useMcMain = (options) => {
           label: `💚 ${$t('actions.export')} Vue 2 SFC`,
           props: {
             onClick: async () => {
-              await handleExportVue(await getEntityData())
+              await handleExportVue(await getEntityData({insertVariableCode: false}))
             },
           },
         },
@@ -143,7 +149,7 @@ export const useMcMain = (options) => {
           label: `💚 ${$t('actions.export')} Vue 3 SFC`,
           props: {
             onClick: async () => {
-              await handleExportVue(await getEntityData(), 3)
+              await handleExportVue(await getEntityData({insertVariableCode: false}), 3)
             },
           },
         },

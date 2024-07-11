@@ -5,6 +5,8 @@ import {QuickOptionItem} from '@/components/CommonUI/QuickOptions/enum'
 import * as changeCase from 'change-case'
 import {filterLabel} from './utils'
 import {demoPluginTpl} from './demo.json'
+import {useI18n} from 'vue-i18n'
+import {base64Utils} from '@/utils/base64-utils'
 
 export type DynamicPlugin = (key: any) => QuickOptionItem
 
@@ -120,6 +122,7 @@ ${code}
       moment,
       useFileDialog,
       changeCase,
+      base64Utils,
 
       // Vue3功能
       ref,
@@ -149,6 +152,7 @@ export interface ICustomPluginItem {
 
 // 自定义插件系统
 export const useQuickLaunchCustomPlugins = (update) => {
+  const {t: $t} = useI18n()
   // 自定义插件
   const customPluginsStorage = useStorage<ICustomPluginItem[]>('quick_launch_custom_plugins', [])
   const findCustomPlugin = (name: string) => {
@@ -217,43 +221,43 @@ ${code}
 
   // 插件管理器
   const qLogicManage = {
-    label: '🔌 Plugins Manager 🧩',
+    label: `🔌 ${$t('common.plugins_manager')} 🧩`,
     children: () => {
       // 支持直接返回vue3计算属性
       return computed(() => {
         return [
           {
-            label: '🔄 Reload All Plugins',
+            label: `🔄 ${$t('plugins.reload_all_plugins')}`,
             props: {
               isBack: 1,
               onClick: async () => {
                 reloadCustomPlugins()
                 await window.$qlUtils.reloadPlugins()
-                window.$message.success('Plugins reloaded!')
+                window.$message.success($t('plugins.plugins_reloaded'))
               },
             },
           },
           {
-            label: '🔄 Reload Custom Plugins',
+            label: `🔄 ${$t('plugins.reload_custom_plugi')}`,
             props: {
               isBack: 1,
               onClick: async () => {
                 reloadCustomPlugins()
-                window.$message.success('Custom plugins reloaded!')
+                window.$message.success($t('plugins.plugins_reloaded'))
               },
             },
           },
           {
-            label: '✨ Add Plugin',
+            label: `✨ ${$t('actions.add_plugin')}`,
             props: {
               onClick: async () => {
                 const name = await window.$mcUtils.showInputPrompt({
-                  title: 'Input plugin name',
+                  title: $t('plugins.input_plugin_name'),
                   value: '',
-                  placeholder: 'Input `demo` to create a demo plugin!',
+                  placeholder: $t('plugins.input_demo_to_creat'),
                   validateFn(val) {
                     if (findCustomPlugin(val)) {
-                      return 'Error: Name duplicated!'
+                      return $t('msgs.error_name_duplicat')
                     }
                   },
                 })
@@ -266,22 +270,22 @@ ${code}
             },
           },
           {
-            label: '🗃️ Import/Export',
+            label: `🗃️ ${$t('actions.import_export')} ${$t('actions.plugins')}`,
             children: [
               {
-                label: '📥 Import Plugins',
+                label: `📥 ${$t('actions.import')} ${$t('actions.plugins')}`,
                 props: {
                   isBack: 1,
                   onClick: async () => {
                     const list = await window.$mcUtils.handleImportJson()
                     customPluginsStorage.value = list || []
-                    window.$message.success('Import success!')
+                    window.$message.success($t('msgs.import_success'))
                     reloadCustomPlugins()
                   },
                 },
               },
               {
-                label: '📤 Export Plugins',
+                label: `📤 ${$t('actions.export')} ${$t('actions.plugins')}`,
                 props: {
                   onClick: async () => {
                     window.$mcUtils.handleExportFile(
@@ -293,10 +297,10 @@ ${code}
                 },
               },
               {
-                label: '🗑️ Delete all custom plugins',
+                label: `🗑️ ${$t('plugins.delete_all_custom_p')}`,
                 children: [
                   {
-                    label: '☑️ Confirm Delete All Custom Plugins',
+                    label: `☑️ ${$t('actions.confirm')}`,
                     props: {
                       isBack: 2,
                       onClick: () => {
@@ -306,7 +310,7 @@ ${code}
                     },
                   },
                   {
-                    label: `🔙 Cancel`,
+                    label: `🔙 ${$t('actions.cancel')}`,
                     props: {
                       isBack: 1,
                     },
@@ -321,7 +325,7 @@ ${code}
               label: '🧩 ' + p.name,
               children: [
                 {
-                  label: `📝 Edit Code [${p.name}]`,
+                  label: `📝 ${$t('actions.edit')} ${$t('common.code')}`,
                   props: {
                     isBack: 2,
                     onClick: () => {
@@ -333,16 +337,16 @@ ${code}
                   },
                 },
                 {
-                  label: `✍️ Rename`,
+                  label: `✍️ ${$t('actions.rename')}`,
                   props: {
                     isBack: 1,
                     onClick: async () => {
                       const name = await window.$mcUtils.showInputPrompt({
-                        title: `Rename Plugin: ${p.name}`,
+                        title: `${$t('actions.rename')}: ${p.name}`,
                         value: p.name,
                         validateFn(val) {
                           if (findCustomPlugin(val)) {
-                            return 'Error: Name duplicated!'
+                            return $t('msgs.error_name_duplicat')
                           }
                         },
                       })
@@ -360,10 +364,10 @@ ${code}
                   },
                 },
                 {
-                  label: '🗑️ Delete',
+                  label: `🗑️ ${$t('actions.delete')} [${p.name}]`,
                   children: [
                     {
-                      label: `☑️ Confirm Delete [${p.name}]`,
+                      label: `☑️ ${$t('actions.confirm')}`,
                       props: {
                         isBack: 2,
                         onClick: () => {
@@ -375,7 +379,7 @@ ${code}
                       },
                     },
                     {
-                      label: `🔙 Cancel`,
+                      label: `🔙 ${$t('actions.cancel')}`,
                       props: {
                         isBack: 1,
                       },

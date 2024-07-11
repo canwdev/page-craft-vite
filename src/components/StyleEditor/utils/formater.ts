@@ -19,10 +19,10 @@ const opts = {
 }
 
 // https://beautifier.io/
-export const formatHtml = (html) => {
+export const beautifyHtml = (html) => {
   return window.html_beautify(html, opts)
 }
 
-export const formatCss = (cssCode, options: any = {}) => {
+export const beautifyCss = (cssCode, options: any = {}) => {
   return window.css_beautify(cssCode, opts)
 }

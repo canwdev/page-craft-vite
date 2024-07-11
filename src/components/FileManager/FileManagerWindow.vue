@@ -20,8 +20,12 @@ const mVisible = useVModel(props, 'visible', emit)
     v-model:visible="mVisible"
     wid="iframe_browser"
     allow-maximum
+    :init-win-options="{
+      width: '600px',
+      height: '500px',
+    }"
   >
-    <template #titleBarLeft>🗃️ File Explorer</template>
+    <template #titleBarLeft>🗃️ {{ $t('common.file_explorer') }}</template>
     <FileManager v-if="mVisible" />
   </ViewPortWindow>
 </template>

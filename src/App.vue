@@ -7,7 +7,7 @@ import {isDev} from '@/enum'
 import {useMainStore} from '@/store/main'
 import {useEventListener} from '@vueuse/core'
 import {useFocusAutoAction} from '@/hooks/use-focus-auto-action'
-import {useUpdater} from '@/components/PageCraft/Settings/use-updater'
+import {useUpdater} from '@/components/SystemSettings/use-updater'
 import {useCssStyleTag} from '@/components/StyleEditor/utils/css-store'
 
 export default defineComponent({
@@ -40,6 +40,8 @@ export default defineComponent({
         mainStore.isShowQuickLaunch = !mainStore.isShowQuickLaunch
       } else if (event.altKey && key === 'i') {
         mainStore.isShowIframeBrowser = !mainStore.isShowIframeBrowser
+      } else if (event.altKey && key === 'g') {
+        mainStore.isShowAiChat = !mainStore.isShowAiChat
       }
     })
 
@@ -90,30 +92,12 @@ export default defineComponent({
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
+}
 
-  //&::before {
-  //  content: '';
-  //  position: absolute;
-  //  top: 0;
-  //  left: 0;
-  //  right: 0;
-  //  bottom: 0;
-  //  pointer-events: none;
-  //  background-image: url('@/assets/bg/grid-light.png');
-  //  background-size: 100px;
-  //  opacity: 0.4;
-  //}
-  &._dark {
+._dark {
+  color: white;
+  .page-craft-root {
     background-color: #181818;
-    //background-color: #5480d3;
-    //background-image: linear-gradient(#5480d3, #3256a7);
-    //&::before {
-    //  background-image: url('@/assets/bg/grid.png');
-    //}
-    &::after {
-      color: white;
-      text-shadow: 0 0 2px #000;
-    }
   }
 }
 </style>

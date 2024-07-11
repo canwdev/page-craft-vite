@@ -7,7 +7,7 @@ import {useI18nToolSettingsStore} from '@/components/VueI18nEditTool/store/i18n-
 import {TextConvertMode, TextConvertOptions} from '@/utils/mc-utils/text-convert'
 import {Globe20Regular} from '@vicons/fluent'
 import {NButton} from 'naive-ui'
-import {useCommonSettings} from '@/components/PageCraft/Settings/use-common-settings'
+import {useCommonSettings} from '@/components/SystemSettings/use-common-settings'
 import OptionUI from '@/components/CommonUI/OptionUI/index.vue'
 
 export default defineComponent({
@@ -31,7 +31,7 @@ export default defineComponent({
       return [
         {
           label: $t('common.i18njson_editing_too'),
-          key: 'json_editing',
+          key: 'i18njson_editing_too',
           children: [
             {
               label: $t('msgs.auto_paste') + ': ' + $t('msgs.remove_quotes'),
@@ -45,7 +45,7 @@ export default defineComponent({
               key: 'autoPasteTextConvertMode',
               store: i18nSetStore,
               type: StOptionType.SELECT,
-              selectOptions: [
+              options: [
                 {label: 'Disabled', value: TextConvertMode.DISABLED},
                 {label: 'Number', value: TextConvertMode.NUMBER},
                 ...TextConvertOptions,
@@ -69,7 +69,7 @@ export default defineComponent({
         },
         {
           label: $t('common.i18njson_batch_tool'),
-          key: 'json_editing',
+          key: 'i18njson_batch_tool',
           children: [
             {
               label: $t('common.folders_mode'),
@@ -122,7 +122,7 @@ export default defineComponent({
   <n-modal
     v-model:show="mVisible"
     preset="dialog"
-    :title="$t('common.settings')"
+    :title="$t('common.i18njson_batch_tool') + ' ' + $t('common.settings')"
     style="padding-left: 10px; padding-right: 10px"
     :icon="dialogIconRender"
   >

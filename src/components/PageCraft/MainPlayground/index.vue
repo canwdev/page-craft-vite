@@ -201,6 +201,7 @@ export default defineComponent({
       @select="handleSelectContextmenu"
       key-field="label"
       :on-clickoutside="handleClickOutside"
+      :animated="false"
     />
 
     <n-modal
@@ -215,12 +216,14 @@ export default defineComponent({
       <VueMonaco v-if="isShowImportDialog" v-model="pasteHtmlText" style="height: 500px" />
     </n-modal>
 
-    <ElementEditDialog
-      v-model:visible="isShowElementEdit"
-      :editing-node="editingNode"
-      :is-root="isEditingRoot"
-      @onSave="updateEditingElement"
-    />
+    <Teleport to=".page-craft-root">
+      <ElementEditDialog
+        v-model:visible="isShowElementEdit"
+        :editing-node="editingNode"
+        :is-root="isEditingRoot"
+        @onSave="updateEditingElement"
+      />
+    </Teleport>
 
     <portal to="indicatorBarTeleportDest">
       <template v-if="!isLitePage">

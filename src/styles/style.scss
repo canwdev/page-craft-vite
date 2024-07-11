@@ -150,6 +150,24 @@ html, body, #app {
   }
 }
 
+.hljs-code-container {
+  padding: 0 !important;
+  overflow: unset !important;
+}
+.hljs-code-header {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  padding: 0.5em 1em;
+  font-size: 12px;
+  border-bottom: 1px solid $color_border;
+  position: sticky;
+  top: 0;
+  border-radius: 4px;
+  .hljs-copy-button {
+  }
+}
+
 /* Vue transitions */
 .mc-fade-enter-active,
 .mc-fade-leave-active {

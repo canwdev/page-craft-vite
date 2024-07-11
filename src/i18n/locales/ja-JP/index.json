@@ -43,13 +43,21 @@
     "others": "その他",
     "sound_fx": "サウンドFX",
     "reference_map": "参照マップ",
-    "welcome": "ようこそ",
     "edit_mode": "編集モード",
     "folders_mode": "フォルダーモード",
     "files_mode": "ファイルモード",
     "field": "フィールド",
     "system": "システム",
-    "common": "ユニバーサル"
+    "common": "ユニバーサル",
+    "toolbox": "工具箱",
+    "code": "コード",
+    "file_explorer": "ファイルエクスプローラ",
+    "home_page": "ホームページ",
+    "plugins_manager": "プラグインマネージャー",
+    "rich_text_tool": "リッチテキストツール",
+    "iframe_browser": "iframe ブラウザ",
+    "welcome": "ホーム",
+    "more": "もっと"
   },
   "actions": {
     "cancel": "キャンセル",
@@ -94,7 +102,15 @@
     "save_as": "名前を付けて保存",
     "open": "開く",
     "download": "ダウンロード",
-    "current": "現在の"
+    "current": "現在の",
+    "add_plugin": "プラグインを追加",
+    "plugins": "プラグイン",
+    "import_export": "輸入/エクスポート",
+    "refactor": "リファクタリング",
+    "save_all": "すべて保存",
+    "send": "送信",
+    "retry": "再試行",
+    "create": "作成する"
   },
   "msgs": {
     "drop_files_here": "ここにファイルをドロップ",
@@ -147,7 +163,6 @@
     "text_conv_mode": "テキスト変換モード",
     "copy_json_from_right": "右側をJSONとしてコピー",
     "paste_json_override_right": "JSONを貼り付けて右側を上書き",
-    "fen_xi_fan_yi_shu": "翻訳ツリーの解析",
     "action_completed_pl": "アクションが完了しました、手動で保存してください！",
     "confirm_close": "閉じますか？ 保存されていない内容は失われます。",
     "auto_paste_and_copy": "[Auto] 貼り付けとコピーの結果",
@@ -156,6 +171,42 @@
     "enable_flag": "フラグを有効にする",
     "refresh_page": "ページをリフレッシュする？",
     "recommend_download_client_desc": "⚡ 完全オープンソース、オフライン利用可能\n💡 Tauriテクノロジーを使用して構築され、10MB以下の軽量化\n🚀 システムのネイティブWebview2を呼び出し、高速で安定したもの\n💽 exeインストールパッケージは、直接実行可能、インストール不要",
-    "recommend_download_client_title": "デスクトップクライアントをダウンロードすることをおすすめします"
+    "recommend_download_client_title": "デスクトップクライアントをダウンロードすることをおすすめします",
+    "error_name_duplicat": "エラー：名前が重複しています！"
+  },
+  "i18n_tools": {
+    "locate_translate_pa": "翻訳パスを特定する",
+    "filter_translate_ke": "フィルター翻訳key",
+    "a_i_translate": "AI翻訳",
+    "delete_keys": "Keysを削除する",
+    "rename_keys": "Keysの名前を変更する",
+    "no_need_for_transla": "翻訳は不要です",
+    "in_all_languages": "すべての言語",
+    "fen_xi_fan_yi_shu": "翻訳ツリーの解析"
+  },
+  "plugins": {
+    "input_demo_to_creat": "デモプラグインを作成するには、'demo'を入力してください！",
+    "input_plugin_name": "インプットプラグイン名",
+    "reload_all_plugins": "すべてのプラグインをリロード",
+    "plugins_reloaded": "プラグインが再読み込みされました！",
+    "reload_custom_plugi": "カスタムプラグインを再読み込み",
+    "delete_all_custom_p": "すべてのカスタムプラグインを削除"
+  },
+  "ai": {
+    "clear_chat_history": "チャット履歴を削除しますか？",
+    "dai_li_di_zhi": "プロキシアドレス",
+    "model": "モデル",
+    "qi_yong_liu_shi_xian": "ストリーミングレスポンスを有効にする",
+    "kuai_su_xiang_ying_d": "迅速な応答ですが、ネットワークが不良品でパケットが落ちる可能性があります",
+    "hui_che_jian_ti_jiao": "Enterで送信、Shift+Enterで改行",
+    "characters": "キャラクター",
+    "name": "名前",
+    "avatar": "アバター",
+    "chuang_jian_hou_bu_k": "作成後は変更できません",
+    "desc": "説明",
+    "system_prompt": "システムプロンプトワード",
+    "yu_current_character": "{0} とのチャット",
+    "new_chat": "新しいチャット",
+    "quan_ju_mo_ren_mo_xi": "グローバルデフォルトモデル"
   }
 }

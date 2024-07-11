@@ -2,10 +2,8 @@
 import {defineComponent, ref} from 'vue'
 import TranslateTreeItem from '@/components/VueI18nEditTool/Single/TranslateTreeItem.vue'
 import {exportI18nTreeJsonObj, I18nJsonObjUtils, ITranslateTreeItem} from '@/enum/vue-i18n-tool'
-import iconTranslate from '../assets/textures/translate.svg?url'
 import DropZone from '@/components/CommonUI/DropZone.vue'
 import {useFileDrop} from '@/hooks/use-file-drop'
-import {useMetaTitle} from '@/hooks/use-meta'
 import {Save20Regular} from '@vicons/fluent'
 import {useBeforeUnload, useSaveShortcut} from '@/hooks/use-beforeunload'
 import {useMainStore} from '@/store/main'
@@ -23,6 +21,7 @@ import {
 } from '@/components/VueI18nEditTool/file-history'
 import moment from 'moment'
 import {handleReadSelectedFile} from '@/utils/mc-utils/io'
+import CommonNavbar from '@/components/CommonUI/CommonNavbar.vue'
 
 const filePickerOptions = {
   types: [
@@ -37,6 +36,7 @@ const filePickerOptions = {
 export default defineComponent({
   name: 'VueI18nEditTool',
   components: {
+    CommonNavbar,
     QuickOptions,
     I18nToolSettings,
     TranslateTreeItem,
@@ -159,8 +159,6 @@ export default defineComponent({
       }
     }
 
-    const {metaTitle} = useMetaTitle()
-
     useSaveShortcut(() => {
       if (fileHandle.value) {
         handleSaveFile()
@@ -206,10 +204,10 @@ export default defineComponent({
           },
         },
         {
-          label: $t('common.tools'),
+          label: $t('common.toolbox'),
           props: {
             onClick: () => {
-              mainStore.isShowQuickLaunch = true
+              mainStore.isShowQuickLaunch = !mainStore.isShowQuickLaunch
             },
           },
         },
@@ -261,7 +259,6 @@ export default defineComponent({
     })
 
     return {
-      metaTitle,
       translateTreeRoot,
       fileHandle,
       handleImport,
@@ -270,7 +267,6 @@ export default defineComponent({
       handleSaveFile,
       handleExport,
       loadDemo,
-      iconTranslate,
       ...useFileDrop({
         cb: handleFileDrop,
       }),
@@ -299,35 +295,30 @@ export default defineComponent({
       <DropZone position-fixed v-show="showDropzone" :text="$t('msgs.drag_file_here')" />
     </transition>
 
-    <div
-      class="vp-bg navbar-wrap"
-      style="position: sticky; top: 0; z-index: 100; margin-bottom: 10px"
-    >
-      <n-page-header subtitle="" @back="$router.push({name: 'HomePage'})">
-        <template #title>{{ metaTitle }}</template>
-        <template #avatar> <n-avatar :src="iconTranslate" style="background: none" /> </template>
-        <template #extra>
-          <QuickOptions
-            is-static
-            :options="menuOptions"
-            horizontal
-            :auto-focus="false"
-            item-cls="vp-button"
-          />
-        </template>
-      </n-page-header>
-    </div>
+    <CommonNavbar>
+      <template #extra>
+        <QuickOptions
+          is-static
+          :options="menuOptions"
+          horizontal
+          :auto-focus="false"
+          item-cls="vp-button"
+        />
+      </template>
+    </CommonNavbar>
 
-    <div class="_container">
-      <TranslateTreeItem
-        v-for="(item, index) in translateTreeRoot"
-        :key="index"
-        :item="item"
-        :index="index"
-        :title="fileHandle?.name"
-      />
+    <div class="scroll-content _scrollbar_mini">
+      <div class="i18n-container">
+        <TranslateTreeItem
+          v-for="(item, index) in translateTreeRoot"
+          :key="index"
+          :item="item"
+          :index="index"
+          :title="fileHandle?.name"
+        />
+        <div class="height-placeholder"></div>
+      </div>
     </div>
-    <div class="height-placeholder"></div>
 
     <I18nToolSettings v-model:visible="isShowToolSettings" />
   </div>
@@ -338,9 +329,10 @@ export default defineComponent({
 .vue-i18n-edit-tool {
   width: 100%;
   height: 100%;
-  overflow: auto;
+  overflow: hidden;
   position: relative;
-  scrollbar-width: thin;
+  display: flex;
+  flex-direction: column;
 
   .n-page-header__extra {
     .quick-options {
@@ -356,10 +348,22 @@ export default defineComponent({
     padding: 10px;
   }
 
-  ._container {
-    max-width: 1000px;
-    margin-left: auto;
-    margin-right: auto;
+  .scroll-content {
+    flex: 1;
+    overflow: auto;
+
+    .i18n-container {
+      max-width: 1000px;
+      margin-left: auto;
+      margin-right: auto;
+      min-width: auto;
+    }
+
+    .translate-tree-item {
+      .group-header {
+        top: 0px;
+      }
+    }
   }
 }
 </style>

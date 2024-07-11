@@ -1,11 +1,15 @@
 import {createRouter, createWebHashHistory} from 'vue-router'
-import WelcomePage from '@/views/WelcomePage.vue'
+import WelcomePage from '@/views/HomePage.vue'
 import CraftPage from '@/views/CraftPage.vue'
-import {useSettingsStore} from '@/store/settings'
 import i18n from '@/i18n/index'
 import {window as tauriWin} from '@tauri-apps/api'
 import {formatSiteTitle} from '@/router/router-utils'
-import {initFs} from '@/components/PageCraft/ComponentExplorer/utils/api'
+
+import iconExcel from '@/assets/textures/excel.svg?url'
+import iconTranslate from '../assets/textures/translate.svg?url'
+import iconAi from '@/assets/textures/chat-gpt-logo.svg?url'
+import iconText from '@/assets/textures/enchanted_book.png?url'
+import iconDev from '@/assets/textures/redstone.png?url'
 
 let history = createWebHashHistory()
 let routes = [
@@ -16,9 +20,9 @@ let routes = [
     meta: {
       title: i18n.global.t('common.welcome'),
     },
-    beforeEnter: (to, from, next) => {
-      return next()
-    },
+    // beforeEnter: (to, from, next) => {
+    //   return next()
+    // },
   },
   {
     path: '/craft',
@@ -47,6 +51,7 @@ let routes = [
         component: () => import('@/views/ExcelCopyTool.vue'),
         meta: {
           title: i18n.global.t('common.excel_copy_tool'),
+          icon: iconExcel,
         },
       },
       {
@@ -55,6 +60,7 @@ let routes = [
         component: () => import('@/views/RichTextTool.vue'),
         meta: {
           title: `RichText Tool`,
+          icon: iconText,
         },
       },
       {
@@ -63,6 +69,7 @@ let routes = [
         component: () => import('@/views/VueI18nEditTool.vue'),
         meta: {
           title: i18n.global.t('common.i18njson_editing_too'),
+          icon: iconTranslate,
         },
       },
       {
@@ -71,18 +78,31 @@ let routes = [
         component: () => import('@/views/VueI18nDirTool.vue'),
         meta: {
           title: i18n.global.t('common.i18njson_batch_tool'),
+          icon: iconTranslate,
         },
       },
       {
-        path: 'explorer',
-        name: 'FileExplorer',
-        component: () => import('@/components/FileManager/FileManagerWindow.vue'),
+        path: 'ai',
+        name: 'AiPage',
+        component: () => import('@/views/AiPage.vue'),
         meta: {
-          title: '🗃️ File Explorer',
+          title: `ChatGPT`,
+          icon: iconAi,
+        },
+      },
+      {
+        path: 'dev',
+        name: 'DevPage',
+        component: () => import('@/views/DevPage.vue'),
+        meta: {
+          title: `Dev Page`,
+          icon: iconDev,
         },
       },
     ],
   },
+  // catch all route for 404
+  {path: '/:catchAll(.*)', component: () => import('@/views/404.vue')},
 ]
 const router = createRouter({history, routes})
 

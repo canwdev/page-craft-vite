@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import {ref} from 'vue'
-import iconTranslate from '../assets/textures/translate.svg?url'
 import {
   DirTreeItem,
   exportI18nTreeJsonObj,
@@ -11,7 +10,6 @@ import {
 import BatchGUI from '@/components/VueI18nEditTool/BatchGUI/index.vue'
 import DropZone from '@/components/CommonUI/DropZone.vue'
 import {useFileDrop} from '@/hooks/use-file-drop'
-import {useMetaTitle} from '@/hooks/use-meta'
 import {useBeforeUnload, useSaveShortcut} from '@/hooks/use-beforeunload'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import TranslateTreeItem from '@/components/VueI18nEditTool/Single/TranslateTreeItem.vue'
@@ -25,9 +23,10 @@ import {useStorage} from '@vueuse/core'
 import TabLayout from '@/components/CommonUI/TabLayout.vue'
 import {useOpenedHistory} from '@/components/VueI18nEditTool/file-history'
 import {LsKeys} from '@/enum/page-craft'
-import {useGuiToolbox} from '@/components/VueI18nEditTool/BatchGUI/hooks/use-gui-toolbox'
-import GuiToolbox from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox.vue'
+import {useGuiToolbox} from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox/use-gui-toolbox'
+import GuiToolbox from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox/GuiToolbox.vue'
 import {handleReadSelectedFile} from '@/utils/mc-utils/io'
+import CommonNavbar from '@/components/CommonUI/CommonNavbar.vue'
 
 const formatDirTreeItem = (data: any = {}): DirTreeItem => {
   return {
@@ -74,7 +73,6 @@ const {t: $t} = useI18n()
 const mainStore = useMainStore()
 const i18nMainStore = useI18nMainStore()
 const i18nSetStore = useI18nToolSettingsStore()
-const isLoading = ref(false)
 
 const {appendHistory, historyMenuOptions} = useOpenedHistory(
   LsKeys.I18N_FOLDER_HANDLE_HISTORY,
@@ -211,9 +209,10 @@ const handlePickDir = async () => {
 }
 const reloadPickedDir = async () => {
   try {
-    isLoading.value = true
+    i18nMainStore.isLoading = true
     const handle = dirHandle.value
     let tree: DirTreeItem[] = []
+    await reloadCurrentEditEntry()
     if (i18nSetStore.isFoldersMode) {
       tree = await recursiveReadDir(handle)
     } else {
@@ -227,13 +226,13 @@ const reloadPickedDir = async () => {
     console.error(e)
     window.$message.error(e.message)
   } finally {
-    isLoading.value = false
+    i18nMainStore.isLoading = false
   }
 }
 
 const handleFileDrop = async (e) => {
   try {
-    isLoading.value = true
+    i18nMainStore.isLoading = true
     // Process all the items.
     for (const item of e.dataTransfer.items) {
       // Careful: `kind` will be 'file' for both file
@@ -254,7 +253,7 @@ const handleFileDrop = async (e) => {
     console.error(e)
     window.$message.error(e.message)
   } finally {
-    isLoading.value = false
+    i18nMainStore.isLoading = false
   }
 }
 
@@ -271,7 +270,7 @@ const editingTextValue = ref<string | null>(null)
 
 const handleSaveFile = async () => {
   try {
-    isLoading.value = true
+    i18nMainStore.isLoading = true
     const fileHandle = currentEditEntry.value
     if (!fileHandle) {
       return
@@ -298,7 +297,7 @@ const handleSaveFile = async () => {
     console.error(error)
     window.$message.error('Save Failed!' + error.message)
   } finally {
-    isLoading.value = false
+    i18nMainStore.isLoading = false
   }
 }
 
@@ -321,8 +320,6 @@ watch(editMode, (val) => {
   updateGuiTranslateTree()
 })
 
-const {metaTitle} = useMetaTitle()
-
 useSaveShortcut(() => {
   if (currentEditEntry.value && editMode.value === EditMode.GUI) {
     handleSaveFile()
@@ -330,8 +327,6 @@ useSaveShortcut(() => {
   }
   globalEventBus.emit(GlobalEvents.I18N_SAVE_ALL_CHANGES)
 })
-
-const vueMonacoRef = ref()
 
 useBeforeUnload(() => {
   return !!dirHandle.value
@@ -341,27 +336,32 @@ const isShowToolSettings = ref(false)
 
 const {handleKeyClick, removeSelectedClass} = useGuiToolbox()
 
+const reloadCurrentEditEntry = async () => {
+  if (currentEditEntry.value) {
+    const str = await handleReadSelectedFile(await currentEditEntry.value.getFile())
+    editingTextValue.value = str as string
+    removeSelectedClass()
+    updateGuiTranslateTree()
+  }
+}
 const nodeProps = ({option}: {option: DirTreeItem}) => {
   return {
     // 处理树枝的点击事件
     async onClick() {
       try {
-        isLoading.value = true
+        i18nMainStore.isLoading = true
         if (option.kind === 'file') {
           const entry = option.entry as FileSystemFileHandle
           currentEditEntry.value = entry
-          const str = await handleReadSelectedFile(await entry.getFile())
-          editingTextValue.value = str as string
           i18nMainStore.filePathArr = [...option.parentDirs, option.label]
           i18nMainStore.translatePath = ''
-          removeSelectedClass()
-          updateGuiTranslateTree()
+          await reloadCurrentEditEntry()
         }
       } catch (e: any) {
         console.error(e)
         window.$message.error(e.message)
       } finally {
-        isLoading.value = false
+        i18nMainStore.isLoading = false
       }
     },
   }
@@ -379,7 +379,7 @@ const {showDropzone, fileDragover, fileDrop} = useFileDrop({
     @drop.prevent.stop="fileDrop"
   >
     <transition name="mc-fade">
-      <div class="mc-loading-container position-fixed" v-if="isLoading">
+      <div class="mc-loading-container position-fixed" v-if="i18nMainStore.isLoading">
         <n-spin />
       </div>
     </transition>
@@ -387,72 +387,71 @@ const {showDropzone, fileDragover, fileDrop} = useFileDrop({
       <DropZone position-fixed v-show="showDropzone" :text="$t('msgs.drag_folder_here')" />
     </transition>
 
-    <div class="vp-bg navbar-wrap">
-      <n-page-header subtitle="" @back="$router.push({name: 'HomePage'})">
-        <template #title>{{ metaTitle }}</template>
-        <template #avatar> <n-avatar :src="iconTranslate" style="background: none" /> </template>
-        <template #extra>
-          <n-space size="small" align="center">
-            <button class="vp-button" @click="isShowToolSettings = true">
-              {{ $t('common.settings') }}
-            </button>
+    <CommonNavbar>
+      <template #extra>
+        <n-space size="small" align="center">
+          <button class="vp-button" @click="isShowToolSettings = true">
+            {{ $t('common.settings') }}
+          </button>
 
-            <button class="vp-button" @click="mainStore.isShowQuickLaunch = true">
-              {{ $t('common.tools') }}
-            </button>
+          <button
+            class="vp-button"
+            @click="mainStore.isShowQuickLaunch = !mainStore.isShowQuickLaunch"
+          >
+            {{ $t('common.toolbox') }}
+          </button>
 
-            <n-button
-              size="small"
-              secondary
-              v-if="currentEditEntry && editMode === EditMode.GUI"
-              type="primary"
-              @click="handleSaveFile"
-            >
-              {{ $t('actions.save_changes') }}
-            </n-button>
+          {{ $t('common.edit_mode') }}:
+          <TabLayout v-model="editMode" horizontal :tab-list="editModeOptions" />
 
-            {{ $t('common.edit_mode') }}:
-            <TabLayout v-model="editMode" horizontal :tab-list="editModeOptions" />
+          <n-button
+            size="small"
+            secondary
+            v-if="currentEditEntry && editMode === EditMode.GUI"
+            type="primary"
+            @click="handleSaveFile"
+          >
+            {{ $t('actions.save_changes') }}
+          </n-button>
 
-            <n-dropdown
-              v-if="dirHandle"
-              size="small"
-              :options="historyMenuOptions"
-              label-field="label"
-              key-field="key"
-            >
-              <n-popconfirm @positive-click="handleCloseDir()">
-                <template #trigger>
-                  <button class="vp-button primary">{{ $t('actions.close') }} Folder</button>
-                </template>
-                {{ $t('msgs.confirm_close') }}
-              </n-popconfirm>
-            </n-dropdown>
-
-            <n-dropdown
-              v-else
-              size="small"
-              :options="historyMenuOptions"
-              label-field="label"
-              key-field="key"
-            >
-              <button class="vp-button primary" @click="handlePickDir">
-                {{ $t('actions.pick_i18n_directory') }}
-              </button>
-            </n-dropdown>
-
-            <n-popconfirm v-if="dirHandle" @positive-click="reloadPickedDir()">
+          <n-dropdown
+            v-if="dirHandle"
+            size="small"
+            :options="historyMenuOptions"
+            label-field="label"
+            key-field="key"
+          >
+            <n-popconfirm @positive-click="handleCloseDir()">
               <template #trigger>
-                <button class="vp-button js_reload_btn">
-                  {{ $t('actions.reload') }}
-                </button>
+                <button class="vp-button primary">{{ $t('actions.close') }} Folder</button>
               </template>
-              {{ $t('msgs.confirm_reload_files') }}
+              {{ $t('msgs.confirm_close') }}
             </n-popconfirm>
-          </n-space>
-        </template>
-      </n-page-header>
-    </div>
+          </n-dropdown>
+
+          <n-dropdown
+            v-else
+            size="small"
+            :options="historyMenuOptions"
+            label-field="label"
+            key-field="key"
+          >
+            <button class="vp-button primary" @click="handlePickDir">
+              {{ $t('actions.pick_i18n_directory') }}
+            </button>
+          </n-dropdown>
+
+          <n-popconfirm v-if="dirHandle" @positive-click="reloadPickedDir()">
+            <template #trigger>
+              <button class="vp-button js_reload_btn">
+                {{ $t('actions.reload') }}
+              </button>
+            </template>
+            {{ $t('msgs.confirm_reload_files') }}
+          </n-popconfirm>
+        </n-space>
+      </template>
+    </CommonNavbar>
 
     <div class="_container">
       <n-layout style="height: 100%" has-sider>
@@ -491,7 +490,11 @@ const {showDropzone, fileDragover, fileDrop} = useFileDrop({
                   class="gui-edit-gui"
                   :style="{width: editMode === EditMode.BATCH ? '500px' : '100%'}"
                 >
-                  <GuiToolbox v-if="editMode === EditMode.BATCH" />
+                  <GuiToolbox
+                    @reloadTranslates="reloadPickedDir"
+                    v-if="editMode !== EditMode.JSON"
+                    :is-batch-mode="editMode === EditMode.BATCH"
+                  />
 
                   <TranslateTreeItem
                     v-for="(item, index) in i18nMainStore.translateTreeRoot"
@@ -607,6 +610,13 @@ const {showDropzone, fileDragover, fileDrop} = useFileDrop({
           &.t_selected {
             background-color: $primary !important;
             transition: all 0.3s;
+          }
+          &.t_highlight {
+            outline-offset: -1px;
+            outline: 1px dashed #ffeb3b !important;
+            &.t_highlight_current {
+              outline: 2px solid #ff9800 !important;
+            }
           }
         }
       }

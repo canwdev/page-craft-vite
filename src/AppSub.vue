@@ -9,14 +9,16 @@ import {useSettingsStore} from '@/store/settings'
 import {mcUtils} from '@/utils/mc-utils'
 import {useRoute} from 'vue-router'
 import {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
+import ChatWindow from '@/components/AiTools/ChatWindow.vue'
 
 export default defineComponent({
   name: 'AppSub',
   components: {
+    ChatWindow,
     IframeBrowser,
     QuickLaunchWindow,
     SystemSettings: defineAsyncComponent(
-      () => import('@/components/PageCraft/Settings/SystemSettings.vue')
+      () => import('@/components/SystemSettings/SystemSettings.vue')
     ),
     DialogTextTransformer,
     StylusToolsDialog: defineAsyncComponent(
@@ -58,5 +60,6 @@ export default defineComponent({
     <SystemSettings v-model:visible="mainStore.isShowSettings" />
     <QuickLaunchWindow v-model:visible="mainStore.isShowQuickLaunch" />
     <IframeBrowser v-model:visible="mainStore.isShowIframeBrowser" />
+    <ChatWindow v-model:visible="mainStore.isShowAiChat" />
   </template>
 </template>

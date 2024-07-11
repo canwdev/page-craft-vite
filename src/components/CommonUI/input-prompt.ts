@@ -14,6 +14,8 @@ export const showInputPrompt = (options: any = {}): Promise<string> => {
     type = 'text',
     // 是否允许空
     allowEmpty = false,
+    positiveText = '',
+    negativeText = '',
   } = options
 
   return new Promise((resolve, reject) => {
@@ -75,7 +77,7 @@ export const showInputPrompt = (options: any = {}): Promise<string> => {
               disabled: !allowEmpty && !editingValue.value,
               onClick: handlePositiveClick,
             },
-            () => 'OK'
+            () => positiveText || 'OK'
           ),
           h(
             NButton,
@@ -85,7 +87,7 @@ export const showInputPrompt = (options: any = {}): Promise<string> => {
                 d.destroy()
               },
             },
-            () => 'Cancel'
+            () => negativeText || 'Cancel'
           ),
         ]),
     })

@@ -1,7 +1,7 @@
 <script lang="ts">
 import {defineComponent, PropType, ref} from 'vue'
 import {DirTreeItem} from '@/enum/vue-i18n-tool'
-import {useBatchItemV2} from '@/components/VueI18nEditTool/BatchGUI/hooks/batch-hooks'
+import {useBatchItemV2} from '@/components/VueI18nEditTool/BatchGUI/batch-hooks'
 import {BatchListItem, useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
 import VueJsonEditor from '@/components/CommonUI/VueJsonEditor.vue'
 import {useMainStore} from '@/store/main'
@@ -168,7 +168,7 @@ export default defineComponent({
 
     <div class="editor-action-row">
       <button class="vp-button primary" :disabled="!isChanged" @click="saveChange({isEmit: true})">
-        Save All
+        {{ $t('actions.save_all') }}
       </button>
 
       <span class="path-tip">

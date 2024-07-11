@@ -33,6 +33,8 @@ type IState = {
   trLastCopyMode: CopyMode
   // 是否手动添加翻译项目（用于自动focus输入框）
   trIsManualAdd: boolean
+  // 是否在加载中
+  isLoading: boolean
 }
 
 export const useI18nMainStore = defineStore('i18nToolMain', {
@@ -49,6 +51,12 @@ export const useI18nMainStore = defineStore('i18nToolMain', {
       trAutoAddGuid: null,
       trLastCopyMode: CopyMode.ORIGINAL,
       trIsManualAdd: false,
+      isLoading: false,
     }
+  },
+  getters: {
+    currentIso(): string {
+      return this.filePathArr[0] || ''
+    },
   },
 })

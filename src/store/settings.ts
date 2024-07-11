@@ -36,6 +36,10 @@ interface IPageCraftSettings {
   autoCheckUpdate: boolean
   // 网页版推荐下载桌面客户端
   recommendDesktopClient: boolean
+
+  // AI
+  openAiApiKey: string
+  openAiApiProxy: string
 }
 
 export const useSettingsStore = defineStore('settingsStore', {
@@ -62,6 +66,9 @@ export const useSettingsStore = defineStore('settingsStore', {
 
       autoCheckUpdate: true,
       recommendDesktopClient: true,
+
+      openAiApiKey: '',
+      openAiApiProxy: '',
     }
   },
   persist: {

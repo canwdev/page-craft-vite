@@ -505,12 +505,11 @@ export const useInteractionHooks = (options) => {
     }
   }
 
-  const updateEditingElement = ({el, formValueRef}) => {
+  const updateEditingElement = ({el, data}) => {
     if (!el) {
       return
     }
     recordUndo()
-    const data = formValueRef.value
     updateHtmlElement(el, data)
 
     const cb = afterUpdateCallback.value

@@ -1,18 +1,18 @@
 <script lang="ts">
-import {defineComponent, PropType, ref} from 'vue'
+import {computed, defineComponent, PropType, ref} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
-import {FormInst} from 'naive-ui'
-import {
-  CustomFormInputType,
-  CustomFormItem,
-  formatForm,
-  getCustomFormItems,
-} from '../utils/element-edit'
-import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
+import {FormInst, FormRules} from 'naive-ui'
+import {formatForm, getCustomFormItems} from '../utils/element-edit'
+import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
+import {AutoFormItemType, MixedFormItems} from '@/components/CommonUI/AutoFormNaive/enum'
+import AutoFormNaive from '@/components/CommonUI/AutoFormNaive/index.vue'
 
 export default defineComponent({
   name: 'ElementEditDialog',
-  components: {VueMonaco},
+  components: {
+    AutoFormNaive,
+    ViewPortWindow,
+  },
   props: {
     editingNode: {
       type: Object as PropType<HTMLElement | null>,
@@ -29,59 +29,92 @@ export default defineComponent({
   },
   emits: ['onSave', 'update:visible'],
   setup(props, {emit}) {
-    const {isRoot} = toRefs(props)
+    const {isRoot, editingNode} = toRefs(props)
     const mVisible = useModelWrapper(props, emit, 'visible')
     const isEditInnerHTML = ref(true)
 
-    const formRef = ref<FormInst | null>(null)
-    const formValueRef = ref(formatForm(null))
-    const formRules = {
-      // tagName: {
-      //   required: true,
-      //   message: 'Please input tagName',
-      //   trigger: ['blur', 'input'],
-      // },
-    }
+    const autoFormRef = ref()
+    const dataForm = ref(formatForm(null))
+    const formRules = ref<FormRules>({})
 
     // add element specific form items
-    const customFormItems = ref<CustomFormItem[]>([])
+    const customFormItems = ref<MixedFormItems[]>([])
 
     watch(mVisible, (val) => {
       if (val) {
-        formValueRef.value = formatForm(props.editingNode)
-        customFormItems.value = getCustomFormItems(props.editingNode)
-        if (isRoot.value) {
-          isEditInnerHTML.value = true
-        }
+        initEditingNode()
       } else {
-        formValueRef.value = formatForm(null)
+        dataForm.value = formatForm(null)
         customFormItems.value = []
       }
     })
 
+    watch(editingNode, (val) => {
+      initEditingNode()
+    })
+
+    const initEditingNode = () => {
+      dataForm.value = formatForm(editingNode.value)
+      customFormItems.value = getCustomFormItems(editingNode.value)
+      if (isRoot.value) {
+        isEditInnerHTML.value = true
+      }
+    }
+
+    const handleResize = () => {
+      // 手动触发resize事件，让monaco编辑器自动调整
+      window.dispatchEvent(new Event('resize'))
+    }
+
+    const handleCancel = () => {
+      mVisible.value = false
+    }
+
+    const handleSubmit = () => {
+      emit('onSave', {
+        el: editingNode.value,
+        data: dataForm.value,
+      })
+      mVisible.value = false
+    }
+
+    const formItems = computed((): MixedFormItems[] => {
+      if (isRoot.value) {
+        return [
+          {
+            type: AutoFormItemType.MONACO_EDITOR,
+            key: 'innerHTML',
+            label: 'innerHTML',
+          },
+        ]
+      }
+      if (isEditInnerHTML.value) {
+        return [
+          ...customFormItems.value,
+          {
+            label: 'innerHTML',
+            key: 'innerHTML',
+            type: AutoFormItemType.MONACO_EDITOR,
+          },
+        ]
+      }
+      return [
+        {
+          label: 'outerHTML',
+          key: 'outerHTML',
+          type: AutoFormItemType.MONACO_EDITOR,
+        },
+      ]
+    })
     return {
       mVisible,
-      formRef,
-      formValueRef,
+      dataForm,
+      autoFormRef,
       formRules,
-      handleValidateClick(e: MouseEvent) {
-        e.preventDefault()
-        formRef.value?.validate((errors) => {
-          if (errors) {
-            return
-          }
-          emit('onSave', {
-            el: props.editingNode,
-            formValueRef,
-          })
-          mVisible.value = false
-        })
-      },
-      handleCancel() {
-        mVisible.value = false
-      },
-      customFormItems,
-      CustomFormInputType,
+      formItems,
+      handleResize,
+      handleSubmit,
+      handleCancel,
       isEditInnerHTML,
     }
   },
@@ -89,76 +122,87 @@ export default defineComponent({
 </script>
 
 <template>
-  <n-modal
-    v-model:show="mVisible"
-    preset="dialog"
-    :title="`${$t('actions.edit_element')}: ${formValueRef.tagName}`"
-    label-placement="top"
-    style="width: 600px"
+  <ViewPortWindow
+    v-model:visible="mVisible"
+    allow-maximum
+    wid="element_editor"
+    @resize="handleResize"
+    :init-win-options="{
+      width: '400px',
+      height: '500px',
+    }"
   >
-    <n-form ref="formRef" :label-width="80" :model="formValueRef" :rules="formRules" size="small">
-      <n-form-item label="class" path="className">
-        <n-input
-          :disabled="isRoot"
-          v-model:value="formValueRef.className"
-          placeholder="class"
-          class="font-code"
-          clearable
-          @keyup.enter="handleValidateClick"
-        />
-      </n-form-item>
-      <n-form-item v-if="isEditInnerHTML" label="innerHTML" path="innerHTML">
-        <VueMonaco v-model="formValueRef.innerHTML" />
-      </n-form-item>
-      <n-form-item v-else label="outerHTML" path="outerHTML">
-        <VueMonaco v-model="formValueRef.outerHTML" />
-      </n-form-item>
+    <template #titleBarLeft>
+      {{ `${$t('actions.edit_element')} <${dataForm.tagName}>` }}
+    </template>
 
-      <n-form-item
-        v-for="item in customFormItems"
-        :key="item.key"
-        :label="item.label"
-        :path="`customForm.${item.key}`"
-        class="font-code"
-      >
-        <n-select
-          v-if="item.type === CustomFormInputType.SELECT"
-          v-model:value="formValueRef.customProps[item.key]"
-          :options="item.options"
-          filterable
-        />
+    <template #titleBarRightControls>
+      <button @click="autoFormRef.submitForm">
+        {{ $t('actions.ok') }}
+      </button>
+    </template>
+    <AutoFormNaive
+      ref="autoFormRef"
+      :form-schema="{
+        model: dataForm,
+        rules: formRules,
+        props: {
+          labelPosition: 'top',
+        },
+        formItems,
+      }"
+      @onSubmit="handleSubmit"
+      class="element-edit-form font-code"
+      hide-actions
+    >
+      <div class="action-row vp-bg">
         <n-switch
-          v-else-if="item.type === CustomFormInputType.SWITCH"
-          v-model:value="formValueRef.customProps[item.key]"
-        />
+          v-model:value="isEditInnerHTML"
+          :title="`${$t('actions.toggle')} innerHTML/outerHTML`"
+          :disabled="isRoot"
+        >
+          <template #checked> innerHTML </template>
+          <template #unchecked> outerHTML </template>
+        </n-switch>
 
-        <n-input
-          v-else
-          v-model:value="formValueRef.customProps[item.key]"
-          placeholder=""
-          clearable
-          @keyup.enter="handleValidateClick"
-        />
-      </n-form-item>
-
-      <n-space justify="space-between">
-        <n-space>
-          <n-switch
-            v-model:value="isEditInnerHTML"
-            :title="`${$t('actions.toggle')} innerHTML/outerHTML`"
-            :disabled="isRoot"
-          >
-            <template #checked> innerHTML </template>
-            <template #unchecked> outerHTML </template>
-          </n-switch>
-        </n-space>
-        <n-space>
-          <n-button attr-type="button" @click="handleCancel"> {{ $t('actions.cancel') }} </n-button>
-          <n-button type="primary" attr-type="button" @click="handleValidateClick">
+        <n-space size="small">
+          <button class="vp-button" @click="handleCancel">{{ $t('actions.cancel') }}</button>
+          <button class="vp-button primary" @click="autoFormRef.submitForm">
             {{ $t('actions.ok') }}
-          </n-button>
+          </button>
         </n-space>
-      </n-space>
-    </n-form>
-  </n-modal>
+      </div>
+    </AutoFormNaive>
+  </ViewPortWindow>
 </template>
+
+<style lang="scss" scoped>
+.element-edit-form {
+  height: 100%;
+  overflow: auto;
+  padding: 10px 10px 0;
+  box-sizing: border-box;
+
+  .vp-button {
+    &.primary {
+      background: $primary;
+      color: white;
+    }
+  }
+
+  .action-row {
+    position: sticky;
+    bottom: 0;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    margin-left: -10px;
+    margin-right: -10px;
+    box-sizing: border-box;
+    z-index: 100;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+}
+</style>

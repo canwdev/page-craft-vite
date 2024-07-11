@@ -152,6 +152,19 @@ export default defineComponent({
       }
     })
 
+    const rootRef = ref()
+    const toggleExpand = () => {
+      isExpand.value = !isExpand.value
+      setTimeout(() => {
+        rootRef.value.scrollIntoView({behavior: 'smooth', block: 'center'})
+      })
+    }
+    const scrollToItemTop = () => {
+      if (rootRef.value) {
+        rootRef.value.scrollIntoView({behavior: 'smooth'})
+      }
+    }
+
     return {
       i18nSetStore,
       handleAddChildren,
@@ -174,11 +187,14 @@ export default defineComponent({
         item.value.translates = list
       },
       isExpand,
+      toggleExpand,
+      rootRef,
       isKeyDuplicated,
       checkDuplicatedGroupKey,
       namespacePrefix,
       namespaceInputRef,
       ccName,
+      scrollToItemTop,
       ...useArrayEdit(),
     }
   },
@@ -186,8 +202,13 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="vp-panel vp-window-panel translate-tree-item" v-if="item" :class="{isKeyDuplicated}">
-    <div class="group-header">
+  <div
+    ref="rootRef"
+    class="vp-panel vp-window-panel translate-tree-item"
+    v-if="item"
+    :class="{isKeyDuplicated}"
+  >
+    <div class="group-header vp-bg">
       <template v-if="isKeyDuplicated">
         <n-tooltip trigger="hover">
           <template #trigger>
@@ -198,8 +219,10 @@ export default defineComponent({
       </template>
 
       <div v-if="isRoot" class="namespace-input-wrap font-code">
-        <CcFlag v-if="i18nSetStore.enableFlag" :cc="ccName" />
-        <span v-else style="color: #f44336" class="namespace-prefix"> § </span>
+        <CcFlag @click="scrollToItemTop" v-if="i18nSetStore.enableFlag" :cc="ccName" />
+        <span @click="scrollToItemTop" v-else style="color: #f44336" class="namespace-prefix">
+          §
+        </span>
         <input
           ref="namespaceInputRef"
           class="font-code vp-input"
@@ -213,7 +236,7 @@ export default defineComponent({
       </div>
 
       <div v-else class="namespace-input-wrap font-code">
-        <span class="namespace-prefix">
+        <span @click="scrollToItemTop" class="namespace-prefix">
           § <template v-if="!isLite">{{ namespacePrefix + (namespacePrefix ? '.' : '') }}</template>
         </span>
         <input
@@ -240,13 +263,13 @@ export default defineComponent({
             {{ $t('msgs.remove_group') }}
           </n-popconfirm>
         </template>
-        <button @click="isExpand = !isExpand" :title="`Toggle Expand`" class="vp-button">
-          {{ !isExpand ? '🙈' : '👀' }}
+        <button @click="toggleExpand" :title="`Toggle Expand`" class="vp-button">
+          {{ !isExpand ? '▼' : '▲' }}
         </button>
       </div>
     </div>
 
-    <div v-if="isExpand">
+    <div class="group-content" v-if="isExpand">
       <div class="tr-list" v-if="item.translates && item.translates.length">
         <TranslateItem
           v-for="(vi, vIndex) in item.translates"
@@ -273,7 +296,7 @@ export default defineComponent({
             class="vp-button primary focus-auto-action"
           >
             <ClipboardPaste20Regular />
-            Auto Paste
+            {{ $t('msgs.auto_paste') }}
           </button>
         </div>
       </div>
@@ -298,15 +321,18 @@ export default defineComponent({
         <span class="namespace-display font-code font-italic">
           {{ namespacePrefix ? namespacePrefix + '.' : '' }}{{ item.namespace }}</span
         >
-        <button
-          v-if="!isLite"
-          @click="handleAddChildren"
-          title="Add translate children group"
-          class="vp-button primary"
-        >
-          <AddSquare20Regular />
-          {{ $t('common.group') }}
-        </button>
+
+        <div class="actions-wrap-side">
+          <button
+            v-if="!isLite"
+            @click="handleAddChildren"
+            title="Add translate children group"
+            class="vp-button primary"
+          >
+            <AddSquare20Regular />
+            {{ $t('common.group') }}
+          </button>
+        </div>
       </div>
     </div>
 
@@ -326,12 +352,18 @@ export default defineComponent({
 .translate-tree-item {
   margin-top: 10px;
   margin-bottom: 10px;
-  padding: 10px;
   box-shadow: none !important;
+  position: relative;
+  $padding: 8px;
+  padding: $padding;
+  // scrollIntoView 滚动偏移量
+  scroll-margin-top: 50px;
 
   &:hover {
     transition: none;
-    border: 1px solid $primary; //darkseagreen;
+    border: 1px solid $primary;
+    & > .group-header {
+    }
   }
   &.isKeyDuplicated {
     background-color: rgba(244, 67, 54, 0.1) !important;
@@ -344,6 +376,8 @@ export default defineComponent({
     gap: 4px;
     .namespace-prefix {
       color: $primary;
+      cursor: pointer;
+      user-select: none;
     }
   }
 
@@ -351,6 +385,14 @@ export default defineComponent({
     display: flex;
     align-items: center;
     gap: 8px;
+    position: sticky;
+    top: 33px;
+    z-index: 1;
+    margin-left: -$padding;
+    margin-right: -$padding;
+    margin-top: -$padding;
+    padding: $padding;
+    outline: 1px solid $primary;
 
     .mc-error-tip-button {
       margin-right: 8px;
@@ -369,14 +411,20 @@ export default defineComponent({
   }
 
   .actions-wrap {
-    margin-top: 5px;
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
+    align-items: center;
+    margin-top: 8px;
 
     .namespace-display {
       opacity: 0.5;
       font-size: 12px;
+    }
+
+    .actions-wrap-side {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
     }
   }
 }

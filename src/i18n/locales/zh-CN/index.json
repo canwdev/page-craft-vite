@@ -43,13 +43,21 @@
     "others": "其他",
     "sound_fx": "交互音效",
     "reference_map": "参考图",
-    "welcome": "欢迎使用",
     "edit_mode": "编辑模式",
     "folders_mode": "多文件夹模式",
     "files_mode": "多文件模式",
     "field": "字段",
     "common": "通用",
-    "system": "系统"
+    "system": "系统",
+    "toolbox": "工具箱",
+    "code": "代码",
+    "file_explorer": "文件资源管理器",
+    "home_page": "主页",
+    "plugins_manager": "插件管理器",
+    "rich_text_tool": "富文本工具",
+    "iframe_browser": "iframe 浏览器",
+    "welcome": "首页",
+    "more": "更多"
   },
   "actions": {
     "cancel": "取消",
@@ -94,7 +102,15 @@
     "save_as": "另存为",
     "open": "打开",
     "download": "下载",
-    "current": "当前"
+    "current": "当前",
+    "add_plugin": "添加插件",
+    "plugins": "插件",
+    "import_export": "导入/导出",
+    "refactor": "重构",
+    "save_all": "全部保存",
+    "send": "发送",
+    "create": "创建",
+    "retry": "重试"
   },
   "msgs": {
     "drop_files_here": "将文件拖放到此处",
@@ -147,7 +163,6 @@
     "text_conv_mode": "文本转换器模式",
     "copy_json_from_right": "复制右侧内容为JSON",
     "paste_json_override_right": "粘贴JSON覆盖右侧的内容",
-    "fen_xi_fan_yi_shu": "分析翻译树",
     "action_completed_pl": "操作完成，请手动保存！",
     "confirm_close": "确认关闭？未保存的内容将会丢失。",
     "auto_paste_and_copy": "[Auto] 粘贴并复制结果",
@@ -156,6 +171,43 @@
     "enable_flag": "启用旗标",
     "refresh_page": "刷新页面？",
     "recommend_download_client_title": "推荐下载桌面客户端",
-    "recommend_download_client_desc": "⚡ 完全开源、离线可用\n💡 使用Tauri技术构建，轻量化不到10MB\n🚀 调用系统原生WebView2，更快更稳定\n💽 exe安装包可解压后直接运行，无需安装"
+    "recommend_download_client_desc": "⚡ 完全开源、离线可用\n💡 使用Tauri技术构建，轻量化不到10MB\n🚀 调用系统原生WebView2，更快更稳定\n💽 exe安装包可解压后直接运行，无需安装",
+    "error_name_duplicat": "错误：名称重复！",
+    "que_ren_shan_chu_ci": "确认删除？此操作不可撤销"
+  },
+  "i18n_tools": {
+    "locate_translate_pa": "定位翻译路径",
+    "filter_translate_ke": "过滤翻译key",
+    "a_i_translate": "AI翻译",
+    "delete_keys": "删除Keys",
+    "rename_keys": "重命名Keys",
+    "no_need_for_transla": "不需要翻译",
+    "in_all_languages": "所有语言",
+    "fen_xi_fan_yi_shu": "分析翻译树"
+  },
+  "plugins": {
+    "input_demo_to_creat": "输入'demo'来创建一个演示插件！",
+    "input_plugin_name": "输入插件名称",
+    "reload_all_plugins": "重新加载所有插件",
+    "plugins_reloaded": "插件已重新加载！",
+    "reload_custom_plugi": "重新加载自定义插件",
+    "delete_all_custom_p": "删除所有自定义插件"
+  },
+  "ai": {
+    "clear_chat_history": "清除聊天记录？",
+    "dai_li_di_zhi": "代理地址",
+    "model": "模型",
+    "qi_yong_liu_shi_xian": "启用流式响应",
+    "kuai_su_xiang_ying_d": "快速响应，但网络不好可能丢包",
+    "hui_che_jian_ti_jiao": "回车键提交，shift+回车换行",
+    "characters": "角色",
+    "name": "名称",
+    "avatar": "头像",
+    "chuang_jian_hou_bu_k": "创建后不可修改",
+    "desc": "描述",
+    "system_prompt": "系统提示词",
+    "yu_current_character": "与 {0} 的聊天",
+    "new_chat": "新聊天",
+    "quan_ju_mo_ren_mo_xi": "全局默认模型"
   }
 }
