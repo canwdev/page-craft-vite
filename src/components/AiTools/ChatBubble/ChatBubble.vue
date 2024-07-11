@@ -100,21 +100,25 @@ const isReply = computed(() => {
         </div>
 
         <template v-if="isEditing">
-          <button class="btn-no-style" @click="isEditing = false">{{ $t('actions.done') }}</button>
+          <button class="btn-no-style" @click="isEditing = false">
+            ✅ {{ $t('actions.done') }}
+          </button>
         </template>
         <template v-else>
-          <button class="btn-no-style" @click="copy(item.content)">{{ $t('actions.copy') }}</button>
+          <button class="btn-no-style" @click="copy(item.content)">
+            📋 {{ $t('actions.copy') }}
+          </button>
 
           <button class="btn-no-style" v-if="allowRetry" @click="$emit('retry')">
-            {{ $t('actions.retry') }}
+            🔄 {{ $t('actions.retry') }}
           </button>
 
           <button class="btn-no-style" v-if="allowEdit" @click="isEditing = true">
-            {{ $t('actions.edit') }}
+            📝 {{ $t('actions.edit') }}
           </button>
           <n-popconfirm v-if="allowDelete" @positive-click="$emit('delete', item)">
             <template #trigger>
-              <button class="btn-no-style">{{ $t('actions.delete') }}</button>
+              <button class="btn-no-style">🗑️ {{ $t('actions.delete') }}</button>
             </template>
             {{ $t('actions.confirm') }}
           </n-popconfirm>
@@ -247,12 +251,14 @@ const isReply = computed(() => {
   .chat-actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    align-items: center;
+    gap: 10px;
     font-size: 12px;
     padding: 0 8px;
     opacity: 0;
     visibility: hidden;
     transition: all 0.2s;
+    margin-top: 4px;
 
     button {
       opacity: 0.6;

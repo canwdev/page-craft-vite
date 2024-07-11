@@ -25,7 +25,9 @@ import SideHistory from '@/components/AiTools/SideHistory.vue'
         </n-split>
       </template>
       <template #2>
-        <ChatContent />
+        <transition name="fade">
+          <ChatContent />
+        </transition>
       </template>
     </n-split>
   </div>

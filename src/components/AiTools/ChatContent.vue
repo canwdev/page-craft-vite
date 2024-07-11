@@ -52,7 +52,10 @@ const scrollBottom = useThrottleFn(
       return
     }
     setTimeout(() => {
-      respContainerRef.value.scrollTop = respContainerRef.value.scrollHeight
+      respContainerRef.value.scrollTo({
+        top: respContainerRef.value.scrollHeight,
+        behavior: 'smooth',
+      })
     })
   },
   200,

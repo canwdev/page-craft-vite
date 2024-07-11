@@ -22,7 +22,7 @@ export const useAiSettings = () => {
           },
           {
             label: `API ${$t('ai.dai_li_di_zhi')}`,
-            tips: 'https://aihubmix.com/v1',
+            tips: '推荐代理：<br>https://aihubmix.com/v1',
             key: 'openAiApiProxy',
             store: aisStore,
             type: StOptionType.INPUT,

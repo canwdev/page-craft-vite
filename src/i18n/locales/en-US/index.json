@@ -203,7 +203,7 @@
     "name": "Name",
     "avatar": "Avatar",
     "desc": "Description",
-    "system_prompt": "System prompts",
+    "system_prompt": "System Prompt",
     "yu_current_character": "Chat with {0}",
     "new_chat": "New Chat",
     "chuang_jian_hou_bu_k": "Cannot be modified after creation",

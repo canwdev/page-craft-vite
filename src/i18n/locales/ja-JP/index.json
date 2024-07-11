@@ -109,7 +109,8 @@
     "refactor": "リファクタリング",
     "save_all": "すべて保存",
     "send": "送信",
-    "retry": "再試行"
+    "retry": "再試行",
+    "create": "作成する"
   },
   "msgs": {
     "drop_files_here": "ここにファイルをドロップ",
