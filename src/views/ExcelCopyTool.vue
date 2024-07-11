@@ -230,7 +230,7 @@ export default defineComponent({
       handleExportFile(
         await promptGetFileName(name, 'excel_sheet_export'),
         JSON.stringify(json, null, 2),
-        '.json'
+        '.json',
       )
     }
     useSaveShortcut(async () => {
@@ -443,7 +443,7 @@ export default defineComponent({
         </n-tabs>
       </n-card>
     </div>
-    <div ref="tableWrapperElRef" class="excel-table-container" @click="handleClick"></div>
+    <div ref="tableWrapperElRef" class="excel-table-container vp-bg" @click="handleClick"></div>
 
     <FileChooser
       ref="importFileChooserRef"
@@ -471,7 +471,6 @@ export default defineComponent({
   .excel-table-container {
     position: relative;
     z-index: 1;
-    background-color: white;
     width: 100%;
     overflow: auto;
     flex: 1;

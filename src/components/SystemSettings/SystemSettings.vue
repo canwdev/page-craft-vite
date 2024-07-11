@@ -4,7 +4,7 @@ import OptionUI from '@/components/CommonUI/OptionUI/index.vue'
 import {useI18n} from 'vue-i18n'
 import {StOptionItem, StOptionType} from '@/components/CommonUI/OptionUI/enum'
 import {useSettingsStore} from '@/store/settings'
-import {ldThemeOptions} from '@/enum/settings'
+import {ldThemeOptions, LdThemeType} from '@/enum/settings'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {useCommonSettings} from '@/components/SystemSettings/use-common-settings'
 import {useThemeOptions} from '@/components/CommonUI/ViewPortWindow/utils/use-theme'
@@ -72,18 +72,23 @@ const optionList = computed((): StOptionItem[] => {
           type: StOptionType.COLOR_PICKER,
         },
         {
-          label: $t('actions.toggle_ld_theme'),
-          key: 'ldTheme',
-          store: settingsStore,
-          type: StOptionType.MULTIPLE_SWITCH,
-          options: ldThemeOptions,
-        },
-        {
           label: $t('common.theme'),
           key: 'customTheme',
           store: settingsStore,
           type: StOptionType.SELECT,
           options: themeOptions.value,
+          props: {
+            'onUpdate:value': (val) => {
+              settingsStore.ldTheme = LdThemeType.LIGHT
+            },
+          },
+        },
+        {
+          label: $t('actions.toggle_ld_theme'),
+          key: 'ldTheme',
+          store: settingsStore,
+          type: StOptionType.MULTIPLE_SWITCH,
+          options: ldThemeOptions,
         },
         {
           label: $t('common.disable_animation'),
@@ -141,7 +146,7 @@ const optionList = computed((): StOptionItem[] => {
               target: '_blank',
               rel: 'noopener noreferrer',
             },
-            'Github'
+            'Github',
           ),
         },
       ].filter(Boolean),

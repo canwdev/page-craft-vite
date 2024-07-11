@@ -46,7 +46,7 @@ export const useGlobalTheme = () => {
         document.body.classList.remove('_dark')
       }
     },
-    {immediate: true}
+    {immediate: true},
   )
 
   const lastTheme = ref('')
@@ -61,7 +61,7 @@ export const useGlobalTheme = () => {
     },
     {
       immediate: true,
-    }
+    },
   )
 
   const updateThemeColor = () => {
@@ -86,7 +86,7 @@ export const useGlobalTheme = () => {
     () => settingsStore.themeColor,
     () => {
       updateThemeColor()
-    }
+    },
   )
 
   watch(
@@ -100,7 +100,7 @@ export const useGlobalTheme = () => {
     },
     {
       immediate: true,
-    }
+    },
   )
 
   onBeforeUnmount(() => {
