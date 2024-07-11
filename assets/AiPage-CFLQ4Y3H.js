@@ -1,0 +1,1 @@
+import{C as a}from"./CommonNavbar-C_V8SAgV.js";import{d as s,a as o,c as e,b as i,cH as m,_ as r}from"./index-DyP2wrK1.js";const d={class:"ai-page _scrollbar_mini"},t=r(s({__name:"AiPage",setup:s=>(s,r)=>(o(),e("div",d,[i(a),i(m)]))}),[["__scopeId","data-v-3aedb8a3"]]);export{t as default};
