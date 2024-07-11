@@ -35,11 +35,11 @@ const useAiIdbState = createGlobalState(() => {
         model: ChatModel.GPT35Turbo,
         systemPrompt: 'You are a helpful assistant.',
       },
-    ]
+    ],
   )
   const {data: allChatHistory, isFinished: isAllChatHistory} = useIDBKeyval<IChatHistoryItem[]>(
     'page_craft_ai_history_group',
-    []
+    [],
   )
 
   return {

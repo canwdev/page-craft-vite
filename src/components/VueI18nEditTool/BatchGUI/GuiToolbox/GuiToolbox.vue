@@ -48,13 +48,13 @@ const guiToolboxOptions = computed((): QuickOptionItem[] => {
   const currentPath = i18nMainStore.translatePath
   return [
     {
-      label: $t('i18n_tools.fen_xi_fan_yi_shu'),
+      label: '🔍 ' + $t('i18n_tools.fen_xi_fan_yi_shu'),
       props: {
         onClick: () => handleAnalyse(),
       },
     },
     {
-      label: $t('i18n_tools.a_i_translate'),
+      label: '✨ ' + $t('i18n_tools.a_i_translate'),
       disabled: !currentPath,
       props: {
         onClick: () => handleGptTranslate(),
@@ -62,7 +62,7 @@ const guiToolboxOptions = computed((): QuickOptionItem[] => {
     },
     {split: true},
     {
-      label: $t('msgs.copy_json_from_right'),
+      label: '📋 ' + $t('msgs.copy_json_from_right'),
       disabled: !currentPath,
       props: {
         onClick: async () => {
@@ -71,7 +71,7 @@ const guiToolboxOptions = computed((): QuickOptionItem[] => {
       },
     },
     {
-      label: $t('msgs.paste_json_override_right'),
+      label: '📋 ' + $t('msgs.paste_json_override_right'),
       disabled: !currentPath,
       props: {
         onClick: () => pasteJsonOverrideRight(),
@@ -79,14 +79,14 @@ const guiToolboxOptions = computed((): QuickOptionItem[] => {
     },
     {split: true},
     {
-      label: `${$t('actions.refactor')}: ${$t('i18n_tools.delete_keys')}`,
+      label: '❌ ' + `${$t('actions.refactor')}: ${$t('i18n_tools.delete_keys')}`,
       disabled: !currentPath,
       props: {
         onClick: () => handleDeleteKeys(),
       },
     },
     {
-      label: `${$t('actions.refactor')}: ${$t('i18n_tools.rename_keys')}`,
+      label: '✏️ ' + `${$t('actions.refactor')}: ${$t('i18n_tools.rename_keys')}`,
       disabled: !currentPath,
       props: {
         onClick: async () => {
@@ -114,8 +114,8 @@ const toolboxFilterKeyChange = () => {
     })
     toolboxFilterEls.value = Array.from(
       document.querySelectorAll(
-        `${tiSelector}[data-translate-path*="${toolboxFilterKey.value.trim()}"]`
-      )
+        `${tiSelector}[data-translate-path*="${toolboxFilterKey.value.trim()}"]`,
+      ),
     ) as HTMLElement[]
   }
   const els = toolboxFilterEls.value

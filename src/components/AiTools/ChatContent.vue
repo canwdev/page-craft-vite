@@ -56,7 +56,7 @@ const scrollBottom = useThrottleFn(
     })
   },
   200,
-  true
+  true,
 )
 const focusInput = () => {
   setTimeout(() => {
@@ -82,7 +82,7 @@ watch(
     }
     handleLoad()
   },
-  {immediate: true}
+  {immediate: true},
 )
 useGlobalBusOn(GlobalEvents.ON_AI_CHARACTER_UPDATE, () => {
   if (!currentHistory.value) {
@@ -109,7 +109,7 @@ const generateChatTitle = async () => {
     history.shift()
 
     currentHistory.value.title = await requestAiChatMessage(
-      tplConversationAssistant(history, locale.value)
+      tplConversationAssistant(history, locale.value),
     )
   } catch (error: any) {
     console.error(error)
@@ -171,7 +171,7 @@ const sendAiRequest = async (isRetry = false) => {
         timestamp: Date.now(),
       })
       userInputContent.value = ''
-      imageList.value.length = []
+      imageList.value = []
     }
     scrollBottom()
 
@@ -188,7 +188,7 @@ const sendAiRequest = async (isRetry = false) => {
       (text: string) => {
         tempResponseChat.value!.content += text
         scrollBottom()
-      }
+      },
     )
 
     if (typeof chatCompletion === 'string') {

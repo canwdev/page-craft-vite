@@ -108,7 +108,8 @@
     "import_export": "輸入/エクスポート",
     "refactor": "リファクタリング",
     "save_all": "すべて保存",
-    "send": "送信"
+    "send": "送信",
+    "retry": "再試行"
   },
   "msgs": {
     "drop_files_here": "ここにファイルをドロップ",
@@ -196,6 +197,15 @@
     "model": "モデル",
     "qi_yong_liu_shi_xian": "ストリーミングレスポンスを有効にする",
     "kuai_su_xiang_ying_d": "迅速な応答ですが、ネットワークが不良品でパケットが落ちる可能性があります",
-    "hui_che_jian_ti_jiao": "Enterで送信、Shift+Enterで改行"
+    "hui_che_jian_ti_jiao": "Enterで送信、Shift+Enterで改行",
+    "characters": "キャラクター",
+    "name": "名前",
+    "avatar": "アバター",
+    "chuang_jian_hou_bu_k": "作成後は変更できません",
+    "desc": "説明",
+    "system_prompt": "システムプロンプトワード",
+    "yu_current_character": "{0} とのチャット",
+    "new_chat": "新しいチャット",
+    "quan_ju_mo_ren_mo_xi": "グローバルデフォルトモデル"
   }
 }

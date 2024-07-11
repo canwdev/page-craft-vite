@@ -105,7 +105,9 @@ const isReply = computed(() => {
         <template v-else>
           <button class="btn-no-style" @click="copy(item.content)">{{ $t('actions.copy') }}</button>
 
-          <button class="btn-no-style" v-if="allowRetry" @click="$emit('retry')">Retry</button>
+          <button class="btn-no-style" v-if="allowRetry" @click="$emit('retry')">
+            {{ $t('actions.retry') }}
+          </button>
 
           <button class="btn-no-style" v-if="allowEdit" @click="isEditing = true">
             {{ $t('actions.edit') }}

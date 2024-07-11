@@ -11,6 +11,7 @@ export interface StOptionItem {
   type?: StOptionType
   // 传递给组件的自定义属性
   props?: any
+  itemProps?: any
   // 当type为 SELECT | MULTIPLE_SWITCH 时，选项的下拉数据
   options?: any[]
   // 是否已禁用

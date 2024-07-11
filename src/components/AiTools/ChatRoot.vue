@@ -5,7 +5,7 @@ import SideHistory from '@/components/AiTools/SideHistory.vue'
 </script>
 
 <template>
-  <div class="ai-chat-root">
+  <div class="ai-chat-root vp-panel">
     <n-split
       direction="horizontal"
       default-size="256px"
@@ -35,6 +35,8 @@ import SideHistory from '@/components/AiTools/SideHistory.vue'
 .ai-chat-root {
   height: 100%;
   color: inherit;
+  border: none !important;
+  box-shadow: none !important;
 
   .ai-option-ui {
     .panel-header {

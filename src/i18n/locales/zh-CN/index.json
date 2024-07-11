@@ -109,7 +109,8 @@
     "refactor": "重构",
     "save_all": "全部保存",
     "send": "发送",
-    "create": "创建"
+    "create": "创建",
+    "retry": "重试"
   },
   "msgs": {
     "drop_files_here": "将文件拖放到此处",
@@ -198,6 +199,15 @@
     "model": "模型",
     "qi_yong_liu_shi_xian": "启用流式响应",
     "kuai_su_xiang_ying_d": "快速响应，但网络不好可能丢包",
-    "hui_che_jian_ti_jiao": "回车键提交，shift+回车换行"
+    "hui_che_jian_ti_jiao": "回车键提交，shift+回车换行",
+    "characters": "角色",
+    "name": "名称",
+    "avatar": "头像",
+    "chuang_jian_hou_bu_k": "创建后不可修改",
+    "desc": "描述",
+    "system_prompt": "系统提示词",
+    "yu_current_character": "与 {0} 的聊天",
+    "new_chat": "新聊天",
+    "quan_ju_mo_ren_mo_xi": "全局默认模型"
   }
 }

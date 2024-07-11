@@ -80,6 +80,7 @@ export default defineComponent({
         :class="[{clickable: sItem.clickFn}, sItem.cls]"
         :data-key="sItem.key"
         @click="handleItemClick($event, sItem.clickFn)"
+        v-bind="sItem.itemProps"
       >
         <div class="o-left">
           <div v-if="sItem.iconRender" class="item-icon">
@@ -166,6 +167,12 @@ export default defineComponent({
       display: flex;
       align-items: center;
       justify-content: space-between;
+      position: relative;
+      transition: all 0.3s;
+
+      &._drag-over {
+        background-color: $primary_opacity;
+      }
 
       &.clickable {
         cursor: pointer;

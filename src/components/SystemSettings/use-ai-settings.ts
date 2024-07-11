@@ -28,7 +28,7 @@ export const useAiSettings = () => {
             type: StOptionType.INPUT,
           },
           {
-            label: `全局默认模型`,
+            label: $t('ai.quan_ju_mo_ren_mo_xi'),
             key: 'model',
             store: aisStore,
             type: StOptionType.SELECT,

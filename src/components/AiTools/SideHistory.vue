@@ -37,7 +37,7 @@ const createChat = () => {
   }
   allChatHistory.value.push(item)
   aisStore.currentChatHistoryId = id
-  console.log('创建历史记录', id, item, allChatHistory.value)
+  // console.log('创建历史记录', id, item, allChatHistory.value)
 }
 watch(currentCharacter, (val) => {
   // 必须等待初始完成再执行
@@ -68,9 +68,9 @@ const autoInit = () => {
 
 const optionList = computed((): StOptionItem[] => {
   if (!currentCharacter.value) {
-    return [{label: '请选择一个角色', key: 'pls'}]
+    return []
   }
-  const historyLabel = `与 ${currentCharacter.value.name} 的聊天`
+  const historyLabel = $t('ai.yu_current_character', [currentCharacter.value.name])
 
   // 删除与当前角色的全部聊天记录
   const deleteCurrentAllHistory = () => {
@@ -143,7 +143,7 @@ const optionList = computed((): StOptionItem[] => {
         ]),
       children: [
         {
-          label: `➕ ${$t('actions.create')} 聊天`,
+          label: `➕ ${$t('ai.new_chat')}`,
           clickFn: () => {
             createChat()
           },
@@ -151,7 +151,7 @@ const optionList = computed((): StOptionItem[] => {
         ...currentHistoryGroup.value.map((item, index) => {
           return {
             key: item.id,
-            label: item.title || `New Chat with ${currentCharacter.value!.name}`,
+            label: item.title || historyLabel,
             subtitle: formatDate(item.timestamp),
             cls: aisStore.currentChatHistoryId === item.id ? 'active' : '',
             clickFn: () => {
@@ -192,7 +192,7 @@ const optionList = computed((): StOptionItem[] => {
 </script>
 
 <template>
-  <div class="ai-side-history vp-bg">
+  <div class="ai-side-history">
     <OptionUI class="ai-option-ui" :option-list="optionList" />
   </div>
 </template>

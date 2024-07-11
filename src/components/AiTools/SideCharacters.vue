@@ -16,6 +16,7 @@ import {renderNDropdownMenu} from '@/components/CommonUI/renders'
 import {mergeIdData, useAiCharacters} from '@/components/AiTools/use-ai-characters'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {base64Utils} from '@/utils/base64-utils'
+import {generateItemDragProps} from '@/components/CommonUI/OptionUI/Tools/item-drag'
 
 const {t: $t} = useI18n()
 const aisStore = useAiSettingsStore()
@@ -35,10 +36,37 @@ const formatEditingData = (data: any = {}) => {
 }
 const editingItem = ref<IAiCharacter>(formatEditingData())
 
+const switchPosition = (oldIndex: number, newIndex: number) => {
+  const arr = [...characterList.value]
+
+  // Validate indices
+  if (
+    oldIndex < 0 ||
+    oldIndex >= arr.length ||
+    newIndex < 0 ||
+    newIndex >= arr.length ||
+    oldIndex === newIndex
+  ) {
+    return
+  }
+
+  // Remove the item from the old position
+  const [movedItem] = arr.splice(oldIndex, 1)
+
+  // Adjust newIndex if it is greater than the oldIndex after removal
+  const adjustedNewIndex = oldIndex < newIndex ? newIndex - 1 : newIndex
+
+  // Insert the item at the new position
+  arr.splice(adjustedNewIndex, 0, movedItem)
+
+  // Update the characterList
+  characterList.value = arr.map(toRaw)
+}
+
 const optionList = computed((): StOptionItem[] => {
   return [
     {
-      label: '角色列表',
+      label: $t('ai.characters'),
       key: 'characters',
       hideExpandIcon: true,
       actionRender: () =>
@@ -104,6 +132,7 @@ const optionList = computed((): StOptionItem[] => {
           clickFn: () => {
             aisStore.currentCharacterId = item.id
           },
+          itemProps: generateItemDragProps({index, cb: switchPosition}),
           actionRender: () =>
             renderNDropdownMenu([
               {
@@ -201,7 +230,7 @@ const formItems = computed((): MixedFormItems[] => {
       {
         type: AutoFormItemType.INPUT,
         key: 'name',
-        label: '角色名称',
+        label: $t('ai.name'),
         props: {
           onChange: () => {
             if (isCreate.value) {
@@ -218,7 +247,7 @@ const formItems = computed((): MixedFormItems[] => {
       {
         type: AutoFormItemType.INPUT,
         key: 'avatar',
-        label: '头像 URL',
+        label: `${$t('ai.avatar')} URL`,
         props: {
           clearable: true,
         },
@@ -242,7 +271,7 @@ const formItems = computed((): MixedFormItems[] => {
       {
         type: AutoFormItemType.INPUT,
         key: 'id',
-        label: 'ID (创建后不可修改)',
+        label: `ID (${$t('ai.chuang_jian_hou_bu_k')})`,
         disabled: !isCreate.value,
       },
       {
@@ -255,12 +284,12 @@ const formItems = computed((): MixedFormItems[] => {
     {
       type: AutoFormItemType.INPUT,
       key: 'desc',
-      label: '角色简介',
+      label: $t('ai.desc'),
     },
     {
       type: AutoFormItemType.INPUT,
       key: 'systemPrompt',
-      label: 'System Prompt',
+      label: $t('ai.system_prompt'),
       props: {
         type: 'textarea',
         rows: 8,
@@ -285,7 +314,7 @@ const handleSubmit = () => {
 </script>
 
 <template>
-  <div class="ai-side-characters vp-bg">
+  <div class="ai-side-characters">
     <OptionUI class="ai-option-ui" :option-list="optionList" />
 
     <n-modal
