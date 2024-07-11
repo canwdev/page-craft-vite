@@ -34,7 +34,7 @@ export const formatTranslateTreeItem = (data: any = {}): ITranslateTreeItem => {
 export const parseI18nJsonObj = (
   obj: any = {},
   tree: ITranslateTreeItem[] = [],
-  parent: ITranslateTreeItem | null = null
+  parent: ITranslateTreeItem | null = null,
 ): ITranslateTreeItem[] => {
   if (!obj) {
     return []
@@ -120,7 +120,7 @@ function containsChinese(text: string) {
 export const formatI18nKey = (
   val: number | string,
   replace: string = '_',
-  limitLength: number = 20
+  limitLength: number = 20,
 ): string => {
   if (typeof val === 'number') {
     return `n${replace}${val}`
@@ -141,6 +141,9 @@ export const formatI18nKey = (
   str = str.replace(/[^a-zA-Z0-9_\s]+/g, '')
   // 大驼峰转换 ABCDeFg -> abc_de_fg
   str = window.$qlUtils.changeCase.snakeCase(str)
+  str = str.slice(0, limitLength)
+  // 移除首尾的 "_"
+  str = str.replace(new RegExp(`${replace}$|^${replace}`, 'g'), '')
   return str
 }
 

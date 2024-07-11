@@ -52,9 +52,16 @@ const handleChoose = async () => {
   <div class="image-picker">
     <button class="vp-button" @click="handleChoose" title="Upload image...">🖼️</button>
     <div class="image-list">
-      <div v-for="(image, index) in images" :key="index" class="image-item">
-        <img :src="image" alt="Selected Image" />
-        <button @click="removeImage(index)" class="vp-button">Remove</button>
+      <div v-for="(image, index) in images" :key="index" class="image-item vp-panel">
+        <n-image
+          show-toolbar-tooltip
+          width="40"
+          height="30"
+          object-fit="contain"
+          :src="image"
+          alt="Selected Image"
+        />
+        <button @click="removeImage(index)" class="btn-no-style" title="Remove">✖</button>
       </div>
     </div>
   </div>
@@ -65,23 +72,36 @@ const handleChoose = async () => {
   display: flex;
   gap: 4px;
   flex-wrap: wrap;
+  align-items: center;
+
   .image-list {
     display: flex;
     gap: 4px;
     flex-wrap: wrap;
+
     .image-item {
       display: flex;
       align-items: center;
+      position: relative;
 
-      img {
-        max-width: 100px;
-        max-height: 100px;
-        margin-right: 10px;
+      .n-image {
       }
 
-      .vp-button {
-        background-color: #f44336;
-        color: white;
+      button {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        opacity: 0;
+
+        &:hover {
+          color: #f44336;
+        }
+      }
+
+      &:hover {
+        button {
+          opacity: 1;
+        }
       }
     }
   }

@@ -92,12 +92,12 @@ const optionList = computed((): StOptionItem[] => {
               onClick: async () => {
                 // 导出与当前角色的全部聊天记录
                 const list = allChatHistory.value.filter(
-                  (i) => i.cid === currentCharacter.value!.id
+                  (i) => i.cid === currentCharacter.value!.id,
                 )
                 window.$mcUtils.handleExportFile(
                   await window.$mcUtils.promptGetFileName(historyLabel),
                   JSON.stringify(list, null, 2),
-                  '.json'
+                  '.json',
                 )
               },
             },
@@ -111,7 +111,7 @@ const optionList = computed((): StOptionItem[] => {
                 allChatHistory.value = list || []
 
                 const oList = allChatHistory.value.filter(
-                  (i) => i.cid === currentCharacter.value!.id
+                  (i) => i.cid === currentCharacter.value!.id,
                 )
                 const mergedList = mergeIdData(oList, list)
 
@@ -192,7 +192,7 @@ const optionList = computed((): StOptionItem[] => {
 </script>
 
 <template>
-  <div class="ai-side-history">
+  <div class="ai-side-history vp-bg">
     <OptionUI class="ai-option-ui" :option-list="optionList" />
   </div>
 </template>

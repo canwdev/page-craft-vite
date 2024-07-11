@@ -60,7 +60,7 @@ const optionList = computed((): StOptionItem[] => {
                 window.$mcUtils.handleExportFile(
                   await window.$mcUtils.promptGetFileName('AICharacters'),
                   JSON.stringify(characterList.value, null, 2),
-                  '.json'
+                  '.json',
                 )
               },
             },
@@ -234,7 +234,7 @@ const formItems = computed((): MixedFormItems[] => {
                 }
               },
             },
-            '🖼️'
+            '🖼️',
           ),
       },
     ],
@@ -285,7 +285,7 @@ const handleSubmit = () => {
 </script>
 
 <template>
-  <div class="ai-side-characters">
+  <div class="ai-side-characters vp-bg">
     <OptionUI class="ai-option-ui" :option-list="optionList" />
 
     <n-modal

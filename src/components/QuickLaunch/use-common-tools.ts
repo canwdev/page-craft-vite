@@ -62,10 +62,11 @@ export const useCommonTools = () => {
       },
     },
     {
-      label: `🤯 ChatGPT (alt+g)`,
+      label: '🤯 ChatGPT',
       props: {
         onClick: async () => {
-          mainStore.isShowAiChat = !mainStore.isShowAiChat
+          mainStore.isShowQuickLaunch = false
+          await router.push({name: 'AiPage'})
         },
       },
     },
@@ -94,11 +95,10 @@ export const useCommonTools = () => {
             },
           },
           {
-            label: '🤯 AI Page',
+            label: `🤯 ChatGPT Window (alt+g)`,
             props: {
               onClick: async () => {
-                mainStore.isShowQuickLaunch = false
-                await router.push({name: 'AiPage'})
+                mainStore.isShowAiChat = !mainStore.isShowAiChat
               },
             },
           },
