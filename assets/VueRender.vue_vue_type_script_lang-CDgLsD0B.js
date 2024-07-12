@@ -1,0 +1,1 @@
+import{d as e}from"./index-B89s4h30.js";const r=e({name:"VueRender",props:{renderFn:{type:[Object,Function],required:!0}},render(){return"function"==typeof this.renderFn?this.renderFn():this.renderFn}});export{r as _};

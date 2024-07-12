@@ -1,0 +1,1 @@
+import{M as o,b as t,e as s}from"./index-B89s4h30.js";import{S as e}from"./index-Ccfj9-BI.js";const n=()=>{const{t:n}=o(),c=t();return{commonSettingsOptions:s((()=>[{label:n("common.common"),key:"common",children:[{label:n("msgs.focus_auto_action")+" (ctrl+alt+a)",subtitle:n("msgs.focus_auto_action_desc"),key:"enableFocusAutoAction",store:c,type:e.SWITCH}]}]))}};export{n as u};

@@ -1,1 +1,0 @@
-import{g as o,dz as t,m as s,cG as c}from"./index-DyP2wrK1.js";const e=()=>{const{t:e}=o(),n=t();return{commonSettingsOptions:s((()=>[{label:e("common.common"),key:"common",children:[{label:e("msgs.focus_auto_action")+" (ctrl+alt+a)",subtitle:e("msgs.focus_auto_action_desc"),key:"enableFocusAutoAction",store:n,type:c.SWITCH}]}]))}};export{e as u};
