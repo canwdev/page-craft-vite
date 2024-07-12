@@ -96,7 +96,7 @@ const {appendHistory, historyMenuOptions} = useOpenedHistory(
       return
     }
     await doOpen()
-  }
+  },
 )
 
 // 保存手动展开的文件夹keys
@@ -112,7 +112,7 @@ const recursiveReadDir = async (
   deep = 0,
   tree: DirTreeItem[] = [],
   parentDirs: string[] = [],
-  parentKey: string = ''
+  parentKey: string = '',
 ): Promise<DirTreeItem[]> => {
   let idx = 0
   for await (const entry of dirHandle.values()) {
@@ -134,7 +134,7 @@ const recursiveReadDir = async (
           entry,
           parentDirs,
           children,
-        })
+        }),
       )
       await recursiveReadDir(entry, deep + 1, children, [...parentDirs, entry.name], key + '_')
     } else {
@@ -150,7 +150,7 @@ const recursiveReadDir = async (
             entry,
             parentDirs,
             children: null,
-          })
+          }),
         )
       }
     }
@@ -187,7 +187,7 @@ const readJsonFiles = async (dirHandle, tree: DirTreeItem[] = []): Promise<DirTr
             entry,
             parentDirs: [],
             children: null,
-          })
+          }),
         )
       }
     }
@@ -282,7 +282,7 @@ const handleSaveFile = async () => {
       editingTextValue.value = JSON.stringify(
         exportI18nTreeJsonObj(i18nMainStore.translateTreeRoot),
         null,
-        2
+        2,
       )
     }
 

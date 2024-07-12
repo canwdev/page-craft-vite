@@ -1,28 +1,28 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import {useMainStore} from '@/store/main'
-import DialogTextTransformer from '@/components/VueI18nEditTool/TextConverter/DialogTextTransformer.vue'
-import QuickLaunchWindow from '@/components/QuickLaunch/QuickLaunchWindow.vue'
-import IframeBrowser from '@/components/IframeBrowser/index.vue'
 import {useSettingsStore} from '@/store/settings'
 
 import {mcUtils} from '@/utils/mc-utils'
 import {useRoute} from 'vue-router'
 import {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
-import ChatWindow from '@/components/AiTools/ChatWindow.vue'
 
 export default defineComponent({
   name: 'AppSub',
   components: {
-    ChatWindow,
-    IframeBrowser,
-    QuickLaunchWindow,
-    SystemSettings: defineAsyncComponent(
-      () => import('@/components/SystemSettings/SystemSettings.vue')
+    ChatWindow: defineAsyncComponent(() => import('@/components/AiTools/ChatWindow.vue')),
+    IframeBrowser: defineAsyncComponent(() => import('@/components/IframeBrowser/index.vue')),
+    QuickLaunchWindow: defineAsyncComponent(
+      () => import('@/components/QuickLaunch/QuickLaunchWindow.vue'),
     ),
-    DialogTextTransformer,
+    DialogTextTransformer: defineAsyncComponent(
+      () => import('@/components/VueI18nEditTool/TextConverter/DialogTextTransformer.vue'),
+    ),
+    SystemSettings: defineAsyncComponent(
+      () => import('@/components/SystemSettings/SystemSettings.vue'),
+    ),
     StylusToolsDialog: defineAsyncComponent(
-      () => import('@/components/StyleEditor/components/StylusToolsDialog.vue')
+      () => import('@/components/StyleEditor/components/StylusToolsDialog.vue'),
     ),
   },
   setup() {

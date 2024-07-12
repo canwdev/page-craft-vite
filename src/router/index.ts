@@ -1,6 +1,5 @@
 import {createRouter, createWebHashHistory} from 'vue-router'
 import WelcomePage from '@/views/HomePage.vue'
-import CraftPage from '@/views/CraftPage.vue'
 import i18n from '@/i18n/index'
 import {window as tauriWin} from '@tauri-apps/api'
 import {formatSiteTitle} from '@/router/router-utils'
@@ -27,7 +26,7 @@ let routes = [
   {
     path: '/craft',
     name: 'CraftPage',
-    component: CraftPage,
+    component: () => import('@/views/CraftPage.vue'),
     meta: {
       title: `Craft`,
     },
