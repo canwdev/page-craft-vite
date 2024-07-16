@@ -10,13 +10,13 @@ import {IMessageItem} from '@/components/AiTools/types/ai'
 export const tplBatchTranslator = (
   jsonTpl: any,
   iso: string,
-  translateContent: string
+  translateContent: string,
 ): GptMessage[] => {
   return [
     {
       role: 'system',
       content: `你是一个后台翻译服务，负责翻译多语言文案，帮我翻译并只返回json内容，不需要markdown格式。json格式为：\`${JSON.stringify(
-        jsonTpl
+        jsonTpl,
       )}\``,
     },
     {
@@ -33,13 +33,19 @@ export const tplBatchTranslator = (
  * @param iso 目标语言
  */
 export const tplConversationAssistant = (history: IMessageItem[], iso: string): GptMessage[] => {
+  const autoCutLongSentence = (text, maxLength = 200) => {
+    if (text.length > maxLength) {
+      return text.slice(0, maxLength) + '...'
+    }
+    return text
+  }
   return [
     {
       content: '你是一名擅长会话的助理，你需要将用户的会话总结为 10 个字以内的标题',
       role: 'system',
     },
     {
-      content: `${history.map((i) => `${i.role}:${i.content}`).join('\n')}
+      content: `${history.map((i) => `${i.role}:${autoCutLongSentence(i.content)}`).join('\n')}
 
 请总结上述对话为10个字以内的标题，不需要包含标点符号，输出语言为：${iso}`,
       role: 'user',

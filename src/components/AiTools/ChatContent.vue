@@ -272,6 +272,7 @@ const handleRetry = (item: IMessageItem, index) => {
         v-if="tempResponseChat"
         :is-dark="mainStore.isAppDarkMode"
         :character="currentCharacter"
+        :is-loading="!tempResponseChat.content"
       />
     </div>
     <div class="request-below">

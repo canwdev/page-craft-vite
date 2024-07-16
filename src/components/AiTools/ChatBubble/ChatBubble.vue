@@ -10,6 +10,7 @@ interface Props {
   allowDelete?: boolean
   allowEdit?: boolean
   allowRetry?: boolean
+  isLoading?: boolean
   character?: IAiCharacter
   item: IMessageItem
 }
@@ -17,6 +18,7 @@ interface Props {
 const emit = defineEmits(['delete', 'retry'])
 const props = withDefaults(defineProps<Props>(), {
   isDark: false,
+  isLoading: false,
   allowRetry: false,
   allowDelete: false,
 })
@@ -71,13 +73,20 @@ const isReply = computed(() => {
     </div>
 
     <div class="chat-body" :class="{isEditing}">
+      <div
+        v-if="isLoading"
+        class="chat-content markdown-body vp-bg"
+        :class="{'markdown-body-dark': isDark}"
+      >
+        <n-spin size="small"></n-spin>
+      </div>
       <MessageContent
-        v-if="item.content && typeof item.content === 'string'"
+        v-else-if="typeof item.content === 'string'"
         v-model:text="item.content"
         :is-dark="isDark"
         :is-editing="isEditing"
       />
-      <template v-else-if="item.content && typeof Array.isArray(item.content)">
+      <template v-else-if="typeof Array.isArray(item.content)">
         <template v-for="(sub, subIndex) in item.content as IMessageContent[]" :key="subIndex">
           <MessageContent
             v-if="sub.type === 'text'"
@@ -90,9 +99,6 @@ const isReply = computed(() => {
           </div>
         </template>
       </template>
-      <div v-else class="chat-content markdown-body vp-bg" :class="{'markdown-body-dark': isDark}">
-        <n-spin size="small"></n-spin>
-      </div>
 
       <div class="chat-actions">
         <div class="chat-date font-code" v-if="item.timestamp">

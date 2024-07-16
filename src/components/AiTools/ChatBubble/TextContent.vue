@@ -29,7 +29,7 @@ watchThrottled(
       renderMd()
     }
   },
-  {throttle: 100, trailing: true, immediate: true}
+  {throttle: 100, trailing: true, immediate: true},
 )
 watch(isEditing, (val) => {
   if (!val) {
@@ -40,6 +40,11 @@ watch(isEditing, (val) => {
 const handleClick = (event) => {
   const el = event.target
   if (el) {
+    if (el.tagName === 'A') {
+      el.target = '_blank'
+      return
+    }
+
     // 处理代码块复制
     const isCopyButton = el.classList.contains('hljs-copy-button')
     if (isCopyButton) {
