@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import ChatContent from '@/components/AiTools/ChatContent.vue'
-import SideCharacters from '@/components/AiTools/SideCharacters.vue'
-import SideHistory from '@/components/AiTools/SideHistory.vue'
+import ChatContent from '@/components/AITools/ChatContent.vue'
+import SideCharacters from '@/components/AITools/SideCharacters.vue'
+import SideHistory from '@/components/AITools/SideHistory.vue'
 </script>
 
 <template>

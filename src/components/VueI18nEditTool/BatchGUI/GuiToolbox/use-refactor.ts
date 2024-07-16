@@ -1,12 +1,12 @@
-import {useGpt} from '@/components/AiTools/use-gpt'
-import {ChatCompletion, GptMessage} from '@/components/AiTools/types/openai'
+import {useGpt} from '@/components/AITools/use-gpt'
+import {ChatCompletion, GptMessage} from '@/components/AITools/types/openai'
 import {
   PasteResult,
   useGuiToolbox,
 } from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox/use-gui-toolbox'
 import {useI18n} from 'vue-i18n'
 import {useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
-import {tplBatchTranslator} from '@/components/AiTools/types/prompts'
+import {tplBatchTranslator} from '@/components/AITools/types/prompts'
 
 export const useBatchTranslateRefactor = (emit) => {
   const {t: $t} = useI18n()
@@ -48,7 +48,7 @@ export const useBatchTranslateRefactor = (emit) => {
     const oldTranslatePath = i18nMainStore.translatePath
     const newTranslatePath = await window.$mcUtils.showInputPrompt({
       title: `${$t('i18n_tools.rename_keys')} (${$t(
-        'i18n_tools.in_all_languages'
+        'i18n_tools.in_all_languages',
       )}): ${oldTranslatePath}`,
       value: oldTranslatePath,
       positiveText: $t('actions.save_all'),

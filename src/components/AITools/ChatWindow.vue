@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
-import ChatGPT from '@/components/AiTools/ChatContent.vue'
+import ChatGPT from '@/components/AITools/ChatContent.vue'
 import {useVModel} from '@vueuse/core'
-import ChatRoot from '@/components/AiTools/ChatRoot.vue'
+import ChatRoot from '@/components/AITools/ChatRoot.vue'
 
 const emit = defineEmits(['update:visible'])
 interface Props {

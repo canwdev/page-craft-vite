@@ -5,9 +5,9 @@ import {useAiSettingsStore} from '@/store/ai-settings'
 import {formatDate, guid} from '@/utils'
 import {renderNDropdownMenu} from '@/components/CommonUI/renders'
 import {useI18n} from 'vue-i18n'
-import {IChatHistoryItem} from '@/components/AiTools/types/ai'
+import {IChatHistoryItem} from '@/components/AITools/types/ai'
 import {useMounted} from '@vueuse/core'
-import {mergeIdData, useAiCharacters} from '@/components/AiTools/use-ai-characters'
+import {mergeIdData, useAiCharacters} from '@/components/AITools/use-ai-characters'
 
 const {t: $t} = useI18n()
 const aisStore = useAiSettingsStore()

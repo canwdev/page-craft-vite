@@ -5,7 +5,7 @@ import {
   chatModels,
   GptMessage,
   OpenAIApiErrorCodeMessage,
-} from '@/components/AiTools/types/openai'
+} from '@/components/AITools/types/openai'
 import {useMainStore} from '@/store/main'
 import {blinkPanel} from '@/utils/anim'
 
@@ -32,7 +32,7 @@ export const useGpt = () => {
    */
   const requestChatCompletion = async (
     options: any = {},
-    streamCallback?: (text: string) => void
+    streamCallback?: (text: string) => void,
   ) => {
     const apiProxy = aisStore.openAiApiProxy || 'https://api.openai.com/v1'
 

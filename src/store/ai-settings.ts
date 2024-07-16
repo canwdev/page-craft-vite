@@ -1,4 +1,4 @@
-import {ChatModel} from '@/components/AiTools/types/openai'
+import {ChatModel} from '@/components/AITools/types/openai'
 
 interface IStore {
   // AI

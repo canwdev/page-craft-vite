@@ -1,9 +1,9 @@
 // 共享的数据库状态
 import {createGlobalState} from '@vueuse/core'
 import {useIDBKeyval} from '@vueuse/integrations/useIDBKeyval'
-import {IAiCharacter, IChatHistoryItem} from '@/components/AiTools/types/ai'
+import {IAiCharacter, IChatHistoryItem} from '@/components/AITools/types/ai'
 import iconAi from '@/assets/textures/chat-gpt-logo.svg'
-import {ChatModel} from '@/components/AiTools/types/openai'
+import {ChatModel} from '@/components/AITools/types/openai'
 import {useAiSettingsStore} from '@/store/ai-settings'
 
 /**
