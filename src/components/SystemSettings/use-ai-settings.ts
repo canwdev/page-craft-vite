@@ -1,7 +1,7 @@
 import {StOptionItem, StOptionType} from '@/components/CommonUI/OptionUI/enum'
 import {useI18n} from 'vue-i18n'
-import {useAiSettingsStore} from '@/store/ai-settings'
-import {chatModels} from '@/components/AiTools/types/openai'
+import {useAiSettingsStore} from '@/components/AI/hooks/ai-settings'
+import {chatModels} from '@/components/AI/types/openai'
 
 export const useAiSettings = () => {
   const {t: $t} = useI18n()

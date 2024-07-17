@@ -1,4 +1,4 @@
-import {ChatModel} from '@/components/AiTools/types/openai'
+import {ChatModel} from '@/components/AI/types/openai'
 
 export interface IMessageContent {
   type: 'text' | 'image_url'

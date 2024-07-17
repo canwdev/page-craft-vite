@@ -1,13 +1,13 @@
-import {GptMessage} from '@/components/AiTools/types/openai'
-import {IMessageItem} from '@/components/AiTools/types/ai'
+import {GptMessage} from '@/components/AI/types/openai'
+import {IMessageItem} from '@/components/AI/types/ai'
 
 /**
- * 批量翻译服务
+ * 获取json批量翻译提示词
  * @param jsonTpl 翻译目标模板
  * @param iso 当前语言iso
  * @param translateContent 要翻译的内容
  */
-export const tplBatchTranslator = (
+export const promptBatchJsonTranslator = (
   jsonTpl: any,
   iso: string,
   translateContent: string,
@@ -32,7 +32,7 @@ export const tplBatchTranslator = (
  * @param history 聊天历史记录
  * @param iso 目标语言
  */
-export const tplConversationAssistant = (history: IMessageItem[], iso: string): GptMessage[] => {
+export const promptConversationAssistant = (history: IMessageItem[], iso: string): GptMessage[] => {
   const autoCutLongSentence = (text, maxLength = 200) => {
     if (text.length > maxLength) {
       return text.slice(0, maxLength) + '...'

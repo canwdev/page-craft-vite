@@ -10,7 +10,7 @@ import {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
 export default defineComponent({
   name: 'AppSub',
   components: {
-    ChatWindow: defineAsyncComponent(() => import('@/components/AiTools/ChatWindow.vue')),
+    ChatWindow: defineAsyncComponent(() => import('@/components/AI/AIChat/ChatWindow.vue')),
     IframeBrowser: defineAsyncComponent(() => import('@/components/IframeBrowser/index.vue')),
     QuickLaunchWindow: defineAsyncComponent(
       () => import('@/components/QuickLaunch/QuickLaunchWindow.vue'),

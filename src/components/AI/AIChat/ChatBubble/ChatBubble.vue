@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import {copy} from '@/components/QuickLaunch/q-logics/utils'
 import {formatDate} from '@/utils'
-import {IAiCharacter, IMessageContent, IMessageItem} from '@/components/AiTools/types/ai'
+import {IAiCharacter, IMessageContent, IMessageItem} from '@/components/AI/types/ai'
 
-import MessageContent from '@/components/AiTools/ChatBubble/TextContent.vue'
+import MessageContent from '@/components/AI/AIChat/ChatBubble/TextContent.vue'
 
 interface Props {
   isDark?: boolean

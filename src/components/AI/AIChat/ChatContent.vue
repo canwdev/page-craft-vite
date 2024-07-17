@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import OptionUI from '@/components/CommonUI/OptionUI/index.vue'
-import {IMessageContent, IMessageItem} from '@/components/AiTools/types/ai'
+import {IMessageContent, IMessageItem} from '@/components/AI/types/ai'
 import '@/styles/markdown/github-markdown.css'
 import '@/styles/markdown/github-markdown-dark.css'
 import {useMainStore} from '@/store/main'
-import ChatItem from '@/components/AiTools/ChatBubble/ChatBubble.vue'
+import ChatItem from '@/components/AI/AIChat/ChatBubble/ChatBubble.vue'
 import {useStorage, useThrottleFn} from '@vueuse/core'
 import {useAiSettings} from '@/components/SystemSettings/use-ai-settings'
-import {useAiSettingsStore} from '@/store/ai-settings'
-import {useGpt} from '@/components/AiTools/use-gpt'
+import {useAiSettingsStore} from '@/components/AI/hooks/ai-settings'
+import {useGpt} from '@/components/AI/hooks/use-gpt'
 import {useI18n} from 'vue-i18n'
-import {useAiCharacters} from '@/components/AiTools/use-ai-characters'
-import {tplConversationAssistant} from '@/components/AiTools/types/prompts'
+import {useAiCharacters} from '@/components/AI/hooks/use-ai-characters'
+import {promptConversationAssistant} from '@/components/AI/utils/prompts'
 import {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
-import ImagePicker from '@/components/AiTools/ChatBubble/ImagePicker.vue'
+import ImagePicker from '@/components/AI/AIChat/ChatBubble/ImagePicker.vue'
 
 const {t: $t, locale} = useI18n()
 const aisStore = useAiSettingsStore()
@@ -112,7 +112,7 @@ const generateChatTitle = async () => {
     history.shift()
 
     currentHistory.value.title = await requestAiChatMessage(
-      tplConversationAssistant(history, locale.value),
+      promptConversationAssistant(history, locale.value),
     )
   } catch (error: any) {
     console.error(error)

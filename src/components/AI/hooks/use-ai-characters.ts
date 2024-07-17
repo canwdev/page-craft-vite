@@ -1,10 +1,10 @@
 // 共享的数据库状态
 import {createGlobalState} from '@vueuse/core'
 import {useIDBKeyval} from '@vueuse/integrations/useIDBKeyval'
-import {IAiCharacter, IChatHistoryItem} from '@/components/AiTools/types/ai'
+import {IAiCharacter, IChatHistoryItem} from '@/components/AI/types/ai'
 import iconAi from '@/assets/textures/chat-gpt-logo.svg'
-import {ChatModel} from '@/components/AiTools/types/openai'
-import {useAiSettingsStore} from '@/store/ai-settings'
+import {ChatModel} from '@/components/AI/types/openai'
+import {useAiSettingsStore} from '@/components/AI/hooks/ai-settings'
 
 /**
  * 自动覆盖相同id的数据，如果id不存在则添加
@@ -20,7 +20,7 @@ export const mergeIdData = (existingData: any[], newData: any[]) => {
   })
 
   // Convert the Map back to an array
-  return Array.from(dataMap.values())
+  return Array.from(dataMap.values()).map(toRaw)
 }
 
 const useAiIdbState = createGlobalState(() => {
