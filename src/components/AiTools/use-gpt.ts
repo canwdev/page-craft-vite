@@ -32,7 +32,7 @@ export const useGpt = () => {
    */
   const requestChatCompletion = async (
     options: any = {},
-    streamCallback?: (text: string) => void
+    streamCallback?: (text: string) => void,
   ) => {
     const apiProxy = aisStore.openAiApiProxy || 'https://api.openai.com/v1'
 
