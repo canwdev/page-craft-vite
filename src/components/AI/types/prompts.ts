@@ -1,5 +1,5 @@
-import {GptMessage} from '@/components/AITools/types/openai'
-import {IMessageItem} from '@/components/AITools/types/ai'
+import {GptMessage} from '@/components/AI/types/openai'
+import {IMessageItem} from '@/components/AI/types/ai'
 
 /**
  * 批量翻译服务

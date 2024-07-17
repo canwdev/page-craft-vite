@@ -1,11 +1,11 @@
-import {useAiSettingsStore} from '@/store/ai-settings'
+import {useAiSettingsStore} from '@/components/AI/hooks/ai-settings'
 import {
   ChatCompletion,
   ChatModel,
   chatModels,
   GptMessage,
   OpenAIApiErrorCodeMessage,
-} from '@/components/AITools/types/openai'
+} from '@/components/AI/types/openai'
 import {useMainStore} from '@/store/main'
 import {blinkPanel} from '@/utils/anim'
 

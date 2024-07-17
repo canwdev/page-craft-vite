@@ -1,10 +1,10 @@
 // 共享的数据库状态
 import {createGlobalState} from '@vueuse/core'
 import {useIDBKeyval} from '@vueuse/integrations/useIDBKeyval'
-import {IAiCharacter, IChatHistoryItem} from '@/components/AITools/types/ai'
+import {IAiCharacter, IChatHistoryItem} from '@/components/AI/types/ai'
 import iconAi from '@/assets/textures/chat-gpt-logo.svg'
-import {ChatModel} from '@/components/AITools/types/openai'
-import {useAiSettingsStore} from '@/store/ai-settings'
+import {ChatModel} from '@/components/AI/types/openai'
+import {useAiSettingsStore} from '@/components/AI/hooks/ai-settings'
 
 /**
  * 自动覆盖相同id的数据，如果id不存在则添加

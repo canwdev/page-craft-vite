@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import {StOptionItem} from '@/components/CommonUI/OptionUI/enum'
 import OptionUI from '@/components/CommonUI/OptionUI/index.vue'
-import {IAiCharacter} from '@/components/AITools/types/ai'
-import {ChatModel, chatModels} from '@/components/AITools/types/openai'
+import {IAiCharacter} from '@/components/AI/types/ai'
+import {ChatModel, chatModels} from '@/components/AI/types/openai'
 
 import iconUser from '@/assets/textures/user.png?url'
-import {useAiSettingsStore} from '@/store/ai-settings'
+import {useAiSettingsStore} from '@/components/AI/hooks/ai-settings'
 import {useI18n} from 'vue-i18n'
 import AutoFormNaive from '@/components/CommonUI/AutoFormNaive/index.vue'
 import {computed, ref} from 'vue'
@@ -13,7 +13,7 @@ import {AutoFormItemType, MixedFormItems} from '@/components/CommonUI/AutoFormNa
 import {FormItemRule, FormRules} from 'naive-ui'
 import {renderNDropdownMenu} from '@/components/CommonUI/renders'
 
-import {mergeIdData, useAiCharacters} from '@/components/AITools/use-ai-characters'
+import {mergeIdData, useAiCharacters} from '@/components/AI/hooks/use-ai-characters'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {base64Utils} from '@/utils/base64-utils'
 import {generateItemDragProps} from '@/components/CommonUI/OptionUI/Tools/item-drag'

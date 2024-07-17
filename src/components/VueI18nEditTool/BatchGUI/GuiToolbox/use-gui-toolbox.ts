@@ -1,6 +1,6 @@
 import {BatchListItem, useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
-import {useGpt} from '@/components/AITools/use-gpt'
-import {ChatCompletion, GptMessage} from '@/components/AITools/types/openai'
+import {useGpt} from '@/components/AI/hooks/use-gpt'
+import {ChatCompletion, GptMessage} from '@/components/AI/types/openai'
 import {readClipboardData} from '@/utils'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {useI18n} from 'vue-i18n'

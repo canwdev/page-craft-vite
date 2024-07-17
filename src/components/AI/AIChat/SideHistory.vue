@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import {StOptionItem} from '@/components/CommonUI/OptionUI/enum'
 import OptionUI from '@/components/CommonUI/OptionUI/index.vue'
-import {useAiSettingsStore} from '@/store/ai-settings'
+import {useAiSettingsStore} from '@/components/AI/hooks/ai-settings'
 import {formatDate, guid} from '@/utils'
 import {renderNDropdownMenu} from '@/components/CommonUI/renders'
 import {useI18n} from 'vue-i18n'
-import {IChatHistoryItem} from '@/components/AITools/types/ai'
+import {IChatHistoryItem} from '@/components/AI/types/ai'
 import {useMounted} from '@vueuse/core'
-import {mergeIdData, useAiCharacters} from '@/components/AITools/use-ai-characters'
+import {mergeIdData, useAiCharacters} from '@/components/AI/hooks/use-ai-characters'
 
 const {t: $t} = useI18n()
 const aisStore = useAiSettingsStore()

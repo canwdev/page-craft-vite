@@ -1,12 +1,12 @@
-import {useGpt} from '@/components/AITools/use-gpt'
-import {ChatCompletion, GptMessage} from '@/components/AITools/types/openai'
+import {useGpt} from '@/components/AI/hooks/use-gpt'
+import {ChatCompletion, GptMessage} from '@/components/AI/types/openai'
 import {
   PasteResult,
   useGuiToolbox,
 } from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox/use-gui-toolbox'
 import {useI18n} from 'vue-i18n'
 import {useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
-import {tplBatchTranslator} from '@/components/AITools/types/prompts'
+import {tplBatchTranslator} from '@/components/AI/types/prompts'
 
 export const useBatchTranslateRefactor = (emit) => {
   const {t: $t} = useI18n()
