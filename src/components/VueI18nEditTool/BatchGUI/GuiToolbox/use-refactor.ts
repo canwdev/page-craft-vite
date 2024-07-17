@@ -6,7 +6,7 @@ import {
 } from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox/use-gui-toolbox'
 import {useI18n} from 'vue-i18n'
 import {useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
-import {tplBatchTranslator} from '@/components/AI/types/prompts'
+import {promptBatchJsonTranslator} from '@/components/AI/utils/prompts'
 
 export const useBatchTranslateRefactor = (emit) => {
   const {t: $t} = useI18n()
@@ -96,7 +96,7 @@ export const useBatchTranslateRefactor = (emit) => {
           throw new Error($t('i18n_tools.no_need_for_transla'))
         }
 
-        const ret: GptMessage[] = tplBatchTranslator(arr, iso, find.value)
+        const ret: GptMessage[] = promptBatchJsonTranslator(arr, iso, find.value)
 
         console.log('[buildAiPrompt]', ret)
         return ret

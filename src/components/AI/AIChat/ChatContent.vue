@@ -11,7 +11,7 @@ import {useAiSettingsStore} from '@/components/AI/hooks/ai-settings'
 import {useGpt} from '@/components/AI/hooks/use-gpt'
 import {useI18n} from 'vue-i18n'
 import {useAiCharacters} from '@/components/AI/hooks/use-ai-characters'
-import {tplConversationAssistant} from '@/components/AI/types/prompts'
+import {promptConversationAssistant} from '@/components/AI/utils/prompts'
 import {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
 import ImagePicker from '@/components/AI/AIChat/ChatBubble/ImagePicker.vue'
 
@@ -112,7 +112,7 @@ const generateChatTitle = async () => {
     history.shift()
 
     currentHistory.value.title = await requestAiChatMessage(
-      tplConversationAssistant(history, locale.value),
+      promptConversationAssistant(history, locale.value),
     )
   } catch (error: any) {
     console.error(error)

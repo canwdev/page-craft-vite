@@ -116,7 +116,7 @@ const optionList = computed((): StOptionItem[] => {
                 const mergedList = mergeIdData(oList, list)
 
                 deleteCurrentAllHistory()
-                allChatHistory.value = mergedList.map(toRaw)
+                allChatHistory.value = mergedList
 
                 window.$message.success('Import success!')
               },

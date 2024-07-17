@@ -20,7 +20,7 @@ export const mergeIdData = (existingData: any[], newData: any[]) => {
   })
 
   // Convert the Map back to an array
-  return Array.from(dataMap.values())
+  return Array.from(dataMap.values()).map(toRaw)
 }
 
 const useAiIdbState = createGlobalState(() => {
