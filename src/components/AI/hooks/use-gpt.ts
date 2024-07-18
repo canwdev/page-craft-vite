@@ -112,10 +112,11 @@ export const useGpt = () => {
   }
 
   // 封装，直接获取AI回答
-  const requestAiChatMessage = async (messages: GptMessage[]) => {
+  const requestAiChatMessage = async (messages: GptMessage[], optionsOverride: any = {}) => {
     const completion = (await requestChatCompletion({
       messages,
       stream: false,
+      ...optionsOverride,
     })) as ChatCompletion
     const message: GptMessage = completion.choices[0]?.message || {}
     // console.log('message', message)

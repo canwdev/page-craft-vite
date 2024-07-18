@@ -14,6 +14,7 @@ import {useAiCharacters} from '@/components/AI/hooks/use-ai-characters'
 import {promptConversationAssistant} from '@/components/AI/utils/prompts'
 import {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
 import ImagePicker from '@/components/AI/AIChat/ChatBubble/ImagePicker.vue'
+import {ChatModel} from '@/components/AI/types/openai'
 
 const {t: $t, locale} = useI18n()
 const aisStore = useAiSettingsStore()
@@ -111,7 +112,9 @@ const generateChatTitle = async () => {
     // 移除系统提示词
     history.shift()
 
-    currentHistory.value.title = await requestAiChatMessage(promptConversationAssistant(history))
+    currentHistory.value.title = await requestAiChatMessage(promptConversationAssistant(history), {
+      model: ChatModel.GPT35Turbo,
+    })
   } catch (error: any) {
     console.error(error)
   }
