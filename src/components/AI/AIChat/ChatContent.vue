@@ -111,9 +111,7 @@ const generateChatTitle = async () => {
     // 移除系统提示词
     history.shift()
 
-    currentHistory.value.title = await requestAiChatMessage(
-      promptConversationAssistant(history, locale.value),
-    )
+    currentHistory.value.title = await requestAiChatMessage(promptConversationAssistant(history))
   } catch (error: any) {
     console.error(error)
   }
