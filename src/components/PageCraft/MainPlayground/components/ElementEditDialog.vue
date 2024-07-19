@@ -166,8 +166,10 @@ export default defineComponent({
         </n-switch>
 
         <n-space size="small">
-          <button class="vp-button" @click="handleCancel">{{ $t('actions.cancel') }}</button>
-          <button class="vp-button primary" @click="autoFormRef.submitForm">
+          <button type="button" class="vp-button" @click="handleCancel">
+            {{ $t('actions.cancel') }}
+          </button>
+          <button type="submit" class="vp-button primary">
             {{ $t('actions.ok') }}
           </button>
         </n-space>

@@ -32,7 +32,7 @@ export default defineComponent({
           emit('onInvalidForm')
           return
         }
-        // console.log('onSubmit', formSchema.value.model)
+        console.log('onSubmit', formSchema.value.model)
         emit('onSubmit', formSchema.value.model)
       })
     }
@@ -62,7 +62,7 @@ export default defineComponent({
     :rules="formSchema.rules"
     :label-position="formSchema.labelPosition"
     class="auto-form-naive"
-    @submit.prevent
+    @submit.prevent="submitForm"
     size="small"
     v-bind="formSchema.props"
   >

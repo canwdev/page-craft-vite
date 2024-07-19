@@ -3,6 +3,7 @@
 ## v1.7.1
 
 - [x] optimize: 优化AI使用体验
+- [x] fix: element edit
 
 ## v1.7.0
 

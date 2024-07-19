@@ -100,10 +100,21 @@ export const getCustomFormItems = (el: HTMLElement | null): MixedFormItems[] => 
 }
 
 export const updateHtmlElement = (el: HTMLElement, data: ElementEditData) => {
+  // console.log('[updateHtmlElement]', el, data)
+  if (!data.customProps) {
+    console.error('[updateHtmlElement] data.customProps is not exist!')
+    return
+  }
+
   if (el.outerHTML !== data.outerHTML) {
     el.outerHTML = data.outerHTML
   } else if (el.innerHTML !== data.innerHTML) {
     el.innerHTML = data.innerHTML
+  }
+
+  if (!el.outerHTML) {
+    console.warn('[updateHtmlElement] data.outerHTML is empty!')
+    return
   }
   const customProps = elCustomPropsMap[el?.tagName.toLowerCase()] || defaultCustomProps
   if (customProps) {
