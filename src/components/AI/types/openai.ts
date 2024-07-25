@@ -6,6 +6,7 @@ export enum ChatModel {
   GPT35Turbo = 'gpt-3.5-turbo',
   GPT4Turbo = 'gpt-4-turbo',
   GPT4o = 'gpt-4o',
+  GPT4oMini = 'gpt-4o-mini',
 }
 
 export const OpenAIApiErrorCodeMessage: Record<string, string> = {
@@ -33,6 +34,12 @@ export const chatModels = [
   {
     label: 'GPT-4o',
     value: ChatModel.GPT4o,
+    tokens: 128_000,
+    vision: true,
+  },
+  {
+    label: 'GPT-4o Mini',
+    value: ChatModel.GPT4oMini,
     tokens: 128_000,
     vision: true,
   },

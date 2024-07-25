@@ -83,7 +83,7 @@ ${code}
       isStaticPlugin = false,
       // 是否为预制插件
       isPresetPlugin = false,
-    } = {}
+    } = {},
   ) => {
     // 区分预制和自定义插件，提升自定义插件刷新性能
     const addStaticPlugin = (plugin: QuickOptionItem) => {
@@ -291,7 +291,7 @@ ${code}
                     window.$mcUtils.handleExportFile(
                       await window.$mcUtils.promptGetFileName('QuickLaunchCustomPlugins'),
                       JSON.stringify(customPluginsStorage.value, null, 2),
-                      '.json'
+                      '.json',
                     )
                   },
                 },

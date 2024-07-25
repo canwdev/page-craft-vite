@@ -11,7 +11,7 @@ import {useThemeOptions} from '@/components/CommonUI/ViewPortWindow/utils/use-th
 import {formatSiteTitle} from '@/router/router-utils'
 import LanguageChooser from '@/i18n/LanguageChooser.vue'
 import {useMainStore} from '@/store/main'
-import {useAiSettings} from '@/components/SystemSettings/use-ai-settings'
+import {useAiSettings} from '@/components/AI/hooks/use-ai-settings'
 import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
 import {useVModel} from '@vueuse/core'
 

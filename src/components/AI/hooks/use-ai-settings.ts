@@ -33,6 +33,11 @@ export const useAiSettings = () => {
             store: aisStore,
             type: StOptionType.SELECT,
             options: chatModels,
+            props: {
+              // 允许动态创建项
+              tag: true,
+              filterable: true,
+            },
           },
           {
             label: $t('ai.qi_yong_liu_shi_xian'),

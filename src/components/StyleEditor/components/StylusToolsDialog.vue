@@ -29,9 +29,16 @@ export default defineComponent({
 
     function doFormat() {
       try {
-        textOutput.value = window.stylusSupermacyFormat(textInput.value, {
+        let result = window.stylusSupermacyFormat(textInput.value, {
           tabStopChar: '  ',
+          selectorSeparator: ', ',
+          alwaysUseZeroWithoutUnit: true,
         })
+
+        result = result.replace(/>>>/g, '::v-deep')
+        result = result.replace(/\.styl/g, '.scss')
+
+        textOutput.value = result
         errorText.value = ''
       } catch (e: any) {
         console.error(e)
@@ -69,19 +76,12 @@ export default defineComponent({
       doClear,
       showDemo() {
         textInput.value = `@require "./file.styl"
-/**
-multi-line comment
-*/
-.class1, .class2
-  padding 1px // comment
-  margin 0px 5px 0px 5px
-  color alpha(red, 0.5)
-  if (!condition)
-    @extend .class3
-  else
-    background blue
-  block =
-    display none`
+.a,.b {
+  color  red
+  >>> .c {
+    border 1px solid currentColor
+  }
+}`
         doFormat()
       },
       handleAutoPasteCopy,
@@ -147,10 +147,10 @@ multi-line comment
               placeholder="Text Input"
             ></n-input>-->
             <div class="input-tip">Input Stylus Code</div>
-            <VueMonaco language="styl" v-model="textInput" class="input-text" />
+            <VueMonaco language="stylus" v-model="textInput" class="input-text" />
           </div>
           <div class="input-wrapper">
-            <div class="input-tip">Formatted</div>
+            <div class="input-tip">Formatted (SCSS)</div>
             <VueMonaco v-model="textOutput" language="scss" class="input-text" />
           </div>
         </div>

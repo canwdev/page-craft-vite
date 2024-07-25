@@ -6,7 +6,7 @@ import '@/styles/markdown/github-markdown-dark.css'
 import {useMainStore} from '@/store/main'
 import ChatItem from '@/components/AI/AIChat/ChatBubble/ChatBubble.vue'
 import {useStorage, useThrottleFn} from '@vueuse/core'
-import {useAiSettings} from '@/components/SystemSettings/use-ai-settings'
+import {useAiSettings} from '@/components/AI/hooks/use-ai-settings'
 import {useAiSettingsStore} from '@/components/AI/hooks/ai-settings'
 import {useGpt} from '@/components/AI/hooks/use-gpt'
 import {useI18n} from 'vue-i18n'
@@ -294,15 +294,14 @@ const handleRetry = (item: IMessageItem, index) => {
             </template>
             <OptionUI style="max-width: 400px" :option-list="aiSettingsOptions" />
           </n-popover>
-
-          {{ currentCharacter.model }}
-
-          <template v-if="isEnableVision">
-            <ImagePicker v-model:images="imageList" />
-          </template>
         </div>
 
         <div class="action-side">
+          <template v-if="isEnableVision">
+            <ImagePicker v-model:images="imageList" />
+          </template>
+          {{ currentCharacter.model }}
+
           <n-popconfirm @positive-click="resetChatHistory">
             <template #trigger>
               <button class="vp-button">{{ $t('actions.clear') }}</button>

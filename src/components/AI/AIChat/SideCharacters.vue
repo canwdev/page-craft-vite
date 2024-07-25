@@ -279,6 +279,11 @@ const formItems = computed((): MixedFormItems[] => {
         options: chatModels,
         key: 'model',
         label: $t('ai.model'),
+        props: {
+          // 允许动态创建项
+          tag: true,
+          filterable: true,
+        },
       },
     ],
     {
