@@ -4,7 +4,7 @@
 
 - [x] fix: element edit
 - [x] optimize: 优化AI使用体验
-- [x] optimize: 其他细节优化
+- [x] optimize: 交互细节优化
 
 ## v1.7.0
 

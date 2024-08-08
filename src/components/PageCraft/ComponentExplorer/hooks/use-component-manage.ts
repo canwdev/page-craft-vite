@@ -82,16 +82,27 @@ export const useComponentManage = (options: Opts) => {
     })
   }
 
+  // 检查文件名是否重复
+  const checkNameExist = (name) => {
+    console.log(name, files.value)
+    if (files.value.some((f) => f.name === name)) {
+      window.$message.error('Filename already exists, please rename it!')
+      return true
+    }
+  }
   const handleCreateComponent = async () => {
     try {
-      isLoading.value = true
-
       let name = await inputPrompt(
         $t('actions.add_component'),
         `Component${idx}`,
-        $t('msgs.please_enter_the_nam')
+        $t('msgs.please_enter_the_nam'),
       )
+      const folderName = `${name}.comp`
+      if (checkNameExist(folderName)) {
+        return
+      }
 
+      isLoading.value = true
       // 设置默认HTML、SCSS代码
       const className = changeCase.paramCase(name || 'my-component')
       const id = guid()
@@ -103,19 +114,13 @@ export const useComponentManage = (options: Opts) => {
         style: `.${className} {\n}\n`,
       })
 
-      const folderName = `${name}.comp`
       idx++
 
       emit('refresh')
 
       setTimeout(() => {
         // 设置当前选中的组件
-        settingsStore.curCompInStore = {
-          id,
-          title: name,
-          path: normalizePath(basePath.value + '/' + folderName),
-          basePath: basePath.value,
-        }
+        document.querySelector(`.mc-comp-item[data-name="${folderName}"]`)?.click()
       }, 100)
     } finally {
       isLoading.value = false
@@ -260,7 +265,7 @@ export const useComponentMigrationToV2 = (emit) => {
       // 读取详细信息并组成组件列表
       return createComponentBlockItem(
         name,
-        JSON.parse(loadCompV1Storage(LsKeys.COMP_META, name) || '{}')
+        JSON.parse(loadCompV1Storage(LsKeys.COMP_META, name) || '{}'),
       )
     })
 
@@ -273,7 +278,7 @@ export const useComponentMigrationToV2 = (emit) => {
 
       const folderName = `${title}.comp`
       const subDirPath = normalizePath(
-        (stared ? '/@Migrated/Stared' : '/@Migrated') + '/' + folderName
+        (stared ? '/@Migrated/Stared' : '/@Migrated') + '/' + folderName,
       )
       const meta: IComponentMeta = {
         id: guid(),

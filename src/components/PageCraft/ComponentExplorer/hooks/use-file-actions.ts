@@ -56,12 +56,23 @@ export const useComponentFileActions = ({
     emit,
   })
 
+  // 检查文件名是否重复
+  const checkNameExist = (name) => {
+    if (files.value.some((f) => f.name === name)) {
+      window.$message.error('Filename already exists, please rename it!')
+      return true
+    }
+  }
+
   const handleCreateFolder = async () => {
     try {
       const name = await showInputPrompt({
         title: 'Create Folder',
         value: `folder_${moment(new Date()).format('YYYYMMDD_HHmmss')}`,
       })
+      if (checkNameExist(name)) {
+        return
+      }
       isLoading.value = true
       await fsWebApi.createDir({path: normalizePath(basePath.value + '/' + name)})
       emit('refresh')
@@ -74,9 +85,13 @@ export const useComponentFileActions = ({
     try {
       const item: IEntry = selectedItems.value[0]
       const name = await showInputPrompt({
-        title: 'Rename',
+        title: $t('actions.rename'),
         value: item.name,
       })
+      if (checkNameExist(name)) {
+        return
+      }
+
       isLoading.value = true
       await fsWebApi.renameEntry({
         fromPath: normalizePath(basePath.value + '/' + item.name),
@@ -133,8 +148,8 @@ export const useComponentFileActions = ({
   // 导入所有json
   const doImportAll = async () => {
     try {
-      isLoading.value = true
       const list = await window.$mcUtils.handleImportJson()
+      isLoading.value = true
       await importComponentAllJson(list)
       window.$message.success('Import success!')
       emit('refresh')
@@ -164,21 +179,27 @@ export const useComponentFileActions = ({
   // 创建组件副本
   const duplicateComponent = async (item: IComponentItem) => {
     try {
+      const name = await showInputPrompt({
+        title: $t('actions.duplicate'),
+        value: item.name.replace(regComponentV2, '') + '-1.comp',
+      })
+      if (checkNameExist(name)) {
+        return
+      }
       isLoading.value = true
 
       const fromPath = normalizePath(basePath.value + '/' + item.name)
-      const toPathAbs = normalizePath(
-        basePath.value + '/' + item.name.replace(regComponentV2, '') + '-1.comp'
-      )
+      const toPathAbs = normalizePath(basePath.value + '/' + name)
 
       await fsWebApi.copyPaste({
         fromPaths: [fromPath],
         toPathAbs,
       })
 
+      const id = guid()
       const meta: IComponentMeta = {
         ...item.meta,
-        id: guid(),
+        id,
         timeCreated: Date.now(),
       }
 
@@ -186,6 +207,11 @@ export const useComponentFileActions = ({
       await createFile(toPathAbs, 'index.json', JSON.stringify(meta))
 
       emit('refresh')
+
+      setTimeout(() => {
+        // 设置当前选中的组件
+        document.querySelector(`.mc-comp-item[data-name="${name}"]`)?.click()
+      }, 100)
     } finally {
       isLoading.value = false
     }
@@ -302,7 +328,7 @@ export const useComponentFileActions = ({
                     const handle = await findHandleByPath(
                       fsWebApi.getRoot(),
                       basePath.value,
-                      'directory'
+                      'directory',
                     )
                     if (!handle) {
                       console.error('handle not found')
@@ -384,7 +410,7 @@ export const useComponentFileActions = ({
         props: {onClick: handleCopy},
       },
       isComponent && {
-        label: `📄 ${$t('actions.duplicate')}`,
+        label: `📄 ${$t('actions.duplicate')}...`,
         props: {
           onClick: () => {
             duplicateComponent(item)
@@ -422,6 +448,12 @@ export const useComponentFileActions = ({
         label: '❌ ' + $t('actions.delete'),
         props: {onClick: confirmDelete},
         disabled: isCurrentComp,
+      },
+      isCurrentComp && {
+        html: `<div style="font-size: 12px; max-width: 150px; word-break: break-word">${$t(
+          'msgs.bu_fen_xuan_xiang_bu',
+        )}</div>`,
+        disabled: true,
       },
     ].filter(Boolean)
   })

@@ -172,7 +172,8 @@
     "refresh_page": "Refresh the page?",
     "recommend_download_client_desc": "⚡ Fully open source, offline available\n💡 Built using Tauri technology, lightweighted to just 10MB\n🚀 Invokes the system's native WebView2, faster and more stable\n💽 The exe installation package can be extracted directly run, no need to install",
     "recommend_download_client_title": "Recommended for downloading the desktop client",
-    "error_name_duplicat": "Error: Name duplicated!"
+    "error_name_duplicat": "Error: Name duplicated!",
+    "bu_fen_xuan_xiang_bu": "Some options are disabled,<br>Please unselect the current component before operating."
   },
   "i18n_tools": {
     "locate_translate_pa": "Locate Translate Path",

@@ -12,7 +12,7 @@ export const renderMoreIconButton = () =>
         e.stopPropagation()
       },
     },
-    () => h(NIcon, {size: '20'}, () => h(MoreVertical20Regular))
+    () => h(NIcon, {size: '20'}, () => h(MoreVertical20Regular)),
   )
 
 export const renderNDropdownMenu = (options) =>
@@ -24,5 +24,5 @@ export const renderNDropdownMenu = (options) =>
       keyField: 'label',
       options,
     },
-    renderMoreIconButton
+    renderMoreIconButton,
   )

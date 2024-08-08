@@ -172,7 +172,8 @@
     "refresh_page": "ページをリフレッシュする？",
     "recommend_download_client_desc": "⚡ 完全オープンソース、オフライン利用可能\n💡 Tauriテクノロジーを使用して構築され、10MB以下の軽量化\n🚀 システムのネイティブWebview2を呼び出し、高速で安定したもの\n💽 exeインストールパッケージは、直接実行可能、インストール不要",
     "recommend_download_client_title": "デスクトップクライアントをダウンロードすることをおすすめします",
-    "error_name_duplicat": "エラー：名前が重複しています！"
+    "error_name_duplicat": "エラー：名前が重複しています！",
+    "bu_fen_xuan_xiang_bu": "一部のオプションが無効になっています。<br>操作する前に現在のコンポーネントを選択解除してください。"
   },
   "i18n_tools": {
     "locate_translate_pa": "翻訳パスを特定する",

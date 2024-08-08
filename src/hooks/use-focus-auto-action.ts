@@ -1,6 +1,7 @@
 import {useAnimate, useEventListener, useWindowFocus} from '@vueuse/core'
 import {useSettingsStore} from '@/store/settings'
 import {isDev} from '@/enum'
+import {useI18n} from 'vue-i18n'
 
 function isElementInViewport(el) {
   const rect = el.getBoundingClientRect()
@@ -13,6 +14,7 @@ function isElementInViewport(el) {
 }
 
 export const useFocusAutoAction = () => {
+  const {t: $t} = useI18n()
   const settingsStore = useSettingsStore()
   // 视口聚焦后自动操作
   const lastClickedEl = shallowRef<any>(null)
@@ -26,7 +28,7 @@ export const useFocusAutoAction = () => {
         useAnimate(
           el,
           [{transform: 'scale(1)'}, {transform: 'scale(0.8)'}, {transform: 'scale(1)'}],
-          500
+          500,
         )
       }
     }
@@ -37,8 +39,8 @@ export const useFocusAutoAction = () => {
       if (!val) {
         lastClickedEl.value = null
       }
-      window.$message.info(`视口聚焦后自动操作: ${val ? 'ON' : 'OFF'}`)
-    }
+      window.$message.success(`${$t('msgs.focus_auto_action')}: ${val ? 'ON ⚡' : 'OFF ✖️'}`)
+    },
   )
   useEventListener(document, 'keydown', (event) => {
     const key = event.key.toLowerCase()

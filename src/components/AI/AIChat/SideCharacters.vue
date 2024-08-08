@@ -11,7 +11,7 @@ import AutoFormNaive from '@/components/CommonUI/AutoFormNaive/index.vue'
 import {computed, ref} from 'vue'
 import {AutoFormItemType, MixedFormItems} from '@/components/CommonUI/AutoFormNaive/enum'
 import {FormItemRule, FormRules} from 'naive-ui'
-import {renderNDropdownMenu} from '@/components/CommonUI/renders'
+import {renderNDropdownMenu} from '@/components/CommonUI/OptionUI/Tools/renders'
 
 import {mergeIdData, useAiCharacters} from '@/components/AI/hooks/use-ai-characters'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
