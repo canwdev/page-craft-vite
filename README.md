@@ -28,6 +28,12 @@ PageCraft 是一个网页快速生成工具，可以帮助您快速创建页面�
   - Vue-i18n JSON 编辑器。
   - Vue-i18n 多语言文件夹批量处理工具。
 
+## 在 Linux 下使用
+
+1. 安装 nginx: `apt install nginx`
+2. 下载 [Releases](https://github.com/canwdev/page-craft-vite/releases) 文件 `dist.zip` 并解压到 `/var/www/html/page-craft-vite/`
+3. 访问 `http://localhost/page-craft-vite`
+
 ## 提示
 
 避免像 `<h1>TestH1<h2>TestH2</h2></h1>` 这样嵌套 HTML 元素。虽然可以在编辑器中插入，但它不符合 HTML 规范，导入后也无法复原。

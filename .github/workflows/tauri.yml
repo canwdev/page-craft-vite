@@ -5,10 +5,10 @@ name: Tauri Auto Build
 #  pull_request:
 #    branches: [ "tauri-auto-build" ]
 
-on:
-  push:
-    tags:
-      - 'v*'
+#on:
+#  push:
+#    tags:
+#      - 'v*'
 
 jobs:
   release:

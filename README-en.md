@@ -27,6 +27,12 @@ PageCraft is a web page rapid generation tool that allows you to quickly create 
     - Vue-i18n JSON editor.
     - Vue-i18n folder batch processing tool.
 
+## For Linux users
+
+1. Install nginx: `apt install nginx`
+2. Download [Releases](https://github.com/canwdev/page-craft-vite/releases) `dist.zip` and unzip its contents to `/var/www/html/page-craft-vite/`
+3. Visit `http://localhost/page-craft-vite`
+
 ## Tips
 
 Avoid nesting HTML elements like `<h1>TestH1<h2>TestH2</h2></h1>`. Although it can be inserted in the editor, it does not conform to the HTML specification and cannot be restored after importing.
