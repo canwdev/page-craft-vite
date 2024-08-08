@@ -4,8 +4,9 @@
 name: Auto Build Release
 
 permissions:
-  contents: write
-  releases: write
+  contents: write  # 允许写入内容
+  packages: write  # 如果您正在使用 GitHub Packages
+  discussions: write  # 如果您正在使用讨论
 
 #on:
 # push:
