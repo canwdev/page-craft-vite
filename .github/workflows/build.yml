@@ -29,6 +29,9 @@ jobs:
       - name: Build
         run: yarn install && yarn build
 
+      - name: Zip Dist Directory
+        run: zip -r dist.zip ./dist
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -44,6 +47,6 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist
+          asset_path: ./dist.zip  # 修改为 zip 文件路径
           asset_name: dist.zip
           asset_content_type: application/zip
