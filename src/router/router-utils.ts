@@ -1,7 +1,7 @@
 import pkg from '../../package.json'
 
 export const formatSiteTitle = (t?: string) => {
-  const title = `PageCraft Toolbox v${pkg.version}`
+  const title = `v${pkg.version} PageCraft Toolbox`
   if (!t) {
     return title
   }

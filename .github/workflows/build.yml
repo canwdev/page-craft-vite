@@ -40,6 +40,12 @@ jobs:
       - name: Build
         run: yarn install --frozen-lockfile && yarn build
 
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@4.1.1
+        with:
+          branch: gh-pages
+          folder: dist
+
       - name: Zip Dist Directory
         run: zip -r dist.zip ./dist
 

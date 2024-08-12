@@ -114,7 +114,7 @@ router.afterEach((to, _, failure) => {
 
   if (window.__TAURI__) {
     let curWin = tauriWin.getCurrent()
-    console.log('curWin', curWin)
+    // console.log('curWin', curWin)
     curWin.setTitle(document.title)
   }
 })
