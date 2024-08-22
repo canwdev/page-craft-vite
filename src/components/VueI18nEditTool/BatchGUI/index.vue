@@ -13,12 +13,7 @@ useGlobalBusOn(GlobalEvents.I18N_BATCH_GUI_GET_SUBS, (resolve) => {
 </script>
 
 <template>
-  <div class="batch-translate">
-    <transition name="fade">
-      <div class="os-loading-container _absolute" v-if="isLoading">
-        <n-spin />
-      </div>
-    </transition>
+  <div class="batch-translate" v-loading="isLoading">
 
     <div class="vp-bg t-action-row">
       <span class="font-code">

@@ -25,18 +25,12 @@ watch(
     }
     currentTab.value = f.rootDir.key
   },
-  {immediate: true}
+  {immediate: true},
 )
 </script>
 
 <template>
-  <div class="batch-text-editor">
-    <transition name="fade">
-      <div class="os-loading-container _absolute" v-if="isLoading">
-        <n-spin />
-      </div>
-    </transition>
-
+  <div class="batch-text-editor" v-loading="isLoading">
     <div class="editor-tabs-wrap">
       <n-tabs size="small" type="card" animated v-model:value="currentTab">
         <n-tab-pane

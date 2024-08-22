@@ -78,7 +78,7 @@ const isReply = computed(() => {
         class="chat-content markdown-body vp-bg"
         :class="{'markdown-body-dark': isDark}"
       >
-        <n-spin size="small"></n-spin>
+        Loading...
       </div>
       <MessageContent
         v-else-if="typeof item.content === 'string'"

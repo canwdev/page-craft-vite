@@ -1,5 +1,5 @@
-import {useRemoteOptions} from '@/components/CommonUI/QuickOptions/utils/use-remote-options'
-import {QuickOptionItem} from '@/components/CommonUI/QuickOptions/enum'
+import {useRemoteOptions} from '@/components/CanUI/packages/QuickOptions/utils/use-remote-options'
+import {QuickOptionItem} from '@/components/CanUI/packages/QuickOptions/enum'
 import {ISnippetItem, monacoStyleGlobal} from './use-monaco-helper'
 import {useStorage} from '@vueuse/core'
 import {StyleEditorKeys} from '@/components/StyleEditor/enum'
@@ -36,7 +36,7 @@ export const useSnippets = ({insertCode, vueMonacoRef}) => {
 
   const traverseCustomOptionsWithSuggestions = (
     list: ISnippetItem[] = [],
-    result: QuickOptionItem[] = []
+    result: QuickOptionItem[] = [],
   ) => {
     list.forEach((i: any) => {
       result.push({
@@ -140,7 +140,7 @@ export const useSnippets = ({insertCode, vueMonacoRef}) => {
                 window.$mcUtils.handleExportFile(
                   await window.$mcUtils.promptGetFileName('ScssSnippets'),
                   JSON.stringify(customSnippets.value, null, 2),
-                  '.json'
+                  '.json',
                 )
               },
             },

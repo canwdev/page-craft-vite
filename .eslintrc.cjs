@@ -1,26 +1,17 @@
+/* eslint-env node */
+require('@rushstack/eslint-patch/modern-module-resolution')
+
 module.exports = {
   root: true,
-  "env": {
-    "browser": true,
-    "es2021": true
-  },
-  "extends": [
-    'plugin:vue/vue3-strongly-recommended',
-    "plugin:vue/vue3-essential",
-    'plugin:prettier/recommended',
+  'extends': [
+    'plugin:vue/vue3-essential',
+    'eslint:recommended',
+    '@vue/eslint-config-typescript',
+    '@vue/eslint-config-prettier'
   ],
-  "parserOptions": {
-    "ecmaVersion": "latest",
-    "parser": "@typescript-eslint/parser",
-    "sourceType": "module",
-    ecmaFeatures: {
-      jsx: true,
-    },
+  parserOptions: {
+    ecmaVersion: 'latest'
   },
-  "plugins": [
-    "vue",
-    "@typescript-eslint"
-  ],
   "rules": {
     'no-console': 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
@@ -35,7 +26,6 @@ module.exports = {
     'vue/no-unused-components': 'warn',
     'vue/no-setup-props-destructure': 'warn',
     '@typescript-eslint/no-empty-interface': 'warn',
-    'vue/multi-word-component-names': 'warn',
     'vue/component-tags-order': [
       'error',
       {

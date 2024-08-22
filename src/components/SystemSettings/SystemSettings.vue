@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import {defineComponent} from 'vue'
-import OptionUI from '@/components/CommonUI/OptionUI/index.vue'
+import OptionUI from '@/components/CanUI/packages/OptionUI/index.vue'
 import {useI18n} from 'vue-i18n'
-import {StOptionItem, StOptionType} from '@/components/CommonUI/OptionUI/enum'
+import {StOptionItem, StOptionType} from '@/components/CanUI/packages/OptionUI/enum'
 import {useSettingsStore} from '@/store/settings'
 import {ldThemeOptions, LdThemeType} from '@/enum/settings'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {useCommonSettings} from '@/components/SystemSettings/use-common-settings'
-import {useThemeOptions} from '@/components/CommonUI/ViewPortWindow/utils/use-theme'
+import {useThemeOptions} from '@/components/CanUI/packages/ViewPortWindow/utils/use-theme'
 import {formatSiteTitle} from '@/router/router-utils'
 import LanguageChooser from '@/i18n/LanguageChooser.vue'
 import {useMainStore} from '@/store/main'
 import {useAiSettings} from '@/components/AI/hooks/use-ai-settings'
-import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
+import ViewPortWindow from '@/components/CanUI/packages/ViewPortWindow/index.vue'
 import {useVModel} from '@vueuse/core'
 
 const getWallpaperText = () => {

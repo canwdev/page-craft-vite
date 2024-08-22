@@ -2,13 +2,13 @@
 import {defineComponent} from 'vue'
 import {useI18n} from 'vue-i18n'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
-import {StOptionItem, StOptionType} from '@/components/CommonUI/OptionUI/enum'
+import {StOptionItem, StOptionType} from '@/components/CanUI/packages/OptionUI/enum'
 import {useI18nToolSettingsStore} from '@/components/VueI18nEditTool/store/i18n-tool-settings'
 import {TextConvertMode, TextConvertOptions} from '@/utils/mc-utils/text-convert'
 import {Globe20Regular} from '@vicons/fluent'
 import {NButton} from 'naive-ui'
 import {useCommonSettings} from '@/components/SystemSettings/use-common-settings'
-import OptionUI from '@/components/CommonUI/OptionUI/index.vue'
+import OptionUI from '@/components/CanUI/packages/OptionUI/index.vue'
 
 export default defineComponent({
   name: 'I18nToolSettings',
@@ -62,7 +62,7 @@ export default defineComponent({
                     console.log('window.$mcUtils', window.$mcUtils)
                   },
                 },
-                () => $t('actions.print_to_console')
+                () => $t('actions.print_to_console'),
               ),
             },
           ],

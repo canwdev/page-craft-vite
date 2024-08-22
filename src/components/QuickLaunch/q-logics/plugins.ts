@@ -1,7 +1,7 @@
 import {createGlobalState, useFileDialog, useStorage} from '@vueuse/core'
 import {copy} from './utils'
 import moment from 'moment/moment'
-import {QuickOptionItem} from '@/components/CommonUI/QuickOptions/enum'
+import {QuickOptionItem} from '@/components/CanUI/packages/QuickOptions/enum'
 import * as changeCase from 'change-case'
 import {filterLabel} from './utils'
 import {demoPluginTpl} from './demo.json'

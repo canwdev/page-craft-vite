@@ -374,7 +374,7 @@ export default defineComponent({
       <DropZone position-fixed v-show="showDropzone" text="Drop Excel file here" />
     </transition>
 
-    <div>
+    <div v-loading="!isReady">
       <CommonNavbar>
         <template #extra>
           <n-space>
@@ -424,11 +424,6 @@ export default defineComponent({
         </template>
       </CommonNavbar>
 
-      <transition name="mc-fade">
-        <div class="mc-loading-container" v-if="!isReady">
-          <n-spin />
-        </div>
-      </transition>
 
       <n-card v-if="isReady" class="sheet-name-card" size="small">
         <n-tabs size="small" type="card" animated v-model:value="sheetNameIndex">

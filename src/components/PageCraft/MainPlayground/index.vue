@@ -15,7 +15,7 @@ import {
   Code20Filled,
   QuestionCircle20Regular,
 } from '@vicons/fluent'
-import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
+import VueMonaco from '@/components/CanUI/packages/VueMonaco/index.vue'
 import {WebviewWindow} from '@tauri-apps/api/window'
 import {useRoute, useRouter} from 'vue-router'
 import {useEventListener} from '@vueuse/core'

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import FileManagerWindow from '@/components/FileManager/FileManagerWindow.vue'
-import OptionUI from '@/components/CommonUI/OptionUI/index.vue'
-import {StOptionItem, StOptionType} from '@/components/CommonUI/OptionUI/enum'
+import OptionUI from '@/components/CanUI/packages/OptionUI/index.vue'
+import {StOptionItem, StOptionType} from '@/components/CanUI/packages/OptionUI/enum'
 import CommonNavbar from '@/components/CommonUI/CommonNavbar.vue'
 
 const configStore = reactive({

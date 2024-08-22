@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {sassToCSS, suggestElementClass} from './utils/css'
 import {beautifyCss} from './utils/formater'
-import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
+import ViewPortWindow from '@/components/CanUI/packages/ViewPortWindow/index.vue'
 import {
   Copy20Regular,
   CursorClick20Regular,
@@ -12,9 +12,9 @@ import {
 } from '@vicons/fluent'
 import {useI18n} from 'vue-i18n'
 import TabLayout from '@/components/CommonUI/TabLayout.vue'
-import monaco from '@/components/CommonUI/VueMonaco/monaco-helper'
-import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
-import QuickOptions from '@/components/CommonUI/QuickOptions/index.vue'
+import monaco from '@/components/CanUI/packages/VueMonaco/monaco-helper'
+import VueMonaco from '@/components/CanUI/packages/VueMonaco/index.vue'
+import QuickOptions from '@/components/CanUI/packages/QuickOptions/index.vue'
 import {useEventListener, useStorage, useVModel} from '@vueuse/core'
 import {useGlobalStyle} from './hooks/use-global-style'
 import {StyleEditorKeys, StyleTabType} from './enum'
@@ -133,7 +133,7 @@ watch(
   () => {
     handleUpdateStyle()
   },
-  {immediate: true}
+  {immediate: true},
 )
 // 初始化时同步浏览器不同窗口间的组件样式
 useBroadcastMessage('PlaygroundPageStyleSync', () => {
@@ -221,7 +221,7 @@ const insertStyleCode = (code, isAppend = false) => {
         selection?.startLineNumber || 0,
         selection?.startColumn || 0,
         selection?.endLineNumber || 0,
-        selection?.endColumn || 0
+        selection?.endColumn || 0,
       ),
       text: code,
       forceMoveMarkers: true,
@@ -253,7 +253,7 @@ watch(
       styleEditorTab.value = StyleTabType.GLOBAL
     }
   },
-  {immediate: true}
+  {immediate: true},
 )
 watch(
   () => styleEditorTab,
@@ -262,7 +262,7 @@ watch(
   },
   {
     immediate: true,
-  }
+  },
 )
 
 const listenShortcuts = (event) => {

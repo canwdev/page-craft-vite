@@ -1,4 +1,4 @@
-import monaco from '@/components/CommonUI/VueMonaco/monaco-helper'
+import monaco from '@/components/CanUI/packages/VueMonaco/monaco-helper'
 
 interface IHistoryItem {
   label: string

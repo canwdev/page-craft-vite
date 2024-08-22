@@ -23,8 +23,8 @@ import {
   Add24Regular,
   Folder16Regular,
 } from '@vicons/fluent'
-import QuickOptions from '@/components/CommonUI/QuickOptions/index.vue'
-import QuickContextMenu from '@/components/CommonUI/QuickOptions/utils/QuickContextMenu.vue'
+import QuickOptions from '@/components/CanUI/packages/QuickOptions/index.vue'
+import QuickContextMenu from '@/components/CanUI/packages/QuickOptions/utils/QuickContextMenu.vue'
 import {useCopyPaste} from './hooks/use-copy-paste'
 import {useSelection} from './hooks/use-selection'
 import {useLayoutSort} from './hooks/use-layout-sort'
@@ -92,13 +92,7 @@ const {handleOpenLocalDir, localDirHistoryOptions, isShowDirHistory} = useLocalD
 </script>
 
 <template>
-  <div class="explorer-list-wrap" @contextmenu.prevent>
-    <transition name="fade">
-      <div class="os-loading-container _absolute" v-if="isLoading">
-        <n-spin />
-      </div>
-    </transition>
-
+  <div class="explorer-list-wrap" @contextmenu.prevent v-loading="isLoading">
     <div class="explorer-actions vp-panel">
       <div class="action-group">
         <button class="vp-button" @click="handleCreateFile()" title="Create Document">

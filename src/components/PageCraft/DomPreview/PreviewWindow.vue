@@ -2,7 +2,7 @@
 import {defineComponent} from 'vue'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import DomPreview from '@/components/PageCraft/DomPreview/DomPreview.vue'
-import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
+import ViewPortWindow from '@/components/CanUI/packages/ViewPortWindow/index.vue'
 import {IComponentExportData} from '@/components/PageCraft/ComponentExplorer/enum'
 
 export default defineComponent({

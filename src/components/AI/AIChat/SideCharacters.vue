@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import {StOptionItem} from '@/components/CommonUI/OptionUI/enum'
-import OptionUI from '@/components/CommonUI/OptionUI/index.vue'
+import {StOptionItem} from '@/components/CanUI/packages/OptionUI/enum'
+import OptionUI from '@/components/CanUI/packages/OptionUI/index.vue'
 import {IAiCharacter} from '@/components/AI/types/ai'
 import {ChatModel, chatModels} from '@/components/AI/types/openai'
 
@@ -11,12 +11,12 @@ import AutoFormNaive from '@/components/CommonUI/AutoFormNaive/index.vue'
 import {computed, ref} from 'vue'
 import {AutoFormItemType, MixedFormItems} from '@/components/CommonUI/AutoFormNaive/enum'
 import {FormItemRule, FormRules} from 'naive-ui'
-import {renderNDropdownMenu} from '@/components/CommonUI/OptionUI/Tools/renders'
+import {renderNDropdownMenu} from '@/components/CanUI/packages/OptionUI/Tools/renders'
 
 import {mergeIdData, useAiCharacters} from '@/components/AI/hooks/use-ai-characters'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {base64Utils} from '@/utils/base64-utils'
-import {generateItemDragProps} from '@/components/CommonUI/OptionUI/Tools/item-drag'
+import {generateItemDragProps} from '@/components/CanUI/packages/OptionUI/Tools/item-drag'
 
 const {t: $t} = useI18n()
 const aisStore = useAiSettingsStore()

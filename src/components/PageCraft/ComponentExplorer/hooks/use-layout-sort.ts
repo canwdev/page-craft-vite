@@ -1,4 +1,4 @@
-import {QuickOptionItem} from '@/components/CommonUI/QuickOptions/enum'
+import {QuickOptionItem} from '@/components/CanUI/packages/QuickOptions/enum'
 
 import {Ref} from 'vue'
 import {sortMethodMap, SortType} from '@/components/PageCraft/ComponentExplorer/utils/sort'
@@ -13,7 +13,7 @@ export const useLayoutSort = (files: Ref<IComponentItem[]>) => {
     localStorage,
     {
       listenToStorageChanges: false,
-    }
+    },
   )
   const showSortMenu = ref(false)
   const sortOptions = computed((): QuickOptionItem[] => {

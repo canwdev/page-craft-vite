@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import {useDebounceFn, useStorage, useThrottleFn, useVModel, watchDebounced} from '@vueuse/core'
-import QuickOptions from '@/components/CommonUI/QuickOptions/index.vue'
-import {QuickOptionItem} from '@/components/CommonUI/QuickOptions/enum'
-import {useContextMenu} from '@/components/CommonUI/QuickOptions/utils/use-context-menu'
+import QuickOptions from '@/components/CanUI/packages/QuickOptions/index.vue'
+import {QuickOptionItem} from '@/components/CanUI/packages/QuickOptions/enum'
+import {useContextMenu} from '@/components/CanUI/packages/QuickOptions/utils/use-context-menu'
 
 interface Props {
   modelValue: any
@@ -32,7 +32,7 @@ watch(
   (val) => {
     emit('historyChanged', val)
   },
-  {immediate: true}
+  {immediate: true},
 )
 
 const recordHistory = () => {
@@ -124,7 +124,7 @@ watchDebounced(
   () => {
     refreshOptions()
   },
-  {debounce: 300, immediate: true}
+  {debounce: 300, immediate: true},
 )
 
 const {menuRef, ctxMenuStyle, showMenuByPoint, isShow, updateCardSize} = useContextMenu({
@@ -138,7 +138,7 @@ const _updateCardSize = useThrottleFn(
     updateCardSize()
   },
   300,
-  true
+  true,
 )
 
 const inputRef = ref()

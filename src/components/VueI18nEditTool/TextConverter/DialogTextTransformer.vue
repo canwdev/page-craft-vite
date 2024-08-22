@@ -9,9 +9,9 @@ import {
 } from '@/utils/mc-utils/text-convert'
 import {ClipboardPaste20Regular, Copy20Regular} from '@vicons/fluent'
 import {useI18n} from 'vue-i18n'
-import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
+import VueMonaco from '@/components/CanUI/packages/VueMonaco/index.vue'
 import {useDebounceFn, useStorage} from '@vueuse/core'
-import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
+import ViewPortWindow from '@/components/CanUI/packages/ViewPortWindow/index.vue'
 
 export default defineComponent({
   name: 'DialogTextTransformer',

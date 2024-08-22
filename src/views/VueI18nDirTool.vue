@@ -377,12 +377,8 @@ const {showDropzone, fileDragover, fileDrop} = useFileDrop({
     @dragover.prevent.stop="fileDragover"
     @dragleave.prevent.stop="showDropzone = false"
     @drop.prevent.stop="fileDrop"
+    v-loading="i18nMainStore.isLoading"
   >
-    <transition name="mc-fade">
-      <div class="mc-loading-container position-fixed" v-if="i18nMainStore.isLoading">
-        <n-spin />
-      </div>
-    </transition>
     <transition name="mc-fade">
       <DropZone position-fixed v-show="showDropzone" :text="$t('msgs.drag_folder_here')" />
     </transition>
@@ -463,7 +459,7 @@ const {showDropzone, fileDragover, fileDrop} = useFileDrop({
           content-style="padding: 10px;"
           bordered
         >
-          <n-scrollbar style="height: 100%">
+          <el-scrollbar style="height: 100%">
             <n-tree
               block-line
               :data="i18nMainStore.dirTree"
@@ -475,7 +471,7 @@ const {showDropzone, fileDragover, fileDrop} = useFileDrop({
               virtual-scroll
               v-model:expanded-keys="expandedKeys"
             />
-          </n-scrollbar>
+          </el-scrollbar>
         </n-layout-sider>
         <n-layout-content>
           <!--{{ expandedKeys }}-->
@@ -486,7 +482,7 @@ const {showDropzone, fileDragover, fileDrop} = useFileDrop({
 
               <!--GUI模式/批处理模式-->
               <div v-else class="edit-content-wrap batch-mode">
-                <n-scrollbar
+                <el-scrollbar
                   class="gui-edit-gui"
                   :style="{width: editMode === EditMode.BATCH ? '500px' : '100%'}"
                 >
@@ -505,12 +501,12 @@ const {showDropzone, fileDragover, fileDrop} = useFileDrop({
                     :title="i18nMainStore.filePathArr.join('/')"
                     @onKeyClick="handleKeyClick"
                   />
-                </n-scrollbar>
+                </el-scrollbar>
 
                 <!--批处理模式-->
-                <n-scrollbar class="gui-edit-batch" v-if="editMode === EditMode.BATCH">
+                <el-scrollbar class="gui-edit-batch" v-if="editMode === EditMode.BATCH">
                   <BatchGUI />
-                </n-scrollbar>
+                </el-scrollbar>
               </div>
             </template>
 

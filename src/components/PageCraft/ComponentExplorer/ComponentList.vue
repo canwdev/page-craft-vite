@@ -14,8 +14,8 @@ import {
   MoreHorizontal20Regular,
   Folder16Regular,
 } from '@vicons/fluent'
-import QuickOptions from '@/components/CommonUI/QuickOptions/index.vue'
-import QuickContextMenu from '@/components/CommonUI/QuickOptions/utils/QuickContextMenu.vue'
+import QuickOptions from '@/components/CanUI/packages/QuickOptions/index.vue'
+import QuickContextMenu from '@/components/CanUI/packages/QuickOptions/utils/QuickContextMenu.vue'
 import {
   useComponentMigrationToV2,
   useComponentStorageV2,
@@ -128,13 +128,7 @@ const {handleOpenLocalDir, localDirHistoryOptions} = useLocalDir({emit})
 </script>
 
 <template>
-  <div class="comp-list-wrap" @contextmenu.prevent>
-    <transition name="fade">
-      <div class="os-loading-container _absolute" v-if="isLoading">
-        <n-spin />
-      </div>
-    </transition>
-
+  <div class="comp-list-wrap" @contextmenu.prevent v-loading="isLoading">
     <div class="explorer-actions vp-panel">
       <div class="action-group">
         <button

@@ -1,5 +1,5 @@
 import {useSettingsStore} from '@/store/settings'
-import {StOptionItem, StOptionType} from '@/components/CommonUI/OptionUI/enum'
+import {StOptionItem, StOptionType} from '@/components/CanUI/packages/OptionUI/enum'
 import {useI18n} from 'vue-i18n'
 
 export const useCommonSettings = () => {

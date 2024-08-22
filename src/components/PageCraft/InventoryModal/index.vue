@@ -9,7 +9,7 @@ import FileChooser from '@/components/CommonUI/FileChooser.vue'
 import {colorHash} from '@/utils'
 import {useSettingsStore} from '@/store/settings'
 import {Box20Regular, Window16Regular, WindowArrowUp16Regular} from '@vicons/fluent'
-import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
+import ViewPortWindow from '@/components/CanUI/packages/ViewPortWindow/index.vue'
 import {useI18n} from 'vue-i18n'
 import {useSfxPop} from '@/hooks/use-sfx'
 import PopFloat from '@/components/PageCraft/ComponentExplorer/PopFloat.vue'
@@ -49,7 +49,7 @@ export default defineComponent({
       () => settingsStore.inventoryTab,
       () => {
         playSfxPop()
-      }
+      },
     )
 
     return {

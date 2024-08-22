@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
+import ViewPortWindow from '@/components/CanUI/packages/ViewPortWindow/index.vue'
 import {useVModel} from '@vueuse/core'
 import FileManager from './index.vue'
 

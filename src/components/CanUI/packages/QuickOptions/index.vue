@@ -274,7 +274,7 @@ export default defineComponent({
 <template>
   <div
     v-if="mVisible || isStatic"
-    class="quick-options _scrollbar_mini"
+    class="quick-options scrollbar-mini"
     :class="{_absolute: !isStatic, _s: isStatic, horizontal, 'vp-panel': !horizontal && !isStatic}"
     @keydown.stop="handleKeyPress"
     tabindex="0"
@@ -301,24 +301,25 @@ export default defineComponent({
 
     <template v-for="(item, index) in mOptions" :key="index">
       <div v-if="item.split" class="option-split"></div>
-      <n-dropdown
-        v-else-if="item.dropdown"
-        :options="item.dropdown"
-        label-field="label"
-        key-field="key"
-        size="small"
-      >
-        <QOptionItem
-          :item="item"
-          :index="index"
-          :cur-index="curIndex"
-          :item-cls="itemCls"
-          :show-index="showIndex"
-          @click="handleOptionClick(item, $event)"
-          @contextmenu="handleOptionContextmenu(item, $event)"
-          @onArrowClick="handleOptionClick(item, $event, true)"
-        />
-      </n-dropdown>
+      <!--TODO-->
+      <!--<n-dropdown-->
+      <!--  v-else-if="item.dropdown"-->
+      <!--  :options="item.dropdown"-->
+      <!--  label-field="label"-->
+      <!--  key-field="key"-->
+      <!--  size="small"-->
+      <!--&gt;-->
+      <!--  <QOptionItem-->
+      <!--    :item="item"-->
+      <!--    :index="index"-->
+      <!--    :cur-index="curIndex"-->
+      <!--    :item-cls="itemCls"-->
+      <!--    :show-index="showIndex"-->
+      <!--    @click="handleOptionClick(item, $event)"-->
+      <!--    @contextmenu="handleOptionContextmenu(item, $event)"-->
+      <!--    @onArrowClick="handleOptionClick(item, $event, true)"-->
+      <!--  />-->
+      <!--</n-dropdown>-->
 
       <QOptionItem
         v-else

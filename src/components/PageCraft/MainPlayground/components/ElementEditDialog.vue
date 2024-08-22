@@ -3,7 +3,7 @@ import {computed, defineComponent, PropType, ref} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {FormInst, FormRules} from 'naive-ui'
 import {formatForm, getCustomFormItems} from '../utils/element-edit'
-import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
+import ViewPortWindow from '@/components/CanUI/packages/ViewPortWindow/index.vue'
 import {AutoFormItemType, MixedFormItems} from '@/components/CommonUI/AutoFormNaive/enum'
 import AutoFormNaive from '@/components/CommonUI/AutoFormNaive/index.vue'
 

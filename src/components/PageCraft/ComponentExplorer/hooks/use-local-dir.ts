@@ -1,6 +1,6 @@
 import {setHfsInstance} from '@/components/FileManager/utils/providers/humanfs-api'
 import {useOpenedHistory} from '@/components/VueI18nEditTool/file-history'
-import {QuickOptionItem} from '@/components/CommonUI/QuickOptions/enum'
+import {QuickOptionItem} from '@/components/CanUI/packages/QuickOptions/enum'
 
 export const useLocalDir = ({emit}) => {
   const handleRef = ref<FileSystemDirectoryHandle | null>(null)
@@ -10,7 +10,7 @@ export const useLocalDir = ({emit}) => {
       await setHfsInstance(handle)
       emit('refresh')
       handleRef.value = handle
-    }
+    },
   )
 
   const handleOpenLocalDir = async () => {

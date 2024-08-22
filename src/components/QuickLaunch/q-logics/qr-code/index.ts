@@ -1,5 +1,5 @@
 import {Ref} from 'vue'
-import {QuickOptionItem} from '@/components/CommonUI/QuickOptions/enum'
+import {QuickOptionItem} from '@/components/CanUI/packages/QuickOptions/enum'
 import QrCodeDisplay from './QrCodeDisplay.vue'
 
 export const qLogicQrCode = (valRef: Ref<string>): QuickOptionItem => {

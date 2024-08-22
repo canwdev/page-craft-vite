@@ -12,8 +12,8 @@ import I18nToolSettings from '@/components/VueI18nEditTool/I18nToolSettings.vue'
 import {useIDBKeyval} from '@vueuse/integrations/useIDBKeyval'
 import {LsKeys} from '@/enum/page-craft'
 import {guid} from '@/utils'
-import {QuickOptionItem} from '@/components/CommonUI/QuickOptions/enum'
-import QuickOptions from '@/components/CommonUI/QuickOptions/index.vue'
+import {QuickOptionItem} from '@/components/CanUI/packages/QuickOptions/enum'
+import QuickOptions from '@/components/CanUI/packages/QuickOptions/index.vue'
 import {
   FileHandleHistory,
   useOpenedHistory,
@@ -55,7 +55,7 @@ export default defineComponent({
         fileHandle.value = handle
         const file = await handle.getFile()
         await handleImport(file)
-      }
+      },
     )
 
     const fileHandle = shallowRef<FileSystemFileHandle>()
@@ -285,12 +285,8 @@ export default defineComponent({
     @dragover.prevent.stop="fileDragover"
     @dragleave.prevent.stop="showDropzone = false"
     @drop.prevent.stop="fileDrop"
+    v-loading="isLoading"
   >
-    <transition name="mc-fade">
-      <div class="mc-loading-container position-fixed" v-if="isLoading">
-        <n-spin />
-      </div>
-    </transition>
     <transition name="mc-fade">
       <DropZone position-fixed v-show="showDropzone" :text="$t('msgs.drag_file_here')" />
     </transition>

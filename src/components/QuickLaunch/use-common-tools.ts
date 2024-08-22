@@ -1,7 +1,7 @@
 import {useRoute, useRouter} from 'vue-router'
 import {useI18n} from 'vue-i18n'
 import {useMainStore} from '@/store/main'
-import {QuickOptionItem} from '@/components/CommonUI/QuickOptions/enum'
+import {QuickOptionItem} from '@/components/CanUI/packages/QuickOptions/enum'
 import {formatSiteTitle} from '@/router/router-utils'
 import {useSettingsStore} from '@/store/settings'
 

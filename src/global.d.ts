@@ -1,17 +1,15 @@
-import {MessageApiInjection} from 'naive-ui/es/message/src/MessageProvider'
-import {DialogApiInjection} from 'naive-ui/es/dialog/src/DialogProvider'
-import {NotificationApiInjection} from 'naive-ui/es/notification/src/NotificationProvider'
 import VueRouter, {Route} from 'vue-router'
-import {QuickLaunchPlugin} from '@/components/QuickLaunch/q-logics/plugins'
+import {Message} from 'element-plus'
+import {SFCInstallWithContext} from 'element-plus/es/utils'
 
 declare global {
   interface Window {
     showOpenFilePicker: any
 
-    $message: MessageApiInjection
-    $notification: NotificationApiInjection
-    $dialog: DialogApiInjection
-    $loadingBar: LoadingBarApiInjection
+    $message: SFCInstallWithContext<Message>
+    // $notification: NotificationApiInjection
+    $dialog: SFCInstallWithContext<ElMessageBox>
+
     Sass: any
     stylusSupermacyFormat: any
     $juice: any

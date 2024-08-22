@@ -18,7 +18,7 @@ export default defineComponent({
     const settingsStore = useSettingsStore()
     const mainStore = useMainStore()
 
-    const {isAppDarkMode, themeOverrides} = useGlobalTheme()
+    const {isAppDarkMode} = useGlobalTheme()
 
     const bgStyle = computed(() => {
       const s: any = {}
@@ -50,10 +50,6 @@ export default defineComponent({
     useCssStyleTag()
 
     return {
-      isAppDarkMode,
-      themeOverrides,
-      darkTheme,
-      settingsStore,
       bgStyle,
     }
   },
@@ -61,23 +57,10 @@ export default defineComponent({
 </script>
 
 <template>
-  <n-config-provider
-    :theme="isAppDarkMode ? darkTheme : null"
-    :theme-overrides="themeOverrides"
-    class="page-craft-root _line-grid"
-    :style="bgStyle"
-  >
-    <n-loading-bar-provider>
-      <n-notification-provider placement="bottom-right">
-        <n-message-provider placement="top">
-          <n-dialog-provider>
-            <RouterView />
-            <AppSub />
-          </n-dialog-provider>
-        </n-message-provider>
-      </n-notification-provider>
-    </n-loading-bar-provider>
-  </n-config-provider>
+  <div class="page-craft-root" :style="bgStyle">
+    <RouterView />
+    <AppSub />
+  </div>
 </template>
 
 <style lang="scss">

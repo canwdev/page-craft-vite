@@ -3,7 +3,7 @@ import moment from 'moment/moment'
 import {fsWebApi} from '../../utils/api'
 import {generateTextFile, normalizePath} from '../../utils'
 import {IEntry} from '../../types/filesystem'
-import {QuickOptionItem} from '@/components/CommonUI/QuickOptions/enum'
+import {QuickOptionItem} from '@/components/CanUI/packages/QuickOptions/enum'
 
 export const useFileActions = ({
   isLoading,

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import OptionUI from '@/components/CommonUI/OptionUI/index.vue'
+import OptionUI from '@/components/CanUI/packages/OptionUI/index.vue'
 import {IMessageContent, IMessageItem} from '@/components/AI/types/ai'
 import '@/styles/markdown/github-markdown.css'
 import '@/styles/markdown/github-markdown-dark.css'

@@ -1,7 +1,7 @@
 <script lang="ts">
 import {defineComponent, ref} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
-import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
+import VueMonaco from '@/components/CanUI/packages/VueMonaco/index.vue'
 
 export default defineComponent({
   name: 'DialogTextEdit',
@@ -50,7 +50,7 @@ export default defineComponent({
       (val) => {
         editingText.value = val
       },
-      {immediate: true}
+      {immediate: true},
     )
 
     watch(mVisible, (val) => {

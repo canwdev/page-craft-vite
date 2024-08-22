@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import {StOptionItem} from '@/components/CommonUI/OptionUI/enum'
-import OptionUI from '@/components/CommonUI/OptionUI/index.vue'
+import {StOptionItem} from '@/components/CanUI/packages/OptionUI/enum'
+import OptionUI from '@/components/CanUI/packages/OptionUI/index.vue'
 import {useAiSettingsStore} from '@/components/AI/hooks/ai-settings'
 import {formatDate, guid} from '@/utils'
-import {renderNDropdownMenu} from '@/components/CommonUI/OptionUI/Tools/renders'
+import {renderNDropdownMenu} from '@/components/CanUI/packages/OptionUI/Tools/renders'
 import {useI18n} from 'vue-i18n'
 import {IChatHistoryItem} from '@/components/AI/types/ai'
 import {useMounted} from '@vueuse/core'

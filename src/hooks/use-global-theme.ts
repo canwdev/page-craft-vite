@@ -2,8 +2,7 @@ import {LdThemeType} from '@/enum/settings'
 import {useSettingsStore} from '@/store/settings'
 import {useMainStore} from '@/store/main'
 import {getSystemIsDarkMode, hexToRgb} from '@/utils/color'
-import {GlobalThemeOverrides} from 'naive-ui'
-import {useThemeOptions} from '@/components/CommonUI/ViewPortWindow/utils/use-theme'
+import {useThemeOptions} from '@/components/CanUI/packages/ViewPortWindow/utils/use-theme'
 
 export const useGlobalTheme = () => {
   const mainStore = useMainStore()
@@ -42,8 +41,11 @@ export const useGlobalTheme = () => {
     (val) => {
       if (val) {
         document.body.classList.add('_dark')
+        // Element Plus 暗黑模式 https://element-plus.org/zh-CN/guide/dark-mode.html
+        document.documentElement.classList.add('dark')
       } else {
         document.body.classList.remove('_dark')
+        document.documentElement.classList.remove('dark')
       }
     },
     {immediate: true},
@@ -115,24 +117,7 @@ export const useGlobalTheme = () => {
     updateThemeColor()
   })
 
-  // NaiveUI GlobalThemeOverrides
-  const themeOverrides = computed<GlobalThemeOverrides>(() => {
-    const primaryColor = settingsStore.themeColor || '#258292'
-
-    return {
-      common: {
-        // borderRadiusSmall: isRect.value ? 0 : '2px',
-        // borderRadius: isRect.value ? 0 : '4px',
-        primaryColor,
-        primaryColorHover: primaryColor,
-        primaryColorPressed: primaryColor,
-        primaryColorSuppl: primaryColor,
-      },
-    } as GlobalThemeOverrides
-  })
-
   return {
     isAppDarkMode,
-    themeOverrides,
   }
 }

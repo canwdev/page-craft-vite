@@ -1,6 +1,6 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
-import {WindowController} from '@/components/CommonUI/ViewPortWindow/utils/window-controller'
+import {WindowController} from '@/components/CanUI/packages/ViewPortWindow/utils/window-controller'
 import {useContextMenu} from '@/hooks/use-context-menu'
 import InventoryList from '@/components/PageCraft/InventoryModal/InventoryList.vue'
 

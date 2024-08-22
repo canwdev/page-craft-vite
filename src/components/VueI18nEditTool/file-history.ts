@@ -1,5 +1,5 @@
 import {useIDBKeyval} from '@vueuse/integrations/useIDBKeyval'
-import {QuickOptionItem} from '@/components/CommonUI/QuickOptions/enum'
+import {QuickOptionItem} from '@/components/CanUI/packages/QuickOptions/enum'
 import moment from 'moment/moment'
 import {showInputPrompt} from '@/components/CommonUI/input-prompt'
 
@@ -27,7 +27,7 @@ export async function verifyPermission(fileHandle) {
 export const useOpenedHistory = (storageKey: string, handleOpenHistory) => {
   const {data: openedHistory, set: setOpenedHistory} = useIDBKeyval<FileHandleHistory[]>(
     storageKey,
-    []
+    [],
   )
 
   const appendHistory = async (handle: FileSystemFileHandle) => {

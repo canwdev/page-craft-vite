@@ -27,15 +27,9 @@ export default defineComponent({
 </script>
 
 <template>
-  <n-select
-    class="language-chooser"
-    size="small"
-    v-model:value="$i18n.locale"
-    :options="languages"
-    value-field="locale"
-    label-field="name"
-    @update:value="handleLanguageSelect"
-  />
+  <el-select class="language-chooser" v-model="$i18n.locale" @change="handleLanguageSelect">
+    <el-option v-for="vi in languages" :key="vi.locale" :label="vi.name" :value="vi.locale" />
+  </el-select>
 </template>
 
 <style lang="scss" scoped>

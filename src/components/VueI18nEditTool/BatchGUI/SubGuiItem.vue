@@ -247,11 +247,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="batch-translate-item vp-panel" :data-translate-path="i18nMainStore.translatePath">
-    <div class="mc-loading-container" v-if="isLoading">
-      <n-spin size="small" />
-    </div>
-
+  <div class="batch-translate-item vp-panel" :data-translate-path="i18nMainStore.translatePath" v-loading="isLoading">
     <div class="card-header">
       <div class="card-title-wrap">
         <span class="card-title font-code">

@@ -1,14 +1,14 @@
 <script lang="ts" setup="">
-import QuickOptions from '@/components/CommonUI/QuickOptions/index.vue'
+import QuickOptions from '@/components/CanUI/packages/QuickOptions/index.vue'
 import {useI18n} from 'vue-i18n'
 import {useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
 import {ref} from 'vue'
-import {QuickOptionItem} from '@/components/CommonUI/QuickOptions/enum'
+import {QuickOptionItem} from '@/components/CanUI/packages/QuickOptions/enum'
 import {useDebounceFn} from '@vueuse/core'
 import {useGuiToolbox} from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox/use-gui-toolbox'
 import {blinkPanel} from '@/utils/anim'
 import {useBatchTranslateAnalyser} from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox/use-analyser'
-import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
+import ViewPortWindow from '@/components/CanUI/packages/ViewPortWindow/index.vue'
 import {useBatchTranslateRefactor} from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox/use-refactor'
 interface Props {
   isBatchMode?: boolean

@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import {useCommonTools} from './use-common-tools'
 import {useRoute, useRouter} from 'vue-router'
-import QuickOptions from '@/components/CommonUI/QuickOptions/index.vue'
+import QuickOptions from '@/components/CanUI/packages/QuickOptions/index.vue'
 import {useQLogics} from './q-logics'
 import {useTextareaAutosize} from '@vueuse/core'
 import {useQuickLaunchPlugins} from './q-logics/plugins'
-import ViewPortWindow from '@/components/CommonUI/ViewPortWindow/index.vue'
-import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
+import ViewPortWindow from '@/components/CanUI/packages/ViewPortWindow/index.vue'
+import VueMonaco from '@/components/CanUI/packages/VueMonaco/index.vue'
 
 const route = useRoute()
 const qRef = ref()

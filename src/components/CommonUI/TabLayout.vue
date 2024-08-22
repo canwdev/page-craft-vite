@@ -1,7 +1,7 @@
 <script lang="ts">
 import {defineComponent, PropType} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
-import VueRender from '@/components/CommonUI/OptionUI/Tools/VueRender.vue'
+import VueRender from '@/components/CanUI/packages/OptionUI/Tools/VueRender.vue'
 type TabItem = {
   label?: string
   value: string | number

@@ -5,7 +5,7 @@ import {useBatchItemV2} from '@/components/VueI18nEditTool/BatchGUI/batch-hooks'
 import {BatchListItem, useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
 import VueJsonEditor from '@/components/CommonUI/VueJsonEditor.vue'
 import {useMainStore} from '@/store/main'
-import VueMonaco from '@/components/CommonUI/VueMonaco/index.vue'
+import VueMonaco from '@/components/CanUI/packages/VueMonaco/index.vue'
 
 export default defineComponent({
   name: 'SubTextItem',
@@ -93,7 +93,7 @@ export default defineComponent({
         }
         await updateLocalJson()
       },
-      {immediate: true}
+      {immediate: true},
     )
 
     const saveChange = async ({isEmit = false} = {}) => {
@@ -161,10 +161,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div v-show="visible" class="sub-text-editor">
-    <div class="mc-loading-container" v-if="isLoading">
-      <n-spin size="small" />
-    </div>
+  <div v-show="visible" class="sub-text-editor" v-loading="isLoading">
 
     <div class="editor-action-row">
       <button class="vp-button primary" :disabled="!isChanged" @click="saveChange({isEmit: true})">
