@@ -304,8 +304,7 @@ defineExpose({
     }"
   >
     <template #titleBarLeft>
-      <n-icon class="window-icon" size="18"><PaintBrush20Regular /></n-icon
-      >{{ $t('common.style_editor') }}
+      🎨 {{ $t('common.style_editor') }}
       (scss)
     </template>
     <template #titleBarRightControls>
@@ -314,28 +313,23 @@ defineExpose({
         :class="{active: isSelecting}"
         @click.stop.prevent="isSelecting = !isSelecting"
       >
-        <n-icon size="20">
-          <CursorHover20Regular v-if="!isSelecting" />
-          <CursorClick20Regular v-else />
-        </n-icon>
+        {{ isSelecting ? '📛' : '🔱' }}
       </button>
       <button
         @click="isShowQuickOptions = !isShowQuickOptions"
         :title="$t('actions.add_tool_codes')"
       >
-        <n-icon size="20"><AppsAddIn20Regular /></n-icon>
+        🖌️
       </button>
 
       <button
         :title="$t('actions.beautify_code') + ' (ctrl+shift+f)'"
         @click="execBeautifyCssAction"
       >
-        <n-icon size="20"><Wand20Regular /></n-icon>
+        ⚜️
       </button>
 
-      <button :title="$t('actions.copy_code') + ' (ctrl+a ctrl+c)'" @click="copyStyle">
-        <n-icon size="20"><Copy20Regular /></n-icon>
-      </button>
+      <button :title="$t('actions.copy_code') + ' (ctrl+a ctrl+c)'" @click="copyStyle">📋</button>
     </template>
 
     <transition name="mc-fade">

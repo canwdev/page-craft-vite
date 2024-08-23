@@ -156,23 +156,23 @@ export default defineComponent({
       hide-actions
     >
       <div class="action-row vp-bg">
-        <n-switch
-          v-model:value="isEditInnerHTML"
+        <el-switch
+          v-model="isEditInnerHTML"
           :title="`${$t('actions.toggle')} innerHTML/outerHTML`"
           :disabled="isRoot"
+          active-text="innerHTML"
+          inactive-text="outerHTML"
         >
-          <template #checked> innerHTML </template>
-          <template #unchecked> outerHTML </template>
-        </n-switch>
+        </el-switch>
 
-        <n-space size="small">
+        <div class="flex-row-center-gap">
           <button type="button" class="vp-button" @click="handleCancel">
             {{ $t('actions.cancel') }}
           </button>
           <button type="submit" class="vp-button primary">
             {{ $t('actions.ok') }}
           </button>
-        </n-space>
+        </div>
       </div>
     </AutoFormElPlus>
   </ViewPortWindow>

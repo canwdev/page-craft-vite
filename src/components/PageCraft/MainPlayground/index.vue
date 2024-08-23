@@ -17,6 +17,10 @@ import {useEventListener} from '@vueuse/core'
 import VueMonaco from '@/components/CanUI/packages/VueMonaco/index.vue'
 import ElementEditDialog from '@/components/PageCraft/MainPlayground/components/ElementEditDialog.vue'
 import DropdownMenu from '@/components/CanUI/packages/OptionUI/Tools/DropdownMenu.vue'
+import QuickContextMenu from '@/components/CanUI/packages/QuickOptions/utils/QuickContextMenu.vue'
+import IndicatorInfo from '@/components/PageCraft/MainPlayground/components/IndicatorInfo.vue'
+
+const emit = defineEmits([])
 
 const router = useRouter()
 const route = useRoute()
@@ -57,6 +61,7 @@ const {
   waitingProgress,
   cursorX,
   cursorY,
+  ctxMenuRef,
   ctxMenuOptions,
   selectionActionStyle,
   selectionElRef,
@@ -134,21 +139,27 @@ const openPlayground = () => {
 
     <Teleport to="body">
       <transition name="fade">
-        <QuickContextMenu :options="ctxMenuOptions" ref="ctxMenuRef" />
+        <QuickContextMenu ref="ctxMenuRef" :options="ctxMenuOptions" />
       </transition>
     </Teleport>
 
-    <n-modal
-      v-model:show="isShowImportDialog"
-      :negative-text="$t('actions.cancel')"
-      :positive-text="$t('actions.import')"
-      preset="dialog"
+    <el-dialog
+      draggable
+      v-model="isShowImportDialog"
       :title="`${$t('actions.paste')} HTML`"
-      @positive-click="handleImportHtml(pasteHtmlText)"
-      style="width: 600px"
+      width="600"
     >
       <VueMonaco v-if="isShowImportDialog" v-model="pasteHtmlText" style="height: 500px" />
-    </n-modal>
+
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="isShowImportDialog = false">{{ $t('actions.cancel') }}</el-button>
+          <el-button type="primary" @click="handleImportHtml(pasteHtmlText)">
+            {{ $t('actions.import') }}
+          </el-button>
+        </div>
+      </template>
+    </el-dialog>
 
     <Teleport to=".page-craft-root">
       <ElementEditDialog
@@ -171,72 +182,57 @@ ${settingsStore.curCompInStore?.title}`"
           </button>
         </DropdownMenu>
 
-        <n-popover :duration="100" :show-arrow="false" trigger="hover">
-          <template #trigger>
+        <el-popover width="180" trigger="hover">
+          <template #reference>
             <button class="vp-button">⚙️ {{ $t('common.options') }}</button>
           </template>
-          <template #header></template>
           <div v-for="item in toggleList" :key="item.flag" class="toggle-list">
-            <div style="display: flex; align-items: center">
-              <n-checkbox
-                v-model:checked="indicatorOptions[item.flag]"
-                :label="item.title"
-                size="small"
-              />
+            <div class="flex-row-center-gap">
+              <el-checkbox v-model="indicatorOptions[item.flag]" :label="item.title" size="small" />
 
               <template v-if="item.desc">
-                <n-popover style="padding: 0; min-width: 200px" trigger="hover">
-                  <template #trigger>
-                    <n-icon size="16">
-                      <QuestionCircle20Regular />
-                    </n-icon>
+                <el-popover trigger="hover">
+                  <template #reference>
+                    <span>❓</span>
                   </template>
                   <span style="font-size: 14px">{{ item.desc }}</span>
-                </n-popover>
+                </el-popover>
               </template>
             </div>
           </div>
-          <n-slider v-model:value="indicatorOptions.bgTransparentPercent" :step="1" />
-          <template #footer>
-            <n-space align="center" size="small">
-              <n-button title="(alt+w)" size="small" @click="mainStore.isShowSettings = true">{{
-                $t('common.settings')
-              }}</n-button>
+          <el-slider v-model="indicatorOptions.bgTransparentPercent" :step="1" size="small" />
+          <div class="flex-row-center-gap">
+            <button
+              class="vp-button primary"
+              title="(alt+w)"
+              @click="mainStore.isShowSettings = !mainStore.isShowSettings"
+            >
+              {{ $t('common.settings') }}
+            </button>
 
-              <n-button quaternary type="primary" size="small" @click="openPlayground">
-                Playground
-              </n-button>
-            </n-space>
-          </template>
-        </n-popover>
+            <button class="vp-button" @click="openPlayground">Playground</button>
+          </div>
+        </el-popover>
       </template>
 
-      <n-button-group>
-        <n-button
-          size="tiny"
+      <div>
+        <button
+          class="vp-button"
           title="Undo (ctrl+z)"
           :disabled="!undoRedo.undoStack.length"
           @click="handleUndo"
         >
-          <template #icon>
-            <n-icon size="18">
-              <ArrowUndo20Filled />
-            </n-icon>
-          </template>
-        </n-button>
-        <n-button
-          size="tiny"
+          ↩️
+        </button>
+        <button
+          class="vp-button"
           title="Redo (ctrl+shift+z)"
           :disabled="!undoRedo.redoStack.length"
           @click="handleRedo"
         >
-          <template #icon>
-            <n-icon size="18">
-              <ArrowRedo20Filled />
-            </n-icon>
-          </template>
-        </n-button>
-      </n-button-group>
+          ↪️
+        </button>
+      </div>
 
       <span v-if="!isLitePage" style="border-right: 1px solid; opacity: 0.3"></span>
     </portal>

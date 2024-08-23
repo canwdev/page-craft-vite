@@ -53,16 +53,11 @@ export default defineComponent({
 </script>
 
 <template>
-  <n-modal
-    style="width: 100%; height: 100vh"
-    preset="dialog"
+  <el-dialog
+    fullscreen
     :positive-text="$t('actions.done')"
     title="Image Cropper"
-    @positive-click="handleSave"
-    @negative-click="handleCancel"
-    @close="mVisible = false"
-    :show="mVisible"
-    :auto-focus="false"
+    v-model="mVisible"
     @keyup.enter="handleSave"
   >
     <template v-if="mVisible">
@@ -70,12 +65,22 @@ export default defineComponent({
         <img ref="imgRef" class="cropping-image" :src="src" />
       </div>
     </template>
-  </n-modal>
+
+    <template #footer>
+      <div class="dialog-footer">
+        <el-button @click="handleCancel">{{ $t('actions.cancel') }}</el-button>
+        <el-button type="primary" @click="handleSave">
+          {{ $t('actions.save') }}
+        </el-button>
+      </div>
+    </template>
+  </el-dialog>
 </template>
 
 <style lang="scss" scoped>
 .cropping-image {
   display: block;
   max-width: 100%;
+  max-height: 86vh;
 }
 </style>

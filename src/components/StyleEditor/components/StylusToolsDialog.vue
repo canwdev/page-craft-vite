@@ -3,11 +3,12 @@ import {defineComponent, ref} from 'vue'
 import {copyToClipboard, readClipboardData} from '@/utils'
 import VueMonaco from '@/components/CanUI/packages/VueMonaco/index.vue'
 import {useI18n} from 'vue-i18n'
-import {useVModel} from '@vueuse/core'
+import {useDebounceFn, useVModel} from '@vueuse/core'
+import ViewPortWindow from '@/components/CanUI/packages/ViewPortWindow/index.vue'
 
 export default defineComponent({
   name: 'StylusToolsDialog',
-  components: {VueMonaco},
+  components: {ViewPortWindow, VueMonaco},
   props: {
     visible: {
       type: Boolean,
@@ -65,6 +66,12 @@ export default defineComponent({
         handleCopy()
       })
     }
+    const monacoEditorRef1 = ref()
+    const monacoEditorRef2 = ref()
+    const resizeMonaco = useDebounceFn(() => {
+      monacoEditorRef1.value.resize()
+      monacoEditorRef2.value.resize()
+    }, 300)
 
     return {
       mVisible,
@@ -86,107 +93,89 @@ export default defineComponent({
       handleAutoPasteCopy,
       handlePaste,
       handleCopy,
+      monacoEditorRef1,
+      monacoEditorRef2,
+      resizeMonaco,
     }
   },
 })
 </script>
 
 <template>
-  <el-dialog
-    v-model="mVisible"
-    :title="`Stylus ${$t('common.formatting_tool')}`"
-    width="800"
-    top="10vh"
+  <ViewPortWindow
+    v-model:visible="mVisible"
+    wid="stylus_tools"
+    allow-maximum
+    @resize="resizeMonaco"
+    :init-win-options="{width: '600px', height: '500px'}"
+    init-center
   >
-    <div class="style-tools">
-      <div class="common-card">
-        <div class="action-row flex-row-center-gap">
-          <!--          <button type="primary" size="small" @click="doFormat">{{ $t('common.format') }}</button>-->
-
-          <div>
-            <button
-              @click="handleAutoPasteCopy"
-              :title="$t('msgs.auto_paste_and_copy')"
-              class="vp-button primary focus-auto-action"
-            >
-              {{ $t('actions.copy') }}+
-              {{ $t('actions.paste') }}
-            </button>
-            <button @click="handlePaste" class="vp-button" title="Paste">
-              {{ $t('actions.paste') }}
-            </button>
-            <button @click="handleCopy" class="vp-button" title="Copy Result">
-              {{ $t('actions.copy') }}
-            </button>
-          </div>
-
-          <a href="https://thisismanta.github.io/stylus-supremacy/#demo" target="_blank">
-            Stylus Supermacy
-          </a>
-
-          <div>
-            <button class="vp-button" @click="doClear">{{ $t('actions.clear') }}</button>
-            <button class="vp-button" @click="showDemo">{{ $t('common.demo') }}</button>
-          </div>
+    <template #titleBarLeft>{{ `Stylus ${$t('common.formatting_tool')}` }}</template>
+    <div v-if="mVisible" class="text-converter-wrap">
+      <div class="tool-header flex-row-center-gap" style="justify-content: space-between">
+        <div>
+          <button
+            @click="handleAutoPasteCopy"
+            :title="$t('msgs.auto_paste_and_copy')"
+            class="vp-button primary focus-auto-action"
+          >
+            {{ $t('actions.copy') }}+
+            {{ $t('actions.paste') }}
+          </button>
+          <button @click="handlePaste" class="vp-button" title="Paste">
+            {{ $t('actions.paste') }}
+          </button>
+          <button @click="handleCopy" class="vp-button" title="Copy Result">
+            {{ $t('actions.copy') }}
+          </button>
         </div>
-        <div class="main-box font-code">
-          <div class="input-wrapper">
-            <!--            <n-input
+
+        <a
+          style="color: #d50000"
+          href="https://thisismanta.github.io/stylus-supremacy/#demo"
+          target="_blank"
+        >
+          Stylus Supermacy
+        </a>
+
+        <div>
+          <button class="vp-button" @click="doClear">{{ $t('actions.clear') }}</button>
+          <button class="vp-button" @click="showDemo">{{ $t('common.demo') }}</button>
+        </div>
+      </div>
+      <div class="main-box font-code">
+        <div class="input-wrapper">
+          <!--            <n-input
               class="input-text"
               type="textarea"
               v-model:value="textInput"
               placeholder="Text Input"
             ></n-input>-->
-            <div class="input-tip">Input Stylus Code</div>
-            <VueMonaco language="stylus" v-model="textInput" class="input-text" />
-          </div>
-          <div class="input-wrapper">
-            <div class="input-tip">Formatted (SCSS)</div>
-            <VueMonaco v-model="textOutput" language="scss" class="input-text" />
-          </div>
+          <div class="input-tip">Input Stylus Code</div>
+          <VueMonaco
+            ref="monacoEditorRef1"
+            language="stylus"
+            v-model="textInput"
+            class="input-text"
+          />
         </div>
-        <div class="error-box">
-          {{ errorText }}
+        <div class="input-wrapper">
+          <div class="input-tip">Formatted (SCSS)</div>
+          <VueMonaco
+            ref="monacoEditorRef2"
+            v-model="textOutput"
+            language="scss"
+            class="input-text"
+          />
         </div>
       </div>
+      <div class="error-box">
+        {{ errorText }}
+      </div>
     </div>
-  </el-dialog>
+  </ViewPortWindow>
 </template>
 
 <style lang="scss" scoped>
-.style-tools {
-  .action-row {
-    margin-bottom: 10px;
-  }
-
-  .main-box {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
-    gap: 10px;
-
-    .input-wrapper {
-      flex: 1;
-      height: 70vh;
-      outline: 1px solid $color_border;
-      display: flex;
-      flex-direction: column;
-
-      .input-tip {
-        padding: 0 5px;
-        background-color: $color_border;
-      }
-
-      .input-text {
-        flex: 1;
-        width: 100%;
-      }
-    }
-  }
-
-  .error-box {
-    color: #e60036;
-  }
-}
+@import '@/components/VueI18nEditTool/TextConverter/text-converter';
 </style>

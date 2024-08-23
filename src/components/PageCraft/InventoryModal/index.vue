@@ -69,16 +69,10 @@ export default defineComponent({
     :init-win-options="{height: '400px'}"
     :allow-move="!settingsStore.isInvDocked"
   >
-    <template #titleBarLeft>
-      <n-icon class="window-icon" size="18"><Box20Regular /></n-icon
-      >{{ $t('common.inventory_list') }}
-    </template>
+    <template #titleBarLeft> 📦 {{ $t('common.inventory_list') }} </template>
     <template #titleBarRightControls>
       <button @click="settingsStore.isInvDocked = !settingsStore.isInvDocked">
-        <n-icon size="16">
-          <Window16Regular v-if="!settingsStore.isInvDocked" />
-          <WindowArrowUp16Regular v-else />
-        </n-icon>
+        {{ !settingsStore.isInvDocked ? '⤵️' : '⤴️' }}
       </button>
     </template>
 

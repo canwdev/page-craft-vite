@@ -46,21 +46,15 @@ export default defineComponent({
 
 <template>
   <div class="inventory-list-wrap">
-    <div class="filter-row" v-if="showFilter">
+    <div class="filter-row flex-row-center-gap" v-if="showFilter">
       <slot name="filterStart"></slot>
 
-      <n-input
-        v-model:value="filterText"
-        clearable
-        :placeholder="$t('msgs.filter_items')"
-        size="small"
-      >
-        <template #prefix>
-          <n-icon size="20">
-            <BoxMultipleSearch20Regular />
-          </n-icon>
-        </template>
-      </n-input>
+      <input
+        class="vp-input"
+        v-model="filterText"
+        @keyup.esc="filterText = ''"
+        :placeholder="'🔎 ' + $t('msgs.filter_items')"
+      />
 
       <slot name="filterEnd"></slot>
     </div>
@@ -88,9 +82,8 @@ export default defineComponent({
   position: relative;
 
   .filter-row {
-    display: flex;
-    .n-input {
-      border-radius: 0;
+    .vp-input {
+      flex: 1;
     }
   }
 

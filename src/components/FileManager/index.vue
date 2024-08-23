@@ -62,9 +62,7 @@ onMounted(() => {
             @click="goBack"
             title="Back"
           >
-            <n-icon size="16">
-              <ArrowLeft20Regular />
-            </n-icon>
+            ⬅️
           </button>
           <button
             :disabled="forwardHistory.length <= 0"
@@ -72,14 +70,10 @@ onMounted(() => {
             @click="goForward"
             title="Forward"
           >
-            <n-icon size="16">
-              <ArrowRight20Regular />
-            </n-icon>
+            ➡️
           </button>
           <button class="btn-action vp-button" :disabled="!allowUp" @click="goUp" title="Up">
-            <n-icon size="16">
-              <ArrowUp20Regular />
-            </n-icon>
+            ⬆️
           </button>
         </div>
         <div class="input-wrap">
@@ -89,14 +83,9 @@ onMounted(() => {
             class="input-addr vp-input"
             @change="handleRefresh"
           />
-          <button class="vp-button btn-action" @click="handleRefresh">
-            <n-icon size="16"><ArrowSync20Filled /> </n-icon>
-          </button>
+          <button class="vp-button btn-action" @click="handleRefresh">🔄</button>
           <button class="vp-button btn-action" @click="toggleStar">
-            <n-icon size="16">
-              <Star20Filled v-if="isStared" />
-              <Star20Regular v-else />
-            </n-icon>
+            {{ isStared ? '🌟' : '⭐' }}
           </button>
 
           <input placeholder="Filter name" v-model="filterText" class="input-filter vp-input" />

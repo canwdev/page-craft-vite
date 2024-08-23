@@ -109,6 +109,7 @@ useGlobalBusOn(GlobalEvents.ON_ADD_STYLE, (arg) => {
     <ToolBar>
       <DropdownMenu :options="styleMenuOptions">
         <button
+          class="vp-button"
           style="min-width: 70px"
           @click="settingsStore.showStyleEditor = !settingsStore.showStyleEditor"
           title="(alt+s)"

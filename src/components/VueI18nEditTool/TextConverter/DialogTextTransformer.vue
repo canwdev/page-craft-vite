@@ -114,7 +114,7 @@ export default defineComponent({
     <template #titleBarLeft>{{ $t('common.text_transformer') }}</template>
 
     <div v-if="mVisible" class="text-converter-wrap">
-      <div class="tool-header">
+      <div class="tool-header flex-row-center-gap">
         Convert to:
         <RectSwitch :options="TextConvertOptions" v-model="mMode"> </RectSwitch>
 
@@ -172,52 +172,5 @@ export default defineComponent({
 </template>
 
 <style lang="scss" scoped>
-.text-converter-wrap {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  .tool-header {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    align-items: center;
-    padding: 8px;
-    box-sizing: border-box;
-    padding-bottom: 0;
-    .vp-input {
-      font-size: 12px;
-    }
-  }
-  .main-box {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    padding: 8px;
-    box-sizing: border-box;
-    overflow: hidden;
-
-    .input-wrapper {
-      flex: 1;
-      flex-shrink: 0;
-      height: 100%;
-      overflow: hidden;
-      outline: 1px solid $color_border;
-      display: flex;
-      flex-direction: column;
-
-      .input-tip {
-        padding: 0 5px;
-        background-color: $color_border;
-      }
-
-      .input-text {
-        flex: 1;
-        width: 100%;
-        box-sizing: border-box;
-      }
-    }
-  }
-}
+@import 'text-converter';
 </style>

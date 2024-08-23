@@ -187,16 +187,21 @@ export const useInteractionHooks = (options) => {
 
   const editingNode = ref<HTMLElement | null>(null)
 
-  const handleContextMenu = (e: MouseEvent) => {
+  const ctxMenuRef = ref()
+  const handleContextMenu = (event: MouseEvent) => {
     const selectedText = selectionRef.value?.toString()
-    if (!indicatorOptions.enableRightClick || selectedText || e.ctrlKey) {
+    if (!indicatorOptions.enableRightClick || selectedText || event.ctrlKey) {
       return
     }
-    e.preventDefault()
+    event.preventDefault()
     if (mainStore.currentBlock.actionType === ActionType.DEBUG) {
-      console.log('[handleContextMenu]', e)
+      console.log('[handleContextMenu]', event)
     }
-    editingNode.value = e.target as HTMLElement
+    editingNode.value = event.target as HTMLElement
+    ctxMenuRef.value.isShow = false
+    setTimeout(() => {
+      ctxMenuRef.value.showMenu(event)
+    })
   }
 
   const ctxMenuOptions = computed((): QuickOptionItem[] => {
@@ -525,6 +530,7 @@ export const useInteractionHooks = (options) => {
     waitingProgress,
     cursorX,
     cursorY,
+    ctxMenuRef,
     ctxMenuOptions,
     selectionActionStyle,
     selectionElRef,

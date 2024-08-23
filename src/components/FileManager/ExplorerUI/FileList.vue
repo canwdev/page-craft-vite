@@ -76,33 +76,19 @@ const {handleOpenLocalDir, localDirHistoryOptions, isShowDirHistory} = useLocalD
   <div class="explorer-list-wrap" @contextmenu.prevent v-loading="isLoading">
     <div class="explorer-actions vp-panel">
       <div class="action-group">
-        <button class="vp-button" @click="handleCreateFile()" title="Create Document">
-          <n-icon size="16">
-            <DocumentAdd16Regular />
-          </n-icon>
-        </button>
-        <button class="vp-button" @click="handleCreateFolder" title="Create Folder">
-          <n-icon size="16">
-            <FolderAdd16Regular />
-          </n-icon>
-        </button>
+        <button class="vp-button" @click="handleCreateFile()" title="Create Document">➕📄</button>
+        <button class="vp-button" @click="handleCreateFolder" title="Create Folder">➕📂</button>
 
         <div class="split-line"></div>
 
         <button class="vp-button" :disabled="!enableAction" @click="handleCut" title="Cut">
-          <n-icon size="16">
-            <Cut20Regular />
-          </n-icon>
+          ✂️
         </button>
         <button class="vp-button" :disabled="!enableAction" @click="handleCopy" title="Copy">
-          <n-icon size="16">
-            <Copy20Regular />
-          </n-icon>
+          📑
         </button>
         <button class="vp-button" :disabled="!enablePaste" @click="handlePaste" title="Paste">
-          <n-icon size="16">
-            <ClipboardPaste20Regular />
-          </n-icon>
+          📋
         </button>
 
         <button
@@ -111,24 +97,23 @@ const {handleOpenLocalDir, localDirHistoryOptions, isShowDirHistory} = useLocalD
           @click="handleRename"
           title="Rename"
         >
-          <n-icon size="16">
-            <Rename16Regular />
-          </n-icon>
+          ✏️
         </button>
         <button class="vp-button" :disabled="!enableAction" @click="confirmDelete" title="Delete">
-          <n-icon size="16">
-            <Delete16Regular />
-          </n-icon>
+          ❌
         </button>
 
         <div class="split-line"></div>
 
-        <n-popover trigger="hover" placement="bottom-start" style="padding: 0">
-          <template #trigger>
+        <el-popover
+          width="200"
+          placement="bottom-start"
+          :teleported="false"
+          popper-style="padding: 0"
+        >
+          <template #reference>
             <button class="vp-button" title="Open Local Folder" @click="handleOpenLocalDir">
-              <n-icon size="16">
-                <Folder16Regular />
-              </n-icon>
+              📂
             </button>
           </template>
           <QuickOptions
@@ -137,31 +122,20 @@ const {handleOpenLocalDir, localDirHistoryOptions, isShowDirHistory} = useLocalD
             is-static
             class="vp-panel"
           />
-        </n-popover>
+        </el-popover>
       </div>
       <div class="action-group">
         <button @click="isGridView = !isGridView" class="vp-button" title="Toggle grid view">
-          <n-icon size="16">
-            <Grid16Regular v-if="isGridView" />
-            <AppsList20Regular v-else />
-          </n-icon>
+          {{ isGridView ? '🎛️' : '🎚️' }}
         </button>
         <div class="action-button-wrap">
-          <button class="vp-button" title="Toggle Sort" @click="showSortMenu = true">
-            <n-icon size="16">
-              <ArrowSortDownLines16Regular />
-            </n-icon>
-          </button>
+          <button class="vp-button" title="Toggle Sort" @click="showSortMenu = true">📶</button>
           <transition name="fade-scale">
             <QuickOptions v-model:visible="showSortMenu" :options="sortOptions" />
           </transition>
         </div>
 
-        <button class="vp-button" @click="toggleSelectAll" title="Toggle Select All">
-          <n-icon size="16">
-            <SelectAllOn24Regular />
-          </n-icon>
-        </button>
+        <button class="vp-button" @click="toggleSelectAll" title="Toggle Select All">✅</button>
       </div>
     </div>
     <div

@@ -189,37 +189,29 @@ export default defineComponent({
           <ClassNameInput />
         </div>
         <div class="mc-toolbar-group">
-          <n-popconfirm @positive-click="resetToolbar">
-            <template #trigger>
-              <n-button secondary size="tiny">
-                <template #icon>
-                  <n-icon size="18"><ArrowReset20Regular /></n-icon>
-                </template>
-              </n-button>
+          <el-popconfirm :title="$t('msgs.confirm_reset_toolba')" @confirm="resetToolbar">
+            <template #reference>
+              <button class="vp-button">♻️</button>
             </template>
-            {{ $t('msgs.confirm_reset_toolba') }}
-          </n-popconfirm>
+          </el-popconfirm>
 
-          <n-button
+          <button
+            class="vp-button"
             style="min-width: 80px"
-            size="tiny"
             @click="settingsStore.showInventory = !settingsStore.showInventory"
             title="(alt+a)"
           >
-            <template #icon>
-              <n-icon v-if="settingsStore.showInventory" size="18"><Box20Regular /></n-icon>
-            </template>
             {{ $t('common.inventory') }}
-          </n-button>
+          </button>
 
           <slot></slot>
 
-          <n-button size="tiny" @click="mainStore.isShowQuickLaunch = !mainStore.isShowQuickLaunch">
-            <template #icon>
-              <n-icon size="18"><Toolbox20Regular /></n-icon>
-            </template>
-            {{ $t('common.toolbox') }}
-          </n-button>
+          <button
+            class="vp-button"
+            @click="mainStore.isShowQuickLaunch = !mainStore.isShowQuickLaunch"
+          >
+            🧰 {{ $t('common.toolbox') }}
+          </button>
         </div>
       </div>
       <div class="mc-toolbar-main scrollbar-mini">
@@ -291,6 +283,10 @@ export default defineComponent({
       flex-wrap: wrap;
     }
 
+    .vp-button {
+      font-size: 12px;
+      padding: 2px 8px;
+    }
     .vp-input {
       font-size: 12px;
       line-height: 1;

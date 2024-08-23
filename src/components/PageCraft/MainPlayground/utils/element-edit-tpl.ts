@@ -1,12 +1,13 @@
 // 通用表单item模板
+
+import {formatSelectOptions} from '@/utils'
+import {autoSetAttr} from '@/components/PageCraft/MainPlayground/utils/dom'
+import {IElCustomProp} from '@/components/PageCraft/MainPlayground/utils/element-edit'
 import {
   AutoFormItem,
   AutoFormItemType,
   MixedFormItems,
-} from '@/components/CommonUI/AutoFormNaive/enum'
-import {formatSelectOptions} from '@/utils'
-import {autoSetAttr} from '@/components/PageCraft/MainPlayground/utils/dom'
-import {IElCustomProp} from '@/components/PageCraft/MainPlayground/utils/element-edit'
+} from '@/components/CanUI/packages/AutoFormElPlus/enum'
 
 const genInputFormItem = (key: string, rows = 0) => {
   return {
@@ -36,7 +37,7 @@ export const tplFormItem: {[key: string]: AutoFormItem} = {
   src: {
     label: 'src',
     key: 'src',
-    type: AutoFormItemType.ADVANCED_INPUT,
+    type: AutoFormItemType.INPUT,
     props: {
       clearable: true,
     },
@@ -45,7 +46,7 @@ export const tplFormItem: {[key: string]: AutoFormItem} = {
   href: {
     label: 'href',
     key: 'href',
-    type: AutoFormItemType.ADVANCED_INPUT,
+    type: AutoFormItemType.INPUT,
     props: {
       clearable: true,
     },
@@ -71,7 +72,7 @@ export const tplFormItem: {[key: string]: AutoFormItem} = {
   poster: {
     label: 'poster',
     key: 'poster',
-    type: AutoFormItemType.ADVANCED_INPUT,
+    type: AutoFormItemType.INPUT,
     props: {
       clearable: true,
     },
