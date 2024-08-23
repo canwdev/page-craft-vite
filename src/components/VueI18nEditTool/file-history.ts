@@ -1,7 +1,6 @@
 import {useIDBKeyval} from '@vueuse/integrations/useIDBKeyval'
 import {QuickOptionItem} from '@/components/CanUI/packages/QuickOptions/enum'
 import moment from 'moment/moment'
-import {showInputPrompt} from '@/components/CommonUI/input-prompt'
 
 export type FileHandleHistory = {
   handle: FileSystemFileHandle
@@ -52,7 +51,7 @@ export const useOpenedHistory = (storageKey: string, handleOpenHistory) => {
     const idx = list.findIndex((i) => i === item)
     if (idx !== -1) {
       let f = list[idx]
-      const newName = await showInputPrompt({
+      const newName = await window.$mcUtils.showInputPrompt({
         title: `Set Alias: ${f.handle.name}`,
         value: f.alias || f.handle.name,
         allowEmpty: true,
@@ -114,15 +113,14 @@ export const useOpenedHistory = (storageKey: string, handleOpenHistory) => {
         label: '🧹 Clear History',
         props: {
           onClick: () => {
-            window.$dialog.warning({
-              title: 'Confirm clear history?',
-              positiveText: 'OK',
-              negativeText: 'Cancel',
-              onPositiveClick: () => {
+            window.$dialog
+              .confirm('Confirm clear history?', '', {
+                type: 'warning',
+              })
+              .then(() => {
                 openedHistory.value = []
-              },
-              onNegativeClick: () => {},
-            })
+              })
+              .catch()
           },
         },
       },

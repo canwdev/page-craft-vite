@@ -22,17 +22,20 @@ export const useBatchTranslateRefactor = (emit) => {
     emit('reloadTranslates')
   }
   const handleDeleteKeys = () => {
-    window.$dialog.warning({
-      title: `${$t('i18n_tools.delete_keys')} (${$t('i18n_tools.in_all_languages')}): ${
-        i18nMainStore.translatePath
-      }`,
-      positiveText: $t('actions.ok'),
-      negativeText: $t('actions.cancel'),
-      onPositiveClick: () => {
+    window.$dialog
+      .confirm(
+        `${$t('i18n_tools.delete_keys')} (${$t('i18n_tools.in_all_languages')}): ${
+          i18nMainStore.translatePath
+        }`,
+        $t('actions.confirm'),
+        {
+          type: 'warning',
+        },
+      )
+      .then(() => {
         doDelete()
-      },
-      onNegativeClick: () => {},
-    })
+      })
+      .catch()
   }
 
   const doRename = async (newPath) => {

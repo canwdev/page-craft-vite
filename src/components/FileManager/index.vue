@@ -1,12 +1,4 @@
 <script setup lang="ts">
-import {
-  ArrowSync20Filled,
-  ArrowUp20Regular,
-  ArrowLeft20Regular,
-  ArrowRight20Regular,
-  Star20Filled,
-  Star20Regular,
-} from '@vicons/fluent'
 import FileList from './ExplorerUI/FileList.vue'
 import {getLastDirName} from './utils'
 import {useNavigation} from './ExplorerUI/hooks/use-navigation'
@@ -124,7 +116,7 @@ onMounted(() => {
         </div>
       </div>
     </div>
-    <div class="explorer-content-wrap _scrollbar_mini">
+    <div class="explorer-content-wrap scrollbar-mini">
       <FileList
         v-model:is-loading="isLoading"
         :files="filteredFiles"

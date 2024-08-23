@@ -1,12 +1,4 @@
 <script lang="ts" setup>
-import {
-  ArrowLeft20Regular,
-  ArrowRight20Regular,
-  ArrowSync20Filled,
-  ArrowUp20Regular,
-  Star20Filled,
-  Star20Regular,
-} from '@vicons/fluent'
 import {useNavigation} from '@/components/FileManager/ExplorerUI/hooks/use-navigation'
 import {fsWebApi} from '@/components/FileManager/utils/providers/humanfs-api'
 import {getLastDirName, normalizePath} from '@/components/FileManager/utils'
@@ -142,7 +134,7 @@ onMounted(() => {
       </div>
     </div>
 
-    <div class="explorer-content-wrap _scrollbar_mini">
+    <div class="explorer-content-wrap scrollbar-mini">
       <ComponentList
         v-model:is-loading="isLoading"
         :files="filteredFiles"

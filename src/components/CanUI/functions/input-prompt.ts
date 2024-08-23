@@ -33,69 +33,42 @@ export const showInputPrompt = (options: any = {}): Promise<string> => {
         }
       }
       resolve(editingValue.value)
-      d.visible = false
+      console.log(dialog)
+      dialog.close()
     }
-
-    const d = {
-      visible: true,
-      title,
-      close: () => {
-        reject()
-        d.visible = false
-      },
-    }
-
-    const dialog = h(
-      ElDialog,
-      {
-        modelValue: d.visible,
-        title,
-        onClose: d.close,
-        onOpen: () => {
-          inputRef.value?.focus()
-        },
-      },
-      {
-        default: () => [
-          h(ElInput, {
-            ref: inputRef,
-            modelValue: editingValue.value,
-            placeholder,
-            type,
-            clearable: true,
-            'onUpdate:modelValue': (v) => {
-              editingValue.value = v
-            },
-            onKeydown: (event) => {
-              if (event.key === 'Enter') {
-                event.preventDefault()
-                handlePositiveClick()
-              }
-            },
-          }),
-        ],
-        footer: () => [
-          h(
-            ElButton,
-            {
-              type: 'primary',
-              disabled: !allowEmpty && !editingValue.value,
-              onClick: handlePositiveClick,
-            },
-            () => 'OK',
-          ),
-          h(
-            ElButton,
-            {
-              onClick: d.close,
-            },
-            () => 'Cancel',
-          ),
-        ],
-      },
-    )
 
     // TODO
-    window.$dialog.show(dialog)
+    const dialog = window.$dialog({
+      title,
+      message: h(ElInput, {
+        ref: inputRef,
+        modelValue: editingValue.value,
+        placeholder,
+        type,
+        clearable: true,
+        'onUpdate:modelValue': (v) => {
+          editingValue.value = v
+        },
+        onKeydown: (event) => {
+          if (event.key === 'Enter') {
+            event.preventDefault()
+            handlePositiveClick()
+          }
+        },
+      }),
+      showCancelButton: true,
+      confirmButtonText: 'OK',
+      cancelButtonText: 'Cancel',
+      beforeClose: async (action, instance, done) => {
+        if (action === 'confirm') {
+          instance.confirmButtonLoading = true
+          await handlePositiveClick()
+          instance.confirmButtonLoading = false
+          done()
+        } else {
+          done()
+        }
+      },
+    })
   })
 }

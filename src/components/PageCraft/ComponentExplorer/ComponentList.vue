@@ -1,19 +1,6 @@
 <script lang="ts" setup>
 import {useVModel} from '@vueuse/core'
-import {
-  DocumentAdd16Regular,
-  FolderAdd16Regular,
-  Rename16Regular,
-  Delete16Regular,
-  SelectAllOn24Regular,
-  ArrowSortDownLines16Regular,
-  Cut20Regular,
-  Copy20Regular,
-  ClipboardPaste20Regular,
-  Add24Regular,
-  MoreHorizontal20Regular,
-  Folder16Regular,
-} from '@vicons/fluent'
+
 import QuickOptions from '@/components/CanUI/packages/QuickOptions/index.vue'
 import QuickContextMenu from '@/components/CanUI/packages/QuickOptions/utils/QuickContextMenu.vue'
 import {

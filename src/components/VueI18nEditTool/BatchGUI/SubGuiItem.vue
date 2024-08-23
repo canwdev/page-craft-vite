@@ -4,7 +4,6 @@ import {DirTreeItem} from '@/enum/vue-i18n-tool'
 import _get from 'lodash/get'
 import _set from 'lodash/set'
 import _unset from 'lodash/unset'
-import {ClipboardPaste20Regular, Delete20Regular, SaveMultiple20Regular} from '@vicons/fluent'
 import DialogTextEdit from '@/components/CommonUI/DialogTextEdit.vue'
 import {useI18n} from 'vue-i18n'
 import {readClipboardData} from '@/utils'
@@ -19,11 +18,8 @@ export default defineComponent({
   name: 'SubGuiItem',
   components: {
     CcFlag,
-    Delete20Regular,
     FieldEdit,
     DialogTextEdit,
-    SaveMultiple20Regular,
-    ClipboardPaste20Regular,
   },
   props: {
     listItem: {
@@ -114,7 +110,7 @@ export default defineComponent({
           isChanged.value = false
         })
       },
-      {immediate: true}
+      {immediate: true},
     )
     watch(fieldValue, () => {
       isChanged.value = true
@@ -126,7 +122,7 @@ export default defineComponent({
         nextTick(() => {
           isChanged.value = false
         })
-      }
+      },
     )
 
     const inputRef = ref()
@@ -247,7 +243,11 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="batch-translate-item vp-panel" :data-translate-path="i18nMainStore.translatePath" v-loading="isLoading">
+  <div
+    class="batch-translate-item vp-panel"
+    :data-translate-path="i18nMainStore.translatePath"
+    v-loading="isLoading"
+  >
     <div class="card-header">
       <div class="card-title-wrap">
         <span class="card-title font-code">

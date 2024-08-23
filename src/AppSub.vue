@@ -6,7 +6,7 @@ import {useSettingsStore} from '@/store/settings'
 import {mcUtils} from '@/utils/mc-utils'
 import {useRoute} from 'vue-router'
 import {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
-import {ElMessage, ElMessageBox} from 'element-plus'
+import {ElMessage, ElMessageBox, ElNotification} from 'element-plus'
 
 export default defineComponent({
   name: 'AppSub',
@@ -30,8 +30,7 @@ export default defineComponent({
     const mainStore = useMainStore()
     const settingsStore = useSettingsStore()
     const route = useRoute()
-    // TODO REFACTOR
-    window.$notification = useNotification()
+    window.$notification = ElNotification
     window.$message = ElMessage
     window.$dialog = ElMessageBox
 

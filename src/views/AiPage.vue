@@ -4,7 +4,7 @@ import ChatRoot from '@/components/AI/AIChat/ChatRoot.vue'
 </script>
 
 <template>
-  <div class="ai-page _scrollbar_mini">
+  <div class="ai-page scrollbar-mini">
     <CommonNavbar />
     <ChatRoot />
   </div>

@@ -6,7 +6,6 @@ import InventoryModal from '@/components/PageCraft/InventoryModal/index.vue'
 import {LsKeys} from '@/enum/page-craft'
 import {useRouter} from 'vue-router'
 import {useSettingsStore} from '@/store/settings'
-import {ArrowReset20Regular, Box20Regular, Toolbox20Regular} from '@vicons/fluent'
 import PreviewWindow from '@/components/PageCraft/DomPreview/PreviewWindow.vue'
 import {useI18n} from 'vue-i18n'
 import {useOpenCloseSound, useSfxSelect} from '@/hooks/use-sfx'
@@ -20,9 +19,6 @@ export default defineComponent({
     PreviewWindow,
     ToolItem,
     InventoryModal,
-    ArrowReset20Regular,
-    Box20Regular,
-    Toolbox20Regular,
   },
   setup(props, {emit}) {
     const {t: $t} = useI18n()
@@ -66,7 +62,7 @@ export default defineComponent({
         updateCurrentBlock(toolBarList.value[newIndex])
         stopSfxSelect()
         playSfxSelect()
-      }
+      },
     )
 
     const selectNext = () => {
@@ -226,7 +222,7 @@ export default defineComponent({
           </n-button>
         </div>
       </div>
-      <div class="mc-toolbar-main _scrollbar_mini">
+      <div class="mc-toolbar-main scrollbar-mini">
         <ToolItem
           v-for="(item, index) in toolBarList"
           :key="index"

@@ -53,14 +53,7 @@ const handleChoose = async () => {
     <button class="vp-button" @click="handleChoose" title="Upload image...">🖼️</button>
     <div class="image-list">
       <div v-for="(image, index) in images" :key="index" class="image-item vp-panel">
-        <n-image
-          show-toolbar-tooltip
-          width="40"
-          height="30"
-          object-fit="contain"
-          :src="image"
-          alt="Selected Image"
-        />
+        <img :src="image" />
         <button @click="removeImage(index)" class="btn-no-style" title="Remove">✖</button>
       </div>
     </div>
@@ -84,7 +77,10 @@ const handleChoose = async () => {
       align-items: center;
       position: relative;
 
-      .n-image {
+      img {
+        width: 40px;
+        height: 30px;
+        object-fit: contain;
       }
 
       button {

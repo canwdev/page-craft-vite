@@ -2,14 +2,7 @@
 import {sassToCSS, suggestElementClass} from './utils/css'
 import {beautifyCss} from './utils/formater'
 import ViewPortWindow from '@/components/CanUI/packages/ViewPortWindow/index.vue'
-import {
-  Copy20Regular,
-  CursorClick20Regular,
-  CursorHover20Regular,
-  PaintBrush20Regular,
-  AppsAddIn20Regular,
-  Wand20Regular,
-} from '@vicons/fluent'
+
 import {useI18n} from 'vue-i18n'
 import TabLayout from '@/components/CommonUI/TabLayout.vue'
 import monaco from '@/components/CanUI/packages/VueMonaco/monaco-helper'

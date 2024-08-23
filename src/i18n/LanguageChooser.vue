@@ -11,15 +11,14 @@ export default defineComponent({
       languages,
       handleLanguageSelect(val) {
         setLanguage(val)
-        window.$dialog.warning({
-          title: $t('msgs.refresh_page'),
-          positiveText: $t('actions.ok'),
-          negativeText: $t('actions.cancel'),
-          onPositiveClick: () => {
+        window.$dialog
+          .confirm($t('msgs.refresh_page'), $t('actions.confirm'), {
+            type: 'warning',
+          })
+          .then(() => {
             location.reload()
-          },
-          onNegativeClick: () => {},
-        })
+          })
+          .catch()
       },
     }
   },

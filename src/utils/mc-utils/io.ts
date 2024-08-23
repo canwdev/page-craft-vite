@@ -1,9 +1,8 @@
-import {showInputPrompt} from '@/components/CommonUI/input-prompt'
 import moment from 'moment'
 import FileSaver from 'file-saver'
 
 export const promptGetFileName = async (name?, fallbackPrefix = 'PageCraft') => {
-  return await showInputPrompt({
+  return await window.$mcUtils.showInputPrompt({
     title: 'Export filename',
     value: name || `${fallbackPrefix}_${moment(new Date()).format('YYYYMMDD_HHmmss')}`,
   })

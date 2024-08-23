@@ -17,6 +17,8 @@ import {useI18n} from 'vue-i18n'
 import {useStorage} from '@vueuse/core'
 import {handleExportFile, promptGetFileName} from '@/utils/mc-utils/io'
 import CommonNavbar from '@/components/CommonUI/CommonNavbar.vue'
+import DropdownMenu from '@/components/CanUI/packages/OptionUI/Tools/DropdownMenu.vue'
+import RectSwitch from '@/components/CanUI/packages/OptionUI/Tools/RectSwitch.vue'
 
 const isAllowedElement = (el) => {
   return el.tagName.toLowerCase() === 'td'
@@ -54,6 +56,8 @@ window.demo_json_to_sheet = [
 export default defineComponent({
   name: 'ExcelCopyTool',
   components: {
+    RectSwitch,
+    DropdownMenu,
     CommonNavbar,
     FileChooser,
     DropZone,
@@ -377,53 +381,40 @@ export default defineComponent({
     <div v-loading="!isReady">
       <CommonNavbar>
         <template #extra>
-          <n-space>
-            <n-space size="small" align="center">
-              <n-checkbox size="small" v-model:checked="isTrimEmptyLines">
+          <div class="flex-row-center-gap">
+            <div class="flex-row-center-gap">
+              <el-checkbox size="small" v-model="isTrimEmptyLines">
                 {{ $t('msgs.trim_empty_lines') }}
-              </n-checkbox>
-              <n-button text @click="mainStore.isShowTextTransformer = true"
-                >{{ $t('common.text_transformer') }}:</n-button
-              >
-              <n-select
-                size="small"
-                v-model:value="copyMode"
-                :options="modTextConvertOptions"
-                style="width: 100px"
-              />
-            </n-space>
+              </el-checkbox>
+              <a @click="mainStore.isShowTextTransformer = true">
+                {{ $t('common.text_transformer') }}:
+              </a>
+              <RectSwitch size="small" v-model="copyMode" :options="modTextConvertOptions" />
+            </div>
 
-            <n-dropdown
-              v-if="workbookRef"
-              :options="dropdownMenuOptions"
-              placement="bottom-start"
-              key-field="label"
-              :disabled="!isReady"
-            >
-              <n-button size="small">💻 {{ $t('actions.export') }}</n-button>
-            </n-dropdown>
+            <DropdownMenu v-if="workbookRef" :options="dropdownMenuOptions" :disabled="!isReady">
+              <button class="vp-button">💻 {{ $t('actions.export') }}</button>
+            </DropdownMenu>
 
-            <n-button
+            <button
               v-if="!fileRef"
-              type="primary"
               :disabled="!isReady"
               @click="importFileChooserRef.chooseFile()"
-              size="small"
+              class="vp-button primary"
             >
               {{ $t('actions.open') + ' Excel' }}
-            </n-button>
+            </button>
 
-            <n-button v-else type="primary" size="small" @click="handleCloseFile">
+            <button v-else class="vp-button primary" @click="handleCloseFile">
               {{ $t('actions.close') }}
-            </n-button>
+            </button>
 
-            <n-button v-if="!fileRef" @click="loadDemo" size="small" :disabled="!isReady">{{
-              $t('common.demo')
-            }}</n-button>
-          </n-space>
+            <button v-if="!fileRef" @click="loadDemo" class="vp-button" :disabled="!isReady">
+              {{ $t('common.demo') }}
+            </button>
+          </div>
         </template>
       </CommonNavbar>
-
 
       <n-card v-if="isReady" class="sheet-name-card" size="small">
         <n-tabs size="small" type="card" animated v-model:value="sheetNameIndex">

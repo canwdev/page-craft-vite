@@ -1,4 +1,3 @@
-import {showInputPrompt} from '@/components/CommonUI/input-prompt'
 import moment from 'moment/moment'
 import {fsWebApi} from '../../utils/api'
 import {generateTextFile, normalizePath} from '../../utils'
@@ -19,7 +18,7 @@ export const useFileActions = ({
 }) => {
   const handleCreateFile = async () => {
     try {
-      const name = await showInputPrompt({
+      const name = await window.$mcUtils.showInputPrompt({
         title: 'Create File',
         value: `file_${moment(new Date()).format('YYYYMMDD_HHmmss')}.txt`,
       })
@@ -35,7 +34,7 @@ export const useFileActions = ({
   }
   const handleCreateFolder = async () => {
     try {
-      const name = await showInputPrompt({
+      const name = await window.$mcUtils.showInputPrompt({
         title: 'Create Folder',
         value: `folder_${moment(new Date()).format('YYYYMMDD_HHmmss')}`,
       })
@@ -50,7 +49,7 @@ export const useFileActions = ({
   const handleRename = async () => {
     try {
       const item: IEntry = selectedItems.value[0]
-      const name = await showInputPrompt({
+      const name = await window.$mcUtils.showInputPrompt({
         title: 'Rename',
         value: item.name,
       })
@@ -77,16 +76,14 @@ export const useFileActions = ({
     }
   }
   const confirmDelete = () => {
-    window.$dialog.warning({
-      title: 'Confirm Delete',
-      content: `确认删除？此操作不可撤销`,
-      positiveText: 'OK',
-      negativeText: 'Cancel',
-      onPositiveClick: () => {
+    window.$dialog
+      .confirm(`确认删除？此操作不可撤销`, 'Confirm Delete', {
+        type: 'warning',
+      })
+      .then(() => {
         doDeleteSelected()
-      },
-      onNegativeClick: () => {},
-    })
+      })
+      .catch()
   }
 
   const ctxMenuOptions = computed((): QuickOptionItem[] => {

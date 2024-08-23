@@ -1,170 +1,112 @@
 <script lang="ts">
+export default {
+  name: 'MainPlayground',
+}
+</script>
+<script setup lang="ts">
 import {useMainStore} from '@/store/main'
-import {ActionType} from '@/enum/page-craft/block'
-import FileChooser from '@/components/CommonUI/FileChooser.vue'
-import IndicatorInfo from '@/components/PageCraft/MainPlayground/components/IndicatorInfo.vue'
 import {useIndicator} from '@/components/PageCraft/MainPlayground/hooks/indicator-hooks'
 import {useInteractionHooks} from '@/components/PageCraft/MainPlayground/hooks/interaction-hooks'
 import {useMcMain} from '@/components/PageCraft/MainPlayground/hooks/main-hooks'
-import ElementEditDialog from '@/components/PageCraft/MainPlayground/components/ElementEditDialog.vue'
+
 import {useSettingsStore} from '@/store/settings'
-import {
-  ArrowUndo20Filled,
-  ArrowRedo20Filled,
-  Settings20Regular,
-  Code20Filled,
-  QuestionCircle20Regular,
-} from '@vicons/fluent'
-import VueMonaco from '@/components/CanUI/packages/VueMonaco/index.vue'
+
 import {WebviewWindow} from '@tauri-apps/api/window'
 import {useRoute, useRouter} from 'vue-router'
 import {useEventListener} from '@vueuse/core'
+import VueMonaco from '@/components/CanUI/packages/VueMonaco/index.vue'
+import ElementEditDialog from '@/components/PageCraft/MainPlayground/components/ElementEditDialog.vue'
+import DropdownMenu from '@/components/CanUI/packages/OptionUI/Tools/DropdownMenu.vue'
 
-export default defineComponent({
-  name: 'MainPlayground',
-  components: {
-    VueMonaco,
-    FileChooser,
-    IndicatorInfo,
-    ElementEditDialog,
-    ArrowUndo20Filled,
-    ArrowRedo20Filled,
-    Settings20Regular,
-    Code20Filled,
-    QuestionCircle20Regular,
-  },
-  setup(props, {emit}) {
-    const router = useRouter()
-    const route = useRoute()
-    const mainPlaygroundRef = ref()
-    const mainStore = useMainStore()
-    const settingsStore = useSettingsStore()
+const router = useRouter()
+const route = useRoute()
+const mainPlaygroundRef = ref()
+const mainStore = useMainStore()
+const settingsStore = useSettingsStore()
 
-    const isLitePage = computed(() => {
-      return route.name === 'PlaygroundPage'
-    })
-
-    const {
-      htmlMenuOptions,
-      isShowImportDialog,
-      setPlaygroundHtml,
-      pasteHtmlText,
-      handleImportHtml,
-      saveData,
-      copyHtml,
-      undoRedo,
-      recordUndo,
-      handleUndo,
-      handleRedo,
-    } = useMcMain({
-      mainPlaygroundRef,
-      emit,
-    })
-
-    const {indicatorOptions, mainCanvasClass, toggleList, backgroundStyle} = useIndicator()
-
-    const {
-      isSelectMode,
-      handleMouseDown,
-      handleMouseUp,
-      handleDragOver,
-      handleDragLeave,
-      handleDrop,
-      waitingProgress,
-      cursorX,
-      cursorY,
-      contextMenuEtc,
-      selectionActionStyle,
-      selectionElRef,
-      isShowSelectionAction,
-      selectionPopupOptions,
-      isShowElementEdit,
-      editingNode,
-      isEditingRoot,
-      updateEditingElement,
-    } = useInteractionHooks({
-      mainPlaygroundRef,
-      saveData,
-      indicatorOptions,
-      copyHtml,
-      recordUndo,
-    })
-
-    const listenShortcuts = (event) => {
-      // console.log(event)
-      const key = event.key.toLowerCase()
-      if (event.ctrlKey && event.shiftKey && key === 'z') {
-        handleRedo()
-      } else if (event.ctrlKey && key === 'z') {
-        handleUndo()
-      }
-    }
-
-    useEventListener(document, 'keydown', (event) => {
-      // console.log(event)
-      const key = event.key.toLowerCase()
-      if (event.altKey && key === 'x') {
-        indicatorOptions.enableExpand = !indicatorOptions.enableExpand
-      } else if (event.altKey && key === 'z') {
-        indicatorOptions.enableDevHelpClass = !indicatorOptions.enableDevHelpClass
-      }
-    })
-
-    const openPlayground = () => {
-      const url = router.resolve({
-        name: 'PlaygroundPage',
-      }).href
-      console.log(url)
-      if (window.__TAURI__) {
-        const webview = new WebviewWindow('theUniqueLabel', {
-          url,
-        })
-        return
-      }
-      window.open(url)
-    }
-
-    return {
-      mainStore,
-      settingsStore,
-      mainPlaygroundRef,
-      indicatorOptions,
-      BlockType: ActionType,
-      toggleList,
-      handleMouseDown,
-      handleMouseUp,
-      handleDragOver,
-      handleDragLeave,
-      handleDrop,
-      waitingProgress,
-      cursorX,
-      cursorY,
-      mainCanvasClass,
-      htmlMenuOptions,
-      isShowImportDialog,
-      setPlaygroundHtml,
-      pasteHtmlText,
-      handleImportHtml,
-      selectionActionStyle,
-      selectionElRef,
-      isShowSelectionAction,
-      selectionPopupOptions,
-      ...contextMenuEtc,
-      undoRedo,
-      handleUndo,
-      handleRedo,
-      isShowElementEdit,
-      editingNode,
-      isEditingRoot,
-      updateEditingElement,
-      backgroundStyle,
-      listenShortcuts,
-      openPlayground,
-      isSelectMode,
-      isLitePage,
-    }
-  },
+const isLitePage = computed(() => {
+  return route.name === 'PlaygroundPage'
 })
+
+const {
+  htmlMenuOptions,
+  isShowImportDialog,
+  setPlaygroundHtml,
+  pasteHtmlText,
+  handleImportHtml,
+  saveData,
+  copyHtml,
+  undoRedo,
+  recordUndo,
+  handleUndo,
+  handleRedo,
+} = useMcMain({
+  mainPlaygroundRef,
+  emit,
+})
+
+const {indicatorOptions, mainCanvasClass, toggleList, backgroundStyle} = useIndicator()
+
+const {
+  isSelectMode,
+  handleMouseDown,
+  handleMouseUp,
+  handleDragOver,
+  handleDragLeave,
+  handleDrop,
+  waitingProgress,
+  cursorX,
+  cursorY,
+  ctxMenuOptions,
+  selectionActionStyle,
+  selectionElRef,
+  isShowSelectionAction,
+  selectionPopupOptions,
+  isShowElementEdit,
+  editingNode,
+  isEditingRoot,
+  updateEditingElement,
+} = useInteractionHooks({
+  mainPlaygroundRef,
+  saveData,
+  indicatorOptions,
+  copyHtml,
+  recordUndo,
+})
+
+const listenShortcuts = (event) => {
+  // console.log(event)
+  const key = event.key.toLowerCase()
+  if (event.ctrlKey && event.shiftKey && key === 'z') {
+    handleRedo()
+  } else if (event.ctrlKey && key === 'z') {
+    handleUndo()
+  }
+}
+
+useEventListener(document, 'keydown', (event) => {
+  // console.log(event)
+  const key = event.key.toLowerCase()
+  if (event.altKey && key === 'x') {
+    indicatorOptions.enableExpand = !indicatorOptions.enableExpand
+  } else if (event.altKey && key === 'z') {
+    indicatorOptions.enableDevHelpClass = !indicatorOptions.enableDevHelpClass
+  }
+})
+
+const openPlayground = () => {
+  const url = router.resolve({
+    name: 'PlaygroundPage',
+  }).href
+  console.log(url)
+  if (window.__TAURI__) {
+    const webview = new WebviewWindow('theUniqueLabel', {
+      url,
+    })
+    return
+  }
+  window.open(url)
+}
 </script>
 
 <template>
@@ -190,19 +132,11 @@ export default defineComponent({
       </div>
     </transition>
 
-    <n-dropdown
-      size="small"
-      trigger="manual"
-      placement="bottom-start"
-      :show="showRightMenu"
-      :options="rightMenuOptions"
-      :x="xRef"
-      :y="yRef"
-      @select="handleSelectContextmenu"
-      key-field="label"
-      :on-clickoutside="handleClickOutside"
-      :animated="false"
-    />
+    <Teleport to="body">
+      <transition name="fade">
+        <QuickContextMenu :options="ctxMenuOptions" ref="ctxMenuRef" />
+      </transition>
+    </Teleport>
 
     <n-modal
       v-model:show="isShowImportDialog"
@@ -227,36 +161,19 @@ export default defineComponent({
 
     <portal to="indicatorBarTeleportDest">
       <template v-if="!isLitePage">
-        <n-dropdown
-          :options="htmlMenuOptions"
-          key-field="label"
-          placement="bottom-start"
-          trigger="hover"
-        >
-          <n-button
-            size="tiny"
+        <DropdownMenu :options="htmlMenuOptions">
+          <button
+            class="vp-button"
             :title="`${settingsStore.curCompInStore?.basePath}
 ${settingsStore.curCompInStore?.title}`"
           >
-            <template #icon>
-              <n-icon size="18">
-                <Code20Filled />
-              </n-icon>
-            </template>
-            {{ settingsStore.curCompInStore?.title?.slice(0, 10) || 'Default' }}</n-button
-          >
-        </n-dropdown>
+            {{ settingsStore.curCompInStore?.title?.slice(0, 10) || 'Default' }}
+          </button>
+        </DropdownMenu>
 
         <n-popover :duration="100" :show-arrow="false" trigger="hover">
           <template #trigger>
-            <n-button size="tiny">
-              <template #icon>
-                <n-icon size="18">
-                  <Settings20Regular />
-                </n-icon>
-              </template>
-              {{ $t('common.options') }}</n-button
-            >
+            <button class="vp-button">⚙️ {{ $t('common.options') }}</button>
           </template>
           <template #header></template>
           <div v-for="item in toggleList" :key="item.flag" class="toggle-list">

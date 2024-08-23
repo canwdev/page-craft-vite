@@ -73,7 +73,7 @@ defineExpose({
 
 <template>
   <div
-    class="vue-json-editor _scrollbar_mini"
+    class="vue-json-editor scrollbar-mini"
     :class="{'jse-theme-dark': dark}"
     ref="editorWrap"
   ></div>

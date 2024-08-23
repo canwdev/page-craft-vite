@@ -2,7 +2,6 @@
 import {bytesToSize, formatDate} from '@/utils'
 import {IEntry} from '../types/filesystem'
 import {useFileItem} from './hooks/use-file-item'
-import {Folder20Regular, Document20Regular} from '@vicons/fluent'
 
 const emit = defineEmits(['open', 'select'])
 

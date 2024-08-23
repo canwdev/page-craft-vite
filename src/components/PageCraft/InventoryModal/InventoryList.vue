@@ -2,13 +2,11 @@
 import {defineComponent, PropType} from 'vue'
 import BlockItemCard from '@/components/PageCraft/InventoryModal/BlockItemCard.vue'
 import {BlockItem} from '@/enum/page-craft/block'
-import {BoxMultipleSearch20Regular} from '@vicons/fluent'
 
 export default defineComponent({
   name: 'InventoryList',
   components: {
     BlockItemCard,
-    BoxMultipleSearch20Regular,
   },
   props: {
     itemList: {
@@ -69,7 +67,7 @@ export default defineComponent({
     <div v-if="!itemListFiltered.length" style="padding: 40px; text-align: center; font-size: 20px">
       {{ $t('msgs.no_items') }}
     </div>
-    <div v-else class="inventory-list _scrollbar_mini" :class="{_big: false}">
+    <div v-else class="inventory-list scrollbar-mini" :class="{_big: false}">
       <template v-for="item in itemListFiltered" :key="item.id">
         <BlockItemCard class="list-item" :item="item" @click="$emit('onItemClick', item)" />
       </template>

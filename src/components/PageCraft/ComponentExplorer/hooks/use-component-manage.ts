@@ -1,5 +1,4 @@
 import * as changeCase from 'change-case'
-import {showInputPrompt} from '@/components/CommonUI/input-prompt'
 import {useI18n} from 'vue-i18n'
 import {Ref} from 'vue'
 import {IEntry} from '@/components/FileManager/types/filesystem'
@@ -70,7 +69,7 @@ export const useComponentManage = (options: Opts) => {
   const {t: $t} = useI18n()
 
   const inputPrompt = (title = '', value = '', placeholder = '') => {
-    return showInputPrompt({
+    return window.$mcUtils.showInputPrompt({
       title,
       value,
       placeholder,
@@ -92,7 +91,7 @@ export const useComponentManage = (options: Opts) => {
   }
   const handleCreateComponent = async () => {
     try {
-      let name = await inputPrompt(
+      const name = await inputPrompt(
         $t('actions.add_component'),
         `Component${idx}`,
         $t('msgs.please_enter_the_nam'),

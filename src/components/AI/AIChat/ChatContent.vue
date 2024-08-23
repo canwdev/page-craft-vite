@@ -255,7 +255,7 @@ const handleRetry = (item: IMessageItem, index) => {
     :data-load="handleLoad()"
     v-if="currentHistory && currentCharacter"
   >
-    <div ref="respContainerRef" class="response-container _scrollbar_mini">
+    <div ref="respContainerRef" class="response-container scrollbar-mini">
       <ChatItem
         v-for="(item, index) in currentHistory.history"
         :key="index"
@@ -288,12 +288,12 @@ const handleRetry = (item: IMessageItem, index) => {
       />
       <div class="request-actions">
         <div class="action-side">
-          <n-popover trigger="click">
-            <template #trigger>
+          <el-popover width="400" placement="top-start" trigger="click" :teleported="false">
+            <template #reference>
               <button class="vp-button">⚙️</button>
             </template>
-            <OptionUI style="max-width: 400px" :option-list="aiSettingsOptions" />
-          </n-popover>
+            <OptionUI :option-list="aiSettingsOptions" />
+          </el-popover>
         </div>
 
         <div class="action-side">
@@ -302,12 +302,15 @@ const handleRetry = (item: IMessageItem, index) => {
           </template>
           {{ currentCharacter.model }}
 
-          <n-popconfirm @positive-click="resetChatHistory">
-            <template #trigger>
+          <el-popconfirm
+            @confirm="resetChatHistory"
+            :title="`Confirm clear chat history?`"
+            :teleported="false"
+          >
+            <template #reference>
               <button class="vp-button">{{ $t('actions.clear') }}</button>
             </template>
-            {{ $t('ai.clear_chat_history') }}
-          </n-popconfirm>
+          </el-popconfirm>
           <button
             class="vp-button"
             :disabled="isLoading || !userInputContent"

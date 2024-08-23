@@ -1,4 +1,3 @@
-import {NButton} from 'naive-ui'
 import {getPkg} from '@/router/router-utils'
 import {useSettingsStore} from '@/store/settings'
 import {useMainStore} from '@/store/main'
@@ -43,9 +42,9 @@ export const useUpdater = (author, name, branch = 'master') => {
 
       if (compareVersions(localVersion, latestVersion) < 0) {
         mainStore.upgradeInfo = `${$t(
-          'msgs.new_version'
+          'msgs.new_version',
         )}: v${latestVersion} | <a style="color:inherit; text-decoration: underline" href="${releasePage}" target="_blank">${$t(
-          'actions.download'
+          'actions.download',
         )}</a>`
 
         // 执行更新操作，例如提示用户或自动更新
@@ -71,36 +70,38 @@ export const useUpdater = (author, name, branch = 'master') => {
 
   onMounted(async () => {
     if (!window.__TAURI__ && settingsStore.recommendDesktopClient) {
-      const n = window.$notification.info({
+      const n = window.$notification({
+        type: 'info',
+        position: 'bottom-right',
         title: $t('msgs.recommend_download_client_title') + ' 🖥️',
-        meta: ' ',
-        action: () =>
-          h(
-            NButton,
-            {
-              text: true,
-              type: 'primary',
-              onClick: () => {
-                window.open(releasePage)
-                n.destroy()
-              },
-            },
-            {
-              default: () => $t('actions.download'),
-            }
-          ),
+        // TODO
+        // action: () =>
+        //   h(
+        //     'button',
+        //     {
+        //       class: 'vp-button',
+        //       onClick: () => {
+        //         window.open(releasePage)
+        //         n.destroy()
+        //       },
+        //     },
+        //     {
+        //       default: () => $t('actions.download'),
+        //     },
+        //   ),
         onClose: () => {
           settingsStore.recommendDesktopClient = false
         },
-        content: $t('msgs.recommend_download_client_desc'),
+        message: $t('msgs.recommend_download_client_desc'),
       })
     }
     if (window.__TAURI__ && settingsStore.autoCheckUpdate) {
       const {update} = await check()
       if (update) {
-        window.$notification.info({
+        window.$notification({
+          type: 'info',
           title: $t('msgs.update_avail') + ' 🎆',
-          content: () => h('div', {innerHTML: mainStore.upgradeInfo}),
+          message: () => h('div', {innerHTML: mainStore.upgradeInfo}),
         })
       }
     }

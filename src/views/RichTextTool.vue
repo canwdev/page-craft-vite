@@ -14,7 +14,7 @@ const mainStore = useMainStore()
 </script>
 
 <template>
-  <div class="rich-text-tool-wrap _scrollbar_mini">
+  <div class="rich-text-tool-wrap scrollbar-mini">
     <CommonNavbar />
 
     <TinyMceEditor

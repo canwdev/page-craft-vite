@@ -4,7 +4,6 @@ import TranslateTreeItem from '@/components/VueI18nEditTool/Single/TranslateTree
 import {exportI18nTreeJsonObj, I18nJsonObjUtils, ITranslateTreeItem} from '@/enum/vue-i18n-tool'
 import DropZone from '@/components/CommonUI/DropZone.vue'
 import {useFileDrop} from '@/hooks/use-file-drop'
-import {Save20Regular} from '@vicons/fluent'
 import {useBeforeUnload, useSaveShortcut} from '@/hooks/use-beforeunload'
 import {useMainStore} from '@/store/main'
 import {useI18n} from 'vue-i18n'
@@ -41,7 +40,6 @@ export default defineComponent({
     I18nToolSettings,
     TranslateTreeItem,
     DropZone,
-    Save20Regular,
   },
   setup() {
     const {t: $t} = useI18n()
@@ -303,7 +301,7 @@ export default defineComponent({
       </template>
     </CommonNavbar>
 
-    <div class="scroll-content _scrollbar_mini">
+    <div class="scroll-content scrollbar-mini">
       <div class="i18n-container">
         <TranslateTreeItem
           v-for="(item, index) in translateTreeRoot"

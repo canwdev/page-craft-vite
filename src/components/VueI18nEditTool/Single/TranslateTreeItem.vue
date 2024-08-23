@@ -11,14 +11,7 @@ import {
 import TranslateItem from '@/components/VueI18nEditTool/Single/TranslateItem.vue'
 import {copyToClipboard, guid, readClipboardData} from '@/utils'
 import DialogTextEdit from '@/components/CommonUI/DialogTextEdit.vue'
-import {
-  Delete20Regular,
-  AddSquare20Regular,
-  Add20Regular,
-  Copy20Regular,
-  Globe16Regular,
-  ClipboardPaste20Regular,
-} from '@vicons/fluent'
+
 import {useMainStore} from '@/store/main'
 import {useI18nToolSettingsStore} from '@/components/VueI18nEditTool/store/i18n-tool-settings'
 import {
@@ -34,14 +27,8 @@ export default defineComponent({
   name: 'TranslateTreeItem',
   components: {
     CcFlag,
-    Delete20Regular,
     TranslateItem,
     DialogTextEdit,
-    AddSquare20Regular,
-    Add20Regular,
-    ClipboardPaste20Regular,
-    Copy20Regular,
-    Globe16Regular,
   },
   props: {
     item: {
@@ -94,7 +81,7 @@ export default defineComponent({
         formatTranslateItem({
           key: i18nMainStore.trAutoAddGuid,
           value: val,
-        })
+        }),
       )
     }
 

@@ -5,7 +5,6 @@ import {
   autoPasteReplaceValue,
   createBlockElement,
 } from '@/components/PageCraft/MainPlayground/utils/dom'
-import {useContextMenu} from '@/hooks/use-context-menu'
 import {copyToClipboard} from '@/utils'
 import {updateHtmlElement} from '@/components/PageCraft/MainPlayground/utils/element-edit'
 import {LineHelper} from '@/utils/line-helper'
@@ -13,6 +12,7 @@ import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {useI18n} from 'vue-i18n'
 import {useOpenCloseSound, useSfxDestroy, useSfxPlace} from '@/hooks/use-sfx'
 import {onClickOutside} from '@vueuse/core'
+import {QuickOptionItem} from '@/components/CanUI/packages/QuickOptions/enum'
 
 const MAX_WAIT_TIME = 0.3 * 1000
 
@@ -80,7 +80,7 @@ export const useInteractionHooks = (options) => {
       return
     }
 
-    let rect = selection.getRangeAt(0).getBoundingClientRect()
+    const rect = selection.getRangeAt(0).getBoundingClientRect()
     selectionActionStyle.value = {
       top: `calc(${rect.top}px + ${rect.height}px + 2px)`,
       left: `calc(${rect.left}px + calc(${rect.width}px / 2) - 110px)`,
@@ -162,7 +162,7 @@ export const useInteractionHooks = (options) => {
     }
     targetEl.insertAdjacentHTML(
       <'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend'>position,
-      text
+      text,
     )
     saveData()
     playSfxPlace()
@@ -185,14 +185,23 @@ export const useInteractionHooks = (options) => {
     playSfxPlace()
   }
 
-  const {
-    editingNode,
-    nodeAction,
-    handleContextmenu: _handleContextmenu,
-    ...contextMenuEtc
-  } = useContextMenu((e: Event) => {
+  const editingNode = ref<HTMLElement | null>(null)
+
+  const handleContextMenu = (e: MouseEvent) => {
+    const selectedText = selectionRef.value?.toString()
+    if (!indicatorOptions.enableRightClick || selectedText || e.ctrlKey) {
+      return
+    }
+    e.preventDefault()
+    if (mainStore.currentBlock.actionType === ActionType.DEBUG) {
+      console.log('[handleContextMenu]', e)
+    }
+    editingNode.value = e.target as HTMLElement
+  }
+
+  const ctxMenuOptions = computed((): QuickOptionItem[] => {
     // @ts-ignore
-    const targetEl: HTMLElement = e.target
+    const targetEl = editingNode.value
     if (!targetEl) {
       return []
     }
@@ -202,10 +211,8 @@ export const useInteractionHooks = (options) => {
       label: '✏️ ' + $t('actions.edit_element'),
       props: {
         onClick: async () => {
-          nodeAction(targetEl, () => {
-            isShowElementEdit.value = true
-            isEditingRoot.value = isRoot
-          })
+          isShowElementEdit.value = true
+          isEditingRoot.value = isRoot
         },
       },
     }
@@ -303,24 +310,12 @@ export const useInteractionHooks = (options) => {
         label: '💻 ' + $t('actions.print_to_console'),
         props: {
           onClick: async () => {
-            console.log(e.target)
+            console.log(editingNode.value)
           },
         },
       },
     ].filter(Boolean)
   })
-
-  const handleContextMenu = (e: MouseEvent) => {
-    const selectedText = selectionRef.value?.toString()
-    if (!indicatorOptions.enableRightClick || selectedText || e.ctrlKey) {
-      return
-    }
-    e.preventDefault()
-    if (mainStore.currentBlock.actionType === ActionType.DEBUG) {
-      console.log('[handleContextMenu]', e)
-    }
-    _handleContextmenu(e, e)
-  }
 
   const isSelectMode = computed(() => {
     return (
@@ -432,7 +427,7 @@ export const useInteractionHooks = (options) => {
   const handleDrop = async (event) => {
     lineHelper.value.hideLine()
 
-    let targetEl = event.target || mainPlaygroundRef.value
+    const targetEl = event.target || mainPlaygroundRef.value
     const currentPosition = lineHelper.value.currentPosition
 
     // 放置HTML代码
@@ -530,7 +525,7 @@ export const useInteractionHooks = (options) => {
     waitingProgress,
     cursorX,
     cursorY,
-    contextMenuEtc,
+    ctxMenuOptions,
     selectionActionStyle,
     selectionElRef,
     isShowSelectionAction,

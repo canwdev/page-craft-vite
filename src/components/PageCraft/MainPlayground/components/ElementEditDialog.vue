@@ -1,16 +1,16 @@
 <script lang="ts">
 import {computed, defineComponent, PropType, ref} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
-import {FormInst, FormRules} from 'naive-ui'
 import {formatForm, getCustomFormItems} from '../utils/element-edit'
 import ViewPortWindow from '@/components/CanUI/packages/ViewPortWindow/index.vue'
-import {AutoFormItemType, MixedFormItems} from '@/components/CommonUI/AutoFormNaive/enum'
-import AutoFormNaive from '@/components/CommonUI/AutoFormNaive/index.vue'
+import {FormRules} from 'element-plus'
+import AutoFormElPlus from '@/components/CanUI/packages/AutoFormElPlus/index.vue'
+import {AutoFormItemType, MixedFormItems} from '@/components/CanUI/packages/AutoFormElPlus/enum'
 
 export default defineComponent({
   name: 'ElementEditDialog',
   components: {
-    AutoFormNaive,
+    AutoFormElPlus,
     ViewPortWindow,
   },
   props: {
@@ -141,7 +141,7 @@ export default defineComponent({
         {{ $t('actions.ok') }}
       </button>
     </template>
-    <AutoFormNaive
+    <AutoFormElPlus
       ref="autoFormRef"
       :form-schema="{
         model: dataForm,
@@ -174,7 +174,7 @@ export default defineComponent({
           </button>
         </n-space>
       </div>
-    </AutoFormNaive>
+    </AutoFormElPlus>
   </ViewPortWindow>
 </template>
 
@@ -184,13 +184,6 @@ export default defineComponent({
   overflow: auto;
   padding: 10px 10px 0;
   box-sizing: border-box;
-
-  .vp-button {
-    &.primary {
-      background: $primary;
-      color: white;
-    }
-  }
 
   .action-row {
     position: sticky;

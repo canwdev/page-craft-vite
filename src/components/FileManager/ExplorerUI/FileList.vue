@@ -3,26 +3,7 @@ import {IEntry} from '../types/filesystem'
 import FileListItem from './FileListItem.vue'
 import {useVModel} from '@vueuse/core'
 import FileGridItem from './FileGridItem.vue'
-import {
-  DocumentAdd16Regular,
-  FolderAdd16Regular,
-  DocumentArrowUp16Regular,
-  FolderArrowUp16Regular,
-  DocumentArrowDown16Regular,
-  Rename16Regular,
-  Delete16Regular,
-  SelectAllOn24Regular,
-  Eye16Filled,
-  EyeOff16Filled,
-  Grid16Regular,
-  AppsList20Regular,
-  ArrowSortDownLines16Regular,
-  Cut20Regular,
-  Copy20Regular,
-  ClipboardPaste20Regular,
-  Add24Regular,
-  Folder16Regular,
-} from '@vicons/fluent'
+
 import QuickOptions from '@/components/CanUI/packages/QuickOptions/index.vue'
 import QuickContextMenu from '@/components/CanUI/packages/QuickOptions/utils/QuickContextMenu.vue'
 import {useCopyPaste} from './hooks/use-copy-paste'

@@ -7,15 +7,15 @@ import {
   TextConvertOptions,
   textConvertMultipleLine,
 } from '@/utils/mc-utils/text-convert'
-import {ClipboardPaste20Regular, Copy20Regular} from '@vicons/fluent'
 import {useI18n} from 'vue-i18n'
 import VueMonaco from '@/components/CanUI/packages/VueMonaco/index.vue'
 import {useDebounceFn, useStorage} from '@vueuse/core'
 import ViewPortWindow from '@/components/CanUI/packages/ViewPortWindow/index.vue'
+import RectSwitch from '@/components/CanUI/packages/OptionUI/Tools/RectSwitch.vue'
 
 export default defineComponent({
   name: 'DialogTextTransformer',
-  components: {ViewPortWindow, VueMonaco, ClipboardPaste20Regular, Copy20Regular},
+  components: {RectSwitch, ViewPortWindow, VueMonaco},
   props: {
     visible: {
       type: Boolean,
@@ -114,64 +114,48 @@ export default defineComponent({
     <template #titleBarLeft>{{ $t('common.text_transformer') }}</template>
 
     <div v-if="mVisible" class="text-converter-wrap">
-      <div class="tool-header" align="center">
+      <div class="tool-header">
         Convert to:
-        <n-select
-          size="small"
-          v-model:value="mMode"
-          :options="TextConvertOptions"
-          style="width: 100px"
-        />
+        <RectSwitch :options="TextConvertOptions" v-model="mMode"> </RectSwitch>
 
-        <n-checkbox size="small" v-model:checked="isTrimEmptyLines">{{
-          $t('msgs.trim_empty_lines')
-        }}</n-checkbox>
+        <el-checkbox v-model="isTrimEmptyLines">{{ $t('msgs.trim_empty_lines') }}</el-checkbox>
 
         <template v-if="mMode === TextConvertMode.HTML">
-          <input class="vp-input" v-model="htmlTagName" placeholder="HTML Tag Name" size="small" />
+          <input class="vp-input" v-model="htmlTagName" placeholder="HTML Tag Name" />
           <input
-            class="vp-input"
             v-if="htmlTagName"
             v-model="htmlAttrs"
             placeholder="HTML Attrs"
-            size="small"
+            class="vp-button"
           />
         </template>
 
-        <n-button-group>
-          <n-button
+        <div>
+          <button
             @click="handleAutoPasteCopy"
-            size="small"
-            type="primary"
             :title="$t('msgs.auto_paste_and_copy')"
-            class="focus-auto-action"
+            class="vp-button primary focus-auto-action"
           >
-            <n-icon> <ClipboardPaste20Regular /> </n-icon>+
-            <n-icon>
-              <Copy20Regular />
-            </n-icon>
-          </n-button>
-          <n-button @click="handlePaste" size="small" title="Paste">
-            <template #icon>
-              <ClipboardPaste20Regular />
-            </template>
-          </n-button>
-          <n-button @click="handleCopy" size="small" title="Copy Result">
-            <template #icon>
-              <Copy20Regular />
-            </template>
-          </n-button>
-        </n-button-group>
+            {{ $t('actions.copy') }}+
+            {{ $t('actions.paste') }}
+          </button>
+          <button @click="handlePaste" class="vp-button" title="Paste">
+            {{ $t('actions.paste') }}
+          </button>
+          <button @click="handleCopy" class="vp-button" title="Copy Result">
+            {{ $t('actions.copy') }}
+          </button>
+        </div>
       </div>
       <div class="main-box font-code">
         <div class="input-wrapper">
           <div class="input-tip">Text Input: text</div>
-          <n-input
-            class="input-text"
+          <textarea
+            class="input-text vp-input"
             type="textarea"
-            v-model:value="textInput"
+            v-model="textInput"
             placeholder="Text Input"
-          ></n-input>
+          ></textarea>
         </div>
         <div class="input-wrapper">
           <div class="input-tip">Text Output: {{ mMode }}</div>
@@ -231,6 +215,7 @@ export default defineComponent({
       .input-text {
         flex: 1;
         width: 100%;
+        box-sizing: border-box;
       }
     }
   }

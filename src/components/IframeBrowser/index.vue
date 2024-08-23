@@ -1,6 +1,11 @@
-<script setup lang="ts">
+<script lang="ts">
+export default {
+  name: 'IframeBrowser',
+}
+</script>
+
+<script lang="ts" setup>
 import ViewPortWindow from '@/components/CanUI/packages/ViewPortWindow/index.vue'
-import {ViewDesktopMobile20Regular} from '@vicons/fluent'
 import {useRouter} from 'vue-router'
 import {useStorage, useVModel} from '@vueuse/core'
 import {useRemoteOptions} from '@/components/CanUI/packages/QuickOptions/utils/use-remote-options'
@@ -98,27 +103,24 @@ const setMobileView = () => {
   >
     <template #titleBarLeft>Iframe Browser {{ titleText }}</template>
     <template #titleBarRightControls>
-      <button @click="setMobileView">
-        <n-icon size="20"> <ViewDesktopMobile20Regular /> </n-icon>
-      </button>
+      <button @click="setMobileView">📱</button>
     </template>
 
     <div v-if="mVisible" class="iframe-browser-inner-wrap">
       <div class="iframe-browser-address-bar-wrap">
         <div class="button-wrap">
-          <n-button size="tiny" @click="showShortcuts = true">@</n-button>
+          <button class="vp-button" @click="showShortcuts = true">@</button>
           <QuickOptions :options="shortcutList" v-model:visible="showShortcuts" title="Shortcuts" />
         </div>
 
-        <n-input
-          class="iframe-browser-input font-code"
-          size="tiny"
-          v-model:value="addressBarUrl"
+        <input
+          class="vp-input iframe-browser-input font-code"
+          v-model="addressBarUrl"
           placeholder="input url (https://)"
           type="text"
           @keyup.enter="handleGo()"
         />
-        <n-button size="tiny" @click="handleGo()">Go</n-button>
+        <button class="vp-button" @click="handleGo()">Go</button>
       </div>
       <iframe
         ref="iframeRef"

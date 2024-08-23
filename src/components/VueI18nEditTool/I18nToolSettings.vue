@@ -5,8 +5,6 @@ import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {StOptionItem, StOptionType} from '@/components/CanUI/packages/OptionUI/enum'
 import {useI18nToolSettingsStore} from '@/components/VueI18nEditTool/store/i18n-tool-settings'
 import {TextConvertMode, TextConvertOptions} from '@/utils/mc-utils/text-convert'
-import {Globe20Regular} from '@vicons/fluent'
-import {NButton} from 'naive-ui'
 import {useCommonSettings} from '@/components/SystemSettings/use-common-settings'
 import OptionUI from '@/components/CanUI/packages/OptionUI/index.vue'
 
@@ -35,7 +33,7 @@ export default defineComponent({
           children: [
             {
               label: $t('msgs.auto_paste') + ': ' + $t('msgs.remove_quotes'),
-              subtitle: 'Trim: \` | \' | "',
+              subtitle: 'Trim: ` | \' | "',
               key: 'autoPasteTrimQuotes',
               store: i18nSetStore,
               type: StOptionType.SWITCH,
@@ -55,14 +53,14 @@ export default defineComponent({
               label: $t('common.tools'),
               key: 'tools',
               actionRender: h(
-                NButton,
+                'button',
                 {
-                  size: 'small',
+                  class: 'vp-button',
                   onClick: () => {
                     console.log('window.$mcUtils', window.$mcUtils)
                   },
                 },
-                () => $t('actions.print_to_console'),
+                $t('actions.print_to_console'),
               ),
             },
           ],
@@ -110,22 +108,17 @@ export default defineComponent({
     return {
       mVisible,
       optionList,
-      dialogIconRender() {
-        return h(Globe20Regular)
-      },
     }
   },
 })
 </script>
 
 <template>
-  <n-modal
-    v-model:show="mVisible"
-    preset="dialog"
+  <el-dialog
+    v-model="mVisible"
+    width="700"
     :title="$t('common.i18njson_batch_tool') + ' ' + $t('common.settings')"
-    style="padding-left: 10px; padding-right: 10px"
-    :icon="dialogIconRender"
   >
     <OptionUI :option-list="optionList" />
-  </n-modal>
+  </el-dialog>
 </template>

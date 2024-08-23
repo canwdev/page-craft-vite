@@ -88,7 +88,7 @@ export const useMcMain = (options) => {
       reloadHtml()
       // 如果开启了多个窗口（iframe)，发送同步状态
       channelRef.value?.postMessage(null)
-    }
+    },
   )
 
   const setPlaygroundHtml = (html: string = '') => {
@@ -207,18 +207,16 @@ export const useMcMain = (options) => {
       label: '❌ ' + $t('actions.clear_all_html'),
       props: {
         onClick: async () => {
-          window.$dialog.warning({
-            title: $t('actions.confirm'),
-            content: $t('msgs.confirm_clear_curren'),
-            positiveText: $t('actions.ok'),
-            negativeText: $t('actions.cancel'),
-            onPositiveClick: () => {
+          window.$dialog
+            .confirm($t('msgs.confirm_clear_curren'), $t('actions.confirm'), {
+              type: 'warning',
+            })
+            .then(() => {
               handleImportHtml('')
               globalEventBus.emit(GlobalEvents.IMPORT_SUCCESS, '')
               window.$message.success($t('actions.done') + '!')
-            },
-            onNegativeClick: () => {},
-          })
+            })
+            .catch()
         },
       },
     },

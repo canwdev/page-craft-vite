@@ -1,34 +1,24 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
-import {actionBlockItemList, BlockItem, BlockType} from '@/enum/page-craft/block'
+import {actionBlockItemList, BlockType} from '@/enum/page-craft/block'
 import {htmlBlockItemList, TabType} from '@/enum/page-craft/inventory'
 import InventoryList from '@/components/PageCraft/InventoryModal/InventoryList.vue'
 import {useMainStore} from '@/store/main'
-import FileChooser from '@/components/CommonUI/FileChooser.vue'
 import {colorHash} from '@/utils'
 import {useSettingsStore} from '@/store/settings'
-import {Box20Regular, Window16Regular, WindowArrowUp16Regular} from '@vicons/fluent'
 import ViewPortWindow from '@/components/CanUI/packages/ViewPortWindow/index.vue'
 import {useI18n} from 'vue-i18n'
 import {useSfxPop} from '@/hooks/use-sfx'
-import PopFloat from '@/components/PageCraft/ComponentExplorer/PopFloat.vue'
-import DialogImageCropper from '@/components/CommonUI/DialogImageCropper.vue'
 import TabLayout from '@/components/CommonUI/TabLayout.vue'
-import {NIcon} from 'naive-ui'
 import ComponentExplorer from '@/components/PageCraft/ComponentExplorer/ComponentExplorer.vue'
 
 export default defineComponent({
   name: 'InventoryModal',
   components: {
     TabLayout,
-    DialogImageCropper,
-    PopFloat,
     ViewPortWindow,
     InventoryList,
-    Window16Regular,
-    WindowArrowUp16Regular,
-    Box20Regular,
     ComponentExplorer,
   },
   props: {

@@ -4,7 +4,6 @@ import {Ref} from 'vue'
 import {useDebounceFn, useStorage} from '@vueuse/core'
 import {usePluginState, useQuickLaunchCustomPlugins} from './plugins'
 import {filterLabel} from './utils'
-import {showInputPrompt} from '@/components/CommonUI/input-prompt'
 
 const qLogicHelp = {
   label: `❓ 这是一个快捷工具箱，支持全键盘操作，帮你快速执行操作！

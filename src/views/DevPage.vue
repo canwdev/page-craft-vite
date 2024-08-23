@@ -21,7 +21,7 @@ const optionList = computed((): StOptionItem[] => {
 </script>
 
 <template>
-  <div class="dev-page _scrollbar_mini">
+  <div class="dev-page scrollbar-mini">
     <CommonNavbar />
 
     <div class="container">

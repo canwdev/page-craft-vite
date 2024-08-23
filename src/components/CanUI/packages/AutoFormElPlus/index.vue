@@ -1,8 +1,14 @@
+<script lang="ts">
+export default {
+  name: 'AutoFormElPlus',
+}
+</script>
+
 <script setup lang="ts">
-import {defineComponent, onBeforeMount, PropType, ref, toRefs} from 'vue'
+import {ref, toRefs} from 'vue'
 import {AutoFormSchema, AutoFormItemType} from './enum'
 import AutoFormItem from './AutoFormItem.vue'
-import {ElMessage, FormInstance} from 'element-plus'
+import {FormInstance} from 'element-plus'
 
 /**
  * Element Plus 表单生成组件

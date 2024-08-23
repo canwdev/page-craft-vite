@@ -1,7 +1,6 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
-import {ClipboardPaste20Regular} from '@vicons/fluent'
 import {readClipboardData} from '@/utils'
 import {textConvertAdvanced, TextConvertMode} from '@/utils/mc-utils/text-convert'
 import {useI18nToolSettingsStore} from '@/components/VueI18nEditTool/store/i18n-tool-settings'
@@ -10,7 +9,6 @@ import {isBase64Image, isSrcHttpUrl, isUrlImage} from '@/utils/is'
 
 export default defineComponent({
   name: 'FieldEdit',
-  components: {ClipboardPaste20Regular},
   props: {
     modelValue: {
       type: [String, Number, Array],

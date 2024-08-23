@@ -5,7 +5,7 @@ import {DEFAULT_THEME} from '@/components/CanUI/packages/ViewPortWindow/utils/us
 import {StyleTabType} from '@/components/StyleEditor/enum'
 import {IComponentInStore} from '@/components/PageCraft/ComponentExplorer/enum'
 
-interface IPageCraftSettings {
+type IStore = {
   // 明暗主题
   ldTheme: LdThemeType
   // 自定义主题类型
@@ -43,7 +43,7 @@ interface IPageCraftSettings {
 }
 
 export const useSettingsStore = defineStore('settingsStore', {
-  state: (): IPageCraftSettings => {
+  state: (): IStore => {
     return {
       ldTheme: LdThemeType.SYSTEM,
       customTheme: DEFAULT_THEME,

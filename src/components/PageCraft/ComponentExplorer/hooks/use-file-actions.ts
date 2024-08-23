@@ -1,4 +1,3 @@
-import {showInputPrompt} from '@/components/CommonUI/input-prompt'
 import moment from 'moment/moment'
 import {QuickOptionItem} from '@/components/CanUI/packages/QuickOptions/enum'
 import {IEntry} from '@/components/FileManager/types/filesystem'
@@ -66,7 +65,7 @@ export const useComponentFileActions = ({
 
   const handleCreateFolder = async () => {
     try {
-      const name = await showInputPrompt({
+      const name = await window.$mcUtils.showInputPrompt({
         title: 'Create Folder',
         value: `folder_${moment(new Date()).format('YYYYMMDD_HHmmss')}`,
       })
@@ -84,7 +83,7 @@ export const useComponentFileActions = ({
   const handleRename = async () => {
     try {
       const item: IEntry = selectedItems.value[0]
-      const name = await showInputPrompt({
+      const name = await window.$mcUtils.showInputPrompt({
         title: $t('actions.rename'),
         value: item.name,
       })
@@ -115,16 +114,14 @@ export const useComponentFileActions = ({
     }
   }
   const confirmDelete = () => {
-    window.$dialog.warning({
-      title: $t('actions.confirm'),
-      content: $t('msgs.are_you_sure_to_dele') + ` component(s) ?`,
-      positiveText: $t('actions.ok'),
-      negativeText: $t('actions.cancel'),
-      onPositiveClick: () => {
+    window.$dialog
+      .confirm($t('msgs.are_you_sure_to_dele') + ` component(s) ?`, $t('actions.confirm'), {
+        type: 'warning',
+      })
+      .then(() => {
         doDeleteSelected()
-      },
-      onNegativeClick: () => {},
-    })
+      })
+      .catch()
   }
 
   // 取消选择当前组件（回到默认画板）
@@ -164,22 +161,20 @@ export const useComponentFileActions = ({
       doAppendPresetComponents()
       return
     }
-    window.$dialog.warning({
-      title: $t('actions.confirm'),
-      content: `This action will override same name component, continue?`,
-      positiveText: $t('actions.ok'),
-      negativeText: $t('actions.cancel'),
-      onPositiveClick: () => {
+    window.$dialog
+      .confirm(`This action will override same name component, continue?`, $t('actions.confirm'), {
+        type: 'warning',
+      })
+      .then(() => {
         doAppendPresetComponents()
-      },
-      onNegativeClick: () => {},
-    })
+      })
+      .catch()
   }
 
   // 创建组件副本
   const duplicateComponent = async (item: IComponentItem) => {
     try {
-      const name = await showInputPrompt({
+      const name = await window.$mcUtils.showInputPrompt({
         title: $t('actions.duplicate'),
         value: item.name.replace(regComponentV2, '') + '-1.comp',
       })
@@ -428,16 +423,16 @@ export const useComponentFileActions = ({
             },
           }
         : components.length
-        ? {
-            // 导出多选组件
-            label: `📤 ${$t('actions.export')} JSON`,
-            props: {
-              onClick: async () => {
-                await exportComponentAllJson(components)
+          ? {
+              // 导出多选组件
+              label: `📤 ${$t('actions.export')} JSON`,
+              props: {
+                onClick: async () => {
+                  await exportComponentAllJson(components)
+                },
               },
-            },
-          }
-        : null,
+            }
+          : null,
       {split: true},
       isSingle && {
         label: '✏️ ' + $t('actions.rename'),

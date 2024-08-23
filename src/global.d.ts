@@ -1,5 +1,5 @@
 import VueRouter, {Route} from 'vue-router'
-import {Message} from 'element-plus'
+import {ElNotification, Message} from 'element-plus'
 import {SFCInstallWithContext} from 'element-plus/es/utils'
 
 declare global {
@@ -7,7 +7,7 @@ declare global {
     showOpenFilePicker: any
 
     $message: SFCInstallWithContext<Message>
-    // $notification: NotificationApiInjection
+    $notification: SFCInstallWithContext<ElNotification>
     $dialog: SFCInstallWithContext<ElMessageBox>
 
     Sass: any

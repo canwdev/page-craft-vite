@@ -73,19 +73,18 @@ const refreshOptions = () => {
           focusBackInput()
         },
         onContextmenu: () => {
-          window.$dialog.warning({
-            title: 'Delete history item?',
-            positiveText: 'OK',
-            negativeText: 'Cancel',
-            onPositiveClick: async () => {
+          window.$dialog
+            .confirm('Delete history item?', 'Delete', {
+              type: 'warning',
+            })
+            .then(() => {
               const idx = historyItems.value.findIndex((i) => i.label === item.label)
               if (idx !== -1) {
                 historyItems.value.splice(idx, 1)
                 refreshOptions()
               }
-            },
-            onNegativeClick: () => {},
-          })
+            })
+            .catch()
         },
       },
     }
@@ -99,17 +98,16 @@ const refreshOptions = () => {
         label: '🧹 Clear History',
         props: {
           onClick: () => {
-            window.$dialog.warning({
-              title: 'Confirm clear history?',
-              positiveText: 'OK',
-              negativeText: 'Cancel',
-              onPositiveClick: () => {
+            window.$dialog
+              .confirm('Confirm clear history?', '', {
+                type: 'warning',
+              })
+              .then(() => {
                 historyItems.value = []
                 refreshOptions()
                 focusBackInput()
-              },
-              onNegativeClick: () => {},
-            })
+              })
+              .catch()
           },
         },
       },

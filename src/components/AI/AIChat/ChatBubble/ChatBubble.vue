@@ -4,6 +4,7 @@ import {formatDate} from '@/utils'
 import {IAiCharacter, IMessageContent, IMessageItem} from '@/components/AI/types/ai'
 
 import MessageContent from '@/components/AI/AIChat/ChatBubble/TextContent.vue'
+import iconAi from '@/assets/textures/chat-gpt-logo.svg'
 
 interface Props {
   isDark?: boolean
@@ -61,8 +62,8 @@ const isReply = computed(() => {
     <div class="chat-header">
       <div class="chat-avatar" :title="item.role">
         <img
-          v-if="character?.avatar"
-          :src="character.avatar"
+          v-if="character"
+          :src="character.avatar || iconAi"
           :alt="item.role"
           :title="character.name"
         />
@@ -78,7 +79,11 @@ const isReply = computed(() => {
         class="chat-content markdown-body vp-bg"
         :class="{'markdown-body-dark': isDark}"
       >
-        Loading...
+        <div
+          style="width: 50px; height: 50px"
+          v-loading="true"
+          element-loading-background="transparent"
+        ></div>
       </div>
       <MessageContent
         v-else-if="typeof item.content === 'string'"
@@ -122,12 +127,16 @@ const isReply = computed(() => {
           <button class="btn-no-style" v-if="allowEdit" @click="isEditing = true">
             📝 {{ $t('actions.edit') }}
           </button>
-          <n-popconfirm v-if="allowDelete" @positive-click="$emit('delete', item)">
-            <template #trigger>
+          <el-popconfirm
+            v-if="allowDelete"
+            @confirm="$emit('delete', item)"
+            :title="$t('actions.confirm')"
+            :teleported="false"
+          >
+            <template #reference>
               <button class="btn-no-style">🗑️ {{ $t('actions.delete') }}</button>
             </template>
-            {{ $t('actions.confirm') }}
-          </n-popconfirm>
+          </el-popconfirm>
         </template>
       </div>
     </div>
@@ -180,7 +189,7 @@ const isReply = computed(() => {
   &.isReply {
     flex-direction: row;
     .chat-avatar {
-      background-color: #74aa9c;
+      background-color: transparent;
     }
     .chat-content {
       border-radius: 0 10px 10px;

@@ -2,13 +2,12 @@
 import {defineComponent, ref} from 'vue'
 import {copyToClipboard, readClipboardData} from '@/utils'
 import VueMonaco from '@/components/CanUI/packages/VueMonaco/index.vue'
-import {ClipboardPaste20Regular, Copy20Regular} from '@vicons/fluent'
 import {useI18n} from 'vue-i18n'
 import {useVModel} from '@vueuse/core'
 
 export default defineComponent({
   name: 'StylusToolsDialog',
-  components: {Copy20Regular, ClipboardPaste20Regular, VueMonaco},
+  components: {VueMonaco},
   props: {
     visible: {
       type: Boolean,
@@ -93,51 +92,43 @@ export default defineComponent({
 </script>
 
 <template>
-  <n-modal
-    v-model:show="mVisible"
-    preset="dialog"
+  <el-dialog
+    v-model="mVisible"
     :title="`Stylus ${$t('common.formatting_tool')}`"
-    style="min-width: 800px"
+    width="800"
+    top="10vh"
   >
     <div class="style-tools">
       <div class="common-card">
-        <n-space size="small" justify="space-between" align="center" class="action-row">
-          <!--          <n-button type="primary" size="small" @click="doFormat">{{ $t('common.format') }}</n-button>-->
+        <div class="action-row flex-row-center-gap">
+          <!--          <button type="primary" size="small" @click="doFormat">{{ $t('common.format') }}</button>-->
 
-          <n-button-group>
-            <n-button
+          <div>
+            <button
               @click="handleAutoPasteCopy"
-              size="small"
-              type="primary"
               :title="$t('msgs.auto_paste_and_copy')"
-              class="focus-auto-action"
+              class="vp-button primary focus-auto-action"
             >
-              <n-icon> <ClipboardPaste20Regular /> </n-icon>+
-              <n-icon>
-                <Copy20Regular />
-              </n-icon>
-            </n-button>
-            <n-button @click="handlePaste" size="small" title="Paste">
-              <template #icon>
-                <ClipboardPaste20Regular />
-              </template>
-            </n-button>
-            <n-button @click="handleCopy" size="small" title="Copy Result">
-              <template #icon>
-                <Copy20Regular />
-              </template>
-            </n-button>
-          </n-button-group>
+              {{ $t('actions.copy') }}+
+              {{ $t('actions.paste') }}
+            </button>
+            <button @click="handlePaste" class="vp-button" title="Paste">
+              {{ $t('actions.paste') }}
+            </button>
+            <button @click="handleCopy" class="vp-button" title="Copy Result">
+              {{ $t('actions.copy') }}
+            </button>
+          </div>
 
-          <n-a href="https://thisismanta.github.io/stylus-supremacy/#demo" target="_blank">
+          <a href="https://thisismanta.github.io/stylus-supremacy/#demo" target="_blank">
             Stylus Supermacy
-          </n-a>
+          </a>
 
-          <n-button-group>
-            <n-button size="small" @click="doClear">{{ $t('actions.clear') }}</n-button>
-            <n-button size="small" @click="showDemo">{{ $t('common.demo') }}</n-button>
-          </n-button-group>
-        </n-space>
+          <div>
+            <button class="vp-button" @click="doClear">{{ $t('actions.clear') }}</button>
+            <button class="vp-button" @click="showDemo">{{ $t('common.demo') }}</button>
+          </div>
+        </div>
         <div class="main-box font-code">
           <div class="input-wrapper">
             <!--            <n-input
@@ -159,7 +150,7 @@ export default defineComponent({
         </div>
       </div>
     </div>
-  </n-modal>
+  </el-dialog>
 </template>
 
 <style lang="scss" scoped>

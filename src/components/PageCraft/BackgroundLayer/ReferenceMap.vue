@@ -1,12 +1,9 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import {WindowController} from '@/components/CanUI/packages/ViewPortWindow/utils/window-controller'
-import {useContextMenu} from '@/hooks/use-context-menu'
-import InventoryList from '@/components/PageCraft/InventoryModal/InventoryList.vue'
 
 export default defineComponent({
   name: 'ReferenceMap',
-  components: {InventoryList},
   props: {
     imgSrc: {
       type: String,
@@ -56,19 +53,6 @@ export default defineComponent({
       }
     })
 
-    const {editingNode, nodeAction, handleContextmenu, ...contextMenuEtc} = useContextMenu(() => {
-      return [
-        {
-          label: 'Close',
-          props: {
-            onClick: async () => {
-              emit('close')
-            },
-          },
-        },
-      ]
-    })
-
     return {
       isDragMode,
       imgRef,
@@ -76,8 +60,6 @@ export default defineComponent({
       handleImageScrollZoom,
       updateImgRect,
       imgStyle,
-      handleContextmenu,
-      ...contextMenuEtc,
     }
   },
 })
@@ -95,19 +77,7 @@ export default defineComponent({
     @wheel.stop="handleImageScrollZoom"
     @load="updateImgRect"
     :style="imgStyle"
-    @contextmenu="handleContextmenu"
-  />
-  <n-dropdown
-    v-if="imgSrc"
-    trigger="manual"
-    placement="bottom-start"
-    :show="showRightMenu"
-    :options="rightMenuOptions"
-    :x="xRef"
-    :y="yRef"
-    @select="handleSelectContextmenu"
-    key-field="label"
-    :on-clickoutside="handleClickOutside"
+    @contextmenu="$emit('close')"
   />
 </template>
 

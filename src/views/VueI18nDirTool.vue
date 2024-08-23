@@ -82,16 +82,14 @@ const {appendHistory, historyMenuOptions} = useOpenedHistory(
       await reloadPickedDir()
     }
     if (dirHandle.value) {
-      window.$dialog.warning({
-        title: 'Confirm',
-        content: $t('msgs.confirm_reload_files'),
-        positiveText: 'OK',
-        negativeText: 'Cancel',
-        onPositiveClick: async () => {
-          await doOpen()
-        },
-        onNegativeClick: () => {},
-      })
+      window.$dialog
+        .confirm($t('msgs.confirm_reload_files'), $t('actions.confirm'), {
+          type: 'warning',
+        })
+        .then(() => {
+          doOpen()
+        })
+        .catch()
 
       return
     }

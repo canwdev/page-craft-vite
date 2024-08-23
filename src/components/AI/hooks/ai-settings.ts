@@ -11,6 +11,8 @@ interface IStore {
   currentCharacterId: string
   // 当前聊天历史记录id
   currentChatHistoryId: string
+  // 聊天侧边栏是否展开
+  isSidebarExpand: boolean
 }
 
 export const useAiSettingsStore = defineStore('aiSettingsStore', {
@@ -22,6 +24,7 @@ export const useAiSettingsStore = defineStore('aiSettingsStore', {
       model: ChatModel.GPT35Turbo,
       currentCharacterId: 'default',
       currentChatHistoryId: '',
+      isSidebarExpand: true,
     }
   },
   persist: {

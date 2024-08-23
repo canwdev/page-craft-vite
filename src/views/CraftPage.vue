@@ -5,14 +5,14 @@ import {useSettingsStore} from '@/store/settings'
 import {beautifyCss} from '@/components/StyleEditor/utils/formater'
 import {sassToCSS} from '@/components/StyleEditor/utils/css'
 import {copyToClipboard} from '@/utils'
-import {PaintBrush16Regular} from '@vicons/fluent'
 import {useI18n} from 'vue-i18n'
 import {useMainStore} from '@/store/main'
 import {useEventListener} from '@vueuse/core'
 import {useOpenCloseSound, useSfxOpenCloseSelect, useSfxBrush, useSfxFill} from '@/hooks/use-sfx'
-import {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
+import globalEventBus, {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
 import {CLASS_MAIN_CANVAS_ROOT} from '@/enum/page-craft'
 import {useComponentStorageV2} from '@/components/PageCraft/ComponentExplorer/hooks/use-component-manage'
+import DropdownMenu from '@/components/CanUI/packages/OptionUI/Tools/DropdownMenu.vue'
 
 const StyleEditor = defineAsyncComponent(() => import('@/components/StyleEditor/index.vue'))
 
@@ -29,16 +29,15 @@ useSfxOpenCloseSelect(() => mainStore.selecting)
 watch(
   () => settingsStore.enableSoundFx,
   () => {
-    window.$dialog.warning({
-      title: $t('msgs.refresh_page'),
-      positiveText: $t('actions.ok'),
-      negativeText: $t('actions.cancel'),
-      onPositiveClick: () => {
+    window.$dialog
+      .confirm($t('msgs.refresh_page'), $t('actions.confirm'), {
+        type: 'warning',
+      })
+      .then(() => {
         location.reload()
-      },
-      onNegativeClick: () => {},
-    })
-  }
+      })
+      .catch()
+  },
 )
 useEventListener(document, 'keydown', (event) => {
   const key = event.key.toLowerCase()
@@ -95,7 +94,7 @@ watch(
   () => settingsStore.curCompInStore,
   async () => {
     await reloadStyle()
-  }
+  },
 )
 useGlobalBusOn(GlobalEvents.IMPORT_SUCCESS, reloadStyle)
 useGlobalBusOn(GlobalEvents.ON_ADD_STYLE, (arg) => {
@@ -108,25 +107,15 @@ useGlobalBusOn(GlobalEvents.ON_ADD_STYLE, (arg) => {
     <MainPlayground />
 
     <ToolBar>
-      <n-dropdown
-        :options="styleMenuOptions"
-        key-field="label"
-        placement="bottom-start"
-        trigger="hover"
-      >
-        <n-button
-          size="tiny"
+      <DropdownMenu :options="styleMenuOptions">
+        <button
           style="min-width: 70px"
           @click="settingsStore.showStyleEditor = !settingsStore.showStyleEditor"
           title="(alt+s)"
         >
-          <template #icon>
-            <n-icon v-if="settingsStore.showStyleEditor" size="18"
-              ><PaintBrush16Regular
-            /></n-icon> </template
-          >{{ $t('common.style') }}
-        </n-button>
-      </n-dropdown>
+          {{ $t('common.style') }}
+        </button>
+      </DropdownMenu>
       <template #end> </template>
     </ToolBar>
   </div>

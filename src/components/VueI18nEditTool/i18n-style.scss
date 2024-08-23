@@ -17,18 +17,6 @@
       height: 20px;
       flex-shrink: 0;
     }
-    &.danger {
-      color: #f44336;
-    }
-    &.secondary {
-      color: $primary;
-      border: none;
-      outline: 1px solid $primary;
-    }
-    &.primary {
-      background: $primary;
-      color: white;
-    }
   }
 
   .actions-buttons-wrap {

@@ -9,7 +9,6 @@ import {
   ITranslateTreeItem,
 } from '@/enum/vue-i18n-tool'
 import {copyToClipboard} from '@/utils'
-import {Delete20Regular} from '@vicons/fluent'
 import {useI18n} from 'vue-i18n'
 import {useMainStore} from '@/store/main'
 import FieldEdit from '@/components/VueI18nEditTool/Single/FieldEdit.vue'
@@ -19,7 +18,6 @@ export default defineComponent({
   name: 'TranslateItem',
   components: {
     FieldEdit,
-    Delete20Regular,
   },
   props: {
     item: {

@@ -3,7 +3,7 @@ import {StOptionItem} from '@/components/CanUI/packages/OptionUI/enum'
 import OptionUI from '@/components/CanUI/packages/OptionUI/index.vue'
 import {useAiSettingsStore} from '@/components/AI/hooks/ai-settings'
 import {formatDate, guid} from '@/utils'
-import {renderNDropdownMenu} from '@/components/CanUI/packages/OptionUI/Tools/renders'
+import {renderDropdownMenu} from '@/components/CanUI/packages/OptionUI/Tools/renders'
 import {useI18n} from 'vue-i18n'
 import {IChatHistoryItem} from '@/components/AI/types/ai'
 import {useMounted} from '@vueuse/core'
@@ -85,7 +85,7 @@ const optionList = computed((): StOptionItem[] => {
       key: 'history',
       hideExpandIcon: true,
       actionRender: () =>
-        renderNDropdownMenu([
+        renderDropdownMenu([
           {
             label: `📤 ${$t('actions.export')} JSON...`,
             props: {
@@ -126,17 +126,15 @@ const optionList = computed((): StOptionItem[] => {
             label: `🗑️ ${$t('actions.delete_all')}`,
             props: {
               onClick: () => {
-                window.$dialog.warning({
-                  title: $t('actions.delete_all'),
-                  content: $t('msgs.que_ren_shan_chu_ci'),
-                  positiveText: $t('actions.ok'),
-                  negativeText: $t('actions.cancel'),
-                  onPositiveClick: () => {
+                window.$dialog
+                  .confirm($t('msgs.que_ren_shan_chu_ci'), $t('actions.delete_all'), {
+                    type: 'warning',
+                  })
+                  .then(() => {
                     // 删除与当前角色的全部聊天记录
                     deleteCurrentAllHistory()
-                  },
-                  onNegativeClick: () => {},
-                })
+                  })
+                  .catch()
               },
             },
           },
@@ -158,7 +156,7 @@ const optionList = computed((): StOptionItem[] => {
               aisStore.currentChatHistoryId = item.id
             },
             actionRender: () =>
-              renderNDropdownMenu([
+              renderDropdownMenu([
                 {
                   label: `✍️ ${$t('actions.rename')}`,
                   props: {

@@ -7,16 +7,15 @@ import {ChatModel, chatModels} from '@/components/AI/types/openai'
 import iconUser from '@/assets/textures/user.png?url'
 import {useAiSettingsStore} from '@/components/AI/hooks/ai-settings'
 import {useI18n} from 'vue-i18n'
-import AutoFormNaive from '@/components/CommonUI/AutoFormNaive/index.vue'
 import {computed, ref} from 'vue'
-import {AutoFormItemType, MixedFormItems} from '@/components/CommonUI/AutoFormNaive/enum'
-import {FormItemRule, FormRules} from 'naive-ui'
-import {renderNDropdownMenu} from '@/components/CanUI/packages/OptionUI/Tools/renders'
 
 import {mergeIdData, useAiCharacters} from '@/components/AI/hooks/use-ai-characters'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {base64Utils} from '@/utils/base64-utils'
 import {generateItemDragProps} from '@/components/CanUI/packages/OptionUI/Tools/item-drag'
+import {AutoFormItemType, MixedFormItems} from '@/components/CanUI/packages/AutoFormElPlus/enum'
+import {renderDropdownMenu} from '@/components/CanUI/packages/OptionUI/Tools/renders'
+import AutoFormElPlus from '@/components/CanUI/packages/AutoFormElPlus/index.vue'
 
 const {t: $t} = useI18n()
 const aisStore = useAiSettingsStore()
@@ -70,7 +69,7 @@ const optionList = computed((): StOptionItem[] => {
       key: 'characters',
       hideExpandIcon: true,
       actionRender: () =>
-        renderNDropdownMenu([
+        renderDropdownMenu([
           {
             label: `➕ ${$t('actions.create')}`,
             props: {
@@ -107,17 +106,15 @@ const optionList = computed((): StOptionItem[] => {
             label: `🗑️ ${$t('actions.delete_all')}`,
             props: {
               onClick: () => {
-                window.$dialog.warning({
-                  title: $t('actions.delete_all'),
-                  content: $t('msgs.que_ren_shan_chu_ci'),
-                  positiveText: $t('actions.ok'),
-                  negativeText: $t('actions.cancel'),
-                  onPositiveClick: () => {
+                window.$dialog
+                  .confirm($t('msgs.que_ren_shan_chu_ci'), $t('actions.delete_all'), {
+                    type: 'warning',
+                  })
+                  .then(() => {
                     characterList.value = []
                     allChatHistory.value = []
-                  },
-                  onNegativeClick: () => {},
-                })
+                  })
+                  .catch()
               },
             },
           },
@@ -134,7 +131,7 @@ const optionList = computed((): StOptionItem[] => {
           },
           itemProps: generateItemDragProps({index, cb: switchPosition}),
           actionRender: () =>
-            renderNDropdownMenu([
+            renderDropdownMenu([
               {
                 label: `✏️ ${$t('actions.edit')}`,
                 props: {
@@ -159,12 +156,11 @@ const optionList = computed((): StOptionItem[] => {
                 label: `🗑️ ${$t('actions.delete')}`,
                 props: {
                   onClick: () => {
-                    window.$dialog.warning({
-                      title: $t('actions.confirm'),
-                      content: $t('msgs.que_ren_shan_chu_ci'),
-                      positiveText: $t('actions.ok'),
-                      negativeText: $t('actions.cancel'),
-                      onPositiveClick: () => {
+                    window.$dialog
+                      .confirm($t('msgs.que_ren_shan_chu_ci'), $t('actions.confirm'), {
+                        type: 'warning',
+                      })
+                      .then(() => {
                         // 删除与当前角色的全部聊天记录
                         allChatHistory.value = allChatHistory.value
                           .filter((i) => i.cid !== item.id)
@@ -172,9 +168,8 @@ const optionList = computed((): StOptionItem[] => {
                           .map(toRaw)
 
                         characterList.value.splice(index, 1)
-                      },
-                      onNegativeClick: () => {},
-                    })
+                      })
+                      .catch()
                   },
                 },
               },
@@ -193,11 +188,11 @@ onMounted(() => {
   }, 100)
 })
 
-const formRules = ref<FormRules>({
+const formRules = ref({
   id: {
     required: true,
     trigger: 'blur',
-    validator: (rule: FormItemRule, value: string) => {
+    validator: (rule, value: string) => {
       if (!value) {
         return new Error('id is required')
       }
@@ -322,12 +317,12 @@ const handleSubmit = () => {
   <div class="ai-side-characters">
     <OptionUI class="ai-option-ui" :option-list="optionList" />
 
-    <n-modal
-      v-model:show="isShowEditDialog"
-      preset="dialog"
+    <el-dialog
+      width="700"
+      v-model="isShowEditDialog"
       :title="isCreate ? $t('actions.create') : $t('actions.edit')"
     >
-      <AutoFormNaive
+      <AutoFormElPlus
         :form-schema="{
           model: editingItem,
           rules: formRules,
@@ -338,7 +333,7 @@ const handleSubmit = () => {
         }"
         @onSubmit="handleSubmit"
       />
-    </n-modal>
+    </el-dialog>
   </div>
 </template>
 
@@ -346,5 +341,12 @@ const handleSubmit = () => {
 .ai-side-characters {
   height: 100%;
   overflow: auto;
+
+  .el-form-item__content {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: nowrap;
+  }
 }
 </style>

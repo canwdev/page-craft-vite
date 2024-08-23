@@ -6,17 +6,24 @@ const route = useRoute()
 
 <template>
   <div class="vp-bg common-navbar-wrap">
-    <n-page-header subtitle="" @back="$router.push({name: 'HomePage'})">
-      <template #title> {{ route.meta?.title }} </template>
-      <template #avatar>
-        <slot name="avatar">
-          <n-avatar v-if="route.meta?.icon" :src="route.meta.icon" style="background: none" />
-        </slot>
+    <el-page-header @back="$router.push({name: 'HomePage'})">
+      <template #content>
+        <div class="flex-row-center-gap">
+          <el-avatar
+            :size="32"
+            shape="square"
+            v-if="route.meta?.icon"
+            :src="route.meta.icon"
+            style="background: none"
+          />
+          {{ route.meta?.title }}
+        </div>
       </template>
+
       <template #extra>
         <slot name="extra"></slot>
       </template>
-    </n-page-header>
+    </el-page-header>
   </div>
 </template>
 
