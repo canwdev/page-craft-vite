@@ -290,7 +290,9 @@ const handleRetry = (item: IMessageItem, index) => {
         <div class="action-side">
           <el-popover width="400" placement="top-start" trigger="click" :teleported="false">
             <template #reference>
-              <button class="vp-button">⚙️</button>
+              <button class="vp-button">
+                <i class="fa fa-cog" aria-hidden="true"></i>
+              </button>
             </template>
             <OptionUI :option-list="aiSettingsOptions" />
           </el-popover>

@@ -75,22 +75,22 @@ export default defineComponent({
         <img :src="mValue" alt="preview" />
       </a>
     </div>
-    <n-input-number
+
+    <el-input-number
       ref="valueInputRef"
       v-if="valType === 'number'"
-      v-model:value="mValue"
+      v-model="mValue"
       placeholder="number value"
-      size="small"
       class="item-value-edit jssl_value font-code"
-      @blur="handleValueBlur"
     />
+
     <button
       v-else-if="valType === 'object'"
       :title="mValue"
       class="item-value-edit _button vp-button"
       @click="$emit('previewArray')"
     >
-      📝 {{ $t('common.array') }}
+      <i class="fa fa-pencil-square-o" aria-hidden="true"></i> {{ $t('common.array') }}
     </button>
     <textarea
       v-else
@@ -109,7 +109,7 @@ export default defineComponent({
       class="vp-button primary"
       :title="`${$t('msgs.auto_paste')} [${autoPasteConvertMode}]`"
     >
-      <ClipboardPaste20Regular />
+      <i class="fa fa-clipboard" aria-hidden="true"></i>
     </button>
   </div>
 </template>

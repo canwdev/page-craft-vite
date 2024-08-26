@@ -10,6 +10,8 @@ import {blinkPanel} from '@/utils/anim'
 import {useBatchTranslateAnalyser} from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox/use-analyser'
 import ViewPortWindow from '@/components/CanUI/packages/ViewPortWindow/index.vue'
 import {useBatchTranslateRefactor} from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox/use-refactor'
+import ToolBar from '@/components/PageCraft/ToolBar/index.vue'
+import DropdownMenu from '@/components/CanUI/packages/OptionUI/Tools/DropdownMenu.vue'
 interface Props {
   isBatchMode?: boolean
 }
@@ -151,22 +153,18 @@ watch(toolboxFilterKey, () => {
 <template>
   <div class="vp-bg action-row">
     <template v-if="isBatchMode">
-      <n-popover trigger="hover" placement="bottom-start" style="padding: 0">
-        <template #trigger>
-          <button class="vp-button">
-            {{ $t('common.tools') }}
-          </button>
-        </template>
-
-        <QuickOptions is-static :options="guiToolboxOptions" class="vp-panel" />
-      </n-popover>
+      <DropdownMenu :options="guiToolboxOptions">
+        <button class="vp-button">
+          {{ $t('common.tools') }}
+        </button>
+      </DropdownMenu>
       <button
         v-if="i18nMainStore.translatePath"
         class="vp-button"
         @click="locateSelectedPath()"
         :title="$t('i18n_tools.locate_translate_pa')"
       >
-        ⨁
+        <i class="fa fa-crosshairs" aria-hidden="true"></i>
       </button>
     </template>
 

@@ -27,6 +27,12 @@ import {useGuiToolbox} from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox/us
 import GuiToolbox from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox/GuiToolbox.vue'
 import {handleReadSelectedFile} from '@/utils/mc-utils/io'
 import CommonNavbar from '@/components/CommonUI/CommonNavbar.vue'
+import ToolBar from '@/components/PageCraft/ToolBar/index.vue'
+import DropdownMenu from '@/components/CanUI/packages/OptionUI/Tools/DropdownMenu.vue'
+import RectSwitch from '@/components/CanUI/packages/OptionUI/Tools/RectSwitch.vue'
+import FoldableSidebarLayout from '@/components/CanUI/packages/Layouts/FoldableSidebarLayout.vue'
+import {TreeNode} from 'element-plus'
+import {TreeNodeData} from 'element-plus/es/components/tree-v2/src/types'
 
 const formatDirTreeItem = (data: any = {}): DirTreeItem => {
   return {
@@ -36,15 +42,6 @@ const formatDirTreeItem = (data: any = {}): DirTreeItem => {
     entry: data.entry,
     parentDirs: data.parentDirs,
     children: data.children || null,
-    prefix: () =>
-      /*      h(
-        NIcon,
-        {size: 18},
-        {
-          default: () => h(data.kind === 'directory' ? Folder20Regular : Document20Regular),
-        }
-      ),*/
-      h('span', {}, data.kind === 'directory' ? '📁' : '📄'),
   }
 }
 
@@ -342,28 +339,27 @@ const reloadCurrentEditEntry = async () => {
     updateGuiTranslateTree()
   }
 }
-const nodeProps = ({option}: {option: DirTreeItem}) => {
-  return {
-    // 处理树枝的点击事件
-    async onClick() {
-      try {
-        i18nMainStore.isLoading = true
-        if (option.kind === 'file') {
-          const entry = option.entry as FileSystemFileHandle
-          currentEditEntry.value = entry
-          i18nMainStore.filePathArr = [...option.parentDirs, option.label]
-          i18nMainStore.translatePath = ''
-          await reloadCurrentEditEntry()
-        }
-      } catch (e: any) {
-        console.error(e)
-        window.$message.error(e.message)
-      } finally {
-        i18nMainStore.isLoading = false
-      }
-    },
+
+// 处理树枝的点击事件
+const handleNodeClick = async (data: DirTreeItem, node: TreeNode, e: MouseEvent) => {
+  console.log(data)
+  try {
+    i18nMainStore.isLoading = true
+    if (data.kind === 'file') {
+      const entry = data.entry as FileSystemFileHandle
+      currentEditEntry.value = entry
+      i18nMainStore.filePathArr = [...data.parentDirs, data.label]
+      i18nMainStore.translatePath = ''
+      await reloadCurrentEditEntry()
+    }
+  } catch (e: any) {
+    console.error(e)
+    window.$message.error(e.message)
+  } finally {
+    i18nMainStore.isLoading = false
   }
 }
+
 const {showDropzone, fileDragover, fileDrop} = useFileDrop({
   cb: handleFileDrop,
 })
@@ -383,7 +379,7 @@ const {showDropzone, fileDragover, fileDrop} = useFileDrop({
 
     <CommonNavbar>
       <template #extra>
-        <n-space size="small" align="center">
+        <div class="flex-row-center-gap">
           <button class="vp-button" @click="isShowToolSettings = true">
             {{ $t('common.settings') }}
           </button>
@@ -396,141 +392,143 @@ const {showDropzone, fileDragover, fileDrop} = useFileDrop({
           </button>
 
           {{ $t('common.edit_mode') }}:
-          <TabLayout v-model="editMode" horizontal :tab-list="editModeOptions" />
+          <RectSwitch v-model="editMode" horizontal :options="editModeOptions" />
 
-          <n-button
-            size="small"
-            secondary
+          <button
+            class="vp-button primary"
             v-if="currentEditEntry && editMode === EditMode.GUI"
-            type="primary"
             @click="handleSaveFile"
           >
             {{ $t('actions.save_changes') }}
-          </n-button>
+          </button>
 
-          <n-dropdown
-            v-if="dirHandle"
-            size="small"
-            :options="historyMenuOptions"
-            label-field="label"
-            key-field="key"
-          >
-            <n-popconfirm @positive-click="handleCloseDir()">
-              <template #trigger>
+          <DropdownMenu v-if="dirHandle" :options="historyMenuOptions">
+            <el-popconfirm @confirm="handleCloseDir()" :title="$t('msgs.confirm_close')">
+              <template #reference>
                 <button class="vp-button primary">{{ $t('actions.close') }} Folder</button>
               </template>
-              {{ $t('msgs.confirm_close') }}
-            </n-popconfirm>
-          </n-dropdown>
+            </el-popconfirm>
+          </DropdownMenu>
 
-          <n-dropdown
-            v-else
-            size="small"
-            :options="historyMenuOptions"
-            label-field="label"
-            key-field="key"
-          >
+          <DropdownMenu v-else :options="historyMenuOptions">
             <button class="vp-button primary" @click="handlePickDir">
               {{ $t('actions.pick_i18n_directory') }}
             </button>
-          </n-dropdown>
+          </DropdownMenu>
 
-          <n-popconfirm v-if="dirHandle" @positive-click="reloadPickedDir()">
-            <template #trigger>
+          <el-popconfirm
+            v-if="dirHandle"
+            @confirm="reloadPickedDir()"
+            :title="$t('msgs.confirm_reload_files')"
+          >
+            <template #reference>
               <button class="vp-button js_reload_btn">
                 {{ $t('actions.reload') }}
               </button>
             </template>
-            {{ $t('msgs.confirm_reload_files') }}
-          </n-popconfirm>
-        </n-space>
+          </el-popconfirm>
+        </div>
       </template>
     </CommonNavbar>
 
-    <div class="_container">
-      <n-layout style="height: 100%" has-sider>
-        <n-layout-sider
-          collapse-mode="width"
-          :collapsed-width="0"
-          :width="300"
-          show-trigger="arrow-circle"
-          content-style="padding: 10px;"
-          bordered
-        >
-          <el-scrollbar style="height: 100%">
-            <n-tree
-              block-line
-              :data="i18nMainStore.dirTree"
-              :node-props="nodeProps"
-              :default-expand-all="false"
-              expand-on-click
-              selectable
-              class="font-code"
-              virtual-scroll
-              v-model:expanded-keys="expandedKeys"
-            />
-          </el-scrollbar>
-        </n-layout-sider>
-        <n-layout-content>
-          <!--{{ expandedKeys }}-->
-          <div class="main-edit-wrap">
-            <template v-if="currentEditEntry">
-              <!--文本编辑器-->
-              <BatchJson v-if="editMode === EditMode.JSON" />
-
-              <!--GUI模式/批处理模式-->
-              <div v-else class="edit-content-wrap batch-mode">
-                <el-scrollbar
-                  class="gui-edit-gui"
-                  :style="{width: editMode === EditMode.BATCH ? '500px' : '100%'}"
-                >
-                  <GuiToolbox
-                    @reloadTranslates="reloadPickedDir"
-                    v-if="editMode !== EditMode.JSON"
-                    :is-batch-mode="editMode === EditMode.BATCH"
-                  />
-
-                  <TranslateTreeItem
-                    v-for="(item, index) in i18nMainStore.translateTreeRoot"
-                    :key="index"
-                    :index="index"
-                    :item="item"
-                    :is-lite="editMode === EditMode.BATCH"
-                    :title="i18nMainStore.filePathArr.join('/')"
-                    @onKeyClick="handleKeyClick"
-                  />
-                </el-scrollbar>
-
-                <!--批处理模式-->
-                <el-scrollbar class="gui-edit-batch" v-if="editMode === EditMode.BATCH">
-                  <BatchGUI />
-                </el-scrollbar>
-              </div>
+    <FoldableSidebarLayout style="flex: 1; height: auto">
+      <template #sidebar>
+        <el-scrollbar style="height: 100%">
+          <!--<n-tree-->
+          <!--  block-line-->
+          <!--  :data="i18nMainStore.dirTree"-->
+          <!--  :node-props="nodeProps"-->
+          <!--  :default-expand-all="false"-->
+          <!--  expand-on-click-->
+          <!--  selectable-->
+          <!--  class="font-code"-->
+          <!--  virtual-scroll-->
+          <!--  v-model:expanded-keys="expandedKeys"-->
+          <!--/>-->
+          <el-tree
+            :data="i18nMainStore.dirTree"
+            :props="{
+              value: 'key',
+              label: 'label',
+              children: 'children',
+            }"
+            :default-expanded-keys="expandedKeys"
+            @node-click="handleNodeClick"
+            highlight-current
+          >
+            <template #default="{data}">
+              <span>
+                {{ data.kind === 'directory' ? '📁' : '📄' }}
+                {{ data.label }}
+              </span>
             </template>
+          </el-tree>
+        </el-scrollbar>
+      </template>
 
-            <!--未打开文件夹，展示提示-->
-            <div class="null-intro" v-else>
-              <template v-if="i18nMainStore.dirTree.length">
-                <div class="intro-title">👈 {{ $t('msgs.please_select_a_json') }}</div>
-              </template>
-              <div class="font-code" v-else>
-                <n-space align="center" class="intro-title">
-                  <n-switch size="large" v-model:value="i18nSetStore.isFoldersMode">
-                    <template #checked>{{ $t('common.folders_mode') }}</template>
-                    <template #unchecked>{{ $t('common.files_mode') }}</template>
-                  </n-switch>
+      <template #default>
+        <!--{{ expandedKeys }}-->
+        <div class="main-edit-wrap">
+          <template v-if="currentEditEntry">
+            <!--文本编辑器-->
+            <BatchJson v-if="editMode === EditMode.JSON" />
 
-                  📁 {{ $t('msgs.recommended_i18n_fol') }}:
-                </n-space>
-                <textarea
-                  class="font-code"
-                  :class="{_alt: !i18nSetStore.isFoldersMode}"
-                  readonly
-                  cols="50"
-                  rows="20"
-                  :value="
-                    i18nSetStore.isFoldersMode
-                      ? `└─[locales]    --> ${$t('msgs.drag_folder_here')}!
+            <!--GUI模式/批处理模式-->
+            <div v-else class="edit-content-wrap batch-mode">
+              <el-scrollbar
+                class="gui-edit-gui"
+                :style="{width: editMode === EditMode.BATCH ? '280px' : '100%'}"
+              >
+                <GuiToolbox
+                  @reloadTranslates="reloadPickedDir"
+                  v-if="editMode !== EditMode.JSON"
+                  :is-batch-mode="editMode === EditMode.BATCH"
+                />
+
+                <TranslateTreeItem
+                  v-for="(item, index) in i18nMainStore.translateTreeRoot"
+                  :key="index"
+                  :index="index"
+                  :item="item"
+                  :is-lite="editMode === EditMode.BATCH"
+                  :title="i18nMainStore.filePathArr.join('/')"
+                  @onKeyClick="handleKeyClick"
+                />
+              </el-scrollbar>
+
+              <!--批处理模式-->
+              <el-scrollbar class="gui-edit-batch" v-if="editMode === EditMode.BATCH">
+                <BatchGUI />
+              </el-scrollbar>
+            </div>
+          </template>
+
+          <!--未打开文件夹，展示提示-->
+          <div class="null-intro" v-else>
+            <template v-if="i18nMainStore.dirTree.length">
+              <div class="intro-title">👈 {{ $t('msgs.please_select_a_json') }}</div>
+            </template>
+            <div class="font-code" v-else>
+              <div class="flex-row-center-gap">
+                <el-switch
+                  size="large"
+                  v-model="i18nSetStore.isFoldersMode"
+                  :active-text="$t('common.folders_mode')"
+                  :inactive-text="$t('common.files_mode')"
+                  inline-prompt
+                />
+
+                📁 {{ $t('msgs.recommended_i18n_fol') }}:
+              </div>
+              <textarea
+                class="font-code"
+                :class="{_alt: !i18nSetStore.isFoldersMode}"
+                readonly
+                cols="50"
+                rows="20"
+                :value="
+                  i18nSetStore.isFoldersMode
+                    ? `└─[locales]    --> ${$t('msgs.drag_folder_here')}!
    ├─de-DE
    │  └─index.json
    ├─en-US
@@ -547,7 +545,7 @@ const {showDropzone, fileDragover, fileDrop} = useFileDrop({
    │  └─index.json
    └─zh-TW
       └─index.json`
-                      : `└─[locales]    --> ${$t('msgs.drag_folder_here')}!
+                    : `└─[locales]    --> ${$t('msgs.drag_folder_here')}!
    ├─ ar.json
    ├─ cn.json
    ├─ de.json
@@ -558,14 +556,13 @@ const {showDropzone, fileDragover, fileDrop} = useFileDrop({
    ├─ jp.json
    └─ kr.json
 `
-                  "
-                ></textarea>
-              </div>
+                "
+              ></textarea>
             </div>
           </div>
-        </n-layout-content>
-      </n-layout>
-    </div>
+        </div>
+      </template>
+    </FoldableSidebarLayout>
 
     <I18nToolSettings v-model:visible="isShowToolSettings" />
   </div>
@@ -580,11 +577,6 @@ const {showDropzone, fileDragover, fileDrop} = useFileDrop({
   position: relative;
   display: flex;
   flex-direction: column;
-  ._container {
-    width: 100%;
-    flex: 1;
-    overflow: hidden;
-  }
   .main-edit-wrap {
     display: flex;
     flex-direction: column;
@@ -627,6 +619,7 @@ const {showDropzone, fileDragover, fileDrop} = useFileDrop({
 
       .gui-edit-batch {
         height: 100%;
+        flex: 1;
       }
     }
   }

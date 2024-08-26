@@ -146,6 +146,7 @@ const openPlayground = () => {
       v-model="isShowImportDialog"
       :title="`${$t('actions.paste')} HTML`"
       width="600"
+      append-to=".page-craft-root"
     >
       <VueMonaco v-if="isShowImportDialog" v-model="pasteHtmlText" style="height: 500px" />
 
@@ -182,7 +183,10 @@ ${settingsStore.curCompInStore?.title}`"
 
         <el-popover width="180" trigger="hover">
           <template #reference>
-            <button class="vp-button">⚙️ {{ $t('common.options') }}</button>
+            <button class="vp-button">
+              <i class="fa fa-cog" aria-hidden="true"></i>
+              {{ $t('common.options') }}
+            </button>
           </template>
           <div v-for="item in toggleList" :key="item.flag" class="toggle-list">
             <div class="flex-row-center-gap">
@@ -191,7 +195,7 @@ ${settingsStore.curCompInStore?.title}`"
               <template v-if="item.desc">
                 <el-popover trigger="hover">
                   <template #reference>
-                    <span>❓</span>
+                    <i class="fa fa-question-circle-o" aria-hidden="true"></i>
                   </template>
                   <span style="font-size: 14px">{{ item.desc }}</span>
                 </el-popover>
@@ -220,7 +224,7 @@ ${settingsStore.curCompInStore?.title}`"
           :disabled="!undoRedo.undoStack.length"
           @click="handleUndo"
         >
-          ↩️
+          <i class="fa fa-undo" aria-hidden="true"></i>
         </button>
         <button
           class="vp-button"
@@ -228,7 +232,7 @@ ${settingsStore.curCompInStore?.title}`"
           :disabled="!undoRedo.redoStack.length"
           @click="handleRedo"
         >
-          ↪️
+          <i class="fa fa-repeat" aria-hidden="true"></i>
         </button>
       </div>
 

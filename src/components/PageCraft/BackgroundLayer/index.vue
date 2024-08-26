@@ -28,7 +28,7 @@ export default defineComponent({
               src: String(reader.result),
             })
           },
-          false
+          false,
         )
 
         reader.readAsDataURL(file)
@@ -58,7 +58,7 @@ export default defineComponent({
       @close="handleImgClose(index)"
     />
     <div class="operation-panel vp-panel font-emoji">
-      <n-button size="tiny" @click="imageChooserRef.chooseFile()">🖼</n-button>
+      <button class="vp-button" @click="imageChooserRef.chooseFile()">🖼</button>
     </div>
     <FileChooser ref="imageChooserRef" accept="image/*" @selected="handleChooseImage" multiple />
   </div>

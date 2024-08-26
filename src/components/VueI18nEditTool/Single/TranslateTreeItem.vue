@@ -197,12 +197,7 @@ export default defineComponent({
   >
     <div class="group-header vp-bg">
       <template v-if="isKeyDuplicated">
-        <n-tooltip trigger="hover">
-          <template #trigger>
-            <div class="mc-error-tip-button">!</div>
-          </template>
-          Group namespace duplicated, may cause bug!
-        </n-tooltip>
+        <div class="mc-error-tip-button" title="Group namespace duplicated, may cause bug!">!</div>
       </template>
 
       <div v-if="isRoot" class="namespace-input-wrap font-code">
@@ -239,16 +234,21 @@ export default defineComponent({
       <div class="actions-buttons-wrap">
         <template v-if="!isLite">
           <button class="vp-button" @click="handleGetJSON" :title="`${$t('actions.copy')} JSON`">
-            <Copy20Regular />
+            <i class="fa fa-copy"></i>
           </button>
-          <n-popconfirm v-if="!isRoot" @positive-click="$emit('onRemove')">
-            <template #trigger>
-              <button class="vp-button danger">
-                <Delete20Regular />
+
+          <el-popconfirm
+            v-if="!isRoot"
+            @confirm="$emit('onRemove')"
+            :title="$t('msgs.remove_item')"
+            :teleported="false"
+          >
+            <template #reference>
+              <button class="vp-button danger" :title="$t('msgs.remove_group')">
+                <i class="fa fa-trash-o"></i>
               </button>
             </template>
-            {{ $t('msgs.remove_group') }}
-          </n-popconfirm>
+          </el-popconfirm>
         </template>
         <button @click="toggleExpand" :title="`Toggle Expand`" class="vp-button">
           {{ !isExpand ? '▼' : '▲' }}
@@ -274,7 +274,7 @@ export default defineComponent({
       <div class="actions-wrap">
         <div class="actions-buttons-wrap" v-if="!isLite">
           <button title="Add translate item" @click="handleAddTranslate" class="vp-button">
-            <Add20Regular />
+            <i class="fa fa-plus"></i>
             {{ $t('common.field') }}
           </button>
           <button
@@ -282,7 +282,7 @@ export default defineComponent({
             :title="$t('msgs.auto_paste_and_copy') + ` (${i18nSetStore.autoPasteTextConvertMode})`"
             class="vp-button primary focus-auto-action"
           >
-            <ClipboardPaste20Regular />
+            <i class="fa fa-clipboard" aria-hidden="true"></i>
             {{ $t('msgs.auto_paste') }}
           </button>
         </div>
@@ -316,7 +316,7 @@ export default defineComponent({
             title="Add translate children group"
             class="vp-button primary"
           >
-            <AddSquare20Regular />
+            <i class="fa fa-plus-square" aria-hidden="true"></i>
             {{ $t('common.group') }}
           </button>
         </div>

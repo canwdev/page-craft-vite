@@ -146,22 +146,41 @@ export const useHoverSubMenu = (props, emit) => {
 
   // 屏幕边缘自动适应
   const calculateEdge = () => {
-    const menuEl = subMenuRef.value
+    const menuEl = subMenuRef.value?.$el
     // console.log(menuEl)
-    if (!menuEl && !menuEl.$el) {
+    if (!menuEl) {
       return
     }
-    const rect = menuEl.$el.getBoundingClientRect()
-    // console.log(rect)
+    const rect = menuEl.getBoundingClientRect()
+    // console.log(menuEl, rect)
+
+    const parentMenuEl = menuEl.parentElement
+    const parentRect = parentMenuEl.getBoundingClientRect()
+    console.log(parentMenuEl, parentRect)
+
+    let offsetLeft = 0
+    // 视口宽高
+    const vWidth = window.innerWidth
+    const vHeight = window.innerHeight
+    // TODO: 如果菜单右侧宽度不能容纳子菜单，则将子菜单显示在左边
+    if (vWidth - parentRect.left + parentRect.width < rect.width) {
+      offsetLeft = -parentRect.width
+    }
+    console.log(offsetLeft)
+
     const style = getMenuPosStyle({
-      x: rect.left,
+      x: rect.left + offsetLeft,
       y: rect.top,
       width: rect.width,
       height: rect.height,
     })
 
     // 设置样式
-    Object.assign(menuEl.$el.style, style)
+    Object.assign(menuEl.style, {
+      ...style,
+      opacity: 1,
+      visibility: 'visible',
+    })
   }
 
   const hasChildren = computed(() => {

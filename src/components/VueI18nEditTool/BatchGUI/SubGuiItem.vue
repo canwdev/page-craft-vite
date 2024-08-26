@@ -263,24 +263,25 @@ export default defineComponent({
       </div>
 
       <template v-if="listItem.json && fieldValue !== null">
-        <n-popconfirm @positive-click="handleDeleteField">
-          <template #trigger>
-            <n-button size="small" tertiary type="error" title="Delete Field">
-              <template #icon>
-                <Delete20Regular />
-              </template>
-            </n-button>
+        <el-popconfirm
+          @confirm="handleDeleteField"
+          :title="$t('msgs.remove_item')"
+          :teleported="false"
+        >
+          <template #reference>
+            <button class="btn-no-style" :title="$t('actions.delete')">
+              <i class="fa fa-trash-o"></i>
+            </button>
           </template>
-          {{ $t('msgs.remove_item') }}
-        </n-popconfirm>
+        </el-popconfirm>
       </template>
     </div>
 
     <div class="tip-not-exist" v-if="!listItem.json">
       <template v-if="isLocalCreated">
-        <n-button secondary size="small" @click="handleReload">
+        <button class="vp-button warning" @click="handleReload">
           {{ $t('actions.reload') }}
-        </n-button>
+        </button>
       </template>
       <template v-else>
         File does not exist, please
@@ -291,39 +292,35 @@ export default defineComponent({
       </template>
     </div>
     <template v-else-if="i18nMainStore.translatePath">
-      <n-space v-if="fieldValue !== null" align="center" size="small">
+      <div class="flex-row-center-gap" v-if="fieldValue !== null">
         <FieldEdit ref="inputRef" v-model="fieldValue" @previewArray="handlePreviewArrayText" />
 
-        <n-button-group v-if="isChanged">
-          <n-button
-            size="small"
-            type="warning"
+        <div v-if="isChanged">
+          <button
+            class="vp-button warning"
             @click="saveChange({isEmit: true, isSetValue: true})"
             title="Batch Save"
           >
-            <template #icon><SaveMultiple20Regular /></template>
-          </n-button>
-          <n-button secondary size="small" @click="cancelChange">
+            <i class="fa fa-floppy-o" aria-hidden="true"></i>
+          </button>
+          <button class="vp-button" @click="cancelChange">
             {{ $t('actions.cancel') }}
-          </n-button>
-        </n-button-group>
-      </n-space>
-      <n-button-group v-else>
-        <n-button
-          size="small"
+          </button>
+        </div>
+      </div>
+      <div v-else>
+        <button
           @click="pasteCreateField()"
-          type="primary"
+          class="vp-button primary"
           :title="`${$t('msgs.auto_paste')} Create (${i18nSetStore.autoPasteTextConvertMode})`"
         >
-          <template #icon>
-            <ClipboardPaste20Regular />
-          </template>
-        </n-button>
-        <n-button size="small" @click="createField('')" type="primary">{{
-          $t('actions.create_text')
-        }}</n-button>
-        <n-button size="small" @click="createField([])">{{ $t('actions.create_array') }}</n-button>
-      </n-button-group>
+          <i class="fa fa-clipboard" aria-hidden="true"></i>
+        </button>
+        <button class="vp-button primary" @click="createField('')">
+          {{ $t('actions.create_text') }}
+        </button>
+        <button class="vp-button" @click="createField([])">{{ $t('actions.create_array') }}</button>
+      </div>
     </template>
     <div style="color: gray" v-else>{{ $t('msgs.please_select_a_tran') }}</div>
 

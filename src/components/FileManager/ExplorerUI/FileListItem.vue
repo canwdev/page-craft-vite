@@ -48,7 +48,6 @@ const {iconName, titleDesc} = useFileItem(props)
   text-align: unset;
   width: 100%;
   border-bottom: 1px solid $color_border;
-  transition: all 0.3s;
   padding-top: 4px;
   padding-bottom: 4px;
   cursor: default;

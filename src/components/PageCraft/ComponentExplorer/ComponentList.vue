@@ -18,6 +18,7 @@ import PopFloat from '@/components/PageCraft/ComponentExplorer/PopFloat.vue'
 import DialogImageCropper from '@/components/CommonUI/DialogImageCropper.vue'
 import {useSettingsStore} from '@/store/settings'
 import {useLocalDir} from '@/components/PageCraft/ComponentExplorer/hooks/use-local-dir'
+import DropdownMenu from '@/components/CanUI/packages/OptionUI/Tools/DropdownMenu.vue'
 
 const emit = defineEmits(['open', 'update:isLoading', 'refresh'])
 
@@ -123,20 +124,22 @@ const {handleOpenLocalDir, localDirHistoryOptions} = useLocalDir({emit})
           @click="handleCreateComponent()"
           :title="$t('actions.add_component')"
         >
-          ➕📄
+          <i class="fa fa-file-o" aria-hidden="true"></i>
         </button>
-        <button class="vp-button" @click="handleCreateFolder" title="Create Folder">➕📂</button>
+        <button class="vp-button" @click="handleCreateFolder" title="Create Folder">
+          <i class="fa fa-folder-o" aria-hidden="true"></i>
+        </button>
 
         <div class="split-line"></div>
 
         <button class="vp-button" :disabled="!enableAction" @click="handleCut" title="Cut">
-          ✂️
+          <i class="fa fa-scissors" aria-hidden="true"></i>
         </button>
         <button class="vp-button" :disabled="!enableAction" @click="handleCopy" title="Copy">
-          📑
+          <i class="fa fa-files-o" aria-hidden="true"></i>
         </button>
         <button class="vp-button" :disabled="!enablePaste" @click="handlePaste" title="Paste">
-          📋
+          <i class="fa fa-clipboard" aria-hidden="true"></i>
         </button>
 
         <button
@@ -145,45 +148,36 @@ const {handleOpenLocalDir, localDirHistoryOptions} = useLocalDir({emit})
           @click="handleRename"
           title="Rename"
         >
-          ✏️
+          <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
         </button>
         <button class="vp-button" :disabled="!enableAction" @click="confirmDelete" title="Delete">
-          ❌
+          <i class="fa fa-trash-o" aria-hidden="true"></i>
         </button>
 
         <div class="split-line"></div>
 
-        <el-popover
-          width="200"
-          placement="bottom-start"
-          :teleported="false"
-          popper-style="padding: 0"
-        >
-          <template #reference>
-            <button class="vp-button" title="Open Local Folder" @click="handleOpenLocalDir">
-              📂
-            </button>
-          </template>
-          <QuickOptions
-            v-if="localDirHistoryOptions.length"
-            :options="localDirHistoryOptions"
-            is-static
-            class="vp-panel"
-          />
-        </el-popover>
+        <DropdownMenu :options="localDirHistoryOptions">
+          <button class="vp-button" title="Open Local Folder" @click="handleOpenLocalDir">
+            <i class="fa fa-folder-open-o" aria-hidden="true"></i>
+          </button>
+        </DropdownMenu>
       </div>
       <div class="action-group">
         <div class="action-button-wrap">
-          <button class="vp-button" title="Toggle Sort" @click="showSortMenu = true">📶</button>
+          <button class="vp-button" title="Toggle Sort" @click="showSortMenu = true">
+            <i class="fa fa-sort" aria-hidden="true"></i>
+          </button>
           <transition name="fade-scale">
             <QuickOptions v-model:visible="showSortMenu" :options="sortOptions" />
           </transition>
         </div>
 
-        <button class="vp-button" @click="toggleSelectAll" title="Toggle Select All">✅</button>
+        <button class="vp-button" @click="toggleSelectAll" title="Toggle Select All">
+          <i class="fa fa-check-square-o" aria-hidden="true"></i>
+        </button>
 
         <button class="vp-button" @click="($event) => handleShowCtxMenu(null, $event)" title="Menu">
-          🚥
+          <i class="fa fa-bars" aria-hidden="true"></i>
         </button>
       </div>
     </div>

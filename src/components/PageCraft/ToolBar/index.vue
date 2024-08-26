@@ -191,7 +191,10 @@ export default defineComponent({
         <div class="mc-toolbar-group">
           <el-popconfirm :title="$t('msgs.confirm_reset_toolba')" @confirm="resetToolbar">
             <template #reference>
-              <button class="vp-button">♻️</button>
+              <button class="vp-button">
+                <i class="fa fa-refresh" aria-hidden="true"></i>
+                ️
+              </button>
             </template>
           </el-popconfirm>
 
@@ -201,6 +204,7 @@ export default defineComponent({
             @click="settingsStore.showInventory = !settingsStore.showInventory"
             title="(alt+a)"
           >
+            <i class="fa fa-archive" aria-hidden="true"></i>
             {{ $t('common.inventory') }}
           </button>
 
@@ -210,7 +214,7 @@ export default defineComponent({
             class="vp-button"
             @click="mainStore.isShowQuickLaunch = !mainStore.isShowQuickLaunch"
           >
-            🧰 {{ $t('common.toolbox') }}
+            <i class="fa fa-wrench" aria-hidden="true"></i> {{ $t('common.toolbox') }}
           </button>
         </div>
       </div>
@@ -286,6 +290,8 @@ export default defineComponent({
     .vp-button {
       font-size: 12px;
       padding: 2px 8px;
+      line-height: 1;
+      min-height: 24px;
     }
     .vp-input {
       font-size: 12px;

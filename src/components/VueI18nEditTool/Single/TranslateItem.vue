@@ -164,7 +164,7 @@ export default defineComponent({
     :class="{isLite, isKeyDuplicated}"
     :data-translate-path="nameDisplay"
   >
-    <n-space size="small" align="center">
+    <div class="flex-row-center-gap">
       <template v-if="isKeyDuplicated">
         <div class="mc-error-tip-button" title="Key duplicated, may cause bug!">!</div>
       </template>
@@ -202,16 +202,19 @@ export default defineComponent({
         </button>
       </div>
 
-      <n-popconfirm v-if="!isLite" @positive-click="$emit('onRemove')">
-        <template #trigger>
-          <button class="vp-button danger">
-            <Delete20Regular />
+      <el-popconfirm
+        v-if="!isLite"
+        @confirm="$emit('onRemove')"
+        :title="$t('msgs.remove_item')"
+        :teleported="false"
+      >
+        <template #reference>
+          <button class="vp-button" :title="$t('actions.delete')">
+            <i class="fa fa-trash-o"></i>
           </button>
-          <!--× Del-->
         </template>
-        {{ $t('msgs.remove_item') }}
-      </n-popconfirm>
-    </n-space>
+      </el-popconfirm>
+    </div>
   </div>
 </template>
 

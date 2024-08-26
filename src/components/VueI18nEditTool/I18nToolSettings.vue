@@ -116,7 +116,8 @@ export default defineComponent({
 <template>
   <el-dialog
     v-model="mVisible"
-    width="700"
+    width="500"
+    draggable
     :title="$t('common.i18njson_batch_tool') + ' ' + $t('common.settings')"
   >
     <OptionUI :option-list="optionList" />

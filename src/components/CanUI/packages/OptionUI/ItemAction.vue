@@ -4,10 +4,11 @@ import RectSwitch from './Tools/RectSwitch.vue'
 import {StOptionItem, StOptionType, swatches} from './enum'
 import VueRender from './Tools/VueRender.vue'
 import AdvancedNumberInput from './Tools/AdvancedNumberInput.vue'
+import DynamicTags from '@/components/CanUI/packages/OptionUI/Tools/DynamicTags.vue'
 
 export default defineComponent({
   name: 'ItemAction',
-  components: {AdvancedNumberInput, VueRender, RectSwitch},
+  components: {DynamicTags, AdvancedNumberInput, VueRender, RectSwitch},
   props: {
     item: {
       type: Object as PropType<StOptionItem>,
@@ -74,13 +75,12 @@ export default defineComponent({
       <el-option v-for="vi in item.options" :key="vi.value" :label="vi.label" :value="vi.value" />
     </el-select>
 
-    <!--<n-dynamic-tags-->
-    <!--    class="dynamic-tags"-->
-    <!--    v-else-if="item.type === StOptionType.DYNAMIC_TAGS"-->
-    <!--    v-model:value="dynamicValue"-->
-    <!--    size="small"-->
-    <!--    v-bind="item.props"-->
-    <!--  />-->
+    <DynamicTags
+      class="dynamic-tags"
+      v-else-if="item.type === StOptionType.DYNAMIC_TAGS"
+      v-model="dynamicValue"
+      v-bind="item.props"
+    />
 
     <el-color-picker
       v-else-if="item.type === StOptionType.COLOR_PICKER"

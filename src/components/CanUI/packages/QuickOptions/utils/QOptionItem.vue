@@ -49,20 +49,18 @@ const {subMenuRef, isMouseOver, isMouseOverSub, hasChildren, subChildren} = useH
     @mouseleave="isMouseOver = false"
   >
     <!-- 鼠标悬浮显示子菜单 -->
-    <transition name="fade">
-      <QuickOptions
-        ref="subMenuRef"
-        v-if="!isStatic && hasChildren && isMouseOver"
-        visible
-        :options="subChildren"
-        :show-index="showIndex"
-        @mouseover="isMouseOverSub = true"
-        @mouseleave="isMouseOverSub = false"
-        @click.stop
-        @onClose="$emit('onClose')"
-        class="sub-option-items"
-      />
-    </transition>
+    <QuickOptions
+      ref="subMenuRef"
+      v-if="!isStatic && hasChildren && isMouseOver"
+      visible
+      :options="subChildren"
+      :show-index="showIndex"
+      @mouseover="isMouseOverSub = true"
+      @mouseleave="isMouseOverSub = false"
+      @click.stop
+      @onClose="$emit('onClose')"
+      class="sub-option-items"
+    />
 
     <div class="index-wrap" v-if="showIndex && index < 9">
       <span>{{ index + 1 }}</span>

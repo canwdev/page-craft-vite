@@ -335,8 +335,8 @@ export default defineComponent({
         @onArrowClick="handleOptionClick(v, $event, true)"
         @onClose="$emit('onClose'), (mVisible = false)"
         @onSubMenuHide="focus"
-        @mouseover="curIndex = index"
       />
+      <!--@mouseover="curIndex = index"-->
     </template>
   </div>
 </template>
@@ -347,12 +347,13 @@ export default defineComponent({
     border 0.2s,
     outline-color 0.2s;
   width: fit-content;
+
   &:focus {
     border: 1px solid $primary;
     outline: none;
     .option-item {
       &.focus {
-        outline-color: currentColor;
+        outline-color: $primary;
       }
     }
   }
@@ -362,7 +363,7 @@ export default defineComponent({
     border: none;
     border-radius: 0;
     .option-item {
-      outline: 1px dashed transparent;
+      outline: 1px solid transparent;
       outline-offset: -1px;
     }
   }
@@ -400,7 +401,6 @@ export default defineComponent({
     min-width: 120px;
     position: relative;
     box-sizing: border-box;
-    transition: all 0.1s;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -411,6 +411,9 @@ export default defineComponent({
       left: 100%;
       // 解决绝对定位，fit-content 不生效的问题
       width: max-content;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s;
     }
 
     &._back {

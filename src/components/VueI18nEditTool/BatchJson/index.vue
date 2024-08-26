@@ -32,18 +32,17 @@ watch(
 <template>
   <div class="batch-text-editor" v-loading="isLoading">
     <div class="editor-tabs-wrap">
-      <n-tabs size="small" type="card" animated v-model:value="currentTab">
-        <n-tab-pane
-          style="padding: 0"
-          :name="item.rootDir.key"
-          :tab="
+      <el-tabs v-model="currentTab" type="card">
+        <el-tab-pane
+          v-for="item in i18nMainStore.batchList"
+          :key="item.rootDir.key"
+          :label="
             (i18nMainStore.changedLabelMap[item.rootDir.label] ? '* ' : '') + item.rootDir.label
           "
-          :key="item.rootDir.key"
-          v-for="item in i18nMainStore.batchList"
+          :name="item.rootDir.key"
         >
-        </n-tab-pane>
-      </n-tabs>
+        </el-tab-pane>
+      </el-tabs>
     </div>
 
     <div class="editor-wrap">
@@ -68,6 +67,9 @@ watch(
   overflow: hidden;
   position: relative;
   .editor-tabs-wrap {
+    :deep(.el-tabs__header) {
+      margin-bottom: 0;
+    }
   }
   .editor-wrap {
     flex: 1;

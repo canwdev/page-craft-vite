@@ -50,7 +50,7 @@ export default defineComponent({
   width: fit-content;
   display: flex;
   align-items: center;
-  border-radius: 4px;
+  border-radius: 2px;
   padding: 2px;
   border: 1px solid $color_border;
 
@@ -63,9 +63,9 @@ export default defineComponent({
   }
 
   .r-item {
-    border-radius: 4px;
-    padding: 5px 15px;
-    font-size: 12px;
+    border-radius: 2px;
+    padding: 4px 10px;
+    font-size: 14px;
     transition: all 0.3s;
     cursor: pointer;
 

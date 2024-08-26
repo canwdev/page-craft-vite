@@ -92,7 +92,7 @@ export default defineComponent({
           <div class="item-title-wrap">
             <div class="item-label-wrap">
               <span class="item-label">{{ sItem.label }}</span>
-              <el-tooltip v-if="sItem.tips" dar>
+              <el-tooltip v-if="sItem.tips" effect="light">
                 <svg
                   style="width: 16px; height: 16px"
                   xmlns="http://www.w3.org/2000/svg"

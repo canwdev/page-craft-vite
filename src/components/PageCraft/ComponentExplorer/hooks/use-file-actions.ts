@@ -256,7 +256,7 @@ export const useComponentFileActions = ({
           label: `🗃️ ${$t('actions.import')}/${$t('actions.export')}`,
           children: [
             {
-              label: `📥 ${$t('actions.import')} ${$t('common.all_components')} Json (Flat)`,
+              label: `📥 ${$t('actions.import')} ${$t('common.all_components')} JSON (Flat)`,
               props: {
                 onClick: () => {
                   doImportAll()
@@ -264,7 +264,7 @@ export const useComponentFileActions = ({
               },
             },
             {
-              label: `📤 ${$t('actions.export')} ${$t('common.all_components')} Json (Flat)`,
+              label: `📤 ${$t('actions.export')} ${$t('common.all_components')} JSON (Flat)`,
               props: {
                 onClick: async () => {
                   await exportComponentAllJson(components)

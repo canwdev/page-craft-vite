@@ -114,7 +114,7 @@ useGlobalBusOn(GlobalEvents.ON_ADD_STYLE, (arg) => {
           @click="settingsStore.showStyleEditor = !settingsStore.showStyleEditor"
           title="(alt+s)"
         >
-          {{ $t('common.style') }}
+          <i class="fa fa-paint-brush" aria-hidden="true"></i> {{ $t('common.style') }}
         </button>
       </DropdownMenu>
       <template #end> </template>

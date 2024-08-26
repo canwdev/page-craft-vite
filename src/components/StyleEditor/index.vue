@@ -304,7 +304,7 @@ defineExpose({
     }"
   >
     <template #titleBarLeft>
-      🎨 {{ $t('common.style_editor') }}
+      <i class="fa fa-paint-brush" aria-hidden="true"></i> {{ $t('common.style_editor') }}
       (scss)
     </template>
     <template #titleBarRightControls>
@@ -313,23 +313,25 @@ defineExpose({
         :class="{active: isSelecting}"
         @click.stop.prevent="isSelecting = !isSelecting"
       >
-        {{ isSelecting ? '📛' : '🔱' }}
+        <i class="fa fa-mouse-pointer" aria-hidden="true"></i>
       </button>
       <button
         @click="isShowQuickOptions = !isShowQuickOptions"
         :title="$t('actions.add_tool_codes')"
       >
-        🖌️
+        <i class="fa fa-list" aria-hidden="true"></i>
       </button>
 
       <button
         :title="$t('actions.beautify_code') + ' (ctrl+shift+f)'"
         @click="execBeautifyCssAction"
       >
-        ⚜️
+        <i class="fa fa-css3" aria-hidden="true"></i>
       </button>
 
-      <button :title="$t('actions.copy_code') + ' (ctrl+a ctrl+c)'" @click="copyStyle">📋</button>
+      <button :title="$t('actions.copy_code') + ' (ctrl+a ctrl+c)'" @click="copyStyle">
+        <i class="fa fa-files-o" aria-hidden="true"></i>
+      </button>
     </template>
 
     <transition name="mc-fade">
@@ -348,7 +350,7 @@ defineExpose({
         :options="snippetsOptions"
         :title="`${$t('actions.add_tool_codes')} (alt+\`)`"
         class="font-code"
-        style="top: 2px; right: 2px"
+        style="top: 2px; right: 2px; position: absolute; z-index: 999"
       />
       <div v-if="showTabs" class="style-editor-action-bar">
         <TabLayout v-model="styleEditorTab" :tab-list="tabList" horizontal />

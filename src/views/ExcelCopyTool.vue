@@ -393,7 +393,10 @@ export default defineComponent({
             </div>
 
             <DropdownMenu v-if="workbookRef" :options="dropdownMenuOptions" :disabled="!isReady">
-              <button class="vp-button">💻 {{ $t('actions.export') }}</button>
+              <button class="vp-button">
+                <i class="fa fa-download" aria-hidden="true"></i>
+                {{ $t('actions.export') }}
+              </button>
             </DropdownMenu>
 
             <button
@@ -416,18 +419,12 @@ export default defineComponent({
         </template>
       </CommonNavbar>
 
-      <n-card v-if="isReady" class="sheet-name-card" size="small">
-        <n-tabs size="small" type="card" animated v-model:value="sheetNameIndex">
-          <n-tab-pane
-            style="padding: 0"
-            :name="index"
-            :tab="item"
-            :key="item"
-            v-for="(item, index) in sheetNames"
-          >
-          </n-tab-pane>
-        </n-tabs>
-      </n-card>
+      <div v-if="isReady" class="sheet-name-card">
+        <el-tabs v-model="sheetNameIndex" type="card">
+          <el-tab-pane v-for="(item, index) in sheetNames" :key="index" :label="item" :name="index">
+          </el-tab-pane>
+        </el-tabs>
+      </div>
     </div>
     <div ref="tableWrapperElRef" class="excel-table-container vp-bg" @click="handleClick"></div>
 
@@ -449,8 +446,11 @@ export default defineComponent({
   position: relative;
 
   .sheet-name-card {
-    .n-card__content {
-      padding: 5px 5px 0;
+    .el-tabs__header {
+      margin-bottom: 0px;
+    }
+    .el-tabs__content {
+      padding: 0;
     }
   }
 

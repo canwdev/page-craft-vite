@@ -33,5 +33,10 @@ const route = useRoute()
   padding: 8px 10px;
   user-select: none;
   border-bottom: 1px solid $color_border;
+  :deep(.el-page-header__back) {
+    &:hover {
+      color: $primary;
+    }
+  }
 }
 </style>

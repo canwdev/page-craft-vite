@@ -62,7 +62,7 @@ onMounted(() => {
             @click="goBack"
             title="Back"
           >
-            ⬅️
+            <i class="fa fa-chevron-left" aria-hidden="true"></i>
           </button>
           <button
             :disabled="forwardHistory.length <= 0"
@@ -70,10 +70,10 @@ onMounted(() => {
             @click="goForward"
             title="Forward"
           >
-            ➡️
+            <i class="fa fa-chevron-right" aria-hidden="true"></i>
           </button>
           <button class="btn-action vp-button" :disabled="!allowUp" @click="goUp" title="Up">
-            ⬆️
+            <i class="fa fa-level-up" aria-hidden="true"></i>
           </button>
         </div>
         <div class="input-wrap">
@@ -83,9 +83,17 @@ onMounted(() => {
             class="input-addr vp-input"
             @change="handleRefresh"
           />
-          <button class="vp-button btn-action" @click="handleRefresh">🔄</button>
+
+          <button class="vp-button btn-action" @click="handleRefresh">
+            <i class="fa fa-refresh" aria-hidden="true"></i>
+          </button>
           <button class="vp-button btn-action" @click="toggleStar">
-            {{ isStared ? '🌟' : '⭐' }}
+            <template v-if="isStared">
+              <i class="fa fa-star" aria-hidden="true"></i>
+            </template>
+            <template v-else>
+              <i class="fa fa-star-o" aria-hidden="true"></i>
+            </template>
           </button>
 
           <input placeholder="Filter name" v-model="filterText" class="input-filter vp-input" />
@@ -124,6 +132,15 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   position: relative;
+
+  .vp-button {
+    line-height: 1;
+    min-width: 25px;
+    min-height: 25px;
+    align-items: center;
+    justify-content: center;
+  }
+
   .explorer-header {
     padding: 4px;
     border: none;

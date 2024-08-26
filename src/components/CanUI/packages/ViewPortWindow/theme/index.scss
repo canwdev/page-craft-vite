@@ -44,11 +44,6 @@
   &.danger {
     color: #f44336;
   }
-  &.secondary {
-    color: $primary;
-    border: none;
-    outline: 1px solid $primary;
-  }
   &.primary {
     background: $primary !important;
     color: white !important;

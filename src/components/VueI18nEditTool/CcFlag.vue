@@ -32,6 +32,7 @@ const flagSrc = computed(() => {
 <template>
   <div class="cc-flag" :style="{width: size, height: size}" :title="cc">
     <img :src="flagSrc" v-if="flagSrc" :alt="cc" />
+    <i v-else class="fa fa-globe" aria-hidden="true"></i>
   </div>
 </template>
 
