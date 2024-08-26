@@ -123,8 +123,8 @@ const handleContextMenu = (event) => {
     height: 200px;
   }
   .context-menu-demo {
-    width: 500px;
-    height: 500px;
+    width: 100%;
+    height: 90vh;
     background-color: gray;
     display: flex;
     align-items: center;

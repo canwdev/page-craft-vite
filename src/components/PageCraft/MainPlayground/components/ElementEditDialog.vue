@@ -184,6 +184,12 @@ export default defineComponent({
   overflow: auto;
   padding: 10px 10px 0;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+
+  :deep(.form-content-wrap) {
+    flex: 1;
+  }
 
   .action-row {
     position: sticky;

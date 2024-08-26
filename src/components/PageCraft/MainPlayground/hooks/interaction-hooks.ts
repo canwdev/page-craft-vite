@@ -13,6 +13,7 @@ import {useI18n} from 'vue-i18n'
 import {useOpenCloseSound, useSfxDestroy, useSfxPlace} from '@/hooks/use-sfx'
 import {onClickOutside} from '@vueuse/core'
 import {QuickOptionItem} from '@/components/CanUI/packages/QuickOptions/enum'
+import {getMenuPosStyle} from '@/components/CanUI/packages/QuickOptions/utils/use-context-menu'
 
 const MAX_WAIT_TIME = 0.3 * 1000
 
@@ -81,10 +82,12 @@ export const useInteractionHooks = (options) => {
     }
 
     const rect = selection.getRangeAt(0).getBoundingClientRect()
-    selectionActionStyle.value = {
-      top: `calc(${rect.top}px + ${rect.height}px + 2px)`,
-      left: `calc(${rect.left}px + calc(${rect.width}px / 2) - 110px)`,
-    }
+    selectionActionStyle.value = getMenuPosStyle({
+      x: rect.left,
+      y: rect.top + rect.height,
+      width: rect.width,
+      height: rect.height,
+    })
     isShowSelectionAction.value = true
     isPointerInCanvas.value = false
   }

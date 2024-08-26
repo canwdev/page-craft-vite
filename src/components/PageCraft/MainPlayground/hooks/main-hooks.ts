@@ -180,8 +180,7 @@ export const useMcMain = (options) => {
       ],
     },
     {
-      type: 'divider',
-      label: 'd0',
+      split: true,
     },
     {
       label: `📄 ${$t('actions.paste')} HTML...`,
@@ -200,8 +199,7 @@ export const useMcMain = (options) => {
       },
     },
     {
-      type: 'divider',
-      label: 'd1',
+      split: true,
     },
     {
       label: '❌ ' + $t('actions.clear_all_html'),

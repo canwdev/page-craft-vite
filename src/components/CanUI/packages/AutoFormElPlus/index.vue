@@ -74,37 +74,44 @@ defineExpose({
       </div>
     </transition>
 
-    <template v-for="(item, index) in formSchema.formItems">
-      <!--      自动grid数组-->
-      <div
-        :key="'g_' + index"
-        class="auto-form-grid"
-        :class="[`count-${item.length}`]"
-        v-if="Array.isArray(item)"
-        :style="{gridTemplateColumns: `repeat(${item.length}, 1fr)`}"
-      >
-        <template v-for="vi in item">
-          <AutoFormItem v-if="'key' in vi" :key="vi.key" :item="vi" :model="formSchema.model" />
-        </template>
-      </div>
-      <!--      手动grid数组(AutoFormRow)-->
-      <div
-        :key="'ag_' + index"
-        class="auto-form-grid"
-        :class="[`count-${item.cols}`]"
-        v-else-if="'children' in item && Array.isArray(item.children)"
-        :style="{gridTemplateColumns: `repeat(${item.cols}, 1fr)`}"
-      >
+    <div class="form-content-wrap">
+      <template v-for="(item, index) in formSchema.formItems">
+        <!--      自动grid数组-->
+        <div
+          :key="'g_' + index"
+          class="auto-form-grid"
+          :class="[`count-${item.length}`]"
+          v-if="Array.isArray(item)"
+          :style="{gridTemplateColumns: `repeat(${item.length}, 1fr)`}"
+        >
+          <template v-for="vi in item">
+            <AutoFormItem v-if="'key' in vi" :key="vi.key" :item="vi" :model="formSchema.model" />
+          </template>
+        </div>
+        <!--      手动grid数组(AutoFormRow)-->
+        <div
+          :key="'ag_' + index"
+          class="auto-form-grid"
+          :class="[`count-${item.cols}`]"
+          v-else-if="'children' in item && Array.isArray(item.children)"
+          :style="{gridTemplateColumns: `repeat(${item.cols}, 1fr)`}"
+        >
+          <AutoFormItem
+            v-for="vi in item.children"
+            :key="vi.key"
+            :item="vi"
+            :model="formSchema.model"
+          />
+        </div>
+        <!--      单个内容-->
         <AutoFormItem
-          v-for="vi in item.children"
-          :key="vi.key"
-          :item="vi"
+          v-else-if="'key' in item"
+          :key="index"
+          :item="item"
           :model="formSchema.model"
         />
-      </div>
-      <!--      单个内容-->
-      <AutoFormItem v-else-if="'key' in item" :key="index" :item="item" :model="formSchema.model" />
-    </template>
+      </template>
+    </div>
 
     <!--    操作按钮-->
     <div v-if="!hideActions" class="auto-form-actions">

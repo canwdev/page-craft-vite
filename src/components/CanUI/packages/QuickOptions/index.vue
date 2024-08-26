@@ -293,7 +293,6 @@ export default defineComponent({
     v-if="mVisible || isStatic"
     class="quick-options scrollbar-mini"
     :class="{
-      _absolute: !isStatic,
       _static: isStatic,
       horizontal,
       'vp-panel': !horizontal && !isStatic,
@@ -356,11 +355,6 @@ export default defineComponent({
         outline-color: currentColor;
       }
     }
-  }
-
-  &._absolute {
-    position: absolute;
-    z-index: 1000;
   }
 
   &._static {

@@ -64,7 +64,7 @@ const styleMenuOptions = [
       onClick: async () => {
         const style = await loadCurCompStyle()
         const css = beautifyCss(await sassToCSS(style))
-        await copyToClipboard(css)
+        window.$qlUtils.copy(css)
       },
     },
   },

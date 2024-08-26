@@ -404,7 +404,7 @@ export default defineComponent({
 
 <template>
   <transition :name="transitionName">
-    <div v-show="isInit && mVisible" class="vp-window" ref="rootRef">
+    <div v-show="isInit && mVisible" class="vp-window" ref="rootRef" :id="wid">
       <LayoutPreview :preview-data="layoutPreviewData" />
       <LayoutHelper v-model:visible="isShowLayoutHelper" @setWindowLayout="setWindowLayout" />
       <div class="vp-window-content">

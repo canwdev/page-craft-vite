@@ -1,5 +1,53 @@
 import {QuickOptionItem} from '@/components/CanUI/packages/QuickOptions/enum'
 
+// 获取菜单位置样式，自动处理屏幕边缘
+export const getMenuPosStyle = ({x, y, width, height}) => {
+  let mx = x
+  let my = y
+
+  // 视口宽高
+  const vWidth = window.innerWidth
+  const vHeight = window.innerHeight
+
+  const style: any = {
+    position: 'fixed',
+    transform: 'none',
+    zIndex: 1000,
+  }
+
+  // 使其始终显示在屏幕内部而不超出
+  const offset_left = vWidth - (mx + width)
+  if (offset_left < 0) {
+    mx += offset_left
+  }
+  if (mx < x) {
+    mx = x - width
+  }
+  // 处理宽度大于视口
+  if (width > vWidth) {
+    mx = 0
+    style.width = '95%'
+  }
+  style.left = mx + 'px'
+
+  const offset_top = vHeight - (my + height)
+  if (offset_top < 0) {
+    my += offset_top
+  }
+  if (my < y) {
+    my = y - height
+  }
+  // 处理高度大于视口
+  if (height > vHeight) {
+    my = 0
+    style.height = '95%'
+    style.overflow = 'auto'
+  }
+  style.top = my + 'px'
+
+  return style
+}
+
 export const useContextMenu = (options: any = {}) => {
   const {getExtraSize} = options
 
@@ -38,34 +86,12 @@ export const useContextMenu = (options: any = {}) => {
   })
 
   const ctxMenuStyle = computed(() => {
-    let mx = xRef.value
-    let my = yRef.value
-    const wWidth = window.innerWidth
-    const wHeight = window.innerHeight
-
-    // 使其始终显示在屏幕内部而不超出
-    const offset_left = wWidth - (mx + menuWidth.value)
-    if (offset_left < 0) {
-      mx += offset_left
-    }
-    if (mx < xRef.value) {
-      mx = xRef.value - menuWidth.value
-    }
-
-    const offset_top = wHeight - (my + menuHeight.value)
-    if (offset_top < 0) {
-      my += offset_top
-    }
-    if (my < yRef.value) {
-      my = yRef.value - menuHeight.value
-    }
-
-    return {
-      position: 'fixed',
-      left: mx + 'px',
-      top: my + 'px',
-      transform: 'none',
-    }
+    return getMenuPosStyle({
+      x: xRef.value,
+      y: yRef.value,
+      width: menuWidth.value,
+      height: menuHeight.value,
+    })
   })
 
   const showMenu = (event: MouseEvent) => {
@@ -121,8 +147,21 @@ export const useHoverSubMenu = (props, emit) => {
   // 屏幕边缘自动适应
   const calculateEdge = () => {
     const menuEl = subMenuRef.value
-    console.log(menuEl)
-    // TODO
+    // console.log(menuEl)
+    if (!menuEl && !menuEl.$el) {
+      return
+    }
+    const rect = menuEl.$el.getBoundingClientRect()
+    // console.log(rect)
+    const style = getMenuPosStyle({
+      x: rect.left,
+      y: rect.top,
+      width: rect.width,
+      height: rect.height,
+    })
+
+    // 设置样式
+    Object.assign(menuEl.$el.style, style)
   }
 
   const hasChildren = computed(() => {

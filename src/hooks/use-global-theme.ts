@@ -3,6 +3,7 @@ import {useSettingsStore} from '@/store/settings'
 import {useMainStore} from '@/store/main'
 import {getSystemIsDarkMode, hexToRgb} from '@/utils/color'
 import {useThemeOptions} from '@/components/CanUI/packages/ViewPortWindow/utils/use-theme'
+import {useElementPlusTheme} from '@/hooks/use-element-plus-theme'
 
 export const useGlobalTheme = () => {
   const mainStore = useMainStore()
@@ -66,10 +67,13 @@ export const useGlobalTheme = () => {
     },
   )
 
+  const {changeTheme} = useElementPlusTheme(settingsStore.themeColor)
+
   const updateThemeColor = () => {
     const themeColor = settingsStore.themeColor
     // console.log({themeColor})
     if (themeColor) {
+      changeTheme(themeColor)
       try {
         const res = hexToRgb(themeColor)
         if (!res) {
