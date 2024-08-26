@@ -1,3 +1,5 @@
+import {QuickOptionItem} from '@/components/CanUI/packages/QuickOptions/enum'
+
 export const useContextMenu = (options: any = {}) => {
   const {getExtraSize} = options
 
@@ -67,10 +69,13 @@ export const useContextMenu = (options: any = {}) => {
   })
 
   const showMenu = (event: MouseEvent) => {
-    xRef.value = event.clientX
-    yRef.value = event.clientY
-    event.preventDefault()
-    isShow.value = true
+    isShow.value = false
+    setTimeout(() => {
+      xRef.value = event.clientX
+      yRef.value = event.clientY
+      event.preventDefault()
+      isShow.value = true
+    })
   }
 
   const showMenuByPoint = (x, y) => {
@@ -90,5 +95,57 @@ export const useContextMenu = (options: any = {}) => {
     updateCardSize,
     showMenu,
     showMenuByPoint,
+  }
+}
+
+// 鼠标悬浮显示子菜单
+export const useHoverSubMenu = (props, emit) => {
+  const {item, isStatic} = toRefs(props)
+
+  const subMenuRef = ref()
+  const isMouseOver = ref(false)
+  const isMouseOverSub = ref(false)
+
+  watch(isMouseOver, (val) => {
+    if (!isStatic.value && hasChildren.value) {
+      if (!val) {
+        emit('onSubMenuHide')
+      } else {
+        setTimeout(() => {
+          calculateEdge()
+        })
+      }
+    }
+  })
+
+  // 屏幕边缘自动适应
+  const calculateEdge = () => {
+    const menuEl = subMenuRef.value
+    console.log(menuEl)
+    // TODO
+  }
+
+  const hasChildren = computed(() => {
+    if (Array.isArray(item.value.children)) {
+      return item.value.children.length > 0
+    }
+    return !!item.value.children
+  })
+  const subChildren = computed<QuickOptionItem[]>(() => {
+    if (!hasChildren.value) {
+      return []
+    }
+    if (Array.isArray(item.value.children)) {
+      return item.value.children
+    }
+    return item.value.children!()
+  })
+
+  return {
+    subMenuRef,
+    isMouseOver,
+    isMouseOverSub,
+    hasChildren,
+    subChildren,
   }
 }

@@ -2,7 +2,7 @@
 import {useVModel} from '@vueuse/core'
 
 import QuickOptions from '@/components/CanUI/packages/QuickOptions/index.vue'
-import QuickContextMenu from '@/components/CanUI/packages/QuickOptions/utils/QuickContextMenu.vue'
+import QuickContextMenu from '@/components/CanUI/packages/QuickOptions/QuickContextMenu.vue'
 import {
   useComponentMigrationToV2,
   useComponentStorageV2,
@@ -209,9 +209,7 @@ const {handleOpenLocalDir, localDirHistoryOptions} = useLocalDir({emit})
       </div>
 
       <Teleport to="body">
-        <transition name="fade">
-          <QuickContextMenu :options="ctxMenuOptions" ref="ctxMenuRef" />
-        </transition>
+        <QuickContextMenu :options="ctxMenuOptions" ref="ctxMenuRef" />
       </Teleport>
     </div>
     <PopFloat />

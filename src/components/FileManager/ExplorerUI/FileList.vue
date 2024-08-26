@@ -5,7 +5,7 @@ import {useVModel} from '@vueuse/core'
 import FileGridItem from './FileGridItem.vue'
 
 import QuickOptions from '@/components/CanUI/packages/QuickOptions/index.vue'
-import QuickContextMenu from '@/components/CanUI/packages/QuickOptions/utils/QuickContextMenu.vue'
+import QuickContextMenu from '@/components/CanUI/packages/QuickOptions/QuickContextMenu.vue'
 import {useCopyPaste} from './hooks/use-copy-paste'
 import {useSelection} from './hooks/use-selection'
 import {useLayoutSort} from './hooks/use-layout-sort'
@@ -179,9 +179,7 @@ const {handleOpenLocalDir, localDirHistoryOptions, isShowDirHistory} = useLocalD
       </div>
 
       <Teleport to="body">
-        <transition name="fade">
-          <QuickContextMenu :options="ctxMenuOptions" ref="ctxMenuRef" />
-        </transition>
+        <QuickContextMenu :options="ctxMenuOptions" ref="ctxMenuRef" />
       </Teleport>
     </div>
   </div>

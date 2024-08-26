@@ -198,10 +198,7 @@ export const useInteractionHooks = (options) => {
       console.log('[handleContextMenu]', event)
     }
     editingNode.value = event.target as HTMLElement
-    ctxMenuRef.value.isShow = false
-    setTimeout(() => {
-      ctxMenuRef.value.showMenu(event)
-    })
+    ctxMenuRef.value.showMenu(event)
   }
 
   const ctxMenuOptions = computed((): QuickOptionItem[] => {
@@ -308,8 +305,7 @@ export const useInteractionHooks = (options) => {
         },
       },
       {
-        type: 'divider',
-        label: 'd10',
+        split: true,
       },
       {
         label: '💻 ' + $t('actions.print_to_console'),

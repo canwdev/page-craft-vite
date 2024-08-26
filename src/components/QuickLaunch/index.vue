@@ -118,6 +118,7 @@ defineExpose({
   .quick-options {
     flex: 1;
     overflow: auto;
+    width: 100%;
     .option-item {
       font-size: 16px;
       line-height: 1.5;

@@ -22,10 +22,14 @@ const optionList = computed((): StOptionItem[] => {
 
 <template>
   <div class="dev-page scrollbar-mini">
-    <CommonNavbar />
+    <CommonNavbar>
+      <template #extra>
+        <RouterLink :to="{name: 'CanUIDemoPage'}">UI Demo</RouterLink>
+      </template>
+    </CommonNavbar>
 
     <div class="container">
-      <OptionUI :option-list="optionList" />
+      <OptionUI style="max-width: 500px" :option-list="optionList" />
     </div>
 
     <FileManagerWindow v-model:visible="configStore.isShowFileManager" />
@@ -35,9 +39,6 @@ const optionList = computed((): StOptionItem[] => {
 <style scoped lang="scss">
 .dev-page {
   .container {
-    max-width: 500px;
-    margin-left: auto;
-    margin-right: auto;
   }
 }
 </style>

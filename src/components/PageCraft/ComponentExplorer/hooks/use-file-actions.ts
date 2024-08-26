@@ -463,10 +463,7 @@ export const useComponentFileActions = ({
         }
       }
     }
-    ctxMenuRef.value.isShow = false
-    setTimeout(() => {
-      ctxMenuRef.value.showMenu(event)
-    })
+    ctxMenuRef.value.showMenu(event)
   }
 
   const enableAction = computed(() => {

@@ -10,8 +10,8 @@ import iconAi from '@/assets/textures/chat-gpt-logo.svg?url'
 import iconText from '@/assets/textures/enchanted_book.png?url'
 import iconDev from '@/assets/textures/redstone.png?url'
 
-let history = createWebHashHistory()
-let routes = [
+const history = createWebHashHistory()
+const routes = [
   {
     path: '/',
     name: 'HomePage',
@@ -98,6 +98,14 @@ let routes = [
           icon: iconDev,
         },
       },
+      {
+        path: 'demo',
+        name: 'CanUIDemoPage',
+        component: () => import('@/components/CanUI/CanUIDemo.vue'),
+        meta: {
+          title: `UI Demo`,
+        },
+      },
     ],
   },
   // catch all route for 404
@@ -113,7 +121,7 @@ router.afterEach((to, _, failure) => {
   document.title = formatSiteTitle(to?.meta?.title as string)
 
   if (window.__TAURI__) {
-    let curWin = tauriWin.getCurrent()
+    const curWin = tauriWin.getCurrent()
     // console.log('curWin', curWin)
     curWin.setTitle(document.title)
   }

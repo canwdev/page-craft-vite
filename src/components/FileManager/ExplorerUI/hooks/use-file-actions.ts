@@ -121,10 +121,7 @@ export const useFileActions = ({
         selectedItems.value = [item]
       }
     }
-    ctxMenuRef.value.isShow = false
-    setTimeout(() => {
-      ctxMenuRef.value.showMenu(event)
-    })
+    ctxMenuRef.value.showMenu(event)
   }
   const enableAction = computed(() => {
     return selectedItems.value.length > 0

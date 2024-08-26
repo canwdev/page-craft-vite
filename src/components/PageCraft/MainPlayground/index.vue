@@ -17,7 +17,7 @@ import {useEventListener} from '@vueuse/core'
 import VueMonaco from '@/components/CanUI/packages/VueMonaco/index.vue'
 import ElementEditDialog from '@/components/PageCraft/MainPlayground/components/ElementEditDialog.vue'
 import DropdownMenu from '@/components/CanUI/packages/OptionUI/Tools/DropdownMenu.vue'
-import QuickContextMenu from '@/components/CanUI/packages/QuickOptions/utils/QuickContextMenu.vue'
+import QuickContextMenu from '@/components/CanUI/packages/QuickOptions/QuickContextMenu.vue'
 import IndicatorInfo from '@/components/PageCraft/MainPlayground/components/IndicatorInfo.vue'
 
 const emit = defineEmits([])
@@ -138,9 +138,7 @@ const openPlayground = () => {
     </transition>
 
     <Teleport to="body">
-      <transition name="fade">
-        <QuickContextMenu ref="ctxMenuRef" :options="ctxMenuOptions" />
-      </transition>
+      <QuickContextMenu ref="ctxMenuRef" :options="ctxMenuOptions" />
     </Teleport>
 
     <el-dialog
