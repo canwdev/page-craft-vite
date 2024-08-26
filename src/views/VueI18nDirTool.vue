@@ -20,7 +20,7 @@ import I18nToolSettings from '@/components/VueI18nEditTool/I18nToolSettings.vue'
 import BatchJson from '@/components/VueI18nEditTool/BatchJson/index.vue'
 import {useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
 import {useStorage} from '@vueuse/core'
-import TabLayout from '@/components/CommonUI/TabLayout.vue'
+import TabLayout from '@/components/CanUI/packages/CommonUI/TabLayout.vue'
 import {useOpenedHistory} from '@/components/VueI18nEditTool/file-history'
 import {LsKeys} from '@/enum/page-craft'
 import {useGuiToolbox} from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox/use-gui-toolbox'
@@ -95,7 +95,35 @@ const {appendHistory, historyMenuOptions} = useOpenedHistory(
 )
 
 // 保存手动展开的文件夹keys
-const expandedKeys = useStorage('vue_i18n_dir_tool_expanded_keys', [])
+const expandedKeys = useStorage<string[]>('vue_i18n_dir_tool_expanded_keys_2', [])
+// 树节点展开
+const handleNodeExpand = (data: DirTreeItem) => {
+  // console.log('handleNodeExpand', data)
+  // 保存当前展开的节点
+  let flag = false
+  expandedKeys.value.some((item) => {
+    if (item === data.key) {
+      // 判断当前节点是否存在， 存在不做处理
+      flag = true
+      return true
+    }
+  })
+  if (!flag) {
+    // 不存在则存到数组里
+    expandedKeys.value.push(data.key)
+  }
+  // console.log(expandedKeys.value)
+}
+// 树节点关闭
+const handleNodeCollapse = (data: DirTreeItem) => {
+  // console.log('handleNodeCollapse', data)
+  expandedKeys.value.some((item, i) => {
+    if (item === data.key) {
+      // 删除关闭节点
+      expandedKeys.value.length = i
+    }
+  })
+}
 
 const isValidDir = (name: string) => {
   return !i18nSetStore.ignoreFoldersMap[name]
@@ -253,11 +281,18 @@ const handleFileDrop = async (e) => {
 }
 
 const handleCloseDir = () => {
-  dirHandle.value = undefined
-  currentEditEntry.value = null
-  editingTextValue.value = null
-  i18nMainStore.dirTree = []
-  i18nMainStore.filePathArr = []
+  window.$dialog
+    .confirm($t('msgs.confirm_close'), $t('actions.confirm'), {
+      type: 'warning',
+    })
+    .then(() => {
+      dirHandle.value = undefined
+      currentEditEntry.value = null
+      editingTextValue.value = null
+      i18nMainStore.dirTree = []
+      i18nMainStore.filePathArr = []
+    })
+    .catch()
 }
 
 const currentEditEntry = ref<FileSystemFileHandle | null>(null)
@@ -342,7 +377,7 @@ const reloadCurrentEditEntry = async () => {
 
 // 处理树枝的点击事件
 const handleNodeClick = async (data: DirTreeItem, node: TreeNode, e: MouseEvent) => {
-  console.log(data)
+  // console.log(data)
   try {
     i18nMainStore.isLoading = true
     if (data.kind === 'file') {
@@ -391,8 +426,10 @@ const {showDropzone, fileDragover, fileDrop} = useFileDrop({
             {{ $t('common.toolbox') }}
           </button>
 
-          {{ $t('common.edit_mode') }}:
-          <RectSwitch v-model="editMode" horizontal :options="editModeOptions" />
+          <a @click="mainStore.isShowTextTransformer = !mainStore.isShowTextTransformer">
+            {{ $t('common.edit_mode') }}:
+          </a>
+          <TabLayout v-model="editMode" horizontal :options="editModeOptions" />
 
           <button
             class="vp-button primary"
@@ -403,11 +440,9 @@ const {showDropzone, fileDragover, fileDrop} = useFileDrop({
           </button>
 
           <DropdownMenu v-if="dirHandle" :options="historyMenuOptions">
-            <el-popconfirm @confirm="handleCloseDir()" :title="$t('msgs.confirm_close')">
-              <template #reference>
-                <button class="vp-button primary">{{ $t('actions.close') }} Folder</button>
-              </template>
-            </el-popconfirm>
+            <button class="vp-button primary" @click="handleCloseDir">
+              {{ $t('actions.close') }} Folder
+            </button>
           </DropdownMenu>
 
           <DropdownMenu v-else :options="historyMenuOptions">
@@ -434,25 +469,18 @@ const {showDropzone, fileDragover, fileDrop} = useFileDrop({
     <FoldableSidebarLayout style="flex: 1; height: auto">
       <template #sidebar>
         <el-scrollbar style="height: 100%">
-          <!--<n-tree-->
-          <!--  block-line-->
-          <!--  :data="i18nMainStore.dirTree"-->
-          <!--  :node-props="nodeProps"-->
-          <!--  :default-expand-all="false"-->
-          <!--  expand-on-click-->
-          <!--  selectable-->
-          <!--  class="font-code"-->
-          <!--  virtual-scroll-->
-          <!--  v-model:expanded-keys="expandedKeys"-->
-          <!--/>-->
           <el-tree
+            style="user-select: none"
             :data="i18nMainStore.dirTree"
             :props="{
               value: 'key',
               label: 'label',
               children: 'children',
             }"
+            node-key="key"
             :default-expanded-keys="expandedKeys"
+            @node-expand="handleNodeExpand"
+            @node-collapse="handleNodeCollapse"
             @node-click="handleNodeClick"
             highlight-current
           >

@@ -117,6 +117,7 @@ export default defineComponent({
   <el-dialog
     v-model="mVisible"
     width="500"
+    top="10vh"
     draggable
     :title="$t('common.i18njson_batch_tool') + ' ' + $t('common.settings')"
   >

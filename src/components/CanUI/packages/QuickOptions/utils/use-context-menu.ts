@@ -1,7 +1,7 @@
 import {QuickOptionItem} from '@/components/CanUI/packages/QuickOptions/enum'
 
 // 获取菜单位置样式，自动处理屏幕边缘
-export const getMenuPosStyle = ({x, y, width, height}) => {
+export const getMenuPosStyle = ({x, y, width, height, isLeftSide = false}) => {
   let mx = x
   let my = y
 
@@ -20,7 +20,8 @@ export const getMenuPosStyle = ({x, y, width, height}) => {
   if (offset_left < 0) {
     mx += offset_left
   }
-  if (mx < x) {
+  if (isLeftSide || mx < x) {
+    // 在菜单左侧显示，而非右侧
     mx = x - width
   }
   // 处理宽度大于视口
@@ -156,23 +157,23 @@ export const useHoverSubMenu = (props, emit) => {
 
     const parentMenuEl = menuEl.parentElement
     const parentRect = parentMenuEl.getBoundingClientRect()
-    console.log(parentMenuEl, parentRect)
 
     let offsetLeft = 0
     // 视口宽高
     const vWidth = window.innerWidth
-    const vHeight = window.innerHeight
-    // TODO: 如果菜单右侧宽度不能容纳子菜单，则将子菜单显示在左边
-    if (vWidth - parentRect.left + parentRect.width < rect.width) {
+    // const vHeight = window.innerHeight
+    // console.log(parentMenuEl, parentRect)
+    // 如果菜单右侧宽度不能容纳子菜单，则将子菜单显示在左边
+    if (vWidth - (parentRect.left + parentRect.width) < rect.width) {
       offsetLeft = -parentRect.width
     }
-    console.log(offsetLeft)
 
     const style = getMenuPosStyle({
       x: rect.left + offsetLeft,
       y: rect.top,
       width: rect.width,
       height: rect.height,
+      isLeftSide: !!offsetLeft,
     })
 
     // 设置样式

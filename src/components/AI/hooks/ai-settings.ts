@@ -21,7 +21,7 @@ export const useAiSettingsStore = defineStore('aiSettingsStore', {
       openAiApiKey: '',
       openAiApiProxy: '',
       stream: true,
-      model: ChatModel.GPT35Turbo,
+      model: ChatModel.GPT4oMini,
       currentCharacterId: 'default',
       currentChatHistoryId: '',
       isSidebarExpand: true,

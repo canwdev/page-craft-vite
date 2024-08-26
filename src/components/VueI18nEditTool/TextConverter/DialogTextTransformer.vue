@@ -136,8 +136,7 @@ export default defineComponent({
             :title="$t('msgs.auto_paste_and_copy')"
             class="vp-button primary focus-auto-action"
           >
-            {{ $t('actions.copy') }}+
-            {{ $t('actions.paste') }}
+            {{ $t('actions.paste') }}+{{ $t('actions.copy') }}
           </button>
           <button @click="handlePaste" class="vp-button" title="Paste">
             {{ $t('actions.paste') }}

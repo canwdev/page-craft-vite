@@ -29,7 +29,7 @@ const formatEditingData = (data: any = {}) => {
     name: data.name || '',
     desc: data.desc || '',
     avatar: data.avatar || '',
-    model: data.model || ChatModel.GPT35Turbo,
+    model: data.model || ChatModel.GPT4oMini,
     systemPrompt: data.systemPrompt || '',
   }
 }
@@ -318,6 +318,8 @@ const handleSubmit = () => {
     <OptionUI class="ai-option-ui" :option-list="optionList" />
 
     <el-dialog
+      draggable
+      top="10vh"
       width="700"
       v-model="isShowEditDialog"
       :title="isCreate ? $t('actions.create') : $t('actions.edit')"

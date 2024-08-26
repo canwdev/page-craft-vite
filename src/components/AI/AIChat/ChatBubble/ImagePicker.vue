@@ -50,7 +50,9 @@ const handleChoose = async () => {
 
 <template>
   <div class="image-picker">
-    <button class="vp-button" @click="handleChoose" title="Upload image...">🖼️</button>
+    <button class="vp-button" @click="handleChoose" title="Upload image...">
+      <i class="fa fa-file-image-o" aria-hidden="true"></i>
+    </button>
     <div class="image-list">
       <div v-for="(image, index) in images" :key="index" class="image-item vp-panel">
         <img :src="image" />

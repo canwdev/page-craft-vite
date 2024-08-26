@@ -32,7 +32,7 @@ const useAiIdbState = createGlobalState(() => {
         name: 'ChatGPT',
         desc: '',
         avatar: iconAi,
-        model: ChatModel.GPT35Turbo,
+        model: ChatModel.GPT4oMini,
         systemPrompt: 'You are a helpful assistant.',
       },
     ],

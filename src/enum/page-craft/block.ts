@@ -130,7 +130,7 @@ export const initToolbarList: BlockItem[] = [
   ActionBlockItems.DELETE,
   ActionBlockItems.PASTE_REPLACE,
   ActionBlockItems.DRAG,
-  ActionBlockItems.EMPTY,
+  ActionBlockItems.DEBUG,
   ...presetHtmlTags.map((tag) => createHtmlBlockItem(tag)),
   ActionBlockItems.EMPTY,
 ]

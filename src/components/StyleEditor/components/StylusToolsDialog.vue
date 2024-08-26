@@ -119,8 +119,7 @@ export default defineComponent({
             :title="$t('msgs.auto_paste_and_copy')"
             class="vp-button primary focus-auto-action"
           >
-            {{ $t('actions.copy') }}+
-            {{ $t('actions.paste') }}
+            {{ $t('actions.paste') }}+{{ $t('actions.copy') }}
           </button>
           <button @click="handlePaste" class="vp-button" title="Paste">
             {{ $t('actions.paste') }}
@@ -145,12 +144,6 @@ export default defineComponent({
       </div>
       <div class="main-box font-code">
         <div class="input-wrapper">
-          <!--            <n-input
-              class="input-text"
-              type="textarea"
-              v-model:value="textInput"
-              placeholder="Text Input"
-            ></n-input>-->
           <div class="input-tip">Input Stylus Code</div>
           <VueMonaco
             ref="monacoEditorRef1"

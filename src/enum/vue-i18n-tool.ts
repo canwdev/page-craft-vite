@@ -40,9 +40,9 @@ export const parseI18nJsonObj = (
     return []
   }
   if (!Array.isArray(obj) && typeof obj === 'object') {
-    for (let key in obj) {
+    for (const key in obj) {
       const o = obj[key]
-      let children: ITranslateTreeItem[] = []
+      const children: ITranslateTreeItem[] = []
       const translates: ITranslateItem[] = []
       if (o && !Array.isArray(o) && typeof o === 'object') {
         // console.log(`[${key}] is object`, o)
@@ -154,7 +154,6 @@ export type DirTreeItem = {
   entry: FileSystemDirectoryHandle | FileSystemFileHandle
   parentDirs: string[]
   children: DirTreeItem[] | null
-  prefix?: any
 }
 
 // 一键复制模式枚举

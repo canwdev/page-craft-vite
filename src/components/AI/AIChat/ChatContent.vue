@@ -113,7 +113,7 @@ const generateChatTitle = async () => {
     history.shift()
 
     currentHistory.value.title = await requestAiChatMessage(promptConversationAssistant(history), {
-      model: ChatModel.GPT35Turbo,
+      model: ChatModel.GPT4oMini,
     })
   } catch (error: any) {
     console.error(error)

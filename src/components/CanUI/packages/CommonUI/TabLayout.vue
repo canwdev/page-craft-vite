@@ -21,7 +21,7 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
-    tabList: {
+    options: {
       type: Array as PropType<TabItem[]>,
       default() {
         return []
@@ -42,7 +42,7 @@ export default defineComponent({
     <div class="sidebar-wrap">
       <div class="mc-tab-list">
         <div
-          v-for="item in tabList"
+          v-for="item in options"
           :key="item.value"
           :class="{active: item.value === mValue}"
           @click="mValue = item.value"

@@ -74,16 +74,14 @@ export default defineComponent({
 </script>
 
 <template>
-  <n-modal
-    style="width: 700px"
-    preset="dialog"
-    :negative-text="$t('actions.cancel')"
-    :positive-text="$t('actions.done')"
+  <el-dialog
+    draggable
+    width="700"
+    top="10vh"
     :title="title"
     @positive-click="handleSave"
-    @negative-click="mVisible = false"
-    @close="mVisible = false"
-    :show="mVisible"
+    v-model="mVisible"
+    :close-on-click-modal="false"
   >
     <template v-if="mVisible">
       <VueMonaco
@@ -93,17 +91,26 @@ export default defineComponent({
         language="json"
         style="height: 500px"
       />
-      <n-input
+      <el-input
         ref="inputRef"
         v-else
         :type="type"
-        v-model:value="editingText"
+        v-model="editingText"
         class="font-code"
         :rows="isTextarea ? 25 : null"
         :placeholder="placeholder"
         autofocus
         :clearable="clearable"
-      ></n-input>
+      ></el-input>
     </template>
-  </n-modal>
+
+    <template #footer>
+      <div class="dialog-footer">
+        <el-button @click="mVisible = false">{{ $t('actions.cancel') }}</el-button>
+        <el-button type="primary" @click="handleSave()">
+          {{ $t('actions.save') }}
+        </el-button>
+      </div>
+    </template>
+  </el-dialog>
 </template>

@@ -19,6 +19,7 @@ import {handleExportFile, promptGetFileName} from '@/utils/mc-utils/io'
 import CommonNavbar from '@/components/CommonUI/CommonNavbar.vue'
 import DropdownMenu from '@/components/CanUI/packages/OptionUI/Tools/DropdownMenu.vue'
 import RectSwitch from '@/components/CanUI/packages/OptionUI/Tools/RectSwitch.vue'
+import TabLayout from '@/components/CanUI/packages/CommonUI/TabLayout.vue'
 
 const isAllowedElement = (el) => {
   return el.tagName.toLowerCase() === 'td'
@@ -56,6 +57,7 @@ window.demo_json_to_sheet = [
 export default defineComponent({
   name: 'ExcelCopyTool',
   components: {
+    TabLayout,
     RectSwitch,
     DropdownMenu,
     CommonNavbar,
@@ -386,10 +388,15 @@ export default defineComponent({
               <el-checkbox size="small" v-model="isTrimEmptyLines">
                 {{ $t('msgs.trim_empty_lines') }}
               </el-checkbox>
-              <a @click="mainStore.isShowTextTransformer = true">
+              <a @click="mainStore.isShowTextTransformer = !mainStore.isShowTextTransformer">
                 {{ $t('common.text_transformer') }}:
               </a>
-              <RectSwitch size="small" v-model="copyMode" :options="modTextConvertOptions" />
+              <TabLayout
+                horizontal
+                size="small"
+                v-model="copyMode"
+                :options="modTextConvertOptions"
+              />
             </div>
 
             <DropdownMenu v-if="workbookRef" :options="dropdownMenuOptions" :disabled="!isReady">

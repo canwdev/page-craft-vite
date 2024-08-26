@@ -39,7 +39,7 @@ export const useIndicator = () => {
     JSON.parse(localStorage.getItem(LsKeys.INDICATOR_OPTIONS) || 'null') || {
       enableDevHelpClass: true,
       enableExpand: true,
-      enableSelection: true,
+      enableSelection: false,
       fullWidth: false,
       bgDark: false,
       bgTransparentPercent: 100,
@@ -48,7 +48,7 @@ export const useIndicator = () => {
       showStyleEditor: false,
       contentEditable: false,
       enableRightClick: true,
-    }
+    },
   )
   watch(
     indicatorOptions,
@@ -63,7 +63,7 @@ export const useIndicator = () => {
       // 如果开启了多个窗口（iframe)，发送同步状态
       channelRef.value?.postMessage(obj)
     },
-    {deep: true}
+    {deep: true},
   )
 
   const disableALinkClick = (event) => {
@@ -88,7 +88,7 @@ export const useIndicator = () => {
           })
         }, 500)
       }
-    }
+    },
   )
 
   const mainCanvasClass = computed(() => {

@@ -170,8 +170,6 @@
     "ignore_folders": "フォルダを無視",
     "enable_flag": "フラグを有効にする",
     "refresh_page": "ページをリフレッシュする？",
-    "recommend_download_client_desc": "⚡ 完全オープンソース、オフライン利用可能\n💡 Tauriテクノロジーを使用して構築され、10MB以下の軽量化\n🚀 システムのネイティブWebview2を呼び出し、高速で安定したもの\n💽 exeインストールパッケージは、直接実行可能、インストール不要",
-    "recommend_download_client_title": "デスクトップクライアントをダウンロードすることをおすすめします",
     "error_name_duplicat": "エラー：名前が重複しています！",
     "bu_fen_xuan_xiang_bu": "一部のオプションが無効になっています。<br>操作する前に現在のコンポーネントを選択解除してください。"
   },
@@ -209,5 +207,11 @@
     "yu_current_character": "{0} とのチャット",
     "new_chat": "新しいチャット",
     "quan_ju_mo_ren_mo_xi": "グローバルデフォルトモデル"
+  },
+  "app_client": {
+    "recommend_desc": "<b>🖥️ デスクトップクライアントのダウンロードを推奨します</b><br>💡 完全にオープンソースで、オフラインでも使用可能<br>⚡ Tauri技術を使用して構築されており、サイズは10MB未満と軽量<br>🚀 システムWebView 2を利用し、迅速かつ安定したパフォーマンスを提供<br>💽 exeインストールパッケージは解凍して直接実行可能",
+    "desktop_client": "デスクトップクライアント",
+    "go_release": "ダウンロードに行く",
+    "never_show_again": "再度通知しない"
   }
 }

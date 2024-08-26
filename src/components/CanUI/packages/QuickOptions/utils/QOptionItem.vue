@@ -39,6 +39,7 @@ const {subMenuRef, isMouseOver, isMouseOverSub, hasChildren, subChildren} = useH
         clickable: item?.props?.onClick || item?.props?.isBack || hasChildren,
         disabled: item.disabled,
         hover: isMouseOverSub,
+        'show-index': showIndex,
       },
       itemCls,
       item.props?.class,

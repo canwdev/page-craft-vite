@@ -18,6 +18,10 @@
       height: 20px;
       flex-shrink: 0;
     }
+    &.warning {
+      background-color: #FF9800;
+      color: white;
+    }
     &.secondary {
       color: $primary;
       border: none;

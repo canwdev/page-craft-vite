@@ -373,6 +373,10 @@ export default defineComponent({
     .option-item {
       padding: 4px 8px;
       min-width: auto;
+
+      &.show-index {
+        padding: 4px 8px;
+      }
       .index-wrap,
       .arrow-wrap {
         display: none;
@@ -396,7 +400,7 @@ export default defineComponent({
   }
 
   .option-item {
-    padding: 8px 24px;
+    padding: 8px 24px 8px 8px;
     line-height: 1.2;
     min-width: 120px;
     position: relative;
@@ -404,6 +408,10 @@ export default defineComponent({
     display: flex;
     align-items: center;
     gap: 8px;
+
+    &.show-index {
+      padding: 8px 24px;
+    }
 
     .sub-option-items {
       position: absolute;

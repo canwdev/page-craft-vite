@@ -146,6 +146,7 @@ const openPlayground = () => {
       v-model="isShowImportDialog"
       :title="`${$t('actions.paste')} HTML`"
       width="600"
+      top="10vh"
       append-to=".page-craft-root"
     >
       <VueMonaco v-if="isShowImportDialog" v-model="pasteHtmlText" style="height: 500px" />

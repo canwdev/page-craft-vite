@@ -170,8 +170,6 @@
     "ignore_folders": "Ignore Folders",
     "enable_flag": "Enable Flag",
     "refresh_page": "Refresh the page?",
-    "recommend_download_client_desc": "⚡ Fully open source, offline available\n💡 Built using Tauri technology, lightweighted to just 10MB\n🚀 Invokes the system's native WebView2, faster and more stable\n💽 The exe installation package can be extracted directly run, no need to install",
-    "recommend_download_client_title": "Recommended for downloading the desktop client",
     "error_name_duplicat": "Error: Name duplicated!",
     "bu_fen_xuan_xiang_bu": "Some options are disabled,<br>Please unselect the current component before operating."
   },
@@ -209,5 +207,11 @@
     "new_chat": "New Chat",
     "chuang_jian_hou_bu_k": "Cannot be modified after creation",
     "quan_ju_mo_ren_mo_xi": "Global Default Model"
+  },
+  "app_client": {
+    "recommend_desc": "<b>🖥️ Recommended to download the desktop client</b><br>💡 Fully open source and available offline<br>⚡ Built using Tauri technology, lightweight at under 10MB<br>🚀 Utilizes system WebView 2 for fast and stable performance<br>💽 exe installation package can be extracted and run directly",
+    "desktop_client": "Desktop Client",
+    "go_release": "Go to Download",
+    "never_show_again": "Do not remind me again"
   }
 }

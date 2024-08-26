@@ -4,7 +4,7 @@ import {beautifyCss} from './utils/formater'
 import ViewPortWindow from '@/components/CanUI/packages/ViewPortWindow/index.vue'
 
 import {useI18n} from 'vue-i18n'
-import TabLayout from '@/components/CommonUI/TabLayout.vue'
+import TabLayout from '@/components/CanUI/packages/CommonUI/TabLayout.vue'
 import monaco from '@/components/CanUI/packages/VueMonaco/monaco-helper'
 import VueMonaco from '@/components/CanUI/packages/VueMonaco/index.vue'
 import QuickOptions from '@/components/CanUI/packages/QuickOptions/index.vue'
@@ -353,7 +353,7 @@ defineExpose({
         style="top: 2px; right: 2px; position: absolute; z-index: 999"
       />
       <div v-if="showTabs" class="style-editor-action-bar">
-        <TabLayout v-model="styleEditorTab" :tab-list="tabList" horizontal />
+        <TabLayout v-model="styleEditorTab" :options="tabList" horizontal />
       </div>
       <div class="code-editor-placeholder">
         <VueMonaco

@@ -72,27 +72,47 @@ export const useUpdater = (author, name, branch = 'master') => {
     if (!window.__TAURI__ && settingsStore.recommendDesktopClient) {
       const n = window.$notification({
         type: 'info',
-        position: 'bottom-right',
-        title: $t('msgs.recommend_download_client_title') + ' 🖥️',
-        // TODO
-        // action: () =>
-        //   h(
-        //     'button',
-        //     {
-        //       class: 'vp-button',
-        //       onClick: () => {
-        //         window.open(releasePage)
-        //         n.destroy()
-        //       },
-        //     },
-        //     {
-        //       default: () => $t('actions.download'),
-        //     },
-        //   ),
-        onClose: () => {
-          settingsStore.recommendDesktopClient = false
-        },
-        message: $t('msgs.recommend_download_client_desc'),
+        position: 'top-right',
+        title: 'PageCraft ' + $t('app_client.desktop_client'),
+        // onClose: () => {},
+        duration: 1000 * 30,
+        message: h(
+          'div',
+          {
+            style: 'font-size: 12px;',
+          },
+          [
+            h('div', {innerHTML: $t('app_client.recommend_desc')}),
+            h(
+              'div',
+              {class: 'flex-row-center-gap', style: 'margin-top: 10px; justify-content: center;'},
+              [
+                h(
+                  'button',
+                  {
+                    class: 'vp-button',
+                    onClick: () => {
+                      n.close()
+                      settingsStore.recommendDesktopClient = false
+                    },
+                  },
+                  $t('app_client.never_show_again'),
+                ),
+                h(
+                  'button',
+                  {
+                    class: 'vp-button primary',
+                    onClick: () => {
+                      window.open(releasePage)
+                      n.destroy()
+                    },
+                  },
+                  $t('app_client.go_release'),
+                ),
+              ],
+            ),
+          ],
+        ),
       })
     }
     if (window.__TAURI__ && settingsStore.autoCheckUpdate) {

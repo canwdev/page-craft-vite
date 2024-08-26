@@ -29,7 +29,7 @@ const props = withDefaults(defineProps<Props>(), {})
       </button>
     </slot>
     <template #dropdown>
-      <QuickOptions :options="options" visible />
+      <QuickOptions :options="options" visible :show-index="false" />
     </template>
   </el-dropdown>
 </template>

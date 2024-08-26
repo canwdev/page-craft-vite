@@ -21,6 +21,7 @@ import {
 import moment from 'moment'
 import {handleReadSelectedFile} from '@/utils/mc-utils/io'
 import CommonNavbar from '@/components/CommonUI/CommonNavbar.vue'
+import DropdownMenu from '@/components/CanUI/packages/OptionUI/Tools/DropdownMenu.vue'
 
 const filePickerOptions = {
   types: [
@@ -35,6 +36,7 @@ const filePickerOptions = {
 export default defineComponent({
   name: 'VueI18nEditTool',
   components: {
+    DropdownMenu,
     CommonNavbar,
     QuickOptions,
     I18nToolSettings,
@@ -190,73 +192,6 @@ export default defineComponent({
       })
     }
 
-    const menuOptions = computed((): QuickOptionItem[] => {
-      // @ts-ignore
-      return [
-        {
-          label: $t('common.settings'),
-          props: {
-            onClick: () => {
-              isShowToolSettings.value = true
-            },
-          },
-        },
-        {
-          label: $t('common.toolbox'),
-          props: {
-            onClick: () => {
-              mainStore.isShowQuickLaunch = !mainStore.isShowQuickLaunch
-            },
-          },
-        },
-        fileHandle.value
-          ? {
-              label: '💻 ' + $t('actions.close') + ' JSON',
-              children: [
-                {
-                  label: $t($t('msgs.confirm_close')),
-                  props: {onClick: handleCloseFile, isBack: true},
-                },
-              ],
-            }
-          : {
-              label: '💻  ' + $t('actions.open') + ' JSON',
-              props: {
-                onClick: () => {
-                  handleSelectFile()
-                },
-              },
-              // TODO
-              dropdown: historyMenuOptions.value,
-            },
-
-        fileHandle.value
-          ? {
-              label: '💾 ' + $t('actions.save'),
-              props: {
-                onClick: () => {
-                  handleSaveFile()
-                },
-              },
-            }
-          : null,
-        {
-          label: $t('actions.save_as') + '...',
-          props: {
-            onClick: () => {
-              handleExport()
-            },
-          },
-        },
-        {
-          label: $t('common.demo'),
-          children: [
-            {label: $t('msgs.load_demo_this_will'), props: {onClick: loadDemo, isBack: true}},
-          ],
-        },
-      ].filter(Boolean)
-    })
-
     return {
       translateTreeRoot,
       fileHandle,
@@ -272,7 +207,7 @@ export default defineComponent({
       mainStore,
       isShowToolSettings,
       isLoading,
-      menuOptions,
+      historyMenuOptions,
     }
   },
 })
@@ -292,13 +227,48 @@ export default defineComponent({
 
     <CommonNavbar>
       <template #extra>
-        <QuickOptions
-          is-static
-          :options="menuOptions"
-          horizontal
-          :auto-focus="false"
-          item-cls="vp-button"
-        />
+        <div class="flex-row-center-gap">
+          <button class="vp-button" @click="isShowToolSettings = true">
+            {{ $t('common.settings') }}
+          </button>
+
+          <button
+            class="vp-button"
+            @click="mainStore.isShowQuickLaunch = !mainStore.isShowQuickLaunch"
+          >
+            {{ $t('common.toolbox') }}
+          </button>
+
+          <el-popconfirm
+            v-if="fileHandle"
+            @confirm="handleCloseFile()"
+            :title="$t('msgs.confirm_close')"
+          >
+            <template #reference>
+              <button class="vp-button">💻 {{ $t('actions.close') }} JSON</button>
+            </template>
+          </el-popconfirm>
+
+          <DropdownMenu v-else :options="historyMenuOptions">
+            <button class="vp-button primary" @click="handleSelectFile()">
+              💻 {{ $t('actions.open') }} JSON
+            </button>
+          </DropdownMenu>
+
+          <button v-if="fileHandle" class="vp-button primary" @click="handleSaveFile()">
+            💾 {{ $t('actions.save') }}
+          </button>
+
+          <button class="vp-button" @click="handleExport()">{{ $t('actions.save_as') }} ...</button>
+
+          <el-popconfirm @confirm="loadDemo()" :title="$t('msgs.load_demo_this_will')">
+            <template #reference>
+              <button class="vp-button">
+                {{ $t('common.demo') }}
+              </button>
+            </template>
+          </el-popconfirm>
+        </div>
       </template>
     </CommonNavbar>
 
