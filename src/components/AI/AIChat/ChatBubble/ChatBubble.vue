@@ -52,7 +52,7 @@ const scrollToBottom = () => {
   const el = rootRef.value
   const scrollParent = el.parentElement
   scrollParent.scrollTo({
-    top: el.offsetTop + el.offsetHeight - scrollParent.offsetHeight,
+    top: el.offsetTop + el.offsetHeight - scrollParent.offsetHeight + 10,
     behavior: 'smooth',
   })
 }
@@ -302,6 +302,7 @@ const scrollToBottom = () => {
     font-size: 16px;
     background-color: $primary_opacity;
     box-shadow: 0 1px 1px $color_border;
+    box-sizing: border-box;
     //transition: all 1s;
   }
 

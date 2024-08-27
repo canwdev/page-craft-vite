@@ -4,7 +4,7 @@ import RectSwitch from './Tools/RectSwitch.vue'
 import {StOptionItem, StOptionType, swatches} from './enum'
 import VueRender from './Tools/VueRender.vue'
 import AdvancedNumberInput from './Tools/AdvancedNumberInput.vue'
-import DynamicTags from '@/components/CanUI/packages/OptionUI/Tools/DynamicTags.vue'
+import DynamicTags from './Tools/DynamicTags.vue'
 
 export default defineComponent({
   name: 'ItemAction',

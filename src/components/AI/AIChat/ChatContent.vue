@@ -264,6 +264,10 @@ const handleStop = () => {
     return
   }
   abortController.value.abort()
+  if (!aisStore.stream) {
+    // 非流式传输清除
+    tempResponseChat.value = null
+  }
 }
 
 onBeforeUnmount(() => {
