@@ -163,7 +163,7 @@ export default defineComponent({
 
     .sub-item {
       min-height: 40px;
-      padding: 4px 16px;
+      padding: 8px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;

@@ -38,16 +38,39 @@ watch(isEditing, () => {
 const isReply = computed(() => {
   return item.value.role === 'assistant'
 })
+
+const rootRef = ref()
+const scrollToTop = () => {
+  const el = rootRef.value
+  const scrollParent = el.parentElement
+  scrollParent.scrollTo({
+    top: el.offsetTop - 10,
+    behavior: 'smooth',
+  })
+}
+const scrollToBottom = () => {
+  const el = rootRef.value
+  const scrollParent = el.parentElement
+  scrollParent.scrollTo({
+    top: el.offsetTop + el.offsetHeight - scrollParent.offsetHeight,
+    behavior: 'smooth',
+  })
+}
 </script>
 
 <template>
-  <div class="ai-chat-bubble-system" :class="{isEditing}" v-if="item.role === 'system'">
+  <div
+    v-if="item.role === 'system'"
+    ref="rootRef"
+    class="ai-chat-bubble-system"
+    :class="{isEditing}"
+  >
     <textarea
       ref="editInputRef"
       v-if="isEditing"
       class="vp-input"
       v-model="item.content as string"
-      rows="5"
+      rows="6"
       @blur="isEditing = false"
     />
     <div
@@ -58,18 +81,29 @@ const isReply = computed(() => {
       @click="isEditing = true"
     ></div>
   </div>
-  <div v-else class="ai-chat-bubble" :class="{isReply, isEditing}">
-    <div class="chat-header">
-      <div class="chat-avatar" :title="item.role">
-        <img
-          v-if="character"
-          :src="character.avatar || iconAi"
-          :alt="item.role"
-          :title="character.name"
-        />
-        <template v-else>
-          {{ item.role }}
-        </template>
+  <div v-else ref="rootRef" class="ai-chat-bubble" :class="{isReply, isEditing}">
+    <div class="chat-side">
+      <div class="chat-header">
+        <div class="chat-avatar" :title="item.role">
+          <img
+            v-if="character"
+            :src="character.avatar || iconAi"
+            :alt="item.role"
+            :title="character.name"
+          />
+          <template v-else>
+            {{ item.role }}
+          </template>
+        </div>
+
+        <div class="btn-jump-wrap">
+          <button class="btn-no-style btn-jump" @click="scrollToTop">
+            <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+          </button>
+          <button class="btn-no-style btn-jump" @click="scrollToBottom">
+            <i class="fa fa-angle-double-down" aria-hidden="true"></i>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -204,11 +238,30 @@ const isReply = computed(() => {
     }
   }
 
-  .chat-header {
-    margin-bottom: 4px;
-    position: sticky;
-    top: 0px;
+  .chat-side {
+    align-self: stretch;
+
+    .chat-header {
+      margin-bottom: 4px;
+      position: sticky;
+      top: 0;
+    }
+
+    .btn-jump-wrap {
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      opacity: 0;
+      transition: all 0.3s;
+    }
+    &:hover {
+      .btn-jump-wrap {
+        opacity: 1;
+      }
+    }
   }
+
   .chat-avatar {
     width: 32px;
     height: 32px;
@@ -237,6 +290,7 @@ const isReply = computed(() => {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
+    flex: 1;
   }
 
   .chat-content {

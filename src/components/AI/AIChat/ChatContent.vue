@@ -47,21 +47,24 @@ const respContainerRef = ref()
 const inputRef = ref()
 
 // 滚动到底部
-const scrollBottom = useThrottleFn(
-  () => {
-    if (!respContainerRef.value) {
-      return
-    }
-    setTimeout(() => {
-      respContainerRef.value.scrollTo({
-        top: respContainerRef.value.scrollHeight,
+const scrollBottom = (force = true) => {
+  if (!respContainerRef.value) {
+    return
+  }
+  setTimeout(() => {
+    const scrollEl = respContainerRef.value
+
+    // 默认强制滚动，或只有超过临界值才滚动
+    if (force || scrollEl.scrollHeight - (scrollEl.scrollTop + scrollEl.offsetHeight) < 400) {
+      scrollEl.scrollTo({
+        top: scrollEl.scrollHeight,
         behavior: 'smooth',
       })
-    })
-  },
-  200,
-  true,
-)
+    }
+  })
+}
+
+const scrollBottomThrottled = useThrottleFn(scrollBottom, 500, true)
 const focusInput = () => {
   setTimeout(() => {
     inputRef.value?.focus()
@@ -70,24 +73,13 @@ const focusInput = () => {
 
 // DOM 加载完成，自动滚动
 const handleLoad = () => {
-  focusInput()
-  scrollBottom()
-  return 'ok'
+  tempResponseChat.value = null
+  setTimeout(() => {
+    focusInput()
+    scrollBottom()
+  })
 }
 
-watch(
-  currentHistory,
-  () => {
-    if (!currentHistory.value) {
-      return
-    }
-    if (!currentHistory.value.history.length) {
-      resetChatHistory()
-    }
-    handleLoad()
-  },
-  {immediate: true},
-)
 useGlobalBusOn(GlobalEvents.ON_AI_CHARACTER_UPDATE, () => {
   if (!currentHistory.value) {
     return
@@ -126,6 +118,7 @@ const isEnableVision = computed(() => {
 })
 const imageList = ref<string[]>([])
 
+const abortController = shallowRef<AbortController | null>(null)
 /**
  * 发送1次聊天请求
  * @param isRetry 是否重新生成
@@ -177,7 +170,12 @@ const sendAiRequest = async (isRetry = false) => {
       userInputContent.value = ''
       imageList.value = []
     }
-    scrollBottom()
+    scrollBottomThrottled(false)
+
+    // 停止请求控制器
+    const controller = new AbortController()
+    const {signal} = controller
+    abortController.value = controller
 
     const chatCompletion = await requestChatCompletion(
       {
@@ -191,7 +189,10 @@ const sendAiRequest = async (isRetry = false) => {
       },
       (text: string) => {
         tempResponseChat.value!.content += text
-        scrollBottom()
+        scrollBottomThrottled(false)
+      },
+      {
+        signal,
       },
     )
 
@@ -214,6 +215,14 @@ const sendAiRequest = async (isRetry = false) => {
 
     generateChatTitle()
   } catch (error: any) {
+    if (abortController.value) {
+      const {signal} = abortController.value
+      if (signal.aborted) {
+        window.$message.warning('Fetch request was aborted')
+
+        return
+      }
+    }
     console.error(error)
     tempResponseChat.value = {
       role: 'assistant',
@@ -222,7 +231,8 @@ const sendAiRequest = async (isRetry = false) => {
     }
   } finally {
     isLoading.value = false
-    scrollBottom()
+    abortController.value = null
+    scrollBottomThrottled(false)
     focusInput()
   }
 }
@@ -247,14 +257,38 @@ const handleRetry = (item: IMessageItem, index) => {
   }
   sendAiRequest(true)
 }
+
+// 停止生成
+const handleStop = () => {
+  if (!abortController.value) {
+    return
+  }
+  abortController.value.abort()
+}
+
+onBeforeUnmount(() => {
+  handleStop()
+})
+
+// 切换历史记录
+watch(
+  currentHistory,
+  () => {
+    handleStop()
+    if (!currentHistory.value) {
+      return
+    }
+    if (!currentHistory.value.history.length) {
+      resetChatHistory()
+    }
+    handleLoad()
+  },
+  {immediate: true},
+)
 </script>
 
 <template>
-  <div
-    class="chat-gpt-wrap vp-bg"
-    :data-load="handleLoad()"
-    v-if="currentHistory && currentCharacter"
-  >
+  <div class="chat-gpt-wrap vp-bg" v-if="currentHistory && currentCharacter">
     <div ref="respContainerRef" class="response-container scrollbar-mini">
       <ChatItem
         v-for="(item, index) in currentHistory.history"
@@ -282,7 +316,7 @@ const handleRetry = (item: IMessageItem, index) => {
         class="vp-input question-input"
         v-model="userInputContent"
         type="textarea"
-        rows="4"
+        rows="5"
         :placeholder="$t('ai.hui_che_jian_ti_jiao')"
         @keydown="handleKeyInput"
       />
@@ -299,10 +333,15 @@ const handleRetry = (item: IMessageItem, index) => {
         </div>
 
         <div class="action-side">
-          <template v-if="isEnableVision">
-            <ImagePicker v-model:images="imageList" />
-          </template>
           {{ currentCharacter.model }}
+
+          <button @click="scrollBottom()" class="vp-button">
+            <i class="fa fa-long-arrow-down" aria-hidden="true"></i>
+          </button>
+
+          <template v-if="isEnableVision">
+            <ImagePicker v-model:images="imageList" :disabled="isLoading" />
+          </template>
 
           <el-popconfirm
             @confirm="resetChatHistory"
@@ -310,14 +349,22 @@ const handleRetry = (item: IMessageItem, index) => {
             :teleported="false"
           >
             <template #reference>
-              <button class="vp-button">{{ $t('actions.clear') }}</button>
+              <button class="vp-button" :disabled="isLoading">{{ $t('actions.clear') }}</button>
             </template>
           </el-popconfirm>
+
+          <button v-if="isLoading" class="vp-button" @click="handleStop">
+            <i class="fa fa-stop" aria-hidden="true"></i>
+            停止生成
+          </button>
+
           <button
-            class="vp-button"
+            v-else
+            class="vp-button primary"
             :disabled="isLoading || !userInputContent"
             @click="sendAiRequest()"
           >
+            <i class="fa fa-play" aria-hidden="true"></i>
             {{ $t('actions.send') }}
           </button>
         </div>

@@ -27,22 +27,24 @@ export const useGpt = () => {
 
   /**
    * https://platform.openai.com/docs/api-reference/chat/create
-   * @param options 任意覆盖参数
+   * @param params 任意覆盖参数
    * @param streamCallback 流式回调
    */
   const requestChatCompletion = async (
-    options: any = {},
+    params: any = {},
     streamCallback?: (text: string) => void,
+    // fetch 覆盖参数
+    options: any = {},
   ) => {
     const apiProxy = aisStore.openAiApiProxy || 'https://api.openai.com/v1'
 
     // 全局默认参数（可覆盖）
-    options = {
+    params = {
       // 指定要使用的模型
       model: aisStore.model,
       // 是否启用流式数据输出
       stream: aisStore.stream,
-      ...options,
+      ...params,
     }
 
     const response = await fetch(`${apiProxy}/chat/completions`, {
@@ -51,7 +53,8 @@ export const useGpt = () => {
         Authorization: `Bearer ${aisStore.openAiApiKey}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(options),
+      body: JSON.stringify(params),
+      ...options,
     })
 
     const errorMessage = OpenAIApiErrorCodeMessage[response.status]
@@ -66,11 +69,11 @@ export const useGpt = () => {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
 
-    if (options.stream && typeof streamCallback === 'function') {
+    if (params.stream && typeof streamCallback === 'function') {
       // 处理流式响应
       const reader = response!.body!.getReader()
       const decoder = new TextDecoder('utf-8')
-      let result = ''
+      const result = ''
 
       while (true) {
         const {done, value} = await reader.read()

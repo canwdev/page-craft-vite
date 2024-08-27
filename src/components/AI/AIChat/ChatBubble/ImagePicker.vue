@@ -3,9 +3,10 @@ import {useVModel} from '@vueuse/core'
 
 interface Props {
   images: string[]
+  disabled?: boolean
 }
 
-const props = withDefaults(defineProps<Props>(), {})
+const props = withDefaults(defineProps<Props>(), {disabled: false})
 
 const emit = defineEmits(['update:images'])
 const mImages = useVModel(props, 'images', emit)
@@ -50,7 +51,7 @@ const handleChoose = async () => {
 
 <template>
   <div class="image-picker">
-    <button class="vp-button" @click="handleChoose" title="Upload image...">
+    <button class="vp-button" :disabled="disabled" @click="handleChoose" title="Upload image...">
       <i class="fa fa-file-image-o" aria-hidden="true"></i>
     </button>
     <div class="image-list">

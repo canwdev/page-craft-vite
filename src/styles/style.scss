@@ -54,6 +54,7 @@ html, body, #app {
     width: 8px;
     height: 8px;
     overflow: overlay;
+    background: transparent;
   }
 
   &::-webkit-scrollbar-thumb {

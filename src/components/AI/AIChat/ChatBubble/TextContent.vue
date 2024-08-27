@@ -56,8 +56,19 @@ const handleClick = (event) => {
 </script>
 
 <template>
-  <div class="chat-content vp-bg" :class="{'markdown-body-dark': isDark}" v-if="isEditing">
-    <textarea class="vp-input" v-model="mText" rows="4" cols="40" ref="editInputRef" />
+  <div
+    class="chat-content vp-bg"
+    :class="{'markdown-body-dark': isDark}"
+    v-if="isEditing"
+    style="width: 100%"
+  >
+    <textarea
+      class="vp-input"
+      v-model="mText"
+      rows="10"
+      ref="editInputRef"
+      style="width: 100%; font-size: 16px"
+    />
   </div>
   <div
     v-else

@@ -115,7 +115,7 @@ export default defineComponent({
     }
   }
   .option-select {
-    width: 150px;
+    width: 200px;
   }
   .dynamic-tags {
     width: 250px;
