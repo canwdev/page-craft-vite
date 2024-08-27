@@ -22,6 +22,7 @@ import {
 import {useArrayEdit} from '@/components/VueI18nEditTool/Single/hooks/use-array-edit'
 import CcFlag from '@/components/VueI18nEditTool/CcFlag.vue'
 import {useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
+import {useSettingsStore} from '@/store/settings'
 
 export default defineComponent({
   name: 'TranslateTreeItem',
@@ -57,6 +58,7 @@ export default defineComponent({
     const {item, index, title} = toRefs(props)
     const i18nMainStore = useI18nMainStore()
     const i18nSetStore = useI18nToolSettingsStore()
+    const settingsStore = useSettingsStore()
 
     const handleAddChildren = () => {
       i18nMainStore.trIsManualAdd = true
@@ -154,6 +156,7 @@ export default defineComponent({
 
     return {
       i18nSetStore,
+      settingsStore,
       handleAddChildren,
       handleAddTranslate,
       handleAutoAdd,
@@ -280,10 +283,14 @@ export default defineComponent({
           <button
             @click="handleAutoAdd"
             :title="$t('msgs.auto_paste_and_copy') + ` (${i18nSetStore.autoPasteTextConvertMode})`"
-            class="vp-button primary focus-auto-action"
+            class="vp-button primary js_focus_auto_action"
           >
             <i class="fa fa-clipboard" aria-hidden="true"></i>
             {{ $t('msgs.auto_paste') }}
+            <span
+              v-if="settingsStore.enableFocusAutoAction"
+              class="js-focus-auto-action-tip"
+            ></span>
           </button>
         </div>
       </div>

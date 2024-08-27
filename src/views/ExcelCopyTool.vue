@@ -426,14 +426,14 @@ export default defineComponent({
         </template>
       </CommonNavbar>
 
-      <div v-if="isReady" class="sheet-name-card">
+      <div v-if="isReady && sheetNames.length" class="sheet-name-card vp-panel">
         <el-tabs v-model="sheetNameIndex" type="card">
           <el-tab-pane v-for="(item, index) in sheetNames" :key="index" :label="item" :name="index">
           </el-tab-pane>
         </el-tabs>
       </div>
     </div>
-    <div ref="tableWrapperElRef" class="excel-table-container vp-bg" @click="handleClick"></div>
+    <div ref="tableWrapperElRef" class="excel-table-container vp-panel" @click="handleClick"></div>
 
     <FileChooser
       ref="importFileChooserRef"

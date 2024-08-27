@@ -23,8 +23,13 @@ export const useFocusAutoAction = () => {
     if (settingsStore.enableFocusAutoAction && val) {
       const el = lastClickedEl.value
       if (el && isElementInViewport(el)) {
+        // window.$message.success({
+        //   message: `[Auto] Clicked`,
+        //   duration: 500,
+        // })
         // console.log('[视口聚焦后自动操作]', {el})
         el.click()
+        el.scrollIntoView({behavior: 'smooth', block: 'center'})
         useAnimate(
           el,
           [{transform: 'scale(1)'}, {transform: 'scale(0.8)'}, {transform: 'scale(1)'}],
@@ -40,6 +45,13 @@ export const useFocusAutoAction = () => {
         lastClickedEl.value = null
       }
       window.$message.success(`${$t('msgs.focus_auto_action')}: ${val ? 'ON ⚡' : 'OFF ✖️'}`)
+      if (val && !lastClickedEl.value) {
+        window.$message.info({
+          message: $t('msgs.focus_auto_action_tip'),
+          duration: 5000,
+          showClose: true,
+        })
+      }
     },
   )
   useEventListener(document, 'keydown', (event) => {
@@ -52,7 +64,7 @@ export const useFocusAutoAction = () => {
   useEventListener(document, 'click', (evt) => {
     if (settingsStore.enableFocusAutoAction) {
       // 必须匹配此类才会记录，否则可能造成误操作
-      const el = evt.target?.closest('.focus-auto-action')
+      const el = evt.target?.closest('.js_focus_auto_action')
       if (el && el !== lastClickedEl.value) {
         // console.log('record', {el})
         lastClickedEl.value = el

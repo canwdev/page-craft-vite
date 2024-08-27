@@ -23,21 +23,21 @@ export const useCommonTools = () => {
       },
     },
     {
+      label: '🧬 ' + $t('common.text_transformer'),
+      search: 'text transformer',
+      props: {
+        onClick: async () => {
+          mainStore.isShowTextTransformer = !mainStore.isShowTextTransformer
+        },
+      },
+    },
+    {
       label: '📗 ' + $t('common.excel_copy_tool'),
       search: 'excel copy',
       props: {
         onClick: async () => {
           mainStore.isShowQuickLaunch = false
           await router.push({name: 'ExcelCopyTool'})
-        },
-      },
-    },
-    {
-      label: '🧬 ' + $t('common.text_transformer'),
-      search: 'text transformer',
-      props: {
-        onClick: async () => {
-          mainStore.isShowTextTransformer = !mainStore.isShowTextTransformer
         },
       },
     },

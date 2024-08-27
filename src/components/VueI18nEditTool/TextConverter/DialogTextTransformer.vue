@@ -12,6 +12,7 @@ import VueMonaco from '@/components/CanUI/packages/VueMonaco/index.vue'
 import {useDebounceFn, useStorage} from '@vueuse/core'
 import ViewPortWindow from '@/components/CanUI/packages/ViewPortWindow/index.vue'
 import RectSwitch from '@/components/CanUI/packages/OptionUI/Tools/RectSwitch.vue'
+import {useSettingsStore} from '@/store/settings'
 
 export default defineComponent({
   name: 'DialogTextTransformer',
@@ -82,8 +83,10 @@ export default defineComponent({
       monacoEditorRef.value.resize()
     }, 300)
 
+    const settingsStore = useSettingsStore()
     return {
       mVisible,
+      settingsStore,
       textInput,
       textOutput,
       TextConvertMode,
@@ -134,9 +137,14 @@ export default defineComponent({
           <button
             @click="handleAutoPasteCopy"
             :title="$t('msgs.auto_paste_and_copy')"
-            class="vp-button primary focus-auto-action"
+            class="vp-button primary js_focus_auto_action"
           >
             {{ $t('actions.paste') }}+{{ $t('actions.copy') }}
+
+            <span
+              v-if="settingsStore.enableFocusAutoAction"
+              class="js-focus-auto-action-tip"
+            ></span>
           </button>
           <button @click="handlePaste" class="vp-button" title="Paste">
             {{ $t('actions.paste') }}

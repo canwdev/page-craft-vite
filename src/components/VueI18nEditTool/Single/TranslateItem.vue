@@ -2,7 +2,6 @@
 import {defineComponent, PropType} from 'vue'
 import {
   CopyMode,
-  copyModeOptions,
   formatI18nKey,
   I18N_JSON_OBJ_ROOT_KEY_NAME,
   ITranslateItem,
@@ -13,10 +12,12 @@ import {useI18n} from 'vue-i18n'
 import {useMainStore} from '@/store/main'
 import FieldEdit from '@/components/VueI18nEditTool/Single/FieldEdit.vue'
 import {useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
+import CopyButtons from '@/components/VueI18nEditTool/Single/CopyButtons.vue'
 
 export default defineComponent({
   name: 'TranslateItem',
   components: {
+    CopyButtons,
     FieldEdit,
   },
   props: {
@@ -83,28 +84,6 @@ export default defineComponent({
       }
     }
 
-    // 一键复制模板
-    const highlightCopyMode = ref<CopyMode | null>(null)
-    const handleCopy = (mode: CopyMode) => {
-      let text = ``
-
-      if (mode === CopyMode.ORIGINAL) {
-        text = `$t('${nameDisplay.value}')`
-      } else if (mode === CopyMode.TEMPLATE) {
-        text = `{{ $t('${nameDisplay.value}') }}`
-      } else if (mode === CopyMode.VHTML) {
-        text = `v-html="$t('${nameDisplay.value}')"`
-      } else if (mode === CopyMode.DOLLART) {
-        text = `this.$t('${nameDisplay.value}')`
-      }
-
-      highlightCopyMode.value = mode
-      i18nMainStore.trLastCopyMode = mode
-
-      copyToClipboard(text)
-      window.$message.success($t('msgs.copy_success') + text)
-    }
-
     const handleValueBlur = () => {
       if (!item.value.key) {
         item.value.key = formatI18nKey(item.value.value)
@@ -113,6 +92,7 @@ export default defineComponent({
     }
 
     const valueInputRef = ref()
+    const cpButtonsRef = ref()
 
     onMounted(() => {
       if (!item.value) {
@@ -125,7 +105,7 @@ export default defineComponent({
         item.value.key = ''
         handleValueBlur()
         setTimeout(() => {
-          handleCopy(i18nMainStore.trLastCopyMode)
+          cpButtonsRef.value?.handleCopy(i18nMainStore.trLastCopyMode)
         })
       } else if (i18nMainStore.trIsManualAdd) {
         // 自动选择value输入框
@@ -137,11 +117,8 @@ export default defineComponent({
     })
 
     return {
-      copyModeOptions,
       namespacePrefix,
       nameDisplay,
-      highlightCopyMode,
-      handleCopy,
       handleValueBlur,
       handleKeyBlur() {
         checkDuplicatedKey()
@@ -151,6 +128,7 @@ export default defineComponent({
       },
       isKeyDuplicated,
       valueInputRef,
+      cpButtonsRef,
     }
   },
 })
@@ -188,19 +166,7 @@ export default defineComponent({
         />
       </template>
 
-      <div class="actions-buttons-wrap _mini" v-if="!isLite && nameDisplay">
-        <!-- 一键复制按钮 -->
-        <button
-          v-for="item in copyModeOptions"
-          :key="item.value"
-          :title="item.desc"
-          @click="handleCopy(item.value)"
-          class="vp-button secondary"
-          :class="{primary: item.value === highlightCopyMode}"
-        >
-          {{ item.label }}
-        </button>
-      </div>
+      <CopyButtons ref="cpButtonsRef" v-if="!isLite && nameDisplay" :content="nameDisplay" />
 
       <el-popconfirm
         v-if="!isLite"

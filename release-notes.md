@@ -6,6 +6,7 @@
 - [x] refactor: 整合内置组件库为 CanUI
 - [x] refactor: 重构图标 [xicons](https://www.xicons.org/#/) 为 [Font Awesome Icons](https://fontawesome.com/v4/icons/)
 - [x] optimize: 优化 ChatGPT 交互，支持停止生成，允许在生成时滚动
+- [x] optimize: 优化多语言工具
 - [ ] optimize: 优化主题UI
 
 ## v1.7.1

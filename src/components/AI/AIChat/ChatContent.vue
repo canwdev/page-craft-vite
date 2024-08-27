@@ -293,7 +293,7 @@ watch(
 
 <template>
   <div class="chat-gpt-wrap vp-bg" v-if="currentHistory && currentCharacter">
-    <div ref="respContainerRef" class="response-container scrollbar-mini">
+    <div ref="respContainerRef" class="response-container">
       <ChatItem
         v-for="(item, index) in currentHistory.history"
         :key="index"
@@ -359,7 +359,7 @@ watch(
 
           <button v-if="isLoading" class="vp-button" @click="handleStop">
             <i class="fa fa-stop" aria-hidden="true"></i>
-            停止生成
+            {{ $t('ai.stop_generation') }}
           </button>
 
           <button

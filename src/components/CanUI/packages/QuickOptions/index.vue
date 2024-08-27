@@ -291,7 +291,7 @@ export default defineComponent({
 <template>
   <div
     v-if="mVisible || isStatic"
-    class="quick-options scrollbar-mini"
+    class="quick-options"
     :class="{
       _static: isStatic,
       horizontal,

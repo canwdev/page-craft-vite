@@ -3,7 +3,7 @@ const isSidebarExpand = ref(true)
 </script>
 
 <template>
-  <div class="foldable-sidebar-layout">
+  <div class="foldable-sidebar-layout vp-panel">
     <div class="layout-sidebar" :class="{_expand: isSidebarExpand}">
       <slot name="sidebar"></slot>
 
@@ -36,6 +36,11 @@ const isSidebarExpand = ref(true)
   height: 100%;
   overflow: hidden;
   display: flex;
+
+  border-radius: 0;
+  border: none;
+  outline: none;
+
   .layout-sidebar {
     width: 0;
     display: flex;

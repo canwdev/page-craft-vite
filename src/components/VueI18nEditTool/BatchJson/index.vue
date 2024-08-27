@@ -30,7 +30,7 @@ watch(
 </script>
 
 <template>
-  <div class="batch-text-editor" v-loading="isLoading">
+  <div class="batch-text-editor vp-bg" v-loading="isLoading">
     <div class="editor-tabs-wrap">
       <el-tabs v-model="currentTab" type="card">
         <el-tab-pane

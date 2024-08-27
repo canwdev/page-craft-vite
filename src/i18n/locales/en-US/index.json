@@ -165,13 +165,14 @@
     "paste_json_override_right": "Paste JSON to overwrite the right-hand side",
     "action_completed_pl": "Action completed, please save manually!",
     "confirm_close": "Confirm close? Unsaved contents will be lost.",
-    "auto_paste_and_copy": "[Auto] Paste and Copy Result",
+    "auto_paste_and_copy": "Paste and Copy Result",
     "auto_show_image": "Auto Show image",
     "ignore_folders": "Ignore Folders",
     "enable_flag": "Enable Flag",
     "refresh_page": "Refresh the page?",
     "error_name_duplicat": "Error: Name duplicated!",
-    "bu_fen_xuan_xiang_bu": "Some options are disabled,<br>Please unselect the current component before operating."
+    "bu_fen_xuan_xiang_bu": "Some options are disabled,<br>Please unselect the current component before operating.",
+    "focus_auto_action_tip": "Please click the button marked with [Auto] to start automatic operation"
   },
   "i18n_tools": {
     "locate_translate_pa": "Locate Translate Path",
@@ -206,7 +207,8 @@
     "yu_current_character": "Chat with {0}",
     "new_chat": "New Chat",
     "chuang_jian_hou_bu_k": "Cannot be modified after creation",
-    "quan_ju_mo_ren_mo_xi": "Global Default Model"
+    "quan_ju_mo_ren_mo_xi": "Global Default Model",
+    "stop_generation": "Stop Generating"
   },
   "app_client": {
     "recommend_desc": "<b>🖥️ Recommended to download the desktop client</b><br>💡 Fully open source and available offline<br>⚡ Built using Tauri technology, lightweight at under 10MB<br>🚀 Utilizes system WebView 2 for fast and stable performance<br>💽 exe installation package can be extracted and run directly",

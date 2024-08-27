@@ -336,18 +336,18 @@ const editMode = useStorage('vue_i18n_dir_tool_edit_mode', EditMode.BATCH, local
 })
 
 const updateGuiTranslateTree = () => {
-  if (editMode.value !== 'text') {
-    if (!editingTextValue.value) {
-      i18nMainStore.translateTreeRoot = []
-      return
-    }
-    const obj = JSON.parse(editingTextValue.value as string)
-    i18nMainStore.translateTreeRoot = I18nJsonObjUtils.parseWithRoot(obj)
+  if (!editingTextValue.value) {
+    i18nMainStore.translateTreeRoot = []
+    return
   }
+  const obj = JSON.parse(editingTextValue.value as string)
+  i18nMainStore.translateTreeRoot = I18nJsonObjUtils.parseWithRoot(obj)
 }
 
 watch(editMode, (val) => {
-  updateGuiTranslateTree()
+  if (val === EditMode.GUI) {
+    reloadCurrentEditEntry()
+  }
 })
 
 useSaveShortcut(() => {

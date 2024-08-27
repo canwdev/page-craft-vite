@@ -165,13 +165,14 @@
     "paste_json_override_right": "JSONを貼り付けて右側を上書き",
     "action_completed_pl": "アクションが完了しました、手動で保存してください！",
     "confirm_close": "閉じますか？ 保存されていない内容は失われます。",
-    "auto_paste_and_copy": "[Auto] 貼り付けとコピーの結果",
+    "auto_paste_and_copy": "貼り付けとコピーの結果",
     "auto_show_image": "画像を自動表示",
     "ignore_folders": "フォルダを無視",
     "enable_flag": "フラグを有効にする",
     "refresh_page": "ページをリフレッシュする？",
     "error_name_duplicat": "エラー：名前が重複しています！",
-    "bu_fen_xuan_xiang_bu": "一部のオプションが無効になっています。<br>操作する前に現在のコンポーネントを選択解除してください。"
+    "bu_fen_xuan_xiang_bu": "一部のオプションが無効になっています。<br>操作する前に現在のコンポーネントを選択解除してください。",
+    "focus_auto_action_tip": "[Auto] が付いているボタンをクリックして自動操作を開始してください"
   },
   "i18n_tools": {
     "locate_translate_pa": "翻訳パスを特定する",
@@ -206,7 +207,8 @@
     "system_prompt": "システムプロンプトワード",
     "yu_current_character": "{0} とのチャット",
     "new_chat": "新しいチャット",
-    "quan_ju_mo_ren_mo_xi": "グローバルデフォルトモデル"
+    "quan_ju_mo_ren_mo_xi": "グローバルデフォルトモデル",
+    "stop_generation": "生成を停止"
   },
   "app_client": {
     "recommend_desc": "<b>🖥️ デスクトップクライアントのダウンロードを推奨します</b><br>💡 完全にオープンソースで、オフラインでも使用可能<br>⚡ Tauri技術を使用して構築されており、サイズは10MB未満と軽量<br>🚀 システムWebView 2を利用し、迅速かつ安定したパフォーマンスを提供<br>💽 exeインストールパッケージは解凍して直接実行可能",

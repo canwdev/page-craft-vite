@@ -22,7 +22,7 @@ html, body, #app {
 }
 
 .font-code {
-  font-family: 'Victor Mono Regular', 'Cascadia Code','等距更纱黑体 SC', 'Monaco', 'Fira Code Medium', Consolas, 'Courier New', monospace;
+  font-family: 'Victor Mono Regular', 'Cascadia Code', '等距更纱黑体 SC', 'Monaco', 'Fira Code Medium', Consolas, 'Courier New', monospace;
 }
 
 .font-emoji {
@@ -48,7 +48,7 @@ html, body, #app {
   }
 }
 
-.scrollbar-mini, .scrollbar-mini * {
+.scrollbar-mini * {
 
   &::-webkit-scrollbar {
     width: 8px;
@@ -72,6 +72,7 @@ html, body, #app {
     border-radius: 4px;
     background: transparent;
   }
+
   &::-webkit-scrollbar-corner {
     background-color: transparent;
   }
@@ -87,6 +88,23 @@ html, body, #app {
 .selection-area {
   background: $primary_opacity;
   border: 1px solid $primary;
+}
+
+.js-focus-auto-action-tip {
+  background-color: white;
+  color: $primary;
+  border: 2px solid currentColor;
+  font-weight: 600;
+  border-radius: 100px;
+  font-size: 12px;
+  padding: 3px 8px;
+  line-height: 1;
+  transform-origin: center;
+  display: inline-block;
+
+  &::before {
+    content: "[Auto]";
+  }
 }
 
 .mc-btn-add {
@@ -111,6 +129,7 @@ html, body, #app {
     filter: contrast(200%) brightness(1.5);
   }
 }
+
 .mc-error-tip-button {
   background-color: #f44336;
   cursor: help;
@@ -135,6 +154,7 @@ html, body, #app {
   justify-content: center;
   z-index: 20;
   background-color: rgba(0, 0, 0, 0.2);
+
   &.position-fixed {
     position: fixed;
     z-index: 200;
@@ -145,6 +165,7 @@ html, body, #app {
   padding: 0 !important;
   overflow: unset !important;
 }
+
 .hljs-code-header {
   display: flex;
   width: 100%;
@@ -155,6 +176,7 @@ html, body, #app {
   position: sticky;
   top: 0;
   border-radius: 4px;
+
   .hljs-copy-button {
   }
 }
