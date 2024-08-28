@@ -37,7 +37,6 @@ export default defineComponent({
         })
 
         result = result.replace(/>>>/g, '::v-deep')
-        result = result.replace(/\.styl/g, '.scss')
 
         textOutput.value = result
         errorText.value = ''
