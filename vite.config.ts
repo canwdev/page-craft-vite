@@ -5,6 +5,7 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import {ElementPlusResolver} from 'unplugin-vue-components/resolvers'
+import {visualizer} from 'rollup-plugin-visualizer'
 
 // 不扫描这些文件夹
 const filesNeedToExclude = ['src-tauri']
@@ -52,7 +53,14 @@ export default defineConfig(({mode}) => {
     plugins: [
       vue(),
       vueJsx(),
-      // VueDevTools(),
+      // visualizer({
+      //   gzipSize: true,
+      //   brotliSize: true,
+      //   emitFile: false,
+      //   filename: 'visualizer.html', //分析图生成的文件名
+      //   open: true, //如果存在本地服务端口，将在打包后自动展示
+      // }),
+
       AutoImport({
         dts: './src/auto-import.d.ts',
         imports: ['vue', 'pinia'],
