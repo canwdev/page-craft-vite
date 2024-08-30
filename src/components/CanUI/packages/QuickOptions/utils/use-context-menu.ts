@@ -159,18 +159,24 @@ export const useHoverSubMenu = (props, emit) => {
     const parentRect = parentMenuEl.getBoundingClientRect()
 
     let offsetLeft = 0
+    let offsetTop = 0
     // 视口宽高
     const vWidth = window.innerWidth
+    const vHeight = window.innerHeight
     // const vHeight = window.innerHeight
     // console.log(parentMenuEl, parentRect)
     // 如果菜单右侧宽度不能容纳子菜单，则将子菜单显示在左边
     if (vWidth - (parentRect.left + parentRect.width) < rect.width) {
       offsetLeft = -parentRect.width
     }
+    // 修复子菜单高度不够容纳时的弹出位置
+    if (vHeight - (parentRect.top + parentRect.height) < rect.height) {
+      offsetTop = parentRect.height
+    }
 
     const style = getMenuPosStyle({
       x: rect.left + offsetLeft,
-      y: rect.top,
+      y: rect.top + offsetTop,
       width: rect.width,
       height: rect.height,
       isLeftSide: !!offsetLeft,

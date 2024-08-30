@@ -577,6 +577,10 @@ export default defineComponent({
         align-items: center;
         gap: 4px;
         line-height: 1.4;
+
+        img {
+          pointer-events: none;
+        }
       }
     }
     .vp-window-body {
