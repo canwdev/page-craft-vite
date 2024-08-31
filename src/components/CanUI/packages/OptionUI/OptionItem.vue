@@ -89,6 +89,9 @@ export default defineComponent({
           <div v-else-if="sItem.icon" class="item-icon">
             <img :src="sItem.icon" alt="icon" />
           </div>
+          <div v-else-if="sItem.iconClass" class="item-icon">
+            <i :class="sItem.iconClass"></i>
+          </div>
           <div class="item-title-wrap">
             <div class="item-label-wrap">
               <span class="item-label">{{ sItem.label }}</span>
@@ -191,6 +194,9 @@ export default defineComponent({
           height: 32px;
           border-radius: 4px;
           display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 20px;
           img {
             width: 100%;
             height: 100%;

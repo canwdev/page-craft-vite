@@ -40,7 +40,7 @@ export default defineComponent({
       @click="mValue = item.value"
       :class="{active: item.value === mValue}"
     >
-      {{ item.label }}
+      {{ item.label || item.value }}
     </div>
   </div>
 </template>
@@ -53,6 +53,7 @@ export default defineComponent({
   border-radius: 2px;
   padding: 2px;
   border: 1px solid $color_border;
+  flex-wrap: wrap;
 
   &.disabled {
     opacity: 0.6;

@@ -26,7 +26,6 @@ import {PiniaSharedState} from 'pinia-shared-state'
 import PortalVue from 'portal-vue'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import i18n from '@/i18n/index'
-import '@/components/CanUI/packages/ViewPortWindow/theme/index.scss'
 import CanUI from '@/components/CanUI'
 import './styles/style.scss'
 
