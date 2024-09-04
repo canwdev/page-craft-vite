@@ -41,7 +41,7 @@ defineExpose({
 </script>
 
 <template>
-  <div class="copy-buttons-wrap">
+  <div class="copy-buttons-wrap vp-button-group">
     <!-- 一键复制按钮 -->
     <button
       v-for="item in copyModeOptions"

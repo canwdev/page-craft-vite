@@ -10,7 +10,6 @@ import {blinkPanel} from '@/utils/anim'
 import {useBatchTranslateAnalyser} from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox/use-analyser'
 import ViewPortWindow from '@/components/CanUI/packages/ViewPortWindow/index.vue'
 import {useBatchTranslateRefactor} from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox/use-refactor'
-import ToolBar from '@/components/PageCraft/ToolBar/index.vue'
 import DropdownMenu from '@/components/CanUI/packages/OptionUI/Tools/DropdownMenu.vue'
 interface Props {
   isBatchMode?: boolean

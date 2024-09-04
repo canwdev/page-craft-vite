@@ -429,7 +429,7 @@ const {showDropzone, fileDragover, fileDrop} = useFileDrop({
           <a @click="mainStore.isShowTextTransformer = !mainStore.isShowTextTransformer">
             {{ $t('common.edit_mode') }}:
           </a>
-          <TabLayout v-model="editMode" horizontal :options="editModeOptions" />
+          <RectSwitch v-model="editMode" horizontal :options="editModeOptions" />
 
           <button
             class="vp-button primary"

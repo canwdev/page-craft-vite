@@ -1,42 +1,36 @@
-<script lang="ts">
-import {defineComponent, PropType} from 'vue'
-import RectSwitch from './Tools/RectSwitch.vue'
+<script lang="ts" setup>
+import {computed, toRefs} from 'vue'
 import {StOptionItem, StOptionType, swatches} from './enum'
+import RectSwitch from './Tools/RectSwitch.vue'
 import VueRender from './Tools/VueRender.vue'
 import AdvancedNumberInput from './Tools/AdvancedNumberInput.vue'
 import DynamicTags from './Tools/DynamicTags.vue'
 
-export default defineComponent({
-  name: 'ItemAction',
-  components: {DynamicTags, AdvancedNumberInput, VueRender, RectSwitch},
-  props: {
-    item: {
-      type: Object as PropType<StOptionItem>,
-      required: true,
-    },
-  },
-  setup(props, {emit}) {
-    const {item} = toRefs(props)
-    const dynamicValue = computed({
-      get() {
-        if (item.value.store) {
-          return item.value.store[item.value.key]
-        }
-        return item.value.value
-      },
-      set(val) {
-        if (item.value.store) {
-          item.value.store[item.value.key] = val
-          return
-        }
-        item.value.value = val
-      },
-    })
-    return {
-      StOptionType,
-      dynamicValue,
-      swatches,
+const props = defineProps<{
+  item: StOptionItem
+}>()
+const {item} = toRefs(props)
+const emit = defineEmits(['updateValue'])
+
+// 顶层父组件的数据
+const sharedStore = inject<any>('sharedStore')
+
+const dynamicValue = computed({
+  get() {
+    const store = item.value.store || sharedStore.value
+    if (store) {
+      return store[item.value.key]
     }
+    return item.value.value
+  },
+  set(val) {
+    emit('updateValue', {item: item.value, value: val})
+    const store = item.value.store || sharedStore.value
+    if (store) {
+      store[item.value.key] = val
+      return
+    }
+    item.value.value = val
   },
 })
 </script>

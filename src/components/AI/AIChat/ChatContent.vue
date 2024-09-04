@@ -131,6 +131,7 @@ const sendAiRequest = async (isRetry = false) => {
     return
   }
   try {
+    scrollBottom()
     isLoading.value = true
     tempResponseChat.value = {
       role: 'assistant',
@@ -334,14 +335,14 @@ watch(
             </template>
             <OptionUI :option-list="aiSettingsOptions" />
           </el-popover>
-        </div>
-
-        <div class="action-side">
-          {{ currentCharacter.model }}
 
           <button @click="scrollBottom()" class="vp-button">
             <i class="fa fa-long-arrow-down" aria-hidden="true"></i>
           </button>
+        </div>
+
+        <div class="action-side">
+          {{ currentCharacter.model }}
 
           <template v-if="isEnableVision">
             <ImagePicker v-model:images="imageList" :disabled="isLoading" />

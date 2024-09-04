@@ -133,7 +133,7 @@ export default defineComponent({
           />
         </template>
 
-        <div>
+        <div class="vp-button-group">
           <button
             @click="handleAutoPasteCopy"
             :title="$t('msgs.auto_paste_and_copy')"

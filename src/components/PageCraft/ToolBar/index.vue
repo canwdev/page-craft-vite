@@ -193,13 +193,13 @@ export default defineComponent({
             <template #reference>
               <button class="vp-button">
                 <i class="fa fa-refresh" aria-hidden="true"></i>
-                ️
               </button>
             </template>
           </el-popconfirm>
 
           <button
             class="vp-button"
+            :class="{primary: settingsStore.showInventory}"
             style="min-width: 80px"
             @click="settingsStore.showInventory = !settingsStore.showInventory"
             title="(alt+a)"
@@ -212,6 +212,7 @@ export default defineComponent({
 
           <button
             class="vp-button"
+            :class="{primary: mainStore.isShowQuickLaunch}"
             @click="mainStore.isShowQuickLaunch = !mainStore.isShowQuickLaunch"
           >
             <i class="fa fa-wrench" aria-hidden="true"></i> {{ $t('common.toolbox') }}

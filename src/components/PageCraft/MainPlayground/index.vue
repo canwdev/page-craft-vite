@@ -178,6 +178,7 @@ const openPlayground = () => {
             :title="`${settingsStore.curCompInStore?.basePath}
 ${settingsStore.curCompInStore?.title}`"
           >
+            <i class="fa fa-code" aria-hidden="true"></i>
             {{ settingsStore.curCompInStore?.title?.slice(0, 10) || 'Default' }}
           </button>
         </DropdownMenu>
@@ -218,7 +219,7 @@ ${settingsStore.curCompInStore?.title}`"
         </el-popover>
       </template>
 
-      <div>
+      <div class="vp-button-group">
         <button
           class="vp-button"
           title="Undo (ctrl+z)"

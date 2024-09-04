@@ -1,50 +1,36 @@
-<script lang="ts">
+<script lang="ts" setup>
 import VueRender from './Tools/VueRender.vue'
-import {defineComponent, PropType} from 'vue'
+import {defineComponent, PropType, toRefs} from 'vue'
 import ItemAction from './ItemAction.vue'
 import {StOptionItem, StOptionType} from './enum'
 
-export default defineComponent({
-  name: 'OptionItem',
-  components: {ItemAction, VueRender},
-  props: {
-    item: {
-      type: Object as PropType<StOptionItem>,
-      required: true,
-    },
-    foldedKeyMap: {
-      type: Object,
-      default() {
-        return {}
-      },
-    },
+const props = withDefaults(
+  defineProps<{
+    item: StOptionItem
+    foldedKeyMap?: any
+  }>(),
+  {
+    foldedKeyMap: {},
   },
-  setup(props, {emit}) {
-    const {item, foldedKeyMap} = toRefs(props)
+)
+const {item, foldedKeyMap} = toRefs(props)
+const emit = defineEmits(['onToggleExpand', 'updateValue'])
 
-    const isExpanded = computed(() => {
-      return !foldedKeyMap.value[item.value.key]
-    })
-
-    const handleItemClick = (e: Event, fn: any) => {
-      if (typeof fn === 'function') {
-        fn(e, item.value)
-      }
-    }
-
-    return {
-      isExpanded,
-      StOptionType,
-      handleItemClick,
-    }
-  },
+const isExpanded = computed(() => {
+  return !foldedKeyMap.value[item.value.key]
 })
+
+const handleItemClick = (e: Event, fn: any) => {
+  if (typeof fn === 'function') {
+    fn(e, item.value)
+  }
+}
 </script>
 
 <template>
   <div class="c-panel-item" :data-key="item.key" :class="[item.cls]">
     <div class="panel-header vp-bg">
-      <div class="p-left">
+      <div class="p-left" :title="item.label">
         <div class="item-label">{{ item.label }}</div>
       </div>
       <div class="p-right">
@@ -68,7 +54,7 @@ export default defineComponent({
             </g>
           </svg>
         </div>
-        <ItemAction :item="item" />
+        <ItemAction :item="item" @updateValue="(v) => emit('updateValue', v)" />
       </div>
     </div>
 
@@ -83,13 +69,13 @@ export default defineComponent({
         v-bind="sItem.itemProps"
       >
         <div class="o-left">
-          <div v-if="sItem.iconRender" class="item-icon">
+          <div v-if="sItem.iconRender" class="item-icon" :title="sItem.label">
             <VueRender :render-fn="sItem.iconRender" />
           </div>
-          <div v-else-if="sItem.icon" class="item-icon">
+          <div v-else-if="sItem.icon" class="item-icon" :title="sItem.label">
             <img :src="sItem.icon" alt="icon" />
           </div>
-          <div v-else-if="sItem.iconClass" class="item-icon">
+          <div v-else-if="sItem.iconClass" class="item-icon" :title="sItem.label">
             <i :class="sItem.iconClass"></i>
           </div>
           <div class="item-title-wrap">
@@ -118,7 +104,7 @@ export default defineComponent({
           </div>
         </div>
         <div class="o-right">
-          <ItemAction :item="sItem" />
+          <ItemAction :item="sItem" @updateValue="(v) => emit('updateValue', v)" />
         </div>
       </div>
     </div>
@@ -134,10 +120,11 @@ export default defineComponent({
     align-items: center;
     justify-content: space-between;
     font-weight: bold;
-    border-bottom: 1px dashed $color_border;
+    border-bottom: 1px solid $color_border;
     position: sticky;
     top: 0;
     z-index: 2;
+    border-radius: 4px 4px 0 0;
 
     .p-left,
     .p-right {

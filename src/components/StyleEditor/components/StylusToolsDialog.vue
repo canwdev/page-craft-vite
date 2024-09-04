@@ -115,7 +115,7 @@ export default defineComponent({
     <template #titleBarLeft>{{ `Stylus ${$t('common.formatting_tool')}` }}</template>
     <div v-if="mVisible" class="text-converter-wrap">
       <div class="tool-header flex-row-center-gap" style="justify-content: space-between">
-        <div>
+        <div class="vp-button-group">
           <button
             @click="handleAutoPasteCopy"
             :title="$t('msgs.auto_paste_and_copy')"
@@ -143,7 +143,7 @@ export default defineComponent({
           Stylus Supermacy
         </a>
 
-        <div>
+        <div class="vp-button-group">
           <button class="vp-button" @click="doClear">{{ $t('actions.clear') }}</button>
           <button class="vp-button" @click="showDemo">{{ $t('common.demo') }}</button>
         </div>

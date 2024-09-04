@@ -2,9 +2,6 @@
 import ToolBar from '@/components/PageCraft/ToolBar/index.vue'
 import MainPlayground from '@/components/PageCraft/MainPlayground/index.vue'
 import {useSettingsStore} from '@/store/settings'
-import {beautifyCss} from '@/components/StyleEditor/utils/formater'
-import {sassToCSS} from '@/components/StyleEditor/utils/css'
-import {copyToClipboard} from '@/utils'
 import {useI18n} from 'vue-i18n'
 import {useMainStore} from '@/store/main'
 import {useEventListener} from '@vueuse/core'
@@ -12,7 +9,6 @@ import {useOpenCloseSound, useSfxOpenCloseSelect, useSfxBrush, useSfxFill} from 
 import globalEventBus, {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
 import {CLASS_MAIN_CANVAS_ROOT} from '@/enum/page-craft'
 import {useComponentStorageV2} from '@/components/PageCraft/ComponentExplorer/hooks/use-component-manage'
-import DropdownMenu from '@/components/CanUI/packages/OptionUI/Tools/DropdownMenu.vue'
 
 const StyleEditor = defineAsyncComponent(() => import('@/components/StyleEditor/index.vue'))
 
@@ -57,18 +53,6 @@ useEventListener(document, 'keydown', (event) => {
 })
 
 const {loadCurCompStyle, saveCurCompStyle} = useComponentStorageV2()
-const styleMenuOptions = [
-  {
-    label: '📄 ' + $t('actions.copy_compiled_css'),
-    props: {
-      onClick: async () => {
-        const style = await loadCurCompStyle()
-        const css = beautifyCss(await sassToCSS(style))
-        window.$qlUtils.copy(css)
-      },
-    },
-  },
-]
 
 const styleEditorRef = ref()
 const isAutoSave = ref(false)
@@ -107,16 +91,15 @@ useGlobalBusOn(GlobalEvents.ON_ADD_STYLE, (arg) => {
     <MainPlayground />
 
     <ToolBar>
-      <DropdownMenu :options="styleMenuOptions">
-        <button
-          class="vp-button"
-          style="min-width: 70px"
-          @click="settingsStore.showStyleEditor = !settingsStore.showStyleEditor"
-          title="(alt+s)"
-        >
-          <i class="fa fa-paint-brush" aria-hidden="true"></i> {{ $t('common.style') }}
-        </button>
-      </DropdownMenu>
+      <button
+        class="vp-button"
+        :class="{primary: settingsStore.showStyleEditor}"
+        style="min-width: 70px"
+        @click="settingsStore.showStyleEditor = !settingsStore.showStyleEditor"
+        title="(alt+s)"
+      >
+        <i class="fa fa-paint-brush" aria-hidden="true"></i> {{ $t('common.style') }}
+      </button>
       <template #end> </template>
     </ToolBar>
   </div>

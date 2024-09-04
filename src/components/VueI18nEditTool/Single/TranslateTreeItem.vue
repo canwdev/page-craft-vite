@@ -234,7 +234,7 @@ export default defineComponent({
           @blur="checkDuplicatedGroupKey"
         />
       </div>
-      <div class="actions-buttons-wrap">
+      <div class="actions-buttons-wrap vp-button-group">
         <template v-if="!isLite">
           <button class="vp-button" @click="handleGetJSON" :title="`${$t('actions.copy')} JSON`">
             <i class="fa fa-copy"></i>
@@ -275,7 +275,7 @@ export default defineComponent({
       </div>
 
       <div class="actions-wrap">
-        <div class="actions-buttons-wrap" v-if="!isLite">
+        <div class="actions-buttons-wrap vp-button-group" v-if="!isLite">
           <button title="Add translate item" @click="handleAddTranslate" class="vp-button">
             <i class="fa fa-plus"></i>
             {{ $t('common.field') }}

@@ -391,12 +391,7 @@ export default defineComponent({
               <a @click="mainStore.isShowTextTransformer = !mainStore.isShowTextTransformer">
                 {{ $t('common.text_transformer') }}:
               </a>
-              <TabLayout
-                horizontal
-                size="small"
-                v-model="copyMode"
-                :options="modTextConvertOptions"
-              />
+              <RectSwitch size="small" v-model="copyMode" :options="modTextConvertOptions" />
             </div>
 
             <DropdownMenu v-if="workbookRef" :options="dropdownMenuOptions" :disabled="!isReady">
