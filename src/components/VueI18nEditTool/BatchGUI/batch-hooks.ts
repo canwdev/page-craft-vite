@@ -74,7 +74,7 @@ export const useBatchWrapper = () => {
           const recursiveFindItem = (
             children: DirTreeItem[] | null,
             dirArr: string[],
-            depth = 0
+            depth = 0,
           ) => {
             const dirName = dirArr[depth]
             if (!children) {
@@ -116,18 +116,27 @@ export const useBatchWrapper = () => {
         }
 
         // console.log(currentItem)
-        const file = await (currentItem.entry as FileSystemFileHandle).getFile()
-        const str = await handleReadSelectedFile(file)
-        list.push({
-          dirItem: currentItem,
-          rootDir: dirItem,
-          json: JSON.parse(str as string),
-        })
+        try {
+          const file = await (currentItem.entry as FileSystemFileHandle).getFile()
+          const str = await handleReadSelectedFile(file)
+          const json = JSON.parse(str as string)
+          console.log(currentItem)
+          list.push({
+            dirItem: currentItem,
+            rootDir: dirItem,
+            json: json,
+          })
+        } catch (error: any) {
+          throw new Error(
+            `${currentItem.parentDirs.join('/') + '/' + currentItem.label}: ${error.message}`,
+          )
+        }
       }
       i18nMainStore.batchList = list
       // console.log('batchList.value', batchList.value)
-    } catch (e) {
-      console.error(e)
+    } catch (error: any) {
+      window.$message.error(error.message)
+      console.error(error)
     } finally {
       isLoading.value = false
     }
@@ -172,7 +181,7 @@ async function createFolder(directoryHandle: FileSystemDirectoryHandle, folderPa
 async function createFile(
   directoryHandle: FileSystemDirectoryHandle,
   filePath: string,
-  content: string
+  content: string,
 ) {
   console.log('[createFile] 获取文件的可写入流')
   const fileHandle = await directoryHandle.getFileHandle(filePath, {create: true})
@@ -245,7 +254,7 @@ export const useBatchItemV2 = (props) => {
       const fileHandle = await createFile(
         folderHandle,
         fullPath.substring(fullPath.lastIndexOf('/') + 1),
-        txt
+        txt,
       )
 
       window.$message.success('Created ' + fullPath)
