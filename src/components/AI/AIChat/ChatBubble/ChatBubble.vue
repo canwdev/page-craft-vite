@@ -296,7 +296,7 @@ const scrollToBottom = () => {
   .chat-content {
     line-height: 26px;
     display: inline-block;
-    padding: 6px 12px;
+    padding: 6px 10px;
     border-radius: 10px 0 10px 10px;
     max-width: 800px;
     font-size: 16px;

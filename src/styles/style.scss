@@ -164,18 +164,27 @@ html, body, #app {
 .hljs-code-container {
   padding: 0 !important;
   overflow: unset !important;
+  display: flex;
+  flex-direction: column;
+  & > code {
+    padding: 8px  !important;
+    width: 100%  !important;
+    overflow: auto  !important;
+  }
 }
 
 .hljs-code-header {
   display: flex;
+  gap: 8px;
+  align-items: center;
   width: 100%;
-  justify-content: space-between;
   padding: 0.5em 1em;
   font-size: 12px;
-  border-bottom: 1px solid $color_border;
+  box-shadow: none !important;
+  border: none !important;
   position: sticky;
   top: 0;
-  border-radius: 4px;
+  border-radius: 4px 4px 0 0 !important;
 
   .hljs-copy-button {
   }
