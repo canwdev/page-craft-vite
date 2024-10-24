@@ -112,6 +112,11 @@ const openPlayground = () => {
   }
   window.open(url)
 }
+
+const doImportAction = () => {
+  handleImportHtml(pasteHtmlText.value)
+  isShowImportDialog.value = false
+}
 </script>
 
 <template>
@@ -154,8 +159,8 @@ const openPlayground = () => {
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="isShowImportDialog = false">{{ $t('actions.cancel') }}</el-button>
-          <el-button type="primary" @click="handleImportHtml(pasteHtmlText)">
-            {{ $t('actions.import') }}
+          <el-button type="primary" @click="doImportAction">
+            {{ $t('actions.import') }} HTML
           </el-button>
         </div>
       </template>

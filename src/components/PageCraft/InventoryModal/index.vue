@@ -10,7 +10,7 @@ import {useSettingsStore} from '@/store/settings'
 import ViewPortWindow from '@/components/CanUI/packages/ViewPortWindow/index.vue'
 import {useI18n} from 'vue-i18n'
 import {useSfxPop} from '@/hooks/use-sfx'
-import TabLayout from '@/components/CanUI/packages/CommonUI/TabLayout.vue'
+import TabLayout from '@/components/CanUI/packages/Layouts/TabLayout.vue'
 import ComponentExplorer from '@/components/PageCraft/ComponentExplorer/ComponentExplorer.vue'
 
 export default defineComponent({

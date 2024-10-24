@@ -103,6 +103,9 @@ export default defineComponent({
           label: 'outerHTML',
           key: 'outerHTML',
           type: AutoFormItemType.MONACO_EDITOR,
+          props: {
+            style: 'height: 400px; border-bottom: 1px solid rgba(91, 85, 85, 0.3)',
+          },
         },
       ]
     })

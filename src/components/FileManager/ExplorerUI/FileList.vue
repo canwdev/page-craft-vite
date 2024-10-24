@@ -118,7 +118,12 @@ const {handleOpenLocalDir, localDirHistoryOptions, isShowDirHistory} = useLocalD
       </div>
       <div class="action-group">
         <button @click="isGridView = !isGridView" class="vp-button" title="Toggle grid view">
-          {{ isGridView ? '🎛️' : '🎚️' }}
+          <template v-if="isGridView">
+            <i class="fa fa-list" aria-hidden="true"></i>
+          </template>
+          <template v-else>
+            <i class="fa fa-th" aria-hidden="true"></i>
+          </template>
         </button>
         <div class="action-button-wrap">
           <button class="vp-button" title="Toggle Sort" @click="showSortMenu = true">
@@ -220,6 +225,7 @@ const {handleOpenLocalDir, localDirHistoryOptions, isShowDirHistory} = useLocalD
       .action-button-wrap {
         display: inline-flex;
         position: relative;
+        z-index: 10;
         .quick-options {
           position: absolute;
           top: 100%;

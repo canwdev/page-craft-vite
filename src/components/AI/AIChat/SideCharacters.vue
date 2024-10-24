@@ -250,6 +250,7 @@ const formItems = computed((): MixedFormItems[] => {
           h(
             'button',
             {
+              type: 'button',
               class: 'btn-no-style',
               onClick: async () => {
                 const url = await base64Utils.chooseFileToBase64({accept: 'image/*'})
@@ -276,7 +277,7 @@ const formItems = computed((): MixedFormItems[] => {
         label: $t('ai.model'),
         props: {
           // 允许动态创建项
-          tag: true,
+          allowCreate: true,
           filterable: true,
         },
       },

@@ -19,7 +19,7 @@ import {handleExportFile, promptGetFileName} from '@/utils/mc-utils/io'
 import CommonNavbar from '@/components/CommonUI/CommonNavbar.vue'
 import DropdownMenu from '@/components/CanUI/packages/OptionUI/Tools/DropdownMenu.vue'
 import RectSwitch from '@/components/CanUI/packages/OptionUI/Tools/RectSwitch.vue'
-import TabLayout from '@/components/CanUI/packages/CommonUI/TabLayout.vue'
+import TabLayout from '@/components/CanUI/packages/Layouts/TabLayout.vue'
 
 const isAllowedElement = (el) => {
   return el.tagName.toLowerCase() === 'td'

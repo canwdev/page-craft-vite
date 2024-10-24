@@ -124,9 +124,11 @@ const {handleOpenLocalDir, localDirHistoryOptions} = useLocalDir({emit})
           @click="handleCreateComponent()"
           :title="$t('actions.add_component')"
         >
+          <i class="fa fa-plus icon-small-abs" aria-hidden="true"></i>
           <i class="fa fa-file-o" aria-hidden="true"></i>
         </button>
         <button class="vp-button" @click="handleCreateFolder" title="Create Folder">
+          <i class="fa fa-plus icon-small-abs" aria-hidden="true"></i>
           <i class="fa fa-folder-o" aria-hidden="true"></i>
         </button>
 
@@ -252,10 +254,19 @@ const {handleOpenLocalDir, localDirHistoryOptions} = useLocalDir({emit})
       .vp-button {
         display: inline-flex;
         padding: 4px 6px;
+        position: relative;
+        .icon-small-abs {
+          font-size: 12px;
+          position: absolute;
+          left: 50%;
+          top: 60%;
+          transform: translate(-50%, -50%) scale(0.6);
+        }
       }
       .action-button-wrap {
         display: inline-flex;
         position: relative;
+        z-index: 10;
         .quick-options {
           position: absolute;
           top: 100%;

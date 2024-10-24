@@ -4,7 +4,7 @@ import {beautifyCss} from './utils/formater'
 import ViewPortWindow from '@/components/CanUI/packages/ViewPortWindow/index.vue'
 
 import {useI18n} from 'vue-i18n'
-import TabLayout from '@/components/CanUI/packages/CommonUI/TabLayout.vue'
+import TabLayout from '@/components/CanUI/packages/Layouts/TabLayout.vue'
 import monaco from '@/components/CanUI/packages/VueMonaco/monaco-helper'
 import VueMonaco from '@/components/CanUI/packages/VueMonaco/index.vue'
 import QuickOptions from '@/components/CanUI/packages/QuickOptions/index.vue'
