@@ -90,7 +90,7 @@ const refreshOptions = () => {
     }
   })
 
-  _updateCardSize()
+  _updateMenuSize()
   if (options.length) {
     tipOptions.value = [
       ...options,
@@ -125,15 +125,15 @@ watchDebounced(
   {debounce: 300, immediate: true},
 )
 
-const {menuRef, ctxMenuStyle, showMenuByPoint, isShow, updateCardSize} = useContextMenu({
+const {menuRef, ctxMenuStyle, showMenuByPoint, isShow, updateMenuSize} = useContextMenu({
   getExtraSize() {
     const {height} = inputRef.value.getBoundingClientRect()
     return {height, width: 0}
   },
 })
-const _updateCardSize = useThrottleFn(
+const _updateMenuSize = useThrottleFn(
   () => {
-    updateCardSize()
+    updateMenuSize()
   },
   300,
   true,
@@ -148,7 +148,10 @@ const showMenu = () => {
   }
   const rect = rootRef.value.getBoundingClientRect()
   // console.log(rect)
-  showMenuByPoint(rect.x, rect.y + rect.height)
+  showMenuByPoint({
+    x: rect.x,
+    y: rect.y + rect.height,
+  })
 }
 const showAndFocus = () => {
   showMenu()

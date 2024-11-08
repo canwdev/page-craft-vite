@@ -60,7 +60,7 @@ export const useContextMenu = (options: any = {}) => {
   const menuHeight = ref(0)
 
   const menuRef = ref()
-  const updateCardSize = () => {
+  const updateMenuSize = () => {
     setTimeout(() => {
       if (!menuRef.value || !menuRef.value.quickRootRef) {
         return
@@ -82,7 +82,7 @@ export const useContextMenu = (options: any = {}) => {
   }
   watch(isShow, (val) => {
     if (val) {
-      updateCardSize()
+      updateMenuSize()
     }
   })
 
@@ -105,7 +105,7 @@ export const useContextMenu = (options: any = {}) => {
     })
   }
 
-  const showMenuByPoint = (x, y) => {
+  const showMenuByPoint = ({x, y}) => {
     xRef.value = x
     yRef.value = y
     isShow.value = true
@@ -119,7 +119,7 @@ export const useContextMenu = (options: any = {}) => {
     menuWidth,
     menuHeight,
     menuRef,
-    updateCardSize,
+    updateMenuSize,
     showMenu,
     showMenuByPoint,
   }
