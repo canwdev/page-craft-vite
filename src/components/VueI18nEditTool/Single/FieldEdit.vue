@@ -90,7 +90,8 @@ export default defineComponent({
       class="item-value-edit _button vp-button"
       @click="$emit('previewArray')"
     >
-      <i class="fa fa-pencil-square-o" aria-hidden="true"></i> {{ $t('common.array') }}
+      <span class="mdi mdi-text-box-edit-outline"></span>
+      {{ $t('common.array') }}
     </button>
     <textarea
       v-else
@@ -109,7 +110,7 @@ export default defineComponent({
       class="vp-button primary"
       :title="`${$t('msgs.auto_paste')} [${autoPasteConvertMode}]`"
     >
-      <i class="fa fa-clipboard" aria-hidden="true"></i>
+      <span class="mdi mdi-content-paste"></span>
     </button>
   </div>
 </template>

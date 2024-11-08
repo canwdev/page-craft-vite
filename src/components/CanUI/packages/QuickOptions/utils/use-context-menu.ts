@@ -59,6 +59,37 @@ export const useContextMenu = (options: any = {}) => {
   const menuWidth = ref(0)
   const menuHeight = ref(0)
 
+  type ByPosition =
+    | 'top'
+    | 'top-left'
+    | 'top-right'
+    | 'bottom'
+    | 'bottom-left'
+    | 'bottom-right'
+    | 'left'
+    | 'right'
+  const byElementPosition = ref<ByPosition | null>(null)
+  const byElement = ref<HTMLElement | null>(null)
+
+  // 在目标元素的各个方向展示菜单
+  const showMenuByElement = (el: HTMLElement, position: ByPosition = 'top', toggle = false) => {
+    if (toggle) {
+      if (isShow.value) {
+        isShow.value = false
+        return
+      }
+    }
+    if (isShow.value) {
+      // console.log('1')
+      isShow.value = false
+    }
+    setTimeout(() => {
+      byElement.value = el
+      byElementPosition.value = position
+      isShow.value = true
+    }, 0)
+  }
+
   const menuRef = ref()
   const updateMenuSize = () => {
     setTimeout(() => {
@@ -78,8 +109,84 @@ export const useContextMenu = (options: any = {}) => {
       menuHeight.value = h
 
       // console.log(menuWidth.value, menuHeight.value)
+
+      if (byElementPosition.value) {
+        updateMenuPosition()
+      }
     }, 10)
   }
+
+  const updateMenuPosition = () => {
+    const position = byElementPosition.value
+    byElementPosition.value = null
+    const el = byElement.value
+    if (!el) {
+      return
+    }
+    byElement.value = null
+
+    if (!el || !position) {
+      return
+    }
+    if (!menuRef.value || !menuRef.value.quickRootRef) {
+      return
+    }
+    const rect = el.getBoundingClientRect()
+    const viewportHeight = window.innerHeight
+    const viewportWidth = window.innerWidth
+
+    const mh = menuHeight.value
+    const mw = menuWidth.value
+
+    switch (position) {
+      case 'top':
+        xRef.value = rect.left + window.scrollX + rect.width / 2 - mw / 2 // 水平居中
+        yRef.value = rect.top + window.scrollY - mh // 垂直位置（减去菜单高度）
+        break
+      case 'top-left':
+        xRef.value = rect.left + window.scrollX // 水平位置（菜单在元素左上角）
+        yRef.value = rect.top + window.scrollY - mh // 垂直位置（减去菜单高度）
+        break
+      case 'top-right':
+        xRef.value = rect.right + window.scrollX - mw // 水平位置（菜单在元素右上角）
+        yRef.value = rect.top + window.scrollY - mh // 垂直位置（减去菜单高度）
+        break
+      case 'bottom':
+        xRef.value = rect.left + window.scrollX + rect.width / 2 - mw / 2 // 水平居中
+        yRef.value = rect.bottom + window.scrollY // 垂直位置（菜单在元素下方）
+        break
+      case 'bottom-left':
+        xRef.value = rect.left + window.scrollX // 水平位置（菜单在元素左下角）
+        yRef.value = rect.bottom + window.scrollY // 垂直位置（菜单在元素下方）
+        break
+      case 'bottom-right':
+        xRef.value = rect.right + window.scrollX - mw // 水平位置（菜单在元素右下角）
+        yRef.value = rect.bottom + window.scrollY // 垂直位置（菜单在元素下方）
+        break
+      case 'left':
+        xRef.value = rect.left + window.scrollX - mw // 水平位置（菜单在元素左侧）
+        yRef.value = rect.top + window.scrollY + rect.height / 2 - mh / 2 // 垂直居中
+        break
+      case 'right':
+        xRef.value = rect.right + window.scrollX // 水平位置（菜单在元素右侧）
+        yRef.value = rect.top + window.scrollY + rect.height / 2 - mh / 2 // 垂直居中
+        break
+    }
+
+    // 确保菜单不超出视口
+    if (yRef.value < 0) {
+      yRef.value = 0
+    } else if (yRef.value + mh > viewportHeight) {
+      yRef.value = viewportHeight - mh
+    }
+
+    if (xRef.value < 0) {
+      xRef.value = 0
+    } else if (xRef.value + mw > viewportWidth) {
+      xRef.value = viewportWidth - mw
+    }
+  }
+
   watch(isShow, (val) => {
     if (val) {
       updateMenuSize()
@@ -96,7 +203,9 @@ export const useContextMenu = (options: any = {}) => {
   })
 
   const showMenu = (event: MouseEvent) => {
-    isShow.value = false
+    if (isShow.value) {
+      isShow.value = false
+    }
     setTimeout(() => {
       xRef.value = event.clientX
       yRef.value = event.clientY
@@ -111,6 +220,10 @@ export const useContextMenu = (options: any = {}) => {
     isShow.value = true
   }
 
+  const hideMenu = () => {
+    isShow.value = false
+  }
+
   return {
     isShow,
     ctxMenuStyle,
@@ -122,6 +235,8 @@ export const useContextMenu = (options: any = {}) => {
     updateMenuSize,
     showMenu,
     showMenuByPoint,
+    showMenuByElement,
+    hideMenu,
   }
 }
 

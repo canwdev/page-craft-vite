@@ -32,7 +32,8 @@ const flagSrc = computed(() => {
 <template>
   <div class="cc-flag" :style="{width: size, height: size}" :title="cc">
     <img :src="flagSrc" v-if="flagSrc" :alt="cc" />
-    <i v-else class="fa fa-globe" aria-hidden="true"></i>
+
+    <span v-else class="mdi mdi-earth"></span>
   </div>
 </template>
 
@@ -48,6 +49,9 @@ const flagSrc = computed(() => {
     width: 100%;
     height: 100%;
     image-rendering: pixelated;
+  }
+  .mdi {
+    font-size: 14px;
   }
 }
 </style>

@@ -163,7 +163,7 @@ watch(toolboxFilterKey, () => {
         @click="locateSelectedPath()"
         :title="$t('i18n_tools.locate_translate_pa')"
       >
-        <i class="fa fa-crosshairs" aria-hidden="true"></i>
+        <span class="mdi mdi-target"></span>
       </button>
     </template>
 

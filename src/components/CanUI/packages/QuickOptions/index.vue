@@ -64,9 +64,13 @@ export default defineComponent({
 
     // 点击外部隐藏
     onClickOutside(quickRootRef, (event) => {
-      if (!isStatic.value) {
+      if (isStatic.value) {
+        return
+      }
+      if (mVisible.value) {
         setTimeout(() => {
           mVisible.value = false
+          emit('onClose')
         })
       }
     })
@@ -290,7 +294,7 @@ export default defineComponent({
 
 <template>
   <div
-    v-if="mVisible || isStatic"
+    v-show="mVisible || isStatic"
     class="quick-options"
     :class="{
       _static: isStatic,

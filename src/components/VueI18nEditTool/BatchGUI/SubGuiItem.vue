@@ -270,7 +270,7 @@ export default defineComponent({
         >
           <template #reference>
             <button class="btn-no-style" :title="$t('actions.delete')">
-              <i class="fa fa-trash-o"></i>
+              <span class="mdi mdi-delete"></span>
             </button>
           </template>
         </el-popconfirm>
@@ -301,9 +301,10 @@ export default defineComponent({
             @click="saveChange({isEmit: true, isSetValue: true})"
             title="Batch Save"
           >
-            <i class="fa fa-floppy-o" aria-hidden="true"></i>
+            <span class="mdi mdi-content-save"></span>
           </button>
           <button class="vp-button" @click="cancelChange">
+            <span class="mdi mdi-close"></span>
             {{ $t('actions.cancel') }}
           </button>
         </div>
@@ -314,7 +315,7 @@ export default defineComponent({
           class="vp-button primary"
           :title="`${$t('msgs.auto_paste')} Create (${i18nSetStore.autoPasteTextConvertMode})`"
         >
-          <i class="fa fa-clipboard" aria-hidden="true"></i>
+          <span class="mdi mdi-content-paste"></span>
         </button>
         <button class="vp-button primary" @click="createField('')">
           {{ $t('actions.create_text') }}

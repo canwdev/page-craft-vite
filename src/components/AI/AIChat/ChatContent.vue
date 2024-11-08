@@ -330,14 +330,14 @@ watch(
           <el-popover width="400" placement="top-start" trigger="click" :teleported="false">
             <template #reference>
               <button class="vp-button">
-                <i class="fa fa-cog" aria-hidden="true"></i>
+                <span class="mdi mdi-cog"></span>
               </button>
             </template>
             <OptionUI :option-list="aiSettingsOptions" />
           </el-popover>
 
           <button @click="scrollBottom()" class="vp-button">
-            <i class="fa fa-long-arrow-down" aria-hidden="true"></i>
+            <span class="mdi mdi-arrow-down"></span>
           </button>
         </div>
 
@@ -359,7 +359,8 @@ watch(
           </el-popconfirm>
 
           <button v-if="isLoading" class="vp-button" @click="handleStop">
-            <i class="fa fa-stop" aria-hidden="true"></i>
+            <span class="mdi mdi-stop-circle-outline"></span>
+
             {{ $t('ai.stop_generation') }}
           </button>
 
@@ -369,7 +370,7 @@ watch(
             :disabled="isLoading || !userInputContent"
             @click="sendAiRequest()"
           >
-            <i class="fa fa-play" aria-hidden="true"></i>
+            <span class="mdi mdi-send"></span>
             {{ $t('actions.send') }}
           </button>
         </div>
@@ -415,6 +416,9 @@ watch(
       width: 100%;
       box-sizing: border-box;
     }
+  }
+  .mdi {
+    font-size: 14px;
   }
 }
 </style>

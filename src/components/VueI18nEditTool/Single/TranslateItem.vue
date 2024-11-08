@@ -176,7 +176,7 @@ export default defineComponent({
       >
         <template #reference>
           <button class="vp-button" :title="$t('actions.delete')">
-            <i class="fa fa-trash-o"></i>
+            <span class="mdi mdi-delete"></span>
           </button>
         </template>
       </el-popconfirm>

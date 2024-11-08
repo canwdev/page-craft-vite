@@ -192,7 +192,7 @@ export default defineComponent({
           <el-popconfirm :title="$t('msgs.confirm_reset_toolba')" @confirm="resetToolbar">
             <template #reference>
               <button class="vp-button">
-                <i class="fa fa-refresh" aria-hidden="true"></i>
+                <span class="mdi mdi-refresh"></span>
               </button>
             </template>
           </el-popconfirm>
@@ -204,7 +204,7 @@ export default defineComponent({
             @click="settingsStore.showInventory = !settingsStore.showInventory"
             title="(alt+a)"
           >
-            <i class="fa fa-archive" aria-hidden="true"></i>
+            <span class="mdi mdi-archive"></span>
             {{ $t('common.inventory') }}
           </button>
 
@@ -215,7 +215,7 @@ export default defineComponent({
             :class="{primary: mainStore.isShowQuickLaunch}"
             @click="mainStore.isShowQuickLaunch = !mainStore.isShowQuickLaunch"
           >
-            <i class="fa fa-wrench" aria-hidden="true"></i> {{ $t('common.toolbox') }}
+            <span class="mdi mdi-toolbox"></span> {{ $t('common.toolbox') }}
           </button>
         </div>
       </div>

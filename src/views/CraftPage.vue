@@ -98,7 +98,8 @@ useGlobalBusOn(GlobalEvents.ON_ADD_STYLE, (arg) => {
         @click="settingsStore.showStyleEditor = !settingsStore.showStyleEditor"
         title="(alt+s)"
       >
-        <i class="fa fa-paint-brush" aria-hidden="true"></i> {{ $t('common.style') }}
+        <span class="mdi mdi-format-paint"></span>
+        {{ $t('common.style') }}
       </button>
       <template #end> </template>
     </ToolBar>

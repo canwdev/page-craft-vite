@@ -73,10 +73,10 @@ export default defineComponent({
     <template #titleBarRightControls>
       <button @click="settingsStore.isInvDocked = !settingsStore.isInvDocked">
         <template v-if="!settingsStore.isInvDocked">
-          <i class="fa fa-caret-square-o-down" aria-hidden="true"></i>
+          <span class="mdi mdi-dock-bottom"></span>
         </template>
         <template v-else>
-          <i class="fa fa-caret-square-o-up" aria-hidden="true"></i>
+          <span class="mdi mdi-dock-window"></span>
         </template>
       </button>
     </template>

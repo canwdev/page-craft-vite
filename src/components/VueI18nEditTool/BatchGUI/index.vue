@@ -20,7 +20,10 @@ useGlobalBusOn(GlobalEvents.I18N_BATCH_GUI_GET_SUBS, (resolve) => {
         {{ i18nMainStore.translatePath }}
       </span>
       <div class="flex-row-center-gap">
-        <span><i class="fa fa-copy"></i> :</span>
+        <span>
+          <span class="mdi mdi-content-copy"></span>
+          :</span
+        >
         <CopyButtons ref="cpButtonsRef" :content="i18nMainStore.translatePath" />
       </div>
     </div>

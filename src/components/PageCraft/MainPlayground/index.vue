@@ -183,7 +183,7 @@ const doImportAction = () => {
             :title="`${settingsStore.curCompInStore?.basePath}
 ${settingsStore.curCompInStore?.title}`"
           >
-            <i class="fa fa-code" aria-hidden="true"></i>
+            <span class="mdi mdi-xml"></span>
             {{ settingsStore.curCompInStore?.title?.slice(0, 10) || 'Default' }}
           </button>
         </DropdownMenu>
@@ -191,7 +191,7 @@ ${settingsStore.curCompInStore?.title}`"
         <el-popover width="180" trigger="hover">
           <template #reference>
             <button class="vp-button">
-              <i class="fa fa-cog" aria-hidden="true"></i>
+              <span class="mdi mdi-cog"></span>
               {{ $t('common.options') }}
             </button>
           </template>
@@ -202,7 +202,7 @@ ${settingsStore.curCompInStore?.title}`"
               <template v-if="item.desc">
                 <el-popover trigger="hover">
                   <template #reference>
-                    <i class="fa fa-question-circle-o" aria-hidden="true"></i>
+                    <span class="mdi mdi-help-circle-outline"></span>
                   </template>
                   <span style="font-size: 14px">{{ item.desc }}</span>
                 </el-popover>
@@ -231,7 +231,7 @@ ${settingsStore.curCompInStore?.title}`"
           :disabled="!undoRedo.undoStack.length"
           @click="handleUndo"
         >
-          <i class="fa fa-undo" aria-hidden="true"></i>
+          <span class="mdi mdi-undo-variant"></span>
         </button>
         <button
           class="vp-button"
@@ -239,7 +239,7 @@ ${settingsStore.curCompInStore?.title}`"
           :disabled="!undoRedo.redoStack.length"
           @click="handleRedo"
         >
-          <i class="fa fa-repeat" aria-hidden="true"></i>
+          <span class="mdi mdi-redo-variant"></span>
         </button>
       </div>
 
@@ -283,4 +283,9 @@ ${settingsStore.curCompInStore?.title}`"
 
 <style lang="scss">
 @import './main-playground';
+.mc-toolbar-above {
+  .mdi {
+    font-size: 14px;
+  }
+}
 </style>

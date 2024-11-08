@@ -81,7 +81,7 @@ onMounted(() => {
             @click="goBack"
             title="Back"
           >
-            <i class="fa fa-chevron-left" aria-hidden="true"></i>
+            <span class="mdi mdi-arrow-left"></span>
           </button>
           <button
             :disabled="forwardHistory.length <= 0"
@@ -89,10 +89,10 @@ onMounted(() => {
             @click="goForward"
             title="Forward"
           >
-            <i class="fa fa-chevron-right" aria-hidden="true"></i>
+            <span class="mdi mdi-arrow-right"></span>
           </button>
           <button class="btn-action vp-button" :disabled="!allowUp" @click="goUp" title="Up">
-            <i class="fa fa-level-up" aria-hidden="true"></i>
+            <span class="mdi mdi-arrow-up"></span>
           </button>
         </div>
         <div class="input-wrap">
@@ -103,14 +103,14 @@ onMounted(() => {
           />
 
           <button class="vp-button btn-action" @click="handleRefresh">
-            <i class="fa fa-refresh" aria-hidden="true"></i>
+            <span class="mdi mdi-refresh"></span>
           </button>
           <button class="vp-button btn-action" @click="toggleStar">
             <template v-if="isStared">
-              <i class="fa fa-star" aria-hidden="true"></i>
+              <span class="mdi mdi-star"></span>
             </template>
             <template v-else>
-              <i class="fa fa-star-o" aria-hidden="true"></i>
+              <span class="mdi mdi-star-outline"></span>
             </template>
           </button>
         </div>
@@ -149,6 +149,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   position: relative;
+  outline: none;
 
   .vp-button {
     line-height: 1;
@@ -188,15 +189,17 @@ onMounted(() => {
         flex-wrap: wrap;
         flex: 1;
         gap: 4px;
+        font-size: 14px;
 
         .input-addr {
           flex: 1;
           line-height: 1;
-          padding: 4px 6px;
+          padding: 6px 8px;
         }
         .input-filter {
           width: 100px;
           line-height: 1;
+          padding: 6px 8px;
         }
       }
     }
@@ -211,6 +214,19 @@ onMounted(() => {
     flex: 1;
     overflow: auto;
     display: flex;
+  }
+
+  .btn-action {
+    display: inline-flex;
+    cursor: pointer;
+    font-size: 18px;
+    &:disabled {
+      cursor: not-allowed;
+    }
+    &:hover,
+    &:focus {
+      background-color: $primary_opacity;
+    }
   }
 }
 </style>

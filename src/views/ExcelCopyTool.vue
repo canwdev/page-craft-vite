@@ -396,7 +396,7 @@ export default defineComponent({
 
             <DropdownMenu v-if="workbookRef" :options="dropdownMenuOptions" :disabled="!isReady">
               <button class="vp-button">
-                <i class="fa fa-download" aria-hidden="true"></i>
+                <span class="mdi mdi-download"></span>
                 {{ $t('actions.export') }}
               </button>
             </DropdownMenu>

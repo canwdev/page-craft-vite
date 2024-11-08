@@ -52,7 +52,7 @@ const handleChoose = async () => {
 <template>
   <div class="image-picker">
     <button class="vp-button" :disabled="disabled" @click="handleChoose" title="Upload image...">
-      <i class="fa fa-file-image-o" aria-hidden="true"></i>
+      <span class="mdi mdi-image"></span>
     </button>
     <div class="image-list">
       <div v-for="(image, index) in images" :key="index" class="image-item vp-panel">
@@ -69,6 +69,10 @@ const handleChoose = async () => {
   gap: 4px;
   flex-wrap: wrap;
   align-items: center;
+
+  .mdi {
+    font-size: 14px;
+  }
 
   .image-list {
     display: flex;

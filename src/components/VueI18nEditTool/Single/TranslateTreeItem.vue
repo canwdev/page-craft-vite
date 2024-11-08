@@ -237,7 +237,7 @@ export default defineComponent({
       <div class="actions-buttons-wrap vp-button-group">
         <template v-if="!isLite">
           <button class="vp-button" @click="handleGetJSON" :title="`${$t('actions.copy')} JSON`">
-            <i class="fa fa-copy"></i>
+            <span class="mdi mdi-content-copy"></span>
           </button>
 
           <el-popconfirm
@@ -248,13 +248,14 @@ export default defineComponent({
           >
             <template #reference>
               <button class="vp-button danger" :title="$t('msgs.remove_group')">
-                <i class="fa fa-trash-o"></i>
+                <span class="mdi mdi-delete"></span>
               </button>
             </template>
           </el-popconfirm>
         </template>
         <button @click="toggleExpand" :title="`Toggle Expand`" class="vp-button">
-          {{ !isExpand ? '▼' : '▲' }}
+          <span v-if="isExpand" class="mdi mdi-chevron-up"></span>
+          <span v-else class="mdi mdi-chevron-down"></span>
         </button>
       </div>
     </div>
@@ -277,7 +278,7 @@ export default defineComponent({
       <div class="actions-wrap">
         <div class="actions-buttons-wrap vp-button-group" v-if="!isLite">
           <button title="Add translate item" @click="handleAddTranslate" class="vp-button">
-            <i class="fa fa-plus"></i>
+            <span class="mdi mdi-plus"></span>
             {{ $t('common.field') }}
           </button>
           <button
@@ -285,7 +286,8 @@ export default defineComponent({
             :title="$t('msgs.auto_paste_and_copy') + ` (${i18nSetStore.autoPasteTextConvertMode})`"
             class="vp-button primary js_focus_auto_action"
           >
-            <i class="fa fa-clipboard" aria-hidden="true"></i>
+            <span class="mdi mdi-content-paste"></span>
+
             {{ $t('msgs.auto_paste') }}
             <span
               v-if="settingsStore.enableFocusAutoAction"
@@ -323,7 +325,7 @@ export default defineComponent({
             title="Add translate children group"
             class="vp-button primary"
           >
-            <i class="fa fa-plus-square" aria-hidden="true"></i>
+            <span class="mdi mdi-plus-box"></span>
             {{ $t('common.group') }}
           </button>
         </div>

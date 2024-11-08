@@ -120,66 +120,92 @@ const {handleOpenLocalDir, localDirHistoryOptions} = useLocalDir({emit})
     <div class="explorer-actions vp-panel">
       <div class="action-group">
         <button
-          class="vp-button"
+          class="btn-action btn-no-style"
           @click="handleCreateComponent()"
           :title="$t('actions.add_component')"
         >
-          <i class="fa fa-plus icon-small-abs" aria-hidden="true"></i>
-          <i class="fa fa-file-o" aria-hidden="true"></i>
+          <span class="mdi mdi-file-document-plus-outline"></span>
         </button>
-        <button class="vp-button" @click="handleCreateFolder" title="Create Folder">
-          <i class="fa fa-plus icon-small-abs" aria-hidden="true"></i>
-          <i class="fa fa-folder-o" aria-hidden="true"></i>
+        <button class="btn-action btn-no-style" @click="handleCreateFolder" title="Create Folder">
+          <span class="mdi mdi-folder-plus-outline"></span>
         </button>
 
         <div class="split-line"></div>
 
-        <button class="vp-button" :disabled="!enableAction" @click="handleCut" title="Cut">
-          <i class="fa fa-scissors" aria-hidden="true"></i>
+        <button
+          class="btn-action btn-no-style"
+          :disabled="!enableAction"
+          @click="handleCut"
+          title="Cut"
+        >
+          <span class="mdi mdi-content-cut"></span>
         </button>
-        <button class="vp-button" :disabled="!enableAction" @click="handleCopy" title="Copy">
-          <i class="fa fa-files-o" aria-hidden="true"></i>
+        <button
+          class="btn-action btn-no-style"
+          :disabled="!enableAction"
+          @click="handleCopy"
+          title="Copy"
+        >
+          <span class="mdi mdi-content-copy"></span>
         </button>
-        <button class="vp-button" :disabled="!enablePaste" @click="handlePaste" title="Paste">
-          <i class="fa fa-clipboard" aria-hidden="true"></i>
+        <button
+          class="btn-action btn-no-style"
+          :disabled="!enablePaste"
+          @click="handlePaste"
+          title="Paste"
+        >
+          <span class="mdi mdi-content-copy"></span>
         </button>
 
         <button
-          class="vp-button"
+          class="btn-action btn-no-style"
           :disabled="selectedItems.length !== 1"
           @click="handleRename"
           title="Rename"
         >
-          <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+          <span class="mdi mdi-rename"></span>
         </button>
-        <button class="vp-button" :disabled="!enableAction" @click="confirmDelete" title="Delete">
-          <i class="fa fa-trash-o" aria-hidden="true"></i>
+        <button
+          class="btn-action btn-no-style"
+          :disabled="!enableAction"
+          @click="confirmDelete"
+          title="Delete"
+        >
+          <span class="mdi mdi-delete-forever-outline"></span>
         </button>
 
         <div class="split-line"></div>
 
         <DropdownMenu :options="localDirHistoryOptions">
-          <button class="vp-button" title="Open Local Folder" @click="handleOpenLocalDir">
-            <i class="fa fa-folder-open-o" aria-hidden="true"></i>
+          <button
+            class="btn-action btn-no-style"
+            title="Open Local Folder"
+            @click="handleOpenLocalDir"
+          >
+            <span class="mdi mdi-folder-open-outline"></span>
           </button>
         </DropdownMenu>
       </div>
       <div class="action-group">
         <div class="action-button-wrap">
-          <button class="vp-button" title="Toggle Sort" @click="showSortMenu = true">
-            <i class="fa fa-sort" aria-hidden="true"></i>
+          <button class="btn-action btn-no-style" title="Toggle Sort" @click="showSortMenu = true">
+            <span class="mdi mdi-sort-alphabetical-variant"></span>
           </button>
           <transition name="fade-scale">
             <QuickOptions v-model:visible="showSortMenu" :options="sortOptions" />
           </transition>
         </div>
 
-        <button class="vp-button" @click="toggleSelectAll" title="Toggle Select All">
-          <i class="fa fa-check-square-o" aria-hidden="true"></i>
+        <button class="btn-action btn-no-style" @click="toggleSelectAll" title="Toggle Select All">
+          <span class="mdi mdi-check-all"></span>
         </button>
 
-        <button class="vp-button" @click="($event) => handleShowCtxMenu(null, $event)" title="Menu">
-          <i class="fa fa-bars" aria-hidden="true"></i>
+        <button
+          class="btn-action btn-no-style"
+          @click="($event) => handleShowCtxMenu(null, $event)"
+          title="Menu"
+        >
+          <span class="mdi mdi-menu"></span>
         </button>
       </div>
     </div>
@@ -241,6 +267,8 @@ const {handleOpenLocalDir, localDirHistoryOptions} = useLocalDir({emit})
     border: none;
     box-shadow: none;
     border-radius: 0;
+    border-bottom: 1px solid $color_border;
+
     .action-group {
       display: flex;
       gap: 4px;
@@ -251,16 +279,24 @@ const {handleOpenLocalDir, localDirHistoryOptions} = useLocalDir({emit})
         margin-left: 2px;
         margin-right: 2px;
       }
-      .vp-button {
+      .btn-action {
         display: inline-flex;
-        padding: 4px 6px;
         position: relative;
+        font-size: 18px;
+        border: none;
+        padding: 2px 4px;
+
         .icon-small-abs {
           font-size: 12px;
           position: absolute;
           left: 50%;
           top: 60%;
           transform: translate(-50%, -50%) scale(0.6);
+        }
+
+        &:hover,
+        &:focus {
+          background-color: $primary_opacity;
         }
       }
       .action-button-wrap {

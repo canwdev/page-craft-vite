@@ -81,5 +81,9 @@ export default defineComponent({
   .page-craft-root {
     background-color: #181818;
   }
+
+  .mdi {
+    font-size: 18px;
+  }
 }
 </style>

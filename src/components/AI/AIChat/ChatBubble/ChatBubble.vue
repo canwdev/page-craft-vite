@@ -98,10 +98,10 @@ const scrollToBottom = () => {
 
         <div class="btn-jump-wrap">
           <button class="btn-no-style btn-jump" @click="scrollToTop">
-            <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+            <span class="mdi mdi-chevron-up"></span>
           </button>
           <button class="btn-no-style btn-jump" @click="scrollToBottom">
-            <i class="fa fa-angle-double-down" aria-hidden="true"></i>
+            <span class="mdi mdi-chevron-down"></span>
           </button>
         </div>
       </div>
@@ -251,9 +251,12 @@ const scrollToBottom = () => {
       margin-top: 10px;
       display: flex;
       justify-content: center;
-      gap: 8px;
+      gap: 4px;
       opacity: 0;
       transition: all 0.3s;
+      .mdi {
+        font-size: 14px;
+      }
     }
     &:hover {
       .btn-jump-wrap {

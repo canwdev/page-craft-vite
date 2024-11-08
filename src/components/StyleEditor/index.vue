@@ -304,7 +304,7 @@ defineExpose({
     }"
   >
     <template #titleBarLeft>
-      <i class="fa fa-paint-brush" aria-hidden="true"></i> {{ $t('common.style_editor') }}
+      <span class="mdi mdi-format-paint"></span> {{ $t('common.style_editor') }}
       (scss)
     </template>
     <template #titleBarRightControls>
@@ -313,24 +313,24 @@ defineExpose({
         :class="{active: isSelecting}"
         @click.stop.prevent="isSelecting = !isSelecting"
       >
-        <i class="fa fa-mouse-pointer" aria-hidden="true"></i>
+        <span class="mdi mdi-button-cursor"></span>
       </button>
       <button
         @click="isShowQuickOptions = !isShowQuickOptions"
         :title="$t('actions.add_tool_codes')"
       >
-        <i class="fa fa-list" aria-hidden="true"></i>
+        <span class="mdi mdi-menu"></span>
       </button>
 
       <button
         :title="$t('actions.beautify_code') + ' (ctrl+shift+f)'"
         @click="execBeautifyCssAction"
       >
-        <i class="fa fa-css3" aria-hidden="true"></i>
+        <span class="mdi mdi-code-braces"></span>
       </button>
 
       <button :title="$t('actions.copy_code') + ' (ctrl+a ctrl+c)'" @click="copyStyle">
-        <i class="fa fa-files-o" aria-hidden="true"></i>
+        <span class="mdi mdi-content-copy"></span>
       </button>
     </template>
 
@@ -411,7 +411,6 @@ defineExpose({
     display: flex;
     flex-direction: column;
     .style-editor-action-bar {
-      height: 31px;
     }
 
     .code-editor-placeholder {
