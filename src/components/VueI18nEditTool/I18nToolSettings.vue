@@ -5,7 +5,6 @@ import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {StOptionItem, StOptionType} from '@/components/CanUI/packages/OptionUI/enum'
 import {useI18nToolSettingsStore} from '@/components/VueI18nEditTool/store/i18n-tool-settings'
 import {TextConvertMode, TextConvertOptions} from '@/utils/mc-utils/text-convert'
-import {useCommonSettings} from '@/components/SystemSettings/use-common-settings'
 import OptionUI from '@/components/CanUI/packages/OptionUI/index.vue'
 
 export default defineComponent({
@@ -22,8 +21,6 @@ export default defineComponent({
     const {t: $t} = useI18n()
     const mVisible = useModelWrapper(props, emit, 'visible')
     const i18nSetStore = useI18nToolSettingsStore()
-
-    const {commonSettingsOptions} = useCommonSettings()
 
     const optionList = computed((): StOptionItem[] => {
       return [
@@ -101,7 +98,6 @@ export default defineComponent({
             },
           ],
         },
-        ...commonSettingsOptions.value,
       ]
     })
 
@@ -114,13 +110,5 @@ export default defineComponent({
 </script>
 
 <template>
-  <el-dialog
-    v-model="mVisible"
-    width="500"
-    top="10vh"
-    draggable
-    :title="$t('common.i18njson_batch_tool') + ' ' + $t('common.settings')"
-  >
-    <OptionUI :option-list="optionList" />
-  </el-dialog>
+  <OptionUI :option-list="optionList" />
 </template>

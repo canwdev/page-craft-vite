@@ -8,20 +8,13 @@ import {useBeforeUnload, useSaveShortcut} from '@/hooks/use-beforeunload'
 import {useMainStore} from '@/store/main'
 import {useI18n} from 'vue-i18n'
 import I18nToolSettings from '@/components/VueI18nEditTool/I18nToolSettings.vue'
-import {useIDBKeyval} from '@vueuse/integrations/useIDBKeyval'
 import {LsKeys} from '@/enum/page-craft'
-import {guid} from '@/utils'
-import {QuickOptionItem} from '@/components/CanUI/packages/QuickOptions/enum'
-import QuickOptions from '@/components/CanUI/packages/QuickOptions/index.vue'
-import {
-  FileHandleHistory,
-  useOpenedHistory,
-  verifyPermission,
-} from '@/components/VueI18nEditTool/file-history'
-import moment from 'moment'
+import {useOpenedHistory} from '@/components/VueI18nEditTool/file-history'
 import {handleReadSelectedFile} from '@/utils/mc-utils/io'
 import CommonNavbar from '@/components/CommonUI/CommonNavbar.vue'
 import DropdownMenu from '@/components/CanUI/packages/OptionUI/Tools/DropdownMenu.vue'
+import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
+import {SettingsTabType} from '@/enum/settings'
 
 const filePickerOptions = {
   types: [
@@ -38,7 +31,6 @@ export default defineComponent({
   components: {
     DropdownMenu,
     CommonNavbar,
-    QuickOptions,
     I18nToolSettings,
     TranslateTreeItem,
     DropZone,
@@ -171,8 +163,6 @@ export default defineComponent({
       return !!fileHandle.value
     })
 
-    const isShowToolSettings = ref(false)
-
     const loadDemo = () => {
       translateTreeRoot.value = I18nJsonObjUtils.parseWithRoot({
         hello_world: {
@@ -192,6 +182,9 @@ export default defineComponent({
       })
     }
 
+    const handleSettings = () => {
+      globalEventBus.emit(GlobalEvents.OPEN_SETTINGS, SettingsTabType.I18N)
+    }
     return {
       translateTreeRoot,
       fileHandle,
@@ -205,9 +198,9 @@ export default defineComponent({
         cb: handleFileDrop,
       }),
       mainStore,
-      isShowToolSettings,
       isLoading,
       historyMenuOptions,
+      handleSettings,
     }
   },
 })
@@ -228,7 +221,7 @@ export default defineComponent({
     <CommonNavbar>
       <template #extra>
         <div class="flex-row-center-gap">
-          <button class="vp-button" @click="isShowToolSettings = true">
+          <button class="vp-button" @click="handleSettings()">
             {{ $t('common.settings') }}
           </button>
 
@@ -284,8 +277,6 @@ export default defineComponent({
         <div class="height-placeholder"></div>
       </div>
     </div>
-
-    <I18nToolSettings v-model:visible="isShowToolSettings" />
   </div>
 </template>
 

@@ -18,3 +18,9 @@ export const ldThemeOptions = [
     value: LdThemeType.DARK,
   },
 ]
+
+export enum SettingsTabType {
+  COMMON,
+  AI,
+  I18N,
+}

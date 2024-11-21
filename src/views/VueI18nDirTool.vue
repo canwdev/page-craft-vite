@@ -16,7 +16,6 @@ import TranslateTreeItem from '@/components/VueI18nEditTool/Single/TranslateTree
 import {useMainStore} from '@/store/main'
 import {useI18n} from 'vue-i18n'
 import {useI18nToolSettingsStore} from '@/components/VueI18nEditTool/store/i18n-tool-settings'
-import I18nToolSettings from '@/components/VueI18nEditTool/I18nToolSettings.vue'
 import BatchJson from '@/components/VueI18nEditTool/BatchJson/index.vue'
 import {useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
 import {useStorage} from '@vueuse/core'
@@ -33,6 +32,7 @@ import RectSwitch from '@/components/CanUI/packages/OptionUI/Tools/RectSwitch.vu
 import FoldableSidebarLayout from '@/components/CanUI/packages/Layouts/FoldableSidebarLayout.vue'
 import {TreeNode} from 'element-plus'
 import {TreeNodeData} from 'element-plus/es/components/tree-v2/src/types'
+import {SettingsTabType} from '@/enum/settings'
 
 const formatDirTreeItem = (data: any = {}): DirTreeItem => {
   return {
@@ -362,8 +362,6 @@ useBeforeUnload(() => {
   return !!dirHandle.value
 })
 
-const isShowToolSettings = ref(false)
-
 const {handleKeyClick, removeSelectedClass} = useGuiToolbox()
 
 const reloadCurrentEditEntry = async () => {
@@ -398,6 +396,10 @@ const handleNodeClick = async (data: DirTreeItem, node: TreeNode, e: MouseEvent)
 const {showDropzone, fileDragover, fileDrop} = useFileDrop({
   cb: handleFileDrop,
 })
+
+const handleSettings = () => {
+  globalEventBus.emit(GlobalEvents.OPEN_SETTINGS, SettingsTabType.I18N)
+}
 </script>
 
 <template>
@@ -415,7 +417,7 @@ const {showDropzone, fileDragover, fileDrop} = useFileDrop({
     <CommonNavbar>
       <template #extra>
         <div class="flex-row-center-gap">
-          <button class="vp-button" @click="isShowToolSettings = true">
+          <button class="vp-button" @click="handleSettings">
             {{ $t('common.settings') }}
           </button>
 
@@ -591,8 +593,6 @@ const {showDropzone, fileDragover, fileDrop} = useFileDrop({
         </div>
       </template>
     </FoldableSidebarLayout>
-
-    <I18nToolSettings v-model:visible="isShowToolSettings" />
   </div>
 </template>
 

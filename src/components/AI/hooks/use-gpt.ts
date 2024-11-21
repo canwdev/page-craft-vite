@@ -1,22 +1,17 @@
 import {useAiSettingsStore} from '@/components/AI/hooks/ai-settings'
-import {
-  ChatCompletion,
-  ChatModel,
-  openAIChatModelOptions,
-  GptMessage,
-  OpenAIApiErrorCodeMessage,
-} from '@/components/AI/types/openai'
-import {useMainStore} from '@/store/main'
+import {OpenAIApiErrorCodeMessage} from '@/components/AI/types/models'
 import {blinkPanel} from '@/utils/anim'
+import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
+import {SettingsTabType} from '@/enum/settings'
+import {OpenAIChatCompletion, GptMessage} from '@/components/AI/types/open-ai'
 
-export const useGpt = () => {
+export const useOpenAI_GPT = () => {
   const aisStore = useAiSettingsStore()
-  const mainStore = useMainStore()
 
   const openAiSettings = () => {
-    mainStore.isShowSettings = true
+    globalEventBus.emit(GlobalEvents.OPEN_SETTINGS, SettingsTabType.AI)
     setTimeout(() => {
-      const aiPanel = document.querySelector('.system-settings .c-panel-item[data-key="ai"]')
+      const aiPanel = document.querySelector('.system-settings .content-wrap')
       if (!aiPanel) {
         return
       }
@@ -29,12 +24,12 @@ export const useGpt = () => {
    * https://platform.openai.com/docs/api-reference/chat/create
    * @param params 任意覆盖参数
    * @param streamCallback 流式回调
+   * @param fetchOptions fetch 覆盖参数
    */
-  const requestChatCompletion = async (
+  const requestChatStream = async (
     params: any = {},
     streamCallback?: (text: string) => void,
-    // fetch 覆盖参数
-    options: any = {},
+    fetchOptions: any = {},
   ) => {
     const apiProxy = aisStore.openAiApiProxy || 'https://api.openai.com/v1'
 
@@ -54,7 +49,7 @@ export const useGpt = () => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(params),
-      ...options,
+      ...fetchOptions,
     })
 
     const errorMessage = OpenAIApiErrorCodeMessage[response.status]
@@ -75,6 +70,7 @@ export const useGpt = () => {
       const decoder = new TextDecoder('utf-8')
       const result = ''
 
+      // eslint-disable-next-line no-constant-condition
       while (true) {
         const {done, value} = await reader.read()
         if (done) break
@@ -109,30 +105,25 @@ export const useGpt = () => {
       return result
     }
 
-    // 正常POST返回 ChatCompletion
+    // 正常POST返回 OpenAIChatCompletion
     const data = await response.json()
-    return data as ChatCompletion
+    return data as OpenAIChatCompletion
   }
 
   // 封装，直接获取AI回答
-  const requestAiChatMessage = async (messages: GptMessage[], optionsOverride: any = {}) => {
-    const completion = (await requestChatCompletion({
+  const requestChatMessage = async (messages: GptMessage[], optionsOverride: any = {}) => {
+    const completion = (await requestChatStream({
       messages,
       stream: false,
       ...optionsOverride,
-    })) as ChatCompletion
+    })) as OpenAIChatCompletion
     const message: GptMessage = completion.choices[0]?.message || {}
     // console.log('message', message)
     return message.content || ''
   }
 
-  const canUseVision = (model) => {
-    return openAIChatModelOptions.find((i) => i.value === model)?.vision || false
-  }
-
   return {
-    requestChatCompletion,
-    requestAiChatMessage,
-    canUseVision,
+    requestChatStream,
+    requestChatMessage,
   }
 }

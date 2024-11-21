@@ -1,5 +1,5 @@
-import {GptMessage} from '@/components/AI/types/openai'
 import {IMessageContent, IMessageItem} from '@/components/AI/types/ai'
+import {GptMessage} from '@/components/AI/types/open-ai'
 
 /**
  * 获取json批量翻译提示词

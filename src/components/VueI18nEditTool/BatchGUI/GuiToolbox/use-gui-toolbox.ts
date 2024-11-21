@@ -1,10 +1,10 @@
 import {BatchListItem, useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
-import {useGpt} from '@/components/AI/hooks/use-gpt'
-import {ChatCompletion, GptMessage} from '@/components/AI/types/openai'
+import {useOpenAI_GPT} from '@/components/AI/hooks/use-gpt'
 import {readClipboardData} from '@/utils'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {useI18n} from 'vue-i18n'
 import {useBatchTranslateAnalyser} from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox/use-analyser'
+import {OpenAIChatCompletion, GptMessage} from '@/components/AI/types/open-ai'
 
 export type PasteResult = {
   // iso，如 en-US

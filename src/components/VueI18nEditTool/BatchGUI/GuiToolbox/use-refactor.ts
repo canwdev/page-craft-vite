@@ -1,5 +1,4 @@
-import {useGpt} from '@/components/AI/hooks/use-gpt'
-import {ChatCompletion, GptMessage} from '@/components/AI/types/openai'
+import {useOpenAI_GPT} from '@/components/AI/hooks/use-gpt'
 import {
   PasteResult,
   useGuiToolbox,
@@ -7,6 +6,7 @@ import {
 import {useI18n} from 'vue-i18n'
 import {useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
 import {promptBatchJsonTranslator} from '@/components/AI/utils/prompts'
+import {OpenAIChatCompletion, GptMessage} from '@/components/AI/types/open-ai'
 
 export const useBatchTranslateRefactor = (emit) => {
   const {t: $t} = useI18n()
@@ -64,7 +64,7 @@ export const useBatchTranslateRefactor = (emit) => {
     await doRename(newTranslatePath)
   }
 
-  const {requestAiChatMessage} = useGpt()
+  const {requestChatMessage} = useOpenAI_GPT()
   /**
    * 自动翻译右侧空缺的字段
    */
@@ -105,7 +105,8 @@ export const useBatchTranslateRefactor = (emit) => {
         return ret
       }
 
-      const message = await requestAiChatMessage(buildAiPrompt())
+      // TODO
+      const message = await requestChatMessage(buildAiPrompt())
       console.log('message', message)
       const content = JSON.parse(message)
       await pasteJsonOverrideRight(content)

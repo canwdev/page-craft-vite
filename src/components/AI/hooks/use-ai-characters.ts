@@ -2,8 +2,13 @@
 import {createGlobalState} from '@vueuse/core'
 import {useIDBKeyval} from '@vueuse/integrations/useIDBKeyval'
 import {IAiCharacter, IChatHistoryItem} from '@/components/AI/types/ai'
-import iconAi from '@/assets/textures/chat-gpt-logo.svg'
-import {ChatModel} from '@/components/AI/types/openai'
+import iconOpenAI from '@/assets/textures/chat-gpt-logo.svg'
+import iconAnthropic from '@/assets/textures/anthropic.svg'
+import {
+  anthropicChatModelOptions,
+  AIProvider,
+  openAIChatModelOptions,
+} from '@/components/AI/types/models'
 import {useAiSettingsStore} from '@/components/AI/hooks/ai-settings'
 
 /**
@@ -31,8 +36,18 @@ const useAiIdbState = createGlobalState(() => {
         id: 'default',
         name: 'ChatGPT',
         desc: '',
-        avatar: iconAi,
-        model: ChatModel.GPT4oMini,
+        avatar: iconOpenAI,
+        provider: AIProvider.OPEN_AI,
+        model: openAIChatModelOptions[0].value,
+        systemPrompt: 'You are a helpful assistant.',
+      },
+      {
+        id: 'claude',
+        name: 'Claude AI',
+        desc: '',
+        avatar: iconAnthropic,
+        provider: AIProvider.ANTHROPIC,
+        model: anthropicChatModelOptions[0].value,
         systemPrompt: 'You are a helpful assistant.',
       },
     ],

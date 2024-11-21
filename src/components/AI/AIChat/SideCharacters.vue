@@ -3,13 +3,11 @@ import {StOptionItem} from '@/components/CanUI/packages/OptionUI/enum'
 import OptionUI from '@/components/CanUI/packages/OptionUI/index.vue'
 import {IAiCharacter} from '@/components/AI/types/ai'
 import {
-  ChatModel,
   openAIChatModelOptions,
-  ChatProvider,
+  AIProvider,
   chatProviderOptions,
-  anthropicChatModelOptions,
   getModelOptions,
-} from '@/components/AI/types/openai'
+} from '@/components/AI/types/models'
 
 import iconUser from '@/assets/textures/user.png?url'
 import {useAiSettingsStore} from '@/components/AI/hooks/ai-settings'
@@ -36,8 +34,8 @@ const formatEditingData = (data: any = {}) => {
     name: data.name || '',
     desc: data.desc || '',
     avatar: data.avatar || '',
-    provider: data.provider || ChatProvider.OPEN_AI,
-    model: data.model || ChatModel.GPT4oMini,
+    provider: data.provider || AIProvider.OPEN_AI,
+    model: data.model || openAIChatModelOptions[0].value,
     systemPrompt: data.systemPrompt || '',
   }
 }

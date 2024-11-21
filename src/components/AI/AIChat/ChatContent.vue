@@ -1,26 +1,24 @@
 <script setup lang="ts">
-import OptionUI from '@/components/CanUI/packages/OptionUI/index.vue'
-import {IMessageContent, IMessageItem} from '@/components/AI/types/ai'
+import {IMessageItem} from '@/components/AI/types/ai'
 import '@/styles/markdown/github-markdown.css'
 import '@/styles/markdown/github-markdown-dark.css'
 import {useMainStore} from '@/store/main'
 import ChatItem from '@/components/AI/AIChat/ChatBubble/ChatBubble.vue'
-import {useStorage, useThrottleFn} from '@vueuse/core'
-import {useAiSettings} from '@/components/AI/hooks/use-ai-settings'
+import {useThrottleFn} from '@vueuse/core'
 import {useAiSettingsStore} from '@/components/AI/hooks/ai-settings'
-import {useGpt} from '@/components/AI/hooks/use-gpt'
 import {useI18n} from 'vue-i18n'
 import {useAiCharacters} from '@/components/AI/hooks/use-ai-characters'
 import {promptConversationAssistant} from '@/components/AI/utils/prompts'
-import {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
+import globalEventBus, {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
 import ImagePicker from '@/components/AI/AIChat/ChatBubble/ImagePicker.vue'
-import {ChatModel} from '@/components/AI/types/openai'
+import {AIProvider, modelsCanUseVision, openAIChatModelOptions} from '@/components/AI/types/models'
+import {SettingsTabType} from '@/enum/settings'
+import {useCommonAi} from '@/components/AI/hooks/use-common-ai'
 
 const {t: $t, locale} = useI18n()
 const aisStore = useAiSettingsStore()
 const {currentCharacter, currentHistory} = useAiCharacters()
 
-const {aiSettingsOptions} = useAiSettings()
 const mainStore = useMainStore()
 const isLoading = ref(false)
 const userInputContent = ref('')
@@ -89,7 +87,7 @@ useGlobalBusOn(GlobalEvents.ON_AI_CHARACTER_UPDATE, () => {
   currentHistory.value.history.unshift(getSystemMessage())
 })
 
-const {requestChatCompletion, requestAiChatMessage, canUseVision} = useGpt()
+const {requestChatStream, requestChatMessage} = useCommonAi()
 
 // 自动生成聊天标题
 const generateChatTitle = async () => {
@@ -104,8 +102,9 @@ const generateChatTitle = async () => {
     // 移除系统提示词
     history.shift()
 
-    currentHistory.value.title = await requestAiChatMessage(promptConversationAssistant(history), {
-      model: ChatModel.GPT4oMini,
+    // TODO
+    currentHistory.value.title = await requestChatMessage(promptConversationAssistant(history), {
+      model: openAIChatModelOptions[0].value,
     })
   } catch (error: any) {
     console.error(error)
@@ -114,7 +113,7 @@ const generateChatTitle = async () => {
 
 // GPT4 以上支持vision图像识别
 const isEnableVision = computed(() => {
-  return canUseVision(currentCharacter.value?.model)
+  return modelsCanUseVision[currentCharacter.value?.model] || false
 })
 const imageList = ref<string[]>([])
 
@@ -178,16 +177,16 @@ const sendAiRequest = async (isRetry = false) => {
     const {signal} = controller
     abortController.value = controller
 
-    const chatCompletion = await requestChatCompletion(
-      {
-        model: currentCharacter.value.model,
-        messages: currentHistory.value.history.map((i) => {
-          return {
-            content: i.content,
-            role: i.role,
-          }
-        }),
-      },
+    const chatCompletion = await requestChatStream(
+      currentCharacter.value.provider || AIProvider.OPEN_AI,
+      currentCharacter.value.model,
+      // TODO
+      currentHistory.value.history.map((i) => {
+        return {
+          content: i.content,
+          role: i.role,
+        }
+      }),
       (text: string) => {
         tempResponseChat.value!.content += text
         scrollBottomThrottled(false)
@@ -197,6 +196,7 @@ const sendAiRequest = async (isRetry = false) => {
       },
     )
 
+    // TODO
     if (typeof chatCompletion === 'string') {
       // 流式返回完整字符串
       const chatItem = tempResponseChat.value
@@ -204,7 +204,7 @@ const sendAiRequest = async (isRetry = false) => {
       chatItem.timestamp = Date.now()
       currentHistory.value.history.push(chatItem)
     } else {
-      // 正常POST返回 ChatCompletion
+      // 正常POST返回 OpenAIChatCompletion
       tempResponseChat.value = null
       const message = chatCompletion.choices[0]?.message || {}
       currentHistory.value.history.push({
@@ -290,6 +290,10 @@ watch(
   },
   {immediate: true},
 )
+
+const handleSettings = () => {
+  globalEventBus.emit(GlobalEvents.OPEN_SETTINGS, SettingsTabType.AI)
+}
 </script>
 
 <template>
@@ -327,14 +331,9 @@ watch(
       />
       <div class="request-actions">
         <div class="action-side">
-          <el-popover width="400" placement="top-start" trigger="click" :teleported="false">
-            <template #reference>
-              <button class="vp-button">
-                <span class="mdi mdi-cog"></span>
-              </button>
-            </template>
-            <OptionUI :option-list="aiSettingsOptions" />
-          </el-popover>
+          <button class="vp-button" @click="handleSettings">
+            <span class="mdi mdi-cog"></span>
+          </button>
 
           <button @click="scrollBottom()" class="vp-button">
             <span class="mdi mdi-arrow-down"></span>

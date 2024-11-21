@@ -1,12 +1,18 @@
-import {ChatModel} from '@/components/AI/types/openai'
+import {anthropicChatModelOptions, openAIChatModelOptions} from '@/components/AI/types/models'
 
 interface IStore {
-  // AI
+  // OpenAI
   openAiApiKey: string
   openAiApiProxy: string
+  model: string
+
+  // Anthropic
+  anthropicApiKey: string
+  anthropicApiProxy: string
+  anthropicModel: string
+
   // 启用流式响应
   stream: boolean
-  model: ChatModel
   // 助手
   currentCharacterId: string
   // 当前聊天历史记录id
@@ -20,8 +26,13 @@ export const useAiSettingsStore = defineStore('aiSettingsStore', {
     return {
       openAiApiKey: '',
       openAiApiProxy: '',
+      model: openAIChatModelOptions[0].value,
+
+      anthropicApiKey: '',
+      anthropicApiProxy: '',
+      anthropicModel: anthropicChatModelOptions[0].value,
+
       stream: true,
-      model: ChatModel.GPT4oMini,
       currentCharacterId: 'default',
       currentChatHistoryId: '',
       isSidebarExpand: true,
