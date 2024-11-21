@@ -1,4 +1,4 @@
-import {ChatModel} from '@/components/AI/types/openai'
+import {ChatModel, ChatProvider} from '@/components/AI/types/openai'
 
 export interface IMessageContent {
   type: 'text' | 'image_url'
@@ -22,6 +22,9 @@ export interface IAiCharacter {
   desc: string
   // 头像
   avatar: string
+  // 厂商
+  provider: ChatProvider
+  // 模型
   model: ChatModel
   // 系统提示词
   systemPrompt: string

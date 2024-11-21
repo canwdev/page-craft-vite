@@ -1,5 +1,11 @@
 # Release Notes
 
+## v1.7.6
+
+- add: AI 支持 Anthropic/Claude 模型
+- add: 展示更新内容
+- optimize: UI 交互优化
+
 ## v1.7.5
 
 - refactor: 重构组件库，将 Naive UI 替换为 Element Plus

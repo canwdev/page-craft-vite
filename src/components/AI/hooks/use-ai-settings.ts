@@ -1,7 +1,7 @@
 import {StOptionItem, StOptionType} from '@/components/CanUI/packages/OptionUI/enum'
 import {useI18n} from 'vue-i18n'
 import {useAiSettingsStore} from '@/components/AI/hooks/ai-settings'
-import {chatModels} from '@/components/AI/types/openai'
+import {openAIChatModelOptions} from '@/components/AI/types/openai'
 
 export const useAiSettings = () => {
   const {t: $t} = useI18n()
@@ -32,7 +32,7 @@ export const useAiSettings = () => {
             key: 'model',
             store: aisStore,
             type: StOptionType.SELECT,
-            options: chatModels,
+            options: openAIChatModelOptions,
             props: {
               // 允许动态创建项
               tag: true,

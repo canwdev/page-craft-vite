@@ -66,7 +66,7 @@ export const useQLogics = (qlOptionsRef, update) => {
     })
   }
 
-  const handleSearch = useDebounceFn(_handleSearch, 300)
+  const handleSearch = useDebounceFn(_handleSearch, 100)
 
   return {
     handleSearch,

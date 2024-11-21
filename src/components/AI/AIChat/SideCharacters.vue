@@ -2,7 +2,14 @@
 import {StOptionItem} from '@/components/CanUI/packages/OptionUI/enum'
 import OptionUI from '@/components/CanUI/packages/OptionUI/index.vue'
 import {IAiCharacter} from '@/components/AI/types/ai'
-import {ChatModel, chatModels} from '@/components/AI/types/openai'
+import {
+  ChatModel,
+  openAIChatModelOptions,
+  ChatProvider,
+  chatProviderOptions,
+  anthropicChatModelOptions,
+  getModelOptions,
+} from '@/components/AI/types/openai'
 
 import iconUser from '@/assets/textures/user.png?url'
 import {useAiSettingsStore} from '@/components/AI/hooks/ai-settings'
@@ -29,6 +36,7 @@ const formatEditingData = (data: any = {}) => {
     name: data.name || '',
     desc: data.desc || '',
     avatar: data.avatar || '',
+    provider: data.provider || ChatProvider.OPEN_AI,
     model: data.model || ChatModel.GPT4oMini,
     systemPrompt: data.systemPrompt || '',
   }
@@ -205,6 +213,10 @@ const formRules = ref({
       return true
     },
   },
+  provider: {
+    required: true,
+    trigger: 'blur',
+  },
   model: {
     required: true,
     trigger: 'blur',
@@ -213,13 +225,10 @@ const formRules = ref({
     required: true,
     trigger: 'blur',
   },
-  systemPrompt: {
-    required: true,
-    trigger: 'blur',
-  },
 })
 
 const formItems = computed((): MixedFormItems[] => {
+  const modelOptions = getModelOptions(editingItem.value.provider)
   return [
     [
       {
@@ -247,20 +256,16 @@ const formItems = computed((): MixedFormItems[] => {
           clearable: true,
         },
         render: () =>
-          h(
-            'button',
-            {
-              type: 'button',
-              class: 'btn-no-style',
-              onClick: async () => {
-                const url = await base64Utils.chooseFileToBase64({accept: 'image/*'})
-                if (typeof url === 'string') {
-                  editingItem.value.avatar = url
-                }
-              },
+          h('button', {
+            type: 'button',
+            class: 'btn-no-style mdi mdi-image-plus',
+            onClick: async () => {
+              const url = await base64Utils.chooseFileToBase64({accept: 'image/*'})
+              if (typeof url === 'string') {
+                editingItem.value.avatar = url
+              }
             },
-            '🖼️',
-          ),
+          }),
       },
     ],
     [
@@ -271,8 +276,28 @@ const formItems = computed((): MixedFormItems[] => {
         disabled: !isCreate.value,
       },
       {
+        type: AutoFormItemType.INPUT,
+        key: 'desc',
+        label: $t('ai.desc'),
+        placeholder: '此为备注，无需填写',
+      },
+    ],
+    [
+      {
         type: AutoFormItemType.SELECT,
-        options: chatModels,
+        options: chatProviderOptions,
+        key: 'provider',
+        label: '提供商',
+        props: {
+          filterable: true,
+          onChange() {
+            editingItem.value.model = getModelOptions(editingItem.value.provider)[0].value
+          },
+        },
+      },
+      {
+        type: AutoFormItemType.SELECT,
+        options: modelOptions,
         key: 'model',
         label: $t('ai.model'),
         props: {
@@ -284,17 +309,13 @@ const formItems = computed((): MixedFormItems[] => {
     ],
     {
       type: AutoFormItemType.INPUT,
-      key: 'desc',
-      label: $t('ai.desc'),
-    },
-    {
-      type: AutoFormItemType.INPUT,
       key: 'systemPrompt',
       label: $t('ai.system_prompt'),
       props: {
         type: 'textarea',
         rows: 8,
       },
+      placeholder: '建议填写',
     },
   ]
 })

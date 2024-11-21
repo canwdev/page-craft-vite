@@ -9,6 +9,11 @@ export enum ChatModel {
   GPT4oMini = 'gpt-4o-mini',
 }
 
+export enum ChatProvider {
+  OPEN_AI = 'open_ai',
+  ANTHROPIC = 'anthropic',
+}
+
 export const OpenAIApiErrorCodeMessage: Record<string, string> = {
   400: '[400] Bad Request',
   401: '[401] 提供错误的API密钥 | Incorrect API key provided',
@@ -19,15 +24,27 @@ export const OpenAIApiErrorCodeMessage: Record<string, string> = {
   500: '[500] 内部错误 | Internal Server Error',
 }
 
-export const chatModels = [
+export const chatProviderOptions = [
+  {label: 'OpenAI', value: ChatProvider.OPEN_AI, url: 'https://platform.openai.com/docs/models'},
   {
-    label: 'GPT-3.5 Turbo',
-    value: ChatModel.GPT35Turbo,
-    tokens: 16_385,
+    label: 'Anthropic',
+    value: ChatProvider.ANTHROPIC,
+    url: 'https://docs.anthropic.com/en/docs/about-claude/models',
   },
+]
+
+export const anthropicChatModelOptions = [
   {
-    label: 'GPT-4 Turbo',
-    value: ChatModel.GPT4Turbo,
+    label: 'claude-3-5-sonnet-latest',
+    value: 'claude-3-5-sonnet-latest',
+    tokens: 200_000,
+  },
+]
+
+export const openAIChatModelOptions = [
+  {
+    label: 'GPT-4o Mini',
+    value: ChatModel.GPT4oMini,
     tokens: 128_000,
     vision: true,
   },
@@ -38,12 +55,21 @@ export const chatModels = [
     vision: true,
   },
   {
-    label: 'GPT-4o Mini',
-    value: ChatModel.GPT4oMini,
+    label: 'GPT-4 Turbo',
+    value: ChatModel.GPT4Turbo,
     tokens: 128_000,
     vision: true,
   },
+  {
+    label: 'GPT-3.5 Turbo',
+    value: ChatModel.GPT35Turbo,
+    tokens: 16_385,
+  },
 ]
+
+export const getModelOptions = (provider: ChatProvider) => {
+  return provider === ChatProvider.ANTHROPIC ? anthropicChatModelOptions : openAIChatModelOptions
+}
 
 export type ChatUsage = {
   prompt_tokens: number

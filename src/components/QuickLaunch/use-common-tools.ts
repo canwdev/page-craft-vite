@@ -62,7 +62,7 @@ export const useCommonTools = () => {
       },
     },
     {
-      label: '🤯 ChatGPT',
+      label: '🤯 AI Chat (GPT/Claude)',
       props: {
         onClick: async () => {
           mainStore.isShowQuickLaunch = false
@@ -95,7 +95,7 @@ export const useCommonTools = () => {
             },
           },
           {
-            label: `🤯 ChatGPT Window (alt+g)`,
+            label: `🤯 AI Chat Window (alt+g)`,
             props: {
               onClick: async () => {
                 mainStore.isShowAiChat = !mainStore.isShowAiChat
