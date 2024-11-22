@@ -2,7 +2,8 @@ import {useRemoteOptions} from '@/components/CanUI/packages/QuickOptions/utils/u
 import {QuickOptionItem} from '@/components/CanUI/packages/QuickOptions/enum'
 import {ISnippetItem, monacoStyleGlobal} from './use-monaco-helper'
 import {useStorage} from '@vueuse/core'
-import {StyleEditorKeys} from '@/components/StyleEditor/enum'
+
+import {StyleEditorKeys} from '@/enum/settings'
 
 export const useSnippets = ({insertCode, vueMonacoRef}) => {
   const customSnippets = useStorage<ISnippetItem[]>(StyleEditorKeys.CUSTOM_SNIPPETS, [])
@@ -96,16 +97,16 @@ export const useSnippets = ({insertCode, vueMonacoRef}) => {
                 const editor = vueMonacoRef.value.getInstance()
 
                 const selection = editor.getSelection()
-                let snippet = editor.getModel().getValueInRange(selection).trim()
+                const snippet = editor.getModel().getValueInRange(selection).trim()
                 if (!snippet) {
                   window.$message.error('Please select code first!')
                   return
                 }
                 // 使用正则表达式匹配类名
-                let classRegex = /\.(\w|-)+/g
-                let match = classRegex.exec(snippet) || []
+                const classRegex = /\.(\w|-)+/g
+                const match = classRegex.exec(snippet) || []
                 console.log(match)
-                let label = await window.$mcUtils.showInputPrompt({
+                const label = await window.$mcUtils.showInputPrompt({
                   title: 'Input snippet label',
                   value: match[0] || '',
                 })
@@ -183,8 +184,8 @@ export const useSnippets = ({insertCode, vueMonacoRef}) => {
     const set = new Set<string>()
 
     // 使用正则表达式匹配类名和 SCSS 变量名
-    let classRegex = /\.(\w|-)+/g
-    let variableRegex = /\$[\w-]+/g
+    const classRegex = /\.(\w|-)+/g
+    const variableRegex = /\$[\w-]+/g
     let match
 
     while ((match = classRegex.exec(style)) !== null) {

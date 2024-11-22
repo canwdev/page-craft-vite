@@ -3,7 +3,8 @@ import {beautifyCss, beautifyHtml} from '@/components/StyleEditor/utils/formater
 import {IComponentExportData} from '@/components/PageCraft/ComponentExplorer/enum'
 import {handleExportFile, promptGetFileName} from '@/utils/mc-utils/io'
 import {useStorage} from '@vueuse/core'
-import {StyleEditorKeys} from '@/components/StyleEditor/enum'
+
+import {StyleEditorKeys} from '@/enum/settings'
 
 export const handleExportHtml = async (exportData: IComponentExportData, options?) => {
   const {html, style} = exportData
@@ -17,7 +18,7 @@ export const handleExportHtml = async (exportData: IComponentExportData, options
     }
   }
 
-  let name = await promptGetFileName(exportData.name ? exportData.name + nameSuffix : '')
+  const name = await promptGetFileName(exportData.name ? exportData.name + nameSuffix : '')
 
   const cssCode = style ? beautifyCss(await sassToCSS(style)) : ''
   let htmlStr

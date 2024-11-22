@@ -57,7 +57,8 @@
     "rich_text_tool": "リッチテキストツール",
     "iframe_browser": "iframe ブラウザ",
     "welcome": "ホーム",
-    "more": "もっと"
+    "more": "もっと",
+    "bei_zhu": "メモ"
   },
   "actions": {
     "cancel": "キャンセル",
@@ -110,7 +111,8 @@
     "save_all": "すべて保存",
     "send": "送信",
     "retry": "再試行",
-    "create": "作成する"
+    "create": "作成する",
+    "test": "テスト"
   },
   "msgs": {
     "drop_files_here": "ここにファイルをドロップ",
@@ -172,7 +174,11 @@
     "refresh_page": "ページをリフレッシュする？",
     "error_name_duplicat": "エラー：名前が重複しています！",
     "bu_fen_xuan_xiang_bu": "一部のオプションが無効になっています。<br>操作する前に現在のコンポーネントを選択解除してください。",
-    "focus_auto_action_tip": "[Auto] が付いているボタンをクリックして自動操作を開始してください"
+    "focus_auto_action_tip": "[Auto] が付いているボタンをクリックして自動操作を開始してください",
+    "release_notes": "リリースノート",
+    "bei_fen_yu_huan_yuan": "バックアップとリストア",
+    "dao_ru_dao_chu_quan": "すべての設定をインポート/エクスポート",
+    "will_override_existe": "既存の設定や構成が上書きされます。続行しますか？"
   },
   "i18n_tools": {
     "locate_translate_pa": "翻訳パスを特定する",
@@ -182,7 +188,8 @@
     "rename_keys": "Keysの名前を変更する",
     "no_need_for_transla": "翻訳は不要です",
     "in_all_languages": "すべての言語",
-    "fen_xi_fan_yi_shu": "翻訳ツリーの解析"
+    "fen_xi_fan_yi_shu": "翻訳ツリーの解析",
+    "i18_n": "多言語ツール"
   },
   "plugins": {
     "input_demo_to_creat": "デモプラグインを作成するには、'demo'を入力してください！",
@@ -208,7 +215,11 @@
     "yu_current_character": "{0} とのチャット",
     "new_chat": "新しいチャット",
     "quan_ju_mo_ren_mo_xi": "グローバルデフォルトモデル",
-    "stop_generation": "生成を停止"
+    "stop_generation": "生成を停止",
+    "quan_ju_mo_ren_ti_go": "グローバルデフォルトプロバイダ",
+    "lian_tong_xing_ce_sh": "接続テスト",
+    "geng_xin_yu_she_jue": "プリセット役職の更新",
+    "ti_gong_shang": "プロバイダ"
   },
   "app_client": {
     "recommend_desc": "<b>🖥️ デスクトップクライアントのダウンロードを推奨します</b><br>💡 完全にオープンソースで、オフラインでも使用可能<br>⚡ Tauri技術を使用して構築されており、サイズは10MB未満と軽量<br>🚀 システムWebView 2を利用し、迅速かつ安定したパフォーマンスを提供<br>💽 exeインストールパッケージは解凍して直接実行可能",

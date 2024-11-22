@@ -20,6 +20,7 @@ import CommonNavbar from '@/components/CommonUI/CommonNavbar.vue'
 import DropdownMenu from '@/components/CanUI/packages/OptionUI/Tools/DropdownMenu.vue'
 import RectSwitch from '@/components/CanUI/packages/OptionUI/Tools/RectSwitch.vue'
 import TabLayout from '@/components/CanUI/packages/Layouts/TabLayout.vue'
+import {LS_SettingsKey} from '@/enum/settings'
 
 const isAllowedElement = (el) => {
   return el.tagName.toLowerCase() === 'td'
@@ -146,9 +147,14 @@ export default defineComponent({
       await initXLSX()
     })
 
-    const copyMode = useStorage('excel_copy_tool_copy_mode', TextConvertMode.HTML, localStorage, {
-      listenToStorageChanges: false,
-    })
+    const copyMode = useStorage(
+      LS_SettingsKey.EXCEL_COPY_TOOL_COPY_MODE,
+      TextConvertMode.HTML,
+      localStorage,
+      {
+        listenToStorageChanges: false,
+      },
+    )
     const handleClick = (event: MouseEvent) => {
       let el = event.target as HTMLElement
       if (!isAllowedElement(el) || !copyMode.value || copyMode.value === TextConvertMode.DISABLED) {

@@ -17,20 +17,8 @@ const aisStore = useAiSettingsStore()
         class="btn-toggle-expand btn-no-style"
         @click="aisStore.isSidebarExpand = !aisStore.isSidebarExpand"
       >
-        <svg
-          width="16"
-          height="16"
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-          viewBox="0 0 16 16"
-        >
-          <g fill="none">
-            <path
-              d="M10.354 3.146a.5.5 0 0 1 0 .708L6.207 8l4.147 4.146a.5.5 0 0 1-.708.708l-4.5-4.5a.5.5 0 0 1 0-.708l4.5-4.5a.5.5 0 0 1 .708 0z"
-              fill="currentColor"
-            ></path>
-          </g>
-        </svg>
+        <span v-if="!aisStore.isSidebarExpand" class="mdi mdi-chevron-right"></span>
+        <span v-else class="mdi mdi-chevron-left"></span>
       </button>
     </div>
     <ChatContent />
@@ -59,9 +47,6 @@ const aisStore = useAiSettingsStore()
       width: 240px;
       border-right: 1px solid $color_border;
       .btn-toggle-expand {
-        svg {
-          transform: rotateY(0);
-        }
       }
     }
 
@@ -71,9 +56,6 @@ const aisStore = useAiSettingsStore()
       top: 50%;
       transform: translateY(-50%);
       z-index: 10;
-      svg {
-        transform: rotateY(180deg);
-      }
     }
 
     .ai-side-characters {
@@ -95,6 +77,7 @@ const aisStore = useAiSettingsStore()
   .ai-option-ui {
     .panel-header {
       padding-right: 8px;
+      border-radius: 0;
     }
     .c-panel-item {
       .panel-body {

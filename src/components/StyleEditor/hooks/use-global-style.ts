@@ -1,7 +1,7 @@
 import {sassToCSS} from '../utils/css'
-import {StyleEditorKeys} from '../enum'
 import {useSharedCssStore} from '../utils/css-store'
 import {useStorage} from '@vueuse/core'
+import {StyleEditorKeys} from '@/enum/settings'
 
 /**
  * 使用全局样式

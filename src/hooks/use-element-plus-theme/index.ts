@@ -1,7 +1,8 @@
 import {PRE, PRE_DARK, PRE_LIGHT, WHITE, BLACK} from './token'
 import {onBeforeMount} from 'vue'
 import {useStyleTag} from '@vueuse/core'
-import {StyleEditorKeys} from '@/components/StyleEditor/enum'
+
+import {StyleEditorKeys} from '@/enum/settings'
 
 const html = document.documentElement
 

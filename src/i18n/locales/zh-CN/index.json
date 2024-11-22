@@ -57,7 +57,8 @@
     "rich_text_tool": "富文本工具",
     "iframe_browser": "iframe 浏览器",
     "welcome": "首页",
-    "more": "更多"
+    "more": "更多",
+    "bei_zhu": "备注"
   },
   "actions": {
     "cancel": "取消",
@@ -110,7 +111,8 @@
     "save_all": "全部保存",
     "send": "发送",
     "create": "创建",
-    "retry": "重试"
+    "retry": "重试",
+    "test": "测试"
   },
   "msgs": {
     "drop_files_here": "将文件拖放到此处",
@@ -173,7 +175,11 @@
     "error_name_duplicat": "错误：名称重复！",
     "que_ren_shan_chu_ci": "确认删除？此操作不可撤销",
     "bu_fen_xuan_xiang_bu": "部分选项不可用，<br>请取消选中当前组件再操作",
-    "focus_auto_action_tip": "请点击带有 [Auto] 标记的按钮来开始自动操作"
+    "focus_auto_action_tip": "请点击带有 [Auto] 标记的按钮来开始自动操作",
+    "release_notes": "发行说明",
+    "bei_fen_yu_huan_yuan": "备份与还原",
+    "dao_ru_dao_chu_quan": "导入/导出全部设置",
+    "will_override_existe": "将覆盖现有的设置或配置，继续吗？"
   },
   "i18n_tools": {
     "locate_translate_pa": "定位翻译路径",
@@ -183,7 +189,8 @@
     "rename_keys": "重命名Keys",
     "no_need_for_transla": "不需要翻译",
     "in_all_languages": "所有语言",
-    "fen_xi_fan_yi_shu": "分析翻译树"
+    "fen_xi_fan_yi_shu": "分析翻译树",
+    "i18_n": "多语言工具"
   },
   "plugins": {
     "input_demo_to_creat": "输入'demo'来创建一个演示插件！",
@@ -209,7 +216,11 @@
     "yu_current_character": "与 {0} 的聊天",
     "new_chat": "新聊天",
     "quan_ju_mo_ren_mo_xi": "全局默认模型",
-    "stop_generation": "停止生成"
+    "stop_generation": "停止生成",
+    "quan_ju_mo_ren_ti_go": "全局默认提供商",
+    "lian_tong_xing_ce_sh": "连通性测试",
+    "geng_xin_yu_she_jue": "更新预设角色",
+    "ti_gong_shang": "提供商"
   },
   "app_client": {
     "recommend_desc": "<b>🖥️ 推荐下载桌面客户端</b><br>💡 完全开源，离线可用<br>⚡ 使用 Tauri 技术构建，体积小于 10MB<br>🚀 调用系统 WebView 2，快速稳定<br>💽 exe 安装包可解压后直接运行",

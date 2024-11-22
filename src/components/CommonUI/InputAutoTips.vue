@@ -6,7 +6,7 @@ import {useContextMenu} from '@/components/CanUI/packages/QuickOptions/utils/use
 
 interface Props {
   modelValue: any
-  hid: string
+  storageKey: string
 }
 
 const props = withDefaults(defineProps<Props>(), {})
@@ -18,7 +18,7 @@ interface IHistoryItem {
 }
 
 const mValue = useVModel(props, 'modelValue', emit)
-const historyItems = useStorage<IHistoryItem[]>(`mc_input_history_${props.hid}`, [])
+const historyItems = useStorage<IHistoryItem[]>(props.storageKey || `mc_input_history`, [])
 const historyItemsSet = computed(() => {
   const set = new Set()
   historyItems.value.forEach((i) => {

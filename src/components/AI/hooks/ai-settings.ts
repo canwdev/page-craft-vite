@@ -1,18 +1,27 @@
-import {anthropicChatModelOptions, openAIChatModelOptions} from '@/components/AI/types/models'
+import {
+  AIProvider,
+  anthropicChatModelOptions,
+  openAIChatModelOptions,
+} from '@/components/AI/types/models'
+import {LS_SettingsKey} from '@/enum/settings'
 
 interface IStore {
   // OpenAI
   openAiApiKey: string
   openAiApiProxy: string
-  model: string
 
   // Anthropic
   anthropicApiKey: string
   anthropicApiProxy: string
-  anthropicModel: string
 
+  // 通用
+  // 全局默认提供商
+  provider: AIProvider
+  // 全局默认模型
+  model: string
   // 启用流式响应
   stream: boolean
+
   // 助手
   currentCharacterId: string
   // 当前聊天历史记录id
@@ -26,19 +35,20 @@ export const useAiSettingsStore = defineStore('aiSettingsStore', {
     return {
       openAiApiKey: '',
       openAiApiProxy: '',
-      model: openAIChatModelOptions[0].value,
 
       anthropicApiKey: '',
       anthropicApiProxy: '',
-      anthropicModel: anthropicChatModelOptions[0].value,
 
+      provider: AIProvider.OPEN_AI,
+      model: openAIChatModelOptions[0].value,
       stream: true,
+
       currentCharacterId: 'default',
       currentChatHistoryId: '',
       isSidebarExpand: true,
     }
   },
   persist: {
-    key: 'ls_key_pagecraft_ai_settings',
+    key: LS_SettingsKey.LS_KEY_PAGECRAFT_AI_SETTINGS,
   },
 })

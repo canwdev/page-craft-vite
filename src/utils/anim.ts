@@ -17,3 +17,12 @@ export const blinkPanel = async (el: HTMLElement, maxCount: number = 3) => {
   el.style.backgroundColor = originalColor
   el.style.transition = ''
 }
+
+export const scrollToElementAndBlink = (selector) => {
+  const aiPanel = document.querySelector(selector)
+  if (!aiPanel) {
+    return
+  }
+  aiPanel.scrollIntoView({behavior: 'smooth'})
+  blinkPanel(aiPanel as HTMLElement)
+}

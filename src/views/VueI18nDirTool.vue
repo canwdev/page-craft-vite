@@ -21,7 +21,6 @@ import {useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-mai
 import {useStorage} from '@vueuse/core'
 import TabLayout from '@/components/CanUI/packages/Layouts/TabLayout.vue'
 import {useOpenedHistory} from '@/components/VueI18nEditTool/file-history'
-import {LsKeys} from '@/enum/page-craft'
 import {useGuiToolbox} from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox/use-gui-toolbox'
 import GuiToolbox from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox/GuiToolbox.vue'
 import {handleReadSelectedFile} from '@/utils/mc-utils/io'
@@ -32,7 +31,7 @@ import RectSwitch from '@/components/CanUI/packages/OptionUI/Tools/RectSwitch.vu
 import FoldableSidebarLayout from '@/components/CanUI/packages/Layouts/FoldableSidebarLayout.vue'
 import {TreeNode} from 'element-plus'
 import {TreeNodeData} from 'element-plus/es/components/tree-v2/src/types'
-import {SettingsTabType} from '@/enum/settings'
+import {LS_SettingsKey, IDBSettingsKey, PageCraftKeys, SettingsTabType} from '@/enum/settings'
 
 const formatDirTreeItem = (data: any = {}): DirTreeItem => {
   return {
@@ -72,7 +71,7 @@ const i18nMainStore = useI18nMainStore()
 const i18nSetStore = useI18nToolSettingsStore()
 
 const {appendHistory, historyMenuOptions} = useOpenedHistory(
-  LsKeys.I18N_FOLDER_HANDLE_HISTORY,
+  IDBSettingsKey.I18N_FOLDER_HANDLE_HISTORY,
   async (handle: FileSystemFileHandle) => {
     async function doOpen() {
       dirHandle.value = handle as unknown as FileSystemDirectoryHandle
@@ -95,7 +94,7 @@ const {appendHistory, historyMenuOptions} = useOpenedHistory(
 )
 
 // 保存手动展开的文件夹keys
-const expandedKeys = useStorage<string[]>('vue_i18n_dir_tool_expanded_keys_2', [])
+const expandedKeys = useStorage<string[]>(LS_SettingsKey.VUE_I18N_DIR_TOOL_EXPANDED_KEYS, [])
 // 树节点展开
 const handleNodeExpand = (data: DirTreeItem) => {
   // console.log('handleNodeExpand', data)
@@ -331,9 +330,14 @@ const handleSaveFile = async () => {
   }
 }
 
-const editMode = useStorage('vue_i18n_dir_tool_edit_mode', EditMode.BATCH, localStorage, {
-  listenToStorageChanges: false,
-})
+const editMode = useStorage(
+  LS_SettingsKey.VUE_I18N_DIR_TOOL_EDIT_MODE,
+  EditMode.BATCH,
+  localStorage,
+  {
+    listenToStorageChanges: false,
+  },
+)
 
 const updateGuiTranslateTree = () => {
   if (!editingTextValue.value) {

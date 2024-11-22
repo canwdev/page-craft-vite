@@ -1,7 +1,7 @@
 import {useStyleTag} from '@vueuse/core'
-import {StyleEditorKeys} from '../enum'
 import {sassToCSS} from './css'
 import {useRoute} from 'vue-router'
+import {StyleEditorKeys} from '@/enum/settings'
 
 type IStore = {
   globalCSS: string
@@ -34,7 +34,7 @@ export const useCssStyleTag = () => {
     (val) => {
       globalCssTag.value = val
     },
-    {immediate: true}
+    {immediate: true},
   )
   watch(
     () => cssStore.currentCSS,
@@ -42,7 +42,7 @@ export const useCssStyleTag = () => {
       // console.log('[cssStore.currentCSS]', val)
       currentCssTag.value = val
     },
-    {immediate: false}
+    {immediate: false},
   )
 
   // 初始化时先应用全局样式

@@ -153,8 +153,8 @@ watch(toolboxFilterKey, () => {
   <div class="vp-bg action-row">
     <template v-if="isBatchMode">
       <DropdownMenu :options="guiToolboxOptions">
-        <button class="vp-button">
-          {{ $t('common.tools') }}
+        <button class="vp-button" :title="$t('common.tools')">
+          <span class="mdi mdi-tools"></span>
         </button>
       </DropdownMenu>
       <button
@@ -205,11 +205,24 @@ watch(toolboxFilterKey, () => {
   gap: 4px;
   padding: 4px 10px;
   display: flex;
+  align-items: center;
   .vp-button,
   .vp-input {
     font-size: 12px;
     padding: 2px 4px;
-    height: auto;
+    height: 26px;
+  }
+
+  .vp-button {
+    .mdi {
+      font-size: 16px;
+    }
+  }
+
+  .vp-input {
+    padding: 2px 8px;
+    box-sizing: border-box;
+    min-width: 50px;
   }
 
   .analyse-textarea {

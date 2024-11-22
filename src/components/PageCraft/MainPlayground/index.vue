@@ -188,7 +188,7 @@ ${settingsStore.curCompInStore?.title}`"
           </button>
         </DropdownMenu>
 
-        <el-popover width="180" trigger="hover">
+        <el-popover width="180" trigger="hover" :persistent="false">
           <template #reference>
             <button class="vp-button">
               <span class="mdi mdi-cog"></span>

@@ -1,6 +1,6 @@
 import {useAiSettingsStore} from '@/components/AI/hooks/ai-settings'
-import {OpenAIApiErrorCodeMessage} from '@/components/AI/types/models'
-import {blinkPanel} from '@/utils/anim'
+import {OpenAIApiErrorCodeMessage, openAIChatModelOptions} from '@/components/AI/types/models'
+import {blinkPanel, scrollToElementAndBlink} from '@/utils/anim'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {SettingsTabType} from '@/enum/settings'
 import {OpenAIChatCompletion, GptMessage} from '@/components/AI/types/open-ai'
@@ -11,13 +11,8 @@ export const useOpenAI_GPT = () => {
   const openAiSettings = () => {
     globalEventBus.emit(GlobalEvents.OPEN_SETTINGS, SettingsTabType.AI)
     setTimeout(() => {
-      const aiPanel = document.querySelector('.system-settings .content-wrap')
-      if (!aiPanel) {
-        return
-      }
-      aiPanel.scrollIntoView({behavior: 'smooth'})
-      blinkPanel(aiPanel as HTMLElement)
-    }, 800)
+      scrollToElementAndBlink('.system-settings .content-wrap [data-key="open_ai"]')
+    }, 500)
   }
 
   /**
@@ -36,7 +31,7 @@ export const useOpenAI_GPT = () => {
     // 全局默认参数（可覆盖）
     params = {
       // 指定要使用的模型
-      model: aisStore.model,
+      model: openAIChatModelOptions[0].value,
       // 是否启用流式数据输出
       stream: aisStore.stream,
       ...params,

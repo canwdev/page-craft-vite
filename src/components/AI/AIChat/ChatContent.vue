@@ -14,6 +14,8 @@ import ImagePicker from '@/components/AI/AIChat/ChatBubble/ImagePicker.vue'
 import {AIProvider, modelsCanUseVision, openAIChatModelOptions} from '@/components/AI/types/models'
 import {SettingsTabType} from '@/enum/settings'
 import {useCommonAi} from '@/components/AI/hooks/use-common-ai'
+import SettingsAi from '@/components/SystemSettings/SettingsAi.vue'
+import {GptMessage} from '@/components/AI/types/open-ai'
 
 const {t: $t, locale} = useI18n()
 const aisStore = useAiSettingsStore()
@@ -102,9 +104,10 @@ const generateChatTitle = async () => {
     // 移除系统提示词
     history.shift()
 
-    // TODO
-    currentHistory.value.title = await requestChatMessage(promptConversationAssistant(history), {
-      model: openAIChatModelOptions[0].value,
+    currentHistory.value.title = await requestChatMessage({
+      provider: aisStore.provider,
+      model: aisStore.model,
+      messages: promptConversationAssistant(history),
     })
   } catch (error: any) {
     console.error(error)
@@ -113,6 +116,7 @@ const generateChatTitle = async () => {
 
 // GPT4 以上支持vision图像识别
 const isEnableVision = computed(() => {
+  // @ts-ignore
   return modelsCanUseVision[currentCharacter.value?.model] || false
 })
 const imageList = ref<string[]>([])
@@ -177,40 +181,41 @@ const sendAiRequest = async (isRetry = false) => {
     const {signal} = controller
     abortController.value = controller
 
-    const chatCompletion = await requestChatStream(
-      currentCharacter.value.provider || AIProvider.OPEN_AI,
-      currentCharacter.value.model,
-      // TODO
-      currentHistory.value.history.map((i) => {
-        return {
-          content: i.content,
-          role: i.role,
-        }
-      }),
-      (text: string) => {
-        tempResponseChat.value!.content += text
-        scrollBottomThrottled(false)
-      },
-      {
-        signal,
-      },
-    )
+    const provider = currentCharacter.value.provider || AIProvider.OPEN_AI
+    const model = currentCharacter.value.model
+    const messages = currentHistory.value.history.map((i) => {
+      return {
+        content: i.content,
+        role: i.role,
+      }
+    }) as GptMessage[]
 
-    // TODO
-    if (typeof chatCompletion === 'string') {
-      // 流式返回完整字符串
+    if (aisStore.stream) {
+      await requestChatStream(
+        provider,
+        model,
+        messages,
+        (text: string) => {
+          tempResponseChat.value!.content += text
+          scrollBottomThrottled(false)
+        },
+        {
+          signal,
+        },
+      )
+      // 流式完成
       const chatItem = tempResponseChat.value
       tempResponseChat.value = null
       chatItem.timestamp = Date.now()
       currentHistory.value.history.push(chatItem)
     } else {
-      // 正常POST返回 OpenAIChatCompletion
+      const message = await requestChatMessage({provider, model, messages})
+      // 正常POST完成
       tempResponseChat.value = null
-      const message = chatCompletion.choices[0]?.message || {}
       currentHistory.value.history.push({
         role: 'assistant',
-        content: message.content || '',
-        timestamp: chatCompletion.created * 1000,
+        content: message || '',
+        timestamp: Date.now(),
       })
     }
 
@@ -290,10 +295,6 @@ watch(
   },
   {immediate: true},
 )
-
-const handleSettings = () => {
-  globalEventBus.emit(GlobalEvents.OPEN_SETTINGS, SettingsTabType.AI)
-}
 </script>
 
 <template>
@@ -331,9 +332,20 @@ const handleSettings = () => {
       />
       <div class="request-actions">
         <div class="action-side">
-          <button class="vp-button" @click="handleSettings">
-            <span class="mdi mdi-cog"></span>
-          </button>
+          <el-popover
+            width="400"
+            placement="top-start"
+            trigger="click"
+            :teleported="false"
+            :persistent="false"
+          >
+            <template #reference>
+              <button class="vp-button">
+                <span class="mdi mdi-cog"></span>
+              </button>
+            </template>
+            <SettingsAi style="max-height: 70vh; overflow-y: auto" />
+          </el-popover>
 
           <button @click="scrollBottom()" class="vp-button">
             <span class="mdi mdi-arrow-down"></span>
@@ -341,7 +353,7 @@ const handleSettings = () => {
         </div>
 
         <div class="action-side">
-          {{ currentCharacter.model }}
+          <span> {{ currentCharacter.provider }}/{{ currentCharacter.model }} </span>
 
           <template v-if="isEnableVision">
             <ImagePicker v-model:images="imageList" :disabled="isLoading" />

@@ -1,11 +1,24 @@
 import {useAiSettingsStore} from '@/components/AI/hooks/ai-settings'
-import {OpenAIApiErrorCodeMessage} from '@/components/AI/types/models'
+import {anthropicChatModelOptions, OpenAIApiErrorCodeMessage} from '@/components/AI/types/models'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {SettingsTabType} from '@/enum/settings'
-import {ClaudeStreamResponse, ClaudeStreamType} from '@/components/AI/types/anthropic'
+import {
+  ClaudeResponseData,
+  ClaudeStreamResponse,
+  ClaudeStreamType,
+} from '@/components/AI/types/anthropic'
+import {scrollToElementAndBlink} from '@/utils/anim'
+import {GptMessage} from '@/components/AI/types/open-ai'
 
 export const useAnthropicClaudeAI = () => {
   const aisStore = useAiSettingsStore()
+
+  const openAiSettings = () => {
+    globalEventBus.emit(GlobalEvents.OPEN_SETTINGS, SettingsTabType.AI)
+    setTimeout(() => {
+      scrollToElementAndBlink('.system-settings .content-wrap [data-key="anthropic"]')
+    }, 500)
+  }
 
   /**
    * https://docs.anthropic.com/en/api/messages
@@ -33,7 +46,7 @@ export const useAnthropicClaudeAI = () => {
     // 全局默认参数（可覆盖）
     params = {
       // 指定要使用的模型
-      model: aisStore.anthropicModel,
+      model: anthropicChatModelOptions[0].value,
       // 是否启用流式数据输出 https://docs.anthropic.com/en/api/messages-streaming
       stream: aisStore.stream,
       max_tokens: 4096,
@@ -56,7 +69,7 @@ export const useAnthropicClaudeAI = () => {
     const errorMessage = OpenAIApiErrorCodeMessage[response.status]
     if (errorMessage) {
       if (response.status === 401) {
-        globalEventBus.emit(GlobalEvents.OPEN_SETTINGS, SettingsTabType.AI)
+        openAiSettings()
       }
       const data = await response.json()
       throw new Error(`${errorMessage}\n\n${data.error.message}`)
@@ -68,6 +81,10 @@ export const useAnthropicClaudeAI = () => {
     // 确保响应体是可读流
     if (!response.body) {
       throw new Error('Response body is null')
+    }
+
+    if (!params.stream) {
+      return await response.json()
     }
 
     const reader = response.body.getReader()
@@ -90,7 +107,7 @@ export const useAnthropicClaudeAI = () => {
               try {
                 const jsonData = JSON.parse(line.slice(6)) as ClaudeStreamResponse
 
-                console.log(jsonData)
+                // console.log(jsonData)
 
                 if (jsonData.type === ClaudeStreamType.CONTENT_BLOCK_DELTA) {
                   const chunkText = jsonData.delta.text
@@ -121,8 +138,15 @@ export const useAnthropicClaudeAI = () => {
     })
   }
 
-  const requestChatMessage = () => {
-    throw new Error('Not implemented!')
+  const requestChatMessage = async (messages: GptMessage[], optionsOverride: any = {}) => {
+    const result = (await requestChatStream({
+      messages,
+      stream: false,
+      ...optionsOverride,
+    })) as ClaudeResponseData
+    console.log(result)
+
+    return result.content[0]?.text || ''
   }
 
   return {

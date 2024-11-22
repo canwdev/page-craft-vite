@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import OptionUI from '@/components/CanUI/packages/OptionUI/index.vue'
-
 import {SettingsTabType} from '@/enum/settings'
 
 import ViewPortWindow from '@/components/CanUI/packages/ViewPortWindow/index.vue'
@@ -10,11 +8,13 @@ import SettingsCommon from '@/components/SystemSettings/SettingsCommon.vue'
 import SettingsAi from '@/components/SystemSettings/SettingsAi.vue'
 import I18nToolSettings from '@/components/VueI18nEditTool/I18nToolSettings.vue'
 import {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
+import {useI18n} from 'vue-i18n'
 
+const {t: $t} = useI18n()
 const settingsTabs = ref([
-  {label: 'Common', value: SettingsTabType.COMMON},
+  {label: $t('common.common'), value: SettingsTabType.COMMON},
   {label: 'AI', value: SettingsTabType.AI},
-  {label: 'I18N', value: SettingsTabType.I18N},
+  {label: $t('i18n_tools.i18_n'), value: SettingsTabType.I18N},
 ])
 const curTab = ref<SettingsTabType>(SettingsTabType.COMMON)
 
@@ -62,7 +62,7 @@ useGlobalBusOn(GlobalEvents.OPEN_SETTINGS, (type: SettingsTabType) => {
 <style lang="scss" scoped>
 .system-settings-window {
   max-height: 80vh;
-  min-width: 350px;
+  min-width: 400px;
   .system-settings {
     height: 100%;
     overflow: auto;

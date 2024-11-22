@@ -1,7 +1,7 @@
 import {ActionBlockItems} from '@/enum/page-craft/block'
 import {BlockItem} from '@/enum/page-craft/block'
-import {LsKeys} from '@/enum/page-craft'
 import {CopyMode} from '@/enum/vue-i18n-tool'
+import {PageCraftKeys} from '@/enum'
 
 type IStore = {
   isAppDarkMode: boolean
@@ -30,7 +30,8 @@ export const useMainStore = defineStore('main', {
       isAppDarkMode: true,
 
       currentBlock:
-        JSON.parse(localStorage.getItem(LsKeys.CURRENT_BLOCK) || 'null') || ActionBlockItems.EMPTY,
+        JSON.parse(localStorage.getItem(PageCraftKeys.CURRENT_BLOCK) || 'null') ||
+        ActionBlockItems.EMPTY,
       className: '',
       innerText: '',
       selecting: false,
@@ -48,7 +49,7 @@ export const useMainStore = defineStore('main', {
   actions: {
     setCurrentBlock(block: BlockItem) {
       this.currentBlock = block
-      localStorage.setItem(LsKeys.CURRENT_BLOCK, JSON.stringify(block))
+      localStorage.setItem(PageCraftKeys.CURRENT_BLOCK, JSON.stringify(block))
     },
   },
   share: {

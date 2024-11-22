@@ -14,18 +14,18 @@ import {
 } from '@/components/PageCraft/ComponentExplorer/enum'
 import {guid} from '@/utils'
 import {useStorage} from '@vueuse/core'
-import {LsKeys} from '@/enum/page-craft'
 import {BlockItem, BlockType, ComponentData} from '@/enum/page-craft/block'
 
 import {promptGetFileName} from '@/utils/mc-utils/io'
+import {PageCraftKeys} from '@/enum'
 
 let idx = 1
 const SPLIT_SIGN_V1 = '__'
 // 读写组件存储
-export const loadCompV1Storage = (lsKey: LsKeys, name: string) => {
+export const loadCompV1Storage = (lsKey: PageCraftKeys, name: string) => {
   return localStorage.getItem(lsKey + SPLIT_SIGN_V1 + name) || ''
 }
-export const saveCompV1Storage = (lsKey: LsKeys, name: string, value: string) => {
+export const saveCompV1Storage = (lsKey: PageCraftKeys, name: string, value: string) => {
   return localStorage.setItem(lsKey + SPLIT_SIGN_V1 + name, value)
 }
 
@@ -203,7 +203,7 @@ export const useComponentStorageV2 = () => {
 
   const loadCurFile = async (filename: string) => {
     if (!settingsStore.curCompInStore) {
-      return loadCompV1Storage(LsKeys.DEFAULT_CANVAS, filename)
+      return loadCompV1Storage(PageCraftKeys.DEFAULT_CANVAS, filename)
     }
     const {path} = settingsStore.curCompInStore
     return await loadFile(path, filename)
@@ -211,7 +211,7 @@ export const useComponentStorageV2 = () => {
 
   const saveCurFile = async (filename: string, content) => {
     if (!settingsStore.curCompInStore) {
-      return saveCompV1Storage(LsKeys.DEFAULT_CANVAS, filename, content)
+      return saveCompV1Storage(PageCraftKeys.DEFAULT_CANVAS, filename, content)
     }
     const {path} = settingsStore.curCompInStore
     return await fsWebApi.writeFile({path: normalizePath(path + '/' + filename), file: content})
@@ -258,13 +258,14 @@ export const useComponentMigrationToV2 = (emit) => {
       return
     }
     isMigrating.value = true
-    const rawList: any[] = JSON.parse(localStorage.getItem(LsKeys.COMP_INDEX_LIST) || 'null') || []
+    const rawList: any[] =
+      JSON.parse(localStorage.getItem(PageCraftKeys.COMP_INDEX_LIST) || 'null') || []
 
     const v1List: BlockItem[] = rawList.map(({name}) => {
       // 读取详细信息并组成组件列表
       return createComponentBlockItem(
         name,
-        JSON.parse(loadCompV1Storage(LsKeys.COMP_META, name) || '{}'),
+        JSON.parse(loadCompV1Storage(PageCraftKeys.COMP_META, name) || '{}'),
       )
     })
 
@@ -286,8 +287,8 @@ export const useComponentMigrationToV2 = (emit) => {
 
       await createFile(subDirPath, 'index.json', JSON.stringify(meta))
       // 还原HTML、SCSS代码
-      await createFile(subDirPath, 'index.html', loadCompV1Storage(LsKeys.COMP_HTML, title))
-      await createFile(subDirPath, 'index.scss', loadCompV1Storage(LsKeys.COMP_STYLE, title))
+      await createFile(subDirPath, 'index.html', loadCompV1Storage(PageCraftKeys.COMP_HTML, title))
+      await createFile(subDirPath, 'index.scss', loadCompV1Storage(PageCraftKeys.COMP_STYLE, title))
       if (cover) {
         await createFile(subDirPath, 'cover.base64', cover)
       }

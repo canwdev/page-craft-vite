@@ -13,6 +13,7 @@ import {useDebounceFn, useStorage} from '@vueuse/core'
 import ViewPortWindow from '@/components/CanUI/packages/ViewPortWindow/index.vue'
 import RectSwitch from '@/components/CanUI/packages/OptionUI/Tools/RectSwitch.vue'
 import {useSettingsStore} from '@/store/settings'
+import {LS_SettingsKey} from '@/enum/settings'
 
 export default defineComponent({
   name: 'DialogTextTransformer',
@@ -29,9 +30,14 @@ export default defineComponent({
     const mVisible = useModelWrapper(props, emit, 'visible')
     const textInput = ref('')
     const textOutput = ref('')
-    const mMode = useStorage('text_converter_copy_mode', TextConvertMode.JSON, localStorage, {
-      listenToStorageChanges: false,
-    })
+    const mMode = useStorage(
+      LS_SettingsKey.TEXT_CONVERTER_COPY_MODE,
+      TextConvertMode.JSON,
+      localStorage,
+      {
+        listenToStorageChanges: false,
+      },
+    )
     const isTrimEmptyLines = ref(true)
     const htmlTagName = ref('')
     const htmlAttrs = ref('')

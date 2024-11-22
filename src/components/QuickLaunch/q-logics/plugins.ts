@@ -7,6 +7,7 @@ import {filterLabel} from './utils'
 import {demoPluginTpl} from './demo.json'
 import {useI18n} from 'vue-i18n'
 import {base64Utils} from '@/utils/base64-utils'
+import {LS_SettingsKey} from '@/enum/settings'
 
 export type DynamicPlugin = (key: any) => QuickOptionItem
 
@@ -154,7 +155,10 @@ export interface ICustomPluginItem {
 export const useQuickLaunchCustomPlugins = (update) => {
   const {t: $t} = useI18n()
   // 自定义插件
-  const customPluginsStorage = useStorage<ICustomPluginItem[]>('quick_launch_custom_plugins', [])
+  const customPluginsStorage = useStorage<ICustomPluginItem[]>(
+    LS_SettingsKey.QUICK_LAUNCH_CUSTOM_PLUGINS,
+    [],
+  )
   const findCustomPlugin = (name: string) => {
     const index = customPluginsStorage.value.findIndex((i) => i.name === name)
     if (index !== -1) {

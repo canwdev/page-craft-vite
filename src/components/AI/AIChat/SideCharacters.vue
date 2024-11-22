@@ -24,7 +24,8 @@ import AutoFormElPlus from '@/components/CanUI/packages/AutoFormElPlus/index.vue
 
 const {t: $t} = useI18n()
 const aisStore = useAiSettingsStore()
-const {characterList, allChatHistory} = useAiCharacters()
+const {characterList, allChatHistory, updatePresetCharacters, isCharacterListFinished} =
+  useAiCharacters()
 
 const isCreate = ref(false)
 const isShowEditDialog = ref(false)
@@ -124,6 +125,15 @@ const optionList = computed((): StOptionItem[] => {
               },
             },
           },
+          {
+            label: $t('ai.geng_xin_yu_she_jue'),
+            iconClass: 'mdi mdi-shape-plus-outline',
+            props: {
+              onClick: () => {
+                updatePresetCharacters()
+              },
+            },
+          },
         ]),
       children: characterList.value.map((item, index) => {
         return {
@@ -186,12 +196,17 @@ const optionList = computed((): StOptionItem[] => {
   ]
 })
 
-onMounted(() => {
-  setTimeout(() => {
-    document.querySelectorAll('.ai-option-ui .sub-item.active').forEach((el) => {
-      el.scrollIntoView({behavior: 'smooth', block: 'center'})
-    })
-  }, 100)
+watch(isCharacterListFinished, (val) => {
+  if (val) {
+    if (!characterList.value.length) {
+      updatePresetCharacters()
+    }
+    setTimeout(() => {
+      document.querySelectorAll('.ai-option-ui .sub-item.active').forEach((el) => {
+        el.scrollIntoView({behavior: 'smooth', block: 'center'})
+      })
+    }, 100)
+  }
 })
 
 const formRules = ref({
@@ -276,8 +291,8 @@ const formItems = computed((): MixedFormItems[] => {
       {
         type: AutoFormItemType.INPUT,
         key: 'desc',
-        label: $t('ai.desc'),
-        placeholder: '此为备注，无需填写',
+        label: $t('common.bei_zhu'),
+        placeholder: '',
       },
     ],
     [
@@ -285,7 +300,7 @@ const formItems = computed((): MixedFormItems[] => {
         type: AutoFormItemType.SELECT,
         options: chatProviderOptions,
         key: 'provider',
-        label: '提供商',
+        label: $t('ai.ti_gong_shang'),
         props: {
           filterable: true,
           onChange() {
@@ -313,7 +328,6 @@ const formItems = computed((): MixedFormItems[] => {
         type: 'textarea',
         rows: 8,
       },
-      placeholder: '建议填写',
     },
   ]
 })

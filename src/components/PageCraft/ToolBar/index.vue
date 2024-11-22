@@ -3,7 +3,6 @@ import {useMainStore} from '@/store/main'
 import {BlockItem, initToolbarList} from '@/enum/page-craft/block'
 import ToolItem from '@/components/PageCraft/ToolBar/ToolItem.vue'
 import InventoryModal from '@/components/PageCraft/InventoryModal/index.vue'
-import {LsKeys} from '@/enum/page-craft'
 import {useRouter} from 'vue-router'
 import {useSettingsStore} from '@/store/settings'
 import PreviewWindow from '@/components/PageCraft/DomPreview/PreviewWindow.vue'
@@ -11,6 +10,7 @@ import {useI18n} from 'vue-i18n'
 import {useOpenCloseSound, useSfxSelect} from '@/hooks/use-sfx'
 import ClassNameInput from '@/components/PageCraft/ToolBar/ClassNameInput.vue'
 import {useStorage} from '@vueuse/core'
+import {PageCraftKeys} from '@/enum'
 
 export default defineComponent({
   name: 'BottomToolBar',
@@ -26,7 +26,7 @@ export default defineComponent({
     const mainStore = useMainStore()
     const settingsStore = useSettingsStore()
 
-    const toolBarList = useStorage(LsKeys.TOOL_BAR_LIST, [...initToolbarList])
+    const toolBarList = useStorage(PageCraftKeys.TOOL_BAR_LIST, [...initToolbarList])
 
     const blinkAnimIndex = ref(-1)
     // add blink animation

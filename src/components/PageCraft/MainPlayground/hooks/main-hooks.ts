@@ -12,8 +12,8 @@ import {useBroadcastMessage} from '@/hooks/use-broadcast-messae'
 import {useComponentStorageV2} from '@/components/PageCraft/ComponentExplorer/hooks/use-component-manage'
 import {IComponentExportData} from '@/components/PageCraft/ComponentExplorer/enum'
 import {useStorage} from '@vueuse/core'
-import {StyleEditorKeys} from '@/components/StyleEditor/enum'
 import {sassToCSS} from '@/components/StyleEditor/utils/css'
+import {StyleEditorKeys} from '@/enum/settings'
 
 export const useMcMain = (options) => {
   const {t: $t} = useI18n()

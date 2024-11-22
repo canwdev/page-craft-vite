@@ -3,6 +3,7 @@ import {useMainStore} from '@/store/main'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import InputAutoTips from '@/components/CommonUI/InputAutoTips.vue'
 import {monacoStyleGlobal} from '@/components/StyleEditor/hooks/use-monaco-helper'
+import {LS_SettingsKey} from '@/enum/settings'
 
 const mainStore = useMainStore()
 
@@ -32,7 +33,7 @@ const updateWindowClassNameHistory = (val) => {
     v-model="mainStore.className"
     class="sl-css-class-input font-code"
     :title="`Focus shortcut: alt+1\nPress enter to insert css class\nInput without dot(.)`"
-    hid="class"
+    :storageKey="LS_SettingsKey.MC_INPUT_HISTORY_CLASS"
     @keyup.enter="handleAddClassName"
     @historyChanged="updateWindowClassNameHistory"
   />

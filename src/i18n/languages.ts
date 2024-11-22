@@ -1,7 +1,8 @@
 import enUS from './locales/en-US/index.json'
 import zhCN from './locales/zh-CN/index.json'
 import jaJP from './locales/ja-JP/index.json'
-import {LsKeys} from '@/enum/page-craft'
+
+import {PageCraftKeys} from '@/enum'
 
 export const FALLBACK_LOCALE = 'en-US'
 export const languages = [
@@ -80,5 +81,6 @@ export const autoMatchLanguage = () => {
   return matchedLanguage
 }
 
-export const getLanguage = () => localStorage.getItem(LsKeys.LANGUAGE)
-export const setLanguage = (language: string) => localStorage.setItem(LsKeys.LANGUAGE, language)
+export const getLanguage = () => localStorage.getItem(PageCraftKeys.LANGUAGE)
+export const setLanguage = (language: string) =>
+  localStorage.setItem(PageCraftKeys.LANGUAGE, language)

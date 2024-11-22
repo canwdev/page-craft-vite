@@ -187,7 +187,11 @@ const handleItemClick = (e: Event, fn: any) => {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          font-size: 20px;
+          font-size: 26px;
+          i,
+          span {
+            font-size: inherit;
+          }
           img {
             width: 100%;
             height: 100%;

@@ -5,9 +5,10 @@ import {
   regComponentDir,
   useComponentStorageV2,
 } from '@/components/PageCraft/ComponentExplorer/hooks/use-component-manage'
+import {LS_SettingsKey} from '@/enum/settings'
 export const useNavigation = ({getListFn, openEntryFn}) => {
   const files = ref<IEntry[]>([])
-  const basePath = useStorage('mc_explorer_base_path', '/', localStorage, {
+  const basePath = useStorage(LS_SettingsKey.MC_EXPLORER_BASE_PATH, '/', localStorage, {
     listenToStorageChanges: false,
   })
   const basePathNormalized = computed(() => {
@@ -113,7 +114,7 @@ export const useNavigation = ({getListFn, openEntryFn}) => {
     }
   }
 
-  const starList = useStorage<string[]>('mc_explorer_component_dir_star_list', [])
+  const starList = useStorage<string[]>(LS_SettingsKey.MC_EXPLORER_COMPONENT_DIR_STAR_LIST, [])
   const isStared = computed(() => {
     return starList.value.includes(basePathNormalized.value)
   })

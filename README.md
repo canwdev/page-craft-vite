@@ -2,7 +2,7 @@
 
 - 在线版：[PageCraft](https://canwdev.github.io/page-craft-vite/#/)
 - 现已支持客户端，完全离线，使用Tauri技术构建，[去Release页面下载](https://github.com/canwdev/page-craft-vite/releases)
-- [更新说明](./release-notes.md)
+- [更新说明](./public/release-notes.md)
 - [English Version](./README-en.md)
 
 PageCraft 是一个网页快速生成工具，可以帮助您快速创建页面的 DOM 结构，并使用集成了 Monaco Editor 的 SCSS 编辑器直接在页面上修改样式。通过此工具，您可以快速实现静态内容。此外，它还包含了许多提升效率的小工具，比如文本转换器、多语言 JSON 文件批量编辑器等。让 PageCraft 成为您构建网页的得力助手！

@@ -10,13 +10,16 @@ import {useRouter} from 'vue-router'
 import {useStorage, useVModel} from '@vueuse/core'
 import {useRemoteOptions} from '@/components/CanUI/packages/QuickOptions/utils/use-remote-options'
 import QuickOptions from '@/components/CanUI/packages/QuickOptions/index.vue'
+import {LS_SettingsKey} from '@/enum/settings'
 
-interface Props {
-  visible: boolean
-}
-const props = withDefaults(defineProps<Props>(), {
-  visible: false,
-})
+const props = withDefaults(
+  defineProps<{
+    visible: boolean
+  }>(),
+  {
+    visible: false,
+  },
+)
 const emit = defineEmits(['update:visible'])
 const mVisible = useVModel(props, 'visible', emit)
 
@@ -30,9 +33,14 @@ const defUrl = router.resolve({
   name: 'PlaygroundPage',
 }).href
 
-const addressBarUrl = useStorage('pagecraft_iframe_browser_url', defUrl, localStorage, {
-  listenToStorageChanges: false,
-})
+const addressBarUrl = useStorage(
+  LS_SettingsKey.PAGECRAFT_IFRAME_BROWSER_URL,
+  defUrl,
+  localStorage,
+  {
+    listenToStorageChanges: false,
+  },
+)
 
 const titleText = computed(() => {
   if (isLoading.value) {

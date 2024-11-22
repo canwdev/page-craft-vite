@@ -75,3 +75,21 @@ interface MessageDeltaData {
 interface MessageStopData {
   type: ClaudeStreamType.MESSAGE_STOP
 }
+
+// 非流式响应数据
+export interface ClaudeResponseData {
+  id: string
+  type: string
+  role: string
+  model: string
+  content: {
+    type: string
+    text?: string
+  }[]
+  stop_reason: string | null
+  stop_sequence: string | null
+  usage: {
+    input_tokens: number
+    output_tokens: number
+  }
+}

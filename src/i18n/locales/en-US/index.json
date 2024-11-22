@@ -57,7 +57,8 @@
     "plugins_manager": "Plugins Manager",
     "code": "Code",
     "toolbox": "Toolbox",
-    "more": "More"
+    "more": "More",
+    "bei_zhu": "Note"
   },
   "actions": {
     "cancel": "Cancel",
@@ -110,7 +111,8 @@
     "save_all": "Save All",
     "send": "Send",
     "create": "Create",
-    "retry": "Retry"
+    "retry": "Retry",
+    "test": "Test"
   },
   "msgs": {
     "drop_files_here": "Drop files here",
@@ -172,7 +174,11 @@
     "refresh_page": "Refresh the page?",
     "error_name_duplicat": "Error: Name duplicated!",
     "bu_fen_xuan_xiang_bu": "Some options are disabled,<br>Please unselect the current component before operating.",
-    "focus_auto_action_tip": "Please click the button marked with [Auto] to start automatic operation"
+    "focus_auto_action_tip": "Please click the button marked with [Auto] to start automatic operation",
+    "release_notes": "Release Notes",
+    "bei_fen_yu_huan_yuan": "Backup and Restore",
+    "dao_ru_dao_chu_quan": "Import/Export All Settings",
+    "will_override_existe": "Will override existed settings or configurations, continue?"
   },
   "i18n_tools": {
     "locate_translate_pa": "Locate Translate Path",
@@ -182,7 +188,8 @@
     "rename_keys": "Rename Keys",
     "no_need_for_transla": "No need for translation",
     "in_all_languages": "In all languages",
-    "fen_xi_fan_yi_shu": "Analyzing Translation Trees"
+    "fen_xi_fan_yi_shu": "Analyzing Translation Trees",
+    "i18_n": "i18n Tool"
   },
   "plugins": {
     "input_demo_to_creat": "Input `demo` to create a demo plugin!",
@@ -208,7 +215,11 @@
     "new_chat": "New Chat",
     "chuang_jian_hou_bu_k": "Cannot be modified after creation",
     "quan_ju_mo_ren_mo_xi": "Global Default Model",
-    "stop_generation": "Stop Generating"
+    "stop_generation": "Stop Generating",
+    "quan_ju_mo_ren_ti_go": "Global Default Provider",
+    "lian_tong_xing_ce_sh": "Connectivity Test",
+    "geng_xin_yu_she_jue": "Update preset roles",
+    "ti_gong_shang": "Provider"
   },
   "app_client": {
     "recommend_desc": "<b>🖥️ Recommended to download the desktop client</b><br>💡 Fully open source and available offline<br>⚡ Built using Tauri technology, lightweight at under 10MB<br>🚀 Utilizes system WebView 2 for fast and stable performance<br>💽 exe installation package can be extracted and run directly",

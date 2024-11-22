@@ -141,7 +141,8 @@ const optionList = computed((): StOptionItem[] => {
         ]),
       children: [
         {
-          label: `➕ ${$t('ai.new_chat')}`,
+          label: `${$t('ai.new_chat')}`,
+          iconClass: 'mdi mdi-plus',
           clickFn: () => {
             createChat()
           },

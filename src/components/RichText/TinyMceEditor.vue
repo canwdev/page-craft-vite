@@ -1,7 +1,7 @@
 <script lang="ts">
 import Editor from '@tinymce/tinymce-vue'
 import {defineComponent, ref, toRefs} from 'vue'
-import {useVModel} from '@vueuse/core'
+import {useScriptTag, useVModel} from '@vueuse/core'
 
 export default defineComponent({
   name: 'TinyMceEditor',
@@ -109,18 +109,25 @@ export default defineComponent({
     })
     const mValue = useVModel(props, 'modelValue', emit)
 
+    const isLoaded = ref(false)
+    useScriptTag('lib/tinymce-6.0.3/tinymce.min.js', (el: HTMLScriptElement) => {
+      isLoaded.value = true
+    })
+
     return {
       mValue,
       initOptions,
+      isLoaded,
     }
   },
 })
 </script>
 
 <template>
-  <div class="tiny-mce-editor">
+  <div v-if="isLoaded" class="tiny-mce-editor">
     <Editor v-model="mValue" :init="initOptions" v-bind="$attrs" />
   </div>
+  <div v-else>Loading...</div>
 </template>
 
 <style lang="scss">

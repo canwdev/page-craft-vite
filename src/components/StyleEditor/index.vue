@@ -10,11 +10,12 @@ import VueMonaco from '@/components/CanUI/packages/VueMonaco/index.vue'
 import QuickOptions from '@/components/CanUI/packages/QuickOptions/index.vue'
 import {useEventListener, useStorage, useVModel} from '@vueuse/core'
 import {useGlobalStyle} from './hooks/use-global-style'
-import {StyleEditorKeys, StyleTabType} from './enum'
+import {StyleTabType} from './enum'
 import ElementByPoint from './components/ElementByPoint.vue'
 import {useSharedCssStore} from './utils/css-store'
 import {useSnippets} from './hooks/use-snippets'
 import {useBroadcastMessage} from '@/hooks/use-broadcast-messae'
+import {StyleEditorKeys} from '@/enum/settings'
 
 interface Props {
   // 窗口是否可见

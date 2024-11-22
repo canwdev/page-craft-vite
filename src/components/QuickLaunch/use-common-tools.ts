@@ -62,7 +62,7 @@ export const useCommonTools = () => {
       },
     },
     {
-      label: '🤯 AI Chat (GPT/Claude)',
+      label: '🤯 AI Chat (ChatGPT / Claude AI)',
       props: {
         onClick: async () => {
           mainStore.isShowQuickLaunch = false

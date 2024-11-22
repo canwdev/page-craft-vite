@@ -1,9 +1,10 @@
-import {CLASS_MAIN_CANVAS_ROOT, LsKeys} from '@/enum/page-craft'
+import {CLASS_MAIN_CANVAS_ROOT} from '@/enum/page-craft'
 import {ActionType, BlockType} from '@/enum/page-craft/block'
 import {useMainStore} from '@/store/main'
 import {useI18n} from 'vue-i18n'
 import {useSfxBass, useSfxPop} from '@/hooks/use-sfx'
 import {useBroadcastMessage} from '@/hooks/use-broadcast-messae'
+import {PageCraftKeys} from '@/enum'
 
 export type IndicatorOptions = {
   enableDevHelpClass: boolean
@@ -36,7 +37,7 @@ export const useIndicator = () => {
   })
 
   const indicatorOptions = reactive<IndicatorOptions>(
-    JSON.parse(localStorage.getItem(LsKeys.INDICATOR_OPTIONS) || 'null') || {
+    JSON.parse(localStorage.getItem(PageCraftKeys.INDICATOR_OPTIONS) || 'null') || {
       enableDevHelpClass: true,
       enableExpand: true,
       enableSelection: false,
@@ -58,7 +59,7 @@ export const useIndicator = () => {
         return
       }
       const obj = {...indicatorOptions}
-      localStorage.setItem(LsKeys.INDICATOR_OPTIONS, JSON.stringify(obj))
+      localStorage.setItem(PageCraftKeys.INDICATOR_OPTIONS, JSON.stringify(obj))
 
       // 如果开启了多个窗口（iframe)，发送同步状态
       channelRef.value?.postMessage(obj)

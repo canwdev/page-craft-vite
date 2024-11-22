@@ -10,6 +10,7 @@ import {
   openAIChatModelOptions,
 } from '@/components/AI/types/models'
 import {useAiSettingsStore} from '@/components/AI/hooks/ai-settings'
+import {IDBSettingsKey} from '@/enum/settings'
 
 /**
  * 自动覆盖相同id的数据，如果id不存在则添加
@@ -30,8 +31,27 @@ export const mergeIdData = (existingData: any[], newData: any[]) => {
 
 const useAiIdbState = createGlobalState(() => {
   const {data: characterList, isFinished: isCharacterListFinished} = useIDBKeyval<IAiCharacter[]>(
-    'page_craft_ai_characters',
-    [
+    IDBSettingsKey.PAGE_CRAFT_AI_CHARACTERS,
+    [],
+  )
+  const {data: allChatHistory, isFinished: isAllChatHistory} = useIDBKeyval<IChatHistoryItem[]>(
+    IDBSettingsKey.PAGE_CRAFT_AI_HISTORY_GROUP,
+    [],
+  )
+
+  return {
+    characterList,
+    allChatHistory,
+    isCharacterListFinished,
+    isAllChatHistory,
+  }
+})
+export const useAiCharacters = () => {
+  const aisStore = useAiSettingsStore()
+  const {characterList, allChatHistory, isCharacterListFinished, isAllChatHistory} = useAiIdbState()
+
+  const getPresetCharacters = (): IAiCharacter[] => {
+    return [
       {
         id: 'default',
         name: 'ChatGPT',
@@ -50,23 +70,12 @@ const useAiIdbState = createGlobalState(() => {
         model: anthropicChatModelOptions[0].value,
         systemPrompt: 'You are a helpful assistant.',
       },
-    ],
-  )
-  const {data: allChatHistory, isFinished: isAllChatHistory} = useIDBKeyval<IChatHistoryItem[]>(
-    'page_craft_ai_history_group',
-    [],
-  )
-
-  return {
-    characterList,
-    allChatHistory,
-    isCharacterListFinished,
-    isAllChatHistory,
+    ]
   }
-})
-export const useAiCharacters = () => {
-  const aisStore = useAiSettingsStore()
-  const {characterList, allChatHistory, isCharacterListFinished, isAllChatHistory} = useAiIdbState()
+  const updatePresetCharacters = () => {
+    characterList.value = mergeIdData(characterList.value, getPresetCharacters())
+    window.$message.success({message: '预设角色已更新！'})
+  }
 
   // 当前选中的角色
   const currentCharacter = computed(() => {
@@ -94,6 +103,8 @@ export const useAiCharacters = () => {
     return currentHistoryGroup.value.find((item) => item.id === aisStore.currentChatHistoryId)
   })
   return {
+    getPresetCharacters,
+    updatePresetCharacters,
     characterList,
     allChatHistory,
     isCharacterListFinished,

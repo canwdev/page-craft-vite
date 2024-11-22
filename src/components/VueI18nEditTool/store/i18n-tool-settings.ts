@@ -1,4 +1,5 @@
 import {TextConvertMode} from '@/utils/mc-utils/text-convert'
+import {LS_SettingsKey} from '@/enum/settings'
 
 type IState = {
   // 文件夹编辑器:是否为文件夹模式
@@ -38,7 +39,7 @@ export const useI18nToolSettingsStore = defineStore('i18nToolSettings', {
     },
   },
   persist: {
-    key: 'ls_key_i18n_tool_settings',
+    key: LS_SettingsKey.LS_KEY_I18N_TOOL_SETTINGS,
   },
   share: {
     enable: false,

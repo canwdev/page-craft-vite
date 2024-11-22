@@ -2,7 +2,7 @@
 
 - Online version: [PageCraft](https://canwdev.github.io/page-craft-vite/#/)
 - Now available for desktop app with Tauri technology, completely offline, [download from the Release page](https://github.com/canwdev/page-craft-vite/releases)
-- [Release Notes](./release-notes.md)
+- [Release Notes](./public/release-notes.md)
 - [中文版](./README.md)
 
 PageCraft is a web page rapid generation tool that allows you to quickly create the DOM structure of a page and directly modify styles using the integrated SCSS editor with Monaco Editor. With this tool, you can quickly implement static content. Additionally, it includes many productivity-enhancing utilities, such as a text converter and a batch editor for multilingual JSON files. Let PageCraft be your powerful assistant in building web pages!

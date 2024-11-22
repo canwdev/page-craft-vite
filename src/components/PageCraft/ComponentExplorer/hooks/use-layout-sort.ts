@@ -4,11 +4,12 @@ import {Ref} from 'vue'
 import {sortMethodMap, SortType} from '@/components/PageCraft/ComponentExplorer/utils/sort'
 import {useStorage} from '@vueuse/core'
 import {IComponentItem} from '@/components/PageCraft/ComponentExplorer/enum'
+import {LS_SettingsKey} from '@/enum/settings'
 
 export const useLayoutSort = (files: Ref<IComponentItem[]>) => {
   const isGridView = ref(false)
   const sortMode = useStorage(
-    'mc_explorer_component_sort_type',
+    LS_SettingsKey.MC_EXPLORER_COMPONENT_SORT_TYPE,
     SortType.birthTimeDesc,
     localStorage,
     {
