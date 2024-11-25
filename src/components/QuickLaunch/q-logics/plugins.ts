@@ -8,6 +8,7 @@ import {demoPluginTpl} from './demo.json'
 import {useI18n} from 'vue-i18n'
 import {base64Utils} from '@/utils/base64-utils'
 import {LS_SettingsKey} from '@/enum/settings'
+import {watchThrottled, useThrottleFn, useDebounceFn, refDebounced} from '@vueuse/core'
 
 export type DynamicPlugin = (key: any) => QuickOptionItem
 
@@ -129,6 +130,11 @@ ${code}
       ref,
       computed,
       watch,
+      // vueUse https://vueuse.org/functions.html
+      watchThrottled,
+      useThrottleFn,
+      useDebounceFn,
+      refDebounced,
 
       // 过滤列表功能
       filterLabel,

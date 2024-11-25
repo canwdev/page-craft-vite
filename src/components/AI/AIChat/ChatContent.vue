@@ -326,7 +326,6 @@ watch(
         class="vp-input question-input"
         v-model="userInputContent"
         type="textarea"
-        rows="5"
         :placeholder="$t('ai.hui_che_jian_ti_jiao')"
         @keydown="handleKeyInput"
       />
@@ -338,6 +337,8 @@ watch(
             trigger="click"
             :teleported="false"
             :persistent="false"
+            popper-style="padding: 0"
+            :auto-close="false"
           >
             <template #reference>
               <button class="vp-button">
@@ -353,7 +354,7 @@ watch(
         </div>
 
         <div class="action-side">
-          <span> {{ currentCharacter.provider }}/{{ currentCharacter.model }} </span>
+          <span> {{ currentCharacter.model }} </span>
 
           <template v-if="isEnableVision">
             <ImagePicker v-model:images="imageList" :disabled="isLoading" />
@@ -425,6 +426,8 @@ watch(
     }
     .question-input {
       width: 100%;
+      height: 15vh;
+      min-height: 100px;
       box-sizing: border-box;
     }
   }

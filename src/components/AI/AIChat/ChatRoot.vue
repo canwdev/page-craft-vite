@@ -32,6 +32,7 @@ const aisStore = useAiSettingsStore()
   border: none !important;
   box-shadow: none !important;
   display: flex;
+  border-radius: 0 !important;
 
   font-family: 'Open Sans', 'Source Han Sans SC', 'PingFang SC', Arial, 'Microsoft YaHei',
     'Helvetica Neue', 'Hiragino Sans GB', 'WenQuanYi Micro Hei', sans-serif;
@@ -47,6 +48,10 @@ const aisStore = useAiSettingsStore()
       width: 240px;
       border-right: 1px solid $color_border;
       .btn-toggle-expand {
+      }
+
+      @media screen and (max-width: $mq_mobile_width) {
+        width: 200px;
       }
     }
 

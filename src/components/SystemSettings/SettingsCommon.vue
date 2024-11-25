@@ -199,6 +199,7 @@ return
         window.__TAURI__ && {
           label: $t('msgs.auto_check_update'),
           key: 'autoCheckUpdate',
+          iconClass: 'mdi mdi-cellphone-arrow-down',
           subtitle: mainStore.upgradeInfo,
           store: settingsStore,
           type: StOptionType.SWITCH,

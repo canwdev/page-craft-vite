@@ -468,6 +468,7 @@ export default defineComponent({
     width: 100%;
     overflow: auto;
     flex: 1;
+    border-radius: 0 !important;
 
     table {
       border-collapse: collapse;
