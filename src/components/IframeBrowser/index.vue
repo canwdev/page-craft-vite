@@ -75,7 +75,8 @@ const {options: shortcutList} = useRemoteOptions({
   },
   mapFn: (item) => {
     return {
-      label: '🌎 ' + (item.label || item.value),
+      label: item.label || item.value,
+      iconClass: 'mdi mdi-bookmark',
       value: item.value,
       props: {
         onClick: !item.children
@@ -109,15 +110,23 @@ const setMobileView = () => {
       height: '500px',
     }"
   >
-    <template #titleBarLeft>Iframe Browser {{ titleText }}</template>
+    <template #titleBarLeft>
+      <span class="mdi mdi-web"></span>
+      Iframe Browser {{ titleText }}
+    </template>
     <template #titleBarRightControls>
-      <button @click="setMobileView">📱</button>
+      <button @click="setMobileView">
+        <!--  📱-->
+        <span class="mdi mdi-cellphone"></span>
+      </button>
     </template>
 
     <div v-if="mVisible" class="iframe-browser-inner-wrap">
       <div class="iframe-browser-address-bar-wrap">
         <div class="button-wrap">
-          <button class="vp-button" @click="showShortcuts = true">@</button>
+          <button class="vp-button" @click="showShortcuts = true">
+            <span class="mdi mdi-bookmark-box"></span>
+          </button>
           <QuickOptions :options="shortcutList" v-model:visible="showShortcuts" title="Shortcuts" />
         </div>
 
@@ -128,7 +137,9 @@ const setMobileView = () => {
           type="text"
           @keyup.enter="handleGo()"
         />
-        <button class="vp-button" @click="handleGo()">Go</button>
+        <button class="vp-button" @click="handleGo()">
+          <span class="mdi mdi-arrow-left-bottom"></span>
+        </button>
       </div>
       <iframe
         ref="iframeRef"
@@ -167,6 +178,16 @@ const setMobileView = () => {
     display: flex;
     .iframe-browser-input {
       flex: 1;
+    }
+    .vp-input,
+    .vp-button {
+      border-radius: 0;
+      height: 32px;
+      box-sizing: border-box;
+      .mdi {
+        font-size: 18px;
+        line-height: 1;
+      }
     }
   }
 

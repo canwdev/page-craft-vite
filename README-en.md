@@ -43,3 +43,4 @@ Avoid nesting HTML elements like `<h1>TestH1<h2>TestH2</h2></h1>`. Although it c
 - [Live editor for CSS, Less & Sass - Magic CSS](https://chrome.google.com/webstore/detail/live-editor-for-css-less/ifhikkcafabcgolfjegfcgloomalapol/related?utm_source=chrome-ntp-icon)
 - [Stylus Supermacy](https://thisismanta.github.io/stylus-supremacy/#demo)
 - [Juice](https://github.com/Automattic/juice)
+- [Material Design Icons](https://pictogrammers.com/library/mdi/)

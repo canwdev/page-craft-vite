@@ -599,6 +599,9 @@ defineExpose({
         img {
           pointer-events: none;
         }
+        .mdi {
+          color: $primary;
+        }
       }
     }
     .vp-window-body {
