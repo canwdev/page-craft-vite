@@ -112,7 +112,10 @@ export default defineComponent({
     :init-win-options="{width: '600px', height: '500px'}"
     init-center
   >
-    <template #titleBarLeft>{{ `Stylus ${$t('common.formatting_tool')}` }}</template>
+    <template #titleBarLeft>
+      <span class="mdi mdi-fleur-de-lis"></span>
+      {{ `Stylus ${$t('common.formatting_tool')}` }}
+    </template>
     <div v-if="mVisible" class="text-converter-wrap">
       <div class="tool-header flex-row-center-gap" style="justify-content: space-between">
         <div class="vp-button-group">

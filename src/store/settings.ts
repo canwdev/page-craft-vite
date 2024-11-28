@@ -47,7 +47,7 @@ export const useSettingsStore = defineStore('settingsStore', {
     return {
       ldTheme: LdThemeType.SYSTEM,
       customTheme: DEFAULT_THEME,
-      themeColor: '#258292',
+      themeColor: '#009688',
       desktopBgColor: '',
       desktopWallpaper: '',
       disableAnimation: false,

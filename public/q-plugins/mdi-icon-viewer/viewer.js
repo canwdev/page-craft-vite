@@ -4,7 +4,8 @@ let metaList = []
 addPlugin(
   (valRef) => {
     return {
-      label: '🌟 Material Design Icons Viewer',
+      label: 'Material Design Icons Viewer',
+      iconClass: 'mdi mdi-material-design',
       children: async () => {
         if (!metaList.length) {
           metaList = await fetch('./q-plugins/mdi-icon-viewer/meta-lite.json').then(res => res.json())
@@ -12,8 +13,14 @@ addPlugin(
         }
 
         const getDefaultResult = () => {
-          return [{html: `Please input filter keywords.
-<a href="https://pictogrammers.com/library/mdi/" target="_blank">Material Design Icons</a>`}]
+          return [
+            {
+              html: `Please input filter keywords.
+<a href="https://pictogrammers.com/library/mdi/" target="_blank">Material Design Icons</a>`,
+              props: {
+                onClick: () => {}
+              }
+            }]
         };
         const resultList = ref(getDefaultResult());
 
@@ -40,14 +47,15 @@ addPlugin(
                 const htmlText = `<span class="${iconClass}"></span>`
                 return {
                   html: `<div class="flex-row-center-gap" style="white-space: normal;">
-<span class="${iconClass}" style="font-size: 32px"></span>
+<span class="${iconClass}" style="font-size: 32px;
+    color: var(--primary);"></span>
 <div>
-  <div>${v.name}</div>
+  <div style="line-height: 1.4;">${v.name}</div>
   <div style="
     font-size: 12px;
     opacity: .7;
     line-height: 1;
-  ">${v.tags_str}</div>
+  ">${v.tags_str||''}</div>
 </div>
 </div>`,
                   props: {
@@ -60,10 +68,10 @@ addPlugin(
                   },
                 }
               })
-              .slice(0, 500)
+              .slice(0, 800)
           ]
           // console.log('updateResultList', valRef.value, resultList.value)
-        }, 500)
+        }, 300)
 
         watch(valRef, (value) => {
           if (!valRef.value) {

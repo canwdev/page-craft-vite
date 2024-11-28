@@ -4,8 +4,9 @@ import QrCodeDisplay from './QrCodeDisplay.vue'
 
 export const qLogicQrCode = (valRef: Ref<string>): QuickOptionItem => {
   return {
-    label: '🤳 QR Code Toolbox',
+    label: 'QR Code Toolbox',
     search: 'qrcode',
+    iconClass: 'mdi mdi-qrcode-edit',
     children: [
       {
         label: 'text to QR Code',

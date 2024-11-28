@@ -14,7 +14,9 @@ export const useCommonTools = () => {
 
   const toolsMenuOptions = [
     {
-      label: '⚜ Stylus ' + $t('common.formatting_tool'),
+      label: 'Stylus ' + $t('common.formatting_tool'),
+      iconClass: 'mdi mdi-fleur-de-lis',
+      // iconClass: 'mdi mdi-language-css3',
       search: 'stylus formatting',
       props: {
         onClick: async () => {
@@ -23,8 +25,9 @@ export const useCommonTools = () => {
       },
     },
     {
-      label: '🧬 ' + $t('common.text_transformer'),
+      label: $t('common.text_transformer'),
       search: 'text transformer',
+      iconClass: 'mdi mdi-file-swap',
       props: {
         onClick: async () => {
           mainStore.isShowTextTransformer = !mainStore.isShowTextTransformer
@@ -32,7 +35,9 @@ export const useCommonTools = () => {
       },
     },
     {
-      label: '📗 ' + $t('common.excel_copy_tool'),
+      label: $t('common.excel_copy_tool'),
+      iconClass: 'mdi mdi-file-excel-box',
+      // iconClass: 'mdi mdi-microsoft-excel',
       search: 'excel copy',
       props: {
         onClick: async () => {
@@ -42,8 +47,9 @@ export const useCommonTools = () => {
       },
     },
     {
-      label: `🌐 ${$t('common.i18njson_editing_too')} 📄`,
+      label: `${$t('common.i18njson_editing_too')} 🌐`,
       search: 'json editor',
+      iconClass: 'mdi mdi-file-marker',
       props: {
         onClick: async () => {
           mainStore.isShowQuickLaunch = false
@@ -52,8 +58,9 @@ export const useCommonTools = () => {
       },
     },
     {
-      label: `🌐 ${$t('common.i18njson_batch_tool')} 📂`,
+      label: `${$t('common.i18njson_batch_tool')} 🌐`,
       search: 'json editor batch',
+      iconClass: 'mdi mdi-folder-marker',
       props: {
         onClick: async () => {
           mainStore.isShowQuickLaunch = false
@@ -62,7 +69,8 @@ export const useCommonTools = () => {
       },
     },
     {
-      label: '🤯 AI Chat (ChatGPT / Claude AI)',
+      label: 'AI Chat (ChatGPT / Claude AI)',
+      iconClass: 'mdi mdi-comment-text',
       props: {
         onClick: async () => {
           mainStore.isShowQuickLaunch = false
@@ -75,10 +83,12 @@ export const useCommonTools = () => {
     let list: QuickOptionItem[] = [
       ...toolsMenuOptions,
       {
-        label: `✨ ${$t('common.more')}...`,
+        label: `${$t('common.more')}...`,
+        iconClass: 'mdi mdi-more',
         children: [
           {
-            label: `🌏 ${$t('common.iframe_browser')} (alt+i)`,
+            label: `${$t('common.iframe_browser')} (alt+i)`,
+            iconClass: 'mdi mdi-web-box',
             props: {
               onClick: async () => {
                 mainStore.isShowIframeBrowser = !mainStore.isShowIframeBrowser
@@ -86,7 +96,8 @@ export const useCommonTools = () => {
             },
           },
           {
-            label: '📑 ' + $t('common.rich_text_tool'),
+            label: $t('common.rich_text_tool'),
+            iconClass: 'mdi mdi-language-markdown-outline',
             props: {
               onClick: async () => {
                 mainStore.isShowQuickLaunch = false
@@ -95,7 +106,8 @@ export const useCommonTools = () => {
             },
           },
           {
-            label: `🤯 AI Chat Window (alt+g)`,
+            label: `AI Chat Window (alt+g)`,
+            iconClass: 'mdi mdi-comment-text',
             props: {
               onClick: async () => {
                 mainStore.isShowAiChat = !mainStore.isShowAiChat
@@ -103,7 +115,8 @@ export const useCommonTools = () => {
             },
           },
           {
-            label: '🔧 Dev Page',
+            label: 'Dev Page',
+            iconClass: 'mdi mdi-language-html5',
             props: {
               onClick: async () => {
                 mainStore.isShowQuickLaunch = false
@@ -114,7 +127,8 @@ export const useCommonTools = () => {
         ],
       },
       {
-        label: '⚙️ ' + $t('common.settings'),
+        label: $t('common.settings'),
+        iconClass: 'mdi mdi-cog',
         search: 'settings',
         props: {
           onClick: async () => {
@@ -126,7 +140,8 @@ export const useCommonTools = () => {
     if (route.name !== 'CraftPage') {
       list = [
         {
-          label: `⛏️ Page Craft`,
+          label: `Page Craft`,
+          iconClass: 'mdi mdi-minecraft',
           props: {
             onClick: async () => {
               mainStore.isShowQuickLaunch = false
@@ -141,7 +156,8 @@ export const useCommonTools = () => {
     if (route.name !== 'HomePage') {
       list = [
         {
-          label: '🏠 ' + $t('common.home_page'),
+          label: $t('common.home_page'),
+          iconClass: 'mdi mdi-home',
           props: {
             onClick: async () => {
               await router.push({name: 'HomePage'})

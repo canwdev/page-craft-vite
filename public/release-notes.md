@@ -5,6 +5,7 @@
 - add: AI 支持 Anthropic/Claude 模型
 - add: 展示 Release Notes
 - add: 支持导入/导出全部设置
+- add: Material Design Icons Viewer
 - optimize: UI 交互优化
 
 ## v1.7.5

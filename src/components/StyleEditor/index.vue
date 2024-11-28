@@ -318,6 +318,7 @@ defineExpose({
       </button>
       <button
         @click="isShowQuickOptions = !isShowQuickOptions"
+        :class="{active: isShowQuickOptions}"
         :title="$t('actions.add_tool_codes')"
       >
         <span class="mdi mdi-menu"></span>
@@ -346,13 +347,15 @@ defineExpose({
     </transition>
 
     <div class="style-editor-inner">
-      <QuickOptions
-        v-model:visible="isShowQuickOptions"
-        :options="snippetsOptions"
-        :title="`${$t('actions.add_tool_codes')} (alt+\`)`"
-        class="font-code"
-        style="top: 2px; right: 2px; position: absolute; z-index: 999"
-      />
+      <transition name="fade-down">
+        <QuickOptions
+          v-model:visible="isShowQuickOptions"
+          :options="snippetsOptions"
+          :title="`${$t('actions.add_tool_codes')} (alt+\`)`"
+          class="font-code vp-panel style-qo"
+          is-static
+        />
+      </transition>
       <div v-if="showTabs" class="style-editor-action-bar">
         <TabLayout v-model="styleEditorTab" :options="tabList" horizontal />
       </div>
@@ -416,6 +419,13 @@ defineExpose({
 
     .code-editor-placeholder {
       height: calc(100% - 31px);
+    }
+
+    .style-qo {
+      position: absolute;
+      z-index: 999;
+      right: 0;
+      width: 100%;
     }
   }
 

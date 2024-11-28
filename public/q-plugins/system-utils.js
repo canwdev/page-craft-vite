@@ -2,8 +2,9 @@ const {addPlugin, copy, ref, computed, watch} = window.$qlUtils
 
 addPlugin(
   {
-    label: '💧 Eye Drop',
+    label: 'Eye Drop',
     search: 'eyedrop',
+    iconClass: 'mdi mdi-eyedropper-variant',
     props: {
       onClick: async () => {
         if ('EyeDropper' in window) {
@@ -26,7 +27,9 @@ let fonts = []
 addPlugin(
   (valRef) => {
     return {
-      label: '🔠 System Fonts',
+      label: 'System Fonts',
+      iconClass: 'mdi mdi-format-size',
+      // iconClass: 'mdi mdi-format-font',
       children: async () => {
         if (!fonts.length) {
           fonts = await window.queryLocalFonts()
@@ -74,7 +77,8 @@ if (!synth) {
   addPlugin(
     (valRef) => {
       return {
-        label: '🗣 Speech Synthesis',
+        label: 'Speech Synthesis',
+        iconClass: 'mdi mdi-speaker-message',
         children: async () => {
           let voices = synth.getVoices()
           console.log(voices)

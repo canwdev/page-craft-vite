@@ -67,8 +67,9 @@ defineExpose({
     ></textarea>
     <QuickOptions
       ref="qRef"
-      :auto-focus="false"
+      :auto-focus="true"
       :options="filteredOptions"
+      visible
       is-static
       class="font-emoji"
       @onClose="textareaRef.focus()"

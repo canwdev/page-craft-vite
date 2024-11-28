@@ -16,6 +16,11 @@ const route = useRoute()
             :src="route.meta.icon"
             style="background: none"
           />
+          <span
+            v-if="route.meta?.iconClass"
+            :class="route.meta?.iconClass"
+            style="font-size: 28px"
+          ></span>
           {{ route.meta?.title }}
         </div>
       </template>

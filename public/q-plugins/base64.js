@@ -5,7 +5,10 @@ const {btoa_utf8, atob_utf8, chooseFileToBase64} = base64Utils
 addPlugin(
   (valRef) => {
     return {
-      label: '🔤 Base64 Toolbox',
+      // 🔤
+      label: 'Base64 Toolbox',
+      iconClass: 'mdi mdi-alphabetical-variant',
+      // iconClass: 'mdi mdi-cpu-64-bit',
       children: [
         {
           label: 'Text to Base64',

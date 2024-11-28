@@ -48,7 +48,8 @@ if (!window.$mcUtils) {
   addPlugin(
     (valRef) => {
       return {
-        html: '🧰 <span style="color: #f8312f;">PageCraft Utils</span>',
+        label: 'PageCraft Utils',
+        iconClass: 'mdi mdi-toolbox',
         children: [
           {
             label: '📋 Copy i18n key',

@@ -626,6 +626,10 @@ defineExpose({
       transition: all 0.3s;
       color: inherit;
 
+      .mdi {
+        font-size: 16px;
+      }
+
       &.active {
         background-color: $primary !important;
       }

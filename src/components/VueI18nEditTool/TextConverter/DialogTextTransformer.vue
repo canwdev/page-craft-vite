@@ -120,7 +120,10 @@ export default defineComponent({
     :init-win-options="{width: '600px', height: '500px'}"
     init-center
   >
-    <template #titleBarLeft>{{ $t('common.text_transformer') }}</template>
+    <template #titleBarLeft>
+      <span class="mdi mdi-file-swap"></span>
+      {{ $t('common.text_transformer') }}
+    </template>
 
     <div v-if="mVisible" class="text-converter-wrap">
       <div class="tool-header flex-row-center-gap">

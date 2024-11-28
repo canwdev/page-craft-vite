@@ -3,7 +3,10 @@ const {addPlugin, changeCase, copy} = window.$qlUtils
 addPlugin(
   (valRef) => {
     return {
-      html: '🪢 <span style="color: #0776c6;">String Manipulation</span>',
+      // 🪢 #0776c6
+      html: 'String Manipulation',
+      iconClass: 'mdi mdi-format-letter-case-lower',
+      // iconClass: 'mdi mdi-code-string',
       children: [
         'paramCase',
         'snakeCase',

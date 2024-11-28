@@ -69,7 +69,10 @@ export default defineComponent({
     :init-win-options="{height: '400px'}"
     :allow-move="!settingsStore.isInvDocked"
   >
-    <template #titleBarLeft> 📦 {{ $t('common.inventory_list') }} </template>
+    <template #titleBarLeft>
+      <span class="mdi mdi-archive"></span>
+      {{ $t('common.inventory_list') }}
+    </template>
     <template #titleBarRightControls>
       <button @click="settingsStore.isInvDocked = !settingsStore.isInvDocked">
         <template v-if="!settingsStore.isInvDocked">

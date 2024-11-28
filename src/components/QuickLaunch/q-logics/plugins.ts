@@ -231,13 +231,16 @@ ${code}
 
   // 插件管理器
   const qLogicManage = {
-    label: `🔌 ${$t('common.plugins_manager')} 🧩`,
+    // 🧩
+    label: `${$t('common.plugins_manager')}`,
+    iconClass: 'mdi mdi-power-plug',
     children: () => {
       // 支持直接返回vue3计算属性
       return computed(() => {
         return [
           {
-            label: `🔄 ${$t('plugins.reload_all_plugins')}`,
+            label: `${$t('plugins.reload_all_plugins')}`,
+            iconClass: 'mdi mdi-refresh-circle',
             props: {
               isBack: 1,
               onClick: async () => {
@@ -248,7 +251,8 @@ ${code}
             },
           },
           {
-            label: `🔄 ${$t('plugins.reload_custom_plugi')}`,
+            label: `${$t('plugins.reload_custom_plugi')}`,
+            iconClass: 'mdi mdi-refresh',
             props: {
               isBack: 1,
               onClick: async () => {
@@ -258,7 +262,8 @@ ${code}
             },
           },
           {
-            label: `✨ ${$t('actions.add_plugin')}`,
+            label: `${$t('actions.add_plugin')}`,
+            iconClass: 'mdi mdi-plus',
             props: {
               onClick: async () => {
                 const name = await window.$mcUtils.showInputPrompt({
@@ -280,10 +285,12 @@ ${code}
             },
           },
           {
-            label: `🗃️ ${$t('actions.import_export')} ${$t('actions.plugins')}`,
+            label: `${$t('actions.import_export')} ${$t('actions.plugins')}`,
+            iconClass: 'mdi mdi-briefcase-arrow-up-down',
             children: [
               {
-                label: `📥 ${$t('actions.import')} ${$t('actions.plugins')}`,
+                label: `${$t('actions.import')} ${$t('actions.plugins')}`,
+                iconClass: 'mdi mdi-import',
                 props: {
                   isBack: 1,
                   onClick: async () => {
@@ -295,7 +302,8 @@ ${code}
                 },
               },
               {
-                label: `📤 ${$t('actions.export')} ${$t('actions.plugins')}`,
+                label: `${$t('actions.export')} ${$t('actions.plugins')}`,
+                iconClass: 'mdi mdi-export',
                 props: {
                   onClick: async () => {
                     window.$mcUtils.handleExportFile(
@@ -307,7 +315,8 @@ ${code}
                 },
               },
               {
-                label: `🗑️ ${$t('plugins.delete_all_custom_p')}`,
+                label: `${$t('plugins.delete_all_custom_p')}`,
+                iconClass: 'mdi mdi-delete',
                 children: [
                   {
                     label: `☑️ ${$t('actions.confirm')}`,
@@ -332,10 +341,12 @@ ${code}
           {split: true},
           ...customPluginsStorage.value.map((p) => {
             return {
-              label: '🧩 ' + p.name,
+              label: p.name,
+              iconClass: 'mdi mdi-puzzle',
               children: [
                 {
-                  label: `📝 ${$t('actions.edit')} ${$t('common.code')}`,
+                  label: `${$t('actions.edit')} ${$t('common.code')}`,
+                  iconClass: 'mdi mdi-code-braces-box',
                   props: {
                     isBack: 2,
                     onClick: () => {
@@ -347,7 +358,8 @@ ${code}
                   },
                 },
                 {
-                  label: `✍️ ${$t('actions.rename')}`,
+                  label: `${$t('actions.rename')}`,
+                  iconClass: 'mdi mdi-rename',
                   props: {
                     isBack: 1,
                     onClick: async () => {
@@ -374,7 +386,8 @@ ${code}
                   },
                 },
                 {
-                  label: `🗑️ ${$t('actions.delete')} [${p.name}]`,
+                  label: `${$t('actions.delete')} [${p.name}]`,
+                  iconClass: 'mdi mdi-delete',
                   children: [
                     {
                       label: `☑️ ${$t('actions.confirm')}`,
