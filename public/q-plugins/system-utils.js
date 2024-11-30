@@ -2,7 +2,7 @@ const {addPlugin, copy, ref, computed, watch} = window.$qlUtils
 
 addPlugin(
   {
-    label: 'Eye Drop',
+    label: 'Color Picker',
     search: 'eyedrop',
     iconClass: 'mdi mdi-eyedropper-variant',
     props: {
@@ -20,7 +20,7 @@ addPlugin(
   },
   {
     isPresetPlugin: true,
-  }
+  },
 )
 
 let fonts = []
@@ -66,7 +66,7 @@ addPlugin(
   {
     isStaticPlugin: true,
     isPresetPlugin: true,
-  }
+  },
 )
 
 // https://eeejay.github.io/webspeechdemos/
@@ -106,6 +106,6 @@ if (!synth) {
     {
       isStaticPlugin: true,
       isPresetPlugin: true,
-    }
+    },
   )
 }

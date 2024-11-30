@@ -6,7 +6,7 @@ addPlugin(
   (valRef) => {
     return {
       // 🔤
-      label: 'Base64 Toolbox',
+      label: 'Base64',
       iconClass: 'mdi mdi-alphabetical-variant',
       // iconClass: 'mdi mdi-cpu-64-bit',
       children: [
@@ -43,5 +43,5 @@ addPlugin(
   {
     isStaticPlugin: true,
     isPresetPlugin: true,
-  }
+  },
 )

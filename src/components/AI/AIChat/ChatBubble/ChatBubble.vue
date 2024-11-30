@@ -91,9 +91,10 @@ const scrollToBottom = () => {
             :alt="item.role"
             :title="character.name"
           />
-          <template v-else>
+          <span class="chat-username" v-else>
             {{ item.role }}
-          </template>
+          </span>
+          <span class="chat-username _character" v-if="character">{{ character.name }}</span>
         </div>
 
         <div class="btn-jump-wrap">
@@ -282,6 +283,11 @@ const scrollToBottom = () => {
       width: 100%;
       height: 100%;
       object-fit: cover;
+    }
+    .chat-username {
+      &._character {
+        display: none;
+      }
     }
   }
   .chat-date {

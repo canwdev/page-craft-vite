@@ -16,6 +16,9 @@ import {SettingsTabType} from '@/enum/settings'
 import {useCommonAi} from '@/components/AI/hooks/use-common-ai'
 import SettingsAi from '@/components/SystemSettings/SettingsAi.vue'
 import {GptMessage} from '@/components/AI/types/open-ai'
+import {getChatContentHtml, printChatContent} from '@/components/AI/utils/print-content'
+import {handleExportFile} from '@/utils/mc-utils/io'
+import DropdownMenu from '@/components/CanUI/packages/OptionUI/Tools/DropdownMenu.vue'
 
 const {t: $t, locale} = useI18n()
 const aisStore = useAiSettingsStore()
@@ -295,6 +298,15 @@ watch(
   },
   {immediate: true},
 )
+
+const handlePrint = async () => {
+  await printChatContent(respContainerRef.value, currentHistory.value?.title || 'Chat')
+}
+
+const handleExportHTML = async () => {
+  const title = currentHistory.value?.title || 'Chat'
+  handleExportFile(title, await getChatContentHtml(respContainerRef.value, title), '.html')
+}
 </script>
 
 <template>
@@ -338,18 +350,45 @@ watch(
             :teleported="false"
             :persistent="false"
             popper-style="padding: 0"
-            :auto-close="false"
+            :auto-close="0"
           >
             <template #reference>
-              <button class="vp-button">
+              <button class="vp-button" title="Settings">
                 <span class="mdi mdi-cog"></span>
               </button>
             </template>
             <SettingsAi style="max-height: 70vh; overflow-y: auto" />
           </el-popover>
 
-          <button @click="scrollBottom()" class="vp-button">
-            <span class="mdi mdi-arrow-down"></span>
+          <DropdownMenu
+            :options="[
+              {
+                label: 'Print to PDF...',
+                iconClass: 'mdi mdi-printer',
+                props: {
+                  onClick() {
+                    handlePrint()
+                  },
+                },
+              },
+              {
+                label: 'Save HTML file',
+                iconClass: 'mdi mdi-language-html5',
+                props: {
+                  onClick() {
+                    handleExportHTML()
+                  },
+                },
+              },
+            ]"
+          >
+            <button class="vp-button" title="Export">
+              <span class="mdi mdi-tray-arrow-down"></span>
+            </button>
+          </DropdownMenu>
+
+          <button @click="scrollBottom()" class="vp-button" title="Scroll Bottom">
+            <span class="mdi mdi-chevron-triple-down"></span>
           </button>
         </div>
 
@@ -422,6 +461,10 @@ watch(
         flex-wrap: wrap;
         gap: 8px;
         font-size: 12px;
+
+        .mdi {
+          font-size: 16px;
+        }
       }
     }
     .question-input {
