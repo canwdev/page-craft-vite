@@ -488,7 +488,7 @@ const handleExportHTML = async () => {
         </div>
 
         <div class="action-side">
-          <span> {{ currentCharacter.model }} </span>
+          <el-tag> {{ currentCharacter.model }} </el-tag>
 
           <template v-if="isEnableVision">
             <ImagePicker v-model:images="imageList" :disabled="isLoading" />

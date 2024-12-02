@@ -93,3 +93,10 @@ export interface ClaudeResponseData {
     output_tokens: number
   }
 }
+
+// 图片发送对象 https://docs.anthropic.com/en/api/messages
+export type ClaudeImageSource = {
+  data: string
+  media_type: 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp'
+  type: 'base64'
+}

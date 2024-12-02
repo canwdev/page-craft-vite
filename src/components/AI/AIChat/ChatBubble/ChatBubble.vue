@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {copy} from '@/components/QuickLaunch/q-logics/utils'
 import {formatDate} from '@/utils'
-import {IAiCharacter, IMessageContent, IMessageItem} from '@/components/AI/types/ai'
+import {IAiCharacter, ImageUrlObj, IMessageContent, IMessageItem} from '@/components/AI/types/ai'
 
 import MessageContent from '@/components/AI/AIChat/ChatBubble/TextContent.vue'
 import iconAi from '@/assets/textures/chat-gpt-logo.svg'
@@ -57,10 +57,6 @@ const scrollToBottom = () => {
   })
 }
 
-type ImageUrlObj = {
-  detail: string
-  url: string
-}
 const imageList = computed((): ImageUrlObj[] => {
   if (!item.value) {
     return []
@@ -93,6 +89,7 @@ const printLog = () => {
     ref="rootRef"
     class="ai-chat-bubble-system"
     :class="{isEditing}"
+    @click="isEditing = true"
   >
     <textarea
       ref="editInputRef"
@@ -107,7 +104,6 @@ const printLog = () => {
       class="chat-content"
       :class="{'markdown-body-dark': isDark}"
       v-html="`[${item.role}] ${item.content}`"
-      @click="isEditing = true"
     ></div>
   </div>
   <div v-else ref="rootRef" class="ai-chat-bubble" :class="{isReply, isEditing}">
@@ -174,6 +170,7 @@ const printLog = () => {
             :preview-src-list="imageSrcList"
             :initial-index="index"
             :preview-teleported="true"
+            fit="contain"
           />
         </div>
       </template>

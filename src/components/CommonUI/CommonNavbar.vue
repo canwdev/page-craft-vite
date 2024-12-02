@@ -43,5 +43,8 @@ const route = useRoute()
       color: $primary;
     }
   }
+  :deep(.mdi) {
+    color: $primary;
+  }
 }
 </style>

@@ -7,6 +7,7 @@ import {
   AIProvider,
   chatProviderOptions,
   getModelOptions,
+  defaultOpenAIModel,
 } from '@/components/AI/types/models'
 
 import iconUser from '@/assets/textures/user.png?url'
@@ -36,7 +37,7 @@ const formatEditingData = (data: any = {}) => {
     desc: data.desc || '',
     avatar: data.avatar || '',
     provider: data.provider || AIProvider.OPEN_AI,
-    model: data.model || openAIChatModelOptions[0].value,
+    model: data.model || defaultOpenAIModel,
     systemPrompt: data.systemPrompt || '',
   }
 }

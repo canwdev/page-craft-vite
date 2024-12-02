@@ -2,8 +2,11 @@
 
 ## v1.7.6
 
-- add: AI 支持 Anthropic/Claude 模型
-- add: 展示 Release Notes
+- AI: 支持 Anthropic/Claude 模型
+- AI: 支持 GPT o1 模型
+- AI: 优化图片发送
+- AI: 支持导出聊天为 PDF/HTML
+- add: 支持展示 Release Notes
 - add: 支持导入/导出全部设置
 - add: Material Design Icons Viewer
 - optimize: UI 交互优化

@@ -1,12 +1,14 @@
 import {AIProvider} from '@/components/AI/types/models'
 
+export type ImageUrlObj = {
+  detail: string
+  url: string
+}
+
 export interface IMessageContent {
   type: 'text' | 'image_url'
   text?: string
-  image_url?: {
-    detail: string
-    url: string
-  }
+  image_url?: ImageUrlObj
 }
 
 export interface IMessageItem {

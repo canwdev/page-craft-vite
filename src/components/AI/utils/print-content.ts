@@ -16,7 +16,9 @@ ${hljsStyle}
 .ai-chat-bubble-system {
     margin-bottom: 10px;
     padding: 10px;
-    border: 1px solid;
+    border: 1px solid #dddddd;
+    font-size: 12px;
+    color: #8a8a8a;
 }
 .btn-jump-wrap {
     display: none;
@@ -30,8 +32,8 @@ ${hljsStyle}
 }
 .chat-header {
     margin: -10px -10px 10px;
-    border-bottom: 1px dashed;
     padding: 4px 10px;
+    background-color: #F6F8FA;
 }
 .chat-avatar {
     display: flex;
@@ -47,7 +49,7 @@ ${hljsStyle}
     font-weight: bold;
 }
 .ai-chat-bubble {
-    border: 1px solid;
+    border: 1px solid #dddddd;
     margin: 10px 0;
     padding: 10px;
 }
@@ -55,7 +57,6 @@ ${hljsStyle}
     display: none;
 }
 pre.hljs-code-container {
-    border: 1px dashed;
     padding: 0;
 }
 .hljs-code-header {

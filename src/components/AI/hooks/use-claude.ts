@@ -1,14 +1,22 @@
 import {useAiSettingsStore} from '@/components/AI/hooks/ai-settings'
-import {anthropicChatModelOptions, OpenAIApiErrorCodeMessage} from '@/components/AI/types/models'
+import {
+  anthropicChatModelOptions,
+  defaultAnthropicModel,
+  OpenAIApiErrorCodeMessage,
+} from '@/components/AI/types/models'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {SettingsTabType} from '@/enum/settings'
 import {
+  ClaudeImageSource,
   ClaudeResponseData,
   ClaudeStreamResponse,
   ClaudeStreamType,
 } from '@/components/AI/types/anthropic'
 import {scrollToElementAndBlink} from '@/utils/anim'
 import {GptMessage} from '@/components/AI/types/open-ai'
+import {IMessageContent} from '@/components/AI/types/ai'
+
+import {formatClaudeParams, parseClaudeImageSource} from '@/components/AI/utils/format-anthropic'
 
 export const useAnthropicClaudeAI = () => {
   const aisStore = useAiSettingsStore()
@@ -33,27 +41,18 @@ export const useAnthropicClaudeAI = () => {
   ) => {
     const apiProxy = aisStore.anthropicApiProxy || 'https://api.anthropic.com/v1/messages'
 
-    // 替换 role 的 system 为 user
-    if (params.messages) {
-      params.messages = params.messages.map((item) => {
-        return {
-          ...item,
-          role: item.role === 'system' ? 'user' : item.role,
-        }
-      })
-    }
-
     // 全局默认参数（可覆盖）
     params = {
       // 指定要使用的模型
-      model: anthropicChatModelOptions[0].value,
+      model: defaultAnthropicModel,
       // 是否启用流式数据输出 https://docs.anthropic.com/en/api/messages-streaming
       stream: aisStore.stream,
       max_tokens: 4096,
-      temperature: 0.25,
-      top_p: 1,
+      // temperature: 0.25,
+      // top_p: 1,
       ...params,
     }
+    formatClaudeParams(params)
 
     const response = await fetch(`${apiProxy}/v1/messages`, {
       method: 'POST',
@@ -144,7 +143,7 @@ export const useAnthropicClaudeAI = () => {
       stream: false,
       ...optionsOverride,
     })) as ClaudeResponseData
-    console.log(result)
+    // console.log(result)
 
     return result.content[0]?.text || ''
   }

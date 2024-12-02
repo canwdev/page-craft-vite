@@ -1,9 +1,16 @@
 import {useAiSettingsStore} from '@/components/AI/hooks/ai-settings'
-import {OpenAIApiErrorCodeMessage, openAIChatModelOptions} from '@/components/AI/types/models'
+import {
+  defaultOpenAIModel,
+  NotAllowSystemRoleModels,
+  OpenAIApiErrorCodeMessage,
+  openAIChatModelOptions,
+} from '@/components/AI/types/models'
 import {blinkPanel, scrollToElementAndBlink} from '@/utils/anim'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {SettingsTabType} from '@/enum/settings'
 import {OpenAIChatCompletion, GptMessage} from '@/components/AI/types/open-ai'
+
+import {formatGPTMessages} from '@/components/AI/utils/format-open-ai'
 
 export const useOpenAI_GPT = () => {
   const aisStore = useAiSettingsStore()
@@ -31,11 +38,12 @@ export const useOpenAI_GPT = () => {
     // 全局默认参数（可覆盖）
     params = {
       // 指定要使用的模型
-      model: openAIChatModelOptions[0].value,
+      model: defaultOpenAIModel,
       // 是否启用流式数据输出
       stream: aisStore.stream,
       ...params,
     }
+    formatGPTMessages(params)
 
     const response = await fetch(`${apiProxy}/chat/completions`, {
       method: 'POST',

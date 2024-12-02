@@ -1,3 +1,5 @@
+import {IMessageContent} from '@/components/AI/types/ai'
+
 export type ChatUsage = {
   prompt_tokens: number
   completion_tokens: number
@@ -5,7 +7,7 @@ export type ChatUsage = {
 }
 export type GptMessage = {
   role: 'assistant' | 'user' | 'system'
-  content: string
+  content: string | IMessageContent[]
 }
 export type ChatChoices = {
   index: number

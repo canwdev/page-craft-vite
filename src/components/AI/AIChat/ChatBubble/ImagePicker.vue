@@ -61,6 +61,7 @@ const handleChoose = async () => {
           :initial-index="index"
           :src="image"
           :preview-teleported="true"
+          fit="contain"
         />
         <button @click="removeImage(index)" class="btn-no-style" title="Remove">✖</button>
       </div>

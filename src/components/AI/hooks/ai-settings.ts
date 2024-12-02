@@ -1,6 +1,7 @@
 import {
   AIProvider,
   anthropicChatModelOptions,
+  defaultOpenAIModel,
   openAIChatModelOptions,
 } from '@/components/AI/types/models'
 import {LS_SettingsKey} from '@/enum/settings'
@@ -43,7 +44,7 @@ export const useAiSettingsStore = defineStore('aiSettingsStore', {
       anthropicApiProxy: '',
 
       provider: AIProvider.OPEN_AI,
-      model: openAIChatModelOptions[0].value,
+      model: defaultOpenAIModel,
       stream: true,
 
       currentCharacterId: 'default',

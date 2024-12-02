@@ -110,7 +110,7 @@ export const useBatchTranslateRefactor = (emit) => {
         messages: buildAiPrompt(),
       })
       console.log('message', message)
-      const content = JSON.parse(message)
+      const content = JSON.parse(message as string)
       await pasteJsonOverrideRight(content)
     } catch (error: any) {
       console.error(error)

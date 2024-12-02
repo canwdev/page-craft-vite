@@ -8,6 +8,8 @@ import {
   anthropicChatModelOptions,
   AIProvider,
   openAIChatModelOptions,
+  defaultOpenAIModel,
+  defaultAnthropicModel,
 } from '@/components/AI/types/models'
 import {useAiSettingsStore} from '@/components/AI/hooks/ai-settings'
 import {IDBSettingsKey} from '@/enum/settings'
@@ -58,7 +60,7 @@ export const useAiCharacters = () => {
         desc: '',
         avatar: iconOpenAI,
         provider: AIProvider.OPEN_AI,
-        model: openAIChatModelOptions[0].value,
+        model: defaultOpenAIModel,
         systemPrompt: 'You are a helpful assistant.',
       },
       {
@@ -67,7 +69,7 @@ export const useAiCharacters = () => {
         desc: '',
         avatar: iconAnthropic,
         provider: AIProvider.ANTHROPIC,
-        model: anthropicChatModelOptions[0].value,
+        model: defaultAnthropicModel,
         systemPrompt: 'You are a helpful assistant.',
       },
     ]
