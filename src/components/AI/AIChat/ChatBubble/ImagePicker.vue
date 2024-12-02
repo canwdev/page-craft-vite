@@ -56,7 +56,12 @@ const handleChoose = async () => {
     </button>
     <div class="image-list">
       <div v-for="(image, index) in images" :key="index" class="image-item vp-panel">
-        <img :src="image" />
+        <el-image
+          :preview-src-list="images"
+          :initial-index="index"
+          :src="image"
+          :preview-teleported="true"
+        />
         <button @click="removeImage(index)" class="btn-no-style" title="Remove">✖</button>
       </div>
     </div>
@@ -84,7 +89,7 @@ const handleChoose = async () => {
       align-items: center;
       position: relative;
 
-      img {
+      .el-image {
         width: 40px;
         height: 30px;
         object-fit: contain;
@@ -92,12 +97,23 @@ const handleChoose = async () => {
 
       button {
         position: absolute;
-        bottom: 0;
-        right: 0;
-        opacity: 0;
-
+        top: -6px;
+        right: -6px;
+        z-index: 1;
+        background-color: #fff;
+        color: #000;
+        border: 1px solid currentColor;
+        width: 16px;
+        height: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+        font-size: 12px;
+        border-radius: 50%;
         &:hover {
-          color: #f44336;
+          background-color: #f44336;
+          color: white;
         }
       }
 

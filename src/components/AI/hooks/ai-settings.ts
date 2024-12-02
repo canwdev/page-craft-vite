@@ -28,6 +28,9 @@ interface IStore {
   currentChatHistoryId: string
   // 聊天侧边栏是否展开
   isSidebarExpand: boolean
+
+  // 是否按回车键直接发送，按shift+enter换行
+  isEnterSend: boolean
 }
 
 export const useAiSettingsStore = defineStore('aiSettingsStore', {
@@ -46,6 +49,7 @@ export const useAiSettingsStore = defineStore('aiSettingsStore', {
       currentCharacterId: 'default',
       currentChatHistoryId: '',
       isSidebarExpand: true,
+      isEnterSend: true,
     }
   },
   persist: {

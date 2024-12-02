@@ -10,6 +10,7 @@ export const getChatContentHtml = async (el: Element, title) => {
   const hljsStyle = hljsStyleModule.default
 
   html += `<style>body { font-family: Arial, sans-serif; }
+* {box-sizing: border-box;}
 ${markdownStyle}
 ${hljsStyle}
 .ai-chat-bubble-system {
@@ -63,7 +64,10 @@ pre.hljs-code-container {
 }
 .markdown-body pre > code {
     white-space: pre-wrap;
-    padding: 10px;!;!i;!;
+    padding: 10px;
+}
+img {
+    max-width: 100%;
 }
 </style>`
 

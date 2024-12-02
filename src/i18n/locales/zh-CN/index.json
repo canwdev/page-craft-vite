@@ -206,7 +206,7 @@
     "model": "模型",
     "qi_yong_liu_shi_xian": "启用流式响应",
     "kuai_su_xiang_ying_d": "快速响应，但网络不好可能丢包",
-    "hui_che_jian_ti_jiao": "回车键提交，shift+回车换行",
+    "enter_send_tips_1": "Enter 键提交，Shift+Enter 换行",
     "characters": "角色",
     "name": "名称",
     "avatar": "头像",
@@ -220,7 +220,9 @@
     "quan_ju_mo_ren_ti_go": "全局默认提供商",
     "lian_tong_xing_ce_sh": "连通性测试",
     "geng_xin_yu_she_jue": "更新预设角色",
-    "ti_gong_shang": "提供商"
+    "ti_gong_shang": "提供商",
+    "enter_send_tips_2": "按 Shift+Enter 提交，按 Enter 换行",
+    "enter_key_send": "Enter 键发送"
   },
   "app_client": {
     "recommend_desc": "<b>🖥️ 推荐下载桌面客户端</b><br>💡 完全开源，离线可用<br>⚡ 使用 Tauri 技术构建，体积小于 10MB<br>🚀 调用系统 WebView 2，快速稳定<br>💽 exe 安装包可解压后直接运行",

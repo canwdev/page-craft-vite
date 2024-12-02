@@ -14,6 +14,7 @@ const getLang = (lang: string) => {
 
 const md = new MarkdownIt({
   linkify: true,
+  breaks: true, // 启用换行
   highlight(code: string, lang: string) {
     let langDisplay = lang
     lang = getLang(lang)

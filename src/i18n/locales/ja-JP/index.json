@@ -205,7 +205,7 @@
     "model": "モデル",
     "qi_yong_liu_shi_xian": "ストリーミングレスポンスを有効にする",
     "kuai_su_xiang_ying_d": "迅速な応答ですが、ネットワークが不良品でパケットが落ちる可能性があります",
-    "hui_che_jian_ti_jiao": "Enterで送信、Shift+Enterで改行",
+    "enter_send_tips_1": "Enterで送信、Shift+Enterで改行",
     "characters": "キャラクター",
     "name": "名前",
     "avatar": "アバター",
@@ -219,7 +219,9 @@
     "quan_ju_mo_ren_ti_go": "グローバルデフォルトプロバイダ",
     "lian_tong_xing_ce_sh": "接続テスト",
     "geng_xin_yu_she_jue": "プリセット役職の更新",
-    "ti_gong_shang": "プロバイダ"
+    "ti_gong_shang": "プロバイダ",
+    "enter_send_tips_2": "Shift+Enter キーを押して送信、Enter キーで改行",
+    "enter_key_send": "Enterキーを押して送信"
   },
   "app_client": {
     "recommend_desc": "<b>🖥️ デスクトップクライアントのダウンロードを推奨します</b><br>💡 完全にオープンソースで、オフラインでも使用可能<br>⚡ Tauri技術を使用して構築されており、サイズは10MB未満と軽量<br>🚀 システムWebView 2を利用し、迅速かつ安定したパフォーマンスを提供<br>💽 exeインストールパッケージは解凍して直接実行可能",

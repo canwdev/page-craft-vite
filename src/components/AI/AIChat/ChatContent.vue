@@ -196,7 +196,7 @@ const sendAiRequest = async (isRetry = false) => {
         content = userInputContent.value
       }
 
-      currentHistory.value.history.push({
+      currentHistory.value!.history.push({
         role: 'user',
         content,
         timestamp: Date.now(),
@@ -211,9 +211,9 @@ const sendAiRequest = async (isRetry = false) => {
     const {signal} = controller
     abortController.value = controller
 
-    const provider = currentCharacter.value.provider || AIProvider.OPEN_AI
-    const model = currentCharacter.value.model
-    const messages = currentHistory.value.history.map((i) => {
+    const provider = currentCharacter.value!.provider || AIProvider.OPEN_AI
+    const model = currentCharacter.value!.model
+    const messages = currentHistory.value!.history.map((i) => {
       return {
         content: i.content,
         role: i.role,
@@ -237,12 +237,12 @@ const sendAiRequest = async (isRetry = false) => {
       const chatItem = tempResponseChat.value
       tempResponseChat.value = null
       chatItem.timestamp = Date.now()
-      currentHistory.value.history.push(chatItem)
+      currentHistory.value!.history.push(chatItem)
     } else {
       const message = await requestChatMessage({provider, model, messages})
       // 正常POST完成
       tempResponseChat.value = null
-      currentHistory.value.history.push({
+      currentHistory.value!.history.push({
         role: 'assistant',
         content: message || '',
         timestamp: Date.now(),
@@ -275,19 +275,26 @@ const sendAiRequest = async (isRetry = false) => {
 
 const handleKeyInput = (event) => {
   if (event.key === 'Enter') {
-    if (!event.shiftKey) {
-      // 如果是回车且没有按 Shift，阻止默认操作并提交
-      event.preventDefault()
-      sendAiRequest()
+    if (aisStore.isEnterSend) {
+      if (!event.shiftKey) {
+        // 如果是回车且没有按 Shift，阻止默认操作并提交
+        event.preventDefault()
+        sendAiRequest()
+      }
+      // 如果同时按下了 Shift，允许默认行为，即换行
+    } else {
+      if (event.shiftKey || event.ctrlKey) {
+        event.preventDefault()
+        sendAiRequest()
+      }
     }
-    // 如果同时按下了 Shift，允许默认行为，即换行
   }
 }
 
 const handlePaste = (event) => {
   // 获取剪贴板数据
-  const clipboardData = event.clipboardData || window.clipboardData
-  console.log('clipboardData', clipboardData)
+  const clipboardData = event.clipboardData
+  // console.log('clipboardData', clipboardData)
   // 检查剪贴板中的项目
   const items = clipboardData.items
 
@@ -305,12 +312,12 @@ const handlePaste = (event) => {
 
       reader.onload = function (e) {
         // 获取base64编码的图片
-        const base64Image = e.target.result
+        const base64Image = e.target!.result
 
         // 打印base64图片
         // console.log('Base64 Image:', base64Image)
         if (base64Image) {
-          imageList.value.push(base64Image)
+          imageList.value.push(base64Image as string)
         }
       }
 
@@ -408,7 +415,9 @@ const handleExportHTML = async () => {
         class="vp-input question-input"
         v-model="userInputContent"
         type="textarea"
-        :placeholder="$t('ai.hui_che_jian_ti_jiao')"
+        :placeholder="
+          aisStore.isEnterSend ? $t('ai.enter_send_tips_1') : $t('ai.enter_send_tips_2')
+        "
         @keydown="handleKeyInput"
         @paste="handlePaste"
       />

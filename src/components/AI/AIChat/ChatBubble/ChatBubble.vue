@@ -56,6 +56,35 @@ const scrollToBottom = () => {
     behavior: 'smooth',
   })
 }
+
+type ImageUrlObj = {
+  detail: string
+  url: string
+}
+const imageList = computed((): ImageUrlObj[] => {
+  if (!item.value) {
+    return []
+  }
+  if (Array.isArray(item.value.content)) {
+    const content = item.value.content as IMessageContent[]
+    const list: ImageUrlObj[] = []
+    content.forEach((item) => {
+      const {type, image_url} = item
+      if (type === 'image_url') {
+        list.push(image_url as ImageUrlObj)
+      }
+    })
+    return list
+  }
+  return []
+})
+const imageSrcList = computed(() => {
+  return imageList.value.map((i) => i.url)
+})
+
+const printLog = () => {
+  console.log(JSON.parse(JSON.stringify(item.value)))
+}
 </script>
 
 <template>
@@ -84,7 +113,7 @@ const scrollToBottom = () => {
   <div v-else ref="rootRef" class="ai-chat-bubble" :class="{isReply, isEditing}">
     <div class="chat-side">
       <div class="chat-header">
-        <div class="chat-avatar" :title="item.role">
+        <div class="chat-avatar" :title="item.role" @click="printLog">
           <img
             v-if="character"
             :src="character.avatar || iconAi"
@@ -126,18 +155,27 @@ const scrollToBottom = () => {
         :is-dark="isDark"
         :is-editing="isEditing"
       />
-      <template v-else-if="typeof Array.isArray(item.content)">
+      <template v-else-if="Array.isArray(item.content)">
         <template v-for="(sub, subIndex) in item.content as IMessageContent[]" :key="subIndex">
           <MessageContent
             v-if="sub.type === 'text'"
             v-model:text="sub.text"
             :is-dark="isDark"
             :is-editing="isEditing"
+            v-show="isEditing || !!sub.text"
           />
-          <div class="chat-images" v-else-if="sub.type === 'image_url' && sub.image_url">
-            <img :src="sub.image_url.url" :alt="sub.image_url.detail" />
-          </div>
         </template>
+        <div class="chat-images" v-if="imageList.length">
+          <el-image
+            v-for="(item, index) in imageList"
+            :key="index"
+            :src="item.url"
+            :alt="item.detail"
+            :preview-src-list="imageSrcList"
+            :initial-index="index"
+            :preview-teleported="true"
+          />
+        </div>
       </template>
 
       <div class="chat-actions">
@@ -320,7 +358,7 @@ const scrollToBottom = () => {
     & + .chat-images {
       margin-top: 4px;
     }
-    img {
+    .el-image {
       max-width: 200px;
       max-height: 300px;
       object-fit: contain;

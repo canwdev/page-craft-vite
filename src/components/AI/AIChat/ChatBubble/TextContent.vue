@@ -32,7 +32,7 @@ const mText = useVModel(props, 'text', emit)
       v-model="mText"
       rows="10"
       ref="editInputRef"
-      style="width: 100%; font-size: 16px"
+      style="width: 100%; font-size: 16px; box-sizing: border-box"
     />
   </div>
 

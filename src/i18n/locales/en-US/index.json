@@ -205,7 +205,7 @@
     "model": "Model",
     "qi_yong_liu_shi_xian": "Enable streaming response",
     "kuai_su_xiang_ying_d": "Quick response, but may lose packets with poor network connectivity",
-    "hui_che_jian_ti_jiao": "Press Enter to submit, Shift+Enter to newline",
+    "enter_send_tips_1": "Press Enter to submit, Shift+Enter to newline",
     "characters": "Characters",
     "name": "Name",
     "avatar": "Avatar",
@@ -219,7 +219,9 @@
     "quan_ju_mo_ren_ti_go": "Global Default Provider",
     "lian_tong_xing_ce_sh": "Connectivity Test",
     "geng_xin_yu_she_jue": "Update preset roles",
-    "ti_gong_shang": "Provider"
+    "ti_gong_shang": "Provider",
+    "enter_send_tips_2": "Press Shift+Enter to submit, Enter to newline",
+    "enter_key_send": "Enter key send"
   },
   "app_client": {
     "recommend_desc": "<b>🖥️ Recommended to download the desktop client</b><br>💡 Fully open source and available offline<br>⚡ Built using Tauri technology, lightweight at under 10MB<br>🚀 Utilizes system WebView 2 for fast and stable performance<br>💽 exe installation package can be extracted and run directly",

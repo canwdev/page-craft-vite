@@ -141,6 +141,13 @@ const optionList = computed((): StOptionItem[] => {
           iconClass: 'mdi mdi-network-pos',
           type: StOptionType.SWITCH,
         },
+        {
+          label: $t('ai.enter_key_send'),
+          subtitle: aisStore.isEnterSend ? $t('ai.enter_send_tips_1') : $t('ai.enter_send_tips_2'),
+          key: 'isEnterSend',
+          iconClass: 'mdi mdi-wrap',
+          type: StOptionType.SWITCH,
+        },
       ],
     },
   ]
