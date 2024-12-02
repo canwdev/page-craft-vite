@@ -66,6 +66,19 @@ const scrollBottom = (force = true) => {
     }
   })
 }
+// 滚动到底部
+const scrollTop = (force = true) => {
+  if (!respContainerRef.value) {
+    return
+  }
+  setTimeout(() => {
+    const scrollEl = respContainerRef.value
+    scrollEl.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    })
+  })
+}
 
 const scrollBottomThrottled = useThrottleFn(scrollBottom, 500, true)
 const focusInput = () => {
@@ -122,7 +135,22 @@ const isEnableVision = computed(() => {
   // @ts-ignore
   return modelsCanUseVision[currentCharacter.value?.model] || false
 })
+
+// base64 或 图像 url 字符串数组
 const imageList = ref<string[]>([])
+
+const isAllowSend = computed(() => {
+  if (!currentCharacter.value || !currentHistory.value) {
+    return false
+  }
+  if (isLoading.value) {
+    return false
+  }
+  if (userInputContent.value || imageList.value.length) {
+    return true
+  }
+  return false
+})
 
 const abortController = shallowRef<AbortController | null>(null)
 /**
@@ -130,10 +158,9 @@ const abortController = shallowRef<AbortController | null>(null)
  * @param isRetry 是否重新生成
  */
 const sendAiRequest = async (isRetry = false) => {
-  if (!currentCharacter.value || !currentHistory.value) {
-    return
-  }
-  if (!isRetry && !userInputContent.value) {
+  if (isRetry) {
+    // allow to send
+  } else if (!isAllowSend.value) {
     return
   }
   try {
@@ -257,6 +284,49 @@ const handleKeyInput = (event) => {
   }
 }
 
+const handlePaste = (event) => {
+  // 获取剪贴板数据
+  const clipboardData = event.clipboardData || window.clipboardData
+  console.log('clipboardData', clipboardData)
+  // 检查剪贴板中的项目
+  const items = clipboardData.items
+
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i]
+    console.log('item', item)
+
+    // 如果是图片类型
+    if (/^image/i.test(item.type)) {
+      // 获取剪贴板中的图片文件
+      const imageFile = item.getAsFile()
+
+      // 使用FileReader读取图片并转换为base64
+      const reader = new FileReader()
+
+      reader.onload = function (e) {
+        // 获取base64编码的图片
+        const base64Image = e.target.result
+
+        // 打印base64图片
+        // console.log('Base64 Image:', base64Image)
+        if (base64Image) {
+          imageList.value.push(base64Image)
+        }
+      }
+
+      // 读取图片文件
+      reader.readAsDataURL(imageFile)
+    }
+    // 如果是文本
+    // else if (item.type === 'text/plain') {
+    //   item.getAsString(function (text) {
+    //     // 处理粘贴的文本
+    //     console.log('Pasted Text:', text)
+    //   })
+    // }
+  }
+}
+
 const handleRetry = (item: IMessageItem, index) => {
   if (!currentHistory.value) {
     return
@@ -340,6 +410,7 @@ const handleExportHTML = async () => {
         type="textarea"
         :placeholder="$t('ai.hui_che_jian_ti_jiao')"
         @keydown="handleKeyInput"
+        @paste="handlePaste"
       />
       <div class="request-actions">
         <div class="action-side">
@@ -387,17 +458,14 @@ const handleExportHTML = async () => {
             </button>
           </DropdownMenu>
 
-          <button @click="scrollBottom()" class="vp-button" title="Scroll Bottom">
+          <button
+            @click="scrollBottom()"
+            @contextmenu.prevent="scrollTop()"
+            class="vp-button"
+            title="Scroll to bottom, right click scroll to top"
+          >
             <span class="mdi mdi-chevron-triple-down"></span>
           </button>
-        </div>
-
-        <div class="action-side">
-          <span> {{ currentCharacter.model }} </span>
-
-          <template v-if="isEnableVision">
-            <ImagePicker v-model:images="imageList" :disabled="isLoading" />
-          </template>
 
           <el-popconfirm
             @confirm="resetChatHistory"
@@ -408,6 +476,14 @@ const handleExportHTML = async () => {
               <button class="vp-button" :disabled="isLoading">{{ $t('actions.clear') }}</button>
             </template>
           </el-popconfirm>
+        </div>
+
+        <div class="action-side">
+          <span> {{ currentCharacter.model }} </span>
+
+          <template v-if="isEnableVision">
+            <ImagePicker v-model:images="imageList" :disabled="isLoading" />
+          </template>
 
           <button v-if="isLoading" class="vp-button" @click="handleStop">
             <span class="mdi mdi-stop-circle-outline"></span>
@@ -418,7 +494,7 @@ const handleExportHTML = async () => {
           <button
             v-else
             class="vp-button primary"
-            :disabled="isLoading || !userInputContent"
+            :disabled="!isAllowSend"
             @click="sendAiRequest()"
           >
             <span class="mdi mdi-send"></span>
