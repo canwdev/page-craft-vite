@@ -11,7 +11,8 @@
     "format": "prettier --write src/",
     "preview": "vite preview",
     "tauri": "tauri",
-    "build:tauri": "tauri build"
+    "build:tauri": "tauri build",
+    "tauri:icon": "tauri icon ./public/favicon-256.png"
   },
   "dependencies": {
     "@humanfs/web": "^0.13.4",

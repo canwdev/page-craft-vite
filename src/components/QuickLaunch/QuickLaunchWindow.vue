@@ -55,7 +55,7 @@ export default defineComponent({
     }"
   >
     <template #titleBarLeft>
-      <img src="@/assets/textures/crafting_table_top.png" alt="icon" />
+      <span class="mdi mdi-pine-tree"></span>
       PageCraft {{ $t('common.toolbox') }} (alt+q)
     </template>
 
