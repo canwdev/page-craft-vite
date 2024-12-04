@@ -9,6 +9,7 @@
 - add: 支持展示 Release Notes
 - add: 支持导入/导出全部设置
 - add: Material Design Icons Viewer
+- add: Vue 3 SFC Loader
 - optimize: UI 交互优化
 
 ## v1.7.5

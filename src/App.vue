@@ -57,7 +57,9 @@ export default defineComponent({
 
 <template>
   <div class="page-craft-root" :style="bgStyle">
-    <RouterView />
+    <transition name="fade" mode="out-in">
+      <RouterView />
+    </transition>
     <AppSub />
   </div>
 </template>

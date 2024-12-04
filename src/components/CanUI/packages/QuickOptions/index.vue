@@ -55,6 +55,10 @@ export default defineComponent({
       type: String,
       default: '',
     },
+    transitionGroupName: {
+      type: String,
+      default: '',
+    },
   },
   emits: ['onClose', 'update:visible', 'onBack', 'onEnter'],
   setup(props, {emit}) {
@@ -324,24 +328,26 @@ export default defineComponent({
       <span v-html="backTitle"></span>
     </div>
 
-    <template v-for="(v, index) in mOptions" :key="index">
-      <div v-if="v.split" class="option-split"></div>
-      <QOptionItem
-        v-else
-        :item="v"
-        :index="index"
-        :cur-index="curIndex"
-        :item-cls="itemCls"
-        :show-index="showIndex"
-        :is-static="isStatic"
-        @click="handleOptionClick(v, $event)"
-        @contextmenu.prevent.stop="handleOptionContextmenu(v, $event)"
-        @onArrowClick="handleOptionClick(v, $event, true)"
-        @onClose="$emit('onClose'), (mVisible = false)"
-        @onSubMenuHide="focus"
-      />
-      <!--@mouseover="curIndex = index"-->
-    </template>
+    <transition-group :name="transitionGroupName">
+      <template v-for="(v, index) in mOptions" :key="index">
+        <div v-if="v.split" class="option-split"></div>
+        <QOptionItem
+          v-else
+          :item="v"
+          :index="index"
+          :cur-index="curIndex"
+          :item-cls="itemCls"
+          :show-index="showIndex"
+          :is-static="isStatic"
+          @click="handleOptionClick(v, $event)"
+          @contextmenu.prevent.stop="handleOptionContextmenu(v, $event)"
+          @onArrowClick="handleOptionClick(v, $event, true)"
+          @onClose="$emit('onClose'), (mVisible = false)"
+          @onSubMenuHide="focus"
+        />
+        <!--@mouseover="curIndex = index"-->
+      </template>
+    </transition-group>
   </div>
 </template>
 

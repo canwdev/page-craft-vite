@@ -84,133 +84,137 @@ const printLog = () => {
 </script>
 
 <template>
-  <div
-    v-if="item.role === 'system'"
-    ref="rootRef"
-    class="ai-chat-bubble-system"
-    :class="{isEditing}"
-    @click="isEditing = true"
-  >
-    <textarea
-      ref="editInputRef"
-      v-if="isEditing"
-      class="vp-input"
-      v-model="item.content as string"
-      rows="6"
-      @blur="isEditing = false"
-    />
+  <transition mode="out-in" name="fade-up">
     <div
-      v-else-if="item.content"
-      class="chat-content"
-      :class="{'markdown-body-dark': isDark}"
-      v-html="`[${item.role}] ${item.content}`"
-    ></div>
-  </div>
-  <div v-else ref="rootRef" class="ai-chat-bubble" :class="{isReply, isEditing}">
-    <div class="chat-side">
-      <div class="chat-header">
-        <div class="chat-avatar" :title="item.role" @click="printLog">
-          <img
-            v-if="character"
-            :src="character.avatar || iconAi"
-            :alt="item.role"
-            :title="character.name"
-          />
-          <span class="chat-username" v-else>
-            {{ item.role }}
-          </span>
-          <span class="chat-username _character" v-if="character">{{ character.name }}</span>
-        </div>
-
-        <div class="btn-jump-wrap">
-          <button class="btn-no-style btn-jump" @click="scrollToTop">
-            <span class="mdi mdi-chevron-up"></span>
-          </button>
-          <button class="btn-no-style btn-jump" @click="scrollToBottom">
-            <span class="mdi mdi-chevron-down"></span>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <div class="chat-body" :class="{isEditing}">
-      <div
-        v-if="isLoading"
-        class="chat-content markdown-body vp-bg"
-        :class="{'markdown-body-dark': isDark}"
-      >
-        <div
-          style="width: 50px; height: 50px"
-          v-loading="true"
-          element-loading-background="transparent"
-        ></div>
-      </div>
-      <MessageContent
-        v-else-if="typeof item.content === 'string'"
-        v-model:text="item.content"
-        :is-dark="isDark"
-        :is-editing="isEditing"
+      v-if="item.role === 'system'"
+      ref="rootRef"
+      class="ai-chat-bubble-system"
+      :class="{isEditing}"
+      @click="isEditing = true"
+    >
+      <textarea
+        ref="editInputRef"
+        v-if="isEditing"
+        class="vp-input"
+        v-model="item.content as string"
+        rows="6"
+        @blur="isEditing = false"
       />
-      <template v-else-if="Array.isArray(item.content)">
-        <template v-for="(sub, subIndex) in item.content as IMessageContent[]" :key="subIndex">
+      <div
+        v-else-if="item.content"
+        class="chat-content"
+        :class="{'markdown-body-dark': isDark}"
+        v-html="`[${item.role}] ${item.content}`"
+      ></div>
+    </div>
+    <div v-else ref="rootRef" class="ai-chat-bubble" :class="{isReply, isEditing}">
+      <div class="chat-side">
+        <div class="chat-header">
+          <div class="chat-avatar" :title="item.role" @click="printLog">
+            <img
+              v-if="character"
+              :src="character.avatar || iconAi"
+              :alt="item.role"
+              :title="character.name"
+            />
+            <span class="chat-username" v-else>
+              {{ item.role }}
+            </span>
+            <span class="chat-username _character" v-if="character">{{ character.name }}</span>
+          </div>
+
+          <div class="btn-jump-wrap">
+            <button class="btn-no-style btn-jump" @click="scrollToTop">
+              <span class="mdi mdi-chevron-up"></span>
+            </button>
+            <button class="btn-no-style btn-jump" @click="scrollToBottom">
+              <span class="mdi mdi-chevron-down"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="chat-body" :class="{isEditing}">
+        <transition-group name="fade" mode="out-in">
+          <div
+            v-if="isLoading"
+            class="chat-content markdown-body vp-bg"
+            :class="{'markdown-body-dark': isDark}"
+          >
+            <div
+              style="width: 50px; height: 50px"
+              v-loading="true"
+              element-loading-background="transparent"
+            ></div>
+          </div>
           <MessageContent
-            v-if="sub.type === 'text'"
-            v-model:text="sub.text"
+            v-else-if="typeof item.content === 'string'"
+            v-model:text="item.content"
             :is-dark="isDark"
             :is-editing="isEditing"
-            v-show="isEditing || !!sub.text"
           />
-        </template>
-        <div class="chat-images" v-if="imageList.length">
-          <el-image
-            v-for="(item, index) in imageList"
-            :key="index"
-            :src="item.url"
-            :alt="item.detail"
-            :preview-src-list="imageSrcList"
-            :initial-index="index"
-            :preview-teleported="true"
-            fit="contain"
-          />
-        </div>
-      </template>
-
-      <div class="chat-actions">
-        <div class="chat-date font-code" v-if="item.timestamp">
-          {{ formatDate(item.timestamp) }}
-        </div>
-
-        <template v-if="isEditing">
-          <button class="btn-no-style" @click="isEditing = false">
-            ✅ {{ $t('actions.done') }}
-          </button>
-        </template>
-        <template v-else>
-          <button class="btn-no-style" @click="copy(item.content)">
-            📋 {{ $t('actions.copy') }}
-          </button>
-
-          <button class="btn-no-style" v-if="allowRetry" @click="$emit('retry')">
-            🔄 {{ $t('actions.retry') }}
-          </button>
-
-          <button class="btn-no-style" v-if="allowEdit" @click="isEditing = true">
-            📝 {{ $t('actions.edit') }}
-          </button>
-          <el-popconfirm
-            v-if="allowDelete"
-            @confirm="$emit('delete', item)"
-            :title="$t('actions.confirm')"
-            :teleported="false"
-          >
-            <template #reference>
-              <button class="btn-no-style">🗑️ {{ $t('actions.delete') }}</button>
+          <template v-else-if="Array.isArray(item.content)">
+            <template v-for="(sub, subIndex) in item.content as IMessageContent[]" :key="subIndex">
+              <MessageContent
+                v-if="sub.type === 'text'"
+                v-model:text="sub.text"
+                :is-dark="isDark"
+                :is-editing="isEditing"
+                v-show="isEditing || !!sub.text"
+              />
             </template>
-          </el-popconfirm>
-        </template>
+            <div class="chat-images" v-if="imageList.length">
+              <el-image
+                v-for="(item, index) in imageList"
+                :key="index"
+                :src="item.url"
+                :alt="item.detail"
+                :preview-src-list="imageSrcList"
+                :initial-index="index"
+                :preview-teleported="true"
+                fit="contain"
+              />
+            </div>
+          </template>
+        </transition-group>
+
+        <div class="chat-actions">
+          <div class="chat-date font-code" v-if="item.timestamp">
+            {{ formatDate(item.timestamp) }}
+          </div>
+
+          <template v-if="isEditing">
+            <button class="btn-no-style" @click="isEditing = false">
+              ✅ {{ $t('actions.done') }}
+            </button>
+          </template>
+          <template v-else>
+            <button class="btn-no-style" @click="copy(item.content)">
+              📋 {{ $t('actions.copy') }}
+            </button>
+
+            <button class="btn-no-style" v-if="allowRetry" @click="$emit('retry')">
+              🔄 {{ $t('actions.retry') }}
+            </button>
+
+            <button class="btn-no-style" v-if="allowEdit" @click="isEditing = true">
+              📝 {{ $t('actions.edit') }}
+            </button>
+            <el-popconfirm
+              v-if="allowDelete"
+              @confirm="$emit('delete', item)"
+              :title="$t('actions.confirm')"
+              :teleported="false"
+            >
+              <template #reference>
+                <button class="btn-no-style">🗑️ {{ $t('actions.delete') }}</button>
+              </template>
+            </el-popconfirm>
+          </template>
+        </div>
       </div>
     </div>
-  </div>
+  </transition>
 </template>
 
 <style lang="scss" scoped>

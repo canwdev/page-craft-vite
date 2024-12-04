@@ -51,9 +51,11 @@ useGlobalBusOn(GlobalEvents.OPEN_SETTINGS, (type: SettingsTabType) => {
 
     <TabLayout class="system-settings" horizontal v-model="curTab" :options="settingsTabs">
       <div class="settings-content">
-        <SettingsCommon v-if="curTab === SettingsTabType.COMMON" />
-        <SettingsAi v-else-if="curTab === SettingsTabType.AI" />
-        <I18nToolSettings v-else-if="curTab === SettingsTabType.I18N" />
+        <transition mode="out-in" name="fade-up">
+          <SettingsCommon v-if="curTab === SettingsTabType.COMMON" />
+          <SettingsAi v-else-if="curTab === SettingsTabType.AI" />
+          <I18nToolSettings v-else-if="curTab === SettingsTabType.I18N" />
+        </transition>
       </div>
     </TabLayout>
   </ViewPortWindow>

@@ -3,7 +3,7 @@ import {IMessageItem} from '@/components/AI/types/ai'
 import '@/styles/markdown/github-markdown.css'
 import '@/styles/markdown/github-markdown-dark.css'
 import {useMainStore} from '@/store/main'
-import ChatItem from '@/components/AI/AIChat/ChatBubble/ChatBubble.vue'
+import ChatBubble from '@/components/AI/AIChat/ChatBubble/ChatBubble.vue'
 import {useThrottleFn} from '@vueuse/core'
 import {useAiSettingsStore} from '@/components/AI/hooks/ai-settings'
 import {useI18n} from 'vue-i18n'
@@ -390,130 +390,132 @@ const handleExportHTML = async () => {
 </script>
 
 <template>
-  <div class="chat-gpt-wrap vp-bg" v-if="currentHistory && currentCharacter">
-    <div ref="respContainerRef" class="response-container">
-      <ChatItem
-        v-for="(item, index) in currentHistory.history"
-        :key="index"
-        :item="item"
-        :is-dark="mainStore.isAppDarkMode"
-        @delete="currentHistory.history.splice(index, 1)"
-        @retry="handleRetry(item, index)"
-        allow-delete
-        allow-edit
-        :allow-retry="index === currentHistory.history.length - 1"
-        :character="item.role === 'assistant' ? currentCharacter : undefined"
-      />
-      <ChatItem
-        :item="tempResponseChat"
-        v-if="tempResponseChat"
-        :is-dark="mainStore.isAppDarkMode"
-        :character="currentCharacter"
-        :is-loading="!tempResponseChat.content"
-      />
-    </div>
-    <div class="request-below">
-      <textarea
-        ref="inputRef"
-        class="vp-input question-input"
-        v-model="userInputContent"
-        type="textarea"
-        :placeholder="
-          aisStore.isEnterSend ? $t('ai.enter_send_tips_1') : $t('ai.enter_send_tips_2')
-        "
-        @keydown="handleKeyInput"
-        @paste="handlePaste"
-      />
-      <div class="request-actions">
-        <div class="action-side">
-          <el-popover
-            width="400"
-            placement="top-start"
-            trigger="click"
-            :teleported="false"
-            :persistent="false"
-            popper-style="padding: 0"
-            :auto-close="0"
-          >
-            <template #reference>
-              <button class="vp-button" title="Settings">
-                <span class="mdi mdi-cog"></span>
+  <transition name="fade" mode="in-out">
+    <div class="chat-gpt-wrap vp-bg" v-if="currentHistory && currentCharacter">
+      <div ref="respContainerRef" class="response-container">
+        <ChatBubble
+          v-for="(item, index) in currentHistory.history"
+          :key="item.timestamp"
+          :item="item"
+          :is-dark="mainStore.isAppDarkMode"
+          @delete="currentHistory.history.splice(index, 1)"
+          @retry="handleRetry(item, index)"
+          allow-delete
+          allow-edit
+          :allow-retry="index === currentHistory.history.length - 1"
+          :character="item.role === 'assistant' ? currentCharacter : undefined"
+        />
+        <ChatBubble
+          :item="tempResponseChat"
+          v-if="tempResponseChat"
+          :is-dark="mainStore.isAppDarkMode"
+          :character="currentCharacter"
+          :is-loading="!tempResponseChat.content"
+        />
+      </div>
+      <div class="request-below">
+        <textarea
+          ref="inputRef"
+          class="vp-input question-input"
+          v-model="userInputContent"
+          type="textarea"
+          :placeholder="
+            aisStore.isEnterSend ? $t('ai.enter_send_tips_1') : $t('ai.enter_send_tips_2')
+          "
+          @keydown="handleKeyInput"
+          @paste="handlePaste"
+        />
+        <div class="request-actions">
+          <div class="action-side">
+            <el-popover
+              width="400"
+              placement="top-start"
+              trigger="click"
+              :teleported="false"
+              :persistent="false"
+              popper-style="padding: 0"
+              :auto-close="0"
+            >
+              <template #reference>
+                <button class="vp-button" title="Settings">
+                  <span class="mdi mdi-cog"></span>
+                </button>
+              </template>
+              <SettingsAi style="max-height: 70vh; overflow-y: auto" />
+            </el-popover>
+
+            <DropdownMenu
+              :options="[
+                {
+                  label: 'Print to PDF...',
+                  iconClass: 'mdi mdi-printer',
+                  props: {
+                    onClick() {
+                      handlePrint()
+                    },
+                  },
+                },
+                {
+                  label: 'Save HTML file',
+                  iconClass: 'mdi mdi-language-html5',
+                  props: {
+                    onClick() {
+                      handleExportHTML()
+                    },
+                  },
+                },
+              ]"
+            >
+              <button class="vp-button" title="Export">
+                <span class="mdi mdi-tray-arrow-down"></span>
               </button>
-            </template>
-            <SettingsAi style="max-height: 70vh; overflow-y: auto" />
-          </el-popover>
+            </DropdownMenu>
 
-          <DropdownMenu
-            :options="[
-              {
-                label: 'Print to PDF...',
-                iconClass: 'mdi mdi-printer',
-                props: {
-                  onClick() {
-                    handlePrint()
-                  },
-                },
-              },
-              {
-                label: 'Save HTML file',
-                iconClass: 'mdi mdi-language-html5',
-                props: {
-                  onClick() {
-                    handleExportHTML()
-                  },
-                },
-              },
-            ]"
-          >
-            <button class="vp-button" title="Export">
-              <span class="mdi mdi-tray-arrow-down"></span>
+            <button
+              @click="scrollBottom()"
+              @contextmenu.prevent="scrollTop()"
+              class="vp-button"
+              title="Scroll to bottom, right click scroll to top"
+            >
+              <span class="mdi mdi-chevron-triple-down"></span>
             </button>
-          </DropdownMenu>
 
-          <button
-            @click="scrollBottom()"
-            @contextmenu.prevent="scrollTop()"
-            class="vp-button"
-            title="Scroll to bottom, right click scroll to top"
-          >
-            <span class="mdi mdi-chevron-triple-down"></span>
-          </button>
+            <el-popconfirm
+              @confirm="resetChatHistory"
+              :title="`Confirm clear chat history?`"
+              :teleported="false"
+            >
+              <template #reference>
+                <button class="vp-button" :disabled="isLoading">{{ $t('actions.clear') }}</button>
+              </template>
+            </el-popconfirm>
+          </div>
 
-          <el-popconfirm
-            @confirm="resetChatHistory"
-            :title="`Confirm clear chat history?`"
-            :teleported="false"
-          >
-            <template #reference>
-              <button class="vp-button" :disabled="isLoading">{{ $t('actions.clear') }}</button>
-            </template>
-          </el-popconfirm>
-        </div>
+          <div class="action-side">
+            <el-tag> {{ currentCharacter.model }} </el-tag>
 
-        <div class="action-side">
-          <el-tag> {{ currentCharacter.model }} </el-tag>
+            <ImagePicker v-model:images="imageList" :disabled="isLoading || !isEnableVision" />
 
-          <ImagePicker v-model:images="imageList" :disabled="isLoading || !isEnableVision" />
+            <button v-if="isLoading" class="vp-button" @click="handleStop">
+              <span class="mdi mdi-stop-circle-outline"></span>
 
-          <button v-if="isLoading" class="vp-button" @click="handleStop">
-            <span class="mdi mdi-stop-circle-outline"></span>
+              {{ $t('ai.stop_generation') }}
+            </button>
 
-            {{ $t('ai.stop_generation') }}
-          </button>
-
-          <button
-            v-else
-            class="vp-button primary"
-            :disabled="!isAllowSend"
-            @click="sendAiRequest()"
-          >
-            <span class="mdi mdi-send"></span>
-            {{ $t('actions.send') }}
-          </button>
+            <button
+              v-else
+              class="vp-button primary"
+              :disabled="!isAllowSend"
+              @click="sendAiRequest()"
+            >
+              <span class="mdi mdi-send"></span>
+              {{ $t('actions.send') }}
+            </button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </transition>
 </template>
 
 <style scoped lang="scss">

@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <link rel="icon" href="/favicon.png">
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>vue3-sfc-loader</title>
+
+  <style>
+    body, html {
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    #app {
+      height: 100%;
+    }
+  </style>
+
+  <!--<script src="https://unpkg.com/vue@latest"></script>-->
+  <script src="./lib/vue/vue.global.js"></script>
+  <!--<script src="https://cdn.jsdelivr.net/npm/vue3-sfc-loader/dist/vue3-sfc-loader.js"></script>-->
+  <script src="./lib/vue/vue3-sfc-loader.js"></script>
+  <script src="./lib/sass/sass.sync.min.js"></script>
+</head>
+
+<body>
+<noscript>Enable JavaScript to visit this page</noscript>
+<div id="app"></div>
+<script>
+  const {loadModule} = window["vue3-sfc-loader"];
+  const uRLSearchParams = new URLSearchParams(location.search)
+  const url = uRLSearchParams.get("file_url");
+  console.log({url});
+
+  if (!url) {
+    // 定义组件
+    const MyComponent = {
+      template: `
+        <fieldset style="max-width: 500px;">
+          <legend>Vue 3 SFC Loader</legend>
+          <ul>
+            <li><a href="https://github.com/FranckFreiburger/vue3-sfc-loader" target="_blank">Github</a></li>
+            <li>支持 style scss scoped 标签！</li>
+            <li>
+              <button @click="loadExample('./lib/vue/example-1.vue')">Load Example (vue3 setup + css scoped)</button>
+            </li>
+            <li>
+              <button @click="loadExample('./lib/vue/example.vue')">Load Example (vue2 + scss)</button>
+            </li>
+            <li>
+              <details>
+                <summary>加载外部 url: <input v-model="inputUrl" type="text" placeholder="*.vue file url">
+                  <button :disabled="!inputUrl" @click="loadExample(inputUrl)">Load</button>
+                </summary>
+
+                <ul>
+                  <li>注意跨域问题</li>
+                  <li>推荐使用 <a href="https://www.npmjs.com/package/http-server" target="_blank">http-server</a></li>
+                  <li>命令 <code>http-server --cors</code></li>
+                </ul>
+              </details>
+            </li>
+          </ul>
+        </fieldset>
+      `,
+      data() {
+        return {
+          inputUrl: "",
+          inputUrlBase64: "PHRlbXBsYXRlPjxkaXYgY2xhc3M9ImhlbGxvLXdvcmxkIj57eyBtZXNzYWdlIH19PC9kaXY+PC90ZW1wbGF0ZT4=",
+        }
+      },
+      methods: {
+        loadExample(url) {
+          // 添加查询参数并刷新页面
+          const newUrl = new URL(window.location.href);
+          newUrl.searchParams.set('file_url', url);
+          window.location.href = newUrl.toString();
+        }
+      }
+    }
+    Vue.createApp(MyComponent).mount('#app')
+    console.warn("param file_url is missing, example: /vue.html?file_url=http://127.0.0.1:8080/test/myComponent.vue");
+  } else {
+
+    // https://github.com/FranckFreiburger/vue3-sfc-loader/tree/main
+    const options = {
+      moduleCache: {
+        vue: Vue
+      },
+      async getFile(url) {
+        const res = await fetch(url);
+        if (!res.ok)
+          throw Object.assign(new Error(res.statusText + " " + url), {res});
+        return {
+          getContentData: asBinary => asBinary ? res.arrayBuffer() : res.text()
+        };
+      },
+      // https://github.com/FranckFreiburger/vue3-sfc-loader/discussions/181
+      processStyles(src, lang, filename, options) {
+        // console.log({ src, lang, filename, options });
+        if (!lang || lang === "css") {
+          return new Promise((resolve, reject) => {
+            resolve(src)
+          });
+        }
+
+        if (lang !== "scss" && lang !== "sass") {
+          throw new Error(`unsupported "${lang}" style processor`);
+        }
+
+        return new Promise((resolve, reject) => {
+          Sass.compile(src, (output) => {
+            if (output.message) {
+              reject(output);
+            } else {
+              resolve(output.text);
+            }
+          });
+        });
+      },
+      addStyle(textContent) {
+        // console.log({ textContent });
+        const style = Object.assign(document.createElement("style"), {textContent: textContent});
+        const ref = document.head.getElementsByTagName("style")[0] || null;
+        document.head.insertBefore(style, ref);
+      },
+      removeStyle(text) {
+      }
+    };
+
+    const app = Vue.createApp({
+      components: {
+        "my-component": Vue.defineAsyncComponent(() => loadModule(url, options))
+      },
+      template: "<my-component></my-component>"
+    });
+
+    app.mount("#app");
+
+  }
+
+</script>
+</body>
+</html>

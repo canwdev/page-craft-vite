@@ -4,6 +4,7 @@ import {useMainStore} from '@/store/main'
 import {QuickOptionItem} from '@/components/CanUI/packages/QuickOptions/enum'
 import {formatSiteTitle} from '@/router/router-utils'
 import {useSettingsStore} from '@/store/settings'
+import {WebviewWindow} from '@tauri-apps/api/window'
 
 export const useCommonTools = () => {
   const {t: $t} = useI18n()
@@ -121,6 +122,23 @@ export const useCommonTools = () => {
               onClick: async () => {
                 mainStore.isShowQuickLaunch = false
                 await router.push({name: 'DevPage'})
+              },
+            },
+          },
+          {
+            label: 'Vue 3 SFC Loader',
+            iconClass: 'mdi mdi-vuejs',
+            props: {
+              onClick: async () => {
+                const url = './vue.html'
+                if (window.__TAURI__) {
+                  console.log('WebviewWindow', WebviewWindow)
+                  const webview = new WebviewWindow('Vue3SFCLoader', {
+                    url,
+                  })
+                  return
+                }
+                window.open(url)
               },
             },
           },

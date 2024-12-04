@@ -50,7 +50,8 @@ export default {
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss" >
+$primary: #009688;
 .simple-counter {
   height: 100%;
   padding: 10px;
@@ -79,7 +80,7 @@ export default {
       box-sizing: border-box;
 
       &:focus {
-        outline: 2px solid green;
+        outline: 2px solid $primary;
       }
     }
   }
@@ -99,7 +100,7 @@ export default {
 
       .no {
         width: 50px;
-        color: green;
+        color: $primary;
       }
 
       .count {
@@ -109,7 +110,7 @@ export default {
       }
 
       & + li {
-        border-top: 1px solid $color_border;
+        border-top: 1px solid $primary;
       }
     }
   }

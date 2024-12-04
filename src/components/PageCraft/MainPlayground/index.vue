@@ -105,7 +105,7 @@ const openPlayground = () => {
   }).href
   console.log(url)
   if (window.__TAURI__) {
-    const webview = new WebviewWindow('theUniqueLabel', {
+    const webview = new WebviewWindow('PlaygroundPage', {
       url,
     })
     return
