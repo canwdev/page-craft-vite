@@ -62,6 +62,7 @@ const routes = [
           icon: iconText,
         },
       },
+
       {
         path: 'vue-i18n-edit',
         name: 'VueI18nEditTool',

@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>vue3-sfc-loader</title>
+
+  <style>
+    body, html {
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    #app {
+      height: 100%;
+    }
+  </style>
+</head>
+
+<body>
+<noscript>Enable JavaScript to visit this page</noscript>
+<div id="app"></div>
+<script src="https://unpkg.com/vue@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue3-sfc-loader/dist/vue3-sfc-loader.js"></script>
+<script src="../lib/sass/sass.sync.min.js"></script>
+<script>
+
+  // https://github.com/FranckFreiburger/vue3-sfc-loader/tree/main
+  const options = {
+    moduleCache: {
+      vue: Vue
+    },
+    async getFile(url) {
+      const res = await fetch(url);
+      if (!res.ok)
+        throw Object.assign(new Error(res.statusText + " " + url), { res });
+      return {
+        getContentData: asBinary => asBinary ? res.arrayBuffer() : res.text()
+      };
+    },
+    // https://github.com/FranckFreiburger/vue3-sfc-loader/discussions/181
+    processStyles(src, lang, filename, options) {
+      // console.log({ src, lang, filename, options });
+      if (lang !== "scss") {
+        throw new Error(`unsupported "${lang}" style processor`);
+      }
+
+      return new Promise((resolve, reject) => {
+        Sass.compile(src, (output) => {
+          if (output.message) {
+            reject(output);
+          } else {
+            resolve(output.text);
+          }
+        });
+      });
+    },
+    addStyle(textContent) {
+      // console.log({ textContent });
+      const style = Object.assign(document.createElement("style"), { textContent: textContent });
+      const ref = document.head.getElementsByTagName("style")[0] || null;
+      document.head.insertBefore(style, ref);
+    },
+    removeStyle(text) {
+    }
+  };
+
+  const { loadModule } = window["vue3-sfc-loader"];
+  const url = new URLSearchParams(location.search).get("file_url") || "";
+
+  if (!url) {
+    // 定义组件
+    const MyComponent = {
+      template: `
+        <div style="padding: 10px;">
+          <ul>
+            <li><a href="https://github.com/FranckFreiburger/vue3-sfc-loader" target="_blank">vue3-sfc-loader</a></li>
+            <li>支持 style scss scoped 标签！</li>
+            <li>
+              <button @click="loadExample">Load Example | 加载示例</button>
+            </li>
+          </ul>
+        </div>
+      `,
+      methods: {
+        loadExample() {
+          // 添加查询参数并刷新页面
+          const newUrl = new URL(window.location.href);
+          newUrl.searchParams.set('file_url', './example.vue');
+          window.location.href = newUrl.toString();
+        }
+      }
+    }
+    Vue.createApp(MyComponent).mount('#app')
+    console.error("param file_url is missing, example: /vue.html?file_url=http://127.0.0.1:8080/test/myComponent.vue");
+  } else {
+
+    const app = Vue.createApp({
+      components: {
+        "my-component": Vue.defineAsyncComponent(() => loadModule(url, options))
+      },
+      template: "<my-component></my-component>"
+    });
+
+    app.mount("#app");
+
+  }
+
+</script>
+</body>
+</html>
