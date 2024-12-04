@@ -50,7 +50,7 @@ const respContainerRef = ref()
 const inputRef = ref()
 
 // 滚动到底部
-const scrollBottom = (force = true) => {
+const scrollBottom = (force = true, behavior = 'smooth') => {
   if (!respContainerRef.value) {
     return
   }
@@ -61,7 +61,7 @@ const scrollBottom = (force = true) => {
     if (force || scrollEl.scrollHeight - (scrollEl.scrollTop + scrollEl.offsetHeight) < 400) {
       scrollEl.scrollTo({
         top: scrollEl.scrollHeight,
-        behavior: 'smooth',
+        behavior,
       })
     }
   })
@@ -92,7 +92,7 @@ const handleLoad = () => {
   tempResponseChat.value = null
   setTimeout(() => {
     focusInput()
-    scrollBottom()
+    scrollBottom(true, 'auto')
   })
 }
 
@@ -292,15 +292,18 @@ const handleKeyInput = (event) => {
 }
 
 const handlePaste = (event) => {
+  if (!isEnableVision.value) {
+    return
+  }
   // 获取剪贴板数据
   const clipboardData = event.clipboardData
-  // console.log('clipboardData', clipboardData)
+  console.log('clipboardData', clipboardData)
   // 检查剪贴板中的项目
   const items = clipboardData.items
 
   for (let i = 0; i < items.length; i++) {
     const item = items[i]
-    console.log('item', item)
+    // console.log('item', item)
 
     // 如果是图片类型
     if (/^image/i.test(item.type)) {
@@ -490,9 +493,7 @@ const handleExportHTML = async () => {
         <div class="action-side">
           <el-tag> {{ currentCharacter.model }} </el-tag>
 
-          <template v-if="isEnableVision">
-            <ImagePicker v-model:images="imageList" :disabled="isLoading" />
-          </template>
+          <ImagePicker v-model:images="imageList" :disabled="isLoading || !isEnableVision" />
 
           <button v-if="isLoading" class="vp-button" @click="handleStop">
             <span class="mdi mdi-stop-circle-outline"></span>
