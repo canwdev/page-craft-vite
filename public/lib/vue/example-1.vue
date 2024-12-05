@@ -1,6 +1,6 @@
-<script setup>
-const {ref} = Vue
-const message = ref('Hello Vue')
+<script lang="ts" setup>
+const {ref} = 'vue'
+const message = ref<string>('Hello Vue')
 </script>
 
 <template>
