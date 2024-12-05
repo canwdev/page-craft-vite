@@ -115,12 +115,14 @@ const printLog = () => {
               v-if="character"
               :src="character.avatar || iconAi"
               :alt="item.role"
-              :title="character.name"
+              :title="`${character.name}\n[${character.provider}/${character.model}]`"
             />
             <span class="chat-username" v-else>
               {{ item.role }}
             </span>
-            <span class="chat-username _character" v-if="character">{{ character.name }}</span>
+            <span class="chat-username _character" v-if="character">
+              {{ character.name }} [{{ `${character.provider}/${character.model}` }}]</span
+            >
           </div>
 
           <div class="btn-jump-wrap">

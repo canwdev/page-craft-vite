@@ -29,7 +29,7 @@ const handleItemClick = (e: Event, fn: any) => {
 </script>
 
 <template>
-  <div class="c-panel-item" :data-key="item.key" :class="[item.cls]">
+  <div class="c-panel-item" :data-key="item.key" :key="item.key" :class="[item.cls]">
     <div class="panel-header vp-bg">
       <div class="p-left" :title="item.label">
         <div class="item-label">{{ item.label }}</div>

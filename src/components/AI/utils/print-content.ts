@@ -114,3 +114,7 @@ export const printChatContent = async (el: Element, printTitle = '') => {
     document.title = backupTitle
   }, 500)
 }
+
+// export const getChatContentMarkdown = async (messages: IMessageItem[], title = '') => {
+//   let md = `# ${title}`
+// }

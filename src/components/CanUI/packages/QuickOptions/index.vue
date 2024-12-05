@@ -329,7 +329,7 @@ export default defineComponent({
     </div>
 
     <transition-group :name="transitionGroupName">
-      <template v-for="(v, index) in mOptions" :key="index">
+      <template v-for="(v, index) in mOptions" :key="v.label || index">
         <div v-if="v.split" class="option-split"></div>
         <QOptionItem
           v-else

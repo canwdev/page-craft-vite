@@ -9,15 +9,13 @@ import {useAiSettingsStore} from '@/components/AI/hooks/ai-settings'
 import {useI18n} from 'vue-i18n'
 import {useAiCharacters} from '@/components/AI/hooks/use-ai-characters'
 import {promptConversationAssistant} from '@/components/AI/utils/prompts'
-import globalEventBus, {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
+import {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
 import ImagePicker from '@/components/AI/AIChat/ChatBubble/ImagePicker.vue'
-import {AIProvider, modelsCanUseVision, openAIChatModelOptions} from '@/components/AI/types/models'
-import {SettingsTabType} from '@/enum/settings'
+import {AIProvider, modelsCanUseVision} from '@/components/AI/types/models'
 import {useCommonAi} from '@/components/AI/hooks/use-common-ai'
 import SettingsAi from '@/components/SystemSettings/SettingsAi.vue'
 import {GptMessage} from '@/components/AI/types/open-ai'
 import {getChatContentHtml, printChatContent} from '@/components/AI/utils/print-content'
-import {handleExportFile} from '@/utils/mc-utils/io'
 import DropdownMenu from '@/components/CanUI/packages/OptionUI/Tools/DropdownMenu.vue'
 
 const {t: $t, locale} = useI18n()
@@ -385,8 +383,74 @@ const handlePrint = async () => {
 
 const handleExportHTML = async () => {
   const title = currentHistory.value?.title || 'Chat'
-  handleExportFile(title, await getChatContentHtml(respContainerRef.value, title), '.html')
+  window.$mcUtils.handleExportFile(
+    title,
+    await getChatContentHtml(respContainerRef.value, title),
+    '.html',
+  )
 }
+// const handleExportMarkdown = async () => {
+//   const title = currentHistory.value?.title || 'Chat'
+//   window.$mcUtils.handleExportFile(
+//     title,
+//     await getChatContentMarkdown(currentHistory.value!.history, title),
+//     '.md',
+//   )
+// }
+
+const exportImportOptions = ref([
+  {
+    label: 'Print to PDF...',
+    iconClass: 'mdi mdi-printer',
+    props: {
+      onClick() {
+        handlePrint()
+      },
+    },
+  },
+  {
+    label: 'Save HTML file',
+    iconClass: 'mdi mdi-language-html5',
+    props: {
+      onClick() {
+        handleExportHTML()
+      },
+    },
+  },
+  // {
+  //   label: 'Save Markdown file',
+  //   iconClass: 'mdi mdi-language-markdown',
+  //   props: {
+  //     onClick() {
+  //       handleExportMarkdown()
+  //     },
+  //   },
+  // },
+  {split: true},
+  {
+    label: 'Import JSON',
+    iconClass: 'mdi mdi-import',
+    props: {
+      async onClick() {
+        currentHistory.value!.history = await window.$mcUtils.handleImportJson()
+        window.$message.success($t('msgs.import_success'))
+      },
+    },
+  },
+  {
+    label: 'Export JSON',
+    iconClass: 'mdi mdi-export',
+    props: {
+      async onClick() {
+        window.$mcUtils.handleExportFile(
+          await window.$mcUtils.promptGetFileName(currentHistory.value?.title || 'Chat'),
+          JSON.stringify(currentHistory.value!.history, null, 2),
+          '.json',
+        )
+      },
+    },
+  },
+])
 </script>
 
 <template>
@@ -444,28 +508,7 @@ const handleExportHTML = async () => {
               <SettingsAi style="max-height: 70vh; overflow-y: auto" />
             </el-popover>
 
-            <DropdownMenu
-              :options="[
-                {
-                  label: 'Print to PDF...',
-                  iconClass: 'mdi mdi-printer',
-                  props: {
-                    onClick() {
-                      handlePrint()
-                    },
-                  },
-                },
-                {
-                  label: 'Save HTML file',
-                  iconClass: 'mdi mdi-language-html5',
-                  props: {
-                    onClick() {
-                      handleExportHTML()
-                    },
-                  },
-                },
-              ]"
-            >
+            <DropdownMenu :options="exportImportOptions">
               <button class="vp-button" title="Export">
                 <span class="mdi mdi-tray-arrow-down"></span>
               </button>
