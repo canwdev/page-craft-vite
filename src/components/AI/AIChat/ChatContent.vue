@@ -520,7 +520,7 @@ const exportImportOptions = ref([
               class="vp-button"
               title="Scroll to bottom, right click scroll to top"
             >
-              <span class="mdi mdi-chevron-triple-down"></span>
+              <span class="mdi mdi-unfold-more-horizontal"></span>
             </button>
 
             <el-popconfirm

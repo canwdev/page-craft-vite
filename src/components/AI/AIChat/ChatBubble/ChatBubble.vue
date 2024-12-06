@@ -5,6 +5,7 @@ import {IAiCharacter, ImageUrlObj, IMessageContent, IMessageItem} from '@/compon
 
 import MessageContent from '@/components/AI/AIChat/ChatBubble/TextContent.vue'
 import iconAi from '@/assets/textures/chat-gpt-logo.svg'
+import {useI18n} from 'vue-i18n'
 
 interface Props {
   isDark?: boolean
@@ -24,6 +25,7 @@ const props = withDefaults(defineProps<Props>(), {
   allowDelete: false,
 })
 const {item} = toRefs(props)
+const {t: $t} = useI18n()
 
 const isEditing = ref(false)
 const editInputRef = ref()
@@ -80,6 +82,15 @@ const imageSrcList = computed(() => {
 
 const printLog = () => {
   console.log(JSON.parse(JSON.stringify(item.value)))
+}
+const confirmDelete = (item) => {
+  window.$dialog
+    .confirm('Delete item?', $t('actions.confirm'), {
+      type: 'warning',
+    })
+    .then(() => {
+      emit('delete', item)
+    })
 }
 </script>
 
@@ -202,16 +213,9 @@ const printLog = () => {
             <button class="btn-no-style" v-if="allowEdit" @click="isEditing = true">
               📝 {{ $t('actions.edit') }}
             </button>
-            <el-popconfirm
-              v-if="allowDelete"
-              @confirm="$emit('delete', item)"
-              :title="$t('actions.confirm')"
-              :teleported="false"
-            >
-              <template #reference>
-                <button class="btn-no-style">🗑️ {{ $t('actions.delete') }}</button>
-              </template>
-            </el-popconfirm>
+            <button class="btn-no-style" v-if="allowDelete" @click="confirmDelete">
+              🗑️ {{ $t('actions.delete') }}
+            </button>
           </template>
         </div>
       </div>

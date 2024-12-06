@@ -220,7 +220,7 @@
     "lian_tong_xing_ce_sh": "Connectivity Test",
     "geng_xin_yu_she_jue": "Update preset roles",
     "ti_gong_shang": "Provider",
-    "enter_send_tips_2": "Press Shift+Enter to submit, Enter to newline",
+    "enter_send_tips_2": "Press Ctrl+Enter to submit, Enter to newline",
     "enter_key_send": "Enter key send"
   },
   "app_client": {

@@ -220,7 +220,7 @@
     "lian_tong_xing_ce_sh": "接続テスト",
     "geng_xin_yu_she_jue": "プリセット役職の更新",
     "ti_gong_shang": "プロバイダ",
-    "enter_send_tips_2": "Shift+Enter キーを押して送信、Enter キーで改行",
+    "enter_send_tips_2": "Ctrl+Enter キーを押して送信、Enter キーで改行",
     "enter_key_send": "Enterキーを押して送信"
   },
   "app_client": {

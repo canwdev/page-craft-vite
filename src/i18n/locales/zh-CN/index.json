@@ -221,7 +221,7 @@
     "lian_tong_xing_ce_sh": "连通性测试",
     "geng_xin_yu_she_jue": "更新预设角色",
     "ti_gong_shang": "提供商",
-    "enter_send_tips_2": "按 Shift+Enter 提交，按 Enter 换行",
+    "enter_send_tips_2": "按 Ctrl+Enter 提交，按 Enter 换行",
     "enter_key_send": "Enter 键发送"
   },
   "app_client": {
