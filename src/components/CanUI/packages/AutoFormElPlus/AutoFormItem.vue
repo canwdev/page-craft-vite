@@ -82,6 +82,13 @@ export default defineComponent({
       :controls="false"
       v-bind="item.props"
     />
+    <el-autocomplete
+      v-else-if="item.type === AutoFormItemType.INPUT_AUTOCOMPLETE"
+      v-model="dynamicValue"
+      :placeholder="item.placeholder"
+      :disabled="item.disabled"
+      v-bind="item.props"
+    />
     <VueMonaco
       v-else-if="item.type === AutoFormItemType.MONACO_EDITOR"
       v-model="dynamicValue"
@@ -186,6 +193,9 @@ export default defineComponent({
   }
   & > .el-form-item__label {
     padding-right: 0;
+  }
+  .el-input-number .el-input__inner {
+    text-align: left;
   }
 }
 </style>

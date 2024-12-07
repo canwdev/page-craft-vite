@@ -107,6 +107,15 @@ const routes = [
           title: `UI Demo`,
         },
       },
+      {
+        path: 'stock-tracker',
+        name: 'StockTrackerPage',
+        component: () => import('@/components/AppUtils/StockTracker/index.vue'),
+        meta: {
+          title: `Stock Tracker`,
+          iconClass: 'mdi mdi-chart-areaspline',
+        },
+      },
     ],
   },
   // catch all route for 404

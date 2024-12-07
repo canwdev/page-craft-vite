@@ -57,9 +57,11 @@ export default defineComponent({
 
 <template>
   <div class="page-craft-root" :style="bgStyle">
-    <transition name="fade" mode="out-in">
-      <RouterView />
-    </transition>
+    <router-view v-slot="{Component}">
+      <transition name="fade" mode="out-in">
+        <component :is="Component" />
+      </transition>
+    </router-view>
     <AppSub />
   </div>
 </template>

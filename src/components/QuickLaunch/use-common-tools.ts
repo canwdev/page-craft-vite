@@ -142,6 +142,15 @@ export const useCommonTools = () => {
               },
             },
           },
+          {
+            label: 'Stock Tracker',
+            iconClass: 'mdi mdi-chart-areaspline',
+            props: {
+              onClick: async () => {
+                await router.push({name: 'StockTrackerPage'})
+              },
+            },
+          },
         ],
       },
       {
@@ -150,6 +159,7 @@ export const useCommonTools = () => {
         search: 'settings',
         props: {
           onClick: async () => {
+            mainStore.isShowQuickLaunch = false
             mainStore.isShowSettings = true
           },
         },

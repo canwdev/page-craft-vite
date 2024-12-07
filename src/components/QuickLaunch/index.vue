@@ -75,7 +75,6 @@ defineExpose({
       @onClose="textareaRef.focus()"
       @onEnter="isEnterSub = true"
       @onBack="isEnterSub = false"
-      transition-group-name="fade"
     />
   </div>
   <Teleport to="body">

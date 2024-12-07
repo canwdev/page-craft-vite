@@ -443,7 +443,7 @@ const exportImportOptions = ref([
     props: {
       async onClick() {
         window.$mcUtils.handleExportFile(
-          await window.$mcUtils.promptGetFileName(currentHistory.value?.title || 'Chat'),
+          await window.$mcUtils.promptGetFileName(null, currentHistory.value?.title || 'Chat'),
           JSON.stringify(currentHistory.value!.history, null, 2),
           '.json',
         )

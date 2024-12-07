@@ -46,16 +46,14 @@ const handleToggleExpand = (item: StOptionItem) => {
 
 <template>
   <div class="option-ui">
-    <transition-group name="fadeMove" mode="out-in">
-      <OptionItem
-        v-show="!item.hidden"
-        v-for="item in optionList"
-        :item="item"
-        :key="item.key"
-        :folded-key-map="foldedKeyMap"
-        @onToggleExpand="handleToggleExpand"
-        @updateValue="(v) => emit('updateValue', v)"
-      />
-    </transition-group>
+    <OptionItem
+      v-show="!item.hidden"
+      v-for="item in optionList"
+      :item="item"
+      :key="item.key"
+      :folded-key-map="foldedKeyMap"
+      @onToggleExpand="handleToggleExpand"
+      @updateValue="(v) => emit('updateValue', v)"
+    />
   </div>
 </template>
