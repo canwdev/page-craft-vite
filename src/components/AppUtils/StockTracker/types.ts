@@ -78,6 +78,27 @@ export const getTransactionHistoryFormRules = (): FormRules => {
   }
 }
 
-export interface StockTrackerSettings {
+// 用户数据保存
+export interface IStockTrackerSettings {
   transactionHistory: ITransactionHistory[]
+}
+
+export interface IStockPrices {
+  open: string
+  high: string
+  low: string
+  close: string
+  volume: string
+  day?: string
+}
+
+export interface IPriceByDay {
+  [day: string]: IStockPrices
+}
+
+// 行情
+export interface IStockTrackerPrices {
+  bySymbol: {
+    [symbol: string]: IPriceByDay
+  }
 }

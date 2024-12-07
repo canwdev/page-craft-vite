@@ -73,6 +73,7 @@ export const LS_SettingsKey = {
   // others
   MC_INPUT_HISTORY_CLASS: 'mc_input_history_class',
   STOCK_TRACKER_SETTINGS: 'stock_tracker_settings',
+  STOCK_TRACKER_PRICES: 'stock_tracker_prices',
 
   ...StyleEditorKeys,
   ...PageCraftKeys,

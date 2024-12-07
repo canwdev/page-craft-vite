@@ -8,7 +8,8 @@ import {
   formatTransactionHistory,
   getTransactionHistoryFormRules,
   ITransactionHistory,
-  StockTrackerSettings,
+  IStockTrackerPrices,
+  IStockTrackerSettings,
 } from './types'
 import RectSwitch from '@/components/CanUI/packages/OptionUI/Tools/RectSwitch.vue'
 import {useStorage} from '@vueuse/core'
@@ -16,13 +17,32 @@ import {LS_SettingsKey} from '@/enum/settings'
 import {AutoFormItemType, MixedFormItems} from '@/components/CanUI/packages/AutoFormElPlus/enum'
 import AutoFormElPlus from '@/components/CanUI/packages/AutoFormElPlus/index.vue'
 import {guid} from '@/utils'
+import {fetchPrices} from '@/components/AppUtils/StockTracker/utils/prices'
+import StockPrices from '@/components/AppUtils/StockTracker/StockPrices.vue'
+import DropdownMenu from '@/components/CanUI/packages/OptionUI/Tools/DropdownMenu.vue'
 
-const stockTrackerSettings = useStorage<StockTrackerSettings>(
+const stockTrackerPrices = useStorage<IStockTrackerPrices>(LS_SettingsKey.STOCK_TRACKER_PRICES, {
+  bySymbol: {},
+})
+const stockTrackerSettings = useStorage<IStockTrackerSettings>(
   LS_SettingsKey.STOCK_TRACKER_SETTINGS,
   {
     transactionHistory: [],
   },
 )
+
+// 交易记录中的股票代码和名称
+const stockSymbolOptions = computed(() => {
+  const nameMap = new Map<string, string>()
+  stockTrackerSettings.value.transactionHistory.forEach((item) => {
+    nameMap.set(item.symbol, item.symbolName)
+  })
+
+  return Array.from(nameMap.keys()).map((key) => {
+    return {value: key, label: nameMap.get(key) || ''}
+  })
+})
+
 const importData = async () => {
   let {
     data: {list},
@@ -48,49 +68,130 @@ const importData = async () => {
     } as ITransactionHistory
   })
 }
+
+const isUpdating = ref(false)
+const updatePrices = async () => {
+  try {
+    isUpdating.value = true
+
+    const {bySymbol} = stockTrackerPrices.value
+
+    for (let i = 0; i < stockSymbolOptions.value.length; i++) {
+      const symbol = stockSymbolOptions.value[i].value
+      if (!symbol) {
+        continue
+      }
+      const data = await fetchPrices({
+        symbol: symbol,
+      })
+
+      if (bySymbol[symbol]) {
+        bySymbol[symbol] = {
+          ...bySymbol[symbol],
+          ...data,
+        }
+      } else {
+        bySymbol[symbol] = data
+      }
+    }
+
+    window.$message.success('更新行情成功！')
+    stockTrackerPrices.value.bySymbol = bySymbol
+    console.log(stockTrackerPrices.value)
+  } catch (error: any) {
+    console.error(error)
+
+    window.$dialog.alert(error.message, '更新行情失败', {
+      type: 'error',
+    })
+  } finally {
+    isUpdating.value = false
+  }
+}
+
+const confirmUpdatePrices = async () => {
+  await window.$dialog.confirm('免费接口每日调用次数有限，请勿频繁更新，是否继续？', '确认', {
+    type: 'warning',
+  })
+  updatePrices()
+}
+
 onMounted(() => {
   // importData()
+  // updatePrices()
 })
 
 enum StockTrackerTab {
+  PRICES = 'prices',
   HISTORY = 'history',
   STATISTICS = 'statistics',
 }
 
 const tabOptions = ref([
+  {label: '行情', value: StockTrackerTab.PRICES},
   {label: '交易记录', value: StockTrackerTab.HISTORY},
   {label: '统计', value: StockTrackerTab.STATISTICS},
 ])
-const curTab = ref(StockTrackerTab.HISTORY)
+const curTab = useStorage('stock_tracker_tab', StockTrackerTab.HISTORY)
 
-const handleImport = async () => {
-  await window.$dialog.confirm('将覆盖当前记录，继续导入？', '确认', {
-    type: 'warning',
-  })
-  stockTrackerSettings.value = await window.$mcUtils.handleImportJson()
-  window.$message.success('导入成功！')
-}
-const handleExport = async () => {
-  window.$mcUtils.handleExportFile(
-    await window.$mcUtils.promptGetFileName(null, 'StockTracker'),
-    JSON.stringify(stockTrackerSettings.value, null, 2),
-    '.json',
-  )
-}
+const exportImportOptions = ref([
+  {
+    label: '导入交易数据',
+    iconClass: 'mdi mdi-import',
+    props: {
+      async onClick() {
+        await window.$dialog.confirm('将覆盖当前记录，继续导入？', '导入交易数据', {
+          type: 'warning',
+        })
+        stockTrackerSettings.value = await window.$mcUtils.handleImportJson()
+        window.$message.success('导入成功！')
+      },
+    },
+  },
+  {
+    label: '导出交易数据',
+    iconClass: 'mdi mdi-export',
+    props: {
+      async onClick() {
+        window.$mcUtils.handleExportFile(
+          await window.$mcUtils.promptGetFileName(null, 'StockTradeHistory'),
+          JSON.stringify(stockTrackerSettings.value, null, 2),
+          '.json',
+        )
+      },
+    },
+  },
+  {split: true},
+  {
+    label: '导入行情数据',
+    iconClass: 'mdi mdi-import',
+    props: {
+      async onClick() {
+        await window.$dialog.confirm('将覆盖当前记录，继续导入？', '导入行情数据', {
+          type: 'warning',
+        })
+        stockTrackerPrices.value = await window.$mcUtils.handleImportJson()
+        window.$message.success('导入成功！')
+      },
+    },
+  },
+  {
+    label: '导出行情数据',
+    iconClass: 'mdi mdi-export',
+    props: {
+      async onClick() {
+        window.$mcUtils.handleExportFile(
+          await window.$mcUtils.promptGetFileName(null, 'StockPrices'),
+          JSON.stringify(stockTrackerPrices.value, null, 2),
+          '.json',
+        )
+      },
+    },
+  },
+])
 
 const isShowEditDialog = ref(false)
 const isCreate = ref(false)
-
-const stockSymbolOptions = computed(() => {
-  const nameMap = new Map<string, string>()
-  stockTrackerSettings.value.transactionHistory.forEach((item) => {
-    nameMap.set(item.symbol, item.symbolName)
-  })
-
-  return Array.from(nameMap.keys()).map((key) => {
-    return {value: key, label: nameMap.get(key) || ''}
-  })
-})
 
 const dataForm = ref<ITransactionHistory>(formatTransactionHistory())
 const formRules = getTransactionHistoryFormRules()
@@ -221,7 +322,6 @@ const formItems = computed((): MixedFormItems[] => {
   ]
 })
 
-const isUpdating = ref(false)
 const handleCreateEdit = async (item: ITransactionHistory) => {
   try {
     isUpdating.value = true
@@ -271,19 +371,24 @@ const deleteItem = (item: ITransactionHistory) => {
 </script>
 
 <template>
-  <div class="stock-tracker vp-bg">
+  <div class="stock-tracker vp-bg scrollbar-mini" v-loading="isUpdating">
     <div class="action-row">
       <div class="flex-row-center-gap">
         <button class="vp-button primary" @click="createItem">添加交易记录</button>
+        <button class="vp-button" @click="confirmUpdatePrices">更新日行情</button>
       </div>
       <RectSwitch v-model="curTab" :options="tabOptions" />
       <div class="flex-row-center-gap">
-        <button class="vp-button" @click="handleImport">导入数据</button>
-        <button class="vp-button" @click="handleExport">导出数据</button>
+        <DropdownMenu :options="exportImportOptions">
+          <button class="vp-button" title="Export">
+            <span class="mdi mdi-briefcase-arrow-up-down"></span>
+          </button>
+        </DropdownMenu>
       </div>
     </div>
 
     <div class="content-wrapper">
+      <StockPrices v-if="curTab === StockTrackerTab.PRICES" :stock-prices="stockTrackerPrices" />
       <TransactionHistory
         v-if="curTab === StockTrackerTab.HISTORY"
         :history-list="stockTrackerSettings.transactionHistory"
@@ -294,6 +399,7 @@ const deleteItem = (item: ITransactionHistory) => {
       <StockStatistics
         v-if="curTab === StockTrackerTab.STATISTICS"
         :history-list="stockTrackerSettings.transactionHistory"
+        :stock-prices="stockTrackerPrices"
       />
     </div>
 
@@ -345,6 +451,11 @@ const deleteItem = (item: ITransactionHistory) => {
   }
   :deep(.price-down) {
     color: #f44336;
+  }
+  :deep(.text-overflow) {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 </style>

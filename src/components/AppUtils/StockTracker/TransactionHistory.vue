@@ -17,18 +17,22 @@ const emit = defineEmits(['editItem', 'duplicateItem', 'deleteItem'])
 const {historyList} = toRefs(props)
 
 const filterData = ref({
-  filterSymbol: '',
+  filterName: '',
 })
 
 const filteredList = ref<ITransactionHistory[]>([])
 const updateFilteredList = () => {
-  const {filterSymbol} = filterData.value
-  if (!filterSymbol) {
+  const {filterName} = filterData.value
+  if (!filterName) {
     filteredList.value = historyList.value
     return
   }
   filteredList.value = historyList.value.filter((item) => {
-    return (item.symbol || '').toLowerCase().includes((filterSymbol || '').toLowerCase())
+    const name = (filterName || '').toLowerCase()
+    return (
+      (item.symbol || '').toLowerCase().includes(name) ||
+      (item.symbolName || '').toLowerCase().includes(name)
+    )
   })
 }
 
@@ -43,19 +47,19 @@ watch(
 const tableColumns: AutoTableColumn[] = [
   {
     key: 'symbol',
-    label: '股票代码',
-    fixed: 'left',
-    props: {
-      sortable: true,
-    },
-  },
-  {
-    key: 'symbolName',
-    label: '股票名称',
+    label: '股票名称/代码',
     minWidth: 120,
     props: {
       sortable: true,
       showOverflowTooltip: true,
+    },
+    formatter({row}) {
+      return `<div>
+<div class="text-overflow">
+<b>${row.symbolName}</b>
+</div>
+<div>${row.symbol}</div>
+</div>`
     },
   },
   {
@@ -189,7 +193,7 @@ const allTips = computed(() => {
       <el-input
         clearable
         placeholder="过滤股票代码"
-        v-model="filterData.filterSymbol"
+        v-model="filterData.filterName"
         @change="updateFilteredList"
       />
     </div>
