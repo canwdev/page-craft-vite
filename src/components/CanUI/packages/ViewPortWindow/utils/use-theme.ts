@@ -1,6 +1,6 @@
 import {createGlobalState} from '@vueuse/core'
 
-export interface IOptions {
+export interface IOption {
   label: string
   value: string
 }
@@ -42,7 +42,7 @@ const removeCssFile = (filename) => {
 
 const useThemeState = createGlobalState(() => {
   const isInitialized = ref(false)
-  const themeOptions = ref<IOptions[]>([...defaultThemeOptions])
+  const themeOptions = ref<IOption[]>([...defaultThemeOptions])
   return {
     isInitialized,
     themeOptions,
@@ -51,7 +51,7 @@ const useThemeState = createGlobalState(() => {
 export const useThemeOptions = () => {
   const {themeOptions, isInitialized} = useThemeState()
 
-  const themes = ref<IOptions[]>([])
+  const themes = ref<IOption[]>([])
   const baseUrl = './resources/themes-dist'
   const loadThemes = async () => {
     if (isInitialized.value) {

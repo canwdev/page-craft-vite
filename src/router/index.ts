@@ -116,6 +116,15 @@ const routes = [
           iconClass: 'mdi mdi-chart-areaspline',
         },
       },
+      {
+        path: 'fire-calc',
+        name: 'FireCalcPage',
+        component: () => import('@/components/AppUtils/FireCalc/index.vue'),
+        meta: {
+          title: `Fire Calc`,
+          iconClass: 'mdi mdi-finance',
+        },
+      },
     ],
   },
   // catch all route for 404

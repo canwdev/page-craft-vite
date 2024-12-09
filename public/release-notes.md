@@ -10,6 +10,7 @@
 - add: 支持导入/导出全部设置
 - add: Material Design Icons Viewer
 - add: Vue 3 SFC Loader
+- add: Stock Tracker / Fire Calc
 - optimize: UI 交互优化
 
 ## v1.7.5

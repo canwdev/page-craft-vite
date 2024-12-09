@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import {IStockTrackerPrices} from '@/components/AppUtils/StockTracker/types'
 import TabLayout from '@/components/CanUI/packages/Layouts/TabLayout.vue'
+import EchartsKLine from '@/components/AppUtils/StockTracker/Graphs/EchartsKLine.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -13,10 +14,10 @@ const {stockPrices} = toRefs(props)
 
 const curTab = ref('')
 const tabOptions = computed(() => {
-  if (!stockPrices.value || !stockPrices.value.bySymbol) {
+  if (!stockPrices.value) {
     return []
   }
-  return Object.keys(stockPrices.value.bySymbol).map((key) => {
+  return Object.keys(stockPrices.value).map((key) => {
     return {
       label: key,
       value: key,
@@ -38,8 +39,11 @@ watch(
 <template>
   <div class="stock-prices-wrapper">
     <TabLayout v-model="curTab" :options="tabOptions" horizontal>
-      <template v-if="stockPrices.bySymbol[curTab]">
-        {{ stockPrices.bySymbol[curTab] }}
+      <template v-if="stockPrices[curTab]">
+        <EchartsKLine
+          v-if="stockPrices[curTab] && stockPrices[curTab].byDay"
+          :by-day="stockPrices[curTab]!.byDay"
+        />
       </template>
     </TabLayout>
   </div>

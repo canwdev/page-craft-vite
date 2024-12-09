@@ -2,7 +2,7 @@ import {IPriceByDay} from '@/components/AppUtils/StockTracker/types'
 import {guid_S4} from '@/utils'
 
 // https://www.alphavantage.co/documentation/
-export const fetchPrices = async ({symbol}): Promise<IPriceByDay> => {
+export const fetchPricesByDay = async ({symbol}): Promise<IPriceByDay> => {
   console.log(`正在获取 ${symbol} 行情...`)
   const data = await fetch(
     `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&apikey=${guid_S4()}`,

@@ -1,13 +1,13 @@
 import {FormRules} from 'element-plus'
 import {CurrencyType} from './utils/currency-symbol'
-import {OptionItem} from '@/components/CanUI/packages/AutoFormElPlus/enum'
+import {IOptionItem} from '@/components/CanUI/packages/AutoFormElPlus/enum'
 import {guid} from '@/utils'
 
 export const currencyOptions = Object.values(CurrencyType).map((item) => {
   return {
     label: item,
     value: item,
-  } as OptionItem
+  } as IOptionItem
 })
 
 export enum EntrustSide {
@@ -15,7 +15,7 @@ export enum EntrustSide {
   SALE = 'S',
 }
 
-export const entrustSideOptions: OptionItem[] = [
+export const entrustSideOptions: IOptionItem[] = [
   {label: '买入', value: EntrustSide.BUY},
   {label: '卖出', value: EntrustSide.SALE},
 ]
@@ -98,7 +98,7 @@ export interface IPriceByDay {
 
 // 行情
 export interface IStockTrackerPrices {
-  bySymbol: {
-    [symbol: string]: IPriceByDay
+  [symbol: string]: {
+    byDay?: IPriceByDay
   }
 }

@@ -23,15 +23,17 @@ const stockLatestPriceBySymbol = computed((): IStockLatestPriceBySymbol => {
   if (!stockPrices.value) {
     return {}
   }
-  const {bySymbol} = stockPrices.value
   const obj: IStockLatestPriceBySymbol = {}
 
-  Object.keys(bySymbol).forEach((symbol: string) => {
-    const dates = Object.keys(bySymbol[symbol])
-    const day = dates[0]
-    obj[symbol] = {
-      ...bySymbol[symbol][day],
-      day,
+  Object.keys(stockPrices.value).forEach((symbol: string) => {
+    const dataByDay = stockPrices.value[symbol].byDay
+    if (dataByDay) {
+      const dates = Object.keys(dataByDay)
+      const day = dates[0]
+      obj[symbol] = {
+        ...dataByDay[day],
+        day,
+      }
     }
   })
   console.table(obj)

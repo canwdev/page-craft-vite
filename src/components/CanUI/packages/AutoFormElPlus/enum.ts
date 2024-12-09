@@ -1,6 +1,6 @@
 import {FormRules} from 'element-plus'
 
-export type OptionItem = {
+export interface IOptionItem {
   value: any
   label: string
 }
@@ -34,7 +34,7 @@ export type AutoFormItem = {
   rules?: any
   formItemProps?: any
   // SELECT下拉选项
-  options?: OptionItem[]
+  options?: IOptionItem[]
   // 渲染函数 h('div', {}, null)
   render?: any
   renderLabel?: any

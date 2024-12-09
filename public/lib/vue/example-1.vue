@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-const {ref} = 'vue'
+const {ref} = Vue
 const message = ref<string>('Hello Vue')
 </script>
 

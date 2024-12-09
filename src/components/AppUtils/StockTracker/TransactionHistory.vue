@@ -1,20 +1,35 @@
 <script setup lang="ts">
 import AutoTableElPlus from '@/components/CanUI/packages/AutoTableElPlus/index.vue'
 import {AutoTableColumn} from '@/components/CanUI/packages/AutoTableElPlus/types'
-import {EntrustSide, ITransactionHistory} from './types'
+import {
+  currencyOptions,
+  EntrustSide,
+  entrustSideOptions,
+  formatTransactionHistory,
+  getTransactionHistoryFormRules,
+  ITransactionHistory,
+} from './types'
 import {useResizeObserver} from '@vueuse/core'
-import {formatDate} from '@/utils'
+import {formatDate, guid} from '@/utils'
 import {getPriceWithSymbol} from '@/components/AppUtils/StockTracker/utils'
 import {renderDropdownMenu} from '@/components/CanUI/packages/OptionUI/Tools/renders'
+import AutoFormElPlus from '@/components/CanUI/packages/AutoFormElPlus/index.vue'
+import {
+  AutoFormItemType,
+  IOptionItem,
+  MixedFormItems,
+} from '@/components/CanUI/packages/AutoFormElPlus/enum'
 
 const props = withDefaults(
   defineProps<{
     historyList: ITransactionHistory[]
+    stockSymbolOptions: IOptionItem[]
+    isUpdating: boolean
   }>(),
   {},
 )
 const emit = defineEmits(['editItem', 'duplicateItem', 'deleteItem'])
-const {historyList} = toRefs(props)
+const {historyList, stockSymbolOptions, isUpdating} = toRefs(props)
 
 const filterData = ref({
   filterName: '',
@@ -138,7 +153,7 @@ const tableColumns: AutoTableColumn[] = [
             label: '编辑',
             props: {
               onClick: () => {
-                emit('editItem', row)
+                editItem(row)
               },
             },
           },
@@ -146,7 +161,7 @@ const tableColumns: AutoTableColumn[] = [
             label: '创建副本',
             props: {
               onClick: () => {
-                emit('duplicateItem', row)
+                duplicateItem(row)
               },
             },
           },
@@ -159,7 +174,7 @@ const tableColumns: AutoTableColumn[] = [
                     type: 'warning',
                   })
                   .then(() => {
-                    emit('deleteItem', row)
+                    deleteItem(row)
                   })
                   .catch()
               },
@@ -184,6 +199,192 @@ const allTips = computed(() => {
   return filteredList.value.reduce((acc, cur) => {
     return acc + cur.tip
   }, 0)
+})
+
+const isShowEditDialog = ref(false)
+const isCreate = ref(false)
+
+const dataForm = ref<ITransactionHistory>(formatTransactionHistory())
+const formRules = getTransactionHistoryFormRules()
+const formItems = computed((): MixedFormItems[] => {
+  return [
+    [
+      {
+        type: AutoFormItemType.INPUT_AUTOCOMPLETE,
+        key: 'symbol',
+        label: `股票代码`,
+        props: {
+          clearable: true,
+          fetchSuggestions: (queryString: string, cb: any) => {
+            const results = queryString
+              ? stockSymbolOptions.value.filter((item) => {
+                  return item.value.toLowerCase().includes(queryString.toLowerCase())
+                })
+              : stockSymbolOptions.value
+            cb(results)
+          },
+          onSelect() {
+            // console.log(dataForm.value.symbol)
+            const find = stockSymbolOptions.value.find((i) => i.value === dataForm.value.symbol)
+            if (find) {
+              dataForm.value.symbolName = find.label
+            }
+          },
+        },
+      },
+      {
+        type: AutoFormItemType.INPUT_AUTOCOMPLETE,
+        key: 'symbolName',
+        label: `股票名称`,
+        props: {
+          clearable: true,
+          fetchSuggestions: (queryString: string, cb: any) => {
+            const results = queryString
+              ? stockSymbolOptions.value.filter((item) => {
+                  return (
+                    item.value.toLowerCase().includes(queryString.toLowerCase()) ||
+                    item.label.toLowerCase().includes(queryString.toLowerCase())
+                  )
+                })
+              : stockSymbolOptions.value
+            cb(results.map((i) => ({value: i.label})))
+          },
+          onSelect() {
+            // console.log(dataForm.value.symbol)
+            const find = stockSymbolOptions.value.find((i) => i.label === dataForm.value.symbolName)
+            if (find) {
+              dataForm.value.symbol = find.value
+            }
+          },
+        },
+      },
+    ],
+    [
+      {
+        type: AutoFormItemType.INPUT_NUMBER,
+        key: 'businessAvgPrice',
+        label: `成交平均价格`,
+        props: {
+          controls: true,
+          controlsPosition: 'right',
+          min: 0,
+        },
+      },
+      {
+        type: AutoFormItemType.INPUT_NUMBER,
+        key: 'businessQty',
+        label: `成交数量`,
+        props: {
+          controls: true,
+          controlsPosition: 'right',
+          min: 0,
+        },
+      },
+    ],
+    [
+      {
+        type: AutoFormItemType.SELECT,
+        key: 'entrustSide',
+        label: `委托方向`,
+        options: entrustSideOptions,
+      },
+      {
+        type: AutoFormItemType.SELECT,
+        key: 'currency',
+        label: `货币类型`,
+        options: currencyOptions,
+        disabled: true,
+        props: {
+          filterable: true,
+        },
+      },
+    ],
+    [
+      {
+        type: AutoFormItemType.INPUT_NUMBER,
+        key: 'tip',
+        label: `佣金`,
+        props: {
+          controls: true,
+          controlsPosition: 'right',
+          min: 0,
+        },
+      },
+      {
+        type: AutoFormItemType.DATE_PICKER,
+        key: 'createTimestamp',
+        label: `创建时间`,
+        props: {
+          type: 'datetime',
+          placeholder: '抢名额开始时间',
+          // 毫秒级时间戳
+          valueFormat: 'x',
+        },
+      },
+    ],
+    {
+      type: AutoFormItemType.INPUT,
+      key: 'remark',
+      label: `备注`,
+      props: {
+        type: 'textarea',
+      },
+    },
+  ]
+})
+
+const handleCreateEdit = async (item: ITransactionHistory) => {
+  try {
+    isUpdating.value = true
+
+    item = JSON.parse(JSON.stringify(item))
+
+    if (isCreate.value) {
+      item.id = guid()
+      historyList.value.push(item)
+
+      window.$message.success('创建成功！')
+    } else {
+      const idx = historyList.value.findIndex((i) => item.id === i.id)
+      historyList.value.splice(idx, 1, item)
+      window.$message.success('更新成功！')
+    }
+    isShowEditDialog.value = false
+  } catch (e) {
+    console.error(e)
+  } finally {
+    isUpdating.value = false
+  }
+}
+
+const createItem = () => {
+  isCreate.value = true
+  dataForm.value = formatTransactionHistory()
+  isShowEditDialog.value = true
+}
+
+const duplicateItem = (item: ITransactionHistory) => {
+  isCreate.value = true
+  dataForm.value = formatTransactionHistory(item)
+  isShowEditDialog.value = true
+}
+
+const editItem = (item: ITransactionHistory) => {
+  isCreate.value = false
+  dataForm.value = formatTransactionHistory(item)
+  isShowEditDialog.value = true
+}
+
+const deleteItem = (item: ITransactionHistory) => {
+  const idx = historyList.value.findIndex((i) => item.id === i.id)
+  historyList.value.splice(idx, 1)
+}
+
+defineExpose({
+  createItem,
+  duplicateItem,
+  editItem,
+  deleteItem,
 })
 </script>
 
@@ -220,6 +421,27 @@ const allTips = computed(() => {
         }}
       </span>
     </div>
+
+    <el-dialog
+      :close-on-click-modal="false"
+      :title="isCreate ? '添加交易记录' : '编辑交易记录'"
+      v-model="isShowEditDialog"
+      width="480"
+      draggable
+    >
+      <AutoFormElPlus
+        v-if="isShowEditDialog"
+        :form-schema="{
+          model: dataForm,
+          rules: formRules,
+          props: {
+            labelPosition: 'top',
+          },
+          formItems,
+        }"
+        @onSubmit="handleCreateEdit"
+      />
+    </el-dialog>
   </div>
 </template>
 

@@ -142,12 +142,24 @@ export const useCommonTools = () => {
               },
             },
           },
+          {split: true},
           {
             label: 'Stock Tracker',
             iconClass: 'mdi mdi-chart-areaspline',
             props: {
               onClick: async () => {
+                mainStore.isShowQuickLaunch = false
                 await router.push({name: 'StockTrackerPage'})
+              },
+            },
+          },
+          {
+            label: 'Fire Calc',
+            iconClass: 'mdi mdi-finance',
+            props: {
+              onClick: async () => {
+                mainStore.isShowQuickLaunch = false
+                await router.push({name: 'FireCalcPage'})
               },
             },
           },
