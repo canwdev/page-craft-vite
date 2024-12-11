@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {IStockTrackerPrices} from '@/components/AppUtils/StockTracker/types'
 import TabLayout from '@/components/CanUI/packages/Layouts/TabLayout.vue'
-import EchartsKLine from '@/components/AppUtils/StockTracker/Graphs/EchartsKLine.vue'
+import EchartsCandlestick from '@/components/AppUtils/StockTracker/Graphs/EchartsCandlestick.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -40,9 +40,10 @@ watch(
   <div class="stock-prices-wrapper">
     <TabLayout v-model="curTab" :options="tabOptions" horizontal>
       <template v-if="stockPrices[curTab]">
-        <EchartsKLine
+        <EchartsCandlestick
           v-if="stockPrices[curTab] && stockPrices[curTab].byDay"
           :by-day="stockPrices[curTab]!.byDay"
+          :title="curTab"
         />
       </template>
     </TabLayout>

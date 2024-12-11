@@ -171,7 +171,6 @@ export const useCommonTools = () => {
         search: 'settings',
         props: {
           onClick: async () => {
-            mainStore.isShowQuickLaunch = false
             mainStore.isShowSettings = true
           },
         },

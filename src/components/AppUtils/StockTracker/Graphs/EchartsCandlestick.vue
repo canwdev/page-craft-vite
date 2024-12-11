@@ -7,8 +7,9 @@ import {IPriceByDay} from '@/components/AppUtils/StockTracker/types'
 // 定义 props
 const props = defineProps<{
   byDay: IPriceByDay
+  title: string
 }>()
-
+const {title} = toRefs(props)
 // 创建 ref
 const chartRef = ref<HTMLDivElement | null>(null)
 let chartInstance: echarts.ECharts | null = null
@@ -59,7 +60,7 @@ const initChart = () => {
   const option = {
     title: [
       {
-        text: 'K Line',
+        text: props.title,
         left: 'center',
         top: 10,
       },
@@ -154,6 +155,10 @@ const initChart = () => {
 
 // 组件挂载时初始化
 onMounted(() => {
+  initChart()
+})
+
+watch(title, () => {
   initChart()
 })
 
