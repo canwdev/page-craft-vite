@@ -1,36 +1,34 @@
-# PageCraft
+# PageCraft - 网页开发效率工具
 
 - 在线版：[PageCraft](https://canwdev.github.io/page-craft-vite/#/)
 - 现已支持客户端，完全离线，使用Tauri技术构建，[去Release页面下载](https://github.com/canwdev/page-craft-vite/releases)
 - [更新说明](./public/release-notes.md)
 - [English Version](./README-en.md)
 
-PageCraft 是一个网页快速生成工具，可以帮助您快速创建页面的 DOM 结构，并使用集成了 Monaco Editor 的 SCSS 编辑器直接在页面上修改样式。通过此工具，您可以快速实现静态内容。此外，它还包含了许多提升效率的小工具，比如文本转换器、多语言 JSON 文件批量编辑器等。让 PageCraft 成为您构建网页的得力助手！
+PageCraft 是一站式网页开发辅助工具，帮助开发者极速构建静态页面和组件，提升开发效率。
 
 ![img](./screenshot.png)
 
-## 功能
+### 关键特性
 
-- **HTML 元素编辑**：创建、插入、删除和拖放 HTML 元素。
-- **组件管理**：
-  - 导入和导出所有组件为 JSON 格式。
-  - 为方便访问，给组件加星标。
-  - 对组件截图。
-  - 预览组件。
-  - 将组件作为模板拖放到画布上。
-- **导入和导出**：
-  - 导出为 HTML/邮件适用的 HTML。
-  - 导出为 Vue 2/3 的单文件组件文件。
-- **工具**：
-  - Stylus 格式化工具。
-  - Excel 复制工具。
-  - 文本转换器。
-  - Vue-i18n JSON 编辑器。
-  - Vue-i18n 多语言文件夹批量处理工具。
+- **完全开源**：完全开源，代码可审查，不收集任何用户信息
+- **可视化 DOM 编辑**：拖拽式HTML元素构建，告别繁琐代码编写
+- **实时样式编辑**：内置 Monaco Editor，实时预览 SCSS 样式变化
+- **组件管理**：支持组件导入/导出、收藏、截图和模板复用
+- **多格式导出**：一键导出 HTML、邮件模板、Vue 2/3 单文件组件
+- **效率工具集**：
+  - 文本转换器
+  - Excel 数据处理
+  - 多语言 JSON 编辑器
+  - Stylus 转 SCSS 格式化
+  - AI 聊天工具，纯前端发起请求，支持代理，支持 OpenAI/GPT 和 Anthropic/Claude 模型
+  - 其他小工具，如 base64 转换，屏幕取色器，二维码生成等，插件系统支持自定义实现小工具
 
-## 在 Linux 下使用
+## 在 Linux/macOS/Web 下使用
 
-1. 安装 nginx: `apt install nginx`
+> 也可以自行编译目标系统的 Tauri 程序
+
+1. 安装 nginx，例：Ubuntu/Debian 运行 `apt install nginx`
 2. 下载 [Releases](https://github.com/canwdev/page-craft-vite/releases) 文件 `dist.zip` 并解压到 `/var/www/html/page-craft-vite/`
 3. 访问 `http://localhost/page-craft-vite`
 
