@@ -2,8 +2,9 @@ const {addPlugin, copy, ref, computed, watch} = window.$qlUtils
 
 addPlugin(
   {
-    label: '💧 Eye Drop',
+    label: 'Color Picker',
     search: 'eyedrop',
+    iconClass: 'mdi mdi-eyedropper-variant',
     props: {
       onClick: async () => {
         if ('EyeDropper' in window) {
@@ -19,14 +20,16 @@ addPlugin(
   },
   {
     isPresetPlugin: true,
-  }
+  },
 )
 
 let fonts = []
 addPlugin(
   (valRef) => {
     return {
-      label: '🔠 System Fonts',
+      label: 'System Fonts',
+      iconClass: 'mdi mdi-format-size',
+      // iconClass: 'mdi mdi-format-font',
       children: async () => {
         if (!fonts.length) {
           fonts = await window.queryLocalFonts()
@@ -63,7 +66,7 @@ addPlugin(
   {
     isStaticPlugin: true,
     isPresetPlugin: true,
-  }
+  },
 )
 
 // https://eeejay.github.io/webspeechdemos/
@@ -74,7 +77,8 @@ if (!synth) {
   addPlugin(
     (valRef) => {
       return {
-        label: '🗣 Speech Synthesis',
+        label: 'Speech Synthesis',
+        iconClass: 'mdi mdi-speaker-message',
         children: async () => {
           let voices = synth.getVoices()
           console.log(voices)
@@ -102,6 +106,6 @@ if (!synth) {
     {
       isStaticPlugin: true,
       isPresetPlugin: true,
-    }
+    },
   )
 }

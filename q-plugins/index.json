@@ -3,6 +3,7 @@
     "basic.js",
     "base64.js",
     "string-man.js",
+    "mdi-icon-viewer/viewer.js",
     "system-utils.js",
     "mc-utils.js"
   ]

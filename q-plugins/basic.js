@@ -26,7 +26,8 @@ addPlugin(
     if (date) {
       const label = window.$qlUtils.moment(date).format('YYYY-MM-DD HH:mm:ss')
       return {
-        label: '📋 ' + label,
+        label: label,
+        iconClass: 'mdi mdi-content-copy',
         props: {onClick: () => copy(label, true)},
       }
     }
@@ -39,7 +40,8 @@ addPlugin(
 addPlugin(
   (valRef) => {
     return {
-      html: '⚡ <span style="color: #ff822d;">JavaScript Eval</span>',
+      html: 'JavaScript Eval',
+      iconClass: 'mdi mdi-flash',
       props: {
         onClick: async () => {
           await copy(evalCode(valRef.value, true), true)
@@ -55,7 +57,9 @@ addPlugin(
 addPlugin(
   (valRef) => {
     return {
-      html: '⚡ <span style="color: #ff822d;">Realtime JavaScript Eval</span>',
+      // ⚡ #ff822d
+      html: 'Realtime JavaScript Eval',
+      iconClass: 'mdi mdi-language-javascript',
       children: [
         {
           label: '',

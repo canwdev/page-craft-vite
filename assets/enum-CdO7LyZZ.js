@@ -1,0 +1,1 @@
+var _=(_=>(_.INPUT="input",_.INPUT_NUMBER="input_number",_.INPUT_AUTOCOMPLETE="input_autocomplete",_.MONACO_EDITOR="monaco_editor",_.SELECT="select",_.COLOR_PICKER="color_picker",_.BUTTON="button",_.DATE_PICKER="date_picker",_.CHECKBOX_GROUP="checkbox_group",_.RADIO_GROUP="radio_group",_.SWITCH="switch",_))(_||{});export{_ as A};
