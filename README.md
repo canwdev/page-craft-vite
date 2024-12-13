@@ -45,3 +45,7 @@ PageCraft 是一个网页快速生成工具，可以帮助您快速创建页面�
 - [Stylus Supermacy](https://thisismanta.github.io/stylus-supremacy/#demo)
 - [Juice](https://github.com/Automattic/juice)
 - [Material Design Icons](https://pictogrammers.com/library/mdi/)
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=canwdev/page-craft-vite&type=Date)](https://star-history.com/#canwdev/page-craft-vite&Date)
