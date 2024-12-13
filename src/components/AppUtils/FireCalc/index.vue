@@ -63,7 +63,7 @@ interface IStepData {
 const stepData = ref<IStepData[]>([])
 
 const resultValue = computed(() => {
-  let result = formData.value.currentValue
+  let result = formData.value.currentValue || 0
   let age = formData.value.age
   stepData.value = []
   stepData.value.push({
@@ -131,37 +131,42 @@ const getPassiveIncome = (value) => {
 }
 
 const resultItems = computed(() => {
-  const result = resultValue.value
-  const resultMonths = stepData.value.length - 1
-  const increasedValue = result - formData.value.currentValue
-  const increasedPercent = ((increasedValue / result) * 100).toFixed(2) + '%'
-  const resultAge = stepData.value[stepData.value.length - 1]?.age
+  try {
+    const result = resultValue.value || 0
+    const resultMonths = stepData.value.length - 1
+    const increasedValue = result - formData.value.currentValue
+    const increasedPercent = ((increasedValue / result) * 100).toFixed(2) + '%'
+    const resultAge = stepData.value[stepData.value.length - 1]?.age
 
-  const {piYearly, piMonthly, piDaily} = getPassiveIncome(result)
+    const {piYearly, piMonthly, piDaily} = getPassiveIncome(result)
 
-  return [
-    {
-      label: '结果资产',
-      key: 'resultValue',
-      value: `${numberWithCommas(result?.toFixed(2))} | ${numberToChineseMoney(result)}`,
-      type: 'text',
-    },
-    {
-      label: '结果时间',
-      key: 'resultTimes',
-      value: `${resultMonths}个月 = ${convertMonthsToYearsAndMonths(resultMonths)} | ${stepData.value[stepData.value.length - 1]?.label}`,
-      type: 'text',
-    },
-    {
-      label: '被动收入',
-      key: 'yearPassiveIncome',
-      value: `年收 ${piYearly.toFixed(2)} | 月收 ${piMonthly.toFixed(2)} | 日收 ${piDaily.toFixed(2)}`,
-      type: 'text',
-    },
-    {label: '增长值', key: 'increasedValue', value: increasedValue.toFixed(2), type: 'number'},
-    {label: '增长百分比', key: 'increasedPercent', value: increasedPercent, type: 'text'},
-    {label: '年龄', key: 'resultAge', value: resultAge, type: 'text'},
-  ].filter(Boolean)
+    return [
+      {
+        label: '结果资产',
+        key: 'resultValue',
+        value: `${numberWithCommas(result.toFixed(2))} | ${numberToChineseMoney(result)}`,
+        type: 'text',
+      },
+      {
+        label: '结果时间',
+        key: 'resultTimes',
+        value: `${resultMonths}个月 = ${convertMonthsToYearsAndMonths(resultMonths)} | ${stepData.value[stepData.value.length - 1]?.label}`,
+        type: 'text',
+      },
+      {
+        label: '被动收入',
+        key: 'yearPassiveIncome',
+        value: `年收 ${piYearly.toFixed(2)} | 月收 ${piMonthly.toFixed(2)} | 日收 ${piDaily.toFixed(2)}`,
+        type: 'text',
+      },
+      {label: '增长值', key: 'increasedValue', value: increasedValue.toFixed(2), type: 'number'},
+      {label: '增长百分比', key: 'increasedPercent', value: increasedPercent, type: 'text'},
+      {label: '年龄', key: 'resultAge', value: resultAge, type: 'text'},
+    ].filter(Boolean)
+  } catch (e) {
+    console.error(e)
+    return []
+  }
 })
 
 function handleResize() {
@@ -199,13 +204,15 @@ const initCharts = () => {
         const [p1] = params
         const d1 = p1 && stepData.value[p1.dataIndex]
 
-        const {piYearly, piMonthly, piDaily} = getPassiveIncome(d1.value)
+        const value = Number(d1.value)
+
+        const {piYearly, piMonthly, piDaily} = getPassiveIncome(value)
 
         return `<div style="font-family: monospace">
 ${p1.marker}
 <div>日期：${d1.label} (${convertMonthsToYearsAndMonths(d1.monthCount)}) | ${d1.monthCount || 0}个月</div>
-<div>资产：${numberWithCommas(d1.value.toFixed(2))}</div>
-<div>资产：${numberToChineseMoney(d1.value)}</div>
+<div>资产：${numberWithCommas(value.toFixed(2))}</div>
+<div>资产：${numberToChineseMoney(value)}</div>
 <div>被动收入：年收 ${piYearly.toFixed(2)} | 月收 ${piMonthly.toFixed(2)} | 日收 ${piDaily.toFixed(2)}</div>
 <div>年龄：${d1.age}</div>
 </div>`
@@ -281,6 +288,9 @@ ${p1.marker}
 }
 
 const updateChart = () => {
+  if (!stepData.value.length) {
+    return
+  }
   // 刷新 Echarts 数据
   const list = stepData.value || []
   echartsInstance.value.setOption({
