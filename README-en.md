@@ -1,37 +1,36 @@
-# PageCraft
+# PageCraft - Web Development Efficiency Tool
 
-- Online version: [PageCraft](https://canwdev.github.io/page-craft-vite/#/)
-- Now available for desktop app with Tauri technology, completely offline, [download from the Release page](https://github.com/canwdev/page-craft-vite/releases)
+- Online Version: [PageCraft](https://canwdev.github.io/page-craft-vite/#/)
+- Now supports client-side, fully offline, built with Tauri technology. [Download from Release page](https://github.com/canwdev/page-craft-vite/releases)
 - [Release Notes](./public/release-notes.md)
-- [中文版](./README.md)
+- [Chinese Version](./README.md)
 
-PageCraft is a web page rapid generation tool that allows you to quickly create the DOM structure of a page and directly modify styles using the integrated SCSS editor with Monaco Editor. With this tool, you can quickly implement static content. Additionally, it includes many productivity-enhancing utilities, such as a text converter and a batch editor for multilingual JSON files. Let PageCraft be your powerful assistant in building web pages!
+PageCraft is an all-in-one web development assistant tool designed to help developers quickly build static pages and components, enhancing development efficiency.
 
 ![img](./screenshot.png)
 
-## Features
+### Key Features
 
-- **HTML Element Editing**: Create, insert, delete, and drag and drop HTML elements.
-- **Component Management**:
-    - Import and export all components in JSON format.
-    - Star components for easy access.
-    - Take screenshots of components.
-    - Preview components.
-    - Drag and drop components as templates onto the canvas.
-- **Import and Export**:
-    - Export as HTML/email-ready HTML.
-    - Export as Vue 2/3 single-file component files.
-- **Utilities**:
-    - Stylus formatter.
-    - Excel copy tool.
-    - Vue-i18n JSON editor.
-    - Vue-i18n folder batch processing tool.
+- **Fully Open Source**: Completely open source, code is auditable, no user information is collected.
+- **Visual DOM Editing**: Drag-and-drop HTML element construction, saying goodbye to tedious code writing.
+- **Real-time Style Editing**: Built-in Monaco Editor, preview SCSS style changes in real-time.
+- **Component Management**: Supports component import/export, favorites, screenshots, and template reuse.
+- **Multi-format Export**: One-click export to HTML, email templates, Vue 2/3 single-file components.
+- **Efficiency Toolset**:
+  - Text Converter
+  - Excel Data Processing
+  - Multi-language JSON Editor
+  - Stylus to SCSS Formatter
+  - AI Chat Tool, initiate requests purely in the front end, supports proxy, and supports OpenAI/GPT and Anthropic/Claude models.
+  - Other small tools, such as base64 converter, screen color picker, QR code generator, etc. The plugin system supports custom implementations of small tools.
 
-## For Linux users
+## Using on Linux/macOS/Web
 
-1. Install nginx: `apt install nginx`
-2. Download [Releases](https://github.com/canwdev/page-craft-vite/releases) `dist.zip` and unzip its contents to `/var/www/html/page-craft-vite/`
-3. Visit `http://localhost/page-craft-vite`
+> You can also compile the Tauri program for your target system yourself.
+
+1. Install nginx, for example: Run `apt install nginx` on Ubuntu/Debian.
+2. Download the `dist.zip` file from [Releases](https://github.com/canwdev/page-craft-vite/releases) and unzip it to `/var/www/html/page-craft-vite/`.
+3. Access `http://localhost/page-craft-vite`.
 
 ## Tips
 
