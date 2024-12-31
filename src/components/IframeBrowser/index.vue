@@ -70,7 +70,7 @@ const handleIframeError = (e) => {
 
 const {options: shortcutList} = useRemoteOptions({
   fetchFn: async () => {
-    const res = await fetch('./bookmarks.json')
+    const res = await fetch('./resources/bookmarks.json')
     return await res.json()
   },
   mapFn: (item) => {

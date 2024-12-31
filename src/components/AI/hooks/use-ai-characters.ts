@@ -52,31 +52,13 @@ export const useAiCharacters = () => {
   const aisStore = useAiSettingsStore()
   const {characterList, allChatHistory, isCharacterListFinished, isAllChatHistory} = useAiIdbState()
 
-  const getPresetCharacters = (): IAiCharacter[] => {
-    return [
-      {
-        id: 'default',
-        name: 'ChatGPT',
-        desc: '',
-        avatar: iconOpenAI,
-        provider: AIProvider.OPEN_AI,
-        model: defaultOpenAIModel,
-        systemPrompt: 'You are a helpful assistant.',
-      },
-      {
-        id: 'claude',
-        name: 'Claude AI',
-        desc: '',
-        avatar: iconAnthropic,
-        provider: AIProvider.ANTHROPIC,
-        model: defaultAnthropicModel,
-        systemPrompt: 'You are a helpful assistant.',
-      },
-    ]
+  const getPresetCharacters = async () => {
+    const res = await fetch('./resources/ai-preset-characters.json')
+    return (await res.json()) as IAiCharacter[]
   }
-  const updatePresetCharacters = () => {
-    characterList.value = mergeIdData(characterList.value, getPresetCharacters())
-    window.$message.success({message: '预设角色已更新！'})
+  const updatePresetCharacters = async () => {
+    characterList.value = mergeIdData(characterList.value, await getPresetCharacters())
+    window.$message.success({message: 'Preset characters updated!'})
   }
 
   // 当前选中的角色

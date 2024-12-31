@@ -51,6 +51,7 @@ export const useCommonAi = () => {
   }) => {
     switch (provider) {
       case AIProvider.OPEN_AI:
+      case AIProvider.OPEN_AI_COMPATIBLE:
         return gptMessage(messages, {model})
       case AIProvider.ANTHROPIC:
         return claudeMessage(messages, {model})

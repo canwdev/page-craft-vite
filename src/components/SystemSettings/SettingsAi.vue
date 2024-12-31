@@ -121,13 +121,14 @@ const optionList = computed((): StOptionItem[] => {
         },
         {
           label: $t('ai.quan_ju_mo_ren_mo_xi'),
+          subtitle: aisStore.model,
           key: 'model',
           iconClass: 'mdi mdi-head-snowflake',
           type: StOptionType.SELECT,
           options: getModelOptions(aisStore.provider),
           props: {
             // 允许动态创建项
-            tag: true,
+            allowCreate: true,
             filterable: true,
           },
         },

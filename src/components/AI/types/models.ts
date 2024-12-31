@@ -1,13 +1,14 @@
 export enum AIProvider {
   OPEN_AI = 'open_ai',
+  OPEN_AI_COMPATIBLE = 'open_ai_compatible',
   ANTHROPIC = 'anthropic',
 }
 
 export interface IChatModelOption {
   desc?: string
-  label: string
+  label?: string
   value: string
-  tokens: number
+  tokens?: number
   vision?: boolean
   functionCall?: boolean
 }
@@ -23,7 +24,16 @@ export const OpenAIApiErrorCodeMessage: Record<string, string> = {
 }
 
 export const chatProviderOptions = [
-  {label: 'OpenAI', value: AIProvider.OPEN_AI, url: 'https://platform.openai.com/docs/models'},
+  {
+    label: 'OpenAI',
+    value: AIProvider.OPEN_AI,
+    url: 'https://platform.openai.com/docs/models',
+  },
+  {
+    label: 'OpenAI Compatible',
+    value: AIProvider.OPEN_AI_COMPATIBLE,
+    url: 'https://aihubmix.com/models',
+  },
   {
     label: 'Anthropic',
     value: AIProvider.ANTHROPIC,
@@ -53,12 +63,22 @@ export const anthropicChatModelOptions: IChatModelOption[] = [
     functionCall: true,
   },
 ]
+
 /**
  * https://platform.openai.com/docs/models
  * https://github.com/lobehub/lobe-chat/blob/main/src/config/modelProviders/openai.ts
  */
 export const defaultOpenAIModel = 'gpt-4o-mini'
 export const openAIChatModelOptions: IChatModelOption[] = [
+  {
+    desc: 'GPT-4o mini是OpenAI在GPT-4 Omni之后推出的最新模型，支持图文输入并输出文本。作为他们最先进的小型模型，它比其他近期的前沿模型便宜很多，并且比GPT-3.5 Turbo便宜超过60%。它保持了最先进的智能，同时具有显著的性价比。GPT-4o mini在MMLU测试中获得了 82% 的得分，目前在聊天偏好上排名高于 GPT-4。',
+
+    label: 'GPT-4o Mini',
+    value: 'gpt-4o-mini',
+    tokens: 128_000,
+    vision: true,
+    functionCall: true,
+  },
   {
     desc: 'o1-mini是一款针对编程、数学和科学应用场景而设计的快速、经济高效的推理模型。该模型具有128K上下文和2023年10月的知识截止日期。',
     label: 'OpenAI o1-mini',
@@ -70,15 +90,6 @@ export const openAIChatModelOptions: IChatModelOption[] = [
     label: 'OpenAI o1-preview',
     value: 'o1-preview',
     tokens: 128_000,
-  },
-  {
-    desc: 'GPT-4o mini是OpenAI在GPT-4 Omni之后推出的最新模型，支持图文输入并输出文本。作为他们最先进的小型模型，它比其他近期的前沿模型便宜很多，并且比GPT-3.5 Turbo便宜超过60%。它保持了最先进的智能，同时具有显著的性价比。GPT-4o mini在MMLU测试中获得了 82% 的得分，目前在聊天偏好上排名高于 GPT-4。',
-
-    label: 'GPT-4o Mini',
-    value: 'gpt-4o-mini',
-    tokens: 128_000,
-    vision: true,
-    functionCall: true,
   },
   {
     desc: 'ChatGPT-4o 是一款动态模型，实时更新以保持当前最新版本。它结合了强大的语言理解与生成能力，适合于大规模应用场景，包括客户服务、教育和技术支持。',
@@ -108,13 +119,35 @@ export const openAIChatModelOptions: IChatModelOption[] = [
   },
 ]
 
+/**
+ * AI / LLM 模型图标集 https://lobehub.com/zh/icons
+ */
+export const compatibleModelOptions: IChatModelOption[] = [
+  {label: 'Google - Gemini', value: 'gemini-2.0-flash-exp', vision: true, functionCall: true},
+  {label: 'xAI - Grok', value: 'grok-2-1212'},
+  {label: 'Meta - LLaMA', value: 'llama-3.3-70b-versatile'},
+  {label: '同义千问 Qwen', value: 'qwen2.5-coder-7b-instruct'},
+  {label: '智谱清言 ChatGLM', value: 'glm-4-flash'},
+  {label: '深度求索 DeepSeek', value: 'deepseek-ai/DeepSeek-V2.5'},
+  {label: '月之暗面 Moonshot', value: 'moonshot-v1-8k'},
+]
+
 export const getModelOptions = (provider: AIProvider) => {
-  return provider === AIProvider.ANTHROPIC ? anthropicChatModelOptions : openAIChatModelOptions
+  switch (provider) {
+    case AIProvider.ANTHROPIC:
+      return anthropicChatModelOptions
+    case AIProvider.OPEN_AI:
+      return openAIChatModelOptions
+    default:
+      return compatibleModelOptions
+  }
 }
 
 export const modelsCanUseVision: {[key: string]: boolean} = {}
-;[...anthropicChatModelOptions, ...openAIChatModelOptions].forEach((item) => {
-  if (item.vision) {
-    modelsCanUseVision[item.value] = true
-  }
-})
+;[...anthropicChatModelOptions, ...openAIChatModelOptions, ...compatibleModelOptions].forEach(
+  (item) => {
+    if (item.vision) {
+      modelsCanUseVision[item.value] = true
+    }
+  },
+)

@@ -154,6 +154,16 @@ export const useCommonTools = () => {
             },
           },
           {
+            label: 'Image Info',
+            iconClass: 'mdi mdi-image',
+            props: {
+              onClick: async () => {
+                mainStore.isShowQuickLaunch = false
+                await router.push({name: 'ImageInfoPage'})
+              },
+            },
+          },
+          {
             label: 'Fire Calc',
             iconClass: 'mdi mdi-finance',
             props: {

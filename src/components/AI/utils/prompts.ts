@@ -50,7 +50,7 @@ export const promptConversationAssistant = (history: IMessageItem[]): GptMessage
   return [
     {
       content:
-        '你是一名擅长会话的助理，你需要将用户的会话总结为 10 个字以内的标题，不需要包含标点符号，输出语言为聊天内容所用的语言，对话内容如下',
+        '你是一名擅长会话的助理，你需要将用户的会话总结为 10 个字以内的标题，不需要包含标点符号，输出标题的语言为聊天内容所用的语言，对话内容如下',
       role: 'system',
     },
     {

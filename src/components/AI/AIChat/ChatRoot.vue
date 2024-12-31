@@ -81,6 +81,7 @@ const aisStore = useAiSettingsStore()
 
   .ai-option-ui {
     .panel-header {
+      min-height: 26px;
       padding-right: 8px;
       border-radius: 0;
     }
@@ -94,8 +95,8 @@ const aisStore = useAiSettingsStore()
             background-color: $primary_opacity;
           }
           .o-left .item-icon {
-            border-radius: 50%;
-            overflow: hidden;
+            //border-radius: 50%;
+            //overflow: hidden;
           }
         }
       }

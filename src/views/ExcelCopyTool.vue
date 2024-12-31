@@ -138,7 +138,7 @@ export default defineComponent({
         window.$message.error(err.message)
         console.error(err)
       }
-      window.$message.success('XLSX Ready!')
+      // window.$message.success('XLSX Ready!')
       console.log('XLSX ready', window.XLSX)
       isReady.value = true
     }

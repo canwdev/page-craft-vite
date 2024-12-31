@@ -9,7 +9,7 @@ import {useAiSettingsStore} from '@/components/AI/hooks/ai-settings'
 import {useI18n} from 'vue-i18n'
 import {useAiCharacters} from '@/components/AI/hooks/use-ai-characters'
 import {promptConversationAssistant} from '@/components/AI/utils/prompts'
-import {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
+import globalEventBus, {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
 import ImagePicker from '@/components/AI/AIChat/ChatBubble/ImagePicker.vue'
 import {AIProvider, modelsCanUseVision} from '@/components/AI/types/models'
 import {useCommonAi} from '@/components/AI/hooks/use-common-ai'
@@ -17,6 +17,7 @@ import SettingsAi from '@/components/SystemSettings/SettingsAi.vue'
 import {GptMessage} from '@/components/AI/types/open-ai'
 import {getChatContentHtml, printChatContent} from '@/components/AI/utils/print-content'
 import DropdownMenu from '@/components/CanUI/packages/OptionUI/Tools/DropdownMenu.vue'
+import {SettingsTabType} from '@/enum/settings'
 
 const {t: $t, locale} = useI18n()
 const aisStore = useAiSettingsStore()
@@ -451,6 +452,10 @@ const exportImportOptions = ref([
     },
   },
 ])
+
+const handleSettings = () => {
+  globalEventBus.emit(GlobalEvents.OPEN_SETTINGS, SettingsTabType.AI)
+}
 </script>
 
 <template>
@@ -491,7 +496,7 @@ const exportImportOptions = ref([
         />
         <div class="request-actions">
           <div class="action-side">
-            <el-popover
+            <!--            <el-popover
               width="400"
               placement="top-start"
               trigger="click"
@@ -506,7 +511,10 @@ const exportImportOptions = ref([
                 </button>
               </template>
               <SettingsAi style="max-height: 70vh; overflow-y: auto" />
-            </el-popover>
+            </el-popover>-->
+            <button class="vp-button" title="Settings" @click="handleSettings">
+              <span class="mdi mdi-cog"></span>
+            </button>
 
             <DropdownMenu :options="exportImportOptions">
               <button class="vp-button" title="Export">

@@ -108,6 +108,14 @@ const routes = [
         },
       },
       {
+        path: 'image-info',
+        name: 'ImageInfoPage',
+        component: () => import('@/components/AppUtils/ImageInfo.vue'),
+        meta: {
+          title: `Image Info`,
+        },
+      },
+      {
         path: 'stock-tracker',
         name: 'StockTrackerPage',
         component: () => import('@/components/AppUtils/StockTracker/index.vue'),

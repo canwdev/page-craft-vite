@@ -69,7 +69,7 @@ export const useSnippets = ({insertCode, vueMonacoRef}) => {
   // scss代码片段自动补全缓存
   const {options: toolOptions} = useRemoteOptions({
     fetchFn: async () => {
-      const res = await fetch('./scss-snippets.json')
+      const res = await fetch('./resources/scss-snippets.json')
       return await res.json()
     },
     mapFn: (i) =>

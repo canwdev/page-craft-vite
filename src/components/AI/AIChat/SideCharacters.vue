@@ -115,9 +115,13 @@ const optionList = computed((): StOptionItem[] => {
             props: {
               onClick: () => {
                 window.$dialog
-                  .confirm($t('msgs.que_ren_shan_chu_ci'), $t('actions.delete_all'), {
-                    type: 'warning',
-                  })
+                  .confirm(
+                    $t('msgs.que_ren_shan_chu_ci') + ' !!All chat records will be deleted!!',
+                    $t('actions.delete_all'),
+                    {
+                      type: 'warning',
+                    },
+                  )
                   .then(() => {
                     characterList.value = []
                     allChatHistory.value = []
@@ -141,7 +145,8 @@ const optionList = computed((): StOptionItem[] => {
           key: item.id,
           label: `${item.name}`,
           subtitle: `${item.desc} [${item.model}]`,
-          icon: item.avatar || iconUser,
+          icon: item.avatar,
+          iconClass: 'mdi mdi-account-circle-outline',
           cls: aisStore.currentCharacterId === item.id ? 'active' : '',
           clickFn: () => {
             aisStore.currentCharacterId = item.id
@@ -174,9 +179,13 @@ const optionList = computed((): StOptionItem[] => {
                 props: {
                   onClick: () => {
                     window.$dialog
-                      .confirm($t('msgs.que_ren_shan_chu_ci'), $t('actions.confirm'), {
-                        type: 'warning',
-                      })
+                      .confirm(
+                        $t('msgs.que_ren_shan_chu_ci') + ' !!Chat records will be deleted!!',
+                        $t('actions.confirm'),
+                        {
+                          type: 'warning',
+                        },
+                      )
                       .then(() => {
                         // 删除与当前角色的全部聊天记录
                         allChatHistory.value = allChatHistory.value
@@ -206,7 +215,7 @@ watch(isCharacterListFinished, (val) => {
       document.querySelectorAll('.ai-option-ui .sub-item.active').forEach((el) => {
         el.scrollIntoView({behavior: 'smooth', block: 'center'})
       })
-    }, 100)
+    }, 500)
   }
 })
 
@@ -313,7 +322,7 @@ const formItems = computed((): MixedFormItems[] => {
         type: AutoFormItemType.SELECT,
         options: modelOptions,
         key: 'model',
-        label: $t('ai.model'),
+        label: $t('ai.model') + ` ${editingItem.value.model}`,
         props: {
           // 允许动态创建项
           allowCreate: true,

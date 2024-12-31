@@ -1,5 +1,15 @@
 # Release Notes
 
+## TBD v1.8.0
+
+- refactor: 重构入口
+
+## v1.7.7
+
+- AI: 增加 OpenAI 兼容模型
+- add: 支持二维码图片扫描，图像信息工具
+- fix: 修复部分bug
+
 ## v1.7.6
 
 - AI: 支持 Anthropic/Claude 模型

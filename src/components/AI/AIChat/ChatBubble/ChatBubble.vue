@@ -4,7 +4,6 @@ import {formatDate} from '@/utils'
 import {IAiCharacter, ImageUrlObj, IMessageContent, IMessageItem} from '@/components/AI/types/ai'
 
 import MessageContent from '@/components/AI/AIChat/ChatBubble/TextContent.vue'
-import iconAi from '@/assets/textures/chat-gpt-logo.svg'
 import {useI18n} from 'vue-i18n'
 
 interface Props {
@@ -24,7 +23,7 @@ const props = withDefaults(defineProps<Props>(), {
   allowRetry: false,
   allowDelete: false,
 })
-const {item} = toRefs(props)
+const {item, character} = toRefs(props)
 const {t: $t} = useI18n()
 
 const isEditing = ref(false)
@@ -36,9 +35,11 @@ watch(isEditing, () => {
     }
   })
 })
-
 const isReply = computed(() => {
   return item.value.role === 'assistant'
+})
+const hasAvatarImage = computed(() => {
+  return character.value && character.value.avatar
 })
 
 const rootRef = ref()
@@ -117,16 +118,27 @@ const confirmDelete = (item) => {
       v-html="`[${item.role}] ${item.content}`"
     ></div>
   </div>
-  <div v-else ref="rootRef" class="ai-chat-bubble" :class="{isReply, isEditing}">
+  <div
+    v-else
+    ref="rootRef"
+    class="ai-chat-bubble"
+    :class="{'no-avatar-image': !hasAvatarImage, 'is-reply': isReply, 'is-editing': isEditing}"
+  >
     <div class="chat-side">
       <div class="chat-header">
-        <div class="chat-avatar" :title="item.role" @click="printLog">
-          <img
-            v-if="character"
-            :src="character.avatar || iconAi"
-            :alt="item.role"
-            :title="`${character.name}\n[${character.provider}/${character.model}]`"
-          />
+        <div
+          class="chat-avatar"
+          @click="printLog"
+          :title="
+            `[${item.role}]` +
+            '\n' +
+            (character ? `${character.name}\n[${character.provider}/${character.model}]` : '')
+          "
+        >
+          <template v-if="character">
+            <img v-if="character.avatar" :src="character.avatar" :alt="item.role" />
+            <span v-else-if="character.name">{{ character.name[0] }}</span>
+          </template>
           <span class="chat-username" v-else>
             {{ item.role }}
           </span>
@@ -258,17 +270,14 @@ const confirmDelete = (item) => {
   flex-direction: row-reverse;
   position: relative;
 
-  &.isEditing {
+  &.is-editing {
     .chat-actions {
       opacity: 1;
       visibility: visible;
     }
   }
-  &.isReply {
+  &.is-reply {
     flex-direction: row;
-    .chat-avatar {
-      background-color: transparent;
-    }
     .chat-content {
       border-radius: 0 10px 10px;
       background-color: #f1f1f1;
@@ -279,6 +288,14 @@ const confirmDelete = (item) => {
     }
     .chat-body {
       align-items: flex-start;
+    }
+  }
+  &.no-avatar-image {
+    .chat-avatar {
+      background-color: $primary;
+      color: white;
+      border-radius: 50%;
+      box-shadow: 0 1px 1px $color_border;
     }
   }
 
@@ -312,16 +329,13 @@ const confirmDelete = (item) => {
   .chat-avatar {
     width: 32px;
     height: 32px;
-    background-color: $primary;
-    color: white;
-    border-radius: 50%;
+    //border-radius: 50%;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 12px;
     user-select: none;
-    box-shadow: 0 1px 1px $color_border;
     img {
       width: 100%;
       height: 100%;

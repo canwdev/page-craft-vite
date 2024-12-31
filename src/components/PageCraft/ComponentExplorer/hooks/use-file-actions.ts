@@ -133,7 +133,7 @@ export const useComponentFileActions = ({
   const doAppendPresetComponents = async () => {
     try {
       isLoading.value = true
-      const res = await fetch('./preset-components.json')
+      const res = await fetch('./resources/preset-components.json')
       const data = await res.json()
       await importComponentAllJson(data)
     } finally {

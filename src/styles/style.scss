@@ -87,6 +87,16 @@ html, body, #app {
   align-items: center;
 }
 
+.flex-rows {
+  display: flex;
+  flex-direction: row;
+}
+
+.flex-cols {
+  display: flex;
+  flex-direction: column;
+}
+
 .selection-area {
   background: $primary_opacity;
   border: 1px solid $primary;
