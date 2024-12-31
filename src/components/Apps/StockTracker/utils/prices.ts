@@ -1,4 +1,4 @@
-import {IPriceByDay} from '@/components/AppUtils/StockTracker/types'
+import {IPriceByDay} from '@/components/Apps/StockTracker/types'
 import {guid_S4} from '@/utils'
 
 // https://www.alphavantage.co/documentation/

@@ -9,6 +9,8 @@ import {useOpenCloseSound, useSfxOpenCloseSelect, useSfxBrush, useSfxFill} from 
 import globalEventBus, {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
 import {CLASS_MAIN_CANVAS_ROOT} from '@/enum/page-craft'
 import {useComponentStorageV2} from '@/components/PageCraft/ComponentExplorer/hooks/use-component-manage'
+import {SettingsTabType} from '@/enum/settings'
+import {useSystemStore} from '@/store/system'
 
 const StyleEditor = defineAsyncComponent(() => import('@/components/StyleEditor/index.vue'))
 
@@ -41,8 +43,6 @@ useEventListener(document, 'keydown', (event) => {
     settingsStore.showInventory = !settingsStore.showInventory
   } else if (event.altKey && key === 's' && !event.ctrlKey) {
     settingsStore.showStyleEditor = !settingsStore.showStyleEditor
-  } else if (event.altKey && key === 'w') {
-    mainStore.isShowSettings = !mainStore.isShowSettings
   } else if (event.altKey && key === '1') {
     const el = document.querySelector('.sl-css-class-input input') as HTMLInputElement | null
     el && el.focus()

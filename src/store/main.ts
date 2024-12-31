@@ -14,12 +14,8 @@ type IStore = {
   selecting: boolean
 
   // 窗口打开状态
-  isShowStylusTools: boolean
-  isShowTextTransformer: boolean
-  isShowSettings: boolean
   isShowQuickLaunch: boolean
   isShowIframeBrowser: boolean
-  isShowAiChat: boolean
 
   upgradeInfo: string
 }
@@ -36,12 +32,8 @@ export const useMainStore = defineStore('main', {
       innerText: '',
       selecting: false,
 
-      isShowStylusTools: false,
-      isShowTextTransformer: false,
-      isShowSettings: false,
       isShowQuickLaunch: false,
       isShowIframeBrowser: false,
-      isShowAiChat: false,
 
       upgradeInfo: '',
     }
@@ -55,15 +47,6 @@ export const useMainStore = defineStore('main', {
   share: {
     // 这些变量不参与多页面数据共享
     // An array of fields that the plugin will ignore.
-    omit: [
-      'isShowStylusTools',
-      'isShowTextTransformer',
-      'isShowSettings',
-      'isShowQuickLaunch',
-      'isShowIframeBrowser',
-      'isShowAiChat',
-      'upgradeInfo',
-    ],
     enable: true,
     initialize: true,
   },

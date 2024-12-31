@@ -215,7 +215,7 @@ watch(isCharacterListFinished, (val) => {
       document.querySelectorAll('.ai-option-ui .sub-item.active').forEach((el) => {
         el.scrollIntoView({behavior: 'smooth', block: 'center'})
       })
-    }, 500)
+    }, 600)
   }
 })
 

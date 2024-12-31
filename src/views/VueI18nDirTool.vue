@@ -432,7 +432,7 @@ const handleSettings = () => {
             {{ $t('common.toolbox') }}
           </button>
 
-          <a @click="mainStore.isShowTextTransformer = !mainStore.isShowTextTransformer">
+          <a @click="globalEventBus.emit(GlobalEvents.OPEN_TEXT_TRANSFORMER)">
             {{ $t('common.edit_mode') }}:
           </a>
           <RectSwitch v-model="editMode" horizontal :options="editModeOptions" />

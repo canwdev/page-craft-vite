@@ -1,6 +1,6 @@
-import {fetchPricesByDay} from '@/components/AppUtils/StockTracker/utils/prices'
+import {fetchPricesByDay} from '@/components/Apps/StockTracker/utils/prices'
 import {useStorage} from '@vueuse/core'
-import {IStockTrackerPrices} from '@/components/AppUtils/StockTracker/types'
+import {IStockTrackerPrices} from '@/components/Apps/StockTracker/types'
 import {LS_SettingsKey} from '@/enum/settings'
 
 export const useUpdatePrices = ({stockSymbolOptions}) => {

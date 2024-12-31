@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import {IStockTrackerPrices} from '@/components/AppUtils/StockTracker/types'
+import {IStockTrackerPrices} from '@/components/Apps/StockTracker/types'
 import TabLayout from '@/components/CanUI/packages/Layouts/TabLayout.vue'
-import EchartsCandlestick from '@/components/AppUtils/StockTracker/Graphs/EchartsCandlestick.vue'
+import EchartsCandlestick from '@/components/Apps/StockTracker/Graphs/EchartsCandlestick.vue'
 
 const props = withDefaults(
   defineProps<{

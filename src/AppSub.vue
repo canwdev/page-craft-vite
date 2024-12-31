@@ -7,29 +7,26 @@ import {mcUtils} from '@/utils/mc-utils'
 import {useRoute} from 'vue-router'
 import {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
 import {ElMessage, ElMessageBox, ElNotification} from 'element-plus'
+import DesktopWindowManager from '@/components/OS/DesktopWindowManager/index.vue'
+import {SettingsTabType} from '@/enum/settings'
+import {useSystemStore} from '@/store/system'
+import {useAppList} from '@/components/Apps/app-list'
 
 export default defineComponent({
   name: 'AppSub',
   components: {
-    ChatWindow: defineAsyncComponent(() => import('@/components/AI/AIChat/ChatWindow.vue')),
+    DesktopWindowManager,
     IframeBrowser: defineAsyncComponent(() => import('@/components/IframeBrowser/index.vue')),
     QuickLaunchWindow: defineAsyncComponent(
       () => import('@/components/QuickLaunch/QuickLaunchWindow.vue'),
-    ),
-    DialogTextTransformer: defineAsyncComponent(
-      () => import('@/components/VueI18nEditTool/TextConverter/DialogTextTransformer.vue'),
-    ),
-    SystemSettings: defineAsyncComponent(
-      () => import('@/components/SystemSettings/SystemSettings.vue'),
-    ),
-    StylusToolsDialog: defineAsyncComponent(
-      () => import('@/components/StyleEditor/components/StylusToolsDialog.vue'),
     ),
   },
   setup() {
     const mainStore = useMainStore()
     const settingsStore = useSettingsStore()
+    const systemStore = useSystemStore()
     const route = useRoute()
+    useAppList()
     window.$notification = ElNotification
     window.$message = ElMessage
     window.$dialog = ElMessageBox
@@ -44,6 +41,16 @@ export default defineComponent({
 
     useGlobalBusOn(GlobalEvents.SYNC_STORAGE_DATA, () => {})
 
+    useGlobalBusOn(GlobalEvents.OPEN_SETTINGS, (type: SettingsTabType = SettingsTabType.COMMON) => {
+      systemStore.createTaskById('os.pagecraft.settings', {curTab: type})
+    })
+    useGlobalBusOn(
+      GlobalEvents.OPEN_TEXT_TRANSFORMER,
+      (type: SettingsTabType = SettingsTabType.COMMON) => {
+        systemStore.createTaskById('os.pagecraft.text_converter')
+      },
+    )
+
     return {
       mainStore,
       settingsStore,
@@ -55,11 +62,16 @@ export default defineComponent({
 
 <template>
   <template v-if="!isLitePage">
-    <StylusToolsDialog v-model:visible="mainStore.isShowStylusTools" />
-    <DialogTextTransformer v-model:visible="mainStore.isShowTextTransformer" />
-    <SystemSettings v-model:visible="mainStore.isShowSettings" />
-    <QuickLaunchWindow v-model:visible="mainStore.isShowQuickLaunch" />
-    <IframeBrowser v-model:visible="mainStore.isShowIframeBrowser" />
-    <ChatWindow v-model:visible="mainStore.isShowAiChat" />
+    <DesktopWindowManager>
+      <QuickLaunchWindow v-model:visible="mainStore.isShowQuickLaunch" />
+      <IframeBrowser v-model:visible="mainStore.isShowIframeBrowser" />
+
+      <RouterView v-slot="{Component}">
+        <transition name="fade">
+          <component :is="Component" />
+        </transition>
+      </RouterView>
+    </DesktopWindowManager>
   </template>
+  <RouterView v-else />
 </template>

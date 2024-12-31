@@ -19,8 +19,8 @@ export const useCommonAi = () => {
     fetchOptions: any = {},
   ) => {
     switch (provider) {
-      case AIProvider.OPEN_AI:
-        return gptStream(
+      case AIProvider.ANTHROPIC:
+        return claudeStream(
           {
             model,
             messages,
@@ -28,8 +28,8 @@ export const useCommonAi = () => {
           callback,
           fetchOptions,
         )
-      case AIProvider.ANTHROPIC:
-        return claudeStream(
+      default:
+        return gptStream(
           {
             model,
             messages,
@@ -50,11 +50,10 @@ export const useCommonAi = () => {
     messages: GptMessage[]
   }) => {
     switch (provider) {
-      case AIProvider.OPEN_AI:
-      case AIProvider.OPEN_AI_COMPATIBLE:
-        return gptMessage(messages, {model})
       case AIProvider.ANTHROPIC:
         return claudeMessage(messages, {model})
+      default:
+        return gptMessage(messages, {model})
     }
   }
 

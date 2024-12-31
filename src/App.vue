@@ -6,7 +6,7 @@ import {isDev} from '@/enum'
 import {useMainStore} from '@/store/main'
 import {useEventListener} from '@vueuse/core'
 import {useFocusAutoAction} from '@/hooks/use-focus-auto-action'
-import {useUpdater} from '@/components/SystemSettings/use-updater'
+import {useUpdater} from '@/components/OS/SettingsApp/use-updater'
 import {useCssStyleTag} from '@/components/StyleEditor/utils/css-store'
 
 export default defineComponent({
@@ -39,8 +39,6 @@ export default defineComponent({
         mainStore.isShowQuickLaunch = !mainStore.isShowQuickLaunch
       } else if (event.altKey && key === 'i') {
         mainStore.isShowIframeBrowser = !mainStore.isShowIframeBrowser
-      } else if (event.altKey && key === 'g') {
-        mainStore.isShowAiChat = !mainStore.isShowAiChat
       }
     })
 
@@ -57,7 +55,6 @@ export default defineComponent({
 
 <template>
   <div class="page-craft-root" :style="bgStyle">
-    <RouterView />
     <AppSub />
   </div>
 </template>

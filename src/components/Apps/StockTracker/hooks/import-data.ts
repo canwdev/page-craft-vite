@@ -1,4 +1,4 @@
-import {ITransactionHistory} from '@/components/AppUtils/StockTracker/types'
+import {ITransactionHistory} from '@/components/Apps/StockTracker/types'
 import {guid} from '@/utils'
 
 export const useImportStockData = () => {

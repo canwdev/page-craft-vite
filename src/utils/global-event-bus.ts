@@ -18,6 +18,7 @@ export const GlobalEvents = {
   I18N_BATCH_GUI_GET_SUBS: 'I18N_BATCH_GUI_GET_SUBS',
   ON_AI_CHARACTER_UPDATE: 'ON_AI_CHARACTER_UPDATE',
   OPEN_SETTINGS: 'OPEN_SETTINGS',
+  OPEN_TEXT_TRANSFORMER: 'OPEN_TEXT_TRANSFORMER',
 }
 
 export const useGlobalBusOn = (eventName, callback) => {

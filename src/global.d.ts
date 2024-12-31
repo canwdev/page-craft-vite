@@ -10,6 +10,8 @@ declare global {
     $notification: SFCInstallWithContext<ElNotification>
     $dialog: SFCInstallWithContext<ElMessageBox>
 
+    $appList: ShortcutItem[]
+
     Sass: any
     stylusSupermacyFormat: any
     $juice: any

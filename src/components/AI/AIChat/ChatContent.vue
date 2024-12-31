@@ -13,7 +13,7 @@ import globalEventBus, {GlobalEvents, useGlobalBusOn} from '@/utils/global-event
 import ImagePicker from '@/components/AI/AIChat/ChatBubble/ImagePicker.vue'
 import {AIProvider, modelsCanUseVision} from '@/components/AI/types/models'
 import {useCommonAi} from '@/components/AI/hooks/use-common-ai'
-import SettingsAi from '@/components/SystemSettings/SettingsAi.vue'
+import SettingsAi from '@/components/OS/SettingsApp/SettingsAi.vue'
 import {GptMessage} from '@/components/AI/types/open-ai'
 import {getChatContentHtml, printChatContent} from '@/components/AI/utils/print-content'
 import DropdownMenu from '@/components/CanUI/packages/OptionUI/Tools/DropdownMenu.vue'

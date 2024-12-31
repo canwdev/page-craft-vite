@@ -5,13 +5,16 @@ import {QuickOptionItem} from '@/components/CanUI/packages/QuickOptions/enum'
 import {formatSiteTitle} from '@/router/router-utils'
 import {useSettingsStore} from '@/store/settings'
 import {WebviewWindow} from '@tauri-apps/api/window'
+import {useSystemStore} from '@/store/system'
+import {SettingsTabType} from '@/enum/settings'
+import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 
 export const useCommonTools = () => {
   const {t: $t} = useI18n()
   const router = useRouter()
   const route = useRoute()
   const mainStore = useMainStore()
-  const settingsStore = useSettingsStore()
+  const systemStore = useSystemStore()
 
   const toolsMenuOptions = [
     {
@@ -21,7 +24,7 @@ export const useCommonTools = () => {
       search: 'stylus formatting',
       props: {
         onClick: async () => {
-          mainStore.isShowStylusTools = true
+          systemStore.createTaskById('os.pagecraft.stylus_tools')
         },
       },
     },
@@ -31,7 +34,7 @@ export const useCommonTools = () => {
       iconClass: 'mdi mdi-file-swap',
       props: {
         onClick: async () => {
-          mainStore.isShowTextTransformer = !mainStore.isShowTextTransformer
+          globalEventBus.emit(GlobalEvents.OPEN_TEXT_TRANSFORMER)
         },
       },
     },
@@ -101,17 +104,16 @@ export const useCommonTools = () => {
             iconClass: 'mdi mdi-language-markdown-outline',
             props: {
               onClick: async () => {
-                mainStore.isShowQuickLaunch = false
-                await router.push({name: 'RichTextTool'})
+                systemStore.createTaskById('os.pagecraft.richtext')
               },
             },
           },
           {
-            label: `AI Chat Window (alt+g)`,
-            iconClass: 'mdi mdi-comment-text',
+            label: $t('common.file_explorer'),
+            iconClass: 'mdi mdi-folder-wrench-outline',
             props: {
               onClick: async () => {
-                mainStore.isShowAiChat = !mainStore.isShowAiChat
+                systemStore.createTaskById('os.pagecraft.file_manager')
               },
             },
           },
@@ -144,22 +146,20 @@ export const useCommonTools = () => {
           },
           {split: true},
           {
-            label: 'Stock Tracker',
-            iconClass: 'mdi mdi-chart-areaspline',
-            props: {
-              onClick: async () => {
-                mainStore.isShowQuickLaunch = false
-                await router.push({name: 'StockTrackerPage'})
-              },
-            },
-          },
-          {
             label: 'Image Info',
             iconClass: 'mdi mdi-image',
             props: {
               onClick: async () => {
-                mainStore.isShowQuickLaunch = false
-                await router.push({name: 'ImageInfoPage'})
+                systemStore.createTaskById('os.pagecraft.image_info')
+              },
+            },
+          },
+          {
+            label: 'Stock Tracker',
+            iconClass: 'mdi mdi-chart-areaspline',
+            props: {
+              onClick: async () => {
+                systemStore.createTaskById('os.pagecraft.stock_tracker')
               },
             },
           },
@@ -168,8 +168,7 @@ export const useCommonTools = () => {
             iconClass: 'mdi mdi-finance',
             props: {
               onClick: async () => {
-                mainStore.isShowQuickLaunch = false
-                await router.push({name: 'FireCalcPage'})
+                systemStore.createTaskById('os.pagecraft.fire_calc')
               },
             },
           },
@@ -181,7 +180,7 @@ export const useCommonTools = () => {
         search: 'settings',
         props: {
           onClick: async () => {
-            mainStore.isShowSettings = true
+            globalEventBus.emit(GlobalEvents.OPEN_SETTINGS, SettingsTabType.COMMON)
           },
         },
       },

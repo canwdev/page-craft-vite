@@ -19,6 +19,9 @@ import ElementEditDialog from '@/components/PageCraft/MainPlayground/components/
 import DropdownMenu from '@/components/CanUI/packages/OptionUI/Tools/DropdownMenu.vue'
 import QuickContextMenu from '@/components/CanUI/packages/QuickOptions/QuickContextMenu.vue'
 import IndicatorInfo from '@/components/PageCraft/MainPlayground/components/IndicatorInfo.vue'
+import {useSystemStore} from '@/store/system'
+import {SettingsTabType} from '@/enum/settings'
+import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 
 const emit = defineEmits([])
 
@@ -27,6 +30,7 @@ const route = useRoute()
 const mainPlaygroundRef = ref()
 const mainStore = useMainStore()
 const settingsStore = useSettingsStore()
+const systemStore = useSystemStore()
 
 const isLitePage = computed(() => {
   return route.name === 'PlaygroundPage'
@@ -213,8 +217,7 @@ ${settingsStore.curCompInStore?.title}`"
           <div class="flex-row-center-gap">
             <button
               class="vp-button primary"
-              title="(alt+w)"
-              @click="mainStore.isShowSettings = !mainStore.isShowSettings"
+              @click="globalEventBus.emit(GlobalEvents.OPEN_SETTINGS, SettingsTabType.COMMON)"
             >
               {{ $t('common.settings') }}
             </button>

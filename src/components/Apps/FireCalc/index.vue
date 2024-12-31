@@ -6,7 +6,7 @@ import {
   numberToChineseMoney,
   numberWithCommas,
   formatLabel,
-} from '@/components/AppUtils/StockTracker/utils'
+} from '@/components/Apps/StockTracker/utils'
 import * as echarts from 'echarts'
 import moment from 'moment/moment'
 
@@ -29,16 +29,21 @@ interface IFireCalcFormData {
   age: number
 }
 
-const formData = useStorage<IFireCalcFormData>(LS_SettingsKey.FIRE_CALC_FORM_DATA, {
-  currentValue: 0,
-  monthlySave: 3000,
-  isTargetMode: false,
-  iterationMonths: 12,
-  targetValue: 1000000,
-  annualInterestRate: 0.025,
-  yearEndAwards: 0,
-  age: 0,
-})
+const formData = useStorage<IFireCalcFormData>(
+  LS_SettingsKey.FIRE_CALC_FORM_DATA,
+  {
+    currentValue: 0,
+    monthlySave: 3000,
+    isTargetMode: false,
+    iterationMonths: 12,
+    targetValue: 1000000,
+    annualInterestRate: 0.025,
+    yearEndAwards: 0,
+    age: 0,
+  },
+  localStorage,
+  {listenToStorageChanges: false},
+)
 
 const formItems = computed(() => {
   return [

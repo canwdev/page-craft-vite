@@ -10,8 +10,9 @@ import OptionUI from '@/components/CanUI/packages/OptionUI/index.vue'
 import {useMainStore} from '@/store/main'
 import {mergeIdData} from '@/components/AI/hooks/use-ai-characters'
 import {useIDBKeyval} from '@vueuse/integrations/useIDBKeyval'
-import {useBackupRestore} from '@/components/SystemSettings/use-backup-restore'
+import {useBackupRestore} from '@/components/OS/SettingsApp/use-backup-restore'
 import {useRouter} from 'vue-router'
+import {useSystemStore} from '@/store/system'
 
 const {t: $t} = useI18n()
 const settingsStore = useSettingsStore()
@@ -28,6 +29,7 @@ const getWallpaperText = () => {
   return tpl
 }
 const mainStore = useMainStore()
+const systemStore = useSystemStore()
 
 const router = useRouter()
 
@@ -215,9 +217,7 @@ return
                 {
                   class: 'vp-button',
                   onClick() {
-                    mainStore.isShowQuickLaunch = false
-                    mainStore.isShowSettings = false
-                    router.push({name: 'RichTextTool', query: {is_release_notes: '1'}})
+                    systemStore.createTaskById('os.pagecraft.richtext', {isReleaseNotes: true})
                   },
                 },
                 $t('msgs.release_notes'),

@@ -53,15 +53,6 @@ const routes = [
           icon: iconExcel,
         },
       },
-      {
-        path: 'richtext',
-        name: 'RichTextTool',
-        component: () => import('@/views/RichTextTool.vue'),
-        meta: {
-          title: `RichText Tool`,
-          icon: iconText,
-        },
-      },
 
       {
         path: 'vue-i18n-edit',
@@ -97,40 +88,6 @@ const routes = [
         meta: {
           title: `Dev Page`,
           icon: iconDev,
-        },
-      },
-      {
-        path: 'demo',
-        name: 'CanUIDemoPage',
-        component: () => import('@/components/CanUI/CanUIDemo.vue'),
-        meta: {
-          title: `UI Demo`,
-        },
-      },
-      {
-        path: 'image-info',
-        name: 'ImageInfoPage',
-        component: () => import('@/components/AppUtils/ImageInfo.vue'),
-        meta: {
-          title: `Image Info`,
-        },
-      },
-      {
-        path: 'stock-tracker',
-        name: 'StockTrackerPage',
-        component: () => import('@/components/AppUtils/StockTracker/index.vue'),
-        meta: {
-          title: `Stock Tracker`,
-          iconClass: 'mdi mdi-chart-areaspline',
-        },
-      },
-      {
-        path: 'fire-calc',
-        name: 'FireCalcPage',
-        component: () => import('@/components/AppUtils/FireCalc/index.vue'),
-        meta: {
-          title: `Fire Calc`,
-          iconClass: 'mdi mdi-finance',
         },
       },
     ],

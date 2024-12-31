@@ -8,7 +8,20 @@ import {useRoute} from 'vue-router'
 import TabLayout from '@/components/CanUI/packages/Layouts/TabLayout.vue'
 import MarkdownEditor from '@/components/RichText/MarkdownEditor.vue'
 
-const editorValue = useStorage(LS_SettingsKey.RICH_TEXT_TOOL_VALUE, '')
+type AppParams = {
+  isReleaseNotes: boolean
+}
+
+const props = withDefaults(
+  defineProps<{
+    appParams?: AppParams
+  }>(),
+  {},
+)
+
+const editorValue = useStorage(LS_SettingsKey.RICH_TEXT_TOOL_VALUE, '', localStorage, {
+  listenToStorageChanges: false,
+})
 const mainStore = useMainStore()
 const route = useRoute()
 
@@ -18,11 +31,16 @@ const loadReleaseNotes = async () => {
   const res = await fetch('./release-notes.md')
   editorValue.value = await res.text()
 }
-
+// 应用启动传参
 watch(
-  () => route.query,
-  (val) => {
-    if (val && val.is_release_notes) {
+  () => props.appParams,
+  () => {
+    console.log(props.appParams)
+    if (!props.appParams) {
+      return
+    }
+
+    if (props.appParams.isReleaseNotes) {
       loadReleaseNotes()
     }
   },
@@ -32,7 +50,6 @@ watch(
 
 <template>
   <div class="rich-text-tool-wrap scrollbar-mini">
-    <CommonNavbar />
     <TabLayout
       class="rich-text-tool-main"
       horizontal

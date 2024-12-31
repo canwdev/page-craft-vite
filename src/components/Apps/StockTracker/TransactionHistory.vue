@@ -11,7 +11,7 @@ import {
 } from './types'
 import {useResizeObserver} from '@vueuse/core'
 import {formatDate, guid} from '@/utils'
-import {getPriceWithSymbol} from '@/components/AppUtils/StockTracker/utils'
+import {getPriceWithSymbol} from '@/components/Apps/StockTracker/utils'
 import {renderDropdownMenu} from '@/components/CanUI/packages/OptionUI/Tools/renders'
 import AutoFormElPlus from '@/components/CanUI/packages/AutoFormElPlus/index.vue'
 import {

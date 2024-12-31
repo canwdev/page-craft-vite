@@ -21,6 +21,7 @@ import DropdownMenu from '@/components/CanUI/packages/OptionUI/Tools/DropdownMen
 import RectSwitch from '@/components/CanUI/packages/OptionUI/Tools/RectSwitch.vue'
 import TabLayout from '@/components/CanUI/packages/Layouts/TabLayout.vue'
 import {LS_SettingsKey} from '@/enum/settings'
+import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 
 const isAllowedElement = (el) => {
   return el.tagName.toLowerCase() === 'td'
@@ -57,6 +58,14 @@ window.demo_json_to_sheet = [
 
 export default defineComponent({
   name: 'ExcelCopyTool',
+  computed: {
+    GlobalEvents() {
+      return GlobalEvents
+    },
+    globalEventBus() {
+      return globalEventBus
+    },
+  },
   components: {
     TabLayout,
     RectSwitch,
@@ -394,7 +403,7 @@ export default defineComponent({
               <el-checkbox size="small" v-model="isTrimEmptyLines">
                 {{ $t('msgs.trim_empty_lines') }}
               </el-checkbox>
-              <a @click="mainStore.isShowTextTransformer = !mainStore.isShowTextTransformer">
+              <a @click="globalEventBus.emit(GlobalEvents.OPEN_TEXT_TRANSFORMER)">
                 {{ $t('common.text_transformer') }}:
               </a>
               <RectSwitch size="small" v-model="copyMode" :options="modTextConvertOptions" />

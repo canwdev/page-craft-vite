@@ -31,6 +31,8 @@ import i18n from '@/i18n/index'
 import CanUI from '@/components/CanUI'
 import './styles/style.scss'
 
+import '@/components/Apps/app-list'
+
 const app = createApp(App)
 app.use(i18n)
 app.use(CanUI)

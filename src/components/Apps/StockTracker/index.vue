@@ -5,9 +5,9 @@ import {IStockTrackerSettings} from './types'
 import RectSwitch from '@/components/CanUI/packages/OptionUI/Tools/RectSwitch.vue'
 import {useStorage} from '@vueuse/core'
 import {LS_SettingsKey} from '@/enum/settings'
-import StockPrices from '@/components/AppUtils/StockTracker/StockPrices.vue'
+import StockPrices from '@/components/Apps/StockTracker/StockPrices.vue'
 import DropdownMenu from '@/components/CanUI/packages/OptionUI/Tools/DropdownMenu.vue'
-import {useUpdatePrices} from '@/components/AppUtils/StockTracker/hooks/update-prices'
+import {useUpdatePrices} from '@/components/Apps/StockTracker/hooks/update-prices'
 import {IOptionItem} from '@/components/CanUI/packages/AutoFormElPlus/enum'
 
 const stockTrackerSettings = useStorage<IStockTrackerSettings>(
