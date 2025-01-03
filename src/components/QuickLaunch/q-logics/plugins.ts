@@ -45,7 +45,7 @@ export const useQuickLaunchPlugins = (update, textRef) => {
     customDynamicPlugins,
   } = usePluginState()
 
-  const basePath = `q-plugins`
+  const basePath = `resources/q-plugins`
 
   // 重新加载所有插件
   const reloadPlugins = async () => {

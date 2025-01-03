@@ -12,6 +12,7 @@ body {
   margin: 0;
   // https://moderncss.dev/12-modern-css-one-line-upgrades/#accent-color
   accent-color: $primary;
+  touch-action: manipulation; // disable ios double tap zoom
 }
 
 

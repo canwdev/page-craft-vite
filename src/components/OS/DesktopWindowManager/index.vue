@@ -75,7 +75,7 @@ const handleRestore = (index) => {
         :allow-move="!getIsMaximum(task)"
         :allow-maximum="true"
         v-model:maximized="task.maximized"
-        :allow-minimum="true"
+        :allow-minimum="false"
         v-model:minimized="task.minimized"
         tabindex="0"
         @keydown="handleWindowKeydown($event, task, index)"
@@ -115,7 +115,7 @@ const handleRestore = (index) => {
   right: 0;
   z-index: 0;
   overflow: hidden;
-  user-select: none;
+  //user-select: none;
 
   .dwm-window {
     min-width: 350px;

@@ -42,6 +42,22 @@ const copyI18n = async (val, isObject = false) => {
   await copy(result, true)
 }
 
+const formatObjKey = async (text) => {
+  const obj = JSON.parse(text)
+  const result = {}
+  for (const objKey in obj) {
+    console.log(objKey);
+    const key = window.$mcUtils.formatI18nKey(objKey) || guid_S4()
+    // 检测重复键
+    if (result[key]) {
+      result[key + '__' + guid_S4()] = obj[objKey]
+    } else {
+      result[key] = obj[objKey]
+    }
+  }
+  await copy(result, true)
+};
+
 if (!window.$mcUtils) {
   console.warn('window.$mcUtils is not defined')
 } else {
@@ -68,7 +84,15 @@ if (!window.$mcUtils) {
             },
           },
           {
-            label: '📃 Export to file',
+            label: '📋 Format object keys to i18n key',
+            props: {
+              onClick: async () => {
+                await formatObjKey(valRef.value)
+              },
+            },
+          },
+          {
+            label: '📃 Save input to file',
             props: {
               onClick: async () => {
                 window.$mcUtils.handleExportFile(
@@ -80,7 +104,7 @@ if (!window.$mcUtils) {
             },
           },
           {
-            label: '⌨️ Text Convert: JSON',
+            label: '⌨️ Convert input to JSON',
             props: {
               onClick: async () => {
                 const text = window.$mcUtils.textConvertMultipleLine(
@@ -92,7 +116,7 @@ if (!window.$mcUtils) {
             },
           },
           {
-            label: '⌨️ Text Convert: HTML',
+            label: '⌨️ Convert input to HTML',
             props: {
               onClick: async () => {
                 const text = window.$mcUtils.textConvertMultipleLine(
