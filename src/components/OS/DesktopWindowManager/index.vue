@@ -11,7 +11,6 @@ import {useSettingsStore} from '@/store/settings'
 import {TaskItem} from '@/enum/os'
 import ThemedIcon from '@/components/OS/ThemedIcon/ThemedIcon.vue'
 import {useMainStore} from '@/store/main'
-import WidgetsPlayground from '@/components/OS/Widgets/WidgetsPlayground.vue'
 
 const mainStore = useMainStore()
 const systemStore = useSystemStore()
