@@ -1,14 +1,26 @@
+<script lang="ts">
+export default {
+  name: 'SettingsApp',
+}
+</script>
+
 <script setup lang="ts">
 import {SettingsTabType} from '@/enum/settings'
-
-import ViewPortWindow from '@/components/CanUI/packages/ViewPortWindow/index.vue'
-import {useVModel} from '@vueuse/core'
 import TabLayout from '@/components/CanUI/packages/Layouts/TabLayout.vue'
 import SettingsCommon from '@/components/OS/SettingsApp/SettingsCommon.vue'
 import SettingsAi from '@/components/OS/SettingsApp/SettingsAi.vue'
 import I18nToolSettings from '@/components/VueI18nEditTool/I18nToolSettings.vue'
-import {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
 import {useI18n} from 'vue-i18n'
+
+type AppParams = {
+  curTab: SettingsTabType
+}
+const props = withDefaults(
+  defineProps<{
+    appParams?: AppParams
+  }>(),
+  {},
+)
 
 const {t: $t} = useI18n()
 const settingsTabs = ref([
@@ -17,6 +29,20 @@ const settingsTabs = ref([
   {label: $t('i18n_tools.i18_n'), value: SettingsTabType.I18N},
 ])
 const curTab = ref<SettingsTabType>(SettingsTabType.COMMON)
+
+// 应用启动传参
+watch(
+  () => props.appParams,
+  () => {
+    if (!props.appParams) {
+      return
+    }
+    curTab.value = props.appParams.curTab
+  },
+  {
+    immediate: true,
+  },
+)
 </script>
 
 <template>
