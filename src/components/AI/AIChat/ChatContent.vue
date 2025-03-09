@@ -61,20 +61,19 @@ const respContainerRef = ref()
 const inputRef = ref()
 
 // 滚动到底部
-const scrollBottom = (force = true, behavior = 'smooth') => {
+const scrollBottom = ({behavior = 'smooth'} = {}) => {
   if (!respContainerRef.value) {
     return
   }
   setTimeout(() => {
-    const scrollEl = respContainerRef.value
+    const containerEl = respContainerRef.value
 
     // 默认强制滚动，或只有超过临界值才滚动
-    if (force || scrollEl.scrollHeight - (scrollEl.scrollTop + scrollEl.offsetHeight) < 400) {
-      scrollEl.scrollTo({
-        top: scrollEl.scrollHeight,
-        behavior,
-      })
-    }
+
+    containerEl.scrollTo({
+      top: containerEl.scrollHeight,
+      behavior,
+    })
   })
 }
 // 滚动到底部
@@ -91,7 +90,6 @@ const scrollTop = (force = true) => {
   })
 }
 
-const scrollBottomThrottled = useThrottleFn(scrollBottom, 500, true)
 const focusInput = () => {
   setTimeout(() => {
     inputRef.value?.focus()
@@ -103,7 +101,7 @@ const handleLoad = () => {
   tempResponseChat.value = null
   setTimeout(() => {
     focusInput()
-    scrollBottom(true, 'auto')
+    scrollBottom({behavior: 'auto'})
   })
 }
 
@@ -144,7 +142,7 @@ const generateChatTitle = async () => {
 // GPT4 以上支持vision图像识别
 const isEnableVision = computed(() => {
   // @ts-ignore
-  return modelsCanUseVision[currentCharacter.value?.model] || false
+  return modelsCanUseVision[currentCharacter.value?.model] !== false
 })
 
 // base64 或 图像 url 字符串数组
@@ -175,7 +173,7 @@ const sendAiRequest = async (isRetry = false) => {
     return
   }
   try {
-    scrollBottom()
+    scrollBottom({behavior: 'auto'})
     isLoading.value = true
     tempResponseChat.value = {
       role: 'assistant',
@@ -215,7 +213,25 @@ const sendAiRequest = async (isRetry = false) => {
       userInputContent.value = ''
       imageList.value = []
     }
-    scrollBottomThrottled(false)
+
+    // 聊天输出时自动滚动到合适位置，但不滚动到底部
+    if (!respContainerRef.value) {
+      throw new Error('respContainerRef.value is null')
+    }
+    const containerEl = respContainerRef.value
+    let maxScrollHeight = 0
+    setTimeout(() => {
+      maxScrollHeight = containerEl.scrollTop + containerEl.offsetHeight - 100
+    }, 100)
+    const scrollBottomAuto = () => {
+      if (containerEl.scrollTop >= maxScrollHeight) {
+        return
+      }
+      containerEl.scrollTo({
+        top: maxScrollHeight,
+        behavior: 'smooth',
+      })
+    }
 
     // 停止请求控制器
     const controller = new AbortController()
@@ -238,7 +254,7 @@ const sendAiRequest = async (isRetry = false) => {
         messages,
         (text: string) => {
           tempResponseChat.value!.content += text
-          scrollBottomThrottled(false)
+          scrollBottomAuto()
         },
         {
           signal,
@@ -279,7 +295,6 @@ const sendAiRequest = async (isRetry = false) => {
   } finally {
     isLoading.value = false
     abortController.value = null
-    scrollBottomThrottled(false)
     focusInput()
   }
 }
@@ -294,7 +309,7 @@ const handleKeyInput = (event) => {
       }
       // 如果同时按下了 Shift，允许默认行为，即换行
     } else {
-      if (event.shiftKey || event.ctrlKey) {
+      if (event.ctrlKey) {
         event.preventDefault()
         sendAiRequest()
       }

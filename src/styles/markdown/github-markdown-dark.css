@@ -521,10 +521,10 @@
 }
 
 .markdown-body-dark hr {
-  background-color: #e1e4e8;
+  background-color: rgba(225, 228, 232, 0.25);
   border: 0;
   height: 1px;
-  margin: 24px 0;
+  margin: 16px 0;
   padding: 0;
 }
 

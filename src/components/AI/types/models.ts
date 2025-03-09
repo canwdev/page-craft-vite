@@ -52,12 +52,13 @@ export const anthropicChatModelOptions: IChatModelOption[] = [
     label: 'Claude 3.5 Haiku',
     value: 'claude-3-5-haiku-20241022',
     tokens: 200_000,
+    vision: false,
     functionCall: true,
   },
   {
-    desc: 'Claude 3.5 Sonnet 提供了超越 Opus 的能力和比 Sonnet 更快的速度，同时保持与 Sonnet 相同的价格。Sonnet 特别擅长编程、数据科学、视觉处理、代理任务。',
-    label: 'Claude 3.5 Sonnet',
-    value: 'claude-3-5-sonnet-20241022',
+    desc: 'Claude 3.7 Sonnet 提供了超越 Opus 的能力和比 Sonnet 更快的速度，同时保持与 Sonnet 相同的价格。Sonnet 特别擅长编程、数据科学、视觉处理、代理任务。',
+    label: 'Claude 3.7 Sonnet',
+    value: 'claude-3-7-sonnet-20250219',
     tokens: 200_000,
     vision: true,
     functionCall: true,
@@ -80,15 +81,24 @@ export const openAIChatModelOptions: IChatModelOption[] = [
     functionCall: true,
   },
   {
+    desc: '',
+    label: 'OpenAI o3-mini',
+    value: 'o3-mini',
+    vision: false,
+    tokens: 128_000,
+  },
+  {
     desc: 'o1-mini是一款针对编程、数学和科学应用场景而设计的快速、经济高效的推理模型。该模型具有128K上下文和2023年10月的知识截止日期。',
     label: 'OpenAI o1-mini',
     value: 'o1-mini',
+    vision: false,
     tokens: 128_000,
   },
   {
     desc: 'o1是OpenAI新的推理模型，适用于需要广泛通用知识的复杂任务。该模型具有128K上下文和2023年10月的知识截止日期。',
-    label: 'OpenAI o1-preview',
-    value: 'o1-preview',
+    label: 'OpenAI o1',
+    value: 'o1',
+    vision: false,
     tokens: 128_000,
   },
   {
@@ -115,6 +125,7 @@ export const openAIChatModelOptions: IChatModelOption[] = [
     label: 'GPT-3.5 Turbo',
     value: 'gpt-3.5-turbo',
     tokens: 16_385,
+    vision: false,
     functionCall: true,
   },
 ]
@@ -123,12 +134,12 @@ export const openAIChatModelOptions: IChatModelOption[] = [
  * AI / LLM 模型图标集 https://lobehub.com/zh/icons
  */
 export const compatibleModelOptions: IChatModelOption[] = [
-  {label: 'Google - Gemini', value: 'gemini-2.0-flash-exp', vision: true, functionCall: true},
+  {label: 'Google - Gemini', value: 'gemini-2.0-flash', vision: true, functionCall: true},
   {label: 'xAI - Grok', value: 'grok-2-1212'},
   {label: 'Meta - LLaMA', value: 'llama-3.3-70b-versatile'},
-  {label: '同义千问 Qwen', value: 'qwen2.5-coder-7b-instruct'},
+  {label: '同义千问 Qwen 2.5 Max', value: 'qwen-max-0125'},
   {label: '智谱清言 ChatGLM', value: 'glm-4-flash'},
-  {label: '深度求索 DeepSeek', value: 'deepseek-ai/DeepSeek-V2.5'},
+  {label: '深度求索 DeepSeek R1', value: 'DeepSeek-R1'},
   {label: '月之暗面 Moonshot', value: 'moonshot-v1-8k'},
 ]
 

@@ -17,6 +17,16 @@ const props = withDefaults(defineProps<Props>(), {
 const {text, isEditing} = toRefs(props)
 const emit = defineEmits(['update:text'])
 const mText = useVModel(props, 'text', emit)
+
+const editInputRef = ref()
+watch(isEditing, () => {
+  setTimeout(() => {
+    if (editInputRef.value) {
+      editInputRef.value.scrollIntoView({behavior: 'smooth'})
+      editInputRef.value.focus()
+    }
+  })
+})
 </script>
 
 <template>
@@ -24,14 +34,14 @@ const mText = useVModel(props, 'text', emit)
     class="chat-content vp-bg"
     :class="{'markdown-body-dark': isDark}"
     v-if="isEditing"
-    style="width: 100%"
+    style="width: 100%; padding: 0; display: flex; border-radius: 2px"
   >
     <textarea
-      class="vp-input"
+      class="vp-input font-code"
       v-model="mText"
-      rows="10"
+      rows="14"
       ref="editInputRef"
-      style="width: 100%; font-size: 16px; box-sizing: border-box"
+      style="width: 100%; font-size: 14px; box-sizing: border-box"
     />
   </div>
 

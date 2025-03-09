@@ -252,6 +252,7 @@ const formRules = ref({
 
 const formItems = computed((): MixedFormItems[] => {
   const modelOptions = getModelOptions(editingItem.value.provider)
+  const isThirdParty = editingItem.value.provider === AIProvider.OPEN_AI_COMPATIBLE
   return [
     [
       {
@@ -328,6 +329,16 @@ const formItems = computed((): MixedFormItems[] => {
           allowCreate: true,
           filterable: true,
         },
+        render: isThirdParty
+          ? () =>
+              h('button', {
+                type: 'button',
+                class: 'btn-no-style mdi mdi-help-circle-outline',
+                onClick: () => {
+                  window.open('https://aihubmix.com/models', '_blank', 'noopener,noreferrer')
+                },
+              })
+          : null,
       },
     ],
     {

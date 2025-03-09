@@ -3,6 +3,7 @@ import {GptMessage} from '@/components/AI/types/open-ai'
 // 不允许 role 为 system 的模型
 export const NotAllowSystemRoleModels = {
   'o1-mini': true,
+  o1: true,
   'o1-preview': true,
 }
 

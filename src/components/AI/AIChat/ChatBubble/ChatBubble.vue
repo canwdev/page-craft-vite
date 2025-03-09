@@ -31,6 +31,7 @@ const editInputRef = ref()
 watch(isEditing, () => {
   setTimeout(() => {
     if (editInputRef.value) {
+      editInputRef.value.scrollIntoView({behavior: 'smooth'})
       editInputRef.value.focus()
     }
   })
@@ -369,7 +370,7 @@ const exportMarkdown = (text) => {
   .chat-content {
     line-height: 26px;
     display: inline-block;
-    padding: 6px 10px;
+    padding: 10px 10px;
     border-radius: 10px 0 10px 10px;
     max-width: 800px;
     font-size: 16px;
@@ -404,8 +405,18 @@ const exportMarkdown = (text) => {
     margin-top: 4px;
 
     button {
-      opacity: 0.6;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      opacity: 0.8;
       font-size: 12px;
+      line-height: 1;
+
+      .mdi {
+        font-size: inherit;
+        line-height: inherit;
+        color: $primary;
+      }
     }
   }
 

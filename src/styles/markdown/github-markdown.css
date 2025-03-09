@@ -523,8 +523,8 @@
 .markdown-body hr {
   background-color: #e1e4e8;
   border: 0;
-  height: .25em;
-  margin: 24px 0;
+  height: 1px;
+  margin: 16px 0;
   padding: 0;
 }
 
