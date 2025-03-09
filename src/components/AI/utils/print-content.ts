@@ -60,7 +60,7 @@ ${hljsStyle}
     margin: 10px 0;
     padding: 10px;
 }
-.hljs-copy-button {
+._js-action-button {
     display: none;
 }
 pre.hljs-code-container {

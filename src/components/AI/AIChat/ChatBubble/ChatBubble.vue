@@ -93,6 +93,10 @@ const confirmDelete = (item) => {
       emit('delete', item)
     })
 }
+
+const exportMarkdown = (text) => {
+  window.$mcUtils.handleExportFile('', text, '_chat.md')
+}
 </script>
 
 <template>
@@ -209,23 +213,26 @@ const confirmDelete = (item) => {
 
         <template v-if="isEditing">
           <button class="btn-no-style" @click="isEditing = false">
-            ✅ {{ $t('actions.done') }}
+            <span class="mdi mdi-check"></span> {{ $t('actions.done') }}
           </button>
         </template>
         <template v-else>
           <button class="btn-no-style" @click="copy(item.content)">
-            📋 {{ $t('actions.copy') }}
+            <span class="mdi mdi-content-copy"></span> {{ $t('actions.copy') }}
+          </button>
+          <button class="btn-no-style" @click="exportMarkdown(item.content)">
+            <span class="mdi mdi-download"></span> {{ $t('actions.download') }}
           </button>
 
           <button class="btn-no-style" v-if="allowRetry" @click="$emit('retry')">
-            🔄 {{ $t('actions.retry') }}
+            <span class="mdi mdi-refresh"></span> {{ $t('actions.retry') }}
           </button>
 
           <button class="btn-no-style" v-if="allowEdit" @click="isEditing = true">
-            📝 {{ $t('actions.edit') }}
+            <span class="mdi mdi-pencil"></span> {{ $t('actions.edit') }}
           </button>
           <button class="btn-no-style" v-if="allowDelete" @click="confirmDelete">
-            🗑️ {{ $t('actions.delete') }}
+            <span class="mdi mdi-delete-forever"></span> {{ $t('actions.delete') }}
           </button>
         </template>
       </div>

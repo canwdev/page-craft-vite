@@ -1,13 +1,13 @@
 # Release Notes
 
-## TBD v1.8.0
-
-- refactor: 重构入口
-
 ## v1.7.7
 
 - refactor: 重构窗口系统
-- AI: 增加 OpenAI 兼容模型
+- AI
+  - 增加 OpenAI 兼容模型
+  - 代码块支持直接下载
+  - 优化了生成中的滚动逻辑
+  - 支持切换代码块的明暗主题
 - add: 支持二维码图片扫描，图像信息工具
 - fix: 修复部分bug
 

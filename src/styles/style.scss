@@ -175,7 +175,7 @@ html, body, #app {
 }
 
 .hljs-code-container {
-  background-color: #212121 !important;
+  //background-color: #212121 !important;
   padding: 0 !important;
   overflow: unset !important;
   display: flex;
@@ -200,7 +200,7 @@ html, body, #app {
   top: 0;
   border-radius: 4px 4px 0 0 !important;
 
-  .hljs-copy-button {
+  ._js-action-button {
   }
 }
 

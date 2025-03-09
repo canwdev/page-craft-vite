@@ -8,8 +8,10 @@ addPlugin(
       iconClass: 'mdi mdi-material-design',
       children: async () => {
         if (!metaList.length) {
-          metaList = await fetch('./q-plugins/mdi-icon-viewer/meta-lite.json').then(res => res.json())
-          console.log({ metaList })
+          metaList = await fetch('./resources/q-plugins/mdi-icon-viewer/meta-lite.json').then(
+            (res) => res.json(),
+          )
+          console.log({metaList})
         }
 
         const getDefaultResult = () => {
@@ -18,11 +20,12 @@ addPlugin(
               html: `Please input filter keywords.
 <a href="https://pictogrammers.com/library/mdi/" target="_blank">Material Design Icons</a>`,
               props: {
-                onClick: () => {}
-              }
-            }]
-        };
-        const resultList = ref(getDefaultResult());
+                onClick: () => {},
+              },
+            },
+          ]
+        }
+        const resultList = ref(getDefaultResult())
 
         const updateResultList = useDebounceFn(() => {
           if (!valRef.value) {
@@ -37,10 +40,10 @@ addPlugin(
                   return true
                 }
                 const sVal = valRef.value.trim().toLowerCase()
-                return v.name.toLowerCase().includes(sVal) ||
-                  (v.tags_str ?
-                  v.tags_str.toLowerCase().includes(sVal)
-                  : false)
+                return (
+                  v.name.toLowerCase().includes(sVal) ||
+                  (v.tags_str ? v.tags_str.toLowerCase().includes(sVal) : false)
+                )
               })
               .map((v) => {
                 const iconClass = `mdi mdi-${v.name}`
@@ -55,7 +58,7 @@ addPlugin(
     font-size: 12px;
     opacity: .7;
     line-height: 1;
-  ">${v.tags_str||''}</div>
+  ">${v.tags_str || ''}</div>
 </div>
 </div>`,
                   props: {
@@ -64,11 +67,11 @@ addPlugin(
                     },
                     onContextmenu: () => {
                       copy(htmlText, true)
-                    }
+                    },
                   },
                 }
               })
-              .slice(0, 800)
+              .slice(0, 800),
           ]
           // console.log('updateResultList', valRef.value, resultList.value)
         }, 300)
@@ -89,5 +92,5 @@ addPlugin(
   {
     isStaticPlugin: true,
     isPresetPlugin: true,
-  }
+  },
 )

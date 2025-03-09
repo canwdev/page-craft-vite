@@ -9,7 +9,7 @@ export const promptGetFileName = async (name?, fallbackPrefix = 'PageCraft') => 
 }
 export const handleExportFile = (filename, contentStr, ext) => {
   if (!filename) {
-    throw new Error('filename is required')
+    filename = `${moment(new Date()).format('YYYYMMDD_HHmmss')}`
   }
   const blob = new Blob([contentStr], {
     type: 'text/plain;charset=utf-8',

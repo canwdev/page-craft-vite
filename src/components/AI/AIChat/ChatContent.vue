@@ -4,7 +4,7 @@ import '@/styles/markdown/github-markdown.css'
 import '@/styles/markdown/github-markdown-dark.css'
 import {useMainStore} from '@/store/main'
 import ChatBubble from '@/components/AI/AIChat/ChatBubble/ChatBubble.vue'
-import {useThrottleFn} from '@vueuse/core'
+import {useStyleTag, useThrottleFn} from '@vueuse/core'
 import {useAiSettingsStore} from '@/components/AI/hooks/ai-settings'
 import {useI18n} from 'vue-i18n'
 import {useAiCharacters} from '@/components/AI/hooks/use-ai-characters'
@@ -13,17 +13,29 @@ import globalEventBus, {GlobalEvents, useGlobalBusOn} from '@/utils/global-event
 import ImagePicker from '@/components/AI/AIChat/ChatBubble/ImagePicker.vue'
 import {AIProvider, modelsCanUseVision} from '@/components/AI/types/models'
 import {useCommonAi} from '@/components/AI/hooks/use-common-ai'
-import SettingsAi from '@/components/OS/SettingsApp/SettingsAi.vue'
 import {GptMessage} from '@/components/AI/types/open-ai'
 import {getChatContentHtml, printChatContent} from '@/components/AI/utils/print-content'
 import DropdownMenu from '@/components/CanUI/packages/OptionUI/Tools/DropdownMenu.vue'
 import {SettingsTabType} from '@/enum/settings'
+// 代码主题样式
+import codeDarkCss from 'highlight.js/styles/github-dark.css?raw'
+import codeLightCss from 'highlight.js/styles/github.css?raw'
 
-const {t: $t, locale} = useI18n()
+const {t: $t} = useI18n()
+const mainStore = useMainStore()
 const aisStore = useAiSettingsStore()
 const {currentCharacter, currentHistory} = useAiCharacters()
 
-const mainStore = useMainStore()
+// 切换代码的明暗主题
+const {css: codeCss} = useStyleTag('', {id: 'element-style-override'})
+watch(
+  () => mainStore.isAppDarkMode,
+  (val) => {
+    codeCss.value = val ? codeDarkCss : codeLightCss
+  },
+  {immediate: true},
+)
+
 const isLoading = ref(false)
 const userInputContent = ref('')
 

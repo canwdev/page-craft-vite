@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import {useVModel, watchThrottled} from '@vueuse/core'
-import markdown from '@/utils/markdown'
 import MarkdownRender from '@/components/RichText/MarkdownRender.vue'
 
 interface Props {

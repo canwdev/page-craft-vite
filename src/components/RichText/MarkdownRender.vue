@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {useVModel, watchThrottled} from '@vueuse/core'
+import {watchThrottled} from '@vueuse/core'
 import markdown from '@/utils/markdown'
 
 interface Props {
@@ -34,10 +34,23 @@ const handleClick = (event) => {
     }
 
     // 处理代码块复制
-    const isCopyButton = el.classList.contains('hljs-copy-button')
-    if (isCopyButton) {
+    const isActionButton = el.classList.contains('_js-action-button')
+    if (isActionButton) {
+      console.log(el)
+
       const code = el.parentElement.nextSibling.textContent
-      window.$qlUtils.copy(code)
+      const lang =
+        el.parentElement.querySelector('.lang-display')?.getAttribute('data-lang') || 'txt'
+
+      console.log(el.parentElement.nextSibling)
+      switch (el.getAttribute('data-action')) {
+        case 'copy':
+          window.$qlUtils.copy(code)
+          break
+        case 'download':
+          window.$mcUtils.handleExportFile('', code, '_code.' + lang)
+          break
+      }
     }
   }
 }
