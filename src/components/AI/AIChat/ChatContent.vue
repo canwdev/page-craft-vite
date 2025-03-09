@@ -220,17 +220,25 @@ const sendAiRequest = async (isRetry = false) => {
     }
     const containerEl = respContainerRef.value
     let maxScrollHeight = 0
+    let isAllowAutoScroll = false
     setTimeout(() => {
-      maxScrollHeight = containerEl.scrollTop + containerEl.offsetHeight - 100
+      isAllowAutoScroll = containerEl.scrollTop >= 0
+      maxScrollHeight = containerEl.scrollTop + containerEl.offsetHeight * (2 / 3)
     }, 100)
+    let scrollCount = 1
     const scrollBottomAuto = () => {
+      if (!isAllowAutoScroll) {
+        return
+      }
       if (containerEl.scrollTop >= maxScrollHeight) {
+        isAllowAutoScroll = false
         return
       }
       containerEl.scrollTo({
         top: maxScrollHeight,
         behavior: 'smooth',
       })
+      scrollCount++
     }
 
     // 停止请求控制器
