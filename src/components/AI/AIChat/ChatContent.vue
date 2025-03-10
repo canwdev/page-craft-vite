@@ -220,11 +220,11 @@ const sendAiRequest = async (isRetry = false) => {
     }
     const containerEl = respContainerRef.value
     let maxScrollHeight = 0
-    let isAllowAutoScroll = false
+    let isAllowAutoScroll = containerEl.scrollTop > 0
+    console.log('containerEl', containerEl, containerEl.scrollTop, isAllowAutoScroll)
     setTimeout(() => {
-      isAllowAutoScroll = containerEl.scrollTop >= 0
       maxScrollHeight = containerEl.scrollTop + containerEl.offsetHeight * (2 / 3)
-    }, 100)
+    })
     let scrollCount = 1
     const scrollBottomAuto = () => {
       if (!isAllowAutoScroll) {

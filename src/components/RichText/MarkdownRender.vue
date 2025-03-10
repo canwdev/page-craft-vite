@@ -36,13 +36,11 @@ const handleClick = (event) => {
     // 处理代码块复制
     const isActionButton = el.classList.contains('_js-action-button')
     if (isActionButton) {
-      console.log(el)
-
       const code = el.parentElement.nextSibling.textContent
       const lang =
         el.parentElement.querySelector('.lang-display')?.getAttribute('data-lang') || 'txt'
 
-      console.log(el.parentElement.nextSibling)
+      // console.log(el.parentElement.nextSibling)
       switch (el.getAttribute('data-action')) {
         case 'copy':
           window.$qlUtils.copy(code)
