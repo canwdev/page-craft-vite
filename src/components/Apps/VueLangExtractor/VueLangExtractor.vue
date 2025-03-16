@@ -49,21 +49,27 @@ const runConvert = async () => {
       }
     }
 
-    if (parsed.script) {
-      const result = vueLangEx.extractScript(parsed.script.content)
-      // console.log('extract script result', result)
+    try {
+      let script = parsed.script?.content || parsed.scriptSetup?.content
+      if (script) {
+        const result = vueLangEx.extractScript(script)
+        // console.log('extract script result', result)
 
-      Object.keys(result.textMap).forEach((key) => {
-        _set(textMap, key, formatValue(result.textMap[key]))
-      })
+        Object.keys(result.textMap).forEach((key) => {
+          _set(textMap, key, formatValue(result.textMap[key]))
+        })
 
-      // console.log(result.textMap)
-      // console.log(result.newTemplate)
-      newVueTmplArr.push(`<script>${result.newTemplate}<\/script>`)
+        // console.log(result.textMap)
+        // console.log(result.newTemplate)
+        newVueTmplArr.push(`<script>${result.newTemplate}<\/script>`)
 
-      if (result.warnings.length > 0) {
-        warnings.push(...result.warnings)
+        if (result.warnings.length > 0) {
+          warnings.push(...result.warnings)
+        }
       }
+    } catch (e) {
+      console.error('extract script error', e)
+      window.$message.warning('暂不支持支持TypeScript。extract script error:' + e.message)
     }
 
     if (parsed.styles) {

@@ -6,6 +6,7 @@ import {
 } from '@/components/Apps/VueLangExtractor/utils/checker'
 import {parse} from '@vue/compiler-dom'
 import {NodeTypes} from '@vue/compiler-core'
+import {parse as babelParse} from '@babel/parser'
 
 const formatValue = (str) => {
   if (typeof str !== 'string') {
@@ -51,9 +52,17 @@ export class VueLangExtractor {
     return key
   }
 
-  extractJs(jsCode: string, options: acorn.Options = {ecmaVersion: 2020}, replaceValueFn) {
-    const jsAst = acorn.parse(jsCode, options)
-    // console.log('js ast', jsAst)
+  extractJs(jsCode: string, replaceValueFn) {
+    // TODO: 支持ts
+    // const tsAst = babelParse(jsCode, {
+    //   sourceType: 'module',
+    //   plugins: ['typescript'],
+    // })
+    // const program = tsAst.program
+    // console.log('ts ast', program)
+
+    const program = acorn.parse(jsCode, {ecmaVersion: 2020, sourceType: 'module'})
+    console.log('js ast', program)
 
     const replacements: ReplacementItem[] = []
     const textMap: {[key: string]: string} = {}
@@ -121,8 +130,10 @@ export class VueLangExtractor {
       // }
 
       // 处理 Literal 节点（例如数组中的字符串）
-      if (node.type === 'Literal' || node.type === 'TemplateElement') {
-        const value = node.type === 'Literal' ? node.value : node.value.raw
+      const isLiteral = node.type === 'StringLiteral' || node.type === 'Literal'
+
+      if (isLiteral || node.type === 'TemplateElement') {
+        const value = isLiteral ? node.value : node.value.raw
         // console.log('Literal/TemplateElement node', {value}, node)
 
         const text = formatValue(value)
@@ -133,7 +144,7 @@ export class VueLangExtractor {
         textMap[key] = text
 
         const replaceValue = replaceValueFn(key)
-        if (node.type === 'Literal') {
+        if (isLiteral) {
           replacements.push([node.start, node.end, replaceValue])
         } else {
           // 移除模板字符串的引号
@@ -182,8 +193,8 @@ export class VueLangExtractor {
       })
     }
 
-    for (let i = 0; i < jsAst.body.length; i++) {
-      const node = jsAst.body[i]
+    for (let i = 0; i < program.body.length; i++) {
+      const node = program.body[i]
       // console.log('sub node', node)
       if (node.type === 'ExpressionStatement') {
         walk(node.expression)
@@ -259,9 +270,6 @@ export class VueLangExtractor {
                     } = this.extractJs(
                       // 给 value 加括号，避免 acorn 解析错误
                       `(${value})`,
-                      {
-                        ecmaVersion: 2020,
-                      },
                       (key) => {
                         return `$t('${key}')`
                       },
@@ -364,15 +372,8 @@ export class VueLangExtractor {
   // 提取 script 中的文本内容
   extractScript(template: string) {
     // console.log(template)
-    return this.extractJs(
-      template,
-      {
-        ecmaVersion: 2020,
-        sourceType: 'module',
-      },
-      (key) => {
-        return `this.$t('${key}')`
-      },
-    )
+    return this.extractJs(template, (key) => {
+      return `this.$t('${key}')`
+    })
   }
 }
