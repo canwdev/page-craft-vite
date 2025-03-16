@@ -1,0 +1,184 @@
+[
+  {
+    "label": "CSS Snippets",
+    "children": [
+      {
+        "label": "Flex (row: space-between)",
+        "snippet": "display: flex;\nalign-items: center;\njustify-content: space-between;\ngap: 8px;"
+      },
+      {
+        "label": "Flex (col)",
+        "snippet": "display: flex;\nflex-direction: column;\ngap: 8px;"
+      },
+      {
+        "label": "Grid",
+        "snippet": "display: grid;\ngrid-template-columns: repeat(4, 1fr);\ngrid-template-rows: auto;\ngap: 10px;"
+      },
+      {
+        "label": "Text Overflow",
+        "snippet": "white-space: nowrap;\noverflow: hidden;\ntext-overflow: ellipsis;"
+      },
+      {
+        "label": "Text Overflow (Limit 3)",
+        "snippet": "display: -webkit-box;\n-webkit-line-clamp: 3;\n-webkit-box-orient: vertical;\noverflow: hidden;\ntext-overflow: ellipsis;"
+      },
+      {
+        "label": "Background Cover",
+        "snippet": "background-image: url(\"\");\nbackground-repeat: no-repeat;\nbackground-position: center;\nbackground-size: cover;"
+      },
+      {
+        "label": "Absolute (Full)",
+        "snippet": "position: absolute;\ntop: 0;\nleft: 0;\nright: 0;\nbottom: 0;"
+      },
+      {
+        "label": "Absolute (Center)",
+        "snippet": "position: absolute;\ntop: 50%;\nleft: 50%;\ntransform: translate(-50%, -50%);"
+      },
+      {
+        "label": "Margin Center",
+        "snippet": "max-width: 1200px;\nmargin-left: auto;\nmargin-right: auto;"
+      },
+      {
+        "label": "Blur (backdrop-filter)",
+        "snippet": "background-color: rgba(255, 255, 255, 0.6);\nbox-shadow: 0 1px 10px rgba(0, 0, 0, 0.27), inset 0 0 0.5px #fff;\nborder: 1px solid rgba(0, 0, 0, .4);\nborder-radius: 4px;\nbackdrop-filter: blur(4px);"
+      },
+      {
+        "label": "drop-shadow()",
+        "snippet": "filter: drop-shadow(0 0 5px rgb(0, 0, 0));"
+      }
+    ]
+  },
+  {
+    "label": "CSS Class",
+    "children": [
+      {
+        "label": ".btn-no-style",
+        "code": ".btn-no-style {\n  background: none;\n  border: none;\n  outline: none;\n  cursor: pointer;\n  color: inherit;\n  padding: 0;\n  text-decoration: none;\n\n  &:active {\n    opacity: 0.8;\n  }\n\n  &:disabled {\n    cursor: not-allowed;\n    opacity: 0.5;\n  }\n}"
+      },
+      {
+        "label": ".background-cover",
+        "snippet": ".background-cover {\n  background-repeat: no-repeat;\n  background-position: center;\n  background-size: cover;\n}"
+      },
+      {
+        "label": ".text-overflow",
+        "snippet": ".text-overflow {\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}"
+      },
+      {
+        "label": ".absolute-center",
+        "snippet": ".absolute-center {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n}"
+      },
+      {
+        "label": ".absolute-full",
+        "snippet": ".absolute-full {\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n}"
+      },
+      {
+        "label": ".flex",
+        "code": ".flex {\n  display: flex;\n}\n\n.flex-center {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\n.flex-1 {\n  flex: 1;\n}\n\n.flex-row {\n  flex-direction: row;\n}\n\n.flex-column {\n  flex-direction: column;\n}\n\n.items-center {\n  align-items: center;\n}\n\n.justify-center {\n  justify-content: center;\n}\n\n.justify-between {\n  justify-content: space-between;\n}"
+      },
+      {
+        "label": ".scrollbar-mini",
+        "code": ".scrollbar-mini {\n  &::-webkit-scrollbar {\n    width: 8px;\n    height: 8px;\n    overflow: overlay;\n  }\n\n  &::-webkit-scrollbar-thumb {\n    border-radius: 8px;\n    border: 2px solid transparent;\n    background-clip: content-box;\n    background-color: #d8d8d8;\n\n    &:hover {\n      background-color: #bebebe;\n    }\n  }\n\n  &::-webkit-scrollbar-track {\n    border-radius: 4px;\n    background: #f9f9f9;\n  }\n}"
+      },
+      {
+        "label": ".font-code",
+        "code": ".font-code {\n  font-family: 'Operator Mono', 'Source Code Pro', Menlo, Monaco, Consolas, 'Courier New', monospace;\n}"
+      },
+      {
+        "label": ".font-emoji",
+        "code": ".font-emoji {\n  font-family: \"Segoe UI Emoji\", \"SF Pro SC\", \"SF Pro Text\", \"SF Pro Icons\", \"PingFang SC\", \"Helvetica Neue\", \"Helvetica\", \"Arial\", sans-serif;\n}"
+      },
+      {
+        "label": ".css-arrow",
+        "code": ".css-arrow {\n  border: solid currentColor;\n  border-width: 0 2px 2px 0;\n  display: inline-block;\n  padding: 3px;\n\n  &.right {\n    transform: rotate(-45deg);\n  }\n\n  &.left {\n    transform: rotate(135deg);\n  }\n\n  &.up {\n    transform: rotate(-135deg);\n  }\n\n  &.down {\n    transform: rotate(45deg);\n  }\n}"
+      },
+      {
+        "label": "@keyframes",
+        "children": [
+          {
+            "label": "rotating180",
+            "snippet": "@keyframes rotating180 {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(180deg);\n  }\n}"
+          },
+          {
+            "label": "rotating360",
+            "snippet": "@keyframes rotating360 {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}"
+          },
+          {
+            "label": "zoomIn",
+            "snippet": "@keyframes zoomIn {\n  0% {\n    transform: scale(1);\n  }\n\n  90% {\n    transform: scale(5);\n    opacity: 1;\n  }\n\n  95% {\n    opacity: 0;\n    transform: scale(5);\n  }\n\n  96% {\n    transform: scale(1);\n  }\n\n  97% {\n    opacity: 0;\n  }\n\n  100% {\n    opacity: 1;\n  }\n}"
+          },
+          {
+            "label": "textFadeInUp",
+            "snippet": "@keyframes textFadeInUp {\n  0% {\n    opacity: 0;\n    transform: translate3d(0, 25px, 0);\n  }\n\n  100% {\n    opacity: 1;\n    transform: translate3d(0, 0, 0);\n  }\n}"
+          },
+          {
+            "label": "airShrinkIn",
+            "snippet": "@keyframes airShrinkIn {\n  0% {\n    opacity: 0;\n    transform: scaleX(0.96);\n  }\n\n  100% {\n    opacity: 1;\n    transform: scale(1);\n  }\n}"
+          },
+          {
+            "label": "airShrinkInReverse",
+            "snippet": "@keyframes airShrinkInReverse {\n  0% {\n    opacity: 0;\n    transform: scale(1.12);\n  }\n\n  100% {\n    opacity: 1;\n    transform: scaleX(1);\n  }\n}"
+          }
+        ]
+      },
+      {
+        "label": "Vue Transitions",
+        "children": [
+          {
+            "label": "fade (Vue2)",
+            "snippet": "// <transition label=\"fade\">\n.fade-enter-active, .fade-leave-active {\n  transition: opacity 0.3s;\n}\n\n.fade-enter, .fade-leave-to {\n  opacity: 0;\n}"
+          },
+          {
+            "label": "fade-up (Vue2)",
+            "snippet": ".fade-up-enter-active, .fade-up-leave-active {\n  transition: all 0.23s;\n}\n\n.fade-up-enter, .fade-up-leave-to {\n  opacity: 0;\n  transform: translate3d(0, 5%, 0);\n}"
+          },
+          {
+            "label": "slide-left (Vue2)",
+            "snippet": ".slide-left-enter-active, .slide-left-leave-active {\n  transition: all .3s;\n}\n\n.slide-left-enter, .slide-left-leave-to {\n  transform: translateX(15%);\n  opacity: 0;\n}\n"
+          },
+          {
+            "label": "fade (Vue3)",
+            "snippet": ".fade-enter-active,\n.fade-leave-active {\n  transition: opacity 0.3s ease;\n}\n\n.fade-enter-from,\n.fade-leave-to {\n  opacity: 0;\n}"
+          },
+          {
+            "label": "scale (Vue3)",
+            "snippet": ".fade-scale-enter-active,\n.fade-scale-leave-active {\n  transform: scale(1);\n  transition: opacity 0.3s, transform 0.3s;\n}\n\n.fade-scale-enter-from,\n.fade-scale-leave-to {\n  opacity: 0;\n  transform: scale(0.92);\n  transition: opacity 0.3s, transform 0.3s;\n}"
+          }
+        ]
+      },
+      {
+        "label": "Media Query",
+        "children": [
+          {
+            "label": "max-width",
+            "snippet": "@media screen and (max-width: $mq_mobile_width) {}"
+          },
+          {
+            "label": "min-width",
+            "snippet": "@media screen and (min-width: $mq_mobile_width) {}"
+          },
+          {
+            "label": "min-width and max-width and max-height",
+            "snippet": "@media screen and (min-width: $mq_mobile_width) and (max-width: $mq_tablet_width) and (max-height: $mq_mobile_height_land) {}"
+          },
+          {
+            "label": "Media Query Variables",
+            "code": "$mq_mobile_min_width: 330px; // 618px // 426px\n$mq_mobile_width: 567px; // 618px // 426px\n$mq_mobile_height_land: 485px; // Landscape\n$mq_tablet_width: 1024px; // 768px\n$mq_pc_min_width: 1450px; // 1440px\n$mq_pc_min_height: 768px; // 768px\n$mq_pc_2k_width: 2300px; // 2560px\n$mq_pc_2k_height: 1250px; // 1328px"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "label": "Others",
+    "children": [
+      {
+        "label": "Theme Color",
+        "code": "$light: #fafafa;\n$dark-alt: #1b1b1b;\n$dark: #212121;\n\n:root {\n  --primary-rgb: 25, 107, 105;\n  --primary: rgb(var(--primary-rgb));\n  --aero-backdrop-filter: none;\n  --aero-light-bg: #{$light};\n  --aero-dark-bg: #{$dark};\n}\n\n$primary: var(--primary); // #8dbb72;\n$primary-opacity: rgba(var(--primary-rgb), .25); //opacify($primary, 0.3);\n$secondary: #ffc107; // #66CCFF;\n$accent: #ec407a; // rgba(255, 128, 192);\n$border-color: rgba(204, 204, 204, .5);\n$separator-color: rgba(148, 148, 148, .3);\n$common-padding: 8px 12px;\n$common-transition: all .2s;\n$border-radius: 2px;\n$container-width: 1400px;\n$container-padding: 10px;\n$common-shadow: 0 0 6px -3px rgba(0, 0, 0, .5);\n\n$layout-border: 1px solid $border-color;\n\n@mixin lightBgMixin() {\n  background: var(--aero-light-bg);\n  backdrop-filter: var(--aero-backdrop-filter);\n  color: $color-black;\n}\n\n@mixin darkBgMixin() {\n  background: var(--aero-dark-bg);\n  backdrop-filter: var(--aero-backdrop-filter);\n  color: $color-white;\n}"
+      },
+      {
+        "label": "Colors",
+        "code": "$success: #4caf50;\n$error: #e91e63;\n$info: #009688;\n$warning: #ffc107;\n\n$color-white: #ffffff;\n$color-black: #000000;\n$color-text: #333;\n\n$color-blue: #007aff;\n$color-brown: #a2845e;\n$color-gray: #8e8e93;\n$color-green: #28cd41;\n$color-indigo: #5856d6;\n$color-orange: #ff9500;\n$color-pink: #ff2d55;\n$color-purple: #af52de;\n$color-red: #ff3b30;\n$color-teal: #5ac8fa;\n$color-yellow: #ffcc00;\n\n$color-dark-blue: #0a84ff;\n$color-dark-brown: #ac8e68;\n$color-dark-gray: #98989d;\n$color-dark-green: #32d74b;\n$color-dark-indigo: #5e5ce6;\n$color-dark-orange: #ff9f0a;\n$color-dark-pink: #ff375f;\n$color-dark-purple: #bf5af2;\n$color-dark-red: #ff453a;\n$color-dark-teal: #64d2ff;\n$color-dark-yellow: #ffd60a;"
+      }
+    ]
+  }
+]

@@ -1,0 +1,1 @@
+import{r as n,N as o}from"./index-BJklM7uy.js";const s=({fetchFn:s,mapFn:r})=>{const t=n([]),a=(n=[],o=[])=>(n.forEach((n=>{const s={children:n.children?a(n.children):void 0,...r(n)};o.push(s)})),o),c=async()=>{const n=await s();t.value=a(n)};return o(c),{options:t,traverse:a,loadOptions:c}};export{s as u};
