@@ -54,13 +54,6 @@ const handleAutoPasteCopy = async () => {
     handleCopy()
   })
 }
-const monacoEditorRef1 = ref()
-const monacoEditorRef2 = ref()
-const resizeMonaco = useDebounceFn(() => {
-  monacoEditorRef1.value.resize()
-  monacoEditorRef2.value.resize()
-}, 300)
-
 const settingsStore = useSettingsStore()
 
 function showDemo() {
@@ -111,16 +104,11 @@ function showDemo() {
     <div class="main-box font-code">
       <div class="input-wrapper">
         <div class="input-tip">Input Stylus Code</div>
-        <VueMonaco
-          ref="monacoEditorRef1"
-          language="stylus"
-          v-model="textInput"
-          class="input-text"
-        />
+        <VueMonaco language="stylus" v-model="textInput" class="input-text" />
       </div>
       <div class="input-wrapper">
         <div class="input-tip">Formatted (SCSS)</div>
-        <VueMonaco ref="monacoEditorRef2" v-model="textOutput" language="scss" class="input-text" />
+        <VueMonaco v-model="textOutput" language="scss" class="input-text" />
       </div>
     </div>
     <div class="error-box">

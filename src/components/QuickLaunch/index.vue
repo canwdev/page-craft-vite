@@ -46,8 +46,6 @@ const cleanText = () => {
   update()
 }
 
-const vueMonacoRef = ref()
-
 defineExpose({
   focus,
 })
@@ -81,7 +79,6 @@ defineExpose({
     <ViewPortWindow
       :visible="!!editingCustomPlugin"
       :init-win-options="{width: '500px', height: '500px'}"
-      @resize="vueMonacoRef?.resize()"
       allow-maximum
       @onClose="editingCustomPlugin = null"
     >
@@ -92,7 +89,6 @@ defineExpose({
       </template>
 
       <VueMonaco
-        ref="vueMonacoRef"
         v-if="editingCustomPlugin"
         v-model="editingCustomPlugin.code"
         language="javascript"

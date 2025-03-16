@@ -144,7 +144,16 @@ export const useCommonTools = () => {
               },
             },
           },
-          {split: true},
+          // {split: true},
+          {
+            label: 'Vue 多语言提取工具 - 基于AST(抽象语法树)',
+            iconClass: 'mdi mdi-vuejs',
+            props: {
+              onClick: async () => {
+                systemStore.createTaskById('os.pagecraft.vue_lang_extractor')
+              },
+            },
+          },
           {
             label: 'Image Info',
             iconClass: 'mdi mdi-image',
@@ -154,24 +163,24 @@ export const useCommonTools = () => {
               },
             },
           },
-          {
-            label: 'Stock Tracker',
-            iconClass: 'mdi mdi-chart-areaspline',
-            props: {
-              onClick: async () => {
-                systemStore.createTaskById('os.pagecraft.stock_tracker')
-              },
-            },
-          },
-          {
-            label: 'Fire Calc',
-            iconClass: 'mdi mdi-finance',
-            props: {
-              onClick: async () => {
-                systemStore.createTaskById('os.pagecraft.fire_calc')
-              },
-            },
-          },
+          // {
+          //   label: 'Stock Tracker',
+          //   iconClass: 'mdi mdi-chart-areaspline',
+          //   props: {
+          //     onClick: async () => {
+          //       systemStore.createTaskById('os.pagecraft.stock_tracker')
+          //     },
+          //   },
+          // },
+          // {
+          //   label: 'Fire Calc',
+          //   iconClass: 'mdi mdi-finance',
+          //   props: {
+          //     onClick: async () => {
+          //       systemStore.createTaskById('os.pagecraft.fire_calc')
+          //     },
+          //   },
+          // },
         ],
       },
       {

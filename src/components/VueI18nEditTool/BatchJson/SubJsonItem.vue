@@ -39,7 +39,6 @@ export default defineComponent({
     const autoFocusEditor = () => {
       if (vueMonacoRef.value) {
         setTimeout(() => {
-          vueMonacoRef.value.resize()
           vueMonacoRef.value.focus()
         })
       }
@@ -162,7 +161,6 @@ export default defineComponent({
 
 <template>
   <div v-show="visible" class="sub-text-editor" v-loading="isLoading">
-
     <div class="editor-action-row">
       <button class="vp-button primary" :disabled="!isChanged" @click="saveChange({isEmit: true})">
         {{ $t('actions.save_all') }}

@@ -78,7 +78,6 @@ const focusEditor = () => {
 }
 watch(mVisible, (val) => {
   if (val) {
-    updateEditorLayout()
     focusEditor()
   }
 })
@@ -294,7 +293,6 @@ defineExpose({
   <ViewPortWindow
     class="mc-style-editor-dialog"
     v-model:visible="mVisible"
-    @resize="updateEditorLayout"
     wid="style_editor"
     @keyup="listenShortcuts"
     @onActive="focusEditor"

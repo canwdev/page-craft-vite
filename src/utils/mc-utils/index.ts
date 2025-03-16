@@ -1,7 +1,13 @@
 import {pinyin} from 'pinyin-pro'
 import {formatI18nKey} from '@/enum/vue-i18n-tool'
 import {textConvertAdvanced, TextConvertMode, textConvertMultipleLine} from './text-convert'
-import {handleExportFile, handleImportJson, handleReadSelectedFile, promptGetFileName} from './io'
+import {
+  handleExportFile,
+  handleImportJson,
+  handleImportTextFile,
+  handleReadSelectedFile,
+  promptGetFileName,
+} from './io'
 import {showInputPrompt} from '@/components/CanUI/functions/input-prompt'
 
 export const mcUtils = {
@@ -11,6 +17,7 @@ export const mcUtils = {
   textConvertMultipleLine,
   TextConvertMode,
   handleExportFile,
+  handleImportTextFile,
   handleImportJson,
   handleReadSelectedFile,
   promptGetFileName,

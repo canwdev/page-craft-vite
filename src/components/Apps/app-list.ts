@@ -89,26 +89,38 @@ export const useAppList = () => {
         component: defineAsyncComponent(() => import('@/components/FileManager/index.vue')),
       },
       {
-        appid: 'os.pagecraft.stock_tracker',
-        title: `Stock Tracker`,
-        iconClass: 'mdi mdi-chart-areaspline',
+        appid: 'os.pagecraft.vue_lang_extractor',
+        title: `Vue Lang Extractor`,
+        iconClass: 'mdi mdi-vuejs',
         winOptions: {
-          width: '600px',
-          height: '500px',
+          width: '700px',
+          height: '600px',
         },
-        component: defineAsyncComponent(() => import('@/components/Apps/StockTracker/index.vue')),
-        singleInstance: true,
+        component: defineAsyncComponent(
+          () => import('@/components/Apps/VueLangExtractor/VueLangExtractor.vue'),
+        ),
       },
-      {
-        appid: 'os.pagecraft.fire_calc',
-        title: `Fire Calc`,
-        iconClass: 'mdi mdi-finance',
-        winOptions: {
-          width: '600px',
-          height: '500px',
-        },
-        component: defineAsyncComponent(() => import('@/components/Apps/FireCalc/index.vue')),
-      },
+      // {
+      //   appid: 'os.pagecraft.stock_tracker',
+      //   title: `Stock Tracker`,
+      //   iconClass: 'mdi mdi-chart-areaspline',
+      //   winOptions: {
+      //     width: '600px',
+      //     height: '500px',
+      //   },
+      //   component: defineAsyncComponent(() => import('@/components/Apps/StockTracker/index.vue')),
+      //   singleInstance: true,
+      // },
+      // {
+      //   appid: 'os.pagecraft.fire_calc',
+      //   title: `Fire Calc`,
+      //   iconClass: 'mdi mdi-finance',
+      //   winOptions: {
+      //     width: '600px',
+      //     height: '500px',
+      //   },
+      //   component: defineAsyncComponent(() => import('@/components/Apps/FireCalc/index.vue')),
+      // },
     ]
   })
 }

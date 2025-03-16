@@ -1,5 +1,11 @@
 # Release Notes
 
+## v1.7.8
+
+- TBD: 重构多语言编辑器
+- add: Vue SFC组件多语言提取工具，基于 AST(抽象语法树) 实现
+- remove: 删除不需要的功能
+
 ## v1.7.7
 
 - refactor: 重构窗口系统

@@ -16,6 +16,24 @@ export const handleExportFile = (filename, contentStr, ext) => {
   })
   FileSaver.saveAs(blob, filename + ext)
 }
+
+export const handleImportTextFile = async (options: any) => {
+  const [handle] = await window.showOpenFilePicker(
+    options || {
+      types: [
+        {
+          description: 'Text',
+          accept: {
+            'text/plain': ['.txt'],
+          },
+        },
+      ],
+    },
+  )
+  const file = await handle.getFile()
+  return await handleReadSelectedFile(file)
+}
+
 export const handleImportJson = async () => {
   const [handle] = await window.showOpenFilePicker({
     types: [
@@ -31,6 +49,7 @@ export const handleImportJson = async () => {
   const str = await handleReadSelectedFile(file)
   return JSON.parse(str as string)
 }
+
 export const handleReadSelectedFile = (file) => {
   // console.log(file)
   return new Promise((resolve, reject) => {

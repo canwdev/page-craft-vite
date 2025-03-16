@@ -1,7 +1,7 @@
 {
   "name": "page-craft-vite",
   "private": true,
-  "version": "1.7.7",
+  "version": "1.7.8-beta",
   "scripts": {
     "dev": "vite --debug hmr",
     "build": "vite build --emptyOutDir",
@@ -26,7 +26,6 @@
     "change-case": "^4",
     "color-hash": "^2.0.2",
     "cropperjs": "^1.6.2",
-    "echarts": "^5.5.1",
     "element-plus": "^2.9.6",
     "emmet-monaco-es": "^5.5.0",
     "file-saver": "^2.0.5",
@@ -50,7 +49,8 @@
     "vanilla-jsoneditor": "^0.23.1",
     "vue": "^3.5.13",
     "vue-i18n": "^11.1.2",
-    "vue-router": "^4.5.0"
+    "vue-router": "^4.5.0",
+    "vue-template-compiler": "^2.7.16"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.8.0",

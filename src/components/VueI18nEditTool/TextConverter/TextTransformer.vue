@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import {defineComponent, ref} from 'vue'
-import {useModelWrapper} from '@/hooks/use-model-wrapper'
+import {ref} from 'vue'
 import {copyToClipboard, readClipboardData} from '@/utils'
 import {
   TextConvertMode,
@@ -10,7 +9,6 @@ import {
 import {useI18n} from 'vue-i18n'
 import VueMonaco from '@/components/CanUI/packages/VueMonaco/index.vue'
 import {useDebounceFn, useStorage} from '@vueuse/core'
-import ViewPortWindow from '@/components/CanUI/packages/ViewPortWindow/index.vue'
 import RectSwitch from '@/components/CanUI/packages/OptionUI/Tools/RectSwitch.vue'
 import {useSettingsStore} from '@/store/settings'
 import {LS_SettingsKey} from '@/enum/settings'
@@ -71,11 +69,6 @@ const handleAutoPasteCopy = async () => {
     handleCopy()
   })
 }
-
-const monacoEditorRef = ref()
-const resizeMonaco = useDebounceFn(() => {
-  monacoEditorRef.value.resize()
-}, 300)
 
 const settingsStore = useSettingsStore()
 </script>
