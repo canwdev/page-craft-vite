@@ -45,8 +45,13 @@ export default defineConfig(({mode}) => {
     },
     css: {
       preprocessorOptions: {
+        // Deprecation Warning [import]: Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+        // scss: {additionalData: `@use "@/styles/_variables.scss" as *;`},
+
         scss: {
           additionalData: `@import "@/styles/_variables.scss";`,
+          quietDeps: true, // Suppresses warnings from imported files
+          silenceDeprecations: ['import'], // Specifically silences @import deprecation warnings
         },
       },
     },
