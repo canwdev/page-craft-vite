@@ -82,6 +82,8 @@ const runConvert = async () => {
 
     if (warnings.length > 0) {
       outputWarnings.value = JSON.stringify(warnings, null, 2)
+    } else {
+      outputWarnings.value = ''
     }
     outputSFC.value = newVueTmplArr.join('\n\n')
     extractedTexts.value = JSON.stringify(textMap, null, 2)

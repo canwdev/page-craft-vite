@@ -24,6 +24,24 @@ PageCraft 是一站式网页开发辅助工具，帮助开发者极速构建静�
   - AI 聊天工具，纯前端发起请求，支持代理，支持 OpenAI/GPT 和 Anthropic/Claude 模型
   - 其他小工具，如 base64 转换，屏幕取色器，二维码生成等，插件系统支持自定义实现小工具
 
+## Development
+
+```bash
+bun i
+# or: yarn install
+bun run dev
+# or: yarn run dev
+```
+
+## Build
+
+```bash
+# build web
+bun run build
+# build desktop app
+bun run build:tauri
+```
+
 ## 在 Linux/macOS/Web 下使用
 
 > 也可以自行编译目标系统的 Tauri 程序

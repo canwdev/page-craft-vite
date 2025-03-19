@@ -242,7 +242,36 @@ export class VueLangExtractor {
         if (node.props) {
           node.props.forEach((prop) => {
             // console.log('prop', prop)
-            if (
+
+            if (prop.type === NodeTypes.ATTRIBUTE) {
+              console.log('ATTRIBUTE prop', prop)
+
+              const propKey = prop.name
+              if (!checkKeyNeedExtract(propKey)) {
+                return
+              }
+              if (!prop.value) {
+                return
+              }
+              const value = prop.value.content
+              const text = formatValue(value)
+              if (!_valueNeedExtractWith(text)) {
+                return
+              }
+              const key = this.generateUniqueKey(text)
+              textMap[key] = text
+              replacements.push([
+                prop.value.loc.start.offset,
+                prop.value.loc.end.offset,
+                `"$t('${key}')"`,
+              ])
+              // label -> :label
+              replacements.push([
+                prop.nameLoc.start.offset,
+                prop.nameLoc.end.offset,
+                `:${prop.nameLoc.source}`,
+              ])
+            } else if (
               prop.type === NodeTypes.DIRECTIVE &&
               (prop.name === 'bind' || prop.name === 'html')
             ) {

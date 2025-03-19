@@ -1,14 +1,27 @@
 import {parse} from 'acorn'
 
 const vueKeyMap = {
+  id: true,
   key: true,
   class: true,
-  id: true,
+  cls: true,
+  className: true,
   href: true,
   rel: true,
+  ref: true,
+  style: true,
+  type: true,
+  ratio: true,
+  src: true,
+  visible: true,
 }
 export const checkKeyNeedExtract = (key: string) => {
+  // console.log('key', key)
   if (vueKeyMap[key]) {
+    return false
+  }
+  // data-*
+  if (key.startsWith('data-')) {
     return false
   }
   return true

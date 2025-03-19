@@ -24,6 +24,24 @@ PageCraft is an all-in-one web development assistant tool designed to help devel
   - AI Chat Tool, initiate requests purely in the front end, supports proxy, and supports OpenAI/GPT and Anthropic/Claude models.
   - Other small tools, such as base64 converter, screen color picker, QR code generator, etc. The plugin system supports custom implementations of small tools.
 
+## Development
+
+```bash
+bun i
+# or: yarn
+bun run dev
+# or: yarn run dev
+```
+
+## Build
+
+```bash
+# build web
+bun run build
+# build desktop app
+bun run build:tauri
+```
+
 ## Using on Linux/macOS/Web
 
 > You can also compile the Tauri program for your target system yourself.
