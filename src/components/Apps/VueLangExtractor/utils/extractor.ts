@@ -244,7 +244,7 @@ export class VueLangExtractor {
             // console.log('prop', prop)
 
             if (prop.type === NodeTypes.ATTRIBUTE) {
-              console.log('ATTRIBUTE prop', prop)
+              // console.log('ATTRIBUTE prop', prop)
 
               const propKey = prop.name
               if (!checkKeyNeedExtract(propKey)) {
@@ -271,6 +271,36 @@ export class VueLangExtractor {
                 prop.nameLoc.end.offset,
                 `:${prop.nameLoc.source}`,
               ])
+            } else if (
+              prop.type === NodeTypes.DIRECTIVE &&
+              prop.name === 'for' &&
+              prop.forParseResult
+            ) {
+              console.log('DIRECTIVE v-for prop', prop)
+              const {source} = prop.forParseResult
+
+              let {
+                textMap: _textMap,
+                newTemplate: _newTemplate,
+                warnings: _warnings,
+              } = this.extractJs(
+                // 给 value 加括号，避免 acorn 解析错误
+                `(${source.content})`,
+                (key) => {
+                  return `$t('${key}')`
+                },
+              )
+
+              // 移除首尾括号
+              _newTemplate = removeBrackets(_newTemplate)
+
+              textMap = {
+                ...textMap,
+                ..._textMap,
+              }
+              warnings = [...warnings, ..._warnings]
+
+              replacements.push([source.loc.start.offset, source.loc.end.offset, _newTemplate])
             } else if (
               prop.type === NodeTypes.DIRECTIVE &&
               (prop.name === 'bind' || prop.name === 'html')
