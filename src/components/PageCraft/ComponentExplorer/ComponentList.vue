@@ -154,7 +154,7 @@ const {handleOpenLocalDir, localDirHistoryOptions} = useLocalDir({emit})
           @click="handlePaste"
           title="Paste"
         >
-          <span class="mdi mdi-content-copy"></span>
+          <span class="mdi mdi-content-paste"></span>
         </button>
 
         <button

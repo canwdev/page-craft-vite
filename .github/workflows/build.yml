@@ -24,21 +24,21 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Cache Yarn dependencies
+      - name: Cache Bun dependencies
         uses: actions/cache@v3
         with:
-          path: ~/.yarn/cache
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-
+            ${{ runner.os }}-bun-
 
-      - name: Setup Node
-        uses: actions/setup-node@v3
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
         with:
-          node-version: '20'
+          bun-version: latest
 
       - name: Build
-        run: yarn install --frozen-lockfile && yarn build
+        run: bun install && bun run build
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@4.1.1

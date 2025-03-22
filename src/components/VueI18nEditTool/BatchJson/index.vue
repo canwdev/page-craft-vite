@@ -53,7 +53,6 @@ watch(
         :list-item="item"
         :visible="item.rootDir.key === currentTab"
         @saveChanged="handleSaveChanged"
-        :is-monaco-editor="i18nSetStore.isJsonMonacoEditor"
       />
     </div>
   </div>

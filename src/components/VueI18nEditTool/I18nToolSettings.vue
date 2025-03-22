@@ -90,12 +90,6 @@ export default defineComponent({
               store: i18nSetStore,
               type: StOptionType.SWITCH,
             },
-            {
-              label: 'JSON Editor use Monaco Editor',
-              key: 'isJsonMonacoEditor',
-              store: i18nSetStore,
-              type: StOptionType.SWITCH,
-            },
           ],
         },
       ]

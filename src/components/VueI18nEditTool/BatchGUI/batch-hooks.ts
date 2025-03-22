@@ -120,7 +120,7 @@ export const useBatchWrapper = () => {
           const file = await (currentItem.entry as FileSystemFileHandle).getFile()
           const str = await handleReadSelectedFile(file)
           const json = JSON.parse(str as string)
-          console.log(currentItem)
+          // console.log(currentItem)
           list.push({
             dirItem: currentItem,
             rootDir: dirItem,

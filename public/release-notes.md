@@ -2,9 +2,11 @@
 
 ## v1.7.8
 
-- TBD: 重构多语言编辑器
+- refactor: 重构多语言编辑器
 - add: Vue SFC组件多语言提取工具，基于 AST(抽象语法树) 实现
 - remove: 删除不需要的功能
+  - remove `"@tinymce/tinymce-vue": "^5.0.0",`
+  - remove `"vanilla-jsoneditor": "^0.23.1"`
 
 ## v1.7.7
 

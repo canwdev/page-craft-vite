@@ -1,23 +1,17 @@
 <script lang="ts">
 import {defineComponent, PropType, ref} from 'vue'
-import {DirTreeItem} from '@/enum/vue-i18n-tool'
 import {useBatchItemV2} from '@/components/VueI18nEditTool/BatchGUI/batch-hooks'
 import {BatchListItem, useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
-import VueJsonEditor from '@/components/CommonUI/VueJsonEditor.vue'
 import {useMainStore} from '@/store/main'
 import VueMonaco from '@/components/CanUI/packages/VueMonaco/index.vue'
 
 export default defineComponent({
   name: 'SubTextItem',
-  components: {VueMonaco, VueJsonEditor},
+  components: {VueMonaco},
   props: {
     visible: {
       type: Boolean,
       default: true,
-    },
-    isMonacoEditor: {
-      type: Boolean,
-      default: false,
     },
     listItem: {
       type: Object as PropType<BatchListItem>,
@@ -175,23 +169,11 @@ export default defineComponent({
     </div>
     <div v-if="!isRefreshing" class="editor-content-wrap">
       <VueMonaco
-        v-if="isMonacoEditor"
         ref="vueMonacoRef"
         :model-value="localText"
         @update:model-value="handleChange"
         language="json"
         show-line-numbers
-      />
-      <VueJsonEditor
-        v-else
-        ref="editorRef"
-        :dark="mainStore.isAppDarkMode"
-        :options="{
-          content: {
-            text: localText,
-          },
-          onChange: handleJsonEditorChange,
-        }"
       />
     </div>
   </div>
