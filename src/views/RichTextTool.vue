@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import TinyMceEditor from '@/components/RichText/TinyMceEditor.vue'
 import {useStorage} from '@vueuse/core'
 import {useMainStore} from '@/store/main'
-import CommonNavbar from '@/components/CommonUI/CommonNavbar.vue'
 import {LS_SettingsKey, SettingsTabType} from '@/enum/settings'
 import {useRoute} from 'vue-router'
 import TabLayout from '@/components/CanUI/packages/Layouts/TabLayout.vue'
@@ -54,20 +52,11 @@ watch(
       class="rich-text-tool-main"
       horizontal
       v-model="curTab"
-      :options="[
-        {label: 'Markdown', value: 'markdown'},
-        {label: 'Tiny MCE', value: 'tinymce'},
-      ]"
+      :options="[{label: 'Markdown', value: 'markdown'}]"
     >
       <MarkdownEditor
         v-if="curTab === 'markdown'"
         :dark="mainStore.isAppDarkMode"
-        v-model="editorValue"
-      />
-      <TinyMceEditor
-        v-else-if="curTab === 'tinymce'"
-        :dark="mainStore.isAppDarkMode"
-        :content-css="mainStore.isAppDarkMode ? 'dark' : ''"
         v-model="editorValue"
       />
     </TabLayout>
