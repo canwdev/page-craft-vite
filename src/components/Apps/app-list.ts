@@ -100,6 +100,36 @@ export const useAppList = () => {
           () => import('@/components/Apps/VueLangExtractor/VueLangExtractor.vue'),
         ),
       },
+      {
+        appid: 'os.pagecraft.qrcode',
+        title: `QR Code`,
+        iconClass: 'mdi mdi-qrcode',
+        winOptions: {
+          width: '300px',
+          height: '400px',
+        },
+        component: defineAsyncComponent(() => import('@/components/Apps/QRCode/QRCode.vue')),
+      },
+      {
+        appid: 'os.pagecraft.mdi_viewer',
+        title: `Material Design Icons Viewer`,
+        iconClass: 'mdi mdi-material-design',
+        winOptions: {
+          width: '500px',
+          height: '500px',
+        },
+        component: defineAsyncComponent(() => import('@/components/Apps/MdiViewer.vue')),
+      },
+      {
+        appid: 'os.pagecraft.time_converter',
+        title: `Time Converter`,
+        iconClass: 'mdi mdi-clipboard-clock-outline',
+        winOptions: {
+          width: '500px',
+          height: '200px',
+        },
+        component: defineAsyncComponent(() => import('@/components/Apps/TimeConverter.vue')),
+      },
       // {
       //   appid: 'os.pagecraft.stock_tracker',
       //   title: `Stock Tracker`,

@@ -98,7 +98,7 @@ onMounted(() => {
 })
 
 const copy = (text) => {
-  window.$qlUtils.copy(text)
+  window.$mcUtils.copy(text)
 }
 const saveFile = (text, ext) => {
   window.$mcUtils.handleExportFile('', text, '.json')

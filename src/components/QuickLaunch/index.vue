@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import {useCommonTools} from './use-common-tools'
 import {useRoute, useRouter} from 'vue-router'
 import QuickOptions from '@/components/CanUI/packages/QuickOptions/index.vue'
 import {useQLogics} from './q-logics'
@@ -18,15 +17,17 @@ const focus = () => {
 }
 
 onMounted(() => {
-  focus()
-  update()
+  setTimeout(() => {
+    focus()
+    update()
+  })
 })
 const {textarea: textareaRef, input: anyText} = useTextareaAutosize()
 
-const {qlOptions} = useCommonTools()
 const update = () => {
   handleSearch(anyText)
 }
+const qlOptions = ref([])
 const {filteredOptions, handleSearch, editingCustomPlugin, saveCustomPlugin, runCustomPlugin} =
   useQLogics(qlOptions, update)
 useQuickLaunchPlugins(update, anyText)
@@ -77,6 +78,7 @@ defineExpose({
   </div>
   <Teleport to="body">
     <ViewPortWindow
+      v-if="editingCustomPlugin"
       :visible="!!editingCustomPlugin"
       :init-win-options="{width: '500px', height: '500px'}"
       allow-maximum
@@ -111,6 +113,9 @@ defineExpose({
     max-height: 150px !important;
     scrollbar-width: none;
     line-height: 1;
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
   }
   .quick-options {
     flex: 1;

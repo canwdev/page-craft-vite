@@ -1,5 +1,4 @@
 import {QuickOptionItem} from '@/components/CanUI/packages/QuickOptions/enum'
-import {qLogicQrCode} from './qr-code'
 import {Ref} from 'vue'
 import {useDebounceFn, useStorage} from '@vueuse/core'
 import {usePluginState, useQuickLaunchCustomPlugins} from './plugins'
@@ -27,16 +26,11 @@ export const useQLogics = (qlOptionsRef, update) => {
   const _handleSearch = (valRef: Ref<string>) => {
     // console.log(valRef.value)
     const val = valRef.value
-    const filterableOptions = [
-      qLogicManage,
-      ...customStaticPlugins.value,
-      qLogicQrCode(valRef),
-      ...staticPlugins.value,
-    ]
+    const filterableOptions = [qLogicManage, ...customStaticPlugins.value, ...staticPlugins.value]
 
     // 没有输入，显示默认内容
     if (!val) {
-      filteredOptions.value = [...qlOptionsRef.value, {split: true}, ...filterableOptions]
+      filteredOptions.value = [...qlOptionsRef.value, ...filterableOptions]
       return
     }
 

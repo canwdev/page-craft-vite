@@ -167,7 +167,7 @@ const execBeautifyCssAction = async () => {
 const copyStyle = () => {
   const editor = vueMonacoRef.value.getInstance()
   const textValue = editor.getValue()
-  window.$qlUtils.copy(textValue)
+  window.$mcUtils.copy(textValue)
 }
 
 const isSelecting = useVModel(props, 'selecting', emit, {passive: true})

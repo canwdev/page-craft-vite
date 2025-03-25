@@ -58,6 +58,7 @@ export const LS_SettingsKey = {
   PAGECRAFT_IFRAME_BROWSER_URL: 'pagecraft_iframe_browser_url',
 
   QUICK_LAUNCH_CUSTOM_PLUGINS: 'quick_launch_custom_plugins',
+  C_LAUNCH_CURRENT_TAB: 'c_launch_current_tab',
 
   // i18n tools
   TEXT_CONVERTER_COPY_MODE: 'text_converter_copy_mode',

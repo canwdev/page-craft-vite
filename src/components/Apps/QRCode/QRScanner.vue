@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import QrcodeDecoder from './qrcode-decoder'
-import {onBeforeUnmount, onMounted, ref} from 'vue'
+import {ref} from 'vue'
+
+const emit = defineEmits(['onResult'])
 
 const isLoading = ref()
 let qr: QrcodeDecoder | null = null
@@ -20,7 +22,9 @@ const startVideoScan = async () => {
     const res = await qr.decodeFromVideo(video)
     console.log(res)
 
-    await window.$qlUtils.copy(res.data)
+    emit('onResult', res.data)
+
+    await window.$mcUtils.copy(res.data)
   } catch (error: any) {
     console.error(error)
     window.$notification({
@@ -66,7 +70,8 @@ const startScanUploadImage = async () => {
           return
         }
 
-        await window.$qlUtils.copy(res.data, true)
+        emit('onResult', res.data)
+        await window.$mcUtils.copy(res.data, true)
       } catch (error) {
         window.$message.error(error.message)
         console.error(error)

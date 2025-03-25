@@ -60,7 +60,7 @@ const dimensionInfo = computed(() => {
 })
 
 const copyToClipboard = (text: string) => {
-  window.$qlUtils.copy(text, true)
+  window.$mcUtils.copy(text, true)
 }
 
 const handleClear = () => {
@@ -77,7 +77,7 @@ const handleClear = () => {
     @drop.prevent="handleDrop"
   >
     <div class="drop-area" @click="triggerFileInput">
-      <h2>将图片拖拽到这里或点击选择</h2>
+      <h2>Drag or Select Image...</h2>
       <input type="file" ref="fileInput" accept="image/*" @change="handleFileSelect" hidden />
     </div>
     <div class="result-area vp-panel font-code" v-if="imageDimensions.width">

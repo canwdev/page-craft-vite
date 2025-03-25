@@ -43,7 +43,7 @@ const handleClick = (event) => {
       // console.log(el.parentElement.nextSibling)
       switch (el.getAttribute('data-action')) {
         case 'copy':
-          window.$qlUtils.copy(code)
+          window.$mcUtils.copy(code)
           break
         case 'download':
           window.$mcUtils.handleExportFile('', code, '_code.' + lang)

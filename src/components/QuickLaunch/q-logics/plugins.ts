@@ -1,5 +1,4 @@
 import {createGlobalState, useFileDialog, useStorage} from '@vueuse/core'
-import {copy} from './utils'
 import moment from 'moment/moment'
 import {QuickOptionItem} from '@/components/CanUI/packages/QuickOptions/enum'
 import * as changeCase from 'change-case'
@@ -9,6 +8,7 @@ import {useI18n} from 'vue-i18n'
 import {base64Utils} from '@/utils/base64-utils'
 import {LS_SettingsKey} from '@/enum/settings'
 import {watchThrottled, useThrottleFn, useDebounceFn, refDebounced} from '@vueuse/core'
+import {copy} from '@/utils/mc-utils/text-convert'
 
 export type DynamicPlugin = (key: any) => QuickOptionItem
 

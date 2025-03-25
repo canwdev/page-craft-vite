@@ -67,7 +67,7 @@ const guiToolboxOptions = computed((): QuickOptionItem[] => {
       disabled: !currentPath,
       props: {
         onClick: async () => {
-          window.$qlUtils.copy(await getArrayFromRight())
+          window.$mcUtils.copy(await getArrayFromRight())
         },
       },
     },

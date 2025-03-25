@@ -38,7 +38,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="mc-vertical-tab-layout vp-bg" :class="{horizontal}">
+  <div class="mc-tab-layout vp-bg" :class="{horizontal}">
     <div class="sidebar-wrap">
       <div class="mc-tab-list">
         <div
@@ -61,7 +61,7 @@ export default defineComponent({
 </template>
 
 <style lang="scss" scoped>
-.mc-vertical-tab-layout {
+.mc-tab-layout {
   display: flex;
   align-items: center;
   height: 100%;
@@ -79,12 +79,14 @@ export default defineComponent({
         padding: 4px 8px;
         transition: background-color 0.3s;
         cursor: pointer;
+        font-weight: 500;
         &:hover {
-          background-color: $color_border;
+          background-color: $color_hover;
         }
 
         &.active {
           background-color: $primary_opacity;
+          font-weight: bold;
         }
 
         .item-text {

@@ -204,7 +204,7 @@ export const useMcMain = (options) => {
         onClick: async () => {
           const style = await loadCurCompStyle()
           const css = beautifyCss(await sassToCSS(style))
-          window.$qlUtils.copy(css)
+          window.$mcUtils.copy(css)
         },
       },
     },

@@ -32,7 +32,7 @@ const handleCopy = (mode: CopyMode) => {
   highlightCopyMode.value = mode
   i18nMainStore.trLastCopyMode = mode
 
-  window.$qlUtils.copy(text)
+  window.$mcUtils.copy(text)
 }
 
 defineExpose({

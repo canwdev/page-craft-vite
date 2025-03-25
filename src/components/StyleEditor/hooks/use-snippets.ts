@@ -29,7 +29,7 @@ export const useSnippets = ({insertCode, vueMonacoRef}) => {
         insertCode(code)
       }
       r.props!.onContextmenu = async () => {
-        window.$qlUtils.copy(code)
+        window.$mcUtils.copy(code)
       }
     }
     return r
