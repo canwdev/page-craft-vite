@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import {copy} from '@/components/QuickLaunch/q-logics/utils'
 import {formatDate} from '@/utils'
 import {IAiCharacter, ImageUrlObj, IMessageContent, IMessageItem} from '@/components/AI/types/ai'
 
 import MessageContent from '@/components/AI/AIChat/ChatBubble/TextContent.vue'
 import {useI18n} from 'vue-i18n'
+import {copy} from '@/utils/mc-utils/text-convert'
 
 interface Props {
   isDark?: boolean

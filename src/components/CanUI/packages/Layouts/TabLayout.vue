@@ -82,11 +82,15 @@ export default defineComponent({
         font-weight: 500;
         &:hover {
           background-color: $color_hover;
+          transition: background-color 0.1s;
         }
 
         &.active {
           background-color: $primary_opacity;
-          font-weight: bold;
+        }
+        &:active {
+          color: white;
+          background-color: $primary;
         }
 
         .item-text {

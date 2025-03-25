@@ -1,3 +1,5 @@
+import {mcUtils} from '@/utils/mc-utils'
+
 export interface ITranslateItem {
   key: string
   value: string
@@ -140,7 +142,7 @@ export const formatI18nKey = (
   // 移除非字母和数字字符
   str = str.replace(/[^a-zA-Z0-9_\s]+/g, '')
   // 大驼峰转换 ABCDeFg -> abc_de_fg
-  str = window.$qlUtils.changeCase.snakeCase(str)
+  str = window.$mcUtils.changeCase.snakeCase(str)
   str = str.slice(0, limitLength)
   // 移除首尾的 "_"
   str = str.replace(new RegExp(`${replace}$|^${replace}`, 'g'), '')

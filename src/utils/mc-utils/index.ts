@@ -9,9 +9,11 @@ import {
   promptGetFileName,
 } from './io'
 import {showInputPrompt} from '@/components/CanUI/functions/input-prompt'
+import * as changeCase from 'change-case'
 
 export const mcUtils = {
   copy,
+  changeCase,
   pinyin,
   formatI18nKey,
   textConvertAdvanced,
