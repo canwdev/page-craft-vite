@@ -71,7 +71,7 @@ const handleClear = () => {
 
 <template>
   <div
-    class="image-size-copier vp-bg"
+    class="image-size-copier vgo-bg"
     @dragenter.prevent
     @dragover.prevent
     @drop.prevent="handleDrop"
@@ -80,14 +80,14 @@ const handleClear = () => {
       <h2>Drag or Select Image...</h2>
       <input type="file" ref="fileInput" accept="image/*" @change="handleFileSelect" hidden />
     </div>
-    <div class="result-area vp-panel font-code" v-if="imageDimensions.width">
+    <div class="result-area vgo-panel font-code" v-if="imageDimensions.width">
       <div class="flex-row-center-gap" v-for="(info, index) in dimensionInfo" :key="index">
         <span>{{ info.label }}: {{ info.value }}</span>
-        <button class="vp-button primary" @click="copyToClipboard(info.value)">Copy</button>
+        <button class="vgo-button primary" @click="copyToClipboard(info.value)">Copy</button>
       </div>
       <div class="flex-row-center-gap">
-        <button class="vp-button primary" @click="copyToClipboard(imageSrc)">Copy base64</button>
-        <button class="vp-button" @click="handleClear">Clear</button>
+        <button class="vgo-button primary" @click="copyToClipboard(imageSrc)">Copy base64</button>
+        <button class="vgo-button" @click="handleClear">Clear</button>
       </div>
     </div>
     <div class="image-preview" v-if="imageSrc">
@@ -105,14 +105,14 @@ const handleClear = () => {
   overflow: auto;
 
   .drop-area {
-    border: 2px dashed $primary_opacity;
+    border: 2px dashed var(--vgo-primary-opacity);
     padding: 40px;
     cursor: pointer;
     border-radius: 5px;
     transition: border-color 0.3s;
 
     &:hover {
-      border-color: $primary;
+      border-color: var(--vgo-primary);
     }
   }
 

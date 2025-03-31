@@ -316,7 +316,7 @@ export default defineComponent({
   font-size: 12px;
   border-radius: 4px;
   transition: all 0.3s;
-  border: 1px solid $color_border;
+  border: 1px solid var(--vgo-color-border);
   position: relative;
   height: 24px;
   min-width: 80px;
@@ -334,7 +334,7 @@ export default defineComponent({
 
   &:hover,
   &.focused {
-    border-color: $primary;
+    border-color: var(--vgo-primary);
   }
 
   .text-input {

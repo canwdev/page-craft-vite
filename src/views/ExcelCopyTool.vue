@@ -410,7 +410,7 @@ export default defineComponent({
             </div>
 
             <DropdownMenu v-if="workbookRef" :options="dropdownMenuOptions" :disabled="!isReady">
-              <button class="vp-button">
+              <button class="vgo-button">
                 <span class="mdi mdi-download"></span>
                 {{ $t('actions.export') }}
               </button>
@@ -420,30 +420,30 @@ export default defineComponent({
               v-if="!fileRef"
               :disabled="!isReady"
               @click="importFileChooserRef.chooseFile()"
-              class="vp-button primary"
+              class="vgo-button primary"
             >
               {{ $t('actions.open') + ' Excel' }}
             </button>
 
-            <button v-else class="vp-button primary" @click="handleCloseFile">
+            <button v-else class="vgo-button primary" @click="handleCloseFile">
               {{ $t('actions.close') }}
             </button>
 
-            <button v-if="!fileRef" @click="loadDemo" class="vp-button" :disabled="!isReady">
+            <button v-if="!fileRef" @click="loadDemo" class="vgo-button" :disabled="!isReady">
               {{ $t('common.demo') }}
             </button>
           </div>
         </template>
       </CommonNavbar>
 
-      <div v-if="isReady && sheetNames.length" class="sheet-name-card vp-panel">
+      <div v-if="isReady && sheetNames.length" class="sheet-name-card vgo-panel">
         <el-tabs v-model="sheetNameIndex" type="card">
           <el-tab-pane v-for="(item, index) in sheetNames" :key="index" :label="item" :name="index">
           </el-tab-pane>
         </el-tabs>
       </div>
     </div>
-    <div ref="tableWrapperElRef" class="excel-table-container vp-panel" @click="handleClick"></div>
+    <div ref="tableWrapperElRef" class="excel-table-container vgo-panel" @click="handleClick"></div>
 
     <FileChooser
       ref="importFileChooserRef"

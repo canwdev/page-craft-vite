@@ -41,14 +41,14 @@ defineExpose({
 </script>
 
 <template>
-  <div class="copy-buttons-wrap vp-button-group">
+  <div class="copy-buttons-wrap vgo-button-group">
     <!-- 一键复制按钮 -->
     <button
       v-for="item in copyModeOptions"
       :key="item.value"
       :title="item.desc"
       @click="handleCopy(item.value)"
-      class="vp-button secondary"
+      class="vgo-button secondary"
       :class="{primary: item.value === highlightCopyMode}"
     >
       {{ item.label }}

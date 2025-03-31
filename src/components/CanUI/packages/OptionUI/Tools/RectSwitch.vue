@@ -59,7 +59,7 @@ export default defineComponent({
   align-items: center;
   border-radius: 4px;
   padding: 2px;
-  border: 1px solid $color_border;
+  border: 1px solid var(--vgo-color-border);
   flex-wrap: wrap;
 
   &.disabled {
@@ -80,7 +80,7 @@ export default defineComponent({
     text-align: center;
 
     &.active {
-      background-color: $primary;
+      background-color: var(--vgo-primary);
       color: white;
     }
   }

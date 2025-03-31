@@ -160,7 +160,7 @@ return
               h(
                 'button',
                 {
-                  class: 'vp-button',
+                  class: 'vgo-button',
                   onClick() {
                     window.$dialog
                       .confirm($t('msgs.will_override_existe'), $t('actions.confirm'), {
@@ -176,7 +176,7 @@ return
               h(
                 'button',
                 {
-                  class: 'vp-button',
+                  class: 'vgo-button',
                   onClick() {
                     exportAllSettings()
                   },
@@ -215,7 +215,7 @@ return
               h(
                 'button',
                 {
-                  class: 'vp-button',
+                  class: 'vgo-button',
                   onClick() {
                     systemStore.createTaskById('os.pagecraft.richtext', {isReleaseNotes: true})
                   },

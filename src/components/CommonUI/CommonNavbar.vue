@@ -5,7 +5,7 @@ const route = useRoute()
 </script>
 
 <template>
-  <div class="vp-bg common-navbar-wrap">
+  <div class="vgo-bg common-navbar-wrap">
     <el-page-header @back="$router.push({name: 'HomePage'})">
       <template #content>
         <div class="flex-row-center-gap">
@@ -37,14 +37,14 @@ const route = useRoute()
   border-radius: 0;
   padding: 8px 10px;
   user-select: none;
-  border-bottom: 1px solid $color_border;
+  border-bottom: 1px solid var(--vgo-color-border);
   :deep(.el-page-header__back) {
     &:hover {
-      color: $primary;
+      color: var(--vgo-primary);
     }
   }
   :deep(.mdi) {
-    color: $primary;
+    color: var(--vgo-primary);
   }
 }
 </style>

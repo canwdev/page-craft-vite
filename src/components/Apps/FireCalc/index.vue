@@ -322,12 +322,12 @@ const updateChart = () => {
 </script>
 
 <template>
-  <div class="fire-calc-wrapper vp-bg">
-    <div class="vp-panel">
+  <div class="fire-calc-wrapper vgo-bg">
+    <div class="vgo-panel">
       <div class="group-grid">
         <label :for="item.key" :key="item.key" v-for="item in formItems">
           {{ item.label || formatLabel(item.key) }}: <br v-if="item.type === 'checkbox'" />
-          <input class="vp-input" :id="item.key" :type="item.type" v-model="formData[item.key]" />
+          <input class="vgo-input" :id="item.key" :type="item.type" v-model="formData[item.key]" />
         </label>
       </div>
       <div class="group-grid group-grid--v2">
@@ -340,7 +340,7 @@ const updateChart = () => {
       </div>
     </div>
 
-    <div class="vp-panel">
+    <div class="vgo-panel">
       <div class="chart-area" id="mainChart"></div>
     </div>
   </div>
@@ -356,9 +356,9 @@ const updateChart = () => {
     box-sizing: border-box;
   }
 
-  .vp-panel {
+  .vgo-panel {
     padding: 10px;
-    & + .vp-panel {
+    & + .vgo-panel {
       margin-top: 10px;
     }
   }

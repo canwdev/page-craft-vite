@@ -52,7 +52,7 @@ export default defineComponent({
 <template>
   <div
     :class="{active, blink: showDropzone}"
-    class="mc-tool-item _mini font-code vp-button"
+    class="mc-tool-item _mini font-code vgo-button"
     :title="item.title"
     draggable="true"
     @dragstart="$emit('onDragStart', $event)"

@@ -112,22 +112,22 @@ const transactionHistoryRef = ref()
 </script>
 
 <template>
-  <div class="stock-tracker vp-bg scrollbar-mini" v-loading="isUpdating">
+  <div class="stock-tracker vgo-bg scrollbar-mini" v-loading="isUpdating">
     <div class="action-row">
       <div class="flex-row-center-gap">
         <button
-          class="vp-button primary"
+          class="vgo-button primary"
           v-if="curTab === StockTrackerTab.HISTORY"
           @click="transactionHistoryRef.createItem"
         >
           添加交易记录
         </button>
-        <button class="vp-button" @click="confirmUpdatePrices">更新日行情</button>
+        <button class="vgo-button" @click="confirmUpdatePrices">更新日行情</button>
       </div>
       <RectSwitch v-model="curTab" :options="tabOptions" />
       <div class="flex-row-center-gap">
         <DropdownMenu :options="exportImportOptions">
-          <button class="vp-button" title="Export">
+          <button class="vgo-button" title="Export">
             <span class="mdi mdi-briefcase-arrow-up-down"></span>
           </button>
         </DropdownMenu>
@@ -164,7 +164,7 @@ const transactionHistoryRef = ref()
     justify-content: space-between;
     gap: 8px;
     padding: 4px;
-    border-bottom: 1px solid $color_border;
+    border-bottom: 1px solid var(--vgo-color-border);
   }
 
   .content-wrapper {

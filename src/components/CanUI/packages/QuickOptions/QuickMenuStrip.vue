@@ -57,17 +57,17 @@ const handleVerticalMenuClose = () => {
   height: 32px;
   display: flex;
   flex-wrap: wrap;
-  border-bottom: 1px solid $color_border;
+  border-bottom: 1px solid var(--vgo-color-border);
   box-sizing: border-box;
   .btn-menu {
     padding: 0px 8px;
 
     &:hover {
-      background-color: $primary_opacity;
+      background-color: var(--vgo-primary-opacity);
     }
 
     &.active {
-      background-color: $primary;
+      background-color: var(--vgo-primary);
       color: white;
     }
   }

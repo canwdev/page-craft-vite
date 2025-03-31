@@ -220,12 +220,12 @@ export default defineComponent({
     <CommonNavbar>
       <template #extra>
         <div class="flex-row-center-gap">
-          <button class="vp-button" @click="handleSettings()">
+          <button class="vgo-button" @click="handleSettings()">
             {{ $t('common.settings') }}
           </button>
 
           <button
-            class="vp-button"
+            class="vgo-button"
             @click="mainStore.isShowQuickLaunch = !mainStore.isShowQuickLaunch"
           >
             {{ $t('common.toolbox') }}
@@ -237,25 +237,27 @@ export default defineComponent({
             :title="$t('msgs.confirm_close')"
           >
             <template #reference>
-              <button class="vp-button">💻 {{ $t('actions.close') }} JSON</button>
+              <button class="vgo-button">💻 {{ $t('actions.close') }} JSON</button>
             </template>
           </el-popconfirm>
 
           <DropdownMenu v-else :options="historyMenuOptions">
-            <button class="vp-button primary" @click="handleSelectFile()">
+            <button class="vgo-button primary" @click="handleSelectFile()">
               💻 {{ $t('actions.open') }} JSON
             </button>
           </DropdownMenu>
 
-          <button v-if="fileHandle" class="vp-button primary" @click="handleSaveFile()">
+          <button v-if="fileHandle" class="vgo-button primary" @click="handleSaveFile()">
             💾 {{ $t('actions.save') }}
           </button>
 
-          <button class="vp-button" @click="handleExport()">{{ $t('actions.save_as') }} ...</button>
+          <button class="vgo-button" @click="handleExport()">
+            {{ $t('actions.save_as') }} ...
+          </button>
 
           <el-popconfirm @confirm="loadDemo()" :title="$t('msgs.load_demo_this_will')">
             <template #reference>
-              <button class="vp-button">
+              <button class="vgo-button">
                 {{ $t('common.demo') }}
               </button>
             </template>

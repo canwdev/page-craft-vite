@@ -82,24 +82,24 @@ const settingsStore = useSettingsStore()
       <el-checkbox v-model="isTrimEmptyLines">{{ $t('msgs.trim_empty_lines') }}</el-checkbox>
 
       <template v-if="mMode === TextConvertMode.HTML">
-        <input class="vp-input" v-model="htmlTagName" placeholder="HTML Tag Name" />
-        <input v-if="htmlTagName" v-model="htmlAttrs" placeholder="HTML Attrs" class="vp-button" />
+        <input class="vgo-input" v-model="htmlTagName" placeholder="HTML Tag Name" />
+        <input v-if="htmlTagName" v-model="htmlAttrs" placeholder="HTML Attrs" class="vgo-button" />
       </template>
 
-      <div class="vp-button-group">
+      <div class="vgo-button-group">
         <button
           @click="handleAutoPasteCopy"
           :title="$t('msgs.auto_paste_and_copy')"
-          class="vp-button primary js_focus_auto_action"
+          class="vgo-button primary js_focus_auto_action"
         >
           {{ $t('actions.paste') }}+{{ $t('actions.copy') }}
 
           <span v-if="settingsStore.enableFocusAutoAction" class="js-focus-auto-action-tip"></span>
         </button>
-        <button @click="handlePaste" class="vp-button" title="Paste">
+        <button @click="handlePaste" class="vgo-button" title="Paste">
           {{ $t('actions.paste') }}
         </button>
-        <button @click="handleCopy" class="vp-button" title="Copy Result">
+        <button @click="handleCopy" class="vgo-button" title="Copy Result">
           {{ $t('actions.copy') }}
         </button>
       </div>
@@ -108,7 +108,7 @@ const settingsStore = useSettingsStore()
       <div class="input-wrapper">
         <div class="input-tip">Text Input: text</div>
         <textarea
-          class="input-text vp-input"
+          class="input-text vgo-input"
           type="textarea"
           v-model="textInput"
           placeholder="Text Input"

@@ -25,7 +25,7 @@ const md = new MarkdownIt({
     const language = hljs.getLanguage(lang) ? lang : 'plaintext'
     const content = hljs.highlight(code, {language: language, ignoreIllegals: true}).value
     return `<pre class="hljs-code-container">
-<div class="hljs-code-header vp-panel">
+<div class="hljs-code-header vgo-panel">
   <span class="lang-display" data-lang="${langOriginal}">${langDisplay}</span>
   <button class="_js-action-button btn-no-style mdi mdi-content-copy" data-action="copy" title="Copy"></button>
   <button class="_js-action-button btn-no-style mdi mdi-download" data-action="download" title="Download"></button>

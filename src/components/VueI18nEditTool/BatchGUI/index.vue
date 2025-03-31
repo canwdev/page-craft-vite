@@ -15,7 +15,7 @@ useGlobalBusOn(GlobalEvents.I18N_BATCH_GUI_GET_SUBS, (resolve) => {
 
 <template>
   <div class="batch-translate" v-loading="isLoading">
-    <div v-if="i18nMainStore.translatePath" class="vp-bg t-action-row flex-row-center-gap">
+    <div v-if="i18nMainStore.translatePath" class="vgo-bg t-action-row flex-row-center-gap">
       <span class="font-code">
         {{ i18nMainStore.translatePath }}
       </span>
@@ -48,7 +48,7 @@ useGlobalBusOn(GlobalEvents.I18N_BATCH_GUI_GET_SUBS, (resolve) => {
     z-index: 2;
     font-size: 12px;
     padding: 4px 10px;
-    border-bottom: 1px solid $color_border;
+    border-bottom: 1px solid var(--vgo-color-border);
     gap: 10px;
   }
   .batch-translate-list-wrap {

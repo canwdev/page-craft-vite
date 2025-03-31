@@ -55,7 +55,7 @@ const timestampToDisplay = computed(() => {
       <span class="f-label">Format</span>
       <input
         v-model="textInput"
-        class="vp-input"
+        class="vgo-input"
         :placeholder="defaultFormat"
         @keyup.esc="textInput = ''"
       />
@@ -66,7 +66,7 @@ const timestampToDisplay = computed(() => {
       <span class="f-label">Input</span>
       <input
         v-model="inputTimestamp"
-        class="vp-input"
+        class="vgo-input"
         placeholder="Input string/timestamp"
         @keyup.esc="inputTimestamp = ''"
       />
@@ -101,8 +101,8 @@ const timestampToDisplay = computed(() => {
   .clickable {
     cursor: pointer;
     &:hover {
-      background-color: $color_hover;
-      color: $primary;
+      background-color: var(--vgo-color-hover);
+      color: var(--vgo-primary);
     }
   }
 }

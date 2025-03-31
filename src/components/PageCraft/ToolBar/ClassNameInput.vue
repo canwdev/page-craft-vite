@@ -43,7 +43,7 @@ const updateWindowClassNameHistory = (val) => {
     v-model="mainStore.innerText"
     placeholder="innerHTML | src | value"
     :title="`Focus shortcut: alt+2\nPress esc to clear`"
-    class="vp-input sl-inner-html-input font-code"
+    class="vgo-input sl-inner-html-input font-code"
     @keyup.esc="mainStore.innerText = ''"
   />
 </template>

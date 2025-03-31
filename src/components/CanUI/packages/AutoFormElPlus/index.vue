@@ -70,7 +70,7 @@ defineExpose({
   >
     <transition name="fade">
       <div class="auto-form-loading-container" v-show="isLoading">
-        <div class="loading-text vp-panel">Loading...</div>
+        <div class="loading-text vgo-panel">Loading...</div>
       </div>
     </transition>
 

@@ -101,7 +101,7 @@ const setMobileView = () => {
 <template>
   <ViewPortWindow
     ref="iframeWinRef"
-    class="iframe-browser-vp-window"
+    class="iframe-browser-vgo-window"
     v-model:visible="mVisible"
     wid="iframe_browser"
     allow-maximum
@@ -124,20 +124,20 @@ const setMobileView = () => {
     <div v-if="mVisible" class="iframe-browser-inner-wrap">
       <div class="iframe-browser-address-bar-wrap">
         <div class="button-wrap">
-          <button class="vp-button" @click="showShortcuts = true">
+          <button class="vgo-button" @click="showShortcuts = true">
             <span class="mdi mdi-bookmark-box"></span>
           </button>
           <QuickOptions :options="shortcutList" v-model:visible="showShortcuts" title="Shortcuts" />
         </div>
 
         <input
-          class="vp-input iframe-browser-input font-code"
+          class="vgo-input iframe-browser-input font-code"
           v-model="addressBarUrl"
           placeholder="input url (https://)"
           type="text"
           @keyup.enter="handleGo()"
         />
-        <button class="vp-button" @click="handleGo()">
+        <button class="vgo-button" @click="handleGo()">
           <span class="mdi mdi-arrow-left-bottom"></span>
         </button>
       </div>
@@ -154,7 +154,7 @@ const setMobileView = () => {
 </template>
 
 <style lang="scss" scoped>
-.iframe-browser-vp-window {
+.iframe-browser-vgo-window {
   min-width: 100px;
   min-height: 200px;
 }
@@ -179,8 +179,8 @@ const setMobileView = () => {
     .iframe-browser-input {
       flex: 1;
     }
-    .vp-input,
-    .vp-button {
+    .vgo-input,
+    .vgo-button {
       border-radius: 0;
       height: 32px;
       box-sizing: border-box;

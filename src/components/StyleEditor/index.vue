@@ -350,7 +350,7 @@ defineExpose({
           v-model:visible="isShowQuickOptions"
           :options="snippetsOptions"
           :title="`${$t('actions.add_tool_codes')} (alt+\`)`"
-          class="font-code vp-panel style-qo"
+          class="font-code vgo-panel style-qo"
           is-static
         />
       </transition>

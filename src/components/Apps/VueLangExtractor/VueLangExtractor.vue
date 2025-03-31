@@ -160,13 +160,13 @@ const pasteAndCopy = async () => {
         <div class="input-header">
           <div>Input Vue SFC</div>
           <div class="flex-rows">
-            <button @click="handleSelectFile" class="vp-button">Open *.vue File</button>
+            <button @click="handleSelectFile" class="vgo-button">Open *.vue File</button>
             <span>-- or drop vue file here --</span>
           </div>
 
           <div class="flex-rows">
-            <button @click="handleClear" class="vp-button">Clear</button>
-            <button @click="loadDemo" class="vp-button">Demo</button>
+            <button @click="handleClear" class="vgo-button">Clear</button>
+            <button @click="loadDemo" class="vgo-button">Demo</button>
           </div>
         </div>
         <VueMonaco v-model="inputSFC" class="input-text" language="html" ref="monacoEditorRef" />
@@ -180,14 +180,14 @@ const pasteAndCopy = async () => {
           v-model="keyPrefix"
           @keyup.esc="() => (keyPrefix = '')"
           placeholder="key prefix"
-          class="vp-input"
+          class="vgo-input"
         />
       </div>
       <div class="flex-rows">
-        <button @click="runConvert" class="vp-button primary">↓ Convert ↓</button>
+        <button @click="runConvert" class="vgo-button primary">↓ Convert ↓</button>
       </div>
       <div class="flex-rows" style="width: 200px; justify-content: flex-end">
-        <button @click="pasteAndCopy" class="vp-button">
+        <button @click="pasteAndCopy" class="vgo-button">
           <span class="mdi mdi-content-paste"></span> Paste+Copy
         </button>
       </div>
@@ -276,7 +276,7 @@ const pasteAndCopy = async () => {
   gap: 2px;
   .input-row {
     height: 30%;
-    border: 1px solid $color_border;
+    border: 1px solid var(--vgo-color-border);
     overflow: hidden;
     .input-header {
       background: #009688;
@@ -301,7 +301,7 @@ const pasteAndCopy = async () => {
     display: flex;
     gap: 2px;
     overflow: hidden;
-    border: 1px solid $color_border;
+    border: 1px solid var(--vgo-color-border);
     border-left: none;
     border-right: none;
     .out-item {
@@ -309,8 +309,8 @@ const pasteAndCopy = async () => {
       flex: 1;
       flex-shrink: 0;
       overflow: hidden;
-      border-left: 1px solid $color_border;
-      border-right: 1px solid $color_border;
+      border-left: 1px solid var(--vgo-color-border);
+      border-right: 1px solid var(--vgo-color-border);
     }
     .input-header {
       background: #4caf50;
@@ -320,14 +320,14 @@ const pasteAndCopy = async () => {
 
   .log-row {
     height: 25%;
-    border: 1px solid $color_border;
+    border: 1px solid var(--vgo-color-border);
     overflow: hidden;
     .out-item {
       height: 100%;
       flex: 1;
       flex-shrink: 0;
       overflow: hidden;
-      border: 1px solid $color_border;
+      border: 1px solid var(--vgo-color-border);
     }
     .input-header {
       background-color: #ffeb3b;
@@ -341,7 +341,7 @@ const pasteAndCopy = async () => {
     height: 100%;
     flex-shrink: 0;
     overflow: hidden;
-    outline: 1px solid $color_border;
+    outline: 1px solid var(--vgo-color-border);
     display: flex;
     flex-direction: column;
 
@@ -352,13 +352,13 @@ const pasteAndCopy = async () => {
       justify-content: space-between;
       align-items: center;
       gap: 4px;
-      border-bottom: 1px solid $color_border;
+      border-bottom: 1px solid var(--vgo-color-border);
       button {
         font-size: 12px;
         padding: 0 4px;
         line-height: 1;
       }
-      .vp-button {
+      .vgo-button {
         padding: 2px 4px;
       }
 

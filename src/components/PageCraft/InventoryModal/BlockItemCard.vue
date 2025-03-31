@@ -46,7 +46,7 @@ export default defineComponent({
 <template>
   <div
     :class="{active: isActive}"
-    class="mc-tool-item font-code vp-button"
+    class="mc-tool-item font-code vgo-button"
     :title="item.title"
     draggable="true"
     @dragstart="handleDragStart"

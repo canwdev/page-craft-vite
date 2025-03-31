@@ -87,7 +87,7 @@ export default defineComponent({
     <button
       v-else-if="valType === 'object'"
       :title="mValue"
-      class="item-value-edit _button vp-button"
+      class="item-value-edit _button vgo-button"
       @click="$emit('previewArray')"
     >
       <span class="mdi mdi-text-box-edit-outline"></span>
@@ -98,7 +98,7 @@ export default defineComponent({
       ref="valueInputRef"
       type="textarea"
       rows="1"
-      class="item-value-edit vp-input font-code"
+      class="item-value-edit vgo-input font-code"
       v-model="mValue"
       placeholder="text value"
       @blur="handleValueBlur"
@@ -107,7 +107,7 @@ export default defineComponent({
     <button
       v-if="valType !== 'object'"
       @click="handlePaste"
-      class="vp-button primary"
+      class="vgo-button primary"
       :title="`${$t('msgs.auto_paste')} [${autoPasteConvertMode}]`"
     >
       <span class="mdi mdi-content-paste"></span>
@@ -129,7 +129,7 @@ export default defineComponent({
     flex: 0.5;
     margin-right: 4px;
     a {
-      color: $primary;
+      color: var(--vgo-primary);
     }
     img {
       width: 100%;

@@ -102,7 +102,7 @@ const handleContextMenu = (event) => {
       </label>
 
       <QuickOptions
-        class="vp-bg"
+        class="vgo-bg"
         v-if="isStaticMenu"
         is-static
         visible

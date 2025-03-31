@@ -1,38 +1,47 @@
-.theme-default {
-  $border: 1px solid rgba(0, 0, 0, 0.45);
-  $radius: 4px;
+:root {
+  --vgo-primary-rgb:37,130,146;
+  --vgo-primary:rgb(var(--primary-rgb));
+  --vgo-primary-opacity: rgba(var(--primary-rgb), .25);
 
-  .vp-window {
+  --vgo-color-border: rgba(91, 85, 85, 0.3);
+  --vgo-color-hover: rgba(91, 85, 85, 0.1);
+  --vgo-radius: 4px;
+}
+
+.vgo-theme-default {
+  $border: 1px solid rgba(0, 0, 0, 0.45);
+
+  .vgo-window {
     border: $border;
     background-color: #F3F3F3;
     transition: opacity 0.3s, transform 0.3s, background-color 0.5s;
     padding: 0;
-    border-radius: $radius;
+    border-radius: var(--vgo-radius);
     box-shadow: 0 1px 10px rgba(0, 0, 0, 0.27);
 
-    .vp-window-content {
+    .vgo-window-content {
 
-      .vp-window-title-bar {
+      .vgo-window-title-bar {
         overflow: hidden;
         text-shadow: 0 0 10px white;
         margin-left: 0;
         margin-right: 0;
         padding-right: 0;
-        //border-radius: $radius $radius 0 0;
+        //border-radius: var(--vgo-radius) var(--vgo-radius) 0 0;
         height: 30px;
 
-        .vp-window-title-bar-text {
+        .vgo-window-title-bar-text {
           padding-left: 6px;
         }
       }
-      .vp-window-body {
+      .vgo-window-body {
         border: 0;
-        border-radius: 0 0 $radius $radius;
+        border-radius: 0 0 var(--vgo-radius) var(--vgo-radius);
         height: calc(100% - 30px);
       }
     }
 
-    .vp-window-controls {
+    .vgo-window-controls {
       padding-right: 0;
 
       button {
@@ -67,12 +76,12 @@
 
     &._maximized {
       padding: 0;
-      .vp-window-content {
-        .vp-window-title-bar {
+      .vgo-window-content {
+        .vgo-window-title-bar {
           margin-left: 0;
           margin-right: -3px;
         }
-        .vp-window-body {
+        .vgo-window-body {
           border: none;
         }
       }
@@ -84,23 +93,23 @@
 
   }
 
-  .vp-panel {
+  .vgo-panel {
     background-color: rgba(255, 255, 255, 0.9);
-    border: 1px solid $color_border;
+    border: 1px solid var(--vgo-color-border);
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-    border-radius: $radius;
+    border-radius: var(--vgo-radius);
   }
 
-  .vp-button {
+  .vgo-button {
     background-color: #FDFDFD;
-    border: 1px solid $color_border;
+    border: 1px solid var(--vgo-color-border);
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-    border-radius: $radius;
+    border-radius: var(--vgo-radius);
 
     &:not(:disabled) {
       &:hover {
-        border-color: $primary;
-        outline: 1px solid $primary;
+        border-color: var(--vgo-primary);
+        outline: 1px solid var(--vgo-primary);
         outline-offset: -1px;
       }
       &:active {
@@ -109,12 +118,12 @@
     }
   }
 
-  .vp-input {
-    border-radius: $radius;
+  .vgo-input {
+    border-radius: var(--vgo-radius);
   }
 
   &._dark {
-    .vp-window {
+    .vgo-window {
       background-color: #4B4B4B;
       color: white;
       border-color: rgba(255, 255, 255, 0.2);
@@ -123,12 +132,12 @@
         background-color: #202020;
       }
 
-      .vp-window-content {
-        .vp-window-title-bar {
+      .vgo-window-content {
+        .vgo-window-title-bar {
           color: white;
           text-shadow: 0 0 10px black;
         }
-        .vp-window-controls {
+        .vgo-window-controls {
           button {
             border: 1px solid rgba(255, 255, 255, 0.2);
 
@@ -148,13 +157,13 @@
         }
       }
 
-      .vp-window-body {
+      .vgo-window-body {
         &._bg {
           background-color: rgba(30, 30, 30, 1);
         }
       }
 
-      .vp-window-controls {
+      .vgo-window-controls {
         border-radius: 0;
         display: flex;
         align-items: flex-start;
@@ -176,18 +185,17 @@
       }
     }
 
-
-    .vp-panel {
+    .vgo-panel {
       background-color: rgba(43, 43, 43, 0.85);
       color: white;
     }
 
-    .vp-button {
+    .vgo-button {
       background-color: #252525;
       color: white;
       box-shadow: 0 0 2px rgba(0, 0, 0, 0.4);
     }
-    .vp-input {
+    .vgo-input {
       background-color: rgba(0, 0, 0, 0.3);
       color: white;
     }

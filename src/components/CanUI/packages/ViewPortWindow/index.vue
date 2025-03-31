@@ -406,20 +406,20 @@ defineExpose({
 
 <template>
   <transition :name="transitionName">
-    <div v-show="isInit && mVisible" class="vp-window" ref="rootRef" :id="wid">
+    <div v-show="isInit && mVisible" class="vgo-window" ref="rootRef" :id="wid">
       <LayoutPreview :preview-data="layoutPreviewData" />
       <LayoutHelper v-model:visible="isShowLayoutHelper" @setWindowLayout="setWindowLayout" />
-      <div class="vp-window-content">
+      <div class="vgo-window-content">
         <div
           v-show="!noTitleBar"
           ref="titleBarRef"
-          class="vp-window-title-bar"
+          class="vgo-window-title-bar"
           @dblclick="toggleMaximized"
         >
-          <div class="vp-window-title-bar-text text-overflow">
+          <div class="vgo-window-title-bar-text text-overflow">
             <slot name="titleBarLeft"></slot>
           </div>
-          <div @dblclick.stop ref="titleBarButtonsRef" class="vp-window-controls">
+          <div @dblclick.stop ref="titleBarButtonsRef" class="vgo-window-controls">
             <slot name="titleBarRightControls"> </slot>
             <slot name="titleBarRight">
               <button v-if="allowMinimum" @click="isMinimized = true" class="is-minimize">
@@ -503,7 +503,7 @@ defineExpose({
           </div>
         </div>
 
-        <div ref="winBodyRef" class="vp-window-body _bg scrollbar-mini">
+        <div ref="winBodyRef" class="vgo-window-body _bg scrollbar-mini">
           <slot></slot>
         </div>
       </div>
@@ -512,7 +512,7 @@ defineExpose({
 </template>
 
 <style lang="scss">
-.vp-window {
+.vgo-window {
   z-index: 100;
   min-height: 50px;
   min-width: 50px;
@@ -536,12 +536,12 @@ defineExpose({
     border: none !important;
     box-shadow: none !important;
     border-radius: 0 !important;
-    .vp-window-content {
-      .vp-window-title-bar {
+    .vgo-window-content {
+      .vgo-window-title-bar {
         margin-left: unset;
         margin-right: unset;
       }
-      .vp-window-body {
+      .vgo-window-body {
         border-left: 0;
         border-right: 0;
       }
@@ -556,15 +556,15 @@ defineExpose({
   }
 
   &._dragging {
-    .vp-window-body {
+    .vgo-window-body {
       // 拖拽时禁用内部鼠标事件，防止鼠标陷入
       pointer-events: none;
     }
   }
 
   &._no_title_bar {
-    .vp-window-content {
-      .vp-window-body {
+    .vgo-window-content {
+      .vgo-window-body {
         border: none;
         box-shadow: none;
         pointer-events: auto;
@@ -573,12 +573,12 @@ defineExpose({
     }
   }
 
-  .vp-window-content {
+  .vgo-window-content {
     height: 100%;
     display: flex;
     flex-direction: column;
 
-    .vp-window-title-bar {
+    .vgo-window-title-bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -590,7 +590,7 @@ defineExpose({
         pointer-events: none;
       }
 
-      .vp-window-title-bar-text {
+      .vgo-window-title-bar-text {
         display: flex;
         align-items: center;
         gap: 4px;
@@ -600,11 +600,11 @@ defineExpose({
           pointer-events: none;
         }
         .mdi {
-          color: $primary;
+          color: var(--vgo-primary);
         }
       }
     }
-    .vp-window-body {
+    .vgo-window-body {
       //flex: 1;
       height: calc(100% - 30px);
 
@@ -615,7 +615,7 @@ defineExpose({
     }
   }
 
-  .vp-window-controls {
+  .vgo-window-controls {
     border-radius: 0;
     display: flex;
     align-items: flex-start;
@@ -634,7 +634,7 @@ defineExpose({
       }
 
       &.active {
-        background-color: $primary !important;
+        background-color: var(--vgo-primary) !important;
       }
     }
   }

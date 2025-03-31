@@ -103,7 +103,7 @@ const dynamicValue = computed({
       v-else-if="item.type === StOptionType.BUTTON"
       :disabled="item.disabled"
       v-bind="item.props"
-      class="vp-button"
+      class="vgo-button"
     >
       {{ item.value }}
     </button>

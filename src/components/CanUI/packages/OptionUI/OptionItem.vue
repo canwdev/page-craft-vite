@@ -30,7 +30,7 @@ const handleItemClick = (e: Event, fn: any) => {
 
 <template>
   <div class="c-panel-item" :data-key="item.key" :key="item.key" :class="[item.cls]">
-    <div class="panel-header vp-bg">
+    <div class="panel-header vgo-bg">
       <div class="p-left" :title="item.label">
         <div class="item-label">{{ item.label }}</div>
       </div>
@@ -126,6 +126,8 @@ const handleItemClick = (e: Event, fn: any) => {
 
 <style lang="scss">
 .c-panel-item {
+  $mq_mobile_width: 567px;
+
   .panel-header {
     min-height: 40px;
     padding: 4px 16px;
@@ -133,7 +135,7 @@ const handleItemClick = (e: Event, fn: any) => {
     align-items: center;
     justify-content: space-between;
     font-weight: bold;
-    border-bottom: 1px solid $color_border;
+    border-bottom: 1px solid var(--vgo-color-border);
     position: sticky;
     top: 0;
     z-index: 2;
@@ -184,13 +186,13 @@ const handleItemClick = (e: Event, fn: any) => {
       }
 
       &._drag-over {
-        background-color: $primary_opacity;
+        background-color: var(--vgo-primary-opacity);
       }
 
       &.clickable {
         cursor: pointer;
         &:hover {
-          background-color: $color_border;
+          background-color: var(--vgo-color-border);
         }
       }
 
@@ -213,7 +215,7 @@ const handleItemClick = (e: Event, fn: any) => {
           align-items: center;
           justify-content: center;
           font-size: 26px;
-          color: $primary;
+          color: var(--vgo-primary);
           @media screen and (max-width: $mq_mobile_width) {
             width: 26px;
             height: 26px;

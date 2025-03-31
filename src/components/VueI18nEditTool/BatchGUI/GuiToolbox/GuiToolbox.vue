@@ -150,16 +150,16 @@ watch(toolboxFilterKey, () => {
 </script>
 
 <template>
-  <div class="vp-bg action-row">
+  <div class="vgo-bg action-row">
     <template v-if="isBatchMode">
       <DropdownMenu :options="guiToolboxOptions">
-        <button class="vp-button" :title="$t('common.tools')">
+        <button class="vgo-button" :title="$t('common.tools')">
           <span class="mdi mdi-tools"></span>
         </button>
       </DropdownMenu>
       <button
         v-if="i18nMainStore.translatePath"
-        class="vp-button"
+        class="vgo-button"
         @click="locateSelectedPath()"
         :title="$t('i18n_tools.locate_translate_pa')"
       >
@@ -168,7 +168,7 @@ watch(toolboxFilterKey, () => {
     </template>
 
     <input
-      class="vp-input font-code"
+      class="vgo-input font-code"
       style="flex: 1; line-height: 1"
       v-model="toolboxFilterKey"
       :placeholder="$t('i18n_tools.filter_translate_ke')"
@@ -190,7 +190,7 @@ watch(toolboxFilterKey, () => {
       }"
     >
       <template #titleBarLeft>{{ $t('i18n_tools.fen_xi_fan_yi_shu') }}</template>
-      <textarea class="analyse-textarea vp-input font-code" :value="analyseMessage" readonly />
+      <textarea class="analyse-textarea vgo-input font-code" :value="analyseMessage" readonly />
     </ViewPortWindow>
   </div>
 </template>
@@ -199,27 +199,27 @@ watch(toolboxFilterKey, () => {
 .action-row {
   font-size: 12px;
   border: none;
-  border-bottom: 1px solid $color_border;
+  border-bottom: 1px solid var(--vgo-color-border);
   position: relative;
   z-index: 1;
   gap: 4px;
   padding: 4px 10px;
   display: flex;
   align-items: center;
-  .vp-button,
-  .vp-input {
+  .vgo-button,
+  .vgo-input {
     font-size: 12px;
     padding: 2px 4px;
     height: 26px;
   }
 
-  .vp-button {
+  .vgo-button {
     .mdi {
       font-size: 16px;
     }
   }
 
-  .vp-input {
+  .vgo-input {
     padding: 2px 8px;
     box-sizing: border-box;
     min-width: 50px;

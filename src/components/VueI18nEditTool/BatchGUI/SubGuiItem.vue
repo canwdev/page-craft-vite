@@ -244,7 +244,7 @@ export default defineComponent({
 
 <template>
   <div
-    class="batch-translate-item vp-panel"
+    class="batch-translate-item vgo-panel"
     :data-translate-path="i18nMainStore.translatePath"
     v-loading="isLoading"
   >
@@ -279,7 +279,7 @@ export default defineComponent({
 
     <div class="tip-not-exist" v-if="!listItem.json">
       <template v-if="isLocalCreated">
-        <button class="vp-button warning" @click="handleReload">
+        <button class="vgo-button warning" @click="handleReload">
           {{ $t('actions.reload') }}
         </button>
       </template>
@@ -297,13 +297,13 @@ export default defineComponent({
 
         <div v-if="isChanged">
           <button
-            class="vp-button warning"
+            class="vgo-button warning"
             @click="saveChange({isEmit: true, isSetValue: true})"
             title="Batch Save"
           >
             <span class="mdi mdi-content-save"></span>
           </button>
-          <button class="vp-button" @click="cancelChange">
+          <button class="vgo-button" @click="cancelChange">
             <span class="mdi mdi-close"></span>
             {{ $t('actions.cancel') }}
           </button>
@@ -312,15 +312,17 @@ export default defineComponent({
       <div v-else>
         <button
           @click="pasteCreateField()"
-          class="vp-button primary"
+          class="vgo-button primary"
           :title="`${$t('msgs.auto_paste')} Create (${i18nSetStore.autoPasteTextConvertMode})`"
         >
           <span class="mdi mdi-content-paste"></span>
         </button>
-        <button class="vp-button primary" @click="createField('')">
+        <button class="vgo-button primary" @click="createField('')">
           {{ $t('actions.create_text') }}
         </button>
-        <button class="vp-button" @click="createField([])">{{ $t('actions.create_array') }}</button>
+        <button class="vgo-button" @click="createField([])">
+          {{ $t('actions.create_array') }}
+        </button>
       </div>
     </template>
     <div style="color: gray" v-else>{{ $t('msgs.please_select_a_tran') }}</div>
@@ -381,13 +383,13 @@ export default defineComponent({
   }
 
   .tip-not-exist {
-    color: $primary;
+    color: var(--vgo-primary);
     margin-bottom: 10px;
   }
 
   .item-value-edit-wrap {
     .item-value-edit {
-      &.vp-input {
+      &.vgo-input {
         min-height: 50px;
       }
     }

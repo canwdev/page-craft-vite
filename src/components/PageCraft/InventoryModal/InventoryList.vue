@@ -50,7 +50,7 @@ export default defineComponent({
       <slot name="filterStart"></slot>
 
       <input
-        class="vp-input"
+        class="vgo-input"
         v-model="filterText"
         @keyup.esc="filterText = ''"
         :placeholder="'🔎 ' + $t('msgs.filter_items')"
@@ -82,7 +82,7 @@ export default defineComponent({
   position: relative;
 
   .filter-row {
-    .vp-input {
+    .vgo-input {
       flex: 1;
     }
   }

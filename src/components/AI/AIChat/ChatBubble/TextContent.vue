@@ -31,13 +31,13 @@ watch(isEditing, () => {
 
 <template>
   <div
-    class="chat-content vp-bg"
+    class="chat-content vgo-bg"
     :class="{'markdown-body-dark': isDark}"
     v-if="isEditing"
     style="width: 100%; padding: 0; display: flex; border-radius: 2px"
   >
     <textarea
-      class="vp-input font-code"
+      class="vgo-input font-code"
       v-model="mText"
       rows="14"
       ref="editInputRef"
@@ -45,5 +45,5 @@ watch(isEditing, () => {
     />
   </div>
 
-  <MarkdownRender v-else class="chat-content vp-bg" :dark="isDark" :text="mText" />
+  <MarkdownRender v-else class="chat-content vgo-bg" :dark="isDark" :text="mText" />
 </template>

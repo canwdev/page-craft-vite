@@ -16,7 +16,7 @@ const mVisible = useVModel(props, 'visible', emit)
 <template>
   <ViewPortWindow
     ref="iframeWinRef"
-    class="iframe-browser-vp-window"
+    class="iframe-browser-vgo-window"
     v-model:visible="mVisible"
     wid="iframe_browser"
     allow-maximum

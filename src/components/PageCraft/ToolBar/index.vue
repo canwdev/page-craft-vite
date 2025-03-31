@@ -176,7 +176,7 @@ export default defineComponent({
       @onItemClick="setCurrentToolItem"
     />
 
-    <div ref="toolbarRef" class="mc-toolbar vp-panel vp-window-panel _panel-bg">
+    <div ref="toolbarRef" class="mc-toolbar vgo-panel vgo-window-panel _panel-bg">
       <div class="mc-toolbar-above">
         <div class="mc-toolbar-group">
           <portal-target name="indicatorBarTeleportDest">
@@ -191,14 +191,14 @@ export default defineComponent({
         <div class="mc-toolbar-group">
           <el-popconfirm :title="$t('msgs.confirm_reset_toolba')" @confirm="resetToolbar">
             <template #reference>
-              <button class="vp-button">
+              <button class="vgo-button">
                 <span class="mdi mdi-refresh"></span>
               </button>
             </template>
           </el-popconfirm>
 
           <button
-            class="vp-button"
+            class="vgo-button"
             :class="{primary: settingsStore.showInventory}"
             style="min-width: 80px"
             @click="settingsStore.showInventory = !settingsStore.showInventory"
@@ -211,7 +211,7 @@ export default defineComponent({
           <slot></slot>
 
           <button
-            class="vp-button"
+            class="vgo-button"
             :class="{primary: mainStore.isShowQuickLaunch}"
             @click="mainStore.isShowQuickLaunch = !mainStore.isShowQuickLaunch"
           >
@@ -288,13 +288,13 @@ export default defineComponent({
       flex-wrap: wrap;
     }
 
-    .vp-button {
+    .vgo-button {
       font-size: 12px;
       padding: 2px 8px;
       line-height: 1;
       min-height: 24px;
     }
-    .vp-input {
+    .vgo-input {
       font-size: 12px;
       line-height: 1;
       padding: 2px 4px;

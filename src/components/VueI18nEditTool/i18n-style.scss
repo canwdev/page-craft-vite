@@ -1,12 +1,12 @@
 .i18n-style {
 
-  .vp-input {
+  .vgo-input {
     height: 28px;
     box-sizing: border-box;
     padding: 4px 8px;
   }
 
-  .vp-button {
+  .vgo-button {
     display: inline-flex;
     gap: 4px;
     padding: 4px 8px;
@@ -23,9 +23,9 @@
       color: white;
     }
     &.secondary {
-      color: $primary;
+      color: var(--vgo-primary);
       border: none;
-      outline: 1px solid $primary;
+      outline: 1px solid var(--vgo-primary);
       font-weight: 600;
     }
   }

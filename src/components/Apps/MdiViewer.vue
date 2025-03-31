@@ -43,11 +43,11 @@ const copyHtml = (item) => {
 
 <template>
   <div class="md-i-viewer font-code">
-    <div class="vp-panel">
+    <div class="vgo-panel">
       <span class="mdi mdi-magnify"></span>
       <input
         v-model="textInput"
-        class="vp-input"
+        class="vgo-input"
         placeholder="Filter icon name..."
         @keyup.esc="textInput = ''"
       />
@@ -71,7 +71,7 @@ const copyHtml = (item) => {
       <a
         href="https://pictogrammers.com/library/mdi/"
         target="_blank"
-        style="color: var(--primary)"
+        style="color: var(--vgo-primary)"
       >
         Material Design Icons
       </a>
@@ -85,7 +85,7 @@ const copyHtml = (item) => {
   flex-direction: column;
   height: 100%;
 
-  .vp-panel {
+  .vgo-panel {
     width: 100%;
     text-align: center;
     border-top: none;
@@ -96,7 +96,7 @@ const copyHtml = (item) => {
     display: flex;
     align-items: center;
     gap: 8px;
-    .vp-input {
+    .vgo-input {
       flex: 1;
     }
   }
@@ -124,15 +124,15 @@ const copyHtml = (item) => {
       padding: 4px;
       gap: 4px;
       &:hover {
-        background-color: $color_hover;
-        outline-color: $primary;
+        background-color: var(--vgo-color-hover);
+        outline-color: var(--vgo-primary);
         transition: all 0.1s;
       }
 
       &:active {
-        background-color: $primary;
+        background-color: var(--vgo-primary);
         color: white;
-        outline-color: $primary;
+        outline-color: var(--vgo-primary);
         .i-icon {
           color: white;
         }
@@ -140,7 +140,7 @@ const copyHtml = (item) => {
 
       .i-icon {
         font-size: 48px;
-        color: $primary;
+        color: var(--vgo-primary);
         line-height: 1;
         transform: translateY(2px);
       }

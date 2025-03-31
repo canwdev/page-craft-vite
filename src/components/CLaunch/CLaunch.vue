@@ -58,7 +58,7 @@ const currentContents = computed(() => {
     gap: 8px;
   }
   .c-launch-item {
-    outline: 1px solid $color_border;
+    outline: 1px solid var(--vgo-color-border);
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -69,15 +69,15 @@ const currentContents = computed(() => {
     border-radius: 4px;
     transition: all 0.2s;
     &:hover {
-      background-color: $color_hover;
-      outline-color: $primary;
+      background-color: var(--vgo-color-hover);
+      outline-color: var(--vgo-primary);
       transition: all 0.1s;
     }
 
     &:active {
-      background-color: $primary;
+      background-color: var(--vgo-primary);
       color: white;
-      outline-color: $primary;
+      outline-color: var(--vgo-primary);
       .icon-wrapper {
         .item-icon {
           color: white;
@@ -93,7 +93,7 @@ const currentContents = computed(() => {
       flex: 1;
       .item-icon {
         font-size: 48px;
-        color: $primary;
+        color: var(--vgo-primary);
         line-height: 1;
         transform: translateY(2px);
       }

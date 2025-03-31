@@ -71,19 +71,19 @@ function showDemo() {
 <template>
   <div class="text-converter-wrap">
     <div class="tool-header flex-row-center-gap" style="justify-content: space-between">
-      <div class="vp-button-group">
+      <div class="vgo-button-group">
         <button
           @click="handleAutoPasteCopy"
           :title="$t('msgs.auto_paste_and_copy')"
-          class="vp-button primary js_focus_auto_action"
+          class="vgo-button primary js_focus_auto_action"
         >
           {{ $t('actions.paste') }}+{{ $t('actions.copy') }}
           <span v-if="settingsStore.enableFocusAutoAction" class="js-focus-auto-action-tip"></span>
         </button>
-        <button @click="handlePaste" class="vp-button" title="Paste">
+        <button @click="handlePaste" class="vgo-button" title="Paste">
           {{ $t('actions.paste') }}
         </button>
-        <button @click="handleCopy" class="vp-button" title="Copy Result">
+        <button @click="handleCopy" class="vgo-button" title="Copy Result">
           {{ $t('actions.copy') }}
         </button>
       </div>
@@ -96,9 +96,9 @@ function showDemo() {
         Stylus Supermacy
       </a>
 
-      <div class="vp-button-group">
-        <button class="vp-button" @click="doClear">{{ $t('actions.clear') }}</button>
-        <button class="vp-button" @click="showDemo">{{ $t('common.demo') }}</button>
+      <div class="vgo-button-group">
+        <button class="vgo-button" @click="doClear">{{ $t('actions.clear') }}</button>
+        <button class="vgo-button" @click="showDemo">{{ $t('common.demo') }}</button>
       </div>
     </div>
     <div class="main-box font-code">

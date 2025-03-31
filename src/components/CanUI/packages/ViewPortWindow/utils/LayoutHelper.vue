@@ -35,7 +35,7 @@ const setLayout = (layout: ILayout) => {
 
 <template>
   <transition name="fade">
-    <div v-if="mVisible" @mouseleave="mVisible = false" class="vp-layout-helper vp-panel">
+    <div v-if="mVisible" @mouseleave="mVisible = false" class="vgo-layout-helper vgo-panel">
       <div
         v-for="(layout, index) in layoutList"
         :key="index"
@@ -60,7 +60,7 @@ const setLayout = (layout: ILayout) => {
 </template>
 
 <style lang="scss" scoped>
-.vp-layout-helper {
+.vgo-layout-helper {
   position: absolute;
   top: 0;
   right: 0;
@@ -75,7 +75,7 @@ const setLayout = (layout: ILayout) => {
     position: relative;
     width: 40px;
     height: 25px;
-    background-color: $primary_opacity;
+    background-color: var(--vgo-primary-opacity);
     cursor: pointer;
     filter: grayscale(1);
     opacity: 0.4;
@@ -87,7 +87,7 @@ const setLayout = (layout: ILayout) => {
     }
     .layout-inner {
       position: absolute;
-      background-color: $primary;
+      background-color: var(--vgo-primary);
       pointer-events: none;
     }
   }

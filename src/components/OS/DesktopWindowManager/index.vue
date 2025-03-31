@@ -127,7 +127,7 @@ const handleRestore = (index) => {
       color: white;
       opacity: 0.4;
       background-color: transparent !important;
-      .vp-window-body {
+      .vgo-window-body {
         opacity: 0;
       }
     }

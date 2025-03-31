@@ -147,7 +147,7 @@ export default defineComponent({
         <div class="mc-error-tip-button" title="Key duplicated, may cause bug!">!</div>
       </template>
       <input
-        class="font-code translate-item-input vp-input"
+        class="font-code translate-item-input vgo-input"
         v-model="item.key"
         placeholder="key"
         @click="handleInputKeyClick"
@@ -175,7 +175,7 @@ export default defineComponent({
         :teleported="false"
       >
         <template #reference>
-          <button class="vp-button" :title="$t('actions.delete')">
+          <button class="vgo-button" :title="$t('actions.delete')">
             <span class="mdi mdi-delete"></span>
           </button>
         </template>
@@ -201,7 +201,7 @@ export default defineComponent({
 
   &:hover {
     transition: none;
-    background-color: $primary_opacity;
+    background-color: var(--vgo-primary-opacity);
   }
   .i18n-badge {
     //user-select: all;

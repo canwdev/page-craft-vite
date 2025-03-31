@@ -76,7 +76,7 @@ export default defineComponent({
   height: 600px;
 
   &._full {
-    :deep(.vp-window-body) {
+    :deep(.vgo-window-body) {
       margin: 10px;
       padding: 10px;
       display: flex;
@@ -84,7 +84,7 @@ export default defineComponent({
       justify-content: center;
     }
   }
-  :deep(.vp-window-body) {
+  :deep(.vgo-window-body) {
     overflow: auto;
     background-color: white !important;
     color: black !important;

@@ -3,7 +3,7 @@ const isSidebarExpand = ref(true)
 </script>
 
 <template>
-  <div class="foldable-sidebar-layout vp-panel">
+  <div class="foldable-sidebar-layout vgo-panel">
     <div class="layout-sidebar" :class="{_expand: isSidebarExpand}">
       <slot name="sidebar"></slot>
 
@@ -50,7 +50,7 @@ const isSidebarExpand = ref(true)
 
     &._expand {
       width: 240px;
-      border-right: 1px solid $color_border;
+      border-right: 1px solid var(--vgo-color-border);
       .btn-toggle-expand {
         svg {
           transform: rotateY(0);

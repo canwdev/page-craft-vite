@@ -86,7 +86,7 @@ export default defineComponent({
   position: absolute;
   top: 0;
   left: 0;
-  outline: 1px dashed $primary;
+  outline: 1px dashed var(--vgo-primary);
   z-index: 100;
   &.is-drag-mode {
     cursor: grab;

@@ -57,8 +57,8 @@ export default defineComponent({
       :key="item.id"
       @close="handleImgClose(index)"
     />
-    <div class="operation-panel vp-panel font-emoji">
-      <button class="vp-button" @click="imageChooserRef.chooseFile()">🖼</button>
+    <div class="operation-panel vgo-panel font-emoji">
+      <button class="vgo-button" @click="imageChooserRef.chooseFile()">🖼</button>
     </div>
     <FileChooser ref="imageChooserRef" accept="image/*" @selected="handleChooseImage" multiple />
   </div>

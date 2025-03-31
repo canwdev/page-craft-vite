@@ -194,11 +194,11 @@ export default defineComponent({
 <template>
   <div
     ref="rootRef"
-    class="vp-panel vp-window-panel translate-tree-item"
+    class="vgo-panel vgo-window-panel translate-tree-item"
     v-if="item"
     :class="{isKeyDuplicated}"
   >
-    <div class="group-header vp-bg">
+    <div class="group-header vgo-bg">
       <template v-if="isKeyDuplicated">
         <div class="mc-error-tip-button" title="Group namespace duplicated, may cause bug!">!</div>
       </template>
@@ -210,7 +210,7 @@ export default defineComponent({
         </span>
         <input
           ref="namespaceInputRef"
-          class="font-code vp-input"
+          class="font-code vgo-input"
           :value="title || item.namespace"
           placeholder="namespace"
           style="flex: 1"
@@ -226,7 +226,7 @@ export default defineComponent({
         </span>
         <input
           ref="namespaceInputRef"
-          class="font-code vp-input"
+          class="font-code vgo-input"
           v-model="item.namespace"
           placeholder="namespace"
           style="flex: 1"
@@ -234,9 +234,9 @@ export default defineComponent({
           @blur="checkDuplicatedGroupKey"
         />
       </div>
-      <div class="actions-buttons-wrap vp-button-group">
+      <div class="actions-buttons-wrap vgo-button-group">
         <template v-if="!isLite">
-          <button class="vp-button" @click="handleGetJSON" :title="`${$t('actions.copy')} JSON`">
+          <button class="vgo-button" @click="handleGetJSON" :title="`${$t('actions.copy')} JSON`">
             <span class="mdi mdi-content-copy"></span>
           </button>
 
@@ -247,13 +247,13 @@ export default defineComponent({
             :teleported="false"
           >
             <template #reference>
-              <button class="vp-button danger" :title="$t('msgs.remove_group')">
+              <button class="vgo-button danger" :title="$t('msgs.remove_group')">
                 <span class="mdi mdi-delete"></span>
               </button>
             </template>
           </el-popconfirm>
         </template>
-        <button @click="toggleExpand" :title="`Toggle Expand`" class="vp-button">
+        <button @click="toggleExpand" :title="`Toggle Expand`" class="vgo-button">
           <span v-if="isExpand" class="mdi mdi-chevron-up"></span>
           <span v-else class="mdi mdi-chevron-down"></span>
         </button>
@@ -276,15 +276,15 @@ export default defineComponent({
       </div>
 
       <div class="actions-wrap">
-        <div class="actions-buttons-wrap vp-button-group" v-if="!isLite">
-          <button title="Add translate item" @click="handleAddTranslate" class="vp-button">
+        <div class="actions-buttons-wrap vgo-button-group" v-if="!isLite">
+          <button title="Add translate item" @click="handleAddTranslate" class="vgo-button">
             <span class="mdi mdi-plus"></span>
             {{ $t('common.field') }}
           </button>
           <button
             @click="handleAutoAdd"
             :title="$t('msgs.auto_paste_and_copy') + ` (${i18nSetStore.autoPasteTextConvertMode})`"
-            class="vp-button primary js_focus_auto_action"
+            class="vgo-button primary js_focus_auto_action"
           >
             <span class="mdi mdi-content-paste"></span>
 
@@ -323,7 +323,7 @@ export default defineComponent({
             v-if="!isLite"
             @click="handleAddChildren"
             title="Add translate children group"
-            class="vp-button primary"
+            class="vgo-button primary"
           >
             <span class="mdi mdi-plus-box"></span>
             {{ $t('common.group') }}
@@ -357,7 +357,7 @@ export default defineComponent({
 
   &:hover {
     transition: none;
-    border: 1px solid $primary;
+    border: 1px solid var(--vgo-primary);
     & > .group-header {
     }
   }
@@ -371,7 +371,7 @@ export default defineComponent({
     align-items: center;
     gap: 4px;
     .namespace-prefix {
-      color: $primary;
+      color: var(--vgo-primary);
       cursor: pointer;
       user-select: none;
     }
@@ -388,7 +388,7 @@ export default defineComponent({
     margin-right: -$padding;
     margin-top: -$padding;
     padding: $padding;
-    outline: 1px solid $primary;
+    outline: 1px solid var(--vgo-primary);
 
     .mc-error-tip-button {
       margin-right: 8px;
@@ -401,7 +401,7 @@ export default defineComponent({
 
   .split-line {
     opacity: 0.5;
-    border-top: 1px dashed $primary;
+    border-top: 1px dashed var(--vgo-primary);
     margin-top: 10px;
     margin-bottom: 10px;
   }

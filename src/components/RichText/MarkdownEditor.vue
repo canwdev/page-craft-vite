@@ -19,7 +19,11 @@ const mValue = useVModel(props, 'modelValue', emit)
   <div class="markdown-editor">
     <div class="editor-container">
       <div class="editor-input font-code">
-        <textarea class="vp-input" v-model="mValue" placeholder="Input markdown content"></textarea>
+        <textarea
+          class="vgo-input"
+          v-model="mValue"
+          placeholder="Input markdown content"
+        ></textarea>
       </div>
       <MarkdownRender class="editor-preview" :dark="dark" :text="mValue" />
     </div>

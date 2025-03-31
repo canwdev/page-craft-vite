@@ -14,7 +14,7 @@ onMounted(() => {
   <MainPlayground style="height: 100%; overflow: auto" />
 
   <div class="mc-playground-action-wrap">
-    <div class="mc-playground-action-inner vp-bg">
+    <div class="mc-playground-action-inner vgo-bg">
       <portal-target name="indicatorBarTeleportDest">
         <!--
         This component can be located anywhere in your App.

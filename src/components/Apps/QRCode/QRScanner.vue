@@ -115,7 +115,7 @@ const loadImage = (src) => {
 
 <template>
   <button
-    class="btn-qr-scanner vp-button"
+    class="btn-qr-scanner vgo-button"
     title="QR Code Scanner, right click upload image to decode"
     :class="{active: isLoading}"
     @click="startScanUploadImage"

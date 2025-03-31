@@ -11,7 +11,7 @@ const props = withDefaults(defineProps<Props>(), {})
   <transition name="fade-scale">
     <div
       v-if="previewData"
-      class="vp-demo-layout"
+      class="vgo-layout-preview"
       :style="{
         top: `${previewData.yRatio * 100}%`,
         left: `${previewData.xRatio * 100}%`,
@@ -23,11 +23,11 @@ const props = withDefaults(defineProps<Props>(), {})
 </template>
 
 <style lang="scss" scoped>
-.vp-demo-layout {
+.vgo-layout-preview {
   position: fixed;
   z-index: 1000;
-  background-color: $primary_opacity;
-  border: 2px solid $primary;
+  background-color: var(--vgo-primary-opacity);
+  border: 2px solid var(--vgo-primary);
   pointer-events: none;
   box-sizing: border-box;
   transition: all 0.3s;

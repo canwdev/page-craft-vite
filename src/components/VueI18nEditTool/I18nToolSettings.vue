@@ -52,7 +52,7 @@ export default defineComponent({
               actionRender: h(
                 'button',
                 {
-                  class: 'vp-button',
+                  class: 'vgo-button',
                   onClick: () => {
                     console.log('window.$mcUtils', window.$mcUtils)
                   },

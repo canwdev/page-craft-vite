@@ -47,13 +47,13 @@ const {iconName, titleDesc} = useFileItem(props)
   display: flex;
   text-align: unset;
   width: 100%;
-  border-bottom: 1px solid $color_border;
+  border-bottom: 1px solid var(--vgo-color-border);
   padding-top: 4px;
   padding-bottom: 4px;
   cursor: default;
   &:hover {
     transition: background-color 0s;
-    background-color: $primary_opacity;
+    background-color: var(--vgo-primary-opacity);
     .file-checkbox {
       visibility: visible;
     }
@@ -65,15 +65,15 @@ const {iconName, titleDesc} = useFileItem(props)
   }
 
   &.active {
-    background-color: $primary_opacity;
-    outline: 1px solid $primary;
+    background-color: var(--vgo-primary-opacity);
+    outline: 1px solid var(--vgo-primary);
     outline-offset: -1px;
     .file-checkbox {
       visibility: visible;
     }
   }
   &:focus {
-    outline: 1px solid $primary;
+    outline: 1px solid var(--vgo-primary);
     outline-offset: -1px;
   }
 

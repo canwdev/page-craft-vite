@@ -38,7 +38,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="mc-tab-layout vp-bg" :class="{horizontal}">
+  <div class="mc-tab-layout vgo-bg" :class="{horizontal}">
     <div class="sidebar-wrap">
       <div class="mc-tab-list">
         <div
@@ -67,12 +67,13 @@ export default defineComponent({
   height: 100%;
   overflow: hidden;
   line-height: 1.6;
+  user-select: none;
 
   .sidebar-wrap {
     width: 120px;
     height: 100%;
     overflow-y: auto;
-    border-right: 1px solid $color_border;
+    border-right: 1px solid var(--vgo-color-border);
 
     .mc-tab-list {
       .list-item {
@@ -81,16 +82,16 @@ export default defineComponent({
         cursor: pointer;
         font-weight: 500;
         &:hover {
-          background-color: $color_hover;
+          background-color: var(--vgo-color-hover);
           transition: background-color 0.1s;
         }
 
         &.active {
-          background-color: $primary_opacity;
+          background-color: var(--vgo-primary-opacity);
         }
         &:active {
           color: white;
-          background-color: $primary;
+          background-color: var(--vgo-primary);
         }
 
         .item-text {
@@ -108,16 +109,17 @@ export default defineComponent({
       min-width: fit-content;
       height: auto;
       border-right: 0;
-      border-bottom: 1px solid $color_border;
+      border-bottom: 1px solid var(--vgo-color-border);
       overflow: hidden;
       width: 100%;
+
       .mc-tab-list {
         display: flex;
         .list-item {
           flex-shrink: 0;
           display: flex;
           align-items: center;
-          padding: 4px 16px;
+          padding: 2px 12px;
         }
       }
     }

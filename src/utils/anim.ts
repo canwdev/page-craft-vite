@@ -11,7 +11,7 @@ export const blinkPanel = async (el: HTMLElement, maxCount: number = 3) => {
   }
 
   for (let i = 0; i < maxCount; i++) {
-    await blink('var(--primary)')
+    await blink('var(--vgo-primary)')
   }
 
   el.style.backgroundColor = originalColor

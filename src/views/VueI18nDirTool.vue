@@ -421,12 +421,12 @@ const handleSettings = () => {
     <CommonNavbar>
       <template #extra>
         <div class="flex-row-center-gap">
-          <button class="vp-button" @click="handleSettings">
+          <button class="vgo-button" @click="handleSettings">
             {{ $t('common.settings') }}
           </button>
 
           <button
-            class="vp-button"
+            class="vgo-button"
             @click="mainStore.isShowQuickLaunch = !mainStore.isShowQuickLaunch"
           >
             {{ $t('common.toolbox') }}
@@ -438,7 +438,7 @@ const handleSettings = () => {
           <RectSwitch v-model="editMode" horizontal :options="editModeOptions" />
 
           <button
-            class="vp-button primary"
+            class="vgo-button primary"
             v-if="currentEditEntry && editMode === EditMode.GUI"
             @click="handleSaveFile"
           >
@@ -446,13 +446,13 @@ const handleSettings = () => {
           </button>
 
           <DropdownMenu v-if="dirHandle" :options="historyMenuOptions">
-            <button class="vp-button primary" @click="handleCloseDir">
+            <button class="vgo-button primary" @click="handleCloseDir">
               {{ $t('actions.close') }} Folder
             </button>
           </DropdownMenu>
 
           <DropdownMenu v-else :options="historyMenuOptions">
-            <button class="vp-button primary" @click="handlePickDir">
+            <button class="vgo-button primary" @click="handlePickDir">
               {{ $t('actions.pick_i18n_directory') }}
             </button>
           </DropdownMenu>
@@ -463,7 +463,7 @@ const handleSettings = () => {
             :title="$t('msgs.confirm_reload_files')"
           >
             <template #reference>
-              <button class="vp-button js_reload_btn">
+              <button class="vgo-button js_reload_btn">
                 {{ $t('actions.reload') }}
               </button>
             </template>
@@ -626,7 +626,7 @@ const handleSettings = () => {
             transition: all 1s;
           }
           &.t_selected {
-            background-color: $primary !important;
+            background-color: var(--vgo-primary) !important;
             transition: all 0.3s;
           }
           &.t_highlight {
@@ -641,7 +641,7 @@ const handleSettings = () => {
 
       .gui-edit-gui {
         height: 100%;
-        border-right: 1px solid $color_border;
+        border-right: 1px solid var(--vgo-color-border);
         .action-row {
           position: sticky;
           top: 0;

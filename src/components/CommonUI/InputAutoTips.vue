@@ -202,7 +202,7 @@ const handleBlur = () => {
       v-model="mValue"
       type="text"
       placeholder="CSS class"
-      class="vp-input sl-css-class-input"
+      class="vgo-input sl-css-class-input"
       v-bind="$attrs"
       @focus="showMenu"
       @click="showMenu"

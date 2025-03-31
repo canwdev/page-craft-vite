@@ -95,7 +95,7 @@ export const useUpdater = (author, name, branch = 'master') => {
                 h(
                   'button',
                   {
-                    class: 'vp-button',
+                    class: 'vgo-button',
                     onClick: () => {
                       n.close()
                       settingsStore.recommendDesktopClient = false
@@ -106,7 +106,7 @@ export const useUpdater = (author, name, branch = 'master') => {
                 h(
                   'button',
                   {
-                    class: 'vp-button primary',
+                    class: 'vgo-button primary',
                     onClick: () => {
                       window.open(releasePage)
                       n.destroy()
@@ -142,7 +142,7 @@ export const useUpdater = (author, name, branch = 'master') => {
                   h(
                     'button',
                     {
-                      class: 'vp-button',
+                      class: 'vgo-button',
                       onClick: () => {
                         n.close()
                       },
@@ -152,7 +152,7 @@ export const useUpdater = (author, name, branch = 'master') => {
                   h(
                     'button',
                     {
-                      class: 'vp-button primary',
+                      class: 'vgo-button primary',
                       onClick: () => {
                         window.open(releasePage)
                         n.destroy()

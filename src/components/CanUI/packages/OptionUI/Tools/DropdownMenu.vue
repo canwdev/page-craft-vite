@@ -27,7 +27,7 @@ const handleVisibleChange = (val) => {
   <el-dropdown
     v-bind="props"
     :options="null"
-    popper-class="vp-dropdown-popper-wrap"
+    popper-class="vgo-dropdown-popper-wrap"
     @visible-change="handleVisibleChange"
   >
     <slot>
@@ -54,7 +54,7 @@ const handleVisibleChange = (val) => {
 </template>
 
 <style lang="scss">
-.vp-dropdown-popper-wrap {
+.vgo-dropdown-popper-wrap {
   .el-dropdown__list {
     & > .quick-options {
       border: none !important;

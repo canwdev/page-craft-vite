@@ -299,7 +299,7 @@ export default defineComponent({
     :class="{
       _static: isStatic,
       horizontal,
-      'vp-panel': !horizontal && !isStatic,
+      'vgo-panel': !horizontal && !isStatic,
     }"
     @keydown.stop="handleKeyPress"
     tabindex="0"
@@ -312,7 +312,7 @@ export default defineComponent({
 
     <div
       v-if="menuStack.length"
-      class="option-item vp-bg _back clickable"
+      class="option-item vgo-bg _back clickable"
       @click="handleBack"
       title="Back (q)"
     >
@@ -337,7 +337,7 @@ export default defineComponent({
         @click="handleOptionClick(v, $event)"
         @contextmenu.prevent.stop="handleOptionContextmenu(v, $event)"
         @onArrowClick="handleOptionClick(v, $event, true)"
-        @onClose="$emit('onClose'), (mVisible = false)"
+        @onClose="($emit('onClose'), (mVisible = false))"
         @onSubMenuHide="focus"
       />
       <!--@mouseover="curIndex = index"-->
@@ -353,11 +353,11 @@ export default defineComponent({
   width: fit-content;
 
   &:focus {
-    border: 1px solid $primary;
+    border: 1px solid var(--vgo-primary);
     outline: none;
     .option-item {
       &.focus {
-        outline-color: $primary;
+        outline-color: var(--vgo-primary);
       }
     }
   }
@@ -398,7 +398,7 @@ export default defineComponent({
   }
 
   .option-split {
-    border-bottom: 1px solid $color_border;
+    border-bottom: 1px solid var(--vgo-color-border);
     margin-top: 1px;
     margin-bottom: 1px;
   }
@@ -456,7 +456,7 @@ export default defineComponent({
       height: 24px;
       font-size: 24px;
       line-height: 1;
-      color: $primary;
+      color: var(--vgo-primary);
       img {
         width: 100%;
         height: 100%;
@@ -475,7 +475,7 @@ export default defineComponent({
       transform: translateY(-50%);
       display: flex;
       &:hover {
-        color: $primary;
+        color: var(--vgo-primary);
       }
     }
 
@@ -487,7 +487,7 @@ export default defineComponent({
       &:hover,
       &.focus,
       &.hover {
-        background-color: $color_hover;
+        background-color: var(--vgo-color-hover);
         transition: all 0s;
       }
     }
@@ -498,7 +498,7 @@ export default defineComponent({
         cursor: pointer;
         &:active {
           color: white;
-          background-color: $primary !important;
+          background-color: var(--vgo-primary) !important;
           .item-icon {
             color: white !important;
           }

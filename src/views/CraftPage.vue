@@ -92,7 +92,7 @@ useGlobalBusOn(GlobalEvents.ON_ADD_STYLE, (arg) => {
 
     <ToolBar>
       <button
-        class="vp-button"
+        class="vgo-button"
         :class="{primary: settingsStore.showStyleEditor}"
         style="min-width: 70px"
         @click="settingsStore.showStyleEditor = !settingsStore.showStyleEditor"

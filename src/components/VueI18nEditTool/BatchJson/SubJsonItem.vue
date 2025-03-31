@@ -156,7 +156,7 @@ export default defineComponent({
 <template>
   <div v-show="visible" class="sub-text-editor" v-loading="isLoading">
     <div class="editor-action-row">
-      <button class="vp-button primary" :disabled="!isChanged" @click="saveChange({isEmit: true})">
+      <button class="vgo-button primary" :disabled="!isChanged" @click="saveChange({isEmit: true})">
         {{ $t('actions.save_all') }}
       </button>
 
@@ -202,7 +202,7 @@ export default defineComponent({
   .path-tip {
     padding: 0 8px;
     ._primary {
-      color: $primary;
+      color: var(--vgo-primary);
     }
     ._error {
       color: #f44336;

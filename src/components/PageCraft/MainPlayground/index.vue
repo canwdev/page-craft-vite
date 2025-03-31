@@ -183,7 +183,7 @@ const doImportAction = () => {
       <template v-if="!isLitePage">
         <DropdownMenu :options="htmlMenuOptions">
           <button
-            class="vp-button"
+            class="vgo-button"
             :title="`${settingsStore.curCompInStore?.basePath}
 ${settingsStore.curCompInStore?.title}`"
           >
@@ -194,7 +194,7 @@ ${settingsStore.curCompInStore?.title}`"
 
         <el-popover width="180" trigger="hover" :persistent="false">
           <template #reference>
-            <button class="vp-button">
+            <button class="vgo-button">
               <span class="mdi mdi-cog"></span>
               {{ $t('common.options') }}
             </button>
@@ -216,20 +216,20 @@ ${settingsStore.curCompInStore?.title}`"
           <el-slider v-model="indicatorOptions.bgTransparentPercent" :step="1" size="small" />
           <div class="flex-row-center-gap">
             <button
-              class="vp-button primary"
+              class="vgo-button primary"
               @click="globalEventBus.emit(GlobalEvents.OPEN_SETTINGS, SettingsTabType.COMMON)"
             >
               {{ $t('common.settings') }}
             </button>
 
-            <button class="vp-button" @click="openPlayground">Playground</button>
+            <button class="vgo-button" @click="openPlayground">Playground</button>
           </div>
         </el-popover>
       </template>
 
-      <div class="vp-button-group">
+      <div class="vgo-button-group">
         <button
-          class="vp-button"
+          class="vgo-button"
           title="Undo (ctrl+z)"
           :disabled="!undoRedo.undoStack.length"
           @click="handleUndo"
@@ -237,7 +237,7 @@ ${settingsStore.curCompInStore?.title}`"
           <span class="mdi mdi-undo-variant"></span>
         </button>
         <button
-          class="vp-button"
+          class="vgo-button"
           title="Redo (ctrl+shift+z)"
           :disabled="!undoRedo.redoStack.length"
           @click="handleRedo"

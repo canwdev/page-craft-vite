@@ -53,12 +53,12 @@ onMounted(() => {
 
 <template>
   <div class="explorer-wrap">
-    <div class="explorer-header vp-panel">
+    <div class="explorer-header vgo-panel">
       <div class="nav-address">
         <div class="nav-wrap">
           <button
             :disabled="backHistory.length <= 1"
-            class="btn-action vp-button"
+            class="btn-action vgo-button"
             @click="goBack"
             title="Back"
           >
@@ -66,13 +66,13 @@ onMounted(() => {
           </button>
           <button
             :disabled="forwardHistory.length <= 0"
-            class="btn-action vp-button"
+            class="btn-action vgo-button"
             @click="goForward"
             title="Forward"
           >
             <span class="mdi mdi-arrow-right"></span>
           </button>
-          <button class="btn-action vp-button" :disabled="!allowUp" @click="goUp" title="Up">
+          <button class="btn-action vgo-button" :disabled="!allowUp" @click="goUp" title="Up">
             <span class="mdi mdi-arrow-up"></span>
           </button>
         </div>
@@ -80,14 +80,14 @@ onMounted(() => {
           <input
             placeholder="Path"
             v-model="basePath"
-            class="input-addr vp-input"
+            class="input-addr vgo-input"
             @change="handleRefresh"
           />
 
-          <button class="vp-button btn-action" @click="handleRefresh">
+          <button class="vgo-button btn-action" @click="handleRefresh">
             <span class="mdi mdi-refresh"></span>
           </button>
-          <button class="vp-button btn-action" @click="toggleStar">
+          <button class="vgo-button btn-action" @click="toggleStar">
             <template v-if="isStared">
               <span class="mdi mdi-star"></span>
             </template>
@@ -96,7 +96,7 @@ onMounted(() => {
             </template>
           </button>
 
-          <input placeholder="Filter name" v-model="filterText" class="input-filter vp-input" />
+          <input placeholder="Filter name" v-model="filterText" class="input-filter vgo-input" />
         </div>
       </div>
 
@@ -104,7 +104,7 @@ onMounted(() => {
         <div v-for="(path, index) in starList" :key="path">
           <button
             @click="handleOpenPath(path)"
-            class="vp-button"
+            class="vgo-button"
             :title="path"
             @contextmenu.prevent="() => starList.splice(index, 1)"
           >
@@ -134,7 +134,7 @@ onMounted(() => {
   position: relative;
   outline: none;
 
-  .vp-button {
+  .vgo-button {
     line-height: 1;
     min-width: 25px;
     min-height: 25px;
@@ -145,7 +145,7 @@ onMounted(() => {
   .explorer-header {
     padding: 4px;
     border: none;
-    border-bottom: 1px solid $color_border;
+    border-bottom: 1px solid var(--vgo-color-border);
     box-shadow: none;
     border-radius: 0;
 
@@ -208,7 +208,7 @@ onMounted(() => {
     }
     &:hover,
     &:focus {
-      background-color: $primary_opacity;
+      background-color: var(--vgo-primary-opacity);
     }
   }
 }

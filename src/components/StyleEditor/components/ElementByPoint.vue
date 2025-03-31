@@ -71,7 +71,7 @@ useEventListener(
   },
   {
     capture: true,
-  }
+  },
 )
 </script>
 
@@ -85,8 +85,8 @@ useEventListener(
   position: fixed;
   pointer-events: none;
   z-index: 9999;
-  border: 1px solid $primary;
-  background-color: $primary_opacity;
+  border: 1px solid var(--vgo-primary);
+  background-color: var(--vgo-primary-opacity);
 }
 .mc-element-by-point-pointer {
   position: fixed;
@@ -97,7 +97,7 @@ useEventListener(
   height: 8px;
   border: 2px solid currentColor;
   border-radius: 50px;
-  background-color: $primary;
+  background-color: var(--vgo-primary);
   z-index: 999;
 }
 </style>

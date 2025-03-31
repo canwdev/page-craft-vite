@@ -111,7 +111,7 @@ const exportMarkdown = (text) => {
     <textarea
       ref="editInputRef"
       v-if="isEditing"
-      class="vp-input"
+      class="vgo-input"
       v-model="item.content as string"
       rows="6"
       @blur="isEditing = false"
@@ -167,7 +167,7 @@ const exportMarkdown = (text) => {
       <transition-group name="fade">
         <div
           v-if="isLoading"
-          class="chat-content markdown-body vp-bg"
+          class="chat-content markdown-body vgo-bg"
           :class="{'markdown-body-dark': isDark}"
         >
           <div
@@ -245,7 +245,7 @@ const exportMarkdown = (text) => {
 .ai-chat-bubble-system {
   margin-bottom: 8px;
   opacity: 0.6;
-  background-color: $primary_opacity;
+  background-color: var(--vgo-primary-opacity);
   display: block;
   width: fit-content;
   padding: 4px 10px;
@@ -256,7 +256,7 @@ const exportMarkdown = (text) => {
   &.isEditing {
     width: 100%;
   }
-  .vp-input {
+  .vgo-input {
     width: 100%;
     box-sizing: border-box;
   }
@@ -300,10 +300,10 @@ const exportMarkdown = (text) => {
   }
   &.no-avatar-image {
     .chat-avatar {
-      background-color: $primary;
+      background-color: var(--vgo-primary);
       color: white;
       border-radius: 50%;
-      box-shadow: 0 1px 1px $color_border;
+      box-shadow: 0 1px 1px var(--vgo-color-border);
     }
   }
 
@@ -374,8 +374,8 @@ const exportMarkdown = (text) => {
     border-radius: 10px 0 10px 10px;
     max-width: 800px;
     font-size: 16px;
-    background-color: $primary_opacity;
-    box-shadow: 0 1px 1px $color_border;
+    background-color: var(--vgo-primary-opacity);
+    box-shadow: 0 1px 1px var(--vgo-color-border);
     box-sizing: border-box;
     //transition: all 1s;
   }
@@ -415,7 +415,7 @@ const exportMarkdown = (text) => {
       .mdi {
         font-size: inherit;
         line-height: inherit;
-        color: $primary;
+        color: var(--vgo-primary);
       }
     }
   }

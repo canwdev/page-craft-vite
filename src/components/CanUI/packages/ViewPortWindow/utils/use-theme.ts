@@ -5,7 +5,7 @@ export interface IOption {
   value: string
 }
 
-export const DEFAULT_THEME = 'theme-default'
+export const DEFAULT_THEME = 'vgo-theme-default'
 const defaultThemeOptions = [
   {
     label: 'Default',

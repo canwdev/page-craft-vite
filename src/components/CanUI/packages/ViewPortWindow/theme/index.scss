@@ -13,31 +13,31 @@
   .n-modal, .n-card, .n-dropdown-menu, .n-notification, .n-message,
   .n-date-panel, .n-popover {
     box-shadow: none;
-    outline: 1px solid $primary;
+    outline: 1px solid var(--vgo-primary);
   }
 
-  .vp-window {
+  .vgo-window {
     backdrop-filter: unset !important;
     box-shadow: none !important;
   }
 }
 
-.vp-bg {
+.vgo-bg {
   background-color: white;
   color: black;
 }
 ._dark {
-  .vp-bg {
+  .vgo-bg {
     background-color: #111;
     color: white;
   }
 }
 
-.vp-button-group {
+.vgo-button-group {
   display: flex;
   flex-wrap: nowrap;
   gap: 0 !important;
-  .vp-button {
+  .vgo-button {
     &:first-child {
       border-top-right-radius: 0;
       border-bottom-right-radius: 0;
@@ -56,7 +56,7 @@
   }
 }
 
-.vp-button {
+.vgo-button {
   padding: 6px 8px;
   cursor: pointer;
 
@@ -68,20 +68,20 @@
     color: #f44336;
   }
   &.primary {
-    background: $primary !important;
+    background: var(--vgo-primary) !important;
     color: white !important;
   }
 }
 
-.vp-input {
+.vgo-input {
   padding: 6px 8px;
-  border: 1px solid $color_border;
+  border: 1px solid var(--vgo-color-border);
   scrollbar-width: thin;
   font-family: inherit;
 
   &:not(&:disabled) {
     &:focus {
-      border: 1px solid $primary;
+      border: 1px solid var(--vgo-primary);
       outline: none;
     }
   }

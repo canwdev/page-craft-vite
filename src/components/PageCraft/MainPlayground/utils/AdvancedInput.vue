@@ -18,8 +18,8 @@ const mValue = useVModel(props, 'modelValue', emit)
   <div class="advanced-input-wrap">
     <textarea v-model="mValue" placeholder="" rows="2" v-bind="$attrs"></textarea>
     <div class="action-row" v-if="showTools">
-      <button class="vp-button" @click="mValue = encodeURI(mValue)">encodeURI</button>
-      <button class="vp-button" @click="mValue = decodeURI(mValue)">decodeURI</button>
+      <button class="vgo-button" @click="mValue = encodeURI(mValue)">encodeURI</button>
+      <button class="vgo-button" @click="mValue = decodeURI(mValue)">decodeURI</button>
     </div>
   </div>
 </template>
@@ -27,7 +27,7 @@ const mValue = useVModel(props, 'modelValue', emit)
 <style lang="scss" scoped>
 .advanced-input-wrap {
   width: 100%;
-  .vp-input {
+  .vgo-input {
     width: 100%;
     box-sizing: border-box;
   }
@@ -37,7 +37,7 @@ const mValue = useVModel(props, 'modelValue', emit)
     gap: 4px;
     justify-content: flex-end;
     margin-top: 4px;
-    .vp-button {
+    .vgo-button {
       font-size: 12px;
       padding: 4px;
     }

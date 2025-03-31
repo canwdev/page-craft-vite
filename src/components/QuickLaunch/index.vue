@@ -61,7 +61,7 @@ defineExpose({
       @input="handleInput"
       placeholder="/?"
       type="textarea"
-      class="font-code vp-input"
+      class="font-code vgo-input"
       @keyup.esc="cleanText"
     ></textarea>
     <QuickOptions

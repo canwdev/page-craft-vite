@@ -117,7 +117,7 @@ const {handleOpenLocalDir, localDirHistoryOptions} = useLocalDir({emit})
 
 <template>
   <div class="comp-list-wrap" @contextmenu.prevent v-loading="isLoading">
-    <div class="explorer-actions vp-panel">
+    <div class="explorer-actions vgo-panel">
       <div class="action-group">
         <button
           class="btn-action btn-no-style"
@@ -254,7 +254,7 @@ const {handleOpenLocalDir, localDirHistoryOptions} = useLocalDir({emit})
   flex-direction: column;
 
   &.isOverDropZone {
-    outline: 2px dashed $primary;
+    outline: 2px dashed var(--vgo-primary);
     outline-offset: -3px;
   }
 
@@ -267,7 +267,7 @@ const {handleOpenLocalDir, localDirHistoryOptions} = useLocalDir({emit})
     border: none;
     box-shadow: none;
     border-radius: 0;
-    border-bottom: 1px solid $color_border;
+    border-bottom: 1px solid var(--vgo-color-border);
 
     .action-group {
       display: flex;
@@ -275,7 +275,7 @@ const {handleOpenLocalDir, localDirHistoryOptions} = useLocalDir({emit})
       flex-wrap: wrap;
 
       .split-line {
-        border-right: 1px solid $color_border;
+        border-right: 1px solid var(--vgo-color-border);
         margin-left: 2px;
         margin-right: 2px;
       }
@@ -296,7 +296,7 @@ const {handleOpenLocalDir, localDirHistoryOptions} = useLocalDir({emit})
 
         &:hover,
         &:focus {
-          background-color: $primary_opacity;
+          background-color: var(--vgo-primary-opacity);
         }
       }
       .action-button-wrap {

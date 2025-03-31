@@ -51,11 +51,11 @@ const handleChoose = async () => {
 
 <template>
   <div class="image-picker">
-    <button class="vp-button" :disabled="disabled" @click="handleChoose" title="Upload image...">
+    <button class="vgo-button" :disabled="disabled" @click="handleChoose" title="Upload image...">
       <span class="mdi mdi-image"></span>
     </button>
     <div class="image-list">
-      <div v-for="(image, index) in images" :key="index" class="image-item vp-panel">
+      <div v-for="(image, index) in images" :key="index" class="image-item vgo-panel">
         <el-image
           :preview-src-list="images"
           :initial-index="index"

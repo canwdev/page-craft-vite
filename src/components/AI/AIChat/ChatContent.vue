@@ -495,7 +495,7 @@ const handleSettings = () => {
 
 <template>
   <transition name="fade" mode="in-out">
-    <div class="chat-gpt-wrap vp-bg" v-if="currentHistory && currentCharacter">
+    <div class="chat-gpt-wrap vgo-bg" v-if="currentHistory && currentCharacter">
       <div ref="respContainerRef" class="response-container">
         <ChatBubble
           v-for="(item, index) in currentHistory.history"
@@ -520,7 +520,7 @@ const handleSettings = () => {
       <div class="request-below">
         <textarea
           ref="inputRef"
-          class="vp-input question-input"
+          class="vgo-input question-input"
           v-model="userInputContent"
           type="textarea"
           :placeholder="
@@ -541,18 +541,18 @@ const handleSettings = () => {
               :auto-close="0"
             >
               <template #reference>
-                <button class="vp-button" title="Settings">
+                <button class="vgo-button" title="Settings">
                   <span class="mdi mdi-cog"></span>
                 </button>
               </template>
               <SettingsAi style="max-height: 70vh; overflow-y: auto" />
             </el-popover>-->
-            <button class="vp-button" title="Settings" @click="handleSettings">
+            <button class="vgo-button" title="Settings" @click="handleSettings">
               <span class="mdi mdi-cog"></span>
             </button>
 
             <DropdownMenu :options="exportImportOptions">
-              <button class="vp-button" title="Export">
+              <button class="vgo-button" title="Export">
                 <span class="mdi mdi-tray-arrow-down"></span>
               </button>
             </DropdownMenu>
@@ -560,7 +560,7 @@ const handleSettings = () => {
             <button
               @click="scrollBottom()"
               @contextmenu.prevent="scrollTop()"
-              class="vp-button"
+              class="vgo-button"
               title="Scroll to bottom, right click scroll to top"
             >
               <span class="mdi mdi-unfold-more-horizontal"></span>
@@ -572,7 +572,7 @@ const handleSettings = () => {
               :teleported="false"
             >
               <template #reference>
-                <button class="vp-button" :disabled="isLoading">{{ $t('actions.clear') }}</button>
+                <button class="vgo-button" :disabled="isLoading">{{ $t('actions.clear') }}</button>
               </template>
             </el-popconfirm>
           </div>
@@ -582,7 +582,7 @@ const handleSettings = () => {
 
             <ImagePicker v-model:images="imageList" :disabled="isLoading || !isEnableVision" />
 
-            <button v-if="isLoading" class="vp-button" @click="handleStop">
+            <button v-if="isLoading" class="vgo-button" @click="handleStop">
               <span class="mdi mdi-stop-circle-outline"></span>
 
               {{ $t('ai.stop_generation') }}
@@ -590,7 +590,7 @@ const handleSettings = () => {
 
             <button
               v-else
-              class="vp-button primary"
+              class="vgo-button primary"
               :disabled="!isAllowSend"
               @click="sendAiRequest()"
             >
@@ -621,7 +621,7 @@ const handleSettings = () => {
     flex-direction: column;
     padding: 8px;
     box-sizing: border-box;
-    border-top: 1px solid $color_border;
+    border-top: 1px solid var(--vgo-color-border);
     .request-actions {
       margin-top: 5px;
       display: flex;

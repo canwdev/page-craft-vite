@@ -11,7 +11,7 @@
 body {
   margin: 0;
   // https://moderncss.dev/12-modern-css-one-line-upgrades/#accent-color
-  accent-color: $primary;
+  accent-color: var(--vgo-primary);
   touch-action: manipulation; // disable ios double tap zoom
 }
 
@@ -99,13 +99,13 @@ html, body, #app {
 }
 
 .selection-area {
-  background: $primary_opacity;
-  border: 1px solid $primary;
+  background: var(--vgo-primary-opacity);
+  border: 1px solid var(--vgo-primary);
 }
 
 .js-focus-auto-action-tip {
   background-color: white;
-  color: $primary;
+  color: var(--vgo-primary);
   border: 2px solid currentColor;
   font-weight: 600;
   border-radius: 100px;
@@ -127,7 +127,7 @@ html, body, #app {
   bottom: 10px;
   right: 10px;
   border-radius: 50%;
-  background-color: $primary; // #e91e63;
+  background-color: var(--vgo-primary); // #e91e63;
   color: white;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   cursor: pointer;

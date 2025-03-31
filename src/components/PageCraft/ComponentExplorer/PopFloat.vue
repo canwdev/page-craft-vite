@@ -90,7 +90,7 @@ const posStyle = computed(() => {
 
 <template>
   <transition name="mc-fade-scale">
-    <div ref="popWindowRef" v-if="mVisible" class="pop-window vp-window" :style="posStyle">
+    <div ref="popWindowRef" v-if="mVisible" class="pop-window vgo-window" :style="posStyle">
       <div class="pop-window-content" v-if="currentItem">
         <img
           v-if="previewCover"

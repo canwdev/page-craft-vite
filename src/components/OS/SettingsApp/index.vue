@@ -66,7 +66,7 @@ watch(
 //    overflow: auto;
 //  }
 //  a {
-//    color: $primary;
+//    color: var(--vgo-primary);
 //  }
 //}
 </style>

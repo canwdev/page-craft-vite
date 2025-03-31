@@ -8,7 +8,7 @@ const aisStore = useAiSettingsStore()
 </script>
 
 <template>
-  <div class="ai-chat-root vp-panel">
+  <div class="ai-chat-root vgo-panel">
     <div class="chat-sidebar" :class="{_expand: aisStore.isSidebarExpand}">
       <SideCharacters />
       <SideHistory />
@@ -34,8 +34,9 @@ const aisStore = useAiSettingsStore()
   display: flex;
   border-radius: 0 !important;
 
-  font-family: 'Open Sans', 'Source Han Sans SC', 'PingFang SC', Arial, 'Microsoft YaHei',
-    'Helvetica Neue', 'Hiragino Sans GB', 'WenQuanYi Micro Hei', sans-serif;
+  font-family:
+    'Open Sans', 'Source Han Sans SC', 'PingFang SC', Arial, 'Microsoft YaHei', 'Helvetica Neue',
+    'Hiragino Sans GB', 'WenQuanYi Micro Hei', sans-serif;
   font-size: 14px;
   .chat-sidebar {
     width: 0;
@@ -46,11 +47,11 @@ const aisStore = useAiSettingsStore()
 
     &._expand {
       width: 240px;
-      border-right: 1px solid $color_border;
+      border-right: 1px solid var(--vgo-color-border);
       .btn-toggle-expand {
       }
 
-      @media screen and (max-width: $mq_mobile_width) {
+      @media screen and (max-width: 567px) {
         width: 200px;
       }
     }
@@ -64,7 +65,7 @@ const aisStore = useAiSettingsStore()
     }
 
     .ai-side-characters {
-      border-bottom: 1px solid $color_border;
+      border-bottom: 1px solid var(--vgo-color-border);
     }
 
     .ai-side-characters,
@@ -92,7 +93,7 @@ const aisStore = useAiSettingsStore()
         .sub-item {
           padding: 4px 8px;
           &.active {
-            background-color: $primary_opacity;
+            background-color: var(--vgo-primary-opacity);
           }
           .o-left .item-icon {
             //border-radius: 50%;

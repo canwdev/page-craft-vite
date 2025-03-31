@@ -75,7 +75,7 @@ const {handleOpenLocalDir, localDirHistoryOptions} = useLocalDir({emit})
 
 <template>
   <div class="explorer-list-wrap" @contextmenu.prevent v-loading="isLoading">
-    <div class="explorer-actions vp-panel">
+    <div class="explorer-actions vgo-panel">
       <div class="action-group">
         <button class="btn-action btn-no-style" @click="handleCreateFile()" title="Create Document">
           <span class="mdi mdi-file-document-plus-outline"></span>
@@ -174,7 +174,7 @@ const {handleOpenLocalDir, localDirHistoryOptions} = useLocalDir({emit})
       @contextmenu.prevent.stop="handleShowCtxMenu(null, $event)"
     >
       <div v-if="!isGridView" class="explorer-list-view">
-        <div class="vp-bg file-list-header file-list-row">
+        <div class="vgo-bg file-list-header file-list-row">
           <div class="list-col c-filename" style="padding-left: 24px">Name</div>
           <div class="list-col c-size">Size</div>
           <div class="list-col c-time">Last Modified</div>
@@ -223,7 +223,7 @@ const {handleOpenLocalDir, localDirHistoryOptions} = useLocalDir({emit})
   flex-direction: column;
 
   &.isOverDropZone {
-    outline: 2px dashed $primary;
+    outline: 2px dashed var(--vgo-primary);
     outline-offset: -3px;
   }
 
@@ -236,7 +236,7 @@ const {handleOpenLocalDir, localDirHistoryOptions} = useLocalDir({emit})
     border: none;
     box-shadow: none;
     border-radius: 0;
-    border-bottom: 1px solid $color_border;
+    border-bottom: 1px solid var(--vgo-color-border);
 
     .action-group {
       display: flex;
@@ -244,7 +244,7 @@ const {handleOpenLocalDir, localDirHistoryOptions} = useLocalDir({emit})
       flex-wrap: wrap;
 
       .split-line {
-        border-right: 1px solid $color_border;
+        border-right: 1px solid var(--vgo-color-border);
         margin-left: 2px;
         margin-right: 2px;
       }
@@ -265,7 +265,7 @@ const {handleOpenLocalDir, localDirHistoryOptions} = useLocalDir({emit})
 
         &:hover,
         &:focus {
-          background-color: $primary_opacity;
+          background-color: var(--vgo-primary-opacity);
         }
       }
       .action-button-wrap {
@@ -295,7 +295,7 @@ const {handleOpenLocalDir, localDirHistoryOptions} = useLocalDir({emit})
     .file-list-header {
       font-weight: 500;
       text-transform: capitalize;
-      border-bottom: 1px solid $color_border;
+      border-bottom: 1px solid var(--vgo-color-border);
       border-left: 0;
       border-right: 0;
       position: sticky;
@@ -306,7 +306,7 @@ const {handleOpenLocalDir, localDirHistoryOptions} = useLocalDir({emit})
         padding: 4px 5px !important;
         font-size: 14px;
         &:hover {
-          background-color: $primary_opacity;
+          background-color: var(--vgo-primary-opacity);
         }
         .mdi {
           transform: scale(1.5);
