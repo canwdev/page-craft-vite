@@ -3,7 +3,7 @@ import VueRender from './Tools/VueRender.vue'
 import {defineComponent, PropType, toRefs} from 'vue'
 import ItemAction from './ItemAction.vue'
 import {StOptionItem, StOptionType} from './enum'
-import TransitionBodyCollapse from '@/components/CanUI/packages/Transitions/TransitionBodyCollapse.vue'
+import TransitionBodyCollapse from '@/components/VgoUI/packages/Transitions/TransitionBodyCollapse.vue'
 
 const props = withDefaults(
   defineProps<{

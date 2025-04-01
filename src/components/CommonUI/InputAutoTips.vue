@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import {useDebounceFn, useStorage, useThrottleFn, useVModel, watchDebounced} from '@vueuse/core'
-import QuickOptions from '@/components/CanUI/packages/QuickOptions/index.vue'
-import {QuickOptionItem} from '@/components/CanUI/packages/QuickOptions/enum'
-import {useContextMenu} from '@/components/CanUI/packages/QuickOptions/utils/use-context-menu'
+import QuickOptions from '@/components/VgoUI/packages/QuickOptions/index.vue'
+import {QuickOptionItem} from '@/components/VgoUI/packages/QuickOptions/enum'
+import {useContextMenu} from '@/components/VgoUI/packages/QuickOptions/utils/use-context-menu'
 
 interface Props {
   modelValue: any

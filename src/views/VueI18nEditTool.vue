@@ -11,7 +11,7 @@ import I18nToolSettings from '@/components/VueI18nEditTool/I18nToolSettings.vue'
 import {useOpenedHistory} from '@/components/VueI18nEditTool/file-history'
 import {handleReadSelectedFile} from '@/utils/mc-utils/io'
 import CommonNavbar from '@/components/CommonUI/CommonNavbar.vue'
-import DropdownMenu from '@/components/CanUI/packages/OptionUI/Tools/DropdownMenu.vue'
+import DropdownMenu from '@/components/VgoUI/packages/OptionUI/Tools/DropdownMenu.vue'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {IDBSettingsKey, PageCraftKeys, SettingsTabType} from '@/enum/settings'
 

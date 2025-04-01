@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import {colorHash, formatDate} from '@/utils'
+import {formatDate} from '@/utils'
 import {IComponentItem, regComponentV2} from '@/components/PageCraft/ComponentExplorer/enum'
 import {useSettingsStore} from '@/store/settings'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {useThrottleFn} from '@vueuse/core'
+import {colorHash} from '@/utils/color'
 
 const emit = defineEmits(['open', 'select', 'handleDragStart'])
 

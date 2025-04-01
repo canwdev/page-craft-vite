@@ -2,13 +2,13 @@
 import StockStatistics from './StockStatistics.vue'
 import TransactionHistory from './TransactionHistory.vue'
 import {IStockTrackerSettings} from './types'
-import RectSwitch from '@/components/CanUI/packages/OptionUI/Tools/RectSwitch.vue'
+import RectSwitch from '@/components/VgoUI/packages/OptionUI/Tools/RectSwitch.vue'
 import {useStorage} from '@vueuse/core'
 import {LS_SettingsKey} from '@/enum/settings'
 import StockPrices from '@/components/Apps/StockTracker/StockPrices.vue'
-import DropdownMenu from '@/components/CanUI/packages/OptionUI/Tools/DropdownMenu.vue'
+import DropdownMenu from '@/components/VgoUI/packages/OptionUI/Tools/DropdownMenu.vue'
 import {useUpdatePrices} from '@/components/Apps/StockTracker/hooks/update-prices'
-import {IOptionItem} from '@/components/CanUI/packages/AutoFormElPlus/enum'
+import {IOptionItem} from '@/components/VgoUI/packages/AutoFormElPlus/enum'
 
 const stockTrackerSettings = useStorage<IStockTrackerSettings>(
   LS_SettingsKey.STOCK_TRACKER_SETTINGS,

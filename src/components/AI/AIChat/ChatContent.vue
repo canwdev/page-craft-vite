@@ -15,7 +15,7 @@ import {AIProvider, modelsCanUseVision} from '@/components/AI/types/models'
 import {useCommonAi} from '@/components/AI/hooks/use-common-ai'
 import {GptMessage} from '@/components/AI/types/open-ai'
 import {getChatContentHtml, printChatContent} from '@/components/AI/utils/print-content'
-import DropdownMenu from '@/components/CanUI/packages/OptionUI/Tools/DropdownMenu.vue'
+import DropdownMenu from '@/components/VgoUI/packages/OptionUI/Tools/DropdownMenu.vue'
 import {SettingsTabType} from '@/enum/settings'
 // 代码主题样式
 import codeDarkCss from 'highlight.js/styles/github-dark.css?raw'

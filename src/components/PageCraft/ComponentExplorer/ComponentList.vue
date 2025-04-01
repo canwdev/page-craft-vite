@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import {useVModel} from '@vueuse/core'
 
-import QuickOptions from '@/components/CanUI/packages/QuickOptions/index.vue'
-import QuickContextMenu from '@/components/CanUI/packages/QuickOptions/QuickContextMenu.vue'
+import QuickOptions from '@/components/VgoUI/packages/QuickOptions/index.vue'
+import QuickContextMenu from '@/components/VgoUI/packages/QuickOptions/QuickContextMenu.vue'
 import {
   useComponentMigrationToV2,
   useComponentStorageV2,
@@ -18,7 +18,7 @@ import PopFloat from '@/components/PageCraft/ComponentExplorer/PopFloat.vue'
 import DialogImageCropper from '@/components/CommonUI/DialogImageCropper.vue'
 import {useSettingsStore} from '@/store/settings'
 import {useLocalDir} from '@/components/PageCraft/ComponentExplorer/hooks/use-local-dir'
-import DropdownMenu from '@/components/CanUI/packages/OptionUI/Tools/DropdownMenu.vue'
+import DropdownMenu from '@/components/VgoUI/packages/OptionUI/Tools/DropdownMenu.vue'
 
 const emit = defineEmits(['open', 'update:isLoading', 'refresh'])
 

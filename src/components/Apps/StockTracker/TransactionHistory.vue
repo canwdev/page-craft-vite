@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import AutoTableElPlus from '@/components/CanUI/packages/AutoTableElPlus/index.vue'
-import {AutoTableColumn} from '@/components/CanUI/packages/AutoTableElPlus/types'
+import AutoTableElPlus from '@/components/VgoUI/packages/AutoTableElPlus/index.vue'
+import {AutoTableColumn} from '@/components/VgoUI/packages/AutoTableElPlus/types'
 import {
   currencyOptions,
   EntrustSide,
@@ -12,13 +12,13 @@ import {
 import {useResizeObserver} from '@vueuse/core'
 import {formatDate, guid} from '@/utils'
 import {getPriceWithSymbol} from '@/components/Apps/StockTracker/utils'
-import {renderDropdownMenu} from '@/components/CanUI/packages/OptionUI/Tools/renders'
-import AutoFormElPlus from '@/components/CanUI/packages/AutoFormElPlus/index.vue'
+import {renderDropdownMenu} from '@/components/VgoUI/packages/OptionUI/Tools/renders'
+import AutoFormElPlus from '@/components/VgoUI/packages/AutoFormElPlus/index.vue'
 import {
   AutoFormItemType,
   IOptionItem,
   MixedFormItems,
-} from '@/components/CanUI/packages/AutoFormElPlus/enum'
+} from '@/components/VgoUI/packages/AutoFormElPlus/enum'
 
 const props = withDefaults(
   defineProps<{

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import {useRoute, useRouter} from 'vue-router'
-import ViewPortWindow from '@/components/CanUI/packages/ViewPortWindow/index.vue'
+import ViewPortWindow from '@/components/VgoUI/packages/ViewPortWindow/index.vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import CLaunch from '@/components/CLaunch/CLaunch.vue'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
@@ -9,7 +9,7 @@ import {useSystemStore} from '@/store/system'
 import {useMainStore} from '@/store/main'
 import {WebviewWindow} from '@tauri-apps/api/window'
 import {SettingsTabType} from '@/enum/settings'
-import {QuickOptionItem} from '@/components/CanUI/packages/QuickOptions/enum'
+import {QuickOptionItem} from '@/components/VgoUI/packages/QuickOptions/enum'
 import QuickLaunch from '@/components/QuickLaunch/index.vue'
 
 const props = withDefaults(
@@ -92,7 +92,7 @@ const cLaunchItems = computed((): QuickOptionItem[] => {
     },
     {
       label: 'AI Chat',
-      iconClass: 'mdi mdi-comment-text',
+      iconClass: 'mdi mdi-robot',
       props: {
         onClick: async () => {
           mainStore.isShowQuickLaunch = false
@@ -258,6 +258,18 @@ const cLaunchItems = computed((): QuickOptionItem[] => {
     },
   ]
 })
+
+const qlRef = ref()
+const handleTabChange = (value: string) => {
+  // console.log(value, qlRef.value)
+  if (value === 'ql') {
+    setTimeout(() => {
+      if (qlRef.value) {
+        qlRef.value.focus()
+      }
+    }, 100)
+  }
+}
 </script>
 
 <template>
@@ -277,9 +289,11 @@ const cLaunchItems = computed((): QuickOptionItem[] => {
       PageCraft {{ $t('common.toolbox') }} (alt+q)
     </template>
 
-    <CLaunch :items="cLaunchItems">
+    <CLaunch :items="cLaunchItems" @tabChange="handleTabChange">
       <template #default="{value}">
-        <QuickLaunch v-if="value === 'ql'" ref="qlRef" />
+        <div v-show="value === 'ql'">
+          <QuickLaunch ref="qlRef" />
+        </div>
       </template>
     </CLaunch>
   </ViewPortWindow>

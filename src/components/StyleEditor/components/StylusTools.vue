@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import {defineComponent, ref} from 'vue'
 import {copyToClipboard, readClipboardData} from '@/utils'
-import VueMonaco from '@/components/CanUI/packages/VueMonaco/index.vue'
+import VueMonaco from '@/components/VgoUI/packages/VueMonaco/index.vue'
 import {useI18n} from 'vue-i18n'
 import {useDebounceFn, useVModel} from '@vueuse/core'
-import ViewPortWindow from '@/components/CanUI/packages/ViewPortWindow/index.vue'
+import ViewPortWindow from '@/components/VgoUI/packages/ViewPortWindow/index.vue'
 import {useSettingsStore} from '@/store/settings'
 
 const {t: $t} = useI18n()

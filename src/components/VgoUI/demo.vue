@@ -3,7 +3,7 @@ import QuickOptionsDemo from './packages/QuickOptions/QuickOptionsDemo.vue'
 </script>
 
 <template>
-  <div class="can-ui-demo-page scrollbar-mini">
+  <div class="ui-demo-page scrollbar-mini">
     <div class="container">
       <QuickOptionsDemo />
     </div>
@@ -11,7 +11,7 @@ import QuickOptionsDemo from './packages/QuickOptions/QuickOptionsDemo.vue'
 </template>
 
 <style scoped lang="scss">
-.can-ui-demo-page {
+.ui-demo-page {
   height: 100%;
   overflow: auto;
 }

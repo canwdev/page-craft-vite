@@ -28,14 +28,14 @@ import {PiniaSharedState} from 'pinia-shared-state'
 import PortalVue from 'portal-vue'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import i18n from '@/i18n/index'
-import CanUI from '@/components/CanUI'
+import VgoUI from '@/components/VgoUI'
 import './styles/style.scss'
 
 import '@/components/Apps/app-list'
 
 const app = createApp(App)
 app.use(i18n)
-app.use(CanUI)
+app.use(VgoUI)
 app.use(ElementPlus)
 app.use(router)
 const pinia = createPinia()

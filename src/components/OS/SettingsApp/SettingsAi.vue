@@ -1,5 +1,5 @@
 <script lang="ts" setup="">
-import {StOptionItem, StOptionType} from '@/components/CanUI/packages/OptionUI/enum'
+import {StOptionItem, StOptionType} from '@/components/VgoUI/packages/OptionUI/enum'
 import {useI18n} from 'vue-i18n'
 import {useAiSettingsStore} from '@/components/AI/hooks/ai-settings'
 import {
@@ -8,8 +8,8 @@ import {
   getModelOptions,
   openAIChatModelOptions,
 } from '@/components/AI/types/models'
-import OptionUI from '@/components/CanUI/packages/OptionUI/index.vue'
-import {AutoFormItemType} from '@/components/CanUI/packages/AutoFormElPlus/enum'
+import OptionUI from '@/components/VgoUI/packages/OptionUI/index.vue'
+import {AutoFormItemType} from '@/components/VgoUI/packages/AutoFormElPlus/enum'
 import {useOpenAI_GPT} from '@/components/AI/hooks/use-gpt'
 import {useAnthropicClaudeAI} from '@/components/AI/hooks/use-claude'
 import {useCommonAi} from '@/components/AI/hooks/use-common-ai'

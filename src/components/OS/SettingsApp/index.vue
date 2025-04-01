@@ -6,7 +6,7 @@ export default {
 
 <script setup lang="ts">
 import {SettingsTabType} from '@/enum/settings'
-import TabLayout from '@/components/CanUI/packages/Layouts/TabLayout.vue'
+import TabLayout from '@/components/VgoUI/packages/Layouts/TabLayout.vue'
 import SettingsCommon from '@/components/OS/SettingsApp/SettingsCommon.vue'
 import SettingsAi from '@/components/OS/SettingsApp/SettingsAi.vue'
 import I18nToolSettings from '@/components/VueI18nEditTool/I18nToolSettings.vue'

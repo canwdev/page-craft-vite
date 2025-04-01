@@ -1,4 +1,3 @@
-import ColorHash from 'color-hash'
 import moment from 'moment/moment'
 
 /**
@@ -81,7 +80,7 @@ export const readClipboardData = (options: any = {}): Promise<string> => {
       document.body.appendChild(textarea)
       textarea.select()
       document.execCommand('paste')
-      let text = textarea.value
+      const text = textarea.value
       resolve(formatText(text))
       document.body.removeChild(textarea)
     }
@@ -100,39 +99,6 @@ export const isCharacterKeyPress = (evt) => {
   }
   return false
 }
-
-// https://stackoverflow.com/a/16348977
-export const stringToColour = (str = '') => {
-  let i
-  let hash = 0
-  for (i = 0; i < str.length; i++) {
-    hash = str.charCodeAt(i) + ((hash << 5) - hash)
-  }
-  let colour = '#'
-  for (i = 0; i < 3; i++) {
-    const value = (hash >> (i * 8)) & 0xff
-    colour += ('00' + value.toString(16)).substr(-2)
-  }
-  return colour
-}
-
-export const customHash = (str = '') => {
-  let hash = 0
-  for (let i = 0; i < str.length; i++) {
-    hash += str.charCodeAt(i)
-  }
-  return hash
-}
-export const colorHash = new ColorHash({
-  hash: customHash,
-  lightness: [0.66],
-  // hue: [
-  //   {min: 30, max: 90},
-  //   {min: 180, max: 210},
-  //   {min: 270, max: 285},
-  // ],
-  // saturation: [0.35, 0.5, 0.65],
-})
 
 export function pad2Num(num: number, len = 2) {
   return num.toString().padStart(len, '0')

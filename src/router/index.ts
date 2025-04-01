@@ -78,7 +78,7 @@ const routes = [
         component: () => import('@/views/AiPage.vue'),
         meta: {
           title: `AI Chat`,
-          iconClass: 'mdi mdi-comment-text',
+          iconClass: 'mdi mdi-robot',
         },
       },
       {

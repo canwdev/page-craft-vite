@@ -1,7 +1,7 @@
 <script lang="ts">
 import {defineComponent, PropType} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
-import VueRender from '@/components/CanUI/packages/OptionUI/Tools/VueRender.vue'
+import VueRender from '@/components/VgoUI/packages/OptionUI/Tools/VueRender.vue'
 type TabItem = {
   label?: string
   value: string | number
@@ -38,9 +38,9 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="mc-tab-layout vgo-bg" :class="{horizontal}">
+  <div class="vgo-tab-layout vgo-bg" :class="{horizontal}">
     <div class="sidebar-wrap">
-      <div class="mc-tab-list">
+      <div class="vgo-tab-list">
         <div
           v-for="item in options"
           :key="item.value"
@@ -61,7 +61,7 @@ export default defineComponent({
 </template>
 
 <style lang="scss" scoped>
-.mc-tab-layout {
+.vgo-tab-layout {
   display: flex;
   align-items: center;
   height: 100%;
@@ -75,7 +75,7 @@ export default defineComponent({
     overflow-y: auto;
     border-right: 1px solid var(--vgo-color-border);
 
-    .mc-tab-list {
+    .vgo-tab-list {
       .list-item {
         padding: 4px 8px;
         transition: background-color 0.3s;
@@ -113,7 +113,7 @@ export default defineComponent({
       overflow: hidden;
       width: 100%;
 
-      .mc-tab-list {
+      .vgo-tab-list {
         display: flex;
         .list-item {
           flex-shrink: 0;

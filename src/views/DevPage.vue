@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import FileManagerWindow from '@/components/FileManager/FileManagerWindow.vue'
-import OptionUI from '@/components/CanUI/packages/OptionUI/index.vue'
-import {StOptionItem, StOptionType} from '@/components/CanUI/packages/OptionUI/enum'
+import OptionUI from '@/components/VgoUI/packages/OptionUI/index.vue'
+import {StOptionItem, StOptionType} from '@/components/VgoUI/packages/OptionUI/enum'
 import CommonNavbar from '@/components/CommonUI/CommonNavbar.vue'
-import CanUIDemo from '@/components/CanUI/CanUIDemo.vue'
+import CanUIDemo from '@/components/VgoUI/demo.vue'
 
 const configStore = reactive({
   isShowFileManager: false,

@@ -12,8 +12,8 @@ import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {useI18n} from 'vue-i18n'
 import {useOpenCloseSound, useSfxDestroy, useSfxPlace} from '@/hooks/use-sfx'
 import {onClickOutside} from '@vueuse/core'
-import {QuickOptionItem} from '@/components/CanUI/packages/QuickOptions/enum'
-import {getMenuPosStyle} from '@/components/CanUI/packages/QuickOptions/utils/use-context-menu'
+import {QuickOptionItem} from '@/components/VgoUI/packages/QuickOptions/enum'
+import {getMenuPosStyle} from '@/components/VgoUI/packages/QuickOptions/utils/use-context-menu'
 
 const MAX_WAIT_TIME = 0.3 * 1000
 

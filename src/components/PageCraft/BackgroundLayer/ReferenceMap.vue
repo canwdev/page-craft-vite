@@ -1,6 +1,6 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
-import {WindowController} from '@/components/CanUI/packages/ViewPortWindow/utils/window-controller'
+import {WindowController} from '@/components/VgoUI/packages/ViewPortWindow/utils/window-controller'
 
 export default defineComponent({
   name: 'ReferenceMap',

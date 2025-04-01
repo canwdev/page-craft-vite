@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {AutoTableColumn} from './types'
 import {useCustomColumns} from './use-custom-columns'
-import VueRender from '@/components/CanUI/packages/OptionUI/Tools/VueRender.vue'
+import VueRender from '@/components/VgoUI/packages/OptionUI/Tools/VueRender.vue'
 
 interface IAutoTableProps {
   columns: AutoTableColumn[]

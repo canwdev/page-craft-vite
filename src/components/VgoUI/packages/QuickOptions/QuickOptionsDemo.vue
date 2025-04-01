@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import QuickOptions from '@/components/CanUI/packages/QuickOptions/index.vue'
-import {QuickOptionItem} from '@/components/CanUI/packages/QuickOptions/enum'
-import QuickContextMenu from '@/components/CanUI/packages/QuickOptions/QuickContextMenu.vue'
+import QuickOptions from '@/components/VgoUI/packages/QuickOptions/index.vue'
+import {QuickOptionItem} from '@/components/VgoUI/packages/QuickOptions/enum'
+import QuickContextMenu from '@/components/VgoUI/packages/QuickOptions/QuickContextMenu.vue'
 
 const menuOptions = ref<QuickOptionItem[]>([
   {

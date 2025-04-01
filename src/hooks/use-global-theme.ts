@@ -2,7 +2,7 @@ import {LdThemeType} from '@/enum/settings'
 import {useSettingsStore} from '@/store/settings'
 import {useMainStore} from '@/store/main'
 import {getSystemIsDarkMode, hexToRgb} from '@/utils/color'
-import {useThemeOptions} from '@/components/CanUI/packages/ViewPortWindow/utils/use-theme'
+import {useThemeOptions} from '@/components/VgoUI/packages/ViewPortWindow/utils/use-theme'
 import {useElementPlusTheme} from '@/hooks/use-element-plus-theme'
 
 export const useGlobalTheme = () => {

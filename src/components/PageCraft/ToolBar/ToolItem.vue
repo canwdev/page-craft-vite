@@ -2,9 +2,9 @@
 import {defineComponent, PropType} from 'vue'
 import {useMainStore} from '@/store/main'
 import {BlockItem} from '@/enum/page-craft/block'
-import {colorHash} from '@/utils'
 import {useFileDrop} from '@/hooks/use-file-drop'
 import {useSettingsStore} from '@/store/settings'
+import {colorHash} from '@/utils/color'
 
 export default defineComponent({
   name: 'ToolItem',

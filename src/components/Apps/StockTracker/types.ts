@@ -1,6 +1,6 @@
 import {FormRules} from 'element-plus'
 import {CurrencyType} from './utils/currency-symbol'
-import {IOptionItem} from '@/components/CanUI/packages/AutoFormElPlus/enum'
+import {IOptionItem} from '@/components/VgoUI/packages/AutoFormElPlus/enum'
 import {guid} from '@/utils'
 
 export const currencyOptions = Object.values(CurrencyType).map((item) => {

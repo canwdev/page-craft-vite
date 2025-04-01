@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import {sassToCSS, suggestElementClass} from './utils/css'
 import {beautifyCss} from './utils/formater'
-import ViewPortWindow from '@/components/CanUI/packages/ViewPortWindow/index.vue'
+import ViewPortWindow from '@/components/VgoUI/packages/ViewPortWindow/index.vue'
 
 import {useI18n} from 'vue-i18n'
-import TabLayout from '@/components/CanUI/packages/Layouts/TabLayout.vue'
-import monaco from '@/components/CanUI/packages/VueMonaco/monaco-helper'
-import VueMonaco from '@/components/CanUI/packages/VueMonaco/index.vue'
-import QuickOptions from '@/components/CanUI/packages/QuickOptions/index.vue'
+import TabLayout from '@/components/VgoUI/packages/Layouts/TabLayout.vue'
+import monaco from '@/components/VgoUI/packages/VueMonaco/monaco-helper'
+import VueMonaco from '@/components/VgoUI/packages/VueMonaco/index.vue'
+import QuickOptions from '@/components/VgoUI/packages/QuickOptions/index.vue'
 import {useEventListener, useStorage, useVModel} from '@vueuse/core'
 import {useGlobalStyle} from './hooks/use-global-style'
 import {StyleTabType} from './enum'

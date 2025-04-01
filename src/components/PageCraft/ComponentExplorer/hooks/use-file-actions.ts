@@ -1,5 +1,5 @@
 import moment from 'moment/moment'
-import {QuickOptionItem} from '@/components/CanUI/packages/QuickOptions/enum'
+import {QuickOptionItem} from '@/components/VgoUI/packages/QuickOptions/enum'
 import {IEntry} from '@/components/FileManager/types/filesystem'
 import {normalizePath} from '@/components/FileManager/utils'
 import {fsWebApi} from '@/components/FileManager/utils/api'

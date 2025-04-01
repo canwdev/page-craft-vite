@@ -3,8 +3,8 @@ import {defineComponent, PropType} from 'vue'
 import {AutoFormItem, AutoFormItemType, AutoFormSchema} from './enum'
 import _get from 'lodash/get'
 import _set from 'lodash/set'
-import VueMonaco from '@/components/CanUI/packages/VueMonaco/index.vue'
-import VueRender from '@/components/CanUI/packages/OptionUI/Tools/VueRender.vue'
+import VueMonaco from '@/components/VgoUI/packages/VueMonaco/index.vue'
+import VueRender from '@/components/VgoUI/packages/OptionUI/Tools/VueRender.vue'
 
 export default defineComponent({
   name: 'AutoFormItem',

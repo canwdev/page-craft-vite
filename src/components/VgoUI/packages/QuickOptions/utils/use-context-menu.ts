@@ -1,4 +1,4 @@
-import {QuickOptionItem} from '@/components/CanUI/packages/QuickOptions/enum'
+import {QuickOptionItem} from '@/components/VgoUI/packages/QuickOptions/enum'
 
 // 获取菜单位置样式，自动处理屏幕边缘
 export const getMenuPosStyle = ({x, y, width, height, isLeftSide = false}) => {

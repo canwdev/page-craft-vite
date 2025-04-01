@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import VueRender from '@/components/CanUI/packages/OptionUI/Tools/VueRender.vue'
+import VueRender from '@/components/VgoUI/packages/OptionUI/Tools/VueRender.vue'
 import {QuickOptionItem} from '../enum'
 import DynamicValueDisplay from './DynamicValueDisplay.vue'
-import {useHoverSubMenu} from '@/components/CanUI/packages/QuickOptions/utils/use-context-menu'
-import QuickOptions from '@/components/CanUI/packages/QuickOptions/index.vue'
+import {useHoverSubMenu} from '@/components/VgoUI/packages/QuickOptions/utils/use-context-menu'
+import QuickOptions from '@/components/VgoUI/packages/QuickOptions/index.vue'
 
 interface Props {
   item: QuickOptionItem

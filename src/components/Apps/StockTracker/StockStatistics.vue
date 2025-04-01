@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import AutoTableElPlus from '@/components/CanUI/packages/AutoTableElPlus/index.vue'
-import {AutoTableColumn} from '@/components/CanUI/packages/AutoTableElPlus/types'
+import AutoTableElPlus from '@/components/VgoUI/packages/AutoTableElPlus/index.vue'
+import {AutoTableColumn} from '@/components/VgoUI/packages/AutoTableElPlus/types'
 import {EntrustSide, IStockPrices, IStockTrackerPrices, ITransactionHistory} from './types'
 import {getPriceClassName, getPriceWithSymbol} from './utils'
 import {useResizeObserver} from '@vueuse/core'

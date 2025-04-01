@@ -5,13 +5,13 @@ import {actionBlockItemList, BlockType} from '@/enum/page-craft/block'
 import {htmlBlockItemList, TabType} from '@/enum/page-craft/inventory'
 import InventoryList from '@/components/PageCraft/InventoryModal/InventoryList.vue'
 import {useMainStore} from '@/store/main'
-import {colorHash} from '@/utils'
 import {useSettingsStore} from '@/store/settings'
-import ViewPortWindow from '@/components/CanUI/packages/ViewPortWindow/index.vue'
+import ViewPortWindow from '@/components/VgoUI/packages/ViewPortWindow/index.vue'
 import {useI18n} from 'vue-i18n'
 import {useSfxPop} from '@/hooks/use-sfx'
-import TabLayout from '@/components/CanUI/packages/Layouts/TabLayout.vue'
+import TabLayout from '@/components/VgoUI/packages/Layouts/TabLayout.vue'
 import ComponentExplorer from '@/components/PageCraft/ComponentExplorer/ComponentExplorer.vue'
+import {colorHash} from '@/utils/color'
 
 export default defineComponent({
   name: 'InventoryModal',

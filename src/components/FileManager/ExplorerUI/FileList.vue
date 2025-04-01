@@ -4,15 +4,15 @@ import FileListItem from './FileListItem.vue'
 import {useVModel} from '@vueuse/core'
 import FileGridItem from './FileGridItem.vue'
 
-import QuickOptions from '@/components/CanUI/packages/QuickOptions/index.vue'
-import QuickContextMenu from '@/components/CanUI/packages/QuickOptions/QuickContextMenu.vue'
+import QuickOptions from '@/components/VgoUI/packages/QuickOptions/index.vue'
+import QuickContextMenu from '@/components/VgoUI/packages/QuickOptions/QuickContextMenu.vue'
 import {useCopyPaste} from './hooks/use-copy-paste'
 import {useSelection} from './hooks/use-selection'
 import {useLayoutSort} from './hooks/use-layout-sort'
 import {useFileActions} from './hooks/use-file-actions'
 import {setHfsInstance} from '@/components/FileManager/utils/providers/humanfs-api'
 import {useLocalDir} from '@/components/PageCraft/ComponentExplorer/hooks/use-local-dir'
-import DropdownMenu from '@/components/CanUI/packages/OptionUI/Tools/DropdownMenu.vue'
+import DropdownMenu from '@/components/VgoUI/packages/OptionUI/Tools/DropdownMenu.vue'
 
 const emit = defineEmits(['open', 'update:isLoading', 'refresh'])
 

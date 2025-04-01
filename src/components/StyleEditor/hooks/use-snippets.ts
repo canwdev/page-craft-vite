@@ -1,5 +1,5 @@
-import {useRemoteOptions} from '@/components/CanUI/packages/QuickOptions/utils/use-remote-options'
-import {QuickOptionItem} from '@/components/CanUI/packages/QuickOptions/enum'
+import {useRemoteOptions} from '@/components/VgoUI/packages/QuickOptions/utils/use-remote-options'
+import {QuickOptionItem} from '@/components/VgoUI/packages/QuickOptions/enum'
 import {ISnippetItem, monacoStyleGlobal} from './use-monaco-helper'
 import {useStorage} from '@vueuse/core'
 
