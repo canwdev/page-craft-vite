@@ -63,27 +63,27 @@
 .theme-classic .n-tabs-tab.n-tabs-tab--active {
   box-shadow: inset 1px 1px gray, 1px 0 #fff, 0 1px #fff, 1px 1px #fff !important;
 }
-.theme-classic._dark .vgo-window {
+.theme-classic.dark .vgo-window {
   color: white;
 }
-.theme-classic._dark .vgo-window .vgo-window-body._bg {
+.theme-classic.dark .vgo-window .vgo-window-body._bg {
   background-color: #31363C;
 }
-.theme-classic._dark .vgo-panel {
+.theme-classic.dark .vgo-panel {
   background-color: #31363C;
   color: white;
   box-shadow: 1px 0 #2C3034, 0 1px #2C3034, 1px 1px #2C3034, inset 1px 1px #7E888F;
 }
-.theme-classic._dark .vgo-button, .theme-classic._dark .n-button {
+.theme-classic.dark .vgo-button, .theme-classic.dark .n-button {
   background-color: #3C434A;
   border-color: #7E888F;
   color: white;
   box-shadow: 1px 0 #2C3034, 0 1px #2C3034, 1px 1px #2C3034, inset 1px 1px #7E888F;
 }
-.theme-classic._dark .vgo-button:not(.theme-classic._dark .vgo-button:disabled, .theme-classic._dark .n-button:disabled):active, .theme-classic._dark .vgo-button:not(.theme-classic._dark .vgo-button:disabled, .theme-classic._dark .n-button:disabled).active, .theme-classic._dark .n-button:not(.theme-classic._dark .vgo-button:disabled, .theme-classic._dark .n-button:disabled):active, .theme-classic._dark .n-button:not(.theme-classic._dark .vgo-button:disabled, .theme-classic._dark .n-button:disabled).active {
+.theme-classic.dark .vgo-button:not(.theme-classic.dark .vgo-button:disabled, .theme-classic.dark .n-button:disabled):active, .theme-classic.dark .vgo-button:not(.theme-classic.dark .vgo-button:disabled, .theme-classic.dark .n-button:disabled).active, .theme-classic.dark .n-button:not(.theme-classic.dark .vgo-button:disabled, .theme-classic.dark .n-button:disabled):active, .theme-classic.dark .n-button:not(.theme-classic.dark .vgo-button:disabled, .theme-classic.dark .n-button:disabled).active {
   box-shadow: inset 1px 1px #2C3034, 1px 0 #89939C, 0 1px #89939C, 1px 1px #89939C !important;
 }
-.theme-classic._dark .vgo-input, .theme-classic._dark .n-input {
+.theme-classic.dark .vgo-input, .theme-classic.dark .n-input {
   background: #31363C;
   color: white;
   box-shadow: inset -1px -1px #89939C, inset 1px 1px #1a1c1e;

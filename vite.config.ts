@@ -5,7 +5,7 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import {ElementPlusResolver} from 'unplugin-vue-components/resolvers'
-import {visualizer} from 'rollup-plugin-visualizer'
+// import {visualizer} from 'rollup-plugin-visualizer'
 
 // 不扫描这些文件夹
 const filesNeedToExclude = ['src-tauri']
@@ -15,7 +15,8 @@ const filesPathToExclude = filesNeedToExclude.map((src) => {
 
 // https://vitejs.dev/config/
 export default defineConfig(({mode}) => {
-  const env = loadEnv(mode, process.cwd())
+  // const env = loadEnv(mode, process.cwd())
+  const isProd = mode === 'production'
   console.log('vite config mode', mode)
   return {
     define: {
@@ -23,11 +24,19 @@ export default defineConfig(({mode}) => {
     },
     base: './',
     build: {
-      minify: 'terser',
       emptyOutDir: true,
       rollupOptions: {
         external: [...filesPathToExclude],
+        output: {
+          manualChunks: {
+            monaco: ['monaco-editor', 'emmet-monaco-es'],
+            ui: ['element-plus'],
+            utils: ['markdown-it-mathjax3', 'mathjax-full', 'highlight.js'],
+          },
+        },
       },
+      target: 'esnext',
+      sourcemap: isProd ? false : 'inline',
     },
     resolve: {
       alias: {
@@ -51,7 +60,7 @@ export default defineConfig(({mode}) => {
         scss: {
           additionalData: `@import "@/styles/_variables.scss";`,
           quietDeps: true, // Suppresses warnings from imported files
-          silenceDeprecations: ['import'], // Specifically silences @import deprecation warnings
+          silenceDeprecations: ['import', 'legacy-js-api'], // Specifically silences @import deprecation warnings
         },
       },
     },
@@ -59,6 +68,7 @@ export default defineConfig(({mode}) => {
       vue(),
       vueJsx(),
       // visualizer({
+      //   template: 'flamegraph', // 'treemap' | 'sunburst' | 'network' | 'flamegraph'
       //   gzipSize: true,
       //   brotliSize: true,
       //   emitFile: false,

@@ -18,6 +18,7 @@ export default defineComponent({
     const mainStore = useMainStore()
 
     const {isAppDarkMode} = useGlobalTheme()
+    provide('darkMode', {isAppDarkMode})
 
     const bgStyle = computed(() => {
       const s: any = {}

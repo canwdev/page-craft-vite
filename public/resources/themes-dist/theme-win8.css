@@ -67,22 +67,22 @@
 .theme-win8 .vgo-button:not(:disabled):hover {
   border-color: var(--primary);
 }
-.theme-win8._dark .vgo-window {
+.theme-win8.dark .vgo-window {
   background-color: black;
   color: white;
 }
-.theme-win8._dark .vgo-window .vgo-window-body._bg {
+.theme-win8.dark .vgo-window .vgo-window-body._bg {
   background-color: rgb(30, 30, 30);
 }
-.theme-win8._dark .vgo-panel {
+.theme-win8.dark .vgo-panel {
   background-color: rgba(0, 0, 0, 0.75);
   color: white;
 }
-.theme-win8._dark .vgo-button {
+.theme-win8.dark .vgo-button {
   background-color: #4B4B4B;
   color: white;
 }
-.theme-win8._dark .vgo-input {
+.theme-win8.dark .vgo-input {
   background-color: #2a2a2a;
   color: white;
 }

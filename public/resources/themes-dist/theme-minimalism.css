@@ -39,25 +39,25 @@
 .theme-minimalism .vgo-button:not(:disabled):hover {
   border-color: rgba(91, 85, 85, 0.2);
 }
-.theme-minimalism._dark .vgo-window {
+.theme-minimalism.dark .vgo-window {
   background-color: #3a3a3a;
   color: white;
 }
-.theme-minimalism._dark .vgo-window .vgo-window-body._bg {
+.theme-minimalism.dark .vgo-window .vgo-window-body._bg {
   background-color: rgb(30, 30, 30);
 }
-.theme-minimalism._dark .vgo-window._active {
+.theme-minimalism.dark .vgo-window._active {
   background-color: black;
 }
-.theme-minimalism._dark .vgo-panel {
+.theme-minimalism.dark .vgo-panel {
   background-color: #3a3a3a;
   color: white;
 }
-.theme-minimalism._dark .vgo-button {
+.theme-minimalism.dark .vgo-button {
   background-color: #4B4B4B;
   color: white;
 }
-.theme-minimalism._dark .vgo-input {
+.theme-minimalism.dark .vgo-input {
   background-color: #2a2a2a;
   color: white;
 }

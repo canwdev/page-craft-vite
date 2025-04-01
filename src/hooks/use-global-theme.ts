@@ -3,7 +3,7 @@ import {useSettingsStore} from '@/store/settings'
 import {useMainStore} from '@/store/main'
 import {getSystemIsDarkMode, hexToRgb} from '@/utils/color'
 import {useThemeOptions} from '@canwdev/vgo-ui/src/components/ViewPortWindow/utils/use-theme'
-import {useElementPlusTheme} from '@/hooks/use-element-plus-theme'
+import {useElementPlusTheme} from '@canwdev/vgo-ui/src/hooks/use-element-plus-theme/index'
 
 export const useGlobalTheme = () => {
   const mainStore = useMainStore()

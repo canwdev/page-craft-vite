@@ -6,6 +6,7 @@ import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/index.
 import {FormRules} from 'element-plus'
 import AutoFormElPlus from '@canwdev/vgo-ui/src/components/AutoFormElPlus/index.vue'
 import {AutoFormItemType, MixedFormItems} from '@canwdev/vgo-ui/src/components/AutoFormElPlus/enum'
+import VueMonaco from '@canwdev/vgo-ui/src/components/VueMonaco/index.vue'
 
 export default defineComponent({
   name: 'ElementEditDialog',
@@ -78,13 +79,24 @@ export default defineComponent({
       mVisible.value = false
     }
 
+    const monacoRender = (_, modelValue, emit) => {
+      return h(VueMonaco, {
+        showLineNumbers: true,
+        style: 'height: 400px; border-bottom: 1px solid rgba(91, 85, 85, 0.3)',
+        modelValue,
+        'onUpdate:modelValue': (val: string) => {
+          emit('update:modelValue', val)
+        },
+      })
+    }
+
     const formItems = computed((): MixedFormItems[] => {
       if (isRoot.value) {
         return [
           {
-            type: AutoFormItemType.MONACO_EDITOR,
             key: 'innerHTML',
             label: 'innerHTML',
+            render: monacoRender,
           },
         ]
       }
@@ -94,7 +106,7 @@ export default defineComponent({
           {
             label: 'innerHTML',
             key: 'innerHTML',
-            type: AutoFormItemType.MONACO_EDITOR,
+            render: monacoRender,
           },
         ]
       }
@@ -102,10 +114,7 @@ export default defineComponent({
         {
           label: 'outerHTML',
           key: 'outerHTML',
-          type: AutoFormItemType.MONACO_EDITOR,
-          props: {
-            style: 'height: 400px; border-bottom: 1px solid rgba(91, 85, 85, 0.3)',
-          },
+          render: monacoRender,
         },
       ]
     })

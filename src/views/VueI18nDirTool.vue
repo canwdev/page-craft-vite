@@ -10,7 +10,7 @@ import {
 import BatchGUI from '@/components/VueI18nEditTool/BatchGUI/index.vue'
 import DropZone from '@/components/CommonUI/DropZone.vue'
 import {useFileDrop} from '@/hooks/use-file-drop'
-import {useBeforeUnload, useSaveShortcut} from '@/hooks/use-beforeunload'
+import {useBeforeUnload, useSaveShortcut} from '@canwdev/vgo-ui/src/hooks/use-beforeunload'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import TranslateTreeItem from '@/components/VueI18nEditTool/Single/TranslateTreeItem.vue'
 import {useMainStore} from '@/store/main'

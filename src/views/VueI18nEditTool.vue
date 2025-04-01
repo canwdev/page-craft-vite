@@ -4,7 +4,7 @@ import TranslateTreeItem from '@/components/VueI18nEditTool/Single/TranslateTree
 import {exportI18nTreeJsonObj, I18nJsonObjUtils, ITranslateTreeItem} from '@/enum/vue-i18n-tool'
 import DropZone from '@/components/CommonUI/DropZone.vue'
 import {useFileDrop} from '@/hooks/use-file-drop'
-import {useBeforeUnload, useSaveShortcut} from '@/hooks/use-beforeunload'
+import {useBeforeUnload, useSaveShortcut} from '@canwdev/vgo-ui/src/hooks/use-beforeunload'
 import {useMainStore} from '@/store/main'
 import {useI18n} from 'vue-i18n'
 import I18nToolSettings from '@/components/VueI18nEditTool/I18nToolSettings.vue'

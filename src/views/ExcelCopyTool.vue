@@ -11,7 +11,7 @@ import {
   textConvertMultipleLine,
   textConvertAdvanced,
 } from '@/utils/mc-utils/text-convert'
-import {useSaveShortcut} from '@/hooks/use-beforeunload'
+import {useSaveShortcut} from '@canwdev/vgo-ui/src/hooks/use-beforeunload'
 import {useMainStore} from '@/store/main'
 import {useI18n} from 'vue-i18n'
 import {useStorage} from '@vueuse/core'
