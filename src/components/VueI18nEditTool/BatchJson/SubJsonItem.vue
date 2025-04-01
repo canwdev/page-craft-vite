@@ -3,7 +3,7 @@ import {defineComponent, PropType, ref} from 'vue'
 import {useBatchItemV2} from '@/components/VueI18nEditTool/BatchGUI/batch-hooks'
 import {BatchListItem, useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
 import {useMainStore} from '@/store/main'
-import VueMonaco from '@/components/VgoUI/packages/VueMonaco/index.vue'
+import VueMonaco from '@canwdev/vgo-ui/src/components/VueMonaco/index.vue'
 
 export default defineComponent({
   name: 'SubTextItem',

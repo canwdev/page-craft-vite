@@ -2,7 +2,7 @@ import {LdThemeType} from '@/enum/settings'
 import {useSettingsStore} from '@/store/settings'
 import {useMainStore} from '@/store/main'
 import {getSystemIsDarkMode, hexToRgb} from '@/utils/color'
-import {useThemeOptions} from '@/components/VgoUI/packages/ViewPortWindow/utils/use-theme'
+import {useThemeOptions} from '@canwdev/vgo-ui/src/components/ViewPortWindow/utils/use-theme'
 import {useElementPlusTheme} from '@/hooks/use-element-plus-theme'
 
 export const useGlobalTheme = () => {
@@ -41,11 +41,11 @@ export const useGlobalTheme = () => {
     isAppDarkMode,
     (val) => {
       if (val) {
-        document.body.classList.add('_dark')
+        document.body.classList.add('dark')
         // Element Plus 暗黑模式 https://element-plus.org/zh-CN/guide/dark-mode.html
         document.documentElement.classList.add('dark')
       } else {
-        document.body.classList.remove('_dark')
+        document.body.classList.remove('dark')
         document.documentElement.classList.remove('dark')
       }
     },

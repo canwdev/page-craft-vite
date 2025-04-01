@@ -19,18 +19,15 @@ import {useI18nToolSettingsStore} from '@/components/VueI18nEditTool/store/i18n-
 import BatchJson from '@/components/VueI18nEditTool/BatchJson/index.vue'
 import {useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
 import {useStorage} from '@vueuse/core'
-import TabLayout from '@/components/VgoUI/packages/Layouts/TabLayout.vue'
 import {useOpenedHistory} from '@/components/VueI18nEditTool/file-history'
 import {useGuiToolbox} from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox/use-gui-toolbox'
 import GuiToolbox from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox/GuiToolbox.vue'
 import {handleReadSelectedFile} from '@/utils/mc-utils/io'
 import CommonNavbar from '@/components/CommonUI/CommonNavbar.vue'
-import ToolBar from '@/components/PageCraft/ToolBar/index.vue'
-import DropdownMenu from '@/components/VgoUI/packages/OptionUI/Tools/DropdownMenu.vue'
-import RectSwitch from '@/components/VgoUI/packages/OptionUI/Tools/RectSwitch.vue'
-import FoldableSidebarLayout from '@/components/VgoUI/packages/Layouts/FoldableSidebarLayout.vue'
+import DropdownMenu from '@canwdev/vgo-ui/src/components/QuickOptions/DropdownMenu.vue'
+import RectSwitch from '@canwdev/vgo-ui/src/components/OptionUI/Tools/RectSwitch.vue'
+import FoldableSidebarLayout from '@canwdev/vgo-ui/src/components/Layouts/FoldableSidebarLayout.vue'
 import {TreeNode} from 'element-plus'
-import {TreeNodeData} from 'element-plus/es/components/tree-v2/src/types'
 import {LS_SettingsKey, IDBSettingsKey, PageCraftKeys, SettingsTabType} from '@/enum/settings'
 
 const formatDirTreeItem = (data: any = {}): DirTreeItem => {
@@ -414,7 +411,7 @@ const handleSettings = () => {
     @drop.prevent.stop="fileDrop"
     v-loading="i18nMainStore.isLoading"
   >
-    <transition name="mc-fade">
+    <transition name="fade">
       <DropZone position-fixed v-show="showDropzone" :text="$t('msgs.drag_folder_here')" />
     </transition>
 

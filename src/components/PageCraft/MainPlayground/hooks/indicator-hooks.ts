@@ -107,7 +107,7 @@ export const useIndicator = () => {
       'page-craft-mc--full-width': indicatorOptions.fullWidth,
       'page-craft-mc--centered-y': indicatorOptions.centeredElementsY,
       'page-craft-mc--centered-x': indicatorOptions.centeredElementsX,
-      _dark: indicatorOptions.bgDark,
+      dark: indicatorOptions.bgDark,
     }
   })
 

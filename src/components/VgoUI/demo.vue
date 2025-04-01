@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import QuickOptionsDemo from './packages/QuickOptions/QuickOptionsDemo.vue'
+import QuickOptionsDemo from '@canwdev/vgo-ui/src/components/QuickOptions/QuickOptionsDemo.vue'
 </script>
 
 <template>

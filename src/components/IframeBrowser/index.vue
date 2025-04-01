@@ -5,11 +5,11 @@ export default {
 </script>
 
 <script lang="ts" setup>
-import ViewPortWindow from '@/components/VgoUI/packages/ViewPortWindow/index.vue'
+import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/index.vue'
 import {useRouter} from 'vue-router'
 import {useStorage, useVModel} from '@vueuse/core'
-import {useRemoteOptions} from '@/components/VgoUI/packages/QuickOptions/utils/use-remote-options'
-import QuickOptions from '@/components/VgoUI/packages/QuickOptions/index.vue'
+import {useRemoteOptions} from '@canwdev/vgo-ui/src/components/QuickOptions/utils/use-remote-options'
+import QuickOptions from '@canwdev/vgo-ui/src/components/QuickOptions/index.vue'
 import {LS_SettingsKey} from '@/enum/settings'
 
 const props = withDefaults(

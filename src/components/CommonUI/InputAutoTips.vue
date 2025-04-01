@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import {useDebounceFn, useStorage, useThrottleFn, useVModel, watchDebounced} from '@vueuse/core'
-import QuickOptions from '@/components/VgoUI/packages/QuickOptions/index.vue'
-import {QuickOptionItem} from '@/components/VgoUI/packages/QuickOptions/enum'
-import {useContextMenu} from '@/components/VgoUI/packages/QuickOptions/utils/use-context-menu'
+import QuickOptions from '@canwdev/vgo-ui/src/components/QuickOptions/index.vue'
+import {QuickOptionItem} from '@canwdev/vgo-ui/src/components/QuickOptions/enum'
+import {useContextMenu} from '@canwdev/vgo-ui/src/components/QuickOptions/utils/use-context-menu'
 
 interface Props {
   modelValue: any
@@ -184,7 +184,7 @@ const handleBlur = () => {
 <template>
   <div ref="rootRef" class="mc-input-auto-tips">
     <Teleport to=".page-craft-root">
-      <transition name="mc-fade-scale">
+      <transition name="fade-scale">
         <QuickOptions
           ref="menuRef"
           :style="{...ctxMenuStyle, transition: 'all .2s'}"

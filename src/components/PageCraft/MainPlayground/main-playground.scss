@@ -72,7 +72,7 @@ $primaryOpacity: var(--vgo-primary-opacity); // rgba(249, 34, 80, 0.2)
   margin-right: auto;
   color: initial;
 
-  &._dark {
+  &.dark {
     background-color: #1e1e1e;
     color: white;
   }

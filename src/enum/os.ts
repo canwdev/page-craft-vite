@@ -1,5 +1,4 @@
 import {guid} from '@/utils'
-import {WinOptions} from '@/components/VgoUI/packages/ViewPortWindow/utils/window-controller'
 import {Component} from 'vue'
 
 export interface ShortcutItem {

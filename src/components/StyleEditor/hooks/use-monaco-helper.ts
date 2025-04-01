@@ -1,4 +1,4 @@
-import monaco from '@/components/VgoUI/packages/VueMonaco/monaco-helper'
+import monaco from '@canwdev/vgo-ui/src/components/VueMonaco/monaco-helper'
 
 interface IHistoryItem {
   label: string

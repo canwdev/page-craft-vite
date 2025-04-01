@@ -11,7 +11,7 @@ import I18nToolSettings from '@/components/VueI18nEditTool/I18nToolSettings.vue'
 import {useOpenedHistory} from '@/components/VueI18nEditTool/file-history'
 import {handleReadSelectedFile} from '@/utils/mc-utils/io'
 import CommonNavbar from '@/components/CommonUI/CommonNavbar.vue'
-import DropdownMenu from '@/components/VgoUI/packages/OptionUI/Tools/DropdownMenu.vue'
+import DropdownMenu from '@canwdev/vgo-ui/src/components/QuickOptions/DropdownMenu.vue'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {IDBSettingsKey, PageCraftKeys, SettingsTabType} from '@/enum/settings'
 
@@ -213,7 +213,7 @@ export default defineComponent({
     @drop.prevent.stop="fileDrop"
     v-loading="isLoading"
   >
-    <transition name="mc-fade">
+    <transition name="fade">
       <DropZone position-fixed v-show="showDropzone" :text="$t('msgs.drag_file_here')" />
     </transition>
 

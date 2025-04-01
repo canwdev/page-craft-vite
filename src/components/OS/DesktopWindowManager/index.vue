@@ -5,7 +5,7 @@ export default {
 </script>
 
 <script lang="ts" setup>
-import ViewPortWindow from '@/components/VgoUI/packages/ViewPortWindow/index.vue'
+import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/index.vue'
 import {useSystemStore} from '@/store/system'
 import {useSettingsStore} from '@/store/settings'
 import {TaskItem} from '@/enum/os'

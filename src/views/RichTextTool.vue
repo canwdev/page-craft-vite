@@ -3,7 +3,7 @@ import {useStorage} from '@vueuse/core'
 import {useMainStore} from '@/store/main'
 import {LS_SettingsKey, SettingsTabType} from '@/enum/settings'
 import {useRoute} from 'vue-router'
-import TabLayout from '@/components/VgoUI/packages/Layouts/TabLayout.vue'
+import TabLayout from '@canwdev/vgo-ui/src/components/Layouts/TabLayout.vue'
 import MarkdownEditor from '@/components/RichText/MarkdownEditor.vue'
 
 type AppParams = {

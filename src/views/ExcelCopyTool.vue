@@ -17,9 +17,9 @@ import {useI18n} from 'vue-i18n'
 import {useStorage} from '@vueuse/core'
 import {handleExportFile, promptGetFileName} from '@/utils/mc-utils/io'
 import CommonNavbar from '@/components/CommonUI/CommonNavbar.vue'
-import DropdownMenu from '@/components/VgoUI/packages/OptionUI/Tools/DropdownMenu.vue'
-import RectSwitch from '@/components/VgoUI/packages/OptionUI/Tools/RectSwitch.vue'
-import TabLayout from '@/components/VgoUI/packages/Layouts/TabLayout.vue'
+import DropdownMenu from '@canwdev/vgo-ui/src/components/QuickOptions/DropdownMenu.vue'
+import RectSwitch from '@canwdev/vgo-ui/src/components/OptionUI/Tools/RectSwitch.vue'
+import TabLayout from '@canwdev/vgo-ui/src/components/Layouts/TabLayout.vue'
 import {LS_SettingsKey} from '@/enum/settings'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 
@@ -391,7 +391,7 @@ export default defineComponent({
     @dragleave.prevent.stop="showDropzone = false"
     @drop.prevent.stop="fileDrop"
   >
-    <transition name="mc-fade">
+    <transition name="fade">
       <DropZone position-fixed v-show="showDropzone" text="Drop Excel file here" />
     </transition>
 

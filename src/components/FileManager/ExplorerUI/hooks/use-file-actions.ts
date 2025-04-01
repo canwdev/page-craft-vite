@@ -2,7 +2,7 @@ import moment from 'moment/moment'
 import {fsWebApi} from '../../utils/api'
 import {generateTextFile, normalizePath} from '../../utils'
 import {IEntry} from '../../types/filesystem'
-import {QuickOptionItem} from '@/components/VgoUI/packages/QuickOptions/enum'
+import {QuickOptionItem} from '@canwdev/vgo-ui/src/components/QuickOptions/enum'
 
 export const useFileActions = ({
   isLoading,

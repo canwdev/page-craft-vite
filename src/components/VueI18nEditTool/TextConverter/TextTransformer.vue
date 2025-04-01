@@ -7,9 +7,9 @@ import {
   textConvertMultipleLine,
 } from '@/utils/mc-utils/text-convert'
 import {useI18n} from 'vue-i18n'
-import VueMonaco from '@/components/VgoUI/packages/VueMonaco/index.vue'
+import VueMonaco from '@canwdev/vgo-ui/src/components/VueMonaco/index.vue'
 import {useDebounceFn, useStorage} from '@vueuse/core'
-import RectSwitch from '@/components/VgoUI/packages/OptionUI/Tools/RectSwitch.vue'
+import RectSwitch from '@canwdev/vgo-ui/src/components/OptionUI/Tools/RectSwitch.vue'
 import {useSettingsStore} from '@/store/settings'
 import {LS_SettingsKey} from '@/enum/settings'
 

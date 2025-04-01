@@ -1,6 +1,6 @@
 import {setHfsInstance} from '@/components/FileManager/utils/providers/humanfs-api'
 import {useOpenedHistory} from '@/components/VueI18nEditTool/file-history'
-import {QuickOptionItem} from '@/components/VgoUI/packages/QuickOptions/enum'
+import {QuickOptionItem} from '@canwdev/vgo-ui/src/components/QuickOptions/enum'
 
 export const useLocalDir = ({emit}) => {
   const handleRef = ref<FileSystemDirectoryHandle | null>(null)

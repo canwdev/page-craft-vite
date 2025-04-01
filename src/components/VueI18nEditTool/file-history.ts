@@ -1,5 +1,5 @@
 import {useIDBKeyval} from '@vueuse/integrations/useIDBKeyval'
-import {QuickOptionItem} from '@/components/VgoUI/packages/QuickOptions/enum'
+import {QuickOptionItem} from '@canwdev/vgo-ui/src/components/QuickOptions/enum'
 import moment from 'moment/moment'
 
 export type FileHandleHistory = {

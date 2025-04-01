@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import TabLayout from '@/components/VgoUI/packages/Layouts/TabLayout.vue'
-import {QuickOptionItem} from '@/components/VgoUI/packages/QuickOptions/enum'
+import TabLayout from '@canwdev/vgo-ui/src/components/Layouts/TabLayout.vue'
+import {QuickOptionItem} from '@canwdev/vgo-ui/src/components/QuickOptions/enum'
 import {useStorage} from '@vueuse/core'
 import {LS_SettingsKey} from '@/enum/settings'
 
@@ -119,7 +119,7 @@ const handleWheel = (e: WheelEvent) => {
         color: var(--vgo-primary);
         line-height: 1;
         transform: translateY(4px);
-        text-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
+        //text-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
       }
     }
     .item-label-wrapper {

@@ -7,7 +7,7 @@ import {
   AutoFormItem,
   AutoFormItemType,
   MixedFormItems,
-} from '@/components/VgoUI/packages/AutoFormElPlus/enum'
+} from '@canwdev/vgo-ui/src/components/AutoFormElPlus/enum'
 
 const genInputFormItem = (key: string, rows = 0) => {
   return {

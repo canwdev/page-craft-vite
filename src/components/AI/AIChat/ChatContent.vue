@@ -15,7 +15,7 @@ import {AIProvider, modelsCanUseVision} from '@/components/AI/types/models'
 import {useCommonAi} from '@/components/AI/hooks/use-common-ai'
 import {GptMessage} from '@/components/AI/types/open-ai'
 import {getChatContentHtml, printChatContent} from '@/components/AI/utils/print-content'
-import DropdownMenu from '@/components/VgoUI/packages/OptionUI/Tools/DropdownMenu.vue'
+import DropdownMenu from '@canwdev/vgo-ui/src/components/QuickOptions/DropdownMenu.vue'
 import {SettingsTabType} from '@/enum/settings'
 // 代码主题样式
 import codeDarkCss from 'highlight.js/styles/github-dark.css?raw'
@@ -27,7 +27,7 @@ const aisStore = useAiSettingsStore()
 const {currentCharacter, currentHistory} = useAiCharacters()
 
 // 切换代码的明暗主题
-const {css: codeCss} = useStyleTag('', {id: 'element-style-override'})
+const {css: codeCss} = useStyleTag('', {id: 'highlight-js-code-theme'})
 watch(
   () => mainStore.isAppDarkMode,
   (val) => {

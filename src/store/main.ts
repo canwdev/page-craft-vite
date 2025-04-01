@@ -47,7 +47,7 @@ export const useMainStore = defineStore('main', {
   share: {
     // 这些变量不参与多页面数据共享
     // An array of fields that the plugin will ignore.
-    omit: ['isShowQuickLaunch', 'upgradeInfo'],
+    omit: ['isShowQuickLaunch', 'isShowIframeBrowser', 'upgradeInfo'],
     enable: true,
     initialize: true,
   },

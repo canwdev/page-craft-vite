@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ViewPortWindow from '@/components/VgoUI/packages/ViewPortWindow/index.vue'
+import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/index.vue'
 import ChatGPT from '@/components/AI/AIChat/ChatContent.vue'
 import {useVModel} from '@vueuse/core'
 import ChatRoot from '@/components/AI/AIChat/ChatRoot.vue'

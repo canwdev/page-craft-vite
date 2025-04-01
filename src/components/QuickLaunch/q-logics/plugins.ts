@@ -1,6 +1,6 @@
 import {createGlobalState, useFileDialog, useStorage} from '@vueuse/core'
 import moment from 'moment/moment'
-import {QuickOptionItem} from '@/components/VgoUI/packages/QuickOptions/enum'
+import {QuickOptionItem} from '@canwdev/vgo-ui/src/components/QuickOptions/enum'
 import * as changeCase from 'change-case'
 import {filterLabel} from './utils'
 import {demoPluginTpl} from './demo.json'

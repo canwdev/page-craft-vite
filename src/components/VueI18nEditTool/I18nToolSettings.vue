@@ -2,10 +2,10 @@
 import {defineComponent} from 'vue'
 import {useI18n} from 'vue-i18n'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
-import {StOptionItem, StOptionType} from '@/components/VgoUI/packages/OptionUI/enum'
+import {StOptionItem, StOptionType} from '@canwdev/vgo-ui/src/components/OptionUI/enum'
 import {useI18nToolSettingsStore} from '@/components/VueI18nEditTool/store/i18n-tool-settings'
 import {TextConvertMode, TextConvertOptions} from '@/utils/mc-utils/text-convert'
-import OptionUI from '@/components/VgoUI/packages/OptionUI/index.vue'
+import OptionUI from '@canwdev/vgo-ui/src/components/OptionUI/index.vue'
 
 export default defineComponent({
   name: 'I18nToolSettings',

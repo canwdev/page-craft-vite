@@ -8,7 +8,7 @@ import {
   handleReadSelectedFile,
   promptGetFileName,
 } from './io'
-import {showInputPrompt} from '@/components/VgoUI/functions/input-prompt'
+import {showInputPrompt} from '@/utils/mc-utils/input-prompt'
 import * as changeCase from 'change-case'
 
 export const mcUtils = {

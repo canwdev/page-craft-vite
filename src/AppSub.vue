@@ -11,6 +11,7 @@ import DesktopWindowManager from '@/components/OS/DesktopWindowManager/index.vue
 import {SettingsTabType} from '@/enum/settings'
 import {useSystemStore} from '@/store/system'
 import {useAppList} from '@/components/Apps/app-list'
+import '@/components/monaco-editor-patch'
 
 export default defineComponent({
   name: 'AppSub',

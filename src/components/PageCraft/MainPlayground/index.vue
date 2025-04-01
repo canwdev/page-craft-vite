@@ -14,10 +14,10 @@ import {useSettingsStore} from '@/store/settings'
 import {WebviewWindow} from '@tauri-apps/api/window'
 import {useRoute, useRouter} from 'vue-router'
 import {useEventListener} from '@vueuse/core'
-import VueMonaco from '@/components/VgoUI/packages/VueMonaco/index.vue'
+import VueMonaco from '@canwdev/vgo-ui/src/components/VueMonaco/index.vue'
 import ElementEditDialog from '@/components/PageCraft/MainPlayground/components/ElementEditDialog.vue'
-import DropdownMenu from '@/components/VgoUI/packages/OptionUI/Tools/DropdownMenu.vue'
-import QuickContextMenu from '@/components/VgoUI/packages/QuickOptions/QuickContextMenu.vue'
+import DropdownMenu from '@canwdev/vgo-ui/src/components/QuickOptions/DropdownMenu.vue'
+import QuickContextMenu from '@canwdev/vgo-ui/src/components/QuickOptions/QuickContextMenu.vue'
 import IndicatorInfo from '@/components/PageCraft/MainPlayground/components/IndicatorInfo.vue'
 import {useSystemStore} from '@/store/system'
 import {SettingsTabType} from '@/enum/settings'
@@ -127,7 +127,7 @@ const doImportAction = () => {
   <div tabindex="0" @keyup="listenShortcuts" class="page-craft-mc-wrap">
     <IndicatorInfo v-if="isSelectMode" />
 
-    <transition name="mc-fade">
+    <transition name="fade">
       <div
         ref="selectionElRef"
         class="selection-action"

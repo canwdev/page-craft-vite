@@ -73,7 +73,7 @@ export default defineComponent({
   background-repeat: no-repeat;
 }
 
-._dark {
+.dark {
   color: white;
   .page-craft-root {
     background-color: #181818;

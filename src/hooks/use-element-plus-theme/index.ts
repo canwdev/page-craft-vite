@@ -1,8 +1,6 @@
-import {PRE, PRE_DARK, PRE_LIGHT, WHITE, BLACK} from './token'
+import {BLACK, PRE, PRE_DARK, PRE_LIGHT, WHITE} from './token'
 import {onBeforeMount} from 'vue'
 import {useStyleTag} from '@vueuse/core'
-
-import {StyleEditorKeys} from '@/enum/settings'
 
 const html = document.documentElement
 
@@ -47,8 +45,7 @@ export function useElementPlusTheme(color?: string) {
       styleObjDark[`${PRE_LIGHT}-${i}`] = mix(color, BLACK, i * 0.1)
     }
     // 设置主要暗色
-    const dark = mix(color, BLACK, 0.2)
-    styleObj[`${PRE_DARK}-2`] = dark
+    styleObj[`${PRE_DARK}-2`] = mix(color, BLACK, 0.2)
 
     css.value = `body {
 ${Object.keys(styleObj)

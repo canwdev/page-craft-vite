@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import {useRoute, useRouter} from 'vue-router'
-import QuickOptions from '@/components/VgoUI/packages/QuickOptions/index.vue'
+import QuickOptions from '@canwdev/vgo-ui/src/components/QuickOptions/index.vue'
 import {useQLogics} from './q-logics'
 import {useTextareaAutosize} from '@vueuse/core'
 import {useQuickLaunchPlugins} from './q-logics/plugins'
-import ViewPortWindow from '@/components/VgoUI/packages/ViewPortWindow/index.vue'
-import VueMonaco from '@/components/VgoUI/packages/VueMonaco/index.vue'
+import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/index.vue'
+import VueMonaco from '@canwdev/vgo-ui/src/components/VueMonaco/index.vue'
 
 const route = useRoute()
 const qRef = ref()

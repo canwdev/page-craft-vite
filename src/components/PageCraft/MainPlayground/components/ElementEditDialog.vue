@@ -2,10 +2,10 @@
 import {computed, defineComponent, PropType, ref} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {formatForm, getCustomFormItems} from '../utils/element-edit'
-import ViewPortWindow from '@/components/VgoUI/packages/ViewPortWindow/index.vue'
+import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/index.vue'
 import {FormRules} from 'element-plus'
-import AutoFormElPlus from '@/components/VgoUI/packages/AutoFormElPlus/index.vue'
-import {AutoFormItemType, MixedFormItems} from '@/components/VgoUI/packages/AutoFormElPlus/enum'
+import AutoFormElPlus from '@canwdev/vgo-ui/src/components/AutoFormElPlus/index.vue'
+import {AutoFormItemType, MixedFormItems} from '@canwdev/vgo-ui/src/components/AutoFormElPlus/enum'
 
 export default defineComponent({
   name: 'ElementEditDialog',

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import {StOptionItem} from '@/components/VgoUI/packages/OptionUI/enum'
-import OptionUI from '@/components/VgoUI/packages/OptionUI/index.vue'
+import {StOptionItem} from '@canwdev/vgo-ui/src/components/OptionUI/enum'
+import OptionUI from '@canwdev/vgo-ui/src/components/OptionUI/index.vue'
 import {IAiCharacter} from '@/components/AI/types/ai'
 import {
   openAIChatModelOptions,
@@ -18,10 +18,10 @@ import {computed, ref} from 'vue'
 import {mergeIdData, useAiCharacters} from '@/components/AI/hooks/use-ai-characters'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import {base64Utils} from '@/utils/base64-utils'
-import {generateItemDragProps} from '@/components/VgoUI/packages/OptionUI/Tools/item-drag'
-import {AutoFormItemType, MixedFormItems} from '@/components/VgoUI/packages/AutoFormElPlus/enum'
-import {renderDropdownMenu} from '@/components/VgoUI/packages/OptionUI/Tools/renders'
-import AutoFormElPlus from '@/components/VgoUI/packages/AutoFormElPlus/index.vue'
+import {generateItemDragProps} from '@canwdev/vgo-ui/src/components/OptionUI/Tools/item-drag'
+import {AutoFormItemType, MixedFormItems} from '@canwdev/vgo-ui/src/components/AutoFormElPlus/enum'
+import {renderDropdownMenu} from '@canwdev/vgo-ui/src/components/OptionUI/Tools/renders'
+import AutoFormElPlus from '@canwdev/vgo-ui/src/components/AutoFormElPlus/index.vue'
 
 const {t: $t} = useI18n()
 const aisStore = useAiSettingsStore()

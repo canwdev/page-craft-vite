@@ -1,4 +1,4 @@
-import {QuickOptionItem} from '@/components/VgoUI/packages/QuickOptions/enum'
+import {QuickOptionItem} from '@canwdev/vgo-ui/src/components/QuickOptions/enum'
 import {sortMethodMap, SortType} from '../../utils/sort'
 import {IEntry} from '../../types/filesystem'
 import {Ref} from 'vue'

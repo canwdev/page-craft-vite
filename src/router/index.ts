@@ -81,15 +81,6 @@ const routes = [
           iconClass: 'mdi mdi-robot',
         },
       },
-      {
-        path: 'dev',
-        name: 'DevPage',
-        component: () => import('@/views/DevPage.vue'),
-        meta: {
-          title: `Dev Page`,
-          icon: iconDev,
-        },
-      },
     ],
   },
   // catch all route for 404
