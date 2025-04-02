@@ -26,7 +26,8 @@ const removeBrackets = (str: string) => {
 }
 
 export class VueLangExtractor {
-  private extractedKeyValues: {[key: string]: boolean}
+  // 已提取的 key，用来防止重复
+  private extractedKeyValues: {[key: string]: number}
 
   // text -> key map
   private extractedTextValues: {[text: string]: string}
@@ -44,10 +45,16 @@ export class VueLangExtractor {
     }
     let key = window.$mcUtils.formatI18nKey(value)
     if (this.extractedKeyValues[key]) {
-      key = key + '_1'
+      console.warn('key duplicate fix!', key, this.extractedKeyValues[key], this.extractedKeyValues)
+      this.extractedKeyValues[key]++
+      key = key + '_' + this.extractedKeyValues[key]
+    } else {
+      // console.log('key set', key)
+      this.extractedKeyValues[key] = 1
     }
     key = this.keyPrefix ? this.keyPrefix + '.' + key : key
-    this.extractedKeyValues[key] = true
+
+    // console.log('extractedKeyValues', this.extractedKeyValues)
     this.extractedTextValues[value] = key
     return key
   }

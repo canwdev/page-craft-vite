@@ -146,6 +146,9 @@ export const formatI18nKey = (
   str = str.slice(0, limitLength)
   // 移除首尾的 "_"
   str = str.replace(new RegExp(`${replace}$|^${replace}`, 'g'), '')
+  if (/^\d+$/.test(str)) {
+    str = `n${replace}${str}`
+  }
   return str
 }
 

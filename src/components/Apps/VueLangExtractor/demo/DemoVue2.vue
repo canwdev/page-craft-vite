@@ -27,6 +27,7 @@ export default {
         label: 'PDF',
         label2: 'Welcome to the Hotel California',
       },
+      testList: ['Facebook', 'Twitter', 'Instagram', 'TikTok', 'YouTube'],
     }
   },
   computed: {
@@ -72,13 +73,31 @@ export default {
       const text2 = `You can find ${lang} here !!!`
       console.log(text)
     },
+    checkValidate() {
+      for (const item of this.testList) {
+        if (!item.type) {
+          this.$message.error('Please select social media type')
+          return false
+        }
+        if (!item.url) {
+          this.$message.error('Please input social media link')
+          return false
+        }
+        if (!isOutLink(item.url)) {
+          this.$message.error('Please input a valid link')
+          return false
+        }
+      }
+      return true
+    },
   },
 }
 </script>
 
 <template>
   <div class="demo-vue-2">
-    <div class="ta-h2">{{ 'Demo Vue2 Component' }}</div>
+    <div class="ta-h2">{{ 'Demo Vue2 Component Long Long Long Long Text 01' }}</div>
+    <div class="ta-h2">{{ 'Demo Vue2 Component Long Long Long Long Text 02' }}</div>
     <div class="ta-h2">{{ `On Sale, ${this.off} OFF!` }}</div>
     <div class="ta-h2" v-html="`Cool HTML`"></div>
     <div class="ta-h2" v-html="title"></div>
