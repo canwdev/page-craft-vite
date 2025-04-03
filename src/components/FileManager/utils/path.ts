@@ -42,9 +42,9 @@ export class path {
   public static join(...paths: any[]): string {
     // Required: Prune any non-strings from the path. I also prune empty segments
     // so we can do a simple join of the array.
-    var processed = []
-    for (var i = 0; i < paths.length; i++) {
-      var segment = paths[i]
+    const processed = []
+    for (let i = 0; i < paths.length; i++) {
+      const segment = paths[i]
       if (typeof segment !== 'string') {
         throw new TypeError('Invalid argument type to path.join: ' + typeof segment)
       } else if (segment !== '') {
@@ -96,9 +96,9 @@ export class path {
   public static resolve(...paths: string[]): string {
     // Monitor for invalid paths, throw out empty paths, and look for the *last*
     // absolute path that we see.
-    var processed = []
-    for (var i = 0; i < paths.length; i++) {
-      var p = paths[i]
+    let processed = []
+    for (let i = 0; i < paths.length; i++) {
+      const p = paths[i]
       if (typeof p !== 'string') {
         throw new TypeError('Invalid argument type to path.join: ' + typeof p)
       } else if (p !== '') {
@@ -111,7 +111,7 @@ export class path {
       }
     }
     // Special: Remove trailing slash unless it's the root
-    var resolved = path.normalize(processed.join(path.sep))
+    let resolved = path.normalize(processed.join(path.sep))
     if (resolved.length > 1 && resolved.charAt(resolved.length - 1) === path.sep) {
       return resolved.substr(0, resolved.length - 1)
     }
@@ -126,7 +126,7 @@ export class path {
         resolved = resolved.length === 1 ? '' : resolved.substr(2)
       }
       // Append the current directory, which *must* be an absolute path.
-      var cwd = process.cwd()
+      const cwd = process.cwd()
       if (resolved !== '') {
         // cwd will never end in a /... unless it's the root.
         resolved = this.normalize(cwd + (cwd !== '/' ? path.sep : '') + resolved)
@@ -159,24 +159,24 @@ export class path {
    * @return [String]
    */
   public static relative(from: string, to: string): string {
-    var i
+    let i
     // Alright. Let's resolve these two to absolute paths and remove any
     // weirdness.
     from = path.resolve(from)
     to = path.resolve(to)
-    var fromSegs = from.split(path.sep)
-    var toSegs = to.split(path.sep)
+    const fromSegs = from.split(path.sep)
+    const toSegs = to.split(path.sep)
     // Remove the first segment on both, as it's '' (both are absolute paths)
     toSegs.shift()
     fromSegs.shift()
     // There are two segments to this path:
     // * Going *up* the directory hierarchy with '..'
     // * Going *down* the directory hierarchy with foo/baz/bat.
-    var upCount = 0
-    var downSegs = []
+    let upCount = 0
+    let downSegs = []
     // Figure out how many things in 'from' are shared with 'to'.
     for (i = 0; i < fromSegs.length; i++) {
-      var seg = fromSegs[i]
+      const seg = fromSegs[i]
       if (seg === toSegs[i]) {
         continue
       }
@@ -198,7 +198,7 @@ export class path {
       upCount = fromSegs.length
     }
     // Create the final string!
-    var rv = ''
+    let rv = ''
     for (i = 0; i < upCount; i++) {
       rv += '../'
     }
@@ -226,8 +226,8 @@ export class path {
     // We get rid of //, but we don't modify anything else (e.g. any extraneous .
     // and ../ are kept intact)
     p = path._removeDuplicateSeps(p)
-    var absolute = p.charAt(0) === path.sep
-    var sections = p.split(path.sep)
+    const absolute = p.charAt(0) === path.sep
+    const sections = p.split(path.sep)
     // Do 1 if it's /foo/bar, 2 if it's /foo/bar/
     if (sections.pop() === '' && sections.length > 0) {
       sections.pop()
@@ -263,8 +263,8 @@ export class path {
     // Normalize the string first to remove any weirdness.
     p = path.normalize(p)
     // Get the last part of the string.
-    var sections = p.split(path.sep)
-    var lastPart = sections[sections.length - 1]
+    const sections = p.split(path.sep)
+    const lastPart = sections[sections.length - 1]
     // Special case: If it's empty, then we have a string like so: foo/
     // Meaning, 'foo' is guaranteed to be a directory.
     if (lastPart === '' && sections.length > 1) {
@@ -272,7 +272,7 @@ export class path {
     }
     // Remove the extension, if need be.
     if (ext.length > 0) {
-      var lastPartExt = lastPart.substr(lastPart.length - ext.length)
+      const lastPartExt = lastPart.substr(lastPart.length - ext.length)
       if (lastPartExt === ext) {
         return lastPart.substr(0, lastPart.length - ext.length)
       }
@@ -301,7 +301,7 @@ export class path {
    */
   public static extname(p: string): string {
     p = path.normalize(p)
-    var sections = p.split(path.sep)
+    const sections = p.split(path.sep)
     p = sections.pop()
     // Special case: foo/file.ext/ should return '.ext'
     if (p === '' && sections.length > 0) {
@@ -310,7 +310,7 @@ export class path {
     if (p === '..') {
       return ''
     }
-    var i = p.lastIndexOf('.')
+    const i = p.lastIndexOf('.')
     if (i === -1 || i === 0) {
       return ''
     }

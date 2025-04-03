@@ -14,7 +14,7 @@ export const useAutoPasteConvert = (valueRef) => {
       }
       valType.value = typeof val
     },
-    {immediate: true}
+    {immediate: true},
   )
 
   // 自动根据当前输入框类型判断粘贴类型

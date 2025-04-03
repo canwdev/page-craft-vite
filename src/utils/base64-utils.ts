@@ -6,7 +6,7 @@ const btoa_utf8 = (str) => {
   // 首先将字符串转换为UTF-8编码的字节
   const utf8Bytes = encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) =>
     // @ts-ignore
-    String.fromCharCode('0x' + p1)
+    String.fromCharCode('0x' + p1),
   )
 
   // 使用btoa函数进行Base64编码
@@ -29,7 +29,7 @@ const atob_utf8 = (str) => {
         .map((c) => {
           return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
         })
-        .join('')
+        .join(''),
     )
   } catch (e) {
     console.error('Decoding failed', e)

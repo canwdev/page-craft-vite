@@ -25,7 +25,7 @@ export function countryCodeEmoji(cc) {
     throw new TypeError(
       `cc argument must be an ISO 3166-1 alpha-2 string, but got '${
         type === 'string' ? cc : type
-      }' instead.`
+      }' instead.`,
     )
   }
 
@@ -42,7 +42,7 @@ export function emojiCountryCode(flag) {
   if (flag.length !== FLAG_LENGTH) {
     const type = typeof flag
     throw new TypeError(
-      `flag argument must be a flag emoji, but got '${type === 'string' ? flag : type}' instead.`
+      `flag argument must be a flag emoji, but got '${type === 'string' ? flag : type}' instead.`,
     )
   }
 

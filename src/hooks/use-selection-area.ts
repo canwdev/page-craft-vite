@@ -43,7 +43,7 @@ export const useSelectionArea = ({
           for (const el of removed) {
             el.classList.remove(toggleClass)
           }
-        }
+        },
       )
       .on('stop', ({store: {stored}}) => {
         setTimeout(() => {

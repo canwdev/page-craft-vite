@@ -12,7 +12,7 @@ import FileSaver from 'file-saver'
 async function zipDirectory(
   directoryHandle: FileSystemDirectoryHandle,
   zip: JSZip = new JSZip(),
-  path: string = ''
+  path: string = '',
 ): Promise<JSZip> {
   // 遍历目录中的所有条目
   for await (const [name, handle] of directoryHandle.entries()) {
@@ -40,7 +40,7 @@ export async function exportZip(directoryHandle: FileSystemDirectoryHandle) {
 async function unzipAndWriteToDirectory(
   zipFile: File,
   directoryHandle: FileSystemDirectoryHandle,
-  basePath = ''
+  basePath = '',
 ) {
   const zip = await JSZip.loadAsync(zipFile)
   await processZipObject(zip, directoryHandle, basePath)
@@ -49,7 +49,7 @@ async function unzipAndWriteToDirectory(
 async function processZipObject(
   zip: JSZip,
   directoryHandle: FileSystemDirectoryHandle,
-  path: string = ''
+  path: string = '',
 ) {
   for (const filename in zip.files) {
     const zipEntry = zip.files[filename]
@@ -89,7 +89,7 @@ async function processZipObject(
  */
 export async function chooseZipFileAndImport(
   directoryHandle: FileSystemDirectoryHandle,
-  basePath = ''
+  basePath = '',
 ) {
   const [fileHandle] = await window.showOpenFilePicker({
     types: [
@@ -110,7 +110,7 @@ export async function chooseZipFileAndImport(
  */
 export async function chooseDirectoryAndImport(
   directoryHandle: FileSystemDirectoryHandle,
-  basePath = ''
+  basePath = '',
 ): Promise<void> {
   // 弹出文件夹选择窗口
   const handle = await window.showDirectoryPicker()
@@ -118,7 +118,7 @@ export async function chooseDirectoryAndImport(
   // 递归复制函数
   async function recursiveCopy(
     srcHandle: FileSystemDirectoryHandle,
-    destHandle: FileSystemDirectoryHandle
+    destHandle: FileSystemDirectoryHandle,
   ): Promise<void> {
     // 遍历源文件夹中的所有条目
     for await (const [name, entry] of srcHandle) {
@@ -158,7 +158,7 @@ export async function chooseDirectoryAndImport(
  */
 export async function chooseFilesAndImport(
   directoryHandle: FileSystemDirectoryHandle,
-  basePath = ''
+  basePath = '',
 ): Promise<void> {
   // 弹出文件选择窗口，允许多选
   const fileHandles = await window.showOpenFilePicker({

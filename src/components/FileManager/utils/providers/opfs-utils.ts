@@ -9,7 +9,7 @@
 export async function findHandleByPath(
   directoryHandle: FileSystemDirectoryHandle,
   path: string,
-  type: 'file' | 'directory'
+  type: 'file' | 'directory',
 ): Promise<FileSystemHandle | null> {
   // 将路径分割成数组，以便逐级查找
   const parts = path.split('/').filter((p) => p.length)

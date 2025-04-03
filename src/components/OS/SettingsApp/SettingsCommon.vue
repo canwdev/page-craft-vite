@@ -5,11 +5,13 @@ import {useSettingsStore} from '@/store/settings'
 import LanguageChooser from '@/i18n/LanguageChooser.vue'
 import {formatSiteTitle} from '@/router/router-utils'
 import {ldThemeOptions, LdThemeType} from '@/enum/settings'
-import {useThemeOptions} from '@canwdev/vgo-ui/src/components/ViewPortWindow/utils/use-theme'
+import {
+  DEFAULT_THEME,
+  useThemeOptions,
+} from '@canwdev/vgo-ui/src/components/ViewPortWindow/utils/use-theme'
 import OptionUI from '@canwdev/vgo-ui/src/components/OptionUI/index.vue'
 import {useMainStore} from '@/store/main'
 import {useBackupRestore} from '@/components/OS/SettingsApp/use-backup-restore'
-import {useRouter} from 'vue-router'
 import {useSystemStore} from '@/store/system'
 
 const {t: $t} = useI18n()
@@ -29,8 +31,6 @@ const getWallpaperText = () => {
 const mainStore = useMainStore()
 const systemStore = useSystemStore()
 
-const router = useRouter()
-
 const {isLoading, importAllSettings, exportAllSettings} = useBackupRestore()
 
 const optionList = computed((): StOptionItem[] => {
@@ -43,14 +43,12 @@ const optionList = computed((): StOptionItem[] => {
           label: $t('common.theme_color'),
           key: 'themeColor',
           iconClass: 'mdi mdi-palette',
-          store: settingsStore,
           type: StOptionType.COLOR_PICKER,
         },
         {
           label: $t('common.wallpaper'),
           key: 'desktopWallpaper',
           iconClass: 'mdi mdi-wallpaper',
-          store: settingsStore,
           type: StOptionType.INPUT,
           tips: getWallpaperText(),
           placeholder: 'optional',
@@ -59,14 +57,12 @@ const optionList = computed((): StOptionItem[] => {
           label: $t('common.bg_color'),
           key: 'desktopBgColor',
           iconClass: 'mdi mdi-format-color-fill',
-          store: settingsStore,
           type: StOptionType.COLOR_PICKER,
         },
         {
           label: $t('common.theme'),
           key: 'customTheme',
           iconClass: 'mdi mdi-palette-swatch-variant',
-          store: settingsStore,
           type: StOptionType.SELECT,
           options: themeOptions.value,
           props: {
@@ -79,7 +75,6 @@ const optionList = computed((): StOptionItem[] => {
           label: $t('actions.toggle_ld_theme'),
           key: 'ldTheme',
           iconClass: 'mdi mdi-brightness-4',
-          store: settingsStore,
           type: StOptionType.MULTIPLE_SWITCH,
           options: ldThemeOptions,
         },
@@ -88,7 +83,6 @@ const optionList = computed((): StOptionItem[] => {
           subtitle: $t('common.eink_optimization'),
           key: 'disableAnimation',
           iconClass: 'mdi mdi-transition',
-          store: settingsStore,
           type: StOptionType.SWITCH,
         },
       ].filter(Boolean),
@@ -101,14 +95,12 @@ const optionList = computed((): StOptionItem[] => {
           label: $t('common.top_layout'),
           key: 'enableTopLayout',
           iconClass: 'mdi mdi-dock-top',
-          store: settingsStore,
           type: StOptionType.SWITCH,
         },
         {
           label: $t('common.sound_fx'),
           key: 'enableSoundFx',
           iconClass: 'mdi mdi-music-accidental-flat',
-          store: settingsStore,
           type: StOptionType.SWITCH,
         },
       ],
@@ -146,7 +138,6 @@ F2::
 return
 </pre>`,
           key: 'enableFocusAutoAction',
-          store: settingsStore,
           type: StOptionType.SWITCH,
         },
         {
@@ -201,7 +192,6 @@ return
           key: 'autoCheckUpdate',
           iconClass: 'mdi mdi-cellphone-arrow-down',
           subtitle: mainStore.upgradeInfo,
-          store: settingsStore,
           type: StOptionType.SWITCH,
         },
         {
@@ -239,5 +229,5 @@ return
 </script>
 
 <template>
-  <OptionUI :option-list="optionList" v-loading="isLoading" />
+  <OptionUI :option-list="optionList" v-loading="isLoading" :store="settingsStore" />
 </template>

@@ -87,6 +87,13 @@ export class VueLangExtractor {
         case 'Program':
         case 'BlockStatement':
           return node.body || [] // 遍历 body 数组
+        case 'ForStatement':
+        case 'ForOfStatement':
+        case 'ForInStatement':
+        case 'ArrowFunctionExpression':
+          return node.body?.body || []
+        case 'IfStatement':
+          return node.consequent?.body || []
         case 'FunctionExpression':
         case 'FunctionDeclaration': // 可选：也支持 FunctionDeclaration
           return [...(node.params || []), node.body] // 遍历参数和函数体

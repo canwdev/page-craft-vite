@@ -37,7 +37,7 @@ export const useBatchTranslateAnalyser = () => {
       tree: ITranslateTreeItem[],
       depth = 0,
       parents: string[] = [],
-      path: string = ''
+      path: string = '',
     ) => {
       if (!tree || !tree.length) {
         return

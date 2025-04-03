@@ -43,7 +43,7 @@ export default defineComponent({
           emit('styleCompiled')
         })
       },
-      {immediate: true}
+      {immediate: true},
     )
 
     return {
