@@ -4,7 +4,7 @@ import {onMounted, ref} from 'vue'
 import {useStorage} from '@vueuse/core'
 import {VueLangExtractor} from '@/components/Apps/VueLangExtractor/utils/extractor'
 import VueMonaco from '@canwdev/vgo-ui/src/components/VueMonaco/index.vue'
-import _set from 'lodash/set'
+import _set from 'lodash-es/set'
 import demoVue2 from './demo/DemoVue2.vue?raw'
 import {readClipboardData} from '@/utils'
 

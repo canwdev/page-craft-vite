@@ -3,7 +3,7 @@ import {StOptionItem, StOptionType} from '@canwdev/vgo-ui/src/components/OptionU
 import {useI18n} from 'vue-i18n'
 import {useSettingsStore} from '@/store/settings'
 import LanguageChooser from '@/i18n/LanguageChooser.vue'
-import {formatSiteTitle} from '@/router/router-utils'
+import {formatSiteTitle, githubLink} from '@/router/router-utils'
 import {ldThemeOptions, LdThemeType} from '@/enum/settings'
 import {
   DEFAULT_THEME,
@@ -214,7 +214,7 @@ return
                 'a',
                 {
                   style: 'color: inherit;',
-                  href: 'https://github.com/canwdev/page-craft-vite',
+                  href: githubLink,
                   target: '_blank',
                   rel: 'noopener noreferrer',
                 },

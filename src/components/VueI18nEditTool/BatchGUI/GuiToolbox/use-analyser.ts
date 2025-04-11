@@ -1,5 +1,5 @@
 import {I18N_JSON_OBJ_ROOT_KEY_NAME, ITranslateTreeItem} from '@/enum/vue-i18n-tool'
-import _get from 'lodash/get'
+import _get from 'lodash-es/get'
 import {unicodeProgressBar} from '@/utils/unicode-progress-bar'
 import {useI18n} from 'vue-i18n'
 import {useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'

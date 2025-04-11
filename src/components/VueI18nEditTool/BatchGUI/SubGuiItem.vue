@@ -1,9 +1,8 @@
 <script lang="ts">
 import {defineComponent, PropType} from 'vue'
-import {DirTreeItem} from '@/enum/vue-i18n-tool'
-import _get from 'lodash/get'
-import _set from 'lodash/set'
-import _unset from 'lodash/unset'
+import _get from 'lodash-es/get'
+import _set from 'lodash-es/set'
+import _unset from 'lodash-es/unset'
 import DialogTextEdit from '@/components/CommonUI/DialogTextEdit.vue'
 import {useI18n} from 'vue-i18n'
 import {readClipboardData} from '@/utils'
