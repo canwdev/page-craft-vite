@@ -109,7 +109,7 @@ const openPlayground = () => {
   }).href
   console.log(url)
   if (window.__TAURI__) {
-    const webview = new WebviewWindow('PlaygroundPage', {
+    new WebviewWindow('PlaygroundPage', {
       url,
     })
     return
@@ -154,11 +154,11 @@ const doImportAction = () => {
       draggable
       v-model="isShowImportDialog"
       :title="`${$t('actions.paste')} HTML`"
-      width="600"
-      top="10vh"
+      width="660"
+      top="5vh"
       append-to=".page-craft-root"
     >
-      <VueMonaco v-if="isShowImportDialog" v-model="pasteHtmlText" style="height: 500px" />
+      <VueMonaco v-if="isShowImportDialog" v-model="pasteHtmlText" style="height: 76vh" />
 
       <template #footer>
         <div class="dialog-footer">

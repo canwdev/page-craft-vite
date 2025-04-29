@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import {useMainStore} from '@/store/main'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
-import InputAutoTips from '@/components/CommonUI/InputAutoTips.vue'
 import {monacoStyleGlobal} from '@/components/StyleEditor/hooks/use-monaco-helper'
 import {LS_SettingsKey} from '@/enum/settings'
+import InputAutoTipsV2 from '@/components/CommonUI/InputAutoTipsV2.vue'
 
 const mainStore = useMainStore()
 
@@ -23,27 +23,36 @@ const handleAddClassName = () => {
 }
 
 const updateWindowClassNameHistory = (val) => {
-  // 类名自动补全缓存
+  console.log('类名自动补全缓存', val)
   monacoStyleGlobal.$monacoClassNameHistory = val
 }
 </script>
 
 <template>
-  <InputAutoTips
+  <InputAutoTipsV2
     v-model="mainStore.className"
-    class="sl-css-class-input font-code"
     :title="`Focus shortcut: alt+1\nPress enter to insert css class\nInput without dot(.)`"
     :storageKey="LS_SettingsKey.MC_INPUT_HISTORY_CLASS"
     @keyup.enter="handleAddClassName"
     @historyChanged="updateWindowClassNameHistory"
   />
 
-  <input
+  <el-input
     type="text"
     v-model="mainStore.innerText"
     placeholder="innerHTML | src | value"
     :title="`Focus shortcut: alt+2\nPress esc to clear`"
-    class="vgo-input sl-inner-html-input font-code"
+    class="input-item sl-inner-html-input font-code"
+    size="small"
+    clearable
     @keyup.esc="mainStore.innerText = ''"
   />
 </template>
+
+<style lang="scss" scoped>
+.input-item {
+  font-size: 12px;
+  line-height: 1;
+  width: 180px;
+}
+</style>

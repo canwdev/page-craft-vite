@@ -7,7 +7,7 @@ const textInput = ref('')
 
 <template>
   <div class="qr-code">
-    <textarea v-model="textInput" class="vgo-input" placeholder="Input text..."></textarea>
+    <textarea v-model="textInput" class="vgo-input" placeholder="Input text..." rows="2"></textarea>
     <QrCodeDisplay :text="textInput" />
     <div style="opacity: 0.3">--- or ---</div>
     <QRScanner @onResult="(val) => (textInput = val)" />
@@ -16,15 +16,19 @@ const textInput = ref('')
 
 <style lang="scss" scoped>
 .qr-code {
-  padding: 16px;
+  padding: 16px 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
+  height: 100%;
+  overflow: auto;
+  box-sizing: border-box;
 
   textarea {
     width: 100%;
-    height: 50px;
+    box-sizing: border-box;
+    flex-shrink: 0;
   }
 }
 </style>

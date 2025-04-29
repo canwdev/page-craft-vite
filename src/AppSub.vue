@@ -68,9 +68,7 @@ export default defineComponent({
       <IframeBrowser v-model:visible="mainStore.isShowIframeBrowser" />
 
       <RouterView v-slot="{Component}">
-        <transition name="fade">
-          <component :is="Component" />
-        </transition>
+        <component :is="Component" />
       </RouterView>
     </DesktopWindowManager>
   </template>

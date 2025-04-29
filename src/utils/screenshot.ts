@@ -144,3 +144,36 @@ export const takeScreenshot = async (options: Options = {}) => {
       return screenshot
     })
 }
+
+export const pasteImage = async () => {
+  const clipboardData = await navigator.clipboard.read()
+  // console.log(clipboardData)
+  const item = clipboardData.find((i) => i.types.find((t) => /^image/i.test(t)))
+  if (!item) {
+    throw new Error('No image found in clipboard')
+  }
+  const blob = await item.getType('image/png')
+  return URL.createObjectURL(blob)
+}
+
+export const getBase64FromImageUrl = async (imageUrl) => {
+  try {
+    const response = await fetch(imageUrl)
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+
+    const blob = await response.blob()
+
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onloadend = () => resolve(reader.result)
+      reader.onerror = reject
+      reader.readAsDataURL(blob)
+    })
+  } catch (error) {
+    console.error('Error getting base64 from image:', error)
+    return null // 或者抛出错误，根据你的需求
+  }
+}

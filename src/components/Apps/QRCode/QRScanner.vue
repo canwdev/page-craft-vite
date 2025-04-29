@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import QrcodeDecoder from './qrcode-decoder'
 import {ref} from 'vue'
+import {pasteImage, takeScreenshot} from '@/utils/screenshot'
 
 const emit = defineEmits(['onResult'])
 
@@ -38,7 +39,7 @@ const startVideoScan = async () => {
   }
 }
 
-const startScanUploadImage = async () => {
+const startScanUploadImage = async (type: 'screen' | 'file' | 'clipboard') => {
   if (qr) {
     qr.stop()
     qr = null
@@ -49,36 +50,51 @@ const startScanUploadImage = async () => {
   try {
     isLoading.value = true
 
-    // 创建文件输入元素
-    const fileInput = document.createElement('input')
-    fileInput.type = 'file'
-    fileInput.accept = 'image/*' // 只接受图片文件
-
-    // 添加 change 事件监听器
-    fileInput.addEventListener('change', async (event) => {
-      const file = event.target.files[0]
-      if (!file) return
-
-      try {
-        const imgSrc = await readFile(file)
-        const imgElement = await loadImage(imgSrc)
-        qr = new QrcodeDecoder()
-        const res = await qr.decodeFromImage(imgElement)
-        console.log(res)
-        if (!res) {
-          window.$message.error('No QR code detected in the image')
-          return
-        }
-
-        emit('onResult', res.data)
-        await window.$mcUtils.copy(res.data, true)
-      } catch (error) {
-        window.$message.error(error.message)
-        console.error(error)
+    const handleImage = async (imgSrc) => {
+      const imgElement = await loadImage(imgSrc)
+      qr = new QrcodeDecoder()
+      const res = await qr.decodeFromImage(imgElement)
+      console.log(res)
+      if (!res) {
+        window.$message.error('No QR detected in the image')
+        return
       }
-    })
 
-    fileInput.click()
+      emit('onResult', res.data)
+      await window.$mcUtils.copy(res.data, true)
+    }
+
+    if (type === 'file') {
+      // 创建文件输入元素
+      const fileInput = document.createElement('input')
+      fileInput.type = 'file'
+      fileInput.accept = 'image/*' // 只接受图片文件
+
+      // 添加 change 事件监听器
+      fileInput.addEventListener('change', async (event) => {
+        const file = event.target.files[0]
+        if (!file) return
+
+        try {
+          const imgSrc = await readFile(file)
+          await handleImage(imgSrc)
+        } catch (error) {
+          window.$message.error(error.message)
+          console.error(error)
+        }
+      })
+
+      fileInput.click()
+    } else if (type === 'screen') {
+      const base64url = await takeScreenshot()
+      if (!base64url) {
+        throw new Error('Failed to take screenshot')
+      }
+      await handleImage(base64url)
+    } else if (type === 'clipboard') {
+      const imgSrc = await pasteImage()
+      await handleImage(imgSrc)
+    }
   } catch (error) {
     console.error(error)
     window.$notification({
@@ -114,20 +130,34 @@ const loadImage = (src) => {
 </script>
 
 <template>
-  <button
-    class="btn-qr-scanner vgo-button"
-    title="QR Code Scanner, right click upload image to decode"
-    :class="{active: isLoading}"
-    @click="startScanUploadImage"
-  >
-    <span class="mdi mdi-qrcode-scan"></span>
-    Scan QR code from image...
-  </button>
+  <div class="btn-qr-scanner">
+    <button class="vgo-button" :class="{active: isLoading}" @click="startScanUploadImage('screen')">
+      <span class="mdi mdi-qrcode-scan"></span>
+      Scan QR from screen...
+    </button>
+
+    <button class="vgo-button" :class="{active: isLoading}" @click="startScanUploadImage('file')">
+      <span class="mdi mdi-upload"></span>
+      Scan QR from image file...
+    </button>
+
+    <button
+      class="vgo-button"
+      :class="{active: isLoading}"
+      @click="startScanUploadImage('clipboard')"
+    >
+      <span class="mdi mdi-clipboard-outline"></span>
+      Scan QR from clipboard...
+    </button>
+  </div>
 </template>
 
 <style lang="scss" scoped>
 .btn-qr-scanner {
-  &.active {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  .active {
     color: #f44336;
   }
 }

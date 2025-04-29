@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import {ref} from 'vue'
+import {getBase64FromImageUrl, pasteImage} from '@/utils/screenshot'
+import FileSaver from 'file-saver'
 
 const fileInput = ref<HTMLInputElement | null>(null)
 const imageSrc = ref<string | null>(null)
@@ -53,7 +55,7 @@ const dimensionInfo = computed(() => {
       value: parseFloat((imageDimensions.value.height / imageDimensions.value.width).toFixed(4)),
     },
     {
-      label: 'Ratio (W/H)',
+      label: 'AspectRatio (W/H)',
       value: parseFloat((imageDimensions.value.width / imageDimensions.value.height).toFixed(4)),
     },
   ]
@@ -67,6 +69,32 @@ const handleClear = () => {
   imageSrc.value = null
   imageDimensions.value = {width: 0, height: 0}
 }
+
+const handlePasteImage = async () => {
+  try {
+    const imgSrc = await pasteImage()
+    if (imgSrc) {
+      imageSrc.value = imgSrc
+    }
+  } catch (error) {
+    console.error(error)
+    window.$message.error(error.message)
+  }
+}
+
+const copyBase64 = async () => {
+  const base64url = await getBase64FromImageUrl(imageSrc.value)
+  copyToClipboard(base64url)
+}
+
+const downloadImage = () => {
+  if (imageSrc.value) {
+    const a = document.createElement('a')
+    a.href = imageSrc.value
+    a.download = 'image.png'
+    a.click()
+  }
+}
 </script>
 
 <template>
@@ -77,17 +105,26 @@ const handleClear = () => {
     @drop.prevent="handleDrop"
   >
     <div class="drop-area" @click="triggerFileInput">
-      <h2>Drag or Select Image...</h2>
+      <h2>
+        <span class="mdi mdi-upload"></span>
+        Drag or Select Image...
+      </h2>
       <input type="file" ref="fileInput" accept="image/*" @change="handleFileSelect" hidden />
+      <button class="vgo-button" @click.stop="handlePasteImage">
+        <span class="mdi mdi-clipboard-outline"></span>
+        Paste Image
+      </button>
     </div>
+
     <div class="result-area vgo-panel font-code" v-if="imageDimensions.width">
       <div class="flex-row-center-gap" v-for="(info, index) in dimensionInfo" :key="index">
         <span>{{ info.label }}: {{ info.value }}</span>
         <button class="vgo-button primary" @click="copyToClipboard(info.value)">Copy</button>
       </div>
       <div class="flex-row-center-gap">
-        <button class="vgo-button primary" @click="copyToClipboard(imageSrc)">Copy base64</button>
+        <button class="vgo-button primary" @click="copyBase64">Copy base64</button>
         <button class="vgo-button" @click="handleClear">Clear</button>
+        <button class="vgo-button" @click="downloadImage">Download</button>
       </div>
     </div>
     <div class="image-preview" v-if="imageSrc">
@@ -122,10 +159,7 @@ const handleClear = () => {
     gap: 8px;
     margin: 16px auto;
     padding: 10px;
-    max-width: 300px;
-
-    div {
-    }
+    max-width: 360px;
   }
 
   .image-preview {
