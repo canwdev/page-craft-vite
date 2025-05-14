@@ -288,6 +288,7 @@ const {handleOpenLocalDir, localDirHistoryOptions} = useLocalDir({emit})
         font-size: 18px;
         border: none;
         padding: 2px 4px;
+        border-radius: 4px;
 
         .icon-small-abs {
           font-size: 12px;

@@ -130,6 +130,7 @@ const handleDragStart = (event) => {
   font-weight: 600;
   position: relative;
   outline: 1px solid rgb(var(--block-color-rgb));
+  border-radius: 4px;
 
   .mc-comp-item-bg {
     position: absolute;
