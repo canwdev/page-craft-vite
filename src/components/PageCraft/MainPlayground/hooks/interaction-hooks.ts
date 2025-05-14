@@ -28,6 +28,8 @@ export const useInteractionHooks = (options) => {
   const isShowElementEdit = ref(false)
   const isEditingRoot = ref(false)
 
+  const extractCompRef = ref()
+
   useOpenCloseSound(() => isShowElementEdit.value)
 
   const lineHelper = shallowRef()
@@ -274,7 +276,6 @@ export const useInteractionHooks = (options) => {
         props: {
           onClick: async () => {
             insertCurrentBlock(targetEl)
-            contextMenuEtc.showRightMenu.value = false
           },
         },
       },
@@ -294,7 +295,6 @@ export const useInteractionHooks = (options) => {
         props: {
           onClick: async () => {
             await pasteHtml(targetEl)
-            contextMenuEtc.showRightMenu.value = false
           },
         },
       },
@@ -303,12 +303,19 @@ export const useInteractionHooks = (options) => {
         props: {
           onClick: async () => {
             await pasteReplaceValue(targetEl)
-            contextMenuEtc.showRightMenu.value = false
           },
         },
       },
       {
         split: true,
+      },
+      {
+        label: '📦 Extract component...',
+        props: {
+          onClick: async () => {
+            extractCompRef.value.showDialog(editingNode.value)
+          },
+        },
       },
       {
         label: '💻 ' + $t('actions.print_to_console'),
@@ -539,5 +546,6 @@ export const useInteractionHooks = (options) => {
     editingNode,
     isEditingRoot,
     updateEditingElement,
+    extractCompRef,
   }
 }

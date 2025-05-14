@@ -1,12 +1,12 @@
 <script lang="ts">
 import {computed, defineComponent, PropType, ref} from 'vue'
-import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {formatForm, getCustomFormItems} from '../utils/element-edit'
 import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/index.vue'
 import {FormRules} from 'element-plus'
 import AutoFormElPlus from '@canwdev/vgo-ui/src/components/AutoFormElPlus/index.vue'
 import {AutoFormItemType, MixedFormItems} from '@canwdev/vgo-ui/src/components/AutoFormElPlus/enum'
 import VueMonaco from '@canwdev/vgo-ui/src/components/VueMonaco/index.vue'
+import {useVModel} from '@vueuse/core'
 
 export default defineComponent({
   name: 'ElementEditDialog',
@@ -31,7 +31,7 @@ export default defineComponent({
   emits: ['onSave', 'update:visible'],
   setup(props, {emit}) {
     const {isRoot, editingNode} = toRefs(props)
-    const mVisible = useModelWrapper(props, emit, 'visible')
+    const mVisible = useVModel(props, 'visible', emit)
     const isEditInnerHTML = ref(true)
 
     const autoFormRef = ref()
@@ -60,11 +60,6 @@ export default defineComponent({
       if (isRoot.value) {
         isEditInnerHTML.value = true
       }
-    }
-
-    const handleResize = () => {
-      // 手动触发resize事件，让monaco编辑器自动调整
-      window.dispatchEvent(new Event('resize'))
     }
 
     const handleCancel = () => {
@@ -124,7 +119,6 @@ export default defineComponent({
       autoFormRef,
       formRules,
       formItems,
-      handleResize,
       handleSubmit,
       handleCancel,
       isEditInnerHTML,
@@ -138,7 +132,6 @@ export default defineComponent({
     v-model:visible="mVisible"
     allow-maximum
     wid="element_editor"
-    @resize="handleResize"
     :init-win-options="{
       width: '400px',
       height: '500px',

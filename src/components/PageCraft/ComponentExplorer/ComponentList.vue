@@ -19,6 +19,7 @@ import DialogImageCropper from '@/components/CommonUI/DialogImageCropper.vue'
 import {useSettingsStore} from '@/store/settings'
 import {useLocalDir} from '@/components/PageCraft/ComponentExplorer/hooks/use-local-dir'
 import DropdownMenu from '@canwdev/vgo-ui/src/components/QuickOptions/DropdownMenu.vue'
+import {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
 
 const emit = defineEmits(['open', 'update:isLoading', 'refresh'])
 
@@ -93,6 +94,8 @@ const {
   files,
   emit,
 })
+
+useGlobalBusOn(GlobalEvents.CREATE_COMPONENT, handleCreateComponent)
 
 useComponentMigrationToV2(emit)
 

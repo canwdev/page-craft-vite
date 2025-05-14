@@ -89,13 +89,21 @@ export const useComponentManage = (options: Opts) => {
       return true
     }
   }
-  const handleCreateComponent = async () => {
+  const handleCreateComponent = async ({
+    name = '',
+    nameDefault = '',
+    html = '',
+    style = '',
+    successCallback,
+  } = {}) => {
     try {
-      const name = await inputPrompt(
-        $t('actions.add_component'),
-        `Component${idx}`,
-        $t('msgs.please_enter_the_nam'),
-      )
+      name =
+        name ||
+        (await inputPrompt(
+          $t('actions.add_component'),
+          nameDefault || `Component${idx}`,
+          $t('msgs.please_enter_the_nam'),
+        ))
       const folderName = `${name}.comp`
       if (checkNameExist(folderName)) {
         return
@@ -109,18 +117,21 @@ export const useComponentManage = (options: Opts) => {
         id,
         name,
         timestamp: Date.now(),
-        html: `<div class="${className}"></div>`,
-        style: `.${className} {\n}\n`,
+        html: html || `<div class="${className}"></div>`,
+        style: style || `.${className} {\n}\n`,
       })
 
       idx++
 
       emit('refresh')
-
-      setTimeout(() => {
-        // 设置当前选中的组件
-        document.querySelector(`.mc-comp-item[data-name="${folderName}"]`)?.click()
-      }, 100)
+      if (typeof successCallback === 'function') {
+        successCallback({id, name})
+      } else {
+        setTimeout(() => {
+          // 设置当前选中的组件
+          document.querySelector(`.mc-comp-item[data-name="${folderName}"]`)?.click()
+        }, 100)
+      }
     } finally {
       isLoading.value = false
     }

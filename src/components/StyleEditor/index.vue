@@ -303,8 +303,8 @@ defineExpose({
     }"
   >
     <template #titleBarLeft>
-      <span class="mdi mdi-format-paint"></span> {{ $t('common.style_editor') }}
-      (scss)
+      <span class="mdi mdi-format-paint"></span>SCSS {{ $t('common.style_editor') }}
+      (alt+s)
     </template>
     <template #titleBarRightControls>
       <button

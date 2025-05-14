@@ -107,6 +107,10 @@ const removeItem = (item) => {
   }
   autocompleteRef.value.getData()
 }
+
+const copyText = (text) => {
+  window.$mcUtils.copy(text, true)
+}
 </script>
 
 <template>
@@ -116,7 +120,7 @@ const removeItem = (item) => {
       v-model="mValue"
       :fetch-suggestions="querySearch"
       class="input-auto-tips sl-css-class-input font-code"
-      placeholder="Please Input"
+      placeholder="CSS class"
       v-bind="$attrs"
       size="small"
       clearable
@@ -126,7 +130,10 @@ const removeItem = (item) => {
       @keyup.enter.stop="recordHistory"
     >
       <template #default="{item}">
-        <div class="input-auto-tips-select-item font-code">
+        <div
+          class="input-auto-tips-select-item font-code"
+          @contextmenu.prevent="copyText(item.value)"
+        >
           {{ item.label }}
 
           <button
@@ -148,6 +155,9 @@ const removeItem = (item) => {
     line-height: 1;
     width: 180px;
   }
+  :deep(.el-input__inner) {
+    font-family: inherit;
+  }
 }
 </style>
 <style lang="scss">
@@ -157,6 +167,7 @@ const removeItem = (item) => {
   justify-content: space-between;
   gap: 8px;
   font-size: 14px;
+
   .mdi-close {
     color: #f44336;
   }

@@ -40,8 +40,6 @@ export default defineComponent({
       window.$mcUtils = mcUtils
     })
 
-    useGlobalBusOn(GlobalEvents.SYNC_STORAGE_DATA, () => {})
-
     useGlobalBusOn(GlobalEvents.OPEN_SETTINGS, (type: SettingsTabType = SettingsTabType.COMMON) => {
       systemStore.createTaskById('os.pagecraft.settings', {curTab: type})
     })

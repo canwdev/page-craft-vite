@@ -33,14 +33,14 @@ const updateWindowClassNameHistory = (val) => {
     v-model="mainStore.className"
     :title="`Focus shortcut: alt+1\nPress enter to insert css class\nInput without dot(.)`"
     :storageKey="LS_SettingsKey.MC_INPUT_HISTORY_CLASS"
-    @keyup.enter="handleAddClassName"
+    @keyup.ctrl.enter="handleAddClassName"
     @historyChanged="updateWindowClassNameHistory"
   />
 
   <el-input
     type="text"
     v-model="mainStore.innerText"
-    placeholder="innerHTML | src | value"
+    placeholder="innerHTML/src/value"
     :title="`Focus shortcut: alt+2\nPress esc to clear`"
     class="input-item sl-inner-html-input font-code"
     size="small"
@@ -54,5 +54,8 @@ const updateWindowClassNameHistory = (val) => {
   font-size: 12px;
   line-height: 1;
   width: 180px;
+  :deep(.el-input__inner) {
+    font-family: inherit;
+  }
 }
 </style>

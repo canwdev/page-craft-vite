@@ -22,6 +22,7 @@ import IndicatorInfo from '@/components/PageCraft/MainPlayground/components/Indi
 import {useSystemStore} from '@/store/system'
 import {SettingsTabType} from '@/enum/settings'
 import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
+import ExtractComponentDialog from '@/components/PageCraft/MainPlayground/components/ExtractComponentDialog.vue'
 
 const emit = defineEmits([])
 
@@ -75,6 +76,7 @@ const {
   editingNode,
   isEditingRoot,
   updateEditingElement,
+  extractCompRef,
 } = useInteractionHooks({
   mainPlaygroundRef,
   saveData,
@@ -170,13 +172,14 @@ const doImportAction = () => {
       </template>
     </el-dialog>
 
-    <Teleport to=".page-craft-root">
+    <Teleport to=".page-craft-root .desktop-window-manager">
       <ElementEditDialog
         v-model:visible="isShowElementEdit"
         :editing-node="editingNode"
         :is-root="isEditingRoot"
         @onSave="updateEditingElement"
       />
+      <ExtractComponentDialog ref="extractCompRef" />
     </Teleport>
 
     <portal to="indicatorBarTeleportDest">

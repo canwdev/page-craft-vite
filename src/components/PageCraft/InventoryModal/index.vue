@@ -71,7 +71,7 @@ export default defineComponent({
   >
     <template #titleBarLeft>
       <span class="mdi mdi-archive"></span>
-      {{ $t('common.inventory_list') }}
+      {{ $t('common.inventory_list') }} (alt+a)
     </template>
     <template #titleBarRightControls>
       <button @click="settingsStore.isInvDocked = !settingsStore.isInvDocked">
