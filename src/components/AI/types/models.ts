@@ -56,6 +56,14 @@ export const anthropicChatModelOptions: IChatModelOption[] = [
     functionCall: true,
   },
   {
+    desc: '',
+    label: 'claude-sonnet-4-20250514',
+    value: 'claude-sonnet-4-20250514',
+    tokens: 200_000,
+    vision: false,
+    functionCall: true,
+  },
+  {
     desc: 'Claude 3.7 Sonnet 提供了超越 Opus 的能力和比 Sonnet 更快的速度，同时保持与 Sonnet 相同的价格。Sonnet 特别擅长编程、数据科学、视觉处理、代理任务。',
     label: 'Claude 3.7 Sonnet',
     value: 'claude-3-7-sonnet-20250219',
@@ -72,8 +80,14 @@ export const anthropicChatModelOptions: IChatModelOption[] = [
 export const defaultOpenAIModel = 'gpt-4o-mini'
 export const openAIChatModelOptions: IChatModelOption[] = [
   {
+    desc: '',
+    label: 'o4-mini',
+    value: 'o4-mini',
+    tokens: 128_000,
+    vision: false,
+  },
+  {
     desc: 'GPT-4o mini是OpenAI在GPT-4 Omni之后推出的最新模型，支持图文输入并输出文本。作为他们最先进的小型模型，它比其他近期的前沿模型便宜很多，并且比GPT-3.5 Turbo便宜超过60%。它保持了最先进的智能，同时具有显著的性价比。GPT-4o mini在MMLU测试中获得了 82% 的得分，目前在聊天偏好上排名高于 GPT-4。',
-
     label: 'GPT-4o Mini',
     value: 'gpt-4o-mini',
     tokens: 128_000,
@@ -134,9 +148,13 @@ export const openAIChatModelOptions: IChatModelOption[] = [
  * AI / LLM 模型图标集 https://lobehub.com/zh/icons
  */
 export const compatibleModelOptions: IChatModelOption[] = [
-  {label: 'Google - Gemini', value: 'gemini-2.0-flash', vision: true, functionCall: true},
-  {label: 'xAI - Grok', value: 'grok-2-1212'},
-  {label: 'Meta - LLaMA', value: 'llama-3.3-70b-versatile'},
+  {label: 'Google Gemini 2.0 Flash', value: 'gemini-2.0-flash', vision: true, functionCall: true},
+  {label: 'Google Gemini 2.5 Flash', value: 'gemini-2.5-flash'},
+  {label: 'Google Gemini 2.5 Pro', value: 'gemini-2.5-pro'},
+  {label: 'DeepSeek-R1', value: 'DeepSeek-R1'},
+  {label: 'xAI Grok 3', value: 'grok-3'},
+  {label: 'xAI Grok 3 Mini', value: 'grok-3-mini'},
+  {label: 'Meta LLaMA', value: 'llama-3.3-70b-versatile'},
   {label: '同义千问 Qwen 2.5 Max', value: 'qwen-max-0125'},
   {label: '智谱清言 ChatGLM', value: 'glm-4-flash'},
   {label: '深度求索 DeepSeek R1', value: 'DeepSeek-R1'},

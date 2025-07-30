@@ -1,7 +1,7 @@
 {
   "name": "page-craft-vite",
   "private": true,
-  "version": "1.7.8-beta",
+  "version": "1.7.8",
   "scripts": {
     "dev": "vite --debug hmr",
     "dev:bun": "bunx --bun vite",

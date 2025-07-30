@@ -1,16 +1,20 @@
 # Release Notes
 
+## v1.8.0
+
+- refactor: 重构多语言编辑器
+  - TODO: 一键翻译
+- add: Vue SFC组件多语言提取工具
+  - TODO：支持 TS
+  - 基于 AST(抽象语法树) 实现
+
 ## v1.7.8
 
 - refactor: 重构启动器
   - 新启动器 UI
   - 新增一些工具: QR Code / Time Converter / Material Design Icons Viewer
-- refactor: 重构多语言编辑器
-  - TODO: 一键翻译
-- refactor: TODO 重构组件系统
 - add: Vue SFC组件多语言提取工具
-  - TODO：支持 TS
-  - 基于 AST(抽象语法树) 实现
+- add: PageCraft: Component Extractor
 - remove: 删除不需要的功能
   - remove `"@tinymce/tinymce-vue": "^5.0.0",`
   - remove `"vanilla-jsoneditor": "^0.23.1"`

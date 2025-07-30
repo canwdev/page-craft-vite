@@ -129,6 +129,7 @@ const optionList = computed((): StOptionItem[] => {
           props: {
             // 允许动态创建项
             allowCreate: true,
+            defaultFirstOption: true,
             filterable: true,
           },
         },
