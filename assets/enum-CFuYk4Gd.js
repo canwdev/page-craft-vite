@@ -1,0 +1,1 @@
+var E=(_=>(_.INPUT="input",_.INPUT_NUMBER="input_number",_.INPUT_AUTOCOMPLETE="input_autocomplete",_.SELECT="select",_.COLOR_PICKER="color_picker",_.BUTTON="button",_.DATE_PICKER="date_picker",_.CHECKBOX_GROUP="checkbox_group",_.RADIO_GROUP="radio_group",_.SWITCH="switch",_))(E||{});export{E as A};

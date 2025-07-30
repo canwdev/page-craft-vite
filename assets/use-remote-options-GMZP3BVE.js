@@ -1,0 +1,1 @@
+import{f as i,c as p}from"./ui-CSZC0Zoz.js";const h=({fetchFn:c,mapFn:e})=>{const t=i([]),o=(n=[],a=[])=>(n.forEach(s=>{const d={children:s.children?o(s.children):void 0,...e(s)};a.push(d)}),a),r=async()=>{const n=await c();t.value=o(n)};return p(r),{options:t,traverse:o,loadOptions:r}};export{h as u};

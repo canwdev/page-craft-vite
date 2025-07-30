@@ -1,0 +1,1 @@
+import{D as n}from"./ui-CSZC0Zoz.js";const t=n({name:"VueRender",props:{renderFn:{type:[Object,Function],required:!0},params:null,modelValue:null},render(e){return typeof this.renderFn=="function"?this.renderFn(e.params,e.modelValue,this.$emit):this.renderFn}});export{t as _};
