@@ -36,21 +36,21 @@
 }
 .theme-classic .vgo-window._active .vgo-window-content .vgo-window-title-bar {
   color: white;
-  background: linear-gradient(45deg, var(--primary), rgba(var(--primary-rgb), 0.25));
+  background: linear-gradient(45deg, var(--vgo-primary), var(--vgo-primary) _opacity);
 }
 .theme-classic .vgo-panel {
   background-color: #D4D0C8;
   box-shadow: 1px 0 #000, 0 1px #000, 1px 1px #000, inset 1px 1px #fff;
   border: 1px solid rgba(45, 45, 45, 0.3);
 }
-.theme-classic .vgo-button, .theme-classic .n-button {
+.theme-classic .vgo-button {
   border: none;
   box-shadow: 1px 0 #000, 0 1px #000, 1px 1px #000, inset 1px 1px #fff;
 }
-.theme-classic .vgo-button:not(.theme-classic .vgo-button:disabled, .theme-classic .n-button:disabled):active, .theme-classic .vgo-button:not(.theme-classic .vgo-button:disabled, .theme-classic .n-button:disabled).active, .theme-classic .n-button:not(.theme-classic .vgo-button:disabled, .theme-classic .n-button:disabled):active, .theme-classic .n-button:not(.theme-classic .vgo-button:disabled, .theme-classic .n-button:disabled).active {
+.theme-classic .vgo-button:not(.theme-classic .vgo-button:disabled):active, .theme-classic .vgo-button:not(.theme-classic .vgo-button:disabled).active {
   box-shadow: inset 1px 1px gray, 1px 0 #fff, 0 1px #fff, 1px 1px #fff !important;
 }
-.theme-classic .vgo-input, .theme-classic .n-input {
+.theme-classic .vgo-input {
   background: #fff;
   box-shadow: inset -1px -1px #dfdfdf, inset 1px 1px grey;
 }
@@ -63,27 +63,28 @@
 .theme-classic .n-tabs-tab.n-tabs-tab--active {
   box-shadow: inset 1px 1px gray, 1px 0 #fff, 0 1px #fff, 1px 1px #fff !important;
 }
-.theme-classic.dark .vgo-window {
+
+.dark .theme-classic .vgo-window {
   color: white;
 }
-.theme-classic.dark .vgo-window .vgo-window-body._bg {
+.dark .theme-classic .vgo-window .vgo-window-body._bg {
   background-color: #31363C;
 }
-.theme-classic.dark .vgo-panel {
+.dark .theme-classic .vgo-panel {
   background-color: #31363C;
   color: white;
   box-shadow: 1px 0 #2C3034, 0 1px #2C3034, 1px 1px #2C3034, inset 1px 1px #7E888F;
 }
-.theme-classic.dark .vgo-button, .theme-classic.dark .n-button {
+.dark .theme-classic .vgo-button {
   background-color: #3C434A;
   border-color: #7E888F;
   color: white;
   box-shadow: 1px 0 #2C3034, 0 1px #2C3034, 1px 1px #2C3034, inset 1px 1px #7E888F;
 }
-.theme-classic.dark .vgo-button:not(.theme-classic.dark .vgo-button:disabled, .theme-classic.dark .n-button:disabled):active, .theme-classic.dark .vgo-button:not(.theme-classic.dark .vgo-button:disabled, .theme-classic.dark .n-button:disabled).active, .theme-classic.dark .n-button:not(.theme-classic.dark .vgo-button:disabled, .theme-classic.dark .n-button:disabled):active, .theme-classic.dark .n-button:not(.theme-classic.dark .vgo-button:disabled, .theme-classic.dark .n-button:disabled).active {
+.dark .theme-classic .vgo-button:not(.dark .theme-classic .vgo-button:disabled):active, .dark .theme-classic .vgo-button:not(.dark .theme-classic .vgo-button:disabled).active {
   box-shadow: inset 1px 1px #2C3034, 1px 0 #89939C, 0 1px #89939C, 1px 1px #89939C !important;
 }
-.theme-classic.dark .vgo-input, .theme-classic.dark .n-input {
+.dark .theme-classic .vgo-input {
   background: #31363C;
   color: white;
   box-shadow: inset -1px -1px #89939C, inset 1px 1px #1a1c1e;

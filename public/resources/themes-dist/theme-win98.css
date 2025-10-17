@@ -84,6 +84,11 @@
   display: block;
   min-width: 16px;
   min-height: 14px;
+}
+.theme-win98 .vgo-window .vgo-window-title-bar .vgo-window-controls button:focus {
+  outline: none;
+}
+.theme-win98 .vgo-window .vgo-window-title-bar .vgo-window-controls button {
   font-family: var(--sans-serif);
   -webkit-font-smoothing: none;
   font-size: 11px;
@@ -94,9 +99,6 @@
   border-radius: 0;
   padding: 0 4px;
   height: auto;
-}
-.theme-win98 .vgo-window .vgo-window-title-bar .vgo-window-controls button:focus {
-  outline: none;
 }
 .theme-win98 .vgo-window .vgo-window-title-bar .vgo-window-controls button svg {
   height: 14px;
@@ -112,12 +114,15 @@
 .theme-win98 .vgo-window .vgo-window-title-bar .vgo-window-controls button::-moz-focus-inner {
   border: 0;
 }
+.theme-win98 .vgo-window .vgo-window-title-bar .vgo-window-controls .is-minimize > i, .theme-win98 .vgo-window .vgo-window-title-bar .vgo-window-controls .is-minimize > svg {
+  display: none;
+}
 .theme-win98 .vgo-window .vgo-window-title-bar .vgo-window-controls .is-minimize {
   background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNiIgaGVpZ2h0PSIyIiB2aWV3Qm94PSIwIDAgNiAyIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPg0KPHJlY3Qgd2lkdGg9IjYiIGhlaWdodD0iMiIgZmlsbD0iYmxhY2siLz4NCjwvc3ZnPg0K);
   background-repeat: no-repeat;
   background-position: bottom 3px left 4px;
 }
-.theme-win98 .vgo-window .vgo-window-title-bar .vgo-window-controls .is-minimize > i {
+.theme-win98 .vgo-window .vgo-window-title-bar .vgo-window-controls .is-maximize > i, .theme-win98 .vgo-window .vgo-window-title-bar .vgo-window-controls .is-maximize > svg, .theme-win98 .vgo-window .vgo-window-title-bar .vgo-window-controls .is-restore > i, .theme-win98 .vgo-window .vgo-window-title-bar .vgo-window-controls .is-restore > svg {
   display: none;
 }
 .theme-win98 .vgo-window .vgo-window-title-bar .vgo-window-controls .is-maximize, .theme-win98 .vgo-window .vgo-window-title-bar .vgo-window-controls .is-restore {
@@ -125,7 +130,7 @@
   background-repeat: no-repeat;
   background-position: top 2px left 3px;
 }
-.theme-win98 .vgo-window .vgo-window-title-bar .vgo-window-controls .is-maximize > i, .theme-win98 .vgo-window .vgo-window-title-bar .vgo-window-controls .is-restore > i {
+.theme-win98 .vgo-window .vgo-window-title-bar .vgo-window-controls .is-close > i, .theme-win98 .vgo-window .vgo-window-title-bar .vgo-window-controls .is-close > svg {
   display: none;
 }
 .theme-win98 .vgo-window .vgo-window-title-bar .vgo-window-controls .is-close {
@@ -133,9 +138,6 @@
   background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOCIgaGVpZ2h0PSI3IiB2aWV3Qm94PSIwIDAgOCA3IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPg0KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0wIDBIMUgyVjFIM1YySDRINVYxSDZWMEg3SDhWMUg3VjJINlYzSDVWNEg2VjVIN1Y2SDhWN0g3SDZWNkg1VjVINEgzVjZIMlY3SDFIMFY2SDFWNUgyVjRIM1YzSDJWMkgxVjFIMFYwWiIgZmlsbD0iYmxhY2siLz4NCjwvc3ZnPg0K);
   background-repeat: no-repeat;
   background-position: top 3px left 4px;
-}
-.theme-win98 .vgo-window .vgo-window-title-bar .vgo-window-controls .is-close > i {
-  display: none;
 }
 .theme-win98 .vgo-window .vgo-window-body {
   height: calc(100% - 24px) !important;
@@ -147,7 +149,7 @@
 /*-------------------------------------------*\
     Forms
 \*-------------------------------------------*/
-.theme-win98 .vgo-input, .theme-win98 .n-input {
+.theme-win98 .vgo-input {
   box-shadow: var(--border-field);
 }
 .theme-win98 label,
@@ -161,7 +163,7 @@
 /*-------------------------------------------*\
     Buttons
 \*-------------------------------------------*/
-.theme-win98 .vgo-button, .theme-win98 .n-button {
+.theme-win98 .vgo-button {
   font-family: var(--sans-serif);
   -webkit-font-smoothing: none;
   font-size: 11px;
@@ -172,14 +174,14 @@
   border-radius: 0;
   padding: 4px 12px;
 }
-.theme-win98 .vgo-button:not(:disabled):active, .theme-win98 .vgo-button:not(:disabled).active, .theme-win98 .n-button:not(:disabled):active, .theme-win98 .n-button:not(:disabled).active {
+.theme-win98 .vgo-button:not(:disabled):active, .theme-win98 .vgo-button:not(:disabled).active {
   box-shadow: var(--border-sunken-outer), var(--border-sunken-inner);
 }
-.theme-win98 .vgo-button:focus, .theme-win98 .vgo-button.focused, .theme-win98 .n-button:focus, .theme-win98 .n-button.focused {
+.theme-win98 .vgo-button:focus, .theme-win98 .vgo-button.focused {
   outline: 1px dotted #000000;
   outline-offset: -4px;
 }
-.theme-win98 .vgo-button::-moz-focus-inner, .theme-win98 .n-button::-moz-focus-inner {
+.theme-win98 .vgo-button::-moz-focus-inner {
   border: 0;
 }
 

@@ -34,30 +34,31 @@
 }
 .theme-minimalism .vgo-button {
   background-color: white;
-  border: 1px solid rgba(91, 85, 85, 0.2);
+  border: 1px solid var(--vgo-color-border);
 }
 .theme-minimalism .vgo-button:not(:disabled):hover {
-  border-color: rgba(91, 85, 85, 0.2);
+  border-color: var(--vgo-color-border);
 }
-.theme-minimalism.dark .vgo-window {
+
+.dark .theme-minimalism .vgo-window {
   background-color: #3a3a3a;
   color: white;
 }
-.theme-minimalism.dark .vgo-window .vgo-window-body._bg {
+.dark .theme-minimalism .vgo-window .vgo-window-body._bg {
   background-color: rgb(30, 30, 30);
 }
-.theme-minimalism.dark .vgo-window._active {
+.dark .theme-minimalism .vgo-window._active {
   background-color: black;
 }
-.theme-minimalism.dark .vgo-panel {
+.dark .theme-minimalism .vgo-panel {
   background-color: #3a3a3a;
   color: white;
 }
-.theme-minimalism.dark .vgo-button {
+.dark .theme-minimalism .vgo-button {
   background-color: #4B4B4B;
   color: white;
 }
-.theme-minimalism.dark .vgo-input {
+.dark .theme-minimalism .vgo-input {
   background-color: #2a2a2a;
   color: white;
 }

@@ -2,7 +2,10 @@
 
 ## v1.8.0
 
-- 删除不需要的功能
+- update dependencies
+- remove sounds
+- fix themes
+- optimize chat UI
 
 ## v1.7.8
 

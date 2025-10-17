@@ -47,7 +47,7 @@
 }
 .theme-win8 .vgo-window._active {
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.27);
-  background-color: var(--primary) !important;
+  background-color: var(--vgo-primary) !important;
 }
 .theme-win8 .vgo-window._active .vgo-window-title-bar {
   color: white !important;
@@ -62,27 +62,28 @@
 }
 .theme-win8 .vgo-button {
   background-color: white;
-  border: 1px solid rgba(91, 85, 85, 0.2);
+  border: 1px solid var(--vgo-color-border);
 }
 .theme-win8 .vgo-button:not(:disabled):hover {
-  border-color: var(--primary);
+  border-color: var(--vgo-primary);
 }
-.theme-win8.dark .vgo-window {
+
+.dark .theme-win8 .vgo-window {
   background-color: black;
   color: white;
 }
-.theme-win8.dark .vgo-window .vgo-window-body._bg {
+.dark .theme-win8 .vgo-window .vgo-window-body._bg {
   background-color: rgb(30, 30, 30);
 }
-.theme-win8.dark .vgo-panel {
+.dark .theme-win8 .vgo-panel {
   background-color: rgba(0, 0, 0, 0.75);
   color: white;
 }
-.theme-win8.dark .vgo-button {
+.dark .theme-win8 .vgo-button {
   background-color: #4B4B4B;
   color: white;
 }
-.theme-win8.dark .vgo-input {
+.dark .theme-win8 .vgo-input {
   background-color: #2a2a2a;
   color: white;
 }

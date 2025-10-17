@@ -1,0 +1,17 @@
+/**
+ * Core 7.css
+ * Based on XP GUI.css by Adam Hammad <adamham.dev>
+ * https://github.com/khang-nd/7.css/blob/main/LICENSE
+ */
+
+@import "variables";
+@import "button";
+@import "textbox";
+@import "window";
+.theme-win7 {
+  .vgo-panel {
+    background: var(--surface);
+    color: #222;
+    border: 1px solid rgba(0, 0, 0, .7);
+  }
+}

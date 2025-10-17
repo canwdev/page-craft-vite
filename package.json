@@ -15,7 +15,7 @@
     "tauri:icon": "tauri icon ./public/favicon-256.png"
   },
   "dependencies": {
-    "@canwdev/vgo-ui": "^0.2.0",
+    "@canwdev/vgo-ui": "^0.2.1",
     "@humanfs/web": "^0.14.1",
     "@imengyu/vue3-context-menu": "^1.5.2",
     "@mdi/font": "^7.4.47",

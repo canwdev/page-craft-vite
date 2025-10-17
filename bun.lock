@@ -4,7 +4,7 @@
     "": {
       "name": "page-craft-vite",
       "dependencies": {
-        "@canwdev/vgo-ui": "^0.2.0",
+        "@canwdev/vgo-ui": "^0.2.1",
         "@humanfs/web": "^0.14.1",
         "@imengyu/vue3-context-menu": "^1.5.2",
         "@mdi/font": "^7.4.47",
@@ -122,7 +122,7 @@
 
     "@babel/types": ["@babel/types@7.28.2", "", { "dependencies": { "@babel/helper-string-parser": "^7.27.1", "@babel/helper-validator-identifier": "^7.27.1" } }, "sha512-ruv7Ae4J5dUYULmeXw1gmb7rYRz57OWCPM57pHojnLq/3Z1CK2lNSLTCVjxVk1F/TZHwOZZrOWi0ur95BbLxNQ=="],
 
-    "@canwdev/vgo-ui": ["@canwdev/vgo-ui@0.2.0", "", { "peerDependencies": { "@vueuse/core": "^12.8.2", "lodash-es": "^4.17.21", "vue": "^3.5.13" } }, "sha512-vJ2IoqeVCgfb5cE6t9NHA2AN+juPLfENbhjfO8l0WUWTFimHb08Oyc/pNjJS+1tbxTKvvrjZH1+4jWGZzpK63A=="],
+    "@canwdev/vgo-ui": ["@canwdev/vgo-ui@0.2.1", "", { "peerDependencies": { "@vueuse/core": "^12.8.2", "lodash-es": "^4.17.21", "vue": "^3.5.13" } }, "sha512-gydmUSwhVaCsU1csFwSmrmqTXE8PJ8Cy4KowYnyooy7uoUDlFfDqzSWMD1fv/p3t2qQ7VB4Fpid3yCE+e+Lwqg=="],
 
     "@clack/core": ["@clack/core@0.5.0", "", { "dependencies": { "picocolors": "^1.0.0", "sisteransi": "^1.0.5" } }, "sha512-p3y0FIOwaYRUPRcMO7+dlmLh8PSRcrjuTndsiA0WAFbWES0mLZlrjVoBRZ9DzkPFJZG6KGkJmoEAY0ZcVWTkow=="],
 
