@@ -2,26 +2,27 @@
 import ChatContent from '@/components/AI/AIChat/ChatContent.vue'
 import SideCharacters from '@/components/AI/AIChat/SideCharacters.vue'
 import SideHistory from '@/components/AI/AIChat/SideHistory.vue'
-import { useAiSettingsStore } from '@/components/AI/hooks/ai-settings'
-
-const aisStore = useAiSettingsStore()
 </script>
 
 <template>
   <div class="ai-chat-root vgo-panel">
-    <div class="chat-sidebar" :class="{ _expand: aisStore.isSidebarExpand }">
-      <SideCharacters />
-      <SideHistory />
-
-      <button
-        class="btn-toggle-expand btn-no-style"
-        @click="aisStore.isSidebarExpand = !aisStore.isSidebarExpand"
-      >
-        <span v-if="!aisStore.isSidebarExpand" class="mdi mdi-chevron-right" />
-        <span v-else class="mdi mdi-chevron-left" />
-      </button>
-    </div>
-    <ChatContent />
+    <el-splitter lazy>
+      <el-splitter-panel size="200px" collapsible>
+        <div class="chat-sidebar">
+          <el-splitter lazy layout="vertical">
+            <el-splitter-panel>
+              <SideCharacters />
+            </el-splitter-panel>
+            <el-splitter-panel>
+              <SideHistory />
+            </el-splitter-panel>
+          </el-splitter>
+        </div>
+      </el-splitter-panel>
+      <el-splitter-panel>
+        <ChatContent />
+      </el-splitter-panel>
+    </el-splitter>
   </div>
 </template>
 
@@ -39,38 +40,13 @@ const aisStore = useAiSettingsStore()
     'WenQuanYi Micro Hei', sans-serif;
   font-size: 14px;
   .chat-sidebar {
-    width: 0;
-    display: flex;
-    flex-direction: column;
+    height: 100%;
+    width: 100%;
     position: relative;
-    transition: all 0.1s;
-
-    &._expand {
-      width: 240px;
-      border-right: 1px solid var(--vgo-color-border);
-      .btn-toggle-expand {
-      }
-
-      @media screen and (max-width: 567px) {
-        width: 200px;
-      }
-    }
-
-    .btn-toggle-expand {
-      position: absolute;
-      left: 100%;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 10;
-    }
-
-    .ai-side-characters {
-      border-bottom: 1px solid var(--vgo-color-border);
-    }
 
     .ai-side-characters,
     .ai-side-history {
-      flex: 1;
+      height: 100%;
     }
   }
 

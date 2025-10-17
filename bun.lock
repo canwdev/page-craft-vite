@@ -6,6 +6,7 @@
       "dependencies": {
         "@canwdev/vgo-ui": "^0.2.0",
         "@humanfs/web": "^0.14.1",
+        "@imengyu/vue3-context-menu": "^1.5.2",
         "@mdi/font": "^7.4.47",
         "@tauri-apps/api": "^1.6.0",
         "@viselect/vanilla": "^3.9.0",
@@ -234,6 +235,10 @@
     "@humanwhocodes/module-importer": ["@humanwhocodes/module-importer@1.0.1", "", {}, "sha512-bxveV4V8v5Yb4ncFTT3rPSgZBOpCkjfK0y4oVVVJwIuDVBRMDXrPyXRL988i5ap9m9bnyEEjWfm5WkBmtffLfA=="],
 
     "@humanwhocodes/retry": ["@humanwhocodes/retry@0.4.3", "", {}, "sha512-bV0Tgo9K4hfPCek+aMAn81RppFKv2ySDQeMoSZuvTASywNTnVJCArCZE2FWqpvIatKu7VMRLWlR1EazvVhDyhQ=="],
+
+    "@imengyu/vue-scroll-rect": ["@imengyu/vue-scroll-rect@0.1.7", "", {}, "sha512-a1ysL8LV2iFcHzMJ6tlrqr8JKtYIBrb1U3XcbjNmhponENUSbRvxs4b1sJd5sXdCFIIkDydwQM/SjVhfT7uBUw=="],
+
+    "@imengyu/vue3-context-menu": ["@imengyu/vue3-context-menu@1.5.2", "", { "dependencies": { "@imengyu/vue-scroll-rect": "^0.1.4" } }, "sha512-JtM9y4JKsqwpsLQnK38Fm3DqV5ZwIs/HksxQYHU6yUuuWScdr5C+NTF16J0KxmSbMHOTwVTMwJCBkwcC1X6y1w=="],
 
     "@intlify/core-base": ["@intlify/core-base@11.1.12", "", { "dependencies": { "@intlify/message-compiler": "11.1.12", "@intlify/shared": "11.1.12" } }, "sha512-whh0trqRsSqVLNEUCwU59pyJZYpU8AmSWl8M3Jz2Mv5ESPP6kFh4juas2NpZ1iCvy7GlNRffUD1xr84gceimjg=="],
 

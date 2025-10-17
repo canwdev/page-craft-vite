@@ -7,6 +7,7 @@ import { useMainStore } from '@/store/main'
 import { useSettingsStore } from '@/store/settings'
 import { getSystemIsDarkMode, hexToRgb } from '@/utils/color'
 
+export const contextMenuTheme = ref('flat dark')
 export function useGlobalTheme() {
   const mainStore = useMainStore()
   const settingsStore = useSettingsStore()
@@ -47,9 +48,11 @@ export function useGlobalTheme() {
       if (val) {
         // Element Plus 暗黑模式 https://element-plus.org/zh-CN/guide/dark-mode.html
         document.documentElement.classList.add('dark')
+        contextMenuTheme.value = 'flat dark'
       }
       else {
         document.documentElement.classList.remove('dark')
+        contextMenuTheme.value = 'flat'
       }
     },
     { immediate: true },

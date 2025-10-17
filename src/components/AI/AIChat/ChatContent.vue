@@ -502,43 +502,47 @@ function handleSettings() {
 
 <template>
   <transition name="fade" mode="in-out">
-    <div v-if="currentHistory && currentCharacter" class="chat-gpt-wrap vgo-bg">
-      <div ref="respContainerRef" class="response-container">
-        <ChatBubble
-          v-for="(item, index) in currentHistory.history"
-          :key="item.timestamp"
-          :item="item"
-          :is-dark="mainStore.isAppDarkMode"
-          allow-delete
-          allow-edit
-          :allow-retry="index === currentHistory.history.length - 1"
-          :character="item.role === 'assistant' ? currentCharacter : undefined"
-          @delete="currentHistory.history.splice(index, 1)"
-          @retry="handleRetry(item, index)"
-        />
-        <ChatBubble
-          v-if="tempResponseChat"
-          :item="tempResponseChat"
-          :is-dark="mainStore.isAppDarkMode"
-          :character="currentCharacter"
-          :is-loading="!tempResponseChat.content"
-        />
-      </div>
-      <div class="request-below">
-        <textarea
-          ref="inputRef"
-          v-model="userInputContent"
-          class="vgo-input question-input"
-          type="textarea"
-          :placeholder="
-            aisStore.isEnterSend ? $t('ai.enter_send_tips_1') : $t('ai.enter_send_tips_2')
-          "
-          @keydown="handleKeyInput"
-          @paste="handlePaste"
-        />
-        <div class="request-actions">
-          <div class="action-side">
-            <!--            <el-popover
+    <div v-if="currentHistory && currentCharacter" class="chat-content-wrapper vgo-bg">
+      <el-splitter lazy layout="vertical">
+        <el-splitter-panel>
+          <div ref="respContainerRef" class="response-container">
+            <ChatBubble
+              v-for="(item, index) in currentHistory.history"
+              :key="item.timestamp"
+              :item="item"
+              :is-dark="mainStore.isAppDarkMode"
+              allow-delete
+              allow-edit
+              :allow-retry="index === currentHistory.history.length - 1"
+              :character="item.role === 'assistant' ? currentCharacter : undefined"
+              @delete="currentHistory.history.splice(index, 1)"
+              @retry="handleRetry(item, index)"
+            />
+            <ChatBubble
+              v-if="tempResponseChat"
+              :item="tempResponseChat"
+              :is-dark="mainStore.isAppDarkMode"
+              :character="currentCharacter"
+              :is-loading="!tempResponseChat.content"
+            />
+          </div>
+        </el-splitter-panel>
+        <el-splitter-panel size="200px" :min="100">
+          <div class="request-below">
+            <textarea
+              ref="inputRef"
+              v-model="userInputContent"
+              class="vgo-input question-input"
+              type="textarea"
+              :placeholder="
+                aisStore.isEnterSend ? $t('ai.enter_send_tips_1') : $t('ai.enter_send_tips_2')
+              "
+              @keydown="handleKeyInput"
+              @paste="handlePaste"
+            />
+            <div class="request-actions">
+              <div class="action-side">
+                <!--            <el-popover
               width="400"
               placement="top-start"
               trigger="click"
@@ -554,78 +558,82 @@ function handleSettings() {
               </template>
               <SettingsAi style="max-height: 70vh; overflow-y: auto" />
             </el-popover> -->
-            <button class="vgo-button" title="Settings" @click="handleSettings">
-              <span class="mdi mdi-cog" />
-            </button>
-
-            <DropdownMenu :options="exportImportOptions">
-              <button class="vgo-button" title="Export">
-                <span class="mdi mdi-tray-arrow-down" />
-              </button>
-            </DropdownMenu>
-
-            <button
-              class="vgo-button"
-              title="Scroll to bottom, right click scroll to top"
-              @click="scrollBottom()"
-              @contextmenu.prevent="scrollTop()"
-            >
-              <span class="mdi mdi-unfold-more-horizontal" />
-            </button>
-
-            <el-popconfirm
-              title="Confirm clear chat history?"
-              :teleported="false"
-              @confirm="resetChatHistory"
-            >
-              <template #reference>
-                <button class="vgo-button" :disabled="isLoading">
-                  {{ $t('actions.clear') }}
+                <button class="vgo-button" title="Settings" @click="handleSettings">
+                  <span class="mdi mdi-cog" />
                 </button>
-              </template>
-            </el-popconfirm>
+
+                <DropdownMenu :options="exportImportOptions">
+                  <button class="vgo-button" title="Export">
+                    <span class="mdi mdi-tray-arrow-down" />
+                  </button>
+                </DropdownMenu>
+
+                <button
+                  class="vgo-button"
+                  title="Scroll to bottom, right click scroll to top"
+                  @click="scrollBottom()"
+                  @contextmenu.prevent="scrollTop()"
+                >
+                  <span class="mdi mdi-unfold-more-horizontal" />
+                </button>
+
+                <el-popconfirm
+                  title="Confirm clear chat history?"
+                  :teleported="false"
+                  @confirm="resetChatHistory"
+                >
+                  <template #reference>
+                    <button class="vgo-button" :disabled="isLoading">
+                      {{ $t('actions.clear') }}
+                    </button>
+                  </template>
+                </el-popconfirm>
+              </div>
+
+              <div class="action-side">
+                <el-tag> {{ currentCharacter.model }} </el-tag>
+
+                <ImagePicker v-model:images="imageList" :disabled="isLoading || !isEnableVision" />
+
+                <button v-if="isLoading" class="vgo-button" @click="handleStop">
+                  <span class="mdi mdi-stop-circle-outline" />
+
+                  {{ $t('ai.stop_generation') }}
+                </button>
+
+                <button
+                  v-else
+                  class="vgo-button primary"
+                  :disabled="!isAllowSend"
+                  @click="sendAiRequest()"
+                >
+                  <span class="mdi mdi-send" />
+                  {{ $t('actions.send') }}
+                </button>
+              </div>
+            </div>
           </div>
-
-          <div class="action-side">
-            <el-tag> {{ currentCharacter.model }} </el-tag>
-
-            <ImagePicker v-model:images="imageList" :disabled="isLoading || !isEnableVision" />
-
-            <button v-if="isLoading" class="vgo-button" @click="handleStop">
-              <span class="mdi mdi-stop-circle-outline" />
-
-              {{ $t('ai.stop_generation') }}
-            </button>
-
-            <button
-              v-else
-              class="vgo-button primary"
-              :disabled="!isAllowSend"
-              @click="sendAiRequest()"
-            >
-              <span class="mdi mdi-send" />
-              {{ $t('actions.send') }}
-            </button>
-          </div>
-        </div>
-      </div>
+        </el-splitter-panel>
+      </el-splitter>
     </div>
   </transition>
 </template>
 
 <style scoped lang="scss">
-.chat-gpt-wrap {
+.chat-content-wrapper {
   position: relative;
   height: 100%;
   //width: 100%;
-  display: flex;
-  flex-direction: column;
+  //display: flex;
+  //flex-direction: column;
   .response-container {
-    flex: 1;
-    overflow-y: auto;
-    padding: 8px;
+    //flex: 1;
+    padding: 0 8px;
+    height: 100%;
+    overflow: auto;
   }
   .request-below {
+    height: 100%;
     display: flex;
     flex-direction: column;
     padding: 8px;
@@ -651,10 +659,12 @@ function handleSettings() {
       }
     }
     .question-input {
+      flex: 1;
       width: 100%;
       height: 15vh;
-      min-height: 100px;
+      min-height: 40px;
       box-sizing: border-box;
+      resize: none;
     }
   }
   .mdi {

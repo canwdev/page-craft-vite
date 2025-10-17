@@ -7,7 +7,6 @@ import { AutoFormItemType } from '@canwdev/vgo-ui/src/components/AutoFormElPlus/
 
 import OptionUI from '@canwdev/vgo-ui/src/components/OptionUI/OptionUI.vue'
 import { generateItemDragProps } from '@canwdev/vgo-ui/src/components/OptionUI/utils/item-drag'
-import { renderDropdownMenu } from '@canwdev/vgo-ui/src/components/OptionUI/utils/renders'
 import { computed, ref } from 'vue'
 
 import { useI18n } from 'vue-i18n'
@@ -19,6 +18,7 @@ import {
   defaultOpenAIModel,
   getModelOptions,
 } from '@/components/AI/types/models'
+import { renderContextMenu } from '@/components/renders'
 import { base64Utils } from '@/utils/base64-utils'
 import globalEventBus, { GlobalEvents } from '@/utils/global-event-bus'
 
@@ -76,66 +76,60 @@ const optionList = computed((): StOptionItem[] => {
       key: 'characters',
       hideExpandIcon: true,
       actionRender: () =>
-        renderDropdownMenu([
+        renderContextMenu([
           {
-            label: `➕ ${$t('actions.create')}`,
-            props: {
-              onClick: () => {
-                isCreate.value = true
-                editingItem.value = formatEditingData()
-                isShowEditDialog.value = true
-              },
+            icon: 'mdi mdi-plus',
+            label: `${$t('actions.create')}`,
+            onClick: () => {
+              isCreate.value = true
+              editingItem.value = formatEditingData()
+              isShowEditDialog.value = true
             },
           },
           {
-            label: `📤 ${$t('actions.export')} JSON...`,
-            props: {
-              onClick: async () => {
-                window.$mcUtils.handleExportFile(
-                  await window.$mcUtils.promptGetFileName('AICharacters'),
-                  JSON.stringify(characterList.value, null, 2),
-                  '.json',
+            icon: 'mdi mdi-export',
+            label: `${$t('actions.export')} JSON...`,
+            onClick: async () => {
+              window.$mcUtils.handleExportFile(
+                await window.$mcUtils.promptGetFileName('AICharacters'),
+                JSON.stringify(characterList.value, null, 2),
+                '.json',
+              )
+            },
+          },
+          {
+            icon: 'mdi mdi-import',
+            label: `${$t('actions.import')} JSON...`,
+            onClick: async () => {
+              const list = await window.$mcUtils.handleImportJson()
+              characterList.value = mergeIdData(characterList.value, list || [])
+              window.$message.success('Import success!')
+            },
+          },
+          {
+            icon: 'mdi mdi-delete',
+            label: `${$t('actions.delete_all')}`,
+            onClick: () => {
+              window.$dialog
+                .confirm(
+                  `${$t('msgs.que_ren_shan_chu_ci')} !!All chat records will be deleted!!`,
+                  $t('actions.delete_all'),
+                  {
+                    type: 'warning',
+                  },
                 )
-              },
+                .then(() => {
+                  characterList.value = []
+                  allChatHistory.value = []
+                })
+                .catch()
             },
           },
           {
-            label: `📥 ${$t('actions.import')} JSON...`,
-            props: {
-              onClick: async () => {
-                const list = await window.$mcUtils.handleImportJson()
-                characterList.value = mergeIdData(characterList.value, list || [])
-                window.$message.success('Import success!')
-              },
-            },
-          },
-          {
-            label: `🗑️ ${$t('actions.delete_all')}`,
-            props: {
-              onClick: () => {
-                window.$dialog
-                  .confirm(
-                    `${$t('msgs.que_ren_shan_chu_ci')} !!All chat records will be deleted!!`,
-                    $t('actions.delete_all'),
-                    {
-                      type: 'warning',
-                    },
-                  )
-                  .then(() => {
-                    characterList.value = []
-                    allChatHistory.value = []
-                  })
-                  .catch()
-              },
-            },
-          },
-          {
+            icon: 'mdi mdi-shape-plus-outline',
             label: $t('ai.geng_xin_yu_she_jue'),
-            iconClass: 'mdi mdi-shape-plus-outline',
-            props: {
-              onClick: () => {
-                updatePresetCharacters()
-              },
+            onClick: () => {
+              updatePresetCharacters()
             },
           },
         ]),
@@ -152,50 +146,47 @@ const optionList = computed((): StOptionItem[] => {
           },
           itemProps: generateItemDragProps({ index, cb: switchPosition }),
           actionRender: () =>
-            renderDropdownMenu([
+            renderContextMenu([
               {
-                label: `✏️ ${$t('actions.edit')}`,
-                props: {
-                  onClick: () => {
-                    isCreate.value = false
-                    editingItem.value = formatEditingData(item)
-                    isShowEditDialog.value = true
-                  },
+                icon: 'mdi mdi-pencil',
+                label: `${$t('actions.edit')}`,
+                onClick: () => {
+                  isCreate.value = false
+                  editingItem.value = formatEditingData(item)
+                  isShowEditDialog.value = true
                 },
               },
               {
-                label: `📄 ${$t('actions.duplicate')}...`,
-                props: {
-                  onClick: async () => {
-                    isCreate.value = true
-                    editingItem.value = formatEditingData(item)
-                    isShowEditDialog.value = true
-                  },
+                icon: 'mdi mdi-content-copy',
+                label: `${$t('actions.duplicate')}...`,
+                onClick: async () => {
+                  isCreate.value = true
+                  editingItem.value = formatEditingData(item)
+                  isShowEditDialog.value = true
                 },
               },
               {
-                label: `🗑️ ${$t('actions.delete')}`,
-                props: {
-                  onClick: () => {
-                    window.$dialog
-                      .confirm(
-                        `${$t('msgs.que_ren_shan_chu_ci')} !!Chat records will be deleted!!`,
-                        $t('actions.confirm'),
-                        {
-                          type: 'warning',
-                        },
-                      )
-                      .then(() => {
-                        // 删除与当前角色的全部聊天记录
-                        allChatHistory.value = allChatHistory.value
-                          .filter(i => i.cid !== item.id)
-                          // 转换成原始对象，否则设值报错
-                          .map(toRaw)
+                icon: 'mdi mdi-delete',
+                label: `${$t('actions.delete')}`,
+                onClick: () => {
+                  window.$dialog
+                    .confirm(
+                      `${$t('msgs.que_ren_shan_chu_ci')} !!Chat records will be deleted!!`,
+                      $t('actions.confirm'),
+                      {
+                        type: 'warning',
+                      },
+                    )
+                    .then(() => {
+                      // 删除与当前角色的全部聊天记录
+                      allChatHistory.value = allChatHistory.value
+                        .filter(i => i.cid !== item.id)
+                        // 转换成原始对象，否则设值报错
+                        .map(toRaw)
 
-                        characterList.value.splice(index, 1)
-                      })
-                      .catch()
-                  },
+                      characterList.value.splice(index, 1)
+                    })
+                    .catch()
                 },
               },
             ]),

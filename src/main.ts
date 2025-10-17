@@ -1,3 +1,4 @@
+import ContextMenu from '@imengyu/vue3-context-menu'
 import ElementPlus from 'element-plus'
 import moment from 'moment/moment'
 
@@ -16,6 +17,7 @@ import 'element-plus/dist/index.css'
 import 'element-plus/theme-chalk/dark/css-vars.css'
 // https://pictogrammers.com/library/mdi/
 import '@mdi/font/css/materialdesignicons.min.css'
+import '@imengyu/vue3-context-menu/lib/vue3-context-menu.css'
 import './styles/style.scss'
 
 import '@/components/Apps/app-list'
@@ -36,6 +38,7 @@ const app = createApp(App)
 app.use(i18n)
 app.use(ElementPlus)
 app.use(router)
+app.use(ContextMenu)
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
 pinia.use(

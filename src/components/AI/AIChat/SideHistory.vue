@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import type { StOptionItem } from '@canwdev/vgo-ui/src/components/OptionUI/enum'
 import OptionUI from '@canwdev/vgo-ui/src/components/OptionUI/OptionUI.vue'
-import { renderDropdownMenu } from '@canwdev/vgo-ui/src/components/OptionUI/utils/renders'
 import { useI18n } from 'vue-i18n'
 import { useAiSettingsStore } from '@/components/AI/hooks/ai-settings'
 import { mergeIdData, useAiCharacters } from '@/components/AI/hooks/use-ai-characters'
+import { renderContextMenu } from '@/components/renders'
 import { formatDate, guid } from '@/utils'
 
 const { t: $t } = useI18n()
@@ -83,57 +83,54 @@ const optionList = computed((): StOptionItem[] => {
       key: 'history',
       hideExpandIcon: true,
       actionRender: () =>
-        renderDropdownMenu([
+        renderContextMenu([
           {
-            label: `📤 ${$t('actions.export')} JSON...`,
-            props: {
-              onClick: async () => {
-                // 导出与当前角色的全部聊天记录
-                const list = allChatHistory.value.filter(
-                  i => i.cid === currentCharacter.value!.id,
-                )
-                window.$mcUtils.handleExportFile(
-                  await window.$mcUtils.promptGetFileName(historyLabel),
-                  JSON.stringify(list, null, 2),
-                  '.json',
-                )
-              },
+            icon: 'mdi mdi-export',
+            label: `${$t('actions.export')} JSON...`,
+            onClick: async () => {
+              // 导出与当前角色的全部聊天记录
+              const list = allChatHistory.value.filter(
+                i => i.cid === currentCharacter.value!.id,
+              )
+              window.$mcUtils.handleExportFile(
+                await window.$mcUtils.promptGetFileName(historyLabel),
+                JSON.stringify(list, null, 2),
+                '.json',
+              )
             },
           },
           {
-            label: `📥 ${$t('actions.import')} JSON...`,
-            props: {
-              onClick: async () => {
-                // 导入与当前角色的全部聊天记录，并覆盖掉本地相同id的记录
-                const list = await window.$mcUtils.handleImportJson()
-                allChatHistory.value = list || []
+            icon: 'mdi mdi-import',
+            label: `${$t('actions.import')} JSON...`,
+            onClick: async () => {
+              // 导入与当前角色的全部聊天记录，并覆盖掉本地相同id的记录
+              const list = await window.$mcUtils.handleImportJson()
+              allChatHistory.value = list || []
 
-                const oList = allChatHistory.value.filter(
-                  i => i.cid === currentCharacter.value!.id,
-                )
-                const mergedList = mergeIdData(oList, list)
+              const oList = allChatHistory.value.filter(
+                i => i.cid === currentCharacter.value!.id,
+              )
+              const mergedList = mergeIdData(oList, list)
 
-                deleteCurrentAllHistory()
-                allChatHistory.value = mergedList
+              deleteCurrentAllHistory()
+              allChatHistory.value = mergedList
 
-                window.$message.success('Import success!')
-              },
+              window.$message.success('Import success!')
             },
           },
           {
-            label: `🗑️ ${$t('actions.delete_all')}`,
-            props: {
-              onClick: () => {
-                window.$dialog
-                  .confirm($t('msgs.que_ren_shan_chu_ci'), $t('actions.delete_all'), {
-                    type: 'warning',
-                  })
-                  .then(() => {
-                    // 删除与当前角色的全部聊天记录
-                    deleteCurrentAllHistory()
-                  })
-                  .catch()
-              },
+            icon: 'mdi mdi-delete',
+            label: `${$t('actions.delete_all')}`,
+            onClick: () => {
+              window.$dialog
+                .confirm($t('msgs.que_ren_shan_chu_ci'), $t('actions.delete_all'), {
+                  type: 'warning',
+                })
+                .then(() => {
+                  // 删除与当前角色的全部聊天记录
+                  deleteCurrentAllHistory()
+                })
+                .catch()
             },
           },
         ]),
@@ -155,28 +152,26 @@ const optionList = computed((): StOptionItem[] => {
               aisStore.currentChatHistoryId = item.id
             },
             actionRender: () =>
-              renderDropdownMenu([
+              renderContextMenu([
                 {
-                  label: `✍️ ${$t('actions.rename')}`,
-                  props: {
-                    onClick: async () => {
-                      const title = await window.$mcUtils.showInputPrompt({
-                        title: `${$t('actions.rename')}: ${item.title}`,
-                        value: item.title,
-                      })
-                      item.title = title
-                    },
+                  icon: 'mdi mdi-pencil',
+                  label: `${$t('actions.rename')}`,
+                  onClick: async () => {
+                    const title = await window.$mcUtils.showInputPrompt({
+                      title: `${$t('actions.rename')}: ${item.title}`,
+                      value: item.title,
+                    })
+                    item.title = title
                   },
                 },
                 {
-                  label: `🗑️ ${$t('actions.delete')}`,
-                  props: {
-                    onClick: () => {
-                      const idx = allChatHistory.value.findIndex(i => i.id === item.id)
-                      if (idx > -1) {
-                        allChatHistory.value.splice(idx, 1)
-                      }
-                    },
+                  icon: 'mdi mdi-delete',
+                  label: `${$t('actions.delete')}`,
+                  onClick: () => {
+                    const idx = allChatHistory.value.findIndex(i => i.id === item.id)
+                    if (idx > -1) {
+                      allChatHistory.value.splice(idx, 1)
+                    }
                   },
                 },
               ]),

@@ -148,3 +148,26 @@ html, body, #app {
   ._js-action-button {
   }
 }
+
+// @imengyu/vue3-context-menu 样式覆盖
+.mx-context-menu.flat {
+  border-radius: 8px !important;
+  .mx-context-menu-item {
+    padding: 8px 12px!important;
+  }
+}
+.mx-context-menu.dark {
+  --mx-menu-backgroud: #1F1F1F !important;
+}
+
+// element 样式覆盖
+.el-splitter-bar__dragger-horizontal:after ,
+.el-splitter-bar__dragger-horizontal:before {
+  width: 1px !important;
+  background-color: var(--vgo-color-border) !important;
+}
+
+.el-splitter-bar__dragger-active:after ,
+.el-splitter-bar__dragger-active:before {
+  background-color: var(--vgo-primary) !important;
+}
