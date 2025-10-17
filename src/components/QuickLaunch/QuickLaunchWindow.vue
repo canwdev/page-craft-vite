@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { QuickOptionItem } from '@canwdev/vgo-ui/src/components/QuickOptions/enum'
 import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/ViewPortWindow.vue'
-import { WebviewWindow } from '@tauri-apps/api/window'
+import { WebviewWindow } from '@tauri-apps/api/webviewWindow'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import CLaunch from '@/components/CLaunch/CLaunch.vue'

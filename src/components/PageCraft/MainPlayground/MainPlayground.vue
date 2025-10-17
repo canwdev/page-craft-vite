@@ -2,7 +2,7 @@
 import DropdownMenu from '@canwdev/vgo-ui/src/components/QuickOptions/DropdownMenu.vue'
 import QuickContextMenu from '@canwdev/vgo-ui/src/components/QuickOptions/QuickContextMenu.vue'
 import VueMonaco from '@canwdev/vgo-ui/src/components/VueMonaco/VueMonaco.vue'
-import { WebviewWindow } from '@tauri-apps/api/window'
+import { WebviewWindow } from '@tauri-apps/api/webviewWindow'
 
 import { useEventListener } from '@vueuse/core'
 

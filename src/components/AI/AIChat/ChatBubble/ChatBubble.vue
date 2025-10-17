@@ -168,12 +168,12 @@ function exportMarkdown(text) {
           v-if="isLoading"
           class="chat-content markdown-body vgo-bg"
           :class="{ 'markdown-body-dark': isDark }"
+          style="display: flex;"
         >
-          <div
-            v-loading="true"
+          <img
+            src="./loading.svg"
             style="width: 50px; height: 50px"
-            element-loading-background="transparent"
-          />
+          >
         </div>
         <MessageContent
           v-else-if="typeof item.content === 'string'"

@@ -157,7 +157,6 @@ export const compatibleModelOptions: IChatModelOption[] = [
   { label: 'Meta LLaMA', value: 'llama-3.3-70b-versatile' },
   { label: '同义千问 Qwen 2.5 Max', value: 'qwen-max-0125' },
   { label: '智谱清言 ChatGLM', value: 'glm-4-flash' },
-  { label: '深度求索 DeepSeek R1', value: 'DeepSeek-R1' },
   { label: '月之暗面 Moonshot', value: 'moonshot-v1-8k' },
 ]
 
