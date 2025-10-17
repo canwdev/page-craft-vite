@@ -19,7 +19,6 @@ import 'element-plus/theme-chalk/dark/css-vars.css'
 import '@mdi/font/css/materialdesignicons.min.css'
 import '@imengyu/vue3-context-menu/lib/vue3-context-menu.css'
 import './styles/style.scss'
-
 import '@/components/Apps/app-list'
 
 /**

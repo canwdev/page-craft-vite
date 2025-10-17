@@ -1,10 +1,11 @@
-<script lang="ts">
+<script lang="ts" setup>
 import { ElMessage, ElMessageBox, ElNotification } from 'element-plus'
-import { defineComponent } from 'vue'
 import { useRoute } from 'vue-router'
 
 import { useAppList } from '@/components/Apps/app-list'
+import IframeBrowser from '@/components/IframeBrowser/IframeBrowser.vue'
 import DesktopWindowManager from '@/components/OS/DesktopWindowManager.vue'
+import QuickLaunchWindow from '@/components/QuickLaunch/QuickLaunchWindow.vue'
 import { SettingsTabType } from '@/enum/settings'
 import { useMainStore } from '@/store/main'
 import { useSettingsStore } from '@/store/settings'
@@ -13,50 +14,32 @@ import { GlobalEvents, useGlobalBusOn } from '@/utils/global-event-bus'
 import { mcUtils } from '@/utils/mc-utils'
 import '@/components/monaco-editor-patch'
 
-export default defineComponent({
-  name: 'AppSub',
-  components: {
-    DesktopWindowManager,
-    IframeBrowser: defineAsyncComponent(() => import('@/components/IframeBrowser/IframeBrowser.vue')),
-    QuickLaunchWindow: defineAsyncComponent(
-      () => import('@/components/QuickLaunch/QuickLaunchWindow.vue'),
-    ),
-  },
-  setup() {
-    const mainStore = useMainStore()
-    const settingsStore = useSettingsStore()
-    const systemStore = useSystemStore()
-    const route = useRoute()
-    useAppList()
-    window.$notification = ElNotification
-    window.$message = ElMessage
-    window.$dialog = ElMessageBox
+const mainStore = useMainStore()
+const settingsStore = useSettingsStore()
+const systemStore = useSystemStore()
+const route = useRoute()
+useAppList()
+window.$notification = ElNotification
+window.$message = ElMessage
+window.$dialog = ElMessageBox
 
-    const isLitePage = computed(() => {
-      return route.name === 'PlaygroundPage'
-    })
-
-    onMounted(() => {
-      window.$mcUtils = mcUtils
-    })
-
-    useGlobalBusOn(GlobalEvents.OPEN_SETTINGS, (type: SettingsTabType = SettingsTabType.COMMON) => {
-      systemStore.createTaskById('os.pagecraft.settings', { curTab: type })
-    })
-    useGlobalBusOn(
-      GlobalEvents.OPEN_TEXT_TRANSFORMER,
-      (type: SettingsTabType = SettingsTabType.COMMON) => {
-        systemStore.createTaskById('os.pagecraft.text_converter')
-      },
-    )
-
-    return {
-      mainStore,
-      settingsStore,
-      isLitePage,
-    }
-  },
+const isLitePage = computed(() => {
+  return route.name === 'PlaygroundPage'
 })
+
+onMounted(() => {
+  window.$mcUtils = mcUtils
+})
+
+useGlobalBusOn(GlobalEvents.OPEN_SETTINGS, (type: SettingsTabType = SettingsTabType.COMMON) => {
+  systemStore.createTaskById('os.pagecraft.settings', { curTab: type })
+})
+useGlobalBusOn(
+  GlobalEvents.OPEN_TEXT_TRANSFORMER,
+  (type: SettingsTabType = SettingsTabType.COMMON) => {
+    systemStore.createTaskById('os.pagecraft.text_converter')
+  },
+)
 </script>
 
 <template>

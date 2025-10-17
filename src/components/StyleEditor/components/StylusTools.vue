@@ -4,17 +4,28 @@ import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useSettingsStore } from '@/store/settings'
 import { copyToClipboard, readClipboardData } from '@/utils'
+import dynamicLoadScript from '@/utils/dynamic-load-script'
 
 const { t: $t } = useI18n()
 const textInput = ref('')
 const textOutput = ref('')
 const errorText = ref('')
 
+const isLoading = ref(false)
+onMounted(async () => {
+  isLoading.value = true
+  await dynamicLoadScript('lib/stylus-supremacy-format.min.js')
+  isLoading.value = false
+})
+
 watch(textInput, () => {
   doFormat()
 })
 
 function doFormat() {
+  if (isLoading.value) {
+    return
+  }
   try {
     let result = window.stylusSupermacyFormat(textInput.value, {
       tabStopChar: '  ',
@@ -68,7 +79,7 @@ function showDemo() {
 </script>
 
 <template>
-  <div class="text-converter-wrap">
+  <div v-loading="isLoading" class="text-converter-wrap">
     <div class="tool-header flex-row-center-gap" style="justify-content: space-between">
       <div class="vgo-button-group">
         <button

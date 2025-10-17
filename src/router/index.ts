@@ -4,8 +4,19 @@ import iconExcel from '@/assets/textures/excel.svg?url'
 
 import i18n from '@/i18n/index'
 import { formatSiteTitle } from '@/router/router-utils'
+import { batchDynamicLoadScript } from '@/utils/dynamic-load-script'
 import WelcomePage from '@/views/HomePage.vue'
 import iconTranslate from '../assets/textures/translate.svg?url'
+
+async function loadCraftDeps() {
+  await batchDynamicLoadScript([
+    'lib/sass/sass.sync.min.js',
+    'lib/juice.min.js',
+    'lib/js-beautify/beautify.min.js',
+    'lib/js-beautify/beautify-css.min.js',
+    'lib/js-beautify/beautify-html.min.js',
+  ])
+}
 
 const history = createWebHashHistory()
 const routes = [
@@ -16,9 +27,7 @@ const routes = [
     meta: {
       title: i18n.global.t('common.welcome'),
     },
-    // beforeEnter: (to, from, next) => {
-    //   return next()
-    // },
+
   },
   {
     path: '/craft',
@@ -27,6 +36,10 @@ const routes = [
     meta: {
       title: `Craft`,
     },
+    beforeEnter: async (to, from, next) => {
+      await loadCraftDeps()
+      return next()
+    },
   },
   {
     path: '/craft/playground',
@@ -34,6 +47,10 @@ const routes = [
     component: () => import('@/views/PlaygroundPage.vue'),
     meta: {
       title: `Playground`,
+    },
+    beforeEnter: async (to, from, next) => {
+      await loadCraftDeps()
+      return next()
     },
   },
   {
