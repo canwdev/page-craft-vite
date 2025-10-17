@@ -1,14 +1,14 @@
 // 前端虚拟文件系统API，仅用于测试！
 // 此API已弃用！请使用humanfs！
-const {BFSRequire} = window.BrowserFS
+const { BFSRequire } = window.BrowserFS
 
 const fs = BFSRequire('fs')
 const Path = BFSRequire('path')
 
 // 在 router.beforeEach 进行 configure初始化
-export const initFs = async () => {
-  const {configure} = window.BrowserFS
-  await configure({fs: 'LocalStorage'}, (e) => {
+export async function initFs() {
+  const { configure } = window.BrowserFS
+  await configure({ fs: 'LocalStorage' }, (e) => {
     if (e) {
       console.error(e)
     }
@@ -30,17 +30,18 @@ export const initFs = async () => {
   // )
 }
 
-const recursiveDelete = (path) => {
+function recursiveDelete(path) {
   let files = []
   if (fs.existsSync(path)) {
     if (fs.lstatSync(path).isDirectory()) {
       files = fs.readdirSync(path)
-      files.forEach(function (file, index) {
-        const curPath = path + '/' + file
+      files.forEach((file, index) => {
+        const curPath = `${path}/${file}`
         recursiveDelete(curPath)
       })
       fs.rmdirSync(path)
-    } else {
+    }
+    else {
       fs.unlinkSync(path)
     }
   }
@@ -51,14 +52,14 @@ const recursiveDelete = (path) => {
  * @param fromPath 来源文件或文件夹，如 /source/file1.txt 或 /source/folder1
  * @param toPath 目标文件夹 /target
  */
-const recursiveCopy = (fromPath, toPath) => {
+function recursiveCopy(fromPath, toPath) {
   const stats = fs.statSync(fromPath) // Get stats about the source
 
   if (stats.isDirectory()) {
     console.log('dir', fromPath)
 
     if (!fs.existsSync(toPath)) {
-      fs.mkdirSync(toPath, {recursive: true})
+      fs.mkdirSync(toPath, { recursive: true })
     }
     // If source is a directory
     fs.readdirSync(fromPath).forEach((file) => {
@@ -67,18 +68,19 @@ const recursiveCopy = (fromPath, toPath) => {
       const destinationFilePath = Path.join(toPath, file) // Construct the full path
       recursiveCopy(sourceFilePath, destinationFilePath) // Recursively copy the file
     })
-  } else if (stats.isFile()) {
+  }
+  else if (stats.isFile()) {
     console.log('file', fromPath)
     const base = Path.dirname(toPath)
     if (!fs.existsSync(base)) {
-      fs.mkdirSync(Path.dirname(toPath), {recursive: true})
+      fs.mkdirSync(Path.dirname(toPath), { recursive: true })
     }
     // If source is a file
     fs.writeFileSync(toPath, fs.readFileSync(fromPath))
   }
 }
 
-const copyEntry = (fromPath: string, toPath: string, isMove = false) => {
+function copyEntry(fromPath: string, toPath: string, isMove = false) {
   if (!fs.existsSync(fromPath)) {
     throw new Error(`fromPath: ${fromPath} is not exist!`)
   }
@@ -102,12 +104,12 @@ const copyEntry = (fromPath: string, toPath: string, isMove = false) => {
 export const fsWebApi = {
   async getDrives(params) {
     return [
-      {label: 'LocalStorage FS', path: '/home'},
-      {label: 'RAM FS', path: '/tmp'},
+      { label: 'LocalStorage FS', path: '/home' },
+      { label: 'RAM FS', path: '/tmp' },
       // {label: 'IndexedDB FS', path: '/idbfs'},
     ]
   },
-  async getList({path}) {
+  async getList({ path }) {
     const files = fs.readdirSync(path)
     return files.map((entryName: string) => {
       const entryPath = Path.join(path, entryName)
@@ -116,7 +118,8 @@ export const fsWebApi = {
 
       try {
         stat = fs.statSync(entryPath)
-      } catch (e: any) {
+      }
+      catch (e: any) {
         error = e.message
       }
       // console.log(stat)
@@ -130,56 +133,57 @@ export const fsWebApi = {
         lastModified: stat?.ctime.getTime() || 0,
         birthtime: stat?.birthtime.getTime() || 0,
         size: isDirectory ? undefined : stat?.size,
-        ext: ext,
+        ext,
         error,
         stat,
       }
     })
   },
   getStream(params) {
-    const {path} = params
+    const { path } = params
     const r = fs.readFileSync(path)
     console.log(r)
     return r
   },
   async createDir(params) {
-    const {path, ignoreExisted = false} = params
+    const { path, ignoreExisted = false } = params
     if (ignoreExisted) {
       if (fs.existsSync(path)) {
-        return {path}
+        return { path }
       }
     }
-    fs.mkdirSync(path, {recursive: true})
-    return {path}
+    fs.mkdirSync(path, { recursive: true })
+    return { path }
   },
   async createFile(params, config: any = {}) {
-    const {path, file} = params
+    const { path, file } = params
 
     if (fs.existsSync(path)) {
       throw new Error(`file ${path} already exist!`)
     }
-    await this.createDir({path: Path.dirname(path), ignoreExisted: true})
+    await this.createDir({ path: Path.dirname(path), ignoreExisted: true })
     fs.writeFileSync(path, file)
   },
   async renameEntry(params) {
-    const {fromPath, toPath} = params
+    const { fromPath, toPath } = params
     fs.renameSync(fromPath, toPath)
   },
   async copyPaste(params) {
-    const {fromPaths, toPath, isMove} = params
+    const { fromPaths, toPath, isMove } = params
     for (let i = 0; i < fromPaths.length; i++) {
       const path = fromPaths[i]
       copyEntry(path, toPath, isMove)
     }
   },
   async deleteEntry(params) {
-    const {path} = params
+    const { path } = params
     if (Array.isArray(path)) {
       for (let i = 0; i < path.length; i++) {
         const p = path[i]
         recursiveDelete(p)
       }
-    } else {
+    }
+    else {
       recursiveDelete(path)
     }
   },

@@ -1,12 +1,10 @@
-import {BatchListItem, useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
-import {useOpenAI_GPT} from '@/components/AI/hooks/use-gpt'
-import {readClipboardData} from '@/utils'
-import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
-import {useI18n} from 'vue-i18n'
-import {useBatchTranslateAnalyser} from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox/use-analyser'
-import {OpenAIChatCompletion, GptMessage} from '@/components/AI/types/open-ai'
+import type { BatchListItem } from '@/components/VueI18nEditTool/store/i18n-tool-main'
+import { useI18n } from 'vue-i18n'
+import { useI18nMainStore } from '@/components/VueI18nEditTool/store/i18n-tool-main'
+import { readClipboardData } from '@/utils'
+import globalEventBus, { GlobalEvents } from '@/utils/global-event-bus'
 
-export type PasteResult = {
+export interface PasteResult {
   // iso，如 en-US
   label: string
   // 翻译内容
@@ -14,7 +12,7 @@ export type PasteResult = {
 }
 
 // SubGuiItem 组件实例内容
-export type SubInstanceItem = {
+export interface SubInstanceItem {
   listItem: BatchListItem
   fieldValue: string
   handleDeleteField: any
@@ -23,8 +21,8 @@ export type SubInstanceItem = {
 }
 
 const tiSelector = '.translate-item'
-export const useGuiToolbox = () => {
-  const {t: $t} = useI18n()
+export function useGuiToolbox() {
+  const { t: $t } = useI18n()
   const i18nMainStore = useI18nMainStore()
 
   const removeSelectedClass = () => {
@@ -54,7 +52,7 @@ export const useGuiToolbox = () => {
   // 获取有json文件的 SubGuiItem 组件实例
   const getSubItems = async () => {
     let items: SubInstanceItem[] = await _getAllSubItems()
-    items = items.filter((item) => item.getIsJsonCreated())
+    items = items.filter(item => item.getIsJsonCreated())
     return items
   }
 
@@ -112,7 +110,7 @@ export const useGuiToolbox = () => {
       for (const key in pastedResult) {
         // SubGuiItem实例
         const result = pastedResult[key]
-        const {label, value} = result
+        const { label, value } = result
 
         if (value !== undefined && value !== null) {
           const item = itemsLabelMap[label]
@@ -122,7 +120,8 @@ export const useGuiToolbox = () => {
         }
       }
       window.$message.success($t('msgs.action_completed_pl'))
-    } catch (error: any) {
+    }
+    catch (error: any) {
       window.$message.error(error.message)
     }
   }

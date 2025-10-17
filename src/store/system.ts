@@ -1,7 +1,8 @@
-import {ShortcutItem, TaskItem} from '@/enum/os'
-import {ServerInfo} from '@server/types/server'
+import type { ServerInfo } from '@server/types/server'
+import type { ShortcutItem } from '@/enum/os'
+import { TaskItem } from '@/enum/os'
 
-type IStore = {
+interface IStore {
   serverInfo: ServerInfo | null
   tasks: TaskItem[]
   activeId: string
@@ -20,7 +21,7 @@ export const useSystemStore = defineStore('system', {
       return window.$appList
     },
     allAppidMap() {
-      const map: {[appid: string]: ShortcutItem} = {}
+      const map: { [appid: string]: ShortcutItem } = {}
       this.allApps.forEach((shortcut) => {
         map[shortcut.appid] = shortcut
       })
@@ -42,14 +43,14 @@ export const useSystemStore = defineStore('system', {
     createTask(shortcut: ShortcutItem, params?: any) {
       if (shortcut.singleInstance) {
         // 查找实例是否已经存在，防止重复启动
-        const task = this.tasks.find((i) => i.component === shortcut.component)
+        const task = this.tasks.find(i => i.component === shortcut.component)
         if (task) {
           task.params = params
           this.setTaskActive(task)
           return task
         }
       }
-      const newTask = new TaskItem({...shortcut, params})
+      const newTask = new TaskItem({ ...shortcut, params })
       // console.log(newTask)
       this.tasks = [...this.tasks, newTask]
       this.activeId = newTask.guid
@@ -61,7 +62,7 @@ export const useSystemStore = defineStore('system', {
      */
     closeTask(guid) {
       const _tasks = [...this.tasks]
-      const idx = _tasks.findIndex((i) => i.guid === guid)
+      const idx = _tasks.findIndex(i => i.guid === guid)
 
       // 窗口关闭动画
       const task = _tasks[idx]
@@ -97,7 +98,7 @@ export const useSystemStore = defineStore('system', {
      * 关闭所有程序
      */
     shutdown() {
-      this.tasks.forEach((task) => this.closeTask(task.guid))
+      this.tasks.forEach(task => this.closeTask(task.guid))
     },
     /**
      * 激活任务

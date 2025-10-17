@@ -1,10 +1,10 @@
-import {setHfsInstance} from '@/components/FileManager/utils/providers/humanfs-api'
-import {useOpenedHistory} from '@/components/VueI18nEditTool/file-history'
-import {QuickOptionItem} from '@canwdev/vgo-ui/src/components/QuickOptions/enum'
+import type { QuickOptionItem } from '@canwdev/vgo-ui/src/components/QuickOptions/enum'
+import { setHfsInstance } from '@/components/FileManager/utils/providers/humanfs-api'
+import { useOpenedHistory } from '@/components/VueI18nEditTool/file-history'
 
-export const useLocalDir = ({emit}) => {
+export function useLocalDir({ emit }) {
   const handleRef = ref<FileSystemDirectoryHandle | null>(null)
-  const {appendHistory, historyMenuOptions, openedHistory} = useOpenedHistory(
+  const { appendHistory, historyMenuOptions, openedHistory } = useOpenedHistory(
     'mc_explorer_local_dir3',
     async (handle: FileSystemDirectoryHandle) => {
       await setHfsInstance(handle)

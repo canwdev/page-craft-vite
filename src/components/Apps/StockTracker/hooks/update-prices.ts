@@ -1,9 +1,9 @@
-import {fetchPricesByDay} from '@/components/Apps/StockTracker/utils/prices'
-import {useStorage} from '@vueuse/core'
-import {IStockTrackerPrices} from '@/components/Apps/StockTracker/types'
-import {LS_SettingsKey} from '@/enum/settings'
+import type { IStockTrackerPrices } from '@/components/Apps/StockTracker/types'
+import { useStorage } from '@vueuse/core'
+import { fetchPricesByDay } from '@/components/Apps/StockTracker/utils/prices'
+import { LS_SettingsKey } from '@/enum/settings'
 
-export const useUpdatePrices = ({stockSymbolOptions}) => {
+export function useUpdatePrices({ stockSymbolOptions }) {
   const stockTrackerPrices = useStorage<IStockTrackerPrices>(
     LS_SettingsKey.STOCK_TRACKER_PRICES,
     {},
@@ -22,7 +22,7 @@ export const useUpdatePrices = ({stockSymbolOptions}) => {
           continue
         }
         const dataByDay = await fetchPricesByDay({
-          symbol: symbol,
+          symbol,
         })
 
         if (!symbolMap[symbol]) {
@@ -35,7 +35,8 @@ export const useUpdatePrices = ({stockSymbolOptions}) => {
             ...symbolMap[symbol].byDay,
             byDay: dataByDay,
           }
-        } else {
+        }
+        else {
           symbolMap[symbol] = {
             byDay: dataByDay,
           }
@@ -45,13 +46,15 @@ export const useUpdatePrices = ({stockSymbolOptions}) => {
       window.$message.success('更新行情成功！')
       stockTrackerPrices.value = symbolMap
       console.log(stockTrackerPrices.value)
-    } catch (error: any) {
+    }
+    catch (error: any) {
       console.error(error)
 
       window.$dialog.alert(error.message, '更新行情失败', {
         type: 'error',
       })
-    } finally {
+    }
+    finally {
       isUpdating.value = false
     }
   }

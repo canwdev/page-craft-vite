@@ -1,10 +1,10 @@
-import {BlockItem, BlockType} from '@/enum/page-craft/block'
-import {TabType} from '@/enum/page-craft/inventory'
-import {LS_SettingsKey, LdThemeType} from '@/enum/settings'
-import {DEFAULT_THEME} from '@canwdev/vgo-ui/src/components/ViewPortWindow/utils/use-theme'
-import {IComponentInStore} from '@/components/PageCraft/ComponentExplorer/enum'
+import type { IComponentInStore } from '@/components/PageCraft/ComponentExplorer/enum'
+import type { BlockItem } from '@/enum/page-craft/block'
+import { DEFAULT_THEME } from '@canwdev/vgo-ui/src/components/ViewPortWindow/utils/use-theme'
+import { TabType } from '@/enum/page-craft/inventory'
+import { LdThemeType, LS_SettingsKey } from '@/enum/settings'
 
-type IStore = {
+interface IStore {
   // 明暗主题
   ldTheme: LdThemeType
   // 自定义主题类型

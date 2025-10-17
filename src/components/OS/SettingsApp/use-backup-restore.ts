@@ -1,6 +1,6 @@
-import {useIDBKeyval} from '@vueuse/integrations/useIDBKeyval'
-import {IDBSettingsKey, LS_SettingsKey} from '@/enum/settings'
-import {useI18n} from 'vue-i18n'
+import { useIDBKeyval } from '@vueuse/integrations/useIDBKeyval'
+import { useI18n } from 'vue-i18n'
+import { IDBSettingsKey, LS_SettingsKey } from '@/enum/settings'
 
 export interface ISettingsBackup {
   backupSettingsVersion: number
@@ -12,12 +12,12 @@ export interface ISettingsBackup {
   }
 }
 
-export const useBackupRestore = () => {
+export function useBackupRestore() {
   const isLoading = ref(false)
-  const {t: $t} = useI18n()
+  const { t: $t } = useI18n()
 
   const idbRestoreData = (key, value) => {
-    const {set, data, isFinished} = useIDBKeyval(key, {})
+    const { set, data, isFinished } = useIDBKeyval(key, {})
     return new Promise((resolve) => {
       watch(isFinished, (val) => {
         if (val) {
@@ -29,7 +29,7 @@ export const useBackupRestore = () => {
   }
 
   const idbBackupData = (key) => {
-    const {set, data, isFinished} = useIDBKeyval(key, {})
+    const { set, data, isFinished } = useIDBKeyval(key, {})
     return new Promise((resolve) => {
       watch(isFinished, (val) => {
         if (val) {
@@ -60,10 +60,12 @@ export const useBackupRestore = () => {
       }
 
       location.reload()
-    } catch (e: any) {
+    }
+    catch (e: any) {
       window.$message.error(e.message)
       console.error(e)
-    } finally {
+    }
+    finally {
       isLoading.value = false
     }
   }
@@ -79,19 +81,20 @@ export const useBackupRestore = () => {
 
       Object.values(LS_SettingsKey).forEach((key) => {
         const data = localStorage.getItem(key)
-        console.log('[LS_SettingsKey] Backup: ', {key, data})
+        console.log('[LS_SettingsKey] Backup: ', { key, data })
         allSettings.localStorageData[key] = data
       })
 
       for (const iKey in IDBSettingsKey) {
         const key = IDBSettingsKey[iKey]
-        if (/_handle_history$/.test(key)) {
+        if (key.endsWith('_handle_history')) {
           console.warn(
             `[IDBSettingsKey] Skip backup ${key} because it contains FileSystemFileHandle`,
           )
-        } else {
+        }
+        else {
           const data = await idbBackupData(key)
-          console.log('[IDBSettingsKey] Backup: ', {key, data})
+          console.log('[IDBSettingsKey] Backup: ', { key, data })
           allSettings.idbKeyValData[key] = data
         }
       }
@@ -103,10 +106,12 @@ export const useBackupRestore = () => {
         JSON.stringify(allSettings, null, 2),
         '.json',
       )
-    } catch (e: any) {
+    }
+    catch (e: any) {
       window.$message.error(e.message)
       console.error(e)
-    } finally {
+    }
+    finally {
       isLoading.value = false
     }
   }

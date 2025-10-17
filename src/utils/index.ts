@@ -4,7 +4,7 @@ import moment from 'moment/moment'
  * 复制字符串到剪贴板操作（兼容新旧接口）
  * @param text 要复制的文本
  */
-export const copyToClipboard = (text): Promise<void> => {
+export function copyToClipboard(text): Promise<void> {
   return new Promise((resolve, reject) => {
     // 如果支持 Clipboard API，就使用它
     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -16,7 +16,8 @@ export const copyToClipboard = (text): Promise<void> => {
         .catch((error) => {
           reject(error)
         })
-    } else {
+    }
+    else {
       // 使用 document.execCommand 兼容旧 API
       const textarea = document.createElement('textarea')
       textarea.value = text
@@ -28,12 +29,15 @@ export const copyToClipboard = (text): Promise<void> => {
         const success = document.execCommand('copy')
         if (!success) {
           throw new Error('Unable to perform copy operation')
-        } else {
+        }
+        else {
           resolve()
         }
-      } catch (error) {
+      }
+      catch (error) {
         reject(error)
-      } finally {
+      }
+      finally {
         document.body.removeChild(textarea)
       }
     }
@@ -44,7 +48,7 @@ export const copyToClipboard = (text): Promise<void> => {
  * 从剪贴板粘贴文本（兼容新旧接口）
  * @param options 配置参数
  */
-export const readClipboardData = (options: any = {}): Promise<string> => {
+export function readClipboardData(options: any = {}): Promise<string> {
   const {
     // 是否修剪前后空格
     isTrim = true,
@@ -74,7 +78,8 @@ export const readClipboardData = (options: any = {}): Promise<string> => {
         .catch((err) => {
           reject(err)
         })
-    } else {
+    }
+    else {
       // 如果不支持，回退到使用 Document.execCommand
       const textarea = document.createElement('textarea')
       document.body.appendChild(textarea)
@@ -87,11 +92,12 @@ export const readClipboardData = (options: any = {}): Promise<string> => {
   })
 }
 
-export const isCharacterKeyPress = (evt) => {
+export function isCharacterKeyPress(evt) {
   if (typeof evt.which == 'undefined') {
     // This is IE, which only fires keypress events for printable keys
     return true
-  } else if (typeof evt.which == 'number' && evt.which > 0) {
+  }
+  else if (typeof evt.which == 'number' && evt.which > 0) {
     // In other browsers except old versions of WebKit, evt.which is
     // only greater than zero if the keypress is a printable key.
     // We need to filter out backspace and ctrl/alt/meta key combinations
@@ -111,7 +117,7 @@ export function formatDate(d: any, format = 'YYYY-MM-DD HH:mm:ss') {
   return moment(d).format(format)
 }
 
-export const formatSelectOptions = (list: string[]) => {
+export function formatSelectOptions(list: string[]) {
   return list.map((item) => {
     return {
       value: item,
@@ -120,40 +126,42 @@ export const formatSelectOptions = (list: string[]) => {
   })
 }
 
-export const sleep = (timeoutInMs: number) =>
-  new Promise((r) => {
+export function sleep(timeoutInMs: number) {
+  return new Promise((r) => {
     setTimeout(r, timeoutInMs)
   })
+}
 
 export function guid_S4() {
   return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1)
 }
-export const guid = (split = '-') => {
+export function guid(split = '-') {
   return (
-    guid_S4() +
-    guid_S4() +
-    split +
-    guid_S4() +
-    split +
-    guid_S4() +
-    split +
-    guid_S4() +
-    split +
-    guid_S4() +
-    guid_S4() +
     guid_S4()
+    + guid_S4()
+    + split
+    + guid_S4()
+    + split
+    + guid_S4()
+    + split
+    + guid_S4()
+    + split
+    + guid_S4()
+    + guid_S4()
+    + guid_S4()
   )
 }
 
 // 字节转换为可读的单位
-export const bytesToSize = (bytes, autoNo = '0 B') => {
+export function bytesToSize(bytes, autoNo = '0 B') {
   bytes = Number(bytes)
   if (Number.isNaN(bytes)) {
     return '-'
   }
-  if (bytes === 0) return autoNo
+  if (bytes === 0)
+    return autoNo
   const k = 1024
   const sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
   const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return Number(bytes / Math.pow(k, i)).toFixed(2) + ' ' + sizes[i]
+  return `${Number(bytes / k ** i).toFixed(2)} ${sizes[i]}`
 }

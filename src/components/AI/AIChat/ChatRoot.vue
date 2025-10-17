@@ -2,14 +2,14 @@
 import ChatContent from '@/components/AI/AIChat/ChatContent.vue'
 import SideCharacters from '@/components/AI/AIChat/SideCharacters.vue'
 import SideHistory from '@/components/AI/AIChat/SideHistory.vue'
-import {useAiSettingsStore} from '@/components/AI/hooks/ai-settings'
+import { useAiSettingsStore } from '@/components/AI/hooks/ai-settings'
 
 const aisStore = useAiSettingsStore()
 </script>
 
 <template>
   <div class="ai-chat-root vgo-panel">
-    <div class="chat-sidebar" :class="{_expand: aisStore.isSidebarExpand}">
+    <div class="chat-sidebar" :class="{ _expand: aisStore.isSidebarExpand }">
       <SideCharacters />
       <SideHistory />
 
@@ -17,8 +17,8 @@ const aisStore = useAiSettingsStore()
         class="btn-toggle-expand btn-no-style"
         @click="aisStore.isSidebarExpand = !aisStore.isSidebarExpand"
       >
-        <span v-if="!aisStore.isSidebarExpand" class="mdi mdi-chevron-right"></span>
-        <span v-else class="mdi mdi-chevron-left"></span>
+        <span v-if="!aisStore.isSidebarExpand" class="mdi mdi-chevron-right" />
+        <span v-else class="mdi mdi-chevron-left" />
       </button>
     </div>
     <ChatContent />
@@ -35,8 +35,8 @@ const aisStore = useAiSettingsStore()
   border-radius: 0 !important;
 
   font-family:
-    'Open Sans', 'Source Han Sans SC', 'PingFang SC', Arial, 'Microsoft YaHei', 'Helvetica Neue',
-    'Hiragino Sans GB', 'WenQuanYi Micro Hei', sans-serif;
+    'Open Sans', 'Source Han Sans SC', 'PingFang SC', Arial, 'Microsoft YaHei', 'Helvetica Neue', 'Hiragino Sans GB',
+    'WenQuanYi Micro Hei', sans-serif;
   font-size: 14px;
   .chat-sidebar {
     width: 0;

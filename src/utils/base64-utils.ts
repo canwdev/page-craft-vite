@@ -2,12 +2,11 @@
  * Encodes a string to Base64 with UTF-8 character encoding.
  * @param str The input string to encode.
  */
-const btoa_utf8 = (str) => {
+function btoa_utf8(str) {
   // 首先将字符串转换为UTF-8编码的字节
   const utf8Bytes = encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) =>
     // @ts-ignore
-    String.fromCharCode('0x' + p1),
-  )
+    String.fromCharCode(`0x${p1}`))
 
   // 使用btoa函数进行Base64编码
   return btoa(utf8Bytes)
@@ -17,7 +16,7 @@ const btoa_utf8 = (str) => {
  * Decodes a Base64-encoded string with UTF-8 character encoding.
  * @param str The Base64-encoded string to decode.
  */
-const atob_utf8 = (str) => {
+function atob_utf8(str) {
   // 使用atob函数进行Base64解码
   const utf8Bytes = atob(str)
 
@@ -27,11 +26,12 @@ const atob_utf8 = (str) => {
       utf8Bytes
         .split('')
         .map((c) => {
-          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+          return `%${(`00${c.charCodeAt(0).toString(16)}`).slice(-2)}`
         })
         .join(''),
     )
-  } catch (e) {
+  }
+  catch (e) {
     console.error('Decoding failed', e)
     return null
   }

@@ -1,50 +1,51 @@
-import {IEntry} from '../types/filesystem'
+import type { IEntry } from '../types/filesystem'
 
-export const defaultSorter = (a: IEntry, b: IEntry) => {
+export function defaultSorter(a: IEntry, b: IEntry) {
   const aVal = a.isDirectory ? 1 : 2
   const bVal = b.isDirectory ? 1 : 2
   const typeDirection = aVal - bVal
-  if (typeDirection !== 0) return typeDirection
+  if (typeDirection !== 0)
+    return typeDirection
   return a.name.toLowerCase().localeCompare(b.name.toLowerCase())
 }
 
-export const nameSorter = (a: IEntry, b: IEntry) => {
+export function nameSorter(a: IEntry, b: IEntry) {
   return a.name.toLowerCase().localeCompare(b.name.toLowerCase())
 }
 
-export const nameDescSorter = (a: IEntry, b: IEntry) => {
+export function nameDescSorter(a: IEntry, b: IEntry) {
   return -a.name.toLowerCase().localeCompare(b.name.toLowerCase())
 }
 
-export const sizeSorter = (a: IEntry, b: IEntry) => {
+export function sizeSorter(a: IEntry, b: IEntry) {
   return (a.size || 0) - (b.size || 0)
 }
 
-export const sizeDescSorter = (a: IEntry, b: IEntry) => {
+export function sizeDescSorter(a: IEntry, b: IEntry) {
   return -((a.size || 0) - (b.size || 0))
 }
 
-export const extensionSorter = (a: IEntry, b: IEntry) => {
+export function extensionSorter(a: IEntry, b: IEntry) {
   return a.ext.toLowerCase().localeCompare(b.ext.toLowerCase())
 }
 
-export const extensionDescSorter = (a: IEntry, b: IEntry) => {
+export function extensionDescSorter(a: IEntry, b: IEntry) {
   return -a.ext.toLowerCase().localeCompare(b.ext.toLowerCase())
 }
 
-export const lastModifiedSorter = (a: IEntry, b: IEntry) => {
+export function lastModifiedSorter(a: IEntry, b: IEntry) {
   return a.lastModified - b.lastModified
 }
 
-export const lastModifiedDescSorter = (a: IEntry, b: IEntry) => {
+export function lastModifiedDescSorter(a: IEntry, b: IEntry) {
   return -(a.lastModified - b.lastModified)
 }
 
-export const birthTimeSorter = (a: IEntry, b: IEntry) => {
+export function birthTimeSorter(a: IEntry, b: IEntry) {
   return a.birthtime - b.birthtime
 }
 
-export const birthTimeDescSorter = (a: IEntry, b: IEntry) => {
+export function birthTimeDescSorter(a: IEntry, b: IEntry) {
   return -(a.birthtime - b.birthtime)
 }
 

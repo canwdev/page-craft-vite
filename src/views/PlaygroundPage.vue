@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import MainPlayground from '@/components/PageCraft/MainPlayground/index.vue'
-import {useBroadcastMessage} from '@/hooks/use-broadcast-messae'
+import { useBroadcastMessage } from '@/hooks/use-broadcast-messae'
 
 // 初始化时同步浏览器不同窗口间的组件样式
-const {channelRef} = useBroadcastMessage('PlaygroundPageStyleSync')
+const { channelRef } = useBroadcastMessage('PlaygroundPageStyleSync')
 onMounted(() => {
   // console.log('[PlaygroundPageStyleSync] onMounted')
   channelRef.value?.postMessage(null)

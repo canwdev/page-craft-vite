@@ -1,7 +1,7 @@
-import {bytesToSize, formatDate} from '../../../../utils'
+import { bytesToSize, formatDate } from '../../../../utils'
 
-export const useFileItem = (props) => {
-  const {item} = toRefs(props)
+export function useFileItem(props) {
+  const { item } = toRefs(props)
   const iconName = computed(() => {
     if (item.value.isDirectory) {
       return 'folder'

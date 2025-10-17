@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import type { QuickOptionItem } from '@canwdev/vgo-ui/src/components/QuickOptions/enum'
 import TabLayout from '@canwdev/vgo-ui/src/components/Layouts/TabLayout.vue'
-import {QuickOptionItem} from '@canwdev/vgo-ui/src/components/QuickOptions/enum'
-import {useStorage} from '@vueuse/core'
-import {LS_SettingsKey} from '@/enum/settings'
+import { useStorage } from '@vueuse/core'
+import { LS_SettingsKey } from '@/enum/settings'
 
 const props = withDefaults(
   defineProps<{
@@ -23,17 +23,18 @@ onMounted(() => {
   }
 })
 const currentContents = computed(() => {
-  return props.items.find((item) => item.value === currentTab.value)
+  return props.items.find(item => item.value === currentTab.value)
 })
 
-const handleWheel = (e: WheelEvent) => {
-  if (!e.shiftKey) return
+function handleWheel(e: WheelEvent) {
+  if (!e.shiftKey)
+    return
   const items = props.items
   const getNextIndex = (currentIndex: number, direction: number) => {
     const newIndex = currentIndex + direction
     return newIndex < 0 ? items.length - 1 : newIndex % items.length
   }
-  const index = items.findIndex((item) => item.value === currentTab.value)
+  const index = items.findIndex(item => item.value === currentTab.value)
   const nextIndex = e.deltaY > 0 ? getNextIndex(index, 1) : getNextIndex(index, -1)
   currentTab.value = items[nextIndex].value
 }
@@ -46,16 +47,16 @@ const handleWheel = (e: WheelEvent) => {
 <template>
   <div class="c-launch" @wheel="handleWheel">
     <TabLayout v-model="currentTab" horizontal :options="items">
-      <div class="c-launch-content" v-if="currentContents?.children">
+      <div v-if="currentContents?.children" class="c-launch-content">
         <div
-          class="c-launch-item"
           v-for="(item, index) in currentContents.children"
           :key="index"
+          class="c-launch-item"
           v-bind="item.props"
           :title="item.label"
         >
           <div class="icon-wrapper">
-            <span class="item-icon" :class="item.iconClass" v-if="item.iconClass"></span>
+            <span v-if="item.iconClass" class="item-icon" :class="item.iconClass" />
           </div>
           <div class="item-label-wrapper">
             <div class="item-label">
@@ -64,7 +65,7 @@ const handleWheel = (e: WheelEvent) => {
           </div>
         </div>
       </div>
-      <slot :value="currentTab"></slot>
+      <slot :value="currentTab" />
     </TabLayout>
   </div>
 </template>

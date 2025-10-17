@@ -1,10 +1,10 @@
+import type { QuickOptionItem } from '@canwdev/vgo-ui/src/components/QuickOptions/enum'
+import type { IEntry } from '../../types/filesystem'
 import moment from 'moment/moment'
-import {fsWebApi} from '../../utils/api'
-import {generateTextFile, normalizePath} from '../../utils'
-import {IEntry} from '../../types/filesystem'
-import {QuickOptionItem} from '@canwdev/vgo-ui/src/components/QuickOptions/enum'
+import { normalizePath } from '../../utils'
+import { fsWebApi } from '../../utils/api'
 
-export const useFileActions = ({
+export function useFileActions({
   isLoading,
   selectedPaths,
   basePath,
@@ -15,7 +15,7 @@ export const useFileActions = ({
   handleCopy,
   selectedItemsSet,
   emit,
-}) => {
+}) {
   const handleCreateFile = async () => {
     try {
       const name = await window.$mcUtils.showInputPrompt({
@@ -24,11 +24,12 @@ export const useFileActions = ({
       })
       isLoading.value = true
       await fsWebApi.createFile({
-        path: normalizePath(basePath.value + '/' + name),
-        file: '', //generateTextFile('', name),
+        path: normalizePath(`${basePath.value}/${name}`),
+        file: '', // generateTextFile('', name),
       })
       emit('refresh')
-    } finally {
+    }
+    finally {
       isLoading.value = false
     }
   }
@@ -39,9 +40,10 @@ export const useFileActions = ({
         value: `folder_${moment(new Date()).format('YYYYMMDD_HHmmss')}`,
       })
       isLoading.value = true
-      await fsWebApi.createDir({path: normalizePath(basePath.value + '/' + name)})
+      await fsWebApi.createDir({ path: normalizePath(`${basePath.value}/${name}`) })
       emit('refresh')
-    } finally {
+    }
+    finally {
       isLoading.value = false
     }
   }
@@ -55,11 +57,12 @@ export const useFileActions = ({
       })
       isLoading.value = true
       await fsWebApi.renameEntry({
-        fromPath: normalizePath(basePath.value + '/' + item.name),
-        toPath: normalizePath(basePath.value + '/' + name),
+        fromPath: normalizePath(`${basePath.value}/${item.name}`),
+        toPath: normalizePath(`${basePath.value}/${name}`),
       })
       emit('refresh')
-    } finally {
+    }
+    finally {
       isLoading.value = false
     }
   }
@@ -70,7 +73,8 @@ export const useFileActions = ({
       await fsWebApi.deleteEntry({
         path: selectedPaths.value,
       })
-    } finally {
+    }
+    finally {
       isLoading.value = false
       emit('refresh')
     }
@@ -89,8 +93,8 @@ export const useFileActions = ({
   const ctxMenuOptions = computed((): QuickOptionItem[] => {
     if (!selectedItems.value.length) {
       return [
-        {label: 'Refresh', props: {onClick: () => emit('refresh')}},
-        {label: 'Paste', props: {onClick: handlePaste}, disabled: !enablePaste.value},
+        { label: 'Refresh', props: { onClick: () => emit('refresh') } },
+        { label: 'Paste', props: { onClick: handlePaste }, disabled: !enablePaste.value },
       ]
     }
     const isSingle = selectedItems.value.length === 1
@@ -104,19 +108,20 @@ export const useFileActions = ({
           },
         },
       },
-      {split: true},
-      {label: 'Cut', props: {onClick: handleCut}},
-      {label: 'Copy', props: {onClick: handleCopy}},
-      {split: true},
-      isSingle && {label: 'Rename', props: {onClick: handleRename}},
-      {label: 'Delete', props: {onClick: confirmDelete}},
+      { split: true },
+      { label: 'Cut', props: { onClick: handleCut } },
+      { label: 'Copy', props: { onClick: handleCopy } },
+      { split: true },
+      isSingle && { label: 'Rename', props: { onClick: handleRename } },
+      { label: 'Delete', props: { onClick: confirmDelete } },
     ].filter(Boolean)
   })
   const ctxMenuRef = ref()
   const handleShowCtxMenu = (item: IEntry | null, event: MouseEvent) => {
     if (!item) {
       selectedItems.value = []
-    } else {
+    }
+    else {
       if (!selectedItemsSet.value.has(item)) {
         selectedItems.value = [item]
       }

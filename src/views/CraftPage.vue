@@ -1,25 +1,23 @@
 <script setup lang="ts">
-import ToolBar from '@/components/PageCraft/ToolBar/index.vue'
+import { useEventListener } from '@vueuse/core'
+import { useI18n } from 'vue-i18n'
+import { useComponentStorageV2 } from '@/components/PageCraft/ComponentExplorer/hooks/use-component-manage'
 import MainPlayground from '@/components/PageCraft/MainPlayground/index.vue'
-import {useSettingsStore} from '@/store/settings'
-import {useI18n} from 'vue-i18n'
-import {useMainStore} from '@/store/main'
-import {useEventListener} from '@vueuse/core'
-import {useOpenCloseSound, useSfxOpenCloseSelect, useSfxBrush, useSfxFill} from '@/hooks/use-sfx'
-import globalEventBus, {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
-import {CLASS_MAIN_CANVAS_ROOT} from '@/enum/page-craft'
-import {useComponentStorageV2} from '@/components/PageCraft/ComponentExplorer/hooks/use-component-manage'
-import {SettingsTabType} from '@/enum/settings'
-import {useSystemStore} from '@/store/system'
+import ToolBar from '@/components/PageCraft/ToolBar/index.vue'
+import { CLASS_MAIN_CANVAS_ROOT } from '@/enum/page-craft'
+import { useOpenCloseSound, useSfxBrush, useSfxFill, useSfxOpenCloseSelect } from '@/hooks/use-sfx'
+import { useMainStore } from '@/store/main'
+import { useSettingsStore } from '@/store/settings'
+import { GlobalEvents, useGlobalBusOn } from '@/utils/global-event-bus'
 
 const StyleEditor = defineAsyncComponent(() => import('@/components/StyleEditor/index.vue'))
 
-const {t: $t} = useI18n()
+const { t: $t } = useI18n()
 const settingsStore = useSettingsStore()
 const mainStore = useMainStore()
 
-const {play: playSfxBrush} = useSfxBrush()
-const {play: sfxFill} = useSfxFill()
+const { play: playSfxBrush } = useSfxBrush()
+const { play: sfxFill } = useSfxFill()
 
 useOpenCloseSound(() => settingsStore.showStyleEditor)
 useSfxOpenCloseSelect(() => mainStore.selecting)
@@ -41,18 +39,21 @@ useEventListener(document, 'keydown', (event) => {
   const key = event.key.toLowerCase()
   if (event.altKey && key === 'a' && !event.ctrlKey) {
     settingsStore.showInventory = !settingsStore.showInventory
-  } else if (event.altKey && key === 's' && !event.ctrlKey) {
+  }
+  else if (event.altKey && key === 's' && !event.ctrlKey) {
     settingsStore.showStyleEditor = !settingsStore.showStyleEditor
-  } else if (event.altKey && key === '1') {
+  }
+  else if (event.altKey && key === '1') {
     const el = document.querySelector('.sl-css-class-input input') as HTMLInputElement | null
     el && el.focus()
-  } else if (event.altKey && key === '2') {
+  }
+  else if (event.altKey && key === '2') {
     const el = document.querySelector('.sl-inner-html-input input') as HTMLInputElement | null
     el && el.focus()
   }
 })
 
-const {loadCurCompStyle, saveCurCompStyle} = useComponentStorageV2()
+const { loadCurCompStyle, saveCurCompStyle } = useComponentStorageV2()
 
 const styleEditorRef = ref()
 const isAutoSave = ref(false)
@@ -64,7 +65,7 @@ watch(styleCode, async () => {
   }
 })
 
-const reloadStyle = async () => {
+async function reloadStyle() {
   isAutoSave.value = false
   styleCode.value = await loadCurCompStyle()
   setTimeout(() => {
@@ -87,32 +88,32 @@ useGlobalBusOn(GlobalEvents.ON_ADD_STYLE, (arg) => {
 </script>
 
 <template>
-  <div class="page-craft-home-view" :class="{_topLayout: settingsStore.enableTopLayout}">
+  <div class="page-craft-home-view" :class="{ _topLayout: settingsStore.enableTopLayout }">
     <MainPlayground />
 
     <ToolBar>
       <button
         class="vgo-button"
-        :class="{primary: settingsStore.showStyleEditor}"
+        :class="{ primary: settingsStore.showStyleEditor }"
         style="min-width: 70px"
-        @click="settingsStore.showStyleEditor = !settingsStore.showStyleEditor"
         title="(alt+s)"
+        @click="settingsStore.showStyleEditor = !settingsStore.showStyleEditor"
       >
-        <span class="mdi mdi-format-paint"></span>
+        <span class="mdi mdi-format-paint" />
         {{ $t('common.style') }}
       </button>
-      <template #end> </template>
+      <template #end />
     </ToolBar>
   </div>
   <StyleEditor
     ref="styleEditorRef"
     v-model:visible="settingsStore.showStyleEditor"
     v-model:selecting="mainStore.selecting"
-    v-model:styleCode="styleCode"
+    v-model:style-code="styleCode"
     :selecting-parent-class="CLASS_MAIN_CANVAS_ROOT"
-    @onFormat="playSfxBrush"
-    @onInsertCode="sfxFill"
     show-tabs
+    @on-format="playSfxBrush"
+    @on-insert-code="sfxFill"
   />
 </template>
 

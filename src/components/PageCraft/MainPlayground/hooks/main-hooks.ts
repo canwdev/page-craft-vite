@@ -1,35 +1,35 @@
-import {handleExportHtml, handleExportVue} from '@/utils/exporter'
-import globalEventBus, {GlobalEvents, syncStorageData} from '@/utils/global-event-bus'
-import {copyToClipboard} from '@/utils'
-import {beautifyCss, beautifyHtml} from '@/components/StyleEditor/utils/formater'
-import {useMainStore} from '@/store/main'
-import {UndoRedo} from '@/utils/undo-redo'
-import {useSettingsStore} from '@/store/settings'
-import {useI18n} from 'vue-i18n'
-import {useBeforeUnload, useSaveShortcut} from '@canwdev/vgo-ui/src/hooks/use-beforeunload'
-import {useSfxBass, useSfxBell, useSfxFill, useSfxGuitar} from '@/hooks/use-sfx'
-import {useBroadcastMessage} from '@/hooks/use-broadcast-messae'
-import {useComponentStorageV2} from '@/components/PageCraft/ComponentExplorer/hooks/use-component-manage'
-import {IComponentExportData} from '@/components/PageCraft/ComponentExplorer/enum'
-import {useStorage} from '@vueuse/core'
-import {sassToCSS} from '@/components/StyleEditor/utils/css'
-import {StyleEditorKeys} from '@/enum/settings'
+import type { IComponentExportData } from '@/components/PageCraft/ComponentExplorer/enum'
+import { useBeforeUnload, useSaveShortcut } from '@canwdev/vgo-ui/src/hooks/use-beforeunload'
+import { useStorage } from '@vueuse/core'
+import { useI18n } from 'vue-i18n'
+import { useComponentStorageV2 } from '@/components/PageCraft/ComponentExplorer/hooks/use-component-manage'
+import { sassToCSS } from '@/components/StyleEditor/utils/css'
+import { beautifyCss, beautifyHtml } from '@/components/StyleEditor/utils/formater'
+import { StyleEditorKeys } from '@/enum/settings'
+import { useBroadcastMessage } from '@/hooks/use-broadcast-messae'
+import { useSfxBass, useSfxBell, useSfxFill, useSfxGuitar } from '@/hooks/use-sfx'
+import { useMainStore } from '@/store/main'
+import { useSettingsStore } from '@/store/settings'
+import { copyToClipboard } from '@/utils'
+import { handleExportHtml, handleExportVue } from '@/utils/exporter'
+import globalEventBus, { GlobalEvents, syncStorageData } from '@/utils/global-event-bus'
+import { UndoRedo } from '@/utils/undo-redo'
 
-export const useMcMain = (options) => {
-  const {t: $t} = useI18n()
-  const {mainPlaygroundRef, emit} = options
+export function useMcMain(options) {
+  const { t: $t } = useI18n()
+  const { mainPlaygroundRef, emit } = options
   const mainStore = useMainStore()
   const settingsStore = useSettingsStore()
   const isShowImportDialog = ref(false)
-  const {loadCurCompHtml, saveCurCompHtml, saveCurCompStyle, loadCurCompStyle} =
-    useComponentStorageV2()
+  const { loadCurCompHtml, saveCurCompHtml, saveCurCompStyle, loadCurCompStyle }
+    = useComponentStorageV2()
   const undoRedo = ref(new UndoRedo(10))
 
   useBeforeUnload(() => {
     return undoRedo.value.getCount() > 0
   })
-  const {play: playSfxBell} = useSfxBell()
-  const {play: sfxFill} = useSfxFill()
+  const { play: playSfxBell } = useSfxBell()
+  const { play: sfxFill } = useSfxFill()
 
   onMounted(() => {
     reloadHtml()
@@ -66,12 +66,12 @@ export const useMcMain = (options) => {
   // 用来防止多窗口通信导致的死循环
   const isSelfUpdating = ref(false)
   // 处理多个窗口(iframe)间的状态同步
-  const {channelRef} = useBroadcastMessage('mainPlaygroundUpdate', (event) => {
+  const { channelRef } = useBroadcastMessage('mainPlaygroundUpdate', (event) => {
     isSelfUpdating.value = true
     console.log('[mainPlaygroundUpdate]')
 
     // 强制重新读取数据
-    settingsStore.$hydrate({runHooks: true})
+    settingsStore.$hydrate({ runHooks: true })
     reloadHtml()
     nextTick(() => {
       isSelfUpdating.value = false
@@ -141,7 +141,7 @@ export const useMcMain = (options) => {
           label: `💚 ${$t('actions.export')} Vue 2 SFC`,
           props: {
             onClick: async () => {
-              await handleExportVue(await getEntityData({insertVariableCode: false}))
+              await handleExportVue(await getEntityData({ insertVariableCode: false }))
             },
           },
         },
@@ -149,7 +149,7 @@ export const useMcMain = (options) => {
           label: `💚 ${$t('actions.export')} Vue 3 SFC`,
           props: {
             onClick: async () => {
-              await handleExportVue(await getEntityData({insertVariableCode: false}), 3)
+              await handleExportVue(await getEntityData({ insertVariableCode: false }), 3)
             },
           },
         },
@@ -165,7 +165,7 @@ export const useMcMain = (options) => {
           label: `📧 ${$t('actions.export')} Email HTML`,
           props: {
             onClick: async () => {
-              handleExportHtml(await getEntityData(), {isInline: true})
+              handleExportHtml(await getEntityData(), { isInline: true })
             },
           },
         },
@@ -173,7 +173,7 @@ export const useMcMain = (options) => {
           label: `📧 ${$t('actions.export')} Email HTML (With Style Tag)`,
           props: {
             onClick: async () => {
-              handleExportHtml(await getEntityData(), {isInline: true, inlineWithStyleTag: true})
+              handleExportHtml(await getEntityData(), { isInline: true, inlineWithStyleTag: true })
             },
           },
         },
@@ -199,7 +199,7 @@ export const useMcMain = (options) => {
       },
     },
     {
-      label: '📄 ' + $t('actions.copy_compiled_css'),
+      label: `📄 ${$t('actions.copy_compiled_css')}`,
       props: {
         onClick: async () => {
           const style = await loadCurCompStyle()
@@ -213,7 +213,7 @@ export const useMcMain = (options) => {
       split: true,
     },
     {
-      label: '❌ ' + $t('actions.clear_all_html'),
+      label: `❌ ${$t('actions.clear_all_html')}`,
       props: {
         onClick: async () => {
           window.$dialog
@@ -223,7 +223,7 @@ export const useMcMain = (options) => {
             .then(() => {
               handleImportHtml('')
               globalEventBus.emit(GlobalEvents.IMPORT_SUCCESS, '')
-              window.$message.success($t('actions.done') + '!')
+              window.$message.success(`${$t('actions.done')}!`)
             })
             .catch()
         },
@@ -240,8 +240,8 @@ export const useMcMain = (options) => {
     const innerHTML = mainPlaygroundRef.value.innerHTML
     undoRedo.value.recordUndo(innerHTML)
   }
-  const {play: playSfxGuitar} = useSfxGuitar()
-  const {play: playSfxBass} = useSfxBass()
+  const { play: playSfxGuitar } = useSfxGuitar()
+  const { play: playSfxBass } = useSfxBass()
   const handleUndo = () => {
     if (!undoRedo.value.undoStack.length) {
       return

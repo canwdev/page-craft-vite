@@ -1,21 +1,21 @@
 <script setup lang="ts">
-import {useVModel} from '@vueuse/core'
+import { useVModel } from '@vueuse/core'
 
 interface Props {
   images: string[]
   disabled?: boolean
 }
 
-const props = withDefaults(defineProps<Props>(), {disabled: false})
+const props = withDefaults(defineProps<Props>(), { disabled: false })
 
 const emit = defineEmits(['update:images'])
 const mImages = useVModel(props, 'images', emit)
 
-const removeImage = (index: number) => {
+function removeImage(index: number) {
   mImages.value.splice(index, 1)
 }
 
-const handleChoose = async () => {
+async function handleChoose() {
   // 仅支持在支持 window.showOpenFilePicker 的环境下运行，如现代浏览器
   try {
     const fileHandles = await window.showOpenFilePicker({
@@ -39,11 +39,13 @@ const handleChoose = async () => {
           }
         }
         reader.readAsDataURL(file)
-      } else {
+      }
+      else {
         window.$message.warning(`File ${file.name} is larger than 5MB and has been ignored.`)
       }
     }
-  } catch (error) {
+  }
+  catch (error) {
     console.error('Error picking files: ', error)
   }
 }
@@ -51,8 +53,8 @@ const handleChoose = async () => {
 
 <template>
   <div class="image-picker">
-    <button class="vgo-button" :disabled="disabled" @click="handleChoose" title="Upload image...">
-      <span class="mdi mdi-image"></span>
+    <button class="vgo-button" :disabled="disabled" title="Upload image..." @click="handleChoose">
+      <span class="mdi mdi-image" />
     </button>
     <div class="image-list">
       <div v-for="(image, index) in images" :key="index" class="image-item vgo-panel">
@@ -63,7 +65,9 @@ const handleChoose = async () => {
           :preview-teleported="true"
           fit="contain"
         />
-        <button @click="removeImage(index)" class="btn-no-style" title="Remove">✖</button>
+        <button class="btn-no-style" title="Remove" @click="removeImage(index)">
+          ✖
+        </button>
       </div>
     </div>
   </div>

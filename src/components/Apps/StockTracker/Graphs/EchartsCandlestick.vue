@@ -1,21 +1,21 @@
 <script setup lang="ts">
-import {ref, onMounted, onUnmounted} from 'vue'
+import type { IPriceByDay } from '@/components/Apps/StockTracker/types'
 import * as echarts from 'echarts'
 
-import {IPriceByDay} from '@/components/Apps/StockTracker/types'
+import { onMounted, onUnmounted, ref } from 'vue'
 
 // 定义 props
 const props = defineProps<{
   byDay: IPriceByDay
   title: string
 }>()
-const {title} = toRefs(props)
+const { title } = toRefs(props)
 // 创建 ref
 const chartRef = ref<HTMLDivElement | null>(null)
 let chartInstance: echarts.ECharts | null = null
 
 // 处理数据转换
-const processChartData = () => {
+function processChartData() {
   // 按日期排序并处理数据
   const sortedDays = Object.keys(props.byDay).sort(
     (a, b) => new Date(a).getTime() - new Date(b).getTime(),
@@ -24,16 +24,16 @@ const processChartData = () => {
   const candleData = sortedDays.map((day) => {
     const item = props.byDay[day]
     return [
-      parseFloat(item.open),
-      parseFloat(item.close),
-      parseFloat(item.low),
-      parseFloat(item.high),
+      Number.parseFloat(item.open),
+      Number.parseFloat(item.close),
+      Number.parseFloat(item.low),
+      Number.parseFloat(item.high),
     ]
   })
 
   const volumeData = sortedDays.map((day) => {
     const item = props.byDay[day]
-    return parseFloat(item.volume)
+    return Number.parseFloat(item.volume)
   })
 
   return {
@@ -44,8 +44,9 @@ const processChartData = () => {
 }
 
 // 初始化图表
-const initChart = () => {
-  if (!chartRef.value) return
+function initChart() {
+  if (!chartRef.value)
+    return
 
   // 销毁已存在的实例
   if (chartInstance) {
@@ -55,7 +56,7 @@ const initChart = () => {
   // 创建新实例
   chartInstance = echarts.init(chartRef.value)
 
-  const {dates, candleData, volumeData} = processChartData()
+  const { dates, candleData, volumeData } = processChartData()
 
   const option = {
     title: [
@@ -90,8 +91,8 @@ const initChart = () => {
         data: dates,
         scale: true,
         boundaryGap: false,
-        axisLine: {onZero: false},
-        splitLine: {show: false},
+        axisLine: { onZero: false },
+        splitLine: { show: false },
         splitNumber: 20,
         min: 'dataMin',
         max: 'dataMax',
@@ -102,10 +103,10 @@ const initChart = () => {
         data: dates,
         scale: true,
         boundaryGap: false,
-        axisLine: {onZero: false},
-        axisTick: {show: false},
-        splitLine: {show: false},
-        axisLabel: {show: false},
+        axisLine: { onZero: false },
+        axisTick: { show: false },
+        splitLine: { show: false },
+        axisLabel: { show: false },
       },
     ],
     yAxis: [
@@ -119,10 +120,10 @@ const initChart = () => {
         gridIndex: 1,
         splitNumber: 2,
         scale: true,
-        axisLabel: {show: true},
-        axisLine: {show: false},
-        axisTick: {show: false},
-        splitLine: {show: false},
+        axisLabel: { show: true },
+        axisLine: { show: false },
+        axisTick: { show: false },
+        splitLine: { show: false },
       },
     ],
     series: [
@@ -187,7 +188,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div ref="chartRef" class="chart-container" style="width: 100%; height: 500px"></div>
+  <div ref="chartRef" class="chart-container" style="width: 100%; height: 500px" />
 </template>
 
 <style lang="scss" scoped>

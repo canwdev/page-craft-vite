@@ -1,8 +1,12 @@
-/*monaco config start*/
+import monaco from '@canwdev/vgo-ui/src/components/VueMonaco/monaco-helper'
+import { emmetCSS, registerCustomSnippets } from 'emmet-monaco-es'
+/* monaco config start */
 import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
-import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
 import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
 import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
+/* monaco config end */
+
+import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
 import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
 
 /*
@@ -26,11 +30,11 @@ self.MonacoEnvironment = {
       return new cssWorker()
     }
     if (
-      label === 'html' ||
-      label === 'handlebars' ||
-      label === 'razor' ||
-      label === 'vue' ||
-      label === 'svelte'
+      label === 'html'
+      || label === 'handlebars'
+      || label === 'razor'
+      || label === 'vue'
+      || label === 'svelte'
     ) {
       return new htmlWorker()
     }
@@ -40,10 +44,6 @@ self.MonacoEnvironment = {
     return new editorWorker()
   },
 }
-/*monaco config end*/
-
-import monaco from '@canwdev/vgo-ui/src/components/VueMonaco/monaco-helper'
-import {emmetCSS, registerCustomSnippets} from 'emmet-monaco-es'
 emmetCSS(monaco, ['css', 'scss'])
 
 registerCustomSnippets('css', {

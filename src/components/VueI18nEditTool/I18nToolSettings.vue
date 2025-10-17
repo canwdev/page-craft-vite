@@ -1,15 +1,16 @@
 <script lang="ts">
-import {defineComponent} from 'vue'
-import {useI18n} from 'vue-i18n'
-import {useModelWrapper} from '@/hooks/use-model-wrapper'
-import {StOptionItem, StOptionType} from '@canwdev/vgo-ui/src/components/OptionUI/enum'
-import {useI18nToolSettingsStore} from '@/components/VueI18nEditTool/store/i18n-tool-settings'
-import {TextConvertMode, TextConvertOptions} from '@/utils/mc-utils/text-convert'
+import type { StOptionItem } from '@canwdev/vgo-ui/src/components/OptionUI/enum'
+import { StOptionType } from '@canwdev/vgo-ui/src/components/OptionUI/enum'
 import OptionUI from '@canwdev/vgo-ui/src/components/OptionUI/index.vue'
+import { defineComponent } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useI18nToolSettingsStore } from '@/components/VueI18nEditTool/store/i18n-tool-settings'
+import { useModelWrapper } from '@/hooks/use-model-wrapper'
+import { TextConvertMode, TextConvertOptions } from '@/utils/mc-utils/text-convert'
 
 export default defineComponent({
   name: 'I18nToolSettings',
-  components: {OptionUI},
+  components: { OptionUI },
   props: {
     visible: {
       type: Boolean,
@@ -17,8 +18,8 @@ export default defineComponent({
     },
   },
   emits: ['update:visible'],
-  setup(props, {emit}) {
-    const {t: $t} = useI18n()
+  setup(props, { emit }) {
+    const { t: $t } = useI18n()
     const mVisible = useModelWrapper(props, emit, 'visible')
     const i18nSetStore = useI18nToolSettingsStore()
 
@@ -29,20 +30,20 @@ export default defineComponent({
           key: 'i18njson_editing_too',
           children: [
             {
-              label: $t('msgs.auto_paste') + ': ' + $t('msgs.remove_quotes'),
+              label: `${$t('msgs.auto_paste')}: ${$t('msgs.remove_quotes')}`,
               subtitle: 'Trim: ` | \' | "',
               key: 'autoPasteTrimQuotes',
               store: i18nSetStore,
               type: StOptionType.SWITCH,
             },
             {
-              label: $t('msgs.auto_paste') + ': ' + $t('msgs.text_conv_mode'),
+              label: `${$t('msgs.auto_paste')}: ${$t('msgs.text_conv_mode')}`,
               key: 'autoPasteTextConvertMode',
               store: i18nSetStore,
               type: StOptionType.SELECT,
               options: [
-                {label: 'Disabled', value: TextConvertMode.DISABLED},
-                {label: 'Number', value: TextConvertMode.NUMBER},
+                { label: 'Disabled', value: TextConvertMode.DISABLED },
+                { label: 'Number', value: TextConvertMode.NUMBER },
                 ...TextConvertOptions,
               ],
             },
@@ -85,7 +86,7 @@ export default defineComponent({
               type: StOptionType.SWITCH,
             },
             {
-              label: $t('msgs.enable_flag') + ' (Wikipedia)',
+              label: `${$t('msgs.enable_flag')} (Wikipedia)`,
               key: 'enableFlag',
               store: i18nSetStore,
               type: StOptionType.SWITCH,

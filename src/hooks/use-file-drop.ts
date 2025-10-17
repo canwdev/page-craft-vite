@@ -1,9 +1,9 @@
-type FileDropType = {
+interface FileDropType {
   cbFiles?: Function
   cb?: Function
 }
 
-export const useFileDrop = ({cbFiles, cb}: FileDropType) => {
+export function useFileDrop({ cbFiles, cb }: FileDropType) {
   const showDropzone = ref(false)
   return {
     showDropzone,

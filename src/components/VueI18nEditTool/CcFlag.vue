@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {countryCodeSvg} from '@/utils/flags/country-code-emoji'
+import { countryCodeSvg } from '@/utils/flags/country-code-emoji'
 
 interface Props {
   src?: string
@@ -13,7 +13,7 @@ const props = withDefaults(defineProps<Props>(), {
   size: '',
 })
 
-const {cc, src} = toRefs(props)
+const { cc, src } = toRefs(props)
 const flagSrc = computed(() => {
   if (src.value) {
     return src.value
@@ -30,10 +30,10 @@ const flagSrc = computed(() => {
 </script>
 
 <template>
-  <div class="cc-flag" :style="{width: size, height: size}" :title="cc">
-    <img :src="flagSrc" v-if="flagSrc" :alt="cc" />
+  <div class="cc-flag" :style="{ width: size, height: size }" :title="cc">
+    <img v-if="flagSrc" :src="flagSrc" :alt="cc">
 
-    <span v-else class="mdi mdi-earth"></span>
+    <span v-else class="mdi mdi-earth" />
   </div>
 </template>
 

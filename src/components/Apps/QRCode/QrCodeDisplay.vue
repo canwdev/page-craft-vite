@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {useQRCode} from '@vueuse/integrations/useQRCode'
+import { useQRCode } from '@vueuse/integrations/useQRCode'
 
 interface Props {
   text: any
@@ -9,7 +9,7 @@ const props = withDefaults(defineProps<Props>(), {
   text: '',
 })
 
-const {text} = toRefs(props)
+const { text } = toRefs(props)
 
 // `qrcode` will be a ref of data URL
 const qrcode = useQRCode(text, {
@@ -20,7 +20,7 @@ const qrcode = useQRCode(text, {
 
 <template>
   <div class="qr-code-display">
-    <img v-if="text" :src="qrcode" :alt="text" />
+    <img v-if="text" :src="qrcode" :alt="text">
     <span v-else>☝️ Input text to generate QR code</span>
   </div>
 </template>

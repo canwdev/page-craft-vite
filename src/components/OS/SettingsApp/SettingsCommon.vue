@@ -1,25 +1,25 @@
 <script lang="ts" setup="">
-import {StOptionItem, StOptionType} from '@canwdev/vgo-ui/src/components/OptionUI/enum'
-import {useI18n} from 'vue-i18n'
-import {useSettingsStore} from '@/store/settings'
-import LanguageChooser from '@/i18n/LanguageChooser.vue'
-import {formatSiteTitle, githubLink} from '@/router/router-utils'
-import {ldThemeOptions, LdThemeType} from '@/enum/settings'
+import type { StOptionItem } from '@canwdev/vgo-ui/src/components/OptionUI/enum'
+import { StOptionType } from '@canwdev/vgo-ui/src/components/OptionUI/enum'
+import OptionUI from '@canwdev/vgo-ui/src/components/OptionUI/index.vue'
 import {
-  DEFAULT_THEME,
   useThemeOptions,
 } from '@canwdev/vgo-ui/src/components/ViewPortWindow/utils/use-theme'
-import OptionUI from '@canwdev/vgo-ui/src/components/OptionUI/index.vue'
-import {useMainStore} from '@/store/main'
-import {useBackupRestore} from '@/components/OS/SettingsApp/use-backup-restore'
-import {useSystemStore} from '@/store/system'
+import { useI18n } from 'vue-i18n'
+import { useBackupRestore } from '@/components/OS/SettingsApp/use-backup-restore'
+import { ldThemeOptions, LdThemeType } from '@/enum/settings'
+import LanguageChooser from '@/i18n/LanguageChooser.vue'
+import { formatSiteTitle, githubLink } from '@/router/router-utils'
+import { useMainStore } from '@/store/main'
+import { useSettingsStore } from '@/store/settings'
+import { useSystemStore } from '@/store/system'
 
-const {t: $t} = useI18n()
+const { t: $t } = useI18n()
 const settingsStore = useSettingsStore()
 
-const {themeOptions} = useThemeOptions()
-const getWallpaperText = () => {
-  const list = [{label: 'Bing', url: 'https://api.dujin.org/bing/1920.php'}]
+const { themeOptions } = useThemeOptions()
+function getWallpaperText() {
+  const list = [{ label: 'Bing', url: 'https://api.dujin.org/bing/1920.php' }]
   let tpl = `<b><a style="color: inherit" href="https://www.dujin.org/12142.html" target="_blank">随机壁纸API</a></b>`
 
   list.forEach((item) => {
@@ -31,7 +31,7 @@ const getWallpaperText = () => {
 const mainStore = useMainStore()
 const systemStore = useSystemStore()
 
-const {isLoading, importAllSettings, exportAllSettings} = useBackupRestore()
+const { isLoading, importAllSettings, exportAllSettings } = useBackupRestore()
 
 const optionList = computed((): StOptionItem[] => {
   return [
@@ -110,7 +110,7 @@ const optionList = computed((): StOptionItem[] => {
       key: 'common',
       children: [
         {
-          label: $t('msgs.focus_auto_action') + ' (ctrl+alt+a)',
+          label: `${$t('msgs.focus_auto_action')} (ctrl+alt+a)`,
           subtitle: $t('msgs.focus_auto_action_desc'),
           iconClass: 'mdi mdi-button-pointer',
           tips: `⚡ 搭配AHK脚本使用，效率更佳！<br><pre style="max-height: 300px;overflow: auto;color: greenyellow;box-sizing:border-box;padding:5px;background-color: black">
@@ -145,7 +145,7 @@ return
           subtitle: $t('msgs.dao_ru_dao_chu_quan'),
           iconClass: 'mdi mdi-backup-restore',
           actionRender: () =>
-            h('div', {class: 'flex-row-center-gap'}, [
+            h('div', { class: 'flex-row-center-gap' }, [
               h(
                 'button',
                 {
@@ -199,13 +199,13 @@ return
           subtitle: `Copyright © 2022-${new Date().getFullYear()} canwdev`,
           iconClass: 'mdi mdi-github',
           actionRender: () =>
-            h('div', {class: 'flex-row-center-gap'}, [
+            h('div', { class: 'flex-row-center-gap' }, [
               h(
                 'button',
                 {
                   class: 'vgo-button',
                   onClick() {
-                    systemStore.createTaskById('os.pagecraft.richtext', {isReleaseNotes: true})
+                    systemStore.createTaskById('os.pagecraft.richtext', { isReleaseNotes: true })
                   },
                 },
                 $t('msgs.release_notes'),
@@ -229,5 +229,5 @@ return
 </script>
 
 <template>
-  <OptionUI :option-list="optionList" v-loading="isLoading" :store="settingsStore" />
+  <OptionUI v-loading="isLoading" :option-list="optionList" :store="settingsStore" />
 </template>

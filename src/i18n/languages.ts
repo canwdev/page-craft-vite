@@ -1,8 +1,8 @@
+import { PageCraftKeys } from '@/enum'
 import enUS from './locales/en-US/index.json'
-import zhCN from './locales/zh-CN/index.json'
 import jaJP from './locales/ja-JP/index.json'
 
-import {PageCraftKeys} from '@/enum'
+import zhCN from './locales/zh-CN/index.json'
 
 export const FALLBACK_LOCALE = 'en-US'
 export const languages = [
@@ -23,12 +23,12 @@ export const languages = [
   },
 ]
 
-export const autoMatchLanguage = () => {
+export function autoMatchLanguage() {
   // 获取用户浏览器的语言信息
   const userLanguage = navigator.language
 
   // 支持的语言列表
-  const supportedLanguages = languages.map((item) => item.locale)
+  const supportedLanguages = languages.map(item => item.locale)
 
   // 查找匹配的语言
   let matchedLanguage = ''
@@ -50,7 +50,8 @@ export const autoMatchLanguage = () => {
     for (let i = 0; i < Math.min(parts1.length, parts2.length); i++) {
       if (parts1[i] === parts2[i]) {
         matchCount++
-      } else {
+      }
+      else {
         break
       }
     }
@@ -82,5 +83,6 @@ export const autoMatchLanguage = () => {
 }
 
 export const getLanguage = () => localStorage.getItem(PageCraftKeys.LANGUAGE)
-export const setLanguage = (language: string) =>
-  localStorage.setItem(PageCraftKeys.LANGUAGE, language)
+export function setLanguage(language: string) {
+  return localStorage.setItem(PageCraftKeys.LANGUAGE, language)
+}

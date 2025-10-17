@@ -1,72 +1,74 @@
-import * as changeCase from 'change-case'
-import {useI18n} from 'vue-i18n'
-import {Ref} from 'vue'
-import {IEntry} from '@/components/FileManager/types/filesystem'
-import {fsWebApi} from '@/components/FileManager/utils/api'
-import {normalizePath} from '@/components/FileManager/utils'
-import {useSettingsStore} from '@/store/settings'
-import {
+import type { Ref } from 'vue'
+import type { IEntry } from '@/components/FileManager/types/filesystem'
+import type {
   IComponentExportData,
   IComponentInStore,
   IComponentItem,
   IComponentMeta,
+} from '@/components/PageCraft/ComponentExplorer/enum'
+import { useStorage } from '@vueuse/core'
+import * as changeCase from 'change-case'
+import { useI18n } from 'vue-i18n'
+import { normalizePath } from '@/components/FileManager/utils'
+import { fsWebApi } from '@/components/FileManager/utils/api'
+import {
   regComponentV2,
 } from '@/components/PageCraft/ComponentExplorer/enum'
-import {guid} from '@/utils'
-import {useStorage} from '@vueuse/core'
-import {BlockItem, BlockType, ComponentData} from '@/enum/page-craft/block'
+import { PageCraftKeys } from '@/enum'
+import { BlockItem, BlockType, ComponentData } from '@/enum/page-craft/block'
+import { useSettingsStore } from '@/store/settings'
 
-import {promptGetFileName} from '@/utils/mc-utils/io'
-import {PageCraftKeys} from '@/enum'
+import { guid } from '@/utils'
+import { promptGetFileName } from '@/utils/mc-utils/io'
 
 let idx = 1
 const SPLIT_SIGN_V1 = '__'
 // 读写组件存储
-export const loadCompV1Storage = (lsKey: PageCraftKeys, name: string) => {
+export function loadCompV1Storage(lsKey: PageCraftKeys, name: string) {
   return localStorage.getItem(lsKey + SPLIT_SIGN_V1 + name) || ''
 }
-export const saveCompV1Storage = (lsKey: PageCraftKeys, name: string, value: string) => {
+export function saveCompV1Storage(lsKey: PageCraftKeys, name: string, value: string) {
   return localStorage.setItem(lsKey + SPLIT_SIGN_V1 + name, value)
 }
 
-const getCompInStore = (item: IComponentItem, path): IComponentInStore => {
+function getCompInStore(item: IComponentItem, path): IComponentInStore {
   if (!item.meta) {
     throw new Error('item has no meta')
   }
   return {
     id: item.meta.id,
     title: item.name.replace(regComponentV2, ''),
-    path: path,
+    path,
     basePath: item.basePath,
   }
 }
 
-export const createFile = async (basePath, name, content) => {
+export async function createFile(basePath, name, content) {
   await fsWebApi.createFile({
-    path: normalizePath(basePath + '/' + name),
+    path: normalizePath(`${basePath}/${name}`),
     file: content,
     isOverride: true,
   })
 }
 
-const loadFile = async (basePath, name, mode?) => {
+async function loadFile(basePath, name, mode?) {
   return await fsWebApi.getFile({
-    path: normalizePath(basePath + '/' + name),
+    path: normalizePath(`${basePath}/${name}`),
     mode,
   })
 }
 
-type Opts = {
+interface Opts {
   files: Ref<IEntry[]>
   basePath: Ref<string>
   isLoading: Ref<boolean>
   emit: any
 }
-export const useComponentManage = (options: Opts) => {
-  const {files, basePath, isLoading, emit} = options
+export function useComponentManage(options: Opts) {
+  const { files, basePath, isLoading, emit } = options
   const settingsStore = useSettingsStore()
 
-  const {t: $t} = useI18n()
+  const { t: $t } = useI18n()
 
   const inputPrompt = (title = '', value = '', placeholder = '') => {
     return window.$mcUtils.showInputPrompt({
@@ -74,7 +76,7 @@ export const useComponentManage = (options: Opts) => {
       value,
       placeholder,
       validateFn: (val) => {
-        if (files.value.find((item) => item.name === val)) {
+        if (files.value.find(item => item.name === val)) {
           return $t('msgs.name_already_exists')
         }
       },
@@ -84,7 +86,7 @@ export const useComponentManage = (options: Opts) => {
   // 检查文件名是否重复
   const checkNameExist = (name) => {
     console.log(name, files.value)
-    if (files.value.some((f) => f.name === name)) {
+    if (files.value.some(f => f.name === name)) {
       window.$message.error('Filename already exists, please rename it!')
       return true
     }
@@ -97,13 +99,13 @@ export const useComponentManage = (options: Opts) => {
     successCallback,
   } = {}) => {
     try {
-      name =
-        name ||
-        (await inputPrompt(
-          $t('actions.add_component'),
-          nameDefault || `Component${idx}`,
-          $t('msgs.please_enter_the_nam'),
-        ))
+      name
+        = name
+          || (await inputPrompt(
+            $t('actions.add_component'),
+            nameDefault || `Component${idx}`,
+            $t('msgs.please_enter_the_nam'),
+          ))
       const folderName = `${name}.comp`
       if (checkNameExist(folderName)) {
         return
@@ -125,22 +127,24 @@ export const useComponentManage = (options: Opts) => {
 
       emit('refresh')
       if (typeof successCallback === 'function') {
-        successCallback({id, name})
-      } else {
+        successCallback({ id, name })
+      }
+      else {
         setTimeout(() => {
           // 设置当前选中的组件
           document.querySelector(`.mc-comp-item[data-name="${folderName}"]`)?.click()
         }, 100)
       }
-    } finally {
+    }
+    finally {
       isLoading.value = false
     }
   }
 
   const importComponentJson = async (item: IComponentExportData) => {
     const folderName = `${item.name}.comp`
-    const subDirPath = normalizePath(basePath.value + '/' + folderName)
-    await fsWebApi.createDir({path: subDirPath})
+    const subDirPath = normalizePath(`${basePath.value}/${folderName}`)
+    await fsWebApi.createDir({ path: subDirPath })
 
     const meta: IComponentMeta = {
       id: item.id || guid(),
@@ -165,7 +169,7 @@ export const useComponentManage = (options: Opts) => {
     if (!item.meta) {
       throw new Error('item must has meta')
     }
-    const subDirPath = normalizePath(basePath.value + '/' + item.name)
+    const subDirPath = normalizePath(`${basePath.value}/${item.name}`)
 
     const html = await loadFile(subDirPath, 'index.html')
     const style = await loadFile(subDirPath, 'index.scss')
@@ -205,7 +209,7 @@ export const useComponentManage = (options: Opts) => {
   }
 }
 
-export const useComponentStorageV2 = () => {
+export function useComponentStorageV2() {
   const settingsStore = useSettingsStore()
 
   const openComponent = (item: IComponentItem, path: string) => {
@@ -216,7 +220,7 @@ export const useComponentStorageV2 = () => {
     if (!settingsStore.curCompInStore) {
       return loadCompV1Storage(PageCraftKeys.DEFAULT_CANVAS, filename)
     }
-    const {path} = settingsStore.curCompInStore
+    const { path } = settingsStore.curCompInStore
     return await loadFile(path, filename)
   }
 
@@ -224,8 +228,8 @@ export const useComponentStorageV2 = () => {
     if (!settingsStore.curCompInStore) {
       return saveCompV1Storage(PageCraftKeys.DEFAULT_CANVAS, filename, content)
     }
-    const {path} = settingsStore.curCompInStore
-    return await fsWebApi.writeFile({path: normalizePath(path + '/' + filename), file: content})
+    const { path } = settingsStore.curCompInStore
+    return await fsWebApi.writeFile({ path: normalizePath(`${path}/${filename}`), file: content })
   }
 
   const loadCurCompHtml = async () => {
@@ -251,7 +255,7 @@ export const useComponentStorageV2 = () => {
 }
 
 // 旧版组件迁移到V2新版文件系统
-export const useComponentMigrationToV2 = (emit) => {
+export function useComponentMigrationToV2(emit) {
   const isMigrated = useStorage('component_is_migrated_v2', false)
   const isMigrating = ref(false)
 
@@ -269,10 +273,10 @@ export const useComponentMigrationToV2 = (emit) => {
       return
     }
     isMigrating.value = true
-    const rawList: any[] =
-      JSON.parse(localStorage.getItem(PageCraftKeys.COMP_INDEX_LIST) || 'null') || []
+    const rawList: any[]
+      = JSON.parse(localStorage.getItem(PageCraftKeys.COMP_INDEX_LIST) || 'null') || []
 
-    const v1List: BlockItem[] = rawList.map(({name}) => {
+    const v1List: BlockItem[] = rawList.map(({ name }) => {
       // 读取详细信息并组成组件列表
       return createComponentBlockItem(
         name,
@@ -284,12 +288,12 @@ export const useComponentMigrationToV2 = (emit) => {
       const item = v1List[i]
       const {
         title,
-        data: {timestamp, stared, cover},
+        data: { timestamp, stared, cover },
       } = item
 
       const folderName = `${title}.comp`
       const subDirPath = normalizePath(
-        (stared ? '/@Migrated/Stared' : '/@Migrated') + '/' + folderName,
+        `${stared ? '/@Migrated/Stared' : '/@Migrated'}/${folderName}`,
       )
       const meta: IComponentMeta = {
         id: guid(),

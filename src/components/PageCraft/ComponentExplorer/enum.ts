@@ -1,4 +1,4 @@
-import {IEntry} from '@/components/FileManager/types/filesystem'
+import type { IEntry } from '@/components/FileManager/types/filesystem'
 
 export const regComponentV2 = /\.comp$/i
 

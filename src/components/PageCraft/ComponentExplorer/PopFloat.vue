@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
-import {useThrottleFn} from '@vueuse/core'
+import globalEventBus, { GlobalEvents } from '@/utils/global-event-bus'
 
 const popWindowRef = ref()
 const mVisible = ref(false)
@@ -23,7 +22,7 @@ onBeforeUnmount(() => {
   globalEventBus.off(GlobalEvents.ON_COMP_HOVER_CLEAR, clearCurrentItem)
 })
 
-const handleStyleCompiled = () => {
+function handleStyleCompiled() {
   setTimeout(() => {
     if (popWindowRef.value) {
       cardWidth.value = popWindowRef.value.offsetWidth
@@ -42,19 +41,19 @@ watch(currentItem, (val) => {
   }
 })
 
-const handleCompHover = (options) => {
-  const {event, item} = options || {}
+function handleCompHover(options) {
+  const { event, item } = options || {}
   currentItem.value = item
   x.value = event.clientX
   y.value = event.clientY
   mVisible.value = true
 }
 
-const handleCompHoverOut = () => {
+function handleCompHoverOut() {
   // currentItem.value = null
   mVisible.value = false
 }
-const clearCurrentItem = () => {
+function clearCurrentItem() {
   currentItem.value = null
 }
 
@@ -82,23 +81,23 @@ const posStyle = computed(() => {
   }
 
   return {
-    left: mx + 'px',
-    top: my + 'px',
+    left: `${mx}px`,
+    top: `${my}px`,
   }
 })
 </script>
 
 <template>
   <transition name="fade-scale">
-    <div ref="popWindowRef" v-if="mVisible" class="pop-window vgo-window" :style="posStyle">
-      <div class="pop-window-content" v-if="currentItem">
+    <div v-if="mVisible" ref="popWindowRef" class="pop-window vgo-window" :style="posStyle">
+      <div v-if="currentItem" class="pop-window-content">
         <img
           v-if="previewCover"
           :src="previewCover"
           alt="cover"
           class="preview-cover"
           @load="handleStyleCompiled"
-        />
+        >
       </div>
     </div>
   </transition>

@@ -3,7 +3,7 @@
  * https://www.npmjs.com/package/country-code-emoji
  * https://github.com/thekelvinliu/country-code-emoji/blob/main/src/index.js
  */
-import {countries} from '@/utils/flags/countries'
+import { countries } from '@/utils/flags/countries'
 
 // country code regex
 const CC_REGEX = /^[a-z]{2}$/i
@@ -29,7 +29,7 @@ export function countryCodeEmoji(cc) {
     )
   }
 
-  const codePoints = [...cc.toUpperCase()].map((c) => c.codePointAt() + OFFSET)
+  const codePoints = [...cc.toUpperCase()].map(c => c.codePointAt() + OFFSET)
   return String.fromCodePoint(...codePoints)
 }
 
@@ -46,7 +46,7 @@ export function emojiCountryCode(flag) {
     )
   }
 
-  const codePoints = [...flag].map((c) => c.codePointAt() - OFFSET)
+  const codePoints = [...flag].map(c => c.codePointAt() - OFFSET)
   return String.fromCodePoint(...codePoints)
 }
 

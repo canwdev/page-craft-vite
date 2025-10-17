@@ -1,19 +1,19 @@
-import {IComponentItem} from '@/components/PageCraft/ComponentExplorer/enum'
-import {takeScreenshot} from '@/utils/screenshot'
-import {sleep} from '@/utils'
-import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
-import {fileToBase64} from '@/utils/exporter'
-import {normalizePath} from '@/components/FileManager/utils'
-import {fsWebApi} from '@/components/FileManager/utils/providers/humanfs-api'
+import type { IComponentItem } from '@/components/PageCraft/ComponentExplorer/enum'
+import { normalizePath } from '@/components/FileManager/utils'
+import { fsWebApi } from '@/components/FileManager/utils/providers/humanfs-api'
+import { sleep } from '@/utils'
+import { fileToBase64 } from '@/utils/exporter'
+import globalEventBus, { GlobalEvents } from '@/utils/global-event-bus'
+import { takeScreenshot } from '@/utils/screenshot'
 
-export const useComponentCover = ({exportComponentJson}) => {
-  /*image cropper start*/
+export function useComponentCover({ exportComponentJson }) {
+  /* image cropper start */
   const isShowImageCropper = ref(false)
   const cropperEditingSrc = ref('')
   const cropperCompleteCb = ref<any>(null) // 裁剪完成回调函数
   const cropperCancelCb = ref<any>(null) // 裁剪完成回调函数
   const startCropImage = (options) => {
-    const {src = '', onComplete, onCancel} = options
+    const { src = '', onComplete, onCancel } = options
 
     cropperEditingSrc.value = src
     cropperCompleteCb.value = onComplete
@@ -38,18 +38,19 @@ export const useComponentCover = ({exportComponentJson}) => {
     cropperCancelCb.value = null
     cropperCompleteCb.value = null
   }
-  /*image cropper end*/
+  /* image cropper end */
 
   const setCover = async (item: IComponentItem, cover?: string) => {
     item.meta!.cover = cover
-    const path = normalizePath(item.basePath + '/' + item.name + '/' + 'cover.base64')
+    const path = normalizePath(`${item.basePath}/${item.name}/` + `cover.base64`)
     if (cover) {
       await fsWebApi.createFile({
         path,
         file: cover,
         isOverride: true,
       })
-    } else {
+    }
+    else {
       await fsWebApi.deleteEntry({
         path,
       })
@@ -82,10 +83,11 @@ export const useComponentCover = ({exportComponentJson}) => {
                   },
                 })
 
-                globalEventBus.emit(GlobalEvents.ON_COMP_PREVIEW_CLOSE, {maximum: false})
-              } catch (e) {
+                globalEventBus.emit(GlobalEvents.ON_COMP_PREVIEW_CLOSE, { maximum: false })
+              }
+              catch (e) {
                 console.error(e)
-                globalEventBus.emit(GlobalEvents.ON_COMP_PREVIEW_CLOSE, {maximum: false})
+                globalEventBus.emit(GlobalEvents.ON_COMP_PREVIEW_CLOSE, { maximum: false })
               }
             },
           },

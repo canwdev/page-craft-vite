@@ -1,16 +1,16 @@
 <script lang="ts">
-import {defineComponent} from 'vue'
-import {useMainStore} from '@/store/main'
-import {useSettingsStore} from '@/store/settings'
+import { ElMessage, ElMessageBox, ElNotification } from 'element-plus'
+import { defineComponent } from 'vue'
+import { useRoute } from 'vue-router'
 
-import {mcUtils} from '@/utils/mc-utils'
-import {useRoute} from 'vue-router'
-import {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
-import {ElMessage, ElMessageBox, ElNotification} from 'element-plus'
+import { useAppList } from '@/components/Apps/app-list'
 import DesktopWindowManager from '@/components/OS/DesktopWindowManager/index.vue'
-import {SettingsTabType} from '@/enum/settings'
-import {useSystemStore} from '@/store/system'
-import {useAppList} from '@/components/Apps/app-list'
+import { SettingsTabType } from '@/enum/settings'
+import { useMainStore } from '@/store/main'
+import { useSettingsStore } from '@/store/settings'
+import { useSystemStore } from '@/store/system'
+import { GlobalEvents, useGlobalBusOn } from '@/utils/global-event-bus'
+import { mcUtils } from '@/utils/mc-utils'
 import '@/components/monaco-editor-patch'
 
 export default defineComponent({
@@ -41,7 +41,7 @@ export default defineComponent({
     })
 
     useGlobalBusOn(GlobalEvents.OPEN_SETTINGS, (type: SettingsTabType = SettingsTabType.COMMON) => {
-      systemStore.createTaskById('os.pagecraft.settings', {curTab: type})
+      systemStore.createTaskById('os.pagecraft.settings', { curTab: type })
     })
     useGlobalBusOn(
       GlobalEvents.OPEN_TEXT_TRANSFORMER,
@@ -65,7 +65,7 @@ export default defineComponent({
       <QuickLaunchWindow v-model:visible="mainStore.isShowQuickLaunch" />
       <IframeBrowser v-model:visible="mainStore.isShowIframeBrowser" />
 
-      <RouterView v-slot="{Component}">
+      <RouterView v-slot="{ Component }">
         <component :is="Component" />
       </RouterView>
     </DesktopWindowManager>

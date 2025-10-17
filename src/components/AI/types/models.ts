@@ -148,20 +148,20 @@ export const openAIChatModelOptions: IChatModelOption[] = [
  * AI / LLM 模型图标集 https://lobehub.com/zh/icons
  */
 export const compatibleModelOptions: IChatModelOption[] = [
-  {label: 'Google Gemini 2.0 Flash', value: 'gemini-2.0-flash', vision: true, functionCall: true},
-  {label: 'Google Gemini 2.5 Flash', value: 'gemini-2.5-flash'},
-  {label: 'Google Gemini 2.5 Pro', value: 'gemini-2.5-pro'},
-  {label: 'DeepSeek-R1', value: 'DeepSeek-R1'},
-  {label: 'xAI Grok 3', value: 'grok-3'},
-  {label: 'xAI Grok 3 Mini', value: 'grok-3-mini'},
-  {label: 'Meta LLaMA', value: 'llama-3.3-70b-versatile'},
-  {label: '同义千问 Qwen 2.5 Max', value: 'qwen-max-0125'},
-  {label: '智谱清言 ChatGLM', value: 'glm-4-flash'},
-  {label: '深度求索 DeepSeek R1', value: 'DeepSeek-R1'},
-  {label: '月之暗面 Moonshot', value: 'moonshot-v1-8k'},
+  { label: 'Google Gemini 2.0 Flash', value: 'gemini-2.0-flash', vision: true, functionCall: true },
+  { label: 'Google Gemini 2.5 Flash', value: 'gemini-2.5-flash' },
+  { label: 'Google Gemini 2.5 Pro', value: 'gemini-2.5-pro' },
+  { label: 'DeepSeek-R1', value: 'DeepSeek-R1' },
+  { label: 'xAI Grok 3', value: 'grok-3' },
+  { label: 'xAI Grok 3 Mini', value: 'grok-3-mini' },
+  { label: 'Meta LLaMA', value: 'llama-3.3-70b-versatile' },
+  { label: '同义千问 Qwen 2.5 Max', value: 'qwen-max-0125' },
+  { label: '智谱清言 ChatGLM', value: 'glm-4-flash' },
+  { label: '深度求索 DeepSeek R1', value: 'DeepSeek-R1' },
+  { label: '月之暗面 Moonshot', value: 'moonshot-v1-8k' },
 ]
 
-export const getModelOptions = (provider: AIProvider) => {
+export function getModelOptions(provider: AIProvider) {
   switch (provider) {
     case AIProvider.ANTHROPIC:
       return anthropicChatModelOptions
@@ -172,7 +172,7 @@ export const getModelOptions = (provider: AIProvider) => {
   }
 }
 
-export const modelsCanUseVision: {[key: string]: boolean} = {}
+export const modelsCanUseVision: { [key: string]: boolean } = {}
 ;[...anthropicChatModelOptions, ...openAIChatModelOptions, ...compatibleModelOptions].forEach(
   (item) => {
     if (item.vision) {

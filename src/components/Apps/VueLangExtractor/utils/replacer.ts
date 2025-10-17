@@ -1,6 +1,6 @@
 export type ReplacementItem = [number, number, string]
 
-export const replaceTemplate = (template: string, replacements: ReplacementItem[]) => {
+export function replaceTemplate(template: string, replacements: ReplacementItem[]) {
   let newTemplate = ''
   let lastIndex = 0
   for (const [start, end, newText] of replacements) {

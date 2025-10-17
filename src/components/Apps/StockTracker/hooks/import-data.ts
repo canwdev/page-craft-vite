@@ -1,11 +1,11 @@
-import {ITransactionHistory} from '@/components/Apps/StockTracker/types'
-import {guid} from '@/utils'
+import type { ITransactionHistory } from '@/components/Apps/StockTracker/types'
+import { guid } from '@/utils'
 
-export const useImportStockData = () => {
+export function useImportStockData() {
   const importData = async (): Promise<ITransactionHistory[]> => {
     const {
-      data: {list},
-    } = await fetch('http://127.0.0.1:8080/stock.json').then((res) => res.json())
+      data: { list },
+    } = await fetch('http://127.0.0.1:8080/stock.json').then(res => res.json())
     console.log(list)
     // stockTrackerSettings.value.transactionHistory =
     const ret = list.reverse().map((item) => {

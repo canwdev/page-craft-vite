@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import {bytesToSize, formatDate} from '@/utils'
-import {IEntry} from '../types/filesystem'
-import {useFileItem} from './hooks/use-file-item'
+import type { IEntry } from '../types/filesystem'
+import { bytesToSize, formatDate } from '@/utils'
+import { useFileItem } from './hooks/use-file-item'
+
+const props = withDefaults(defineProps<Props>(), {})
 
 const emit = defineEmits(['open', 'select'])
 
@@ -9,36 +11,40 @@ interface Props {
   item: IEntry
   active: boolean
 }
-const props = withDefaults(defineProps<Props>(), {})
-
-const {iconName, titleDesc} = useFileItem(props)
+const { iconName, titleDesc } = useFileItem(props)
 </script>
 
 <template>
   <button
     class="btn-no-style file-list-item file-list-row"
-    :class="{active, hidden: item.hidden}"
-    @click.stop="$emit('select', {item, event: $event})"
+    :class="{ active, hidden: item.hidden }"
+    :title="titleDesc"
+    @click.stop="$emit('select', { item, event: $event })"
     @keyup.enter="$emit('open', item)"
     @dblclick.stop="$emit('open', item)"
-    :title="titleDesc"
   >
     <div class="list-col c-filename">
       <input
         class="file-checkbox"
         type="checkbox"
         :checked="active"
-        @click.stop="$emit('select', {item, event: $event, toggle: true})"
+        @click.stop="$emit('select', { item, event: $event, toggle: true })"
         @dblclick.stop
-      />
+      >
 
       <span class="text-overflow filename-text" @click.stop="$emit('open', item)" @dblclick.stop>
         {{ item.isDirectory ? '📁' : '📄' }} {{ item.name }}
       </span>
     </div>
-    <div class="list-col c-size">{{ bytesToSize(item.size) }}</div>
-    <div class="list-col c-time">{{ formatDate(item.lastModified) }}</div>
-    <div class="list-col c-time">{{ formatDate(item.birthtime) }}</div>
+    <div class="list-col c-size">
+      {{ bytesToSize(item.size) }}
+    </div>
+    <div class="list-col c-time">
+      {{ formatDate(item.lastModified) }}
+    </div>
+    <div class="list-col c-time">
+      {{ formatDate(item.birthtime) }}
+    </div>
   </button>
 </template>
 

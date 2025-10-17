@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import {useStorage} from '@vueuse/core'
-import {LS_SettingsKey} from '@/enum/settings'
-import {
-  convertMonthsToYearsAndMonths,
-  numberToChineseMoney,
-  numberWithCommas,
-  formatLabel,
-} from '@/components/Apps/StockTracker/utils'
+import { useStorage } from '@vueuse/core'
 import * as echarts from 'echarts'
 import moment from 'moment/moment'
+import {
+  convertMonthsToYearsAndMonths,
+  formatLabel,
+  numberToChineseMoney,
+  numberWithCommas,
+} from '@/components/Apps/StockTracker/utils'
+import { LS_SettingsKey } from '@/enum/settings'
 
 interface IFireCalcFormData {
   // 当前资产
@@ -42,20 +42,20 @@ const formData = useStorage<IFireCalcFormData>(
     age: 0,
   },
   localStorage,
-  {listenToStorageChanges: false},
+  { listenToStorageChanges: false },
 )
 
 const formItems = computed(() => {
   return [
-    {label: '当前资产', key: 'currentValue', type: 'number'},
-    {label: '月存入', key: 'monthlySave', type: 'number'},
-    {label: '是否为目标存款模式', key: 'isTargetMode', type: 'checkbox'},
+    { label: '当前资产', key: 'currentValue', type: 'number' },
+    { label: '月存入', key: 'monthlySave', type: 'number' },
+    { label: '是否为目标存款模式', key: 'isTargetMode', type: 'checkbox' },
     formData.value.isTargetMode
-      ? {label: '目标资产', key: 'targetValue', type: 'number'}
-      : {label: '迭代月数', key: 'iterationMonths', type: 'number'},
-    {label: '年利率', key: 'annualInterestRate', type: 'number'},
-    {label: '年终奖', key: 'yearEndAwards', type: 'number'},
-    {label: '年龄(选填)', key: 'age', type: 'number'},
+      ? { label: '目标资产', key: 'targetValue', type: 'number' }
+      : { label: '迭代月数', key: 'iterationMonths', type: 'number' },
+    { label: '年利率', key: 'annualInterestRate', type: 'number' },
+    { label: '年终奖', key: 'yearEndAwards', type: 'number' },
+    { label: '年龄(选填)', key: 'age', type: 'number' },
   ].filter(Boolean)
 })
 
@@ -123,7 +123,7 @@ watch(resultValue, () => {
   updateChart()
 })
 
-const getPassiveIncome = (value) => {
+function getPassiveIncome(value) {
   const piYearly = value * formData.value.annualInterestRate
   const piMonthly = piYearly / 12
   const piDaily = piMonthly / 30
@@ -140,10 +140,10 @@ const resultItems = computed(() => {
     const result = resultValue.value || 0
     const resultMonths = stepData.value.length - 1
     const increasedValue = result - formData.value.currentValue
-    const increasedPercent = ((increasedValue / result) * 100).toFixed(2) + '%'
+    const increasedPercent = `${((increasedValue / result) * 100).toFixed(2)}%`
     const resultAge = stepData.value[stepData.value.length - 1]?.age
 
-    const {piYearly, piMonthly, piDaily} = getPassiveIncome(result)
+    const { piYearly, piMonthly, piDaily } = getPassiveIncome(result)
 
     return [
       {
@@ -164,11 +164,12 @@ const resultItems = computed(() => {
         value: `年收 ${piYearly.toFixed(2)} | 月收 ${piMonthly.toFixed(2)} | 日收 ${piDaily.toFixed(2)}`,
         type: 'text',
       },
-      {label: '增长值', key: 'increasedValue', value: increasedValue.toFixed(2), type: 'number'},
-      {label: '增长百分比', key: 'increasedPercent', value: increasedPercent, type: 'text'},
-      {label: '年龄', key: 'resultAge', value: resultAge, type: 'text'},
+      { label: '增长值', key: 'increasedValue', value: increasedValue.toFixed(2), type: 'number' },
+      { label: '增长百分比', key: 'increasedPercent', value: increasedPercent, type: 'text' },
+      { label: '年龄', key: 'resultAge', value: resultAge, type: 'text' },
     ].filter(Boolean)
-  } catch (e) {
+  }
+  catch (e) {
     console.error(e)
     return []
   }
@@ -191,9 +192,9 @@ onUnmounted(() => {
 })
 
 const echartsInstance = shallowRef()
-const initCharts = () => {
+function initCharts() {
   // 基于准备好的dom，初始化echarts实例
-  var myChart = echarts.init(document.getElementById('mainChart'))
+  const myChart = echarts.init(document.getElementById('mainChart'))
   // 绘制图表
   myChart.setOption({
     title: {
@@ -211,7 +212,7 @@ const initCharts = () => {
 
         const value = Number(d1.value)
 
-        const {piYearly, piMonthly, piDaily} = getPassiveIncome(value)
+        const { piYearly, piMonthly, piDaily } = getPassiveIncome(value)
 
         return `<div style="font-family: monospace">
 ${p1.marker}
@@ -292,7 +293,7 @@ ${p1.marker}
   echartsInstance.value = myChart
 }
 
-const updateChart = () => {
+function updateChart() {
   if (!stepData.value.length) {
     return
   }
@@ -300,11 +301,11 @@ const updateChart = () => {
   const list = stepData.value || []
   echartsInstance.value.setOption({
     xAxis: {
-      data: list.map((i) => i.label),
+      data: list.map(i => i.label),
     },
     series: [
       {
-        data: list.map((i) => i.value),
+        data: list.map(i => i.value),
         markPoint: {
           data: [
             {
@@ -325,13 +326,13 @@ const updateChart = () => {
   <div class="fire-calc-wrapper vgo-bg">
     <div class="vgo-panel">
       <div class="group-grid">
-        <label :for="item.key" :key="item.key" v-for="item in formItems">
-          {{ item.label || formatLabel(item.key) }}: <br v-if="item.type === 'checkbox'" />
-          <input class="vgo-input" :id="item.key" :type="item.type" v-model="formData[item.key]" />
+        <label v-for="item in formItems" :key="item.key" :for="item.key">
+          {{ item.label || formatLabel(item.key) }}: <br v-if="item.type === 'checkbox'">
+          <input :id="item.key" v-model="formData[item.key]" class="vgo-input" :type="item.type">
         </label>
       </div>
       <div class="group-grid group-grid--v2">
-        <div :key="item.key" v-for="item in resultItems">
+        <div v-for="item in resultItems" :key="item.key">
           {{ item.label || formatLabel(item.key) }}:
           <b>
             {{ item.value }}
@@ -341,7 +342,7 @@ const updateChart = () => {
     </div>
 
     <div class="vgo-panel">
-      <div class="chart-area" id="mainChart"></div>
+      <div id="mainChart" class="chart-area" />
     </div>
   </div>
 </template>

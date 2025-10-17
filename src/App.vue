@@ -1,57 +1,48 @@
-<script lang="ts">
-import {useGlobalTheme} from '@/hooks/use-global-theme'
+<script lang="ts" setup>
+import { useEventListener } from '@vueuse/core'
 import AppSub from '@/AppSub.vue'
-import {useSettingsStore} from '@/store/settings'
-import {isDev} from '@/enum'
-import {useMainStore} from '@/store/main'
-import {useEventListener} from '@vueuse/core'
-import {useFocusAutoAction} from '@/hooks/use-focus-auto-action'
-import {useUpdater} from '@/components/OS/SettingsApp/use-updater'
-import {useCssStyleTag} from '@/components/StyleEditor/utils/css-store'
+import { useUpdater } from '@/components/OS/SettingsApp/use-updater'
+import { useCssStyleTag } from '@/components/StyleEditor/utils/css-store'
+import { isDev } from '@/enum'
+import { useFocusAutoAction } from '@/hooks/use-focus-auto-action'
+import { useGlobalTheme } from '@/hooks/use-global-theme'
+import { useMainStore } from '@/store/main'
+import { useSettingsStore } from '@/store/settings'
 
-export default defineComponent({
-  components: {
-    AppSub,
-  },
-  setup() {
-    const settingsStore = useSettingsStore()
-    const mainStore = useMainStore()
+const settingsStore = useSettingsStore()
+const mainStore = useMainStore()
 
-    const {isAppDarkMode} = useGlobalTheme()
-    provide('darkMode', {isAppDarkMode})
+const { isAppDarkMode } = useGlobalTheme()
+provide('darkMode', { isAppDarkMode })
 
-    const bgStyle = computed(() => {
-      const s: any = {}
-      if (settingsStore.desktopWallpaper) {
-        s.backgroundImage = `url(${settingsStore.desktopWallpaper})`
-      }
-      if (settingsStore.desktopBgColor) {
-        s.backgroundColor = settingsStore.desktopBgColor
-      }
-      return s
-    })
-
-    useEventListener(document, 'keydown', (event) => {
-      const key = event.key.toLowerCase()
-      if (event.ctrlKey && key === 'r' && !event.shiftKey && !isDev) {
-        event.preventDefault()
-        window.$message.info('ctrl+r is disabled')
-      } else if (event.altKey && key === 'q') {
-        mainStore.isShowQuickLaunch = !mainStore.isShowQuickLaunch
-      } else if (event.altKey && key === 'i') {
-        mainStore.isShowIframeBrowser = !mainStore.isShowIframeBrowser
-      }
-    })
-
-    useFocusAutoAction()
-    useUpdater('canwdev', 'page-craft-vite')
-    useCssStyleTag()
-
-    return {
-      bgStyle,
-    }
-  },
+const bgStyle = computed(() => {
+  const s: any = {}
+  if (settingsStore.desktopWallpaper) {
+    s.backgroundImage = `url(${settingsStore.desktopWallpaper})`
+  }
+  if (settingsStore.desktopBgColor) {
+    s.backgroundColor = settingsStore.desktopBgColor
+  }
+  return s
 })
+
+useEventListener(document, 'keydown', (event) => {
+  const key = event.key.toLowerCase()
+  if (event.ctrlKey && key === 'r' && !event.shiftKey && !isDev) {
+    event.preventDefault()
+    window.$message.info('ctrl+r is disabled')
+  }
+  else if (event.altKey && key === 'q') {
+    mainStore.isShowQuickLaunch = !mainStore.isShowQuickLaunch
+  }
+  else if (event.altKey && key === 'i') {
+    mainStore.isShowIframeBrowser = !mainStore.isShowIframeBrowser
+  }
+})
+
+useFocusAutoAction()
+useUpdater('canwdev', 'page-craft-vite')
+useCssStyleTag()
 </script>
 
 <template>
@@ -61,8 +52,6 @@ export default defineComponent({
 </template>
 
 <style lang="scss">
-#app {
-}
 .page-craft-root {
   position: relative;
   height: 100%;

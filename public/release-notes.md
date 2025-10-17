@@ -4,9 +4,6 @@
 
 - refactor: 重构多语言编辑器
   - TODO: 一键翻译
-- add: Vue SFC组件多语言提取工具
-  - TODO：支持 TS
-  - 基于 AST(抽象语法树) 实现
 
 ## v1.7.8
 

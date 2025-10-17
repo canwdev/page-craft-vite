@@ -1,5 +1,5 @@
 // 过滤列表功能
-export const filterLabel = (item, value) => {
+export function filterLabel(item, value) {
   const sVal = value.trim().toLowerCase()
   let flag = false
   if (item.search) {

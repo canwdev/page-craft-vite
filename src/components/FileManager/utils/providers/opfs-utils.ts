@@ -12,7 +12,7 @@ export async function findHandleByPath(
   type: 'file' | 'directory',
 ): Promise<FileSystemHandle | null> {
   // 将路径分割成数组，以便逐级查找
-  const parts = path.split('/').filter((p) => p.length)
+  const parts = path.split('/').filter(p => p.length)
   let currentHandle: FileSystemDirectoryHandle | FileSystemFileHandle = directoryHandle
 
   // 遍历路径的每一部分
@@ -21,28 +21,32 @@ export async function findHandleByPath(
     if (currentHandle.kind === 'directory') {
       // 尝试获取下一级的handle
       const nextHandle = await (currentHandle as FileSystemDirectoryHandle)
-        .getDirectoryHandle(part, {create: false})
+        .getDirectoryHandle(part, { create: false })
         .catch(() => null)
 
       // 如果没有找到，并且不是路径的最后一部分，说明路径无效
       if (!nextHandle && parts.indexOf(part) !== parts.length - 1) {
         return null
-      } else if (nextHandle) {
+      }
+      else if (nextHandle) {
         // 如果找到了下一级目录，继续在这个目录中查找
         currentHandle = nextHandle
-      } else {
+      }
+      else {
         // 如果是路径的最后一部分，尝试判断是文件还是目录
         if (type === 'directory') {
           return null // 已知最后一部分不是目录
-        } else {
+        }
+        else {
           // 尝试作为文件处理
           const fileHandle = await (currentHandle as FileSystemDirectoryHandle)
-            .getFileHandle(part, {create: false})
+            .getFileHandle(part, { create: false })
             .catch(() => null)
           return fileHandle // 可能是null，如果文件不存在
         }
       }
-    } else {
+    }
+    else {
       // 当前handle是文件，但路径还没有结束，说明路径错误
       return null
     }

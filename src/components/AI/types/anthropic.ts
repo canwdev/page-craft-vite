@@ -8,14 +8,14 @@ export enum ClaudeStreamType {
   MESSAGE_STOP = 'message_stop',
 }
 
-export type ClaudeStreamResponse =
-  | MessageStartData
-  | ContentBlockStartData
-  | PingData
-  | ContentBlockDeltaData
-  | ContentBlockStopData
-  | MessageDeltaData
-  | MessageStopData
+export type ClaudeStreamResponse
+  = | MessageStartData
+    | ContentBlockStartData
+    | PingData
+    | ContentBlockDeltaData
+    | ContentBlockStopData
+    | MessageDeltaData
+    | MessageStopData
 
 interface MessageStartData {
   type: ClaudeStreamType.MESSAGE_START
@@ -95,7 +95,7 @@ export interface ClaudeResponseData {
 }
 
 // 图片发送对象 https://docs.anthropic.com/en/api/messages
-export type ClaudeImageSource = {
+export interface ClaudeImageSource {
   data: string
   media_type: 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp'
   type: 'base64'

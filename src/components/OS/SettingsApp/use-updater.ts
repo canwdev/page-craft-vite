@@ -1,7 +1,7 @@
-import {getPkg} from '@/router/router-utils'
-import {useSettingsStore} from '@/store/settings'
-import {useMainStore} from '@/store/main'
-import {useI18n} from 'vue-i18n'
+import { useI18n } from 'vue-i18n'
+import { getPkg } from '@/router/router-utils'
+import { useMainStore } from '@/store/main'
+import { useSettingsStore } from '@/store/settings'
 import markdown from '@/utils/markdown'
 
 export function compareVersions(version1, version2) {
@@ -13,12 +13,13 @@ export function compareVersions(version1, version2) {
   const maxLength = Math.max(parts1.length, parts2.length)
 
   for (let i = 0; i < maxLength; i++) {
-    const num1 = parseInt(parts1[i] || 0)
-    const num2 = parseInt(parts2[i] || 0)
+    const num1 = Number.parseInt(parts1[i] || 0)
+    const num2 = Number.parseInt(parts2[i] || 0)
 
     if (num1 < num2) {
       return -1
-    } else if (num1 > num2) {
+    }
+    else if (num1 > num2) {
       return 1
     }
   }
@@ -26,8 +27,8 @@ export function compareVersions(version1, version2) {
   return 0
 }
 
-export const useUpdater = (author, name, branch = 'master') => {
-  const {t: $t} = useI18n()
+export function useUpdater(author, name, branch = 'master') {
+  const { t: $t } = useI18n()
   const mainStore = useMainStore()
   const settingsStore = useSettingsStore()
 
@@ -41,15 +42,15 @@ export const useUpdater = (author, name, branch = 'master') => {
       const response = await fetch(url)
       const data = await response.json()
       console.log('[checkForNewVersion]', data)
-      const {tag_name, body: releaseNotes} = data
+      const { tag_name, body: releaseNotes } = data
       const latestVersion = (tag_name || '').replace(/^v|V/, '')
 
       if (compareVersions(localVersion, latestVersion) < 0) {
-        mainStore.upgradeInfo =
-          `${$t('msgs.update_avail')} v${latestVersion} 🎆` +
-          ` <a style="color:inherit; text-decoration: underline" href="${releasePage}" target="_blank">[${$t(
-            'app_client.go_release',
-          )}]</a>`
+        mainStore.upgradeInfo
+          = `${$t('msgs.update_avail')} v${latestVersion} 🎆`
+            + ` <a style="color:inherit; text-decoration: underline" href="${releasePage}" target="_blank">[${$t(
+              'app_client.go_release',
+            )}]</a>`
 
         // 执行更新操作，例如提示用户或自动更新
         return {
@@ -57,14 +58,16 @@ export const useUpdater = (author, name, branch = 'master') => {
           version: latestVersion,
           releaseNotes,
         }
-      } else {
+      }
+      else {
         mainStore.upgradeInfo = `${$t('msgs.up_to_date')}: v${localVersion}`
         return {
           update: false,
           version: localVersion,
         }
       }
-    } catch (error: any) {
+    }
+    catch (error: any) {
       console.warn('Check for updates failed', error.message)
       return {
         update: false,
@@ -78,7 +81,7 @@ export const useUpdater = (author, name, branch = 'master') => {
       const n = window.$notification({
         type: 'info',
         position: 'top-right',
-        title: 'PageCraft ' + $t('app_client.desktop_client'),
+        title: `PageCraft ${$t('app_client.desktop_client')}`,
         // onClose: () => {},
         duration: 1000 * 30,
         message: h(
@@ -87,10 +90,10 @@ export const useUpdater = (author, name, branch = 'master') => {
             style: 'font-size: 12px;',
           },
           [
-            h('div', {innerHTML: $t('app_client.recommend_desc')}),
+            h('div', { innerHTML: $t('app_client.recommend_desc') }),
             h(
               'div',
-              {class: 'flex-row-center-gap', style: 'margin-top: 10px; justify-content: center;'},
+              { class: 'flex-row-center-gap', style: 'margin-top: 10px; justify-content: center;' },
               [
                 h(
                   'button',
@@ -121,7 +124,7 @@ export const useUpdater = (author, name, branch = 'master') => {
       })
     }
     if (window.__TAURI__ && settingsStore.autoCheckUpdate) {
-      const {update, version, releaseNotes} = await checkForNewVersion()
+      const { update, version, releaseNotes } = await checkForNewVersion()
       console.log(update)
       if (update) {
         const n = window.$notification({
@@ -134,10 +137,10 @@ export const useUpdater = (author, name, branch = 'master') => {
               style: 'font-size: 12px;',
             },
             [
-              h('div', {innerHTML: markdown.render(releaseNotes)}),
+              h('div', { innerHTML: markdown.render(releaseNotes) }),
               h(
                 'div',
-                {class: 'flex-row-center-gap', style: 'margin-top: 10px; justify-content: center;'},
+                { class: 'flex-row-center-gap', style: 'margin-top: 10px; justify-content: center;' },
                 [
                   h(
                     'button',

@@ -1,15 +1,15 @@
-import {IMessageContent} from '@/components/AI/types/ai'
+import type { IMessageContent } from '@/components/AI/types/ai'
 
-export type ChatUsage = {
+export interface ChatUsage {
   prompt_tokens: number
   completion_tokens: number
   total_tokens: number
 }
-export type GptMessage = {
+export interface GptMessage {
   role: 'assistant' | 'user' | 'system'
   content: string | IMessageContent[]
 }
-export type ChatChoices = {
+export interface ChatChoices {
   index: number
   message: GptMessage
   logprobs: number | null
@@ -18,7 +18,7 @@ export type ChatChoices = {
 /**
  * https://platform.openai.com/docs/api-reference/chat/create
  */
-export type OpenAIChatCompletion = {
+export interface OpenAIChatCompletion {
   id: string
   object: 'chat.completion'
   created: number

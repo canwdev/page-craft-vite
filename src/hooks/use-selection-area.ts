@@ -1,12 +1,12 @@
 import SelectionArea from '@viselect/vanilla'
 
-export const useSelectionArea = ({
+export function useSelectionArea({
   containerRef,
   onStart,
   onStop,
   toggleClass = 'active',
   selectables = ['.selectable'],
-}) => {
+}) {
   const selectionArea = ref()
   onMounted(() => {
     // https://github.com/simonwep/selection/tree/master/packages/vanilla
@@ -21,7 +21,7 @@ export const useSelectionArea = ({
       },
       container: containerRef.value,
     })
-      .on('start', ({store, event}) => {
+      .on('start', ({ store, event }) => {
         if (!(event as MouseEvent).ctrlKey && !(event as MouseEvent).metaKey) {
           selectionArea.value.clearSelection()
           setTimeout(() => {
@@ -33,7 +33,7 @@ export const useSelectionArea = ({
         'move',
         ({
           store: {
-            changed: {added, removed},
+            changed: { added, removed },
           },
         }) => {
           for (const el of added) {
@@ -45,7 +45,7 @@ export const useSelectionArea = ({
           }
         },
       )
-      .on('stop', ({store: {stored}}) => {
+      .on('stop', ({ store: { stored } }) => {
         setTimeout(() => {
           onStop && onStop(stored)
         })

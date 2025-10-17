@@ -1,6 +1,6 @@
-import {AIProvider} from '@/components/AI/types/models'
+import type { AIProvider } from '@/components/AI/types/models'
 
-export type ImageUrlObj = {
+export interface ImageUrlObj {
   detail: string
   url: string
 }

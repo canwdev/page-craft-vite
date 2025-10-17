@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {IStockTrackerPrices} from '@/components/Apps/StockTracker/types'
+import type { IStockTrackerPrices } from '@/components/Apps/StockTracker/types'
 import TabLayout from '@canwdev/vgo-ui/src/components/Layouts/TabLayout.vue'
 import EchartsCandlestick from '@/components/Apps/StockTracker/Graphs/EchartsCandlestick.vue'
 
@@ -10,7 +10,7 @@ const props = withDefaults(
   {},
 )
 const emit = defineEmits([])
-const {stockPrices} = toRefs(props)
+const { stockPrices } = toRefs(props)
 
 const curTab = ref('')
 const tabOptions = computed(() => {
@@ -32,7 +32,7 @@ watch(
       curTab.value = val[0].value
     }
   },
-  {immediate: true},
+  { immediate: true },
 )
 </script>
 

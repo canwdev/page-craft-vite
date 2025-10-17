@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/index.vue'
-import {useVModel} from '@vueuse/core'
+import { useVModel } from '@vueuse/core'
 import FileManager from './index.vue'
 
 interface Props {
@@ -16,8 +16,8 @@ const mVisible = useVModel(props, 'visible', emit)
 <template>
   <ViewPortWindow
     ref="iframeWinRef"
-    class="iframe-browser-vgo-window"
     v-model:visible="mVisible"
+    class="iframe-browser-vgo-window"
     wid="iframe_browser"
     allow-maximum
     :init-win-options="{
@@ -25,7 +25,9 @@ const mVisible = useVModel(props, 'visible', emit)
       height: '500px',
     }"
   >
-    <template #titleBarLeft>🗃️ {{ $t('common.file_explorer') }}</template>
+    <template #titleBarLeft>
+      🗃️ {{ $t('common.file_explorer') }}
+    </template>
     <FileManager v-if="mVisible" />
   </ViewPortWindow>
 </template>

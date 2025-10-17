@@ -1,17 +1,19 @@
 <script lang="ts">
-import {defineComponent, PropType} from 'vue'
+import type { PropType } from 'vue'
+import type { BatchListItem } from '@/components/VueI18nEditTool/store/i18n-tool-main'
 import _get from 'lodash-es/get'
 import _set from 'lodash-es/set'
 import _unset from 'lodash-es/unset'
+import { defineComponent } from 'vue'
+import { useI18n } from 'vue-i18n'
 import DialogTextEdit from '@/components/CommonUI/DialogTextEdit.vue'
-import {useI18n} from 'vue-i18n'
-import {readClipboardData} from '@/utils'
-import {textConvertAdvanced} from '@/utils/mc-utils/text-convert'
-import {useI18nToolSettingsStore} from '@/components/VueI18nEditTool/store/i18n-tool-settings'
-import FieldEdit from '@/components/VueI18nEditTool/Single/FieldEdit.vue'
-import {useBatchItemV2} from '@/components/VueI18nEditTool/BatchGUI/batch-hooks'
-import {BatchListItem, useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
+import { useBatchItemV2 } from '@/components/VueI18nEditTool/BatchGUI/batch-hooks'
 import CcFlag from '@/components/VueI18nEditTool/CcFlag.vue'
+import FieldEdit from '@/components/VueI18nEditTool/Single/FieldEdit.vue'
+import { useI18nMainStore } from '@/components/VueI18nEditTool/store/i18n-tool-main'
+import { useI18nToolSettingsStore } from '@/components/VueI18nEditTool/store/i18n-tool-settings'
+import { readClipboardData } from '@/utils'
+import { textConvertAdvanced } from '@/utils/mc-utils/text-convert'
 
 export default defineComponent({
   name: 'SubGuiItem',
@@ -27,9 +29,9 @@ export default defineComponent({
     },
   },
   emits: ['saveChanged'],
-  setup(props, {emit}) {
-    const {listItem} = toRefs(props)
-    const {t: $t} = useI18n()
+  setup(props, { emit }) {
+    const { listItem } = toRefs(props)
+    const { t: $t } = useI18n()
     const i18nMainStore = useI18nMainStore()
     const i18nSetStore = useI18nToolSettingsStore()
 
@@ -43,7 +45,7 @@ export default defineComponent({
     } = useBatchItemV2(props)
 
     // 翻译文件的json对象
-    let localJson = computed(() => {
+    const localJson = computed(() => {
       return listItem.value.json
     })
 
@@ -67,7 +69,8 @@ export default defineComponent({
           throw new Error('json file not exist!')
         }
         _set(listItem.value.json as any, path, val)
-      } catch (e: any) {
+      }
+      catch (e: any) {
         console.error(e)
         window.$message.error(e.message)
         throw e
@@ -109,7 +112,7 @@ export default defineComponent({
           isChanged.value = false
         })
       },
-      {immediate: true},
+      { immediate: true },
     )
     watch(fieldValue, () => {
       isChanged.value = true
@@ -150,7 +153,7 @@ export default defineComponent({
       createField(handlePasteFormat(val))
     }
 
-    const saveChange = async ({isEmit = false, isSetValue = false} = {}) => {
+    const saveChange = async ({ isEmit = false, isSetValue = false } = {}) => {
       if (!isChanged.value) {
         return
       }
@@ -192,7 +195,8 @@ export default defineComponent({
       try {
         fieldValue.value = JSON.parse(val)
         isShowArrayEdit.value = false
-      } catch (e: any) {
+      }
+      catch (e: any) {
         console.error(e)
         window.$message.error(e.message)
       }
@@ -243,9 +247,9 @@ export default defineComponent({
 
 <template>
   <div
+    v-loading="isLoading"
     class="batch-translate-item vgo-panel"
     :data-translate-path="i18nMainStore.translatePath"
-    v-loading="isLoading"
   >
     <div class="card-header">
       <div class="card-title-wrap">
@@ -253,30 +257,30 @@ export default defineComponent({
           <CcFlag v-if="i18nSetStore.enableFlag" :cc="listItem.rootDir.label" />
           <span class="region-label">{{ listItem.rootDir.label }}</span>
           <template v-if="i18nSetStore.isFoldersMode">
-            {{ '/' + subFilePathArr.join('/') }}
+            {{ `/${subFilePathArr.join('/')}` }}
           </template>
         </span>
-        <!--        <span class="translate-path">-->
-        <!--          {{ i18nMainStore.translatePath }}-->
-        <!--        </span>-->
+        <!--        <span class="translate-path"> -->
+        <!--          {{ i18nMainStore.translatePath }} -->
+        <!--        </span> -->
       </div>
 
       <template v-if="listItem.json && fieldValue !== null">
         <el-popconfirm
-          @confirm="handleDeleteField"
           :title="$t('msgs.remove_item')"
           :teleported="false"
+          @confirm="handleDeleteField"
         >
           <template #reference>
             <button class="btn-no-style" :title="$t('actions.delete')">
-              <span class="mdi mdi-delete"></span>
+              <span class="mdi mdi-delete" />
             </button>
           </template>
         </el-popconfirm>
       </template>
     </div>
 
-    <div class="tip-not-exist" v-if="!listItem.json">
+    <div v-if="!listItem.json" class="tip-not-exist">
       <template v-if="isLocalCreated">
         <button class="vgo-button warning" @click="handleReload">
           {{ $t('actions.reload') }}
@@ -291,30 +295,30 @@ export default defineComponent({
       </template>
     </div>
     <template v-else-if="i18nMainStore.translatePath">
-      <div class="flex-row-center-gap" v-if="fieldValue !== null">
-        <FieldEdit ref="inputRef" v-model="fieldValue" @previewArray="handlePreviewArrayText" />
+      <div v-if="fieldValue !== null" class="flex-row-center-gap">
+        <FieldEdit ref="inputRef" v-model="fieldValue" @preview-array="handlePreviewArrayText" />
 
         <div v-if="isChanged">
           <button
             class="vgo-button warning"
-            @click="saveChange({isEmit: true, isSetValue: true})"
             title="Batch Save"
+            @click="saveChange({ isEmit: true, isSetValue: true })"
           >
-            <span class="mdi mdi-content-save"></span>
+            <span class="mdi mdi-content-save" />
           </button>
           <button class="vgo-button" @click="cancelChange">
-            <span class="mdi mdi-close"></span>
+            <span class="mdi mdi-close" />
             {{ $t('actions.cancel') }}
           </button>
         </div>
       </div>
       <div v-else>
         <button
-          @click="pasteCreateField()"
           class="vgo-button primary"
           :title="`${$t('msgs.auto_paste')} Create (${i18nSetStore.autoPasteTextConvertMode})`"
+          @click="pasteCreateField()"
         >
-          <span class="mdi mdi-content-paste"></span>
+          <span class="mdi mdi-content-paste" />
         </button>
         <button class="vgo-button primary" @click="createField('')">
           {{ $t('actions.create_text') }}
@@ -324,16 +328,18 @@ export default defineComponent({
         </button>
       </div>
     </template>
-    <div style="color: gray" v-else>{{ $t('msgs.please_select_a_tran') }}</div>
+    <div v-else style="color: gray">
+      {{ $t('msgs.please_select_a_tran') }}
+    </div>
 
     <DialogTextEdit
       v-if="isShowArrayEdit"
+      v-model:visible="isShowArrayEdit"
       is-textarea
       :title="$t('common.array_detail')"
       :placeholder="$t('common.array_json_string')"
-      v-model:visible="isShowArrayEdit"
       :text="currentArrayString"
-      @onSave="handleSaveArray"
+      @on-save="handleSaveArray"
     />
   </div>
 </template>

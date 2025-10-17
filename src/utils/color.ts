@@ -4,22 +4,23 @@ export function hexToRgb(hex) {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
   return result
     ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16),
+        r: Number.parseInt(result[1], 16),
+        g: Number.parseInt(result[2], 16),
+        b: Number.parseInt(result[3], 16),
       }
     : null
 }
 
 export function rgbToHex(r, g, b) {
-  return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)
+  return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`
 }
 
-export const getSystemIsDarkMode = () =>
-  window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+export function getSystemIsDarkMode() {
+  return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+}
 
 // https://stackoverflow.com/a/16348977
-export const stringToColour = (str = '') => {
+export function stringToColour(str = '') {
   let i
   let hash = 0
   for (i = 0; i < str.length; i++) {
@@ -27,12 +28,12 @@ export const stringToColour = (str = '') => {
   }
   let colour = '#'
   for (i = 0; i < 3; i++) {
-    const value = (hash >> (i * 8)) & 0xff
-    colour += ('00' + value.toString(16)).substr(-2)
+    const value = (hash >> (i * 8)) & 0xFF
+    colour += (`00${value.toString(16)}`).substr(-2)
   }
   return colour
 }
-export const customHash = (str = '') => {
+export function customHash(str = '') {
   let hash = 0
   for (let i = 0; i < str.length; i++) {
     hash += str.charCodeAt(i)

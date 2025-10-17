@@ -1,10 +1,8 @@
 import {
   AIProvider,
-  anthropicChatModelOptions,
   defaultOpenAIModel,
-  openAIChatModelOptions,
 } from '@/components/AI/types/models'
-import {LS_SettingsKey} from '@/enum/settings'
+import { LS_SettingsKey } from '@/enum/settings'
 
 interface IStore {
   // OpenAI

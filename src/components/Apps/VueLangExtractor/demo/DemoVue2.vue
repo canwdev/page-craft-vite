@@ -1,23 +1,11 @@
 <script>
-import TestComponent from '~/components/TestComponent.vue'
 import SubComponent1 from '~/components/SubComponent1.vue'
 import SubComponent2 from '~/components/SubComponent2.vue'
+import TestComponent from '~/components/TestComponent.vue'
 
 export default {
-  head() {
-    return generateHead.call(this, {
-      offText: `Sale! ${this.off} OFF! ${this.isCN} ENDS TODAY! ${this.item}`,
-      title: `Head Text is Here! | ${this.$t('title')}`,
-      description: this.isEN
-        ? `Is this the real life? Is this just fantasy?`
-        : this.$t('page.desc'),
-      ogDesc: 'Such a lovely place (Such a lovely place)',
-      ogImage: `Such AAA lovely place (Such a lovely place)`,
-    })
-  },
   name: 'DemoVue2',
-  label2: 'Welcome to the XXX California',
-  components: {SubComponent2, SubComponent1, TestComponent},
+  components: { SubComponent2, SubComponent1, TestComponent },
   data() {
     return {
       isCN: false,
@@ -30,18 +18,30 @@ export default {
       testList: ['Facebook', 'Twitter', 'Instagram', 'TikTok', 'YouTube'],
     }
   },
+  head() {
+    return generateHead.call(this, {
+      offText: `Sale! ${this.off} OFF! ${this.isCN} ENDS TODAY! ${this.item}`,
+      title: `Head Text is Here! | ${this.$t('title')}`,
+      description: this.isEN
+        ? `Is this the real life? Is this just fantasy?`
+        : this.$t('page.desc'),
+      ogDesc: 'Such a lovely place (Such a lovely place)',
+      ogImage: `Such AAA lovely place (Such a lovely place)`,
+    })
+  },
+  label2: 'Welcome to the XXX California',
   computed: {
     title() {
       return `It's close to midnight, and something evil's lurking in the dark`
     },
     ndList() {
       return [
-        {label: 'Tiny Dancer in my hand, pirouetting for the man.', class: 'main'},
-        {label: 'Same Text', class: 'sub'},
-        {label: 'Same Text', class: 'sub'},
-        {label: 'Same Text', class: 'sub'},
-        {label: 'Same Text', class: 'sub'},
-        {label: '', class: 'sub'},
+        { label: 'Tiny Dancer in my hand, pirouetting for the man.', class: 'main' },
+        { label: 'Same Text', class: 'sub' },
+        { label: 'Same Text', class: 'sub' },
+        { label: 'Same Text', class: 'sub' },
+        { label: 'Same Text', class: 'sub' },
+        { label: '', class: 'sub' },
       ]
     },
     demoFeats() {
@@ -68,7 +68,7 @@ export default {
   },
   methods: {
     onLangChange(lang = 'Demo text') {
-      alert('Hello world!' + lang)
+      alert(`Hello world!${lang}`)
       const text = 'Plenty of room at the Hotel California'
       const text2 = `You can find ${lang} here !!!`
       console.log(text)
@@ -96,22 +96,30 @@ export default {
 
 <template>
   <div class="demo-vue-2">
-    <div class="ta-h2">{{ 'Demo Vue2 Component Long Long Long Long Text 01' }}</div>
-    <div class="ta-h2">{{ 'Demo Vue2 Component Long Long Long Long Text 02' }}</div>
-    <div class="ta-h2">{{ `On Sale, ${this.off} OFF!` }}</div>
-    <div class="ta-h2" v-html="`Cool HTML`"></div>
-    <div class="ta-h2" v-html="title"></div>
-    <div class="ta-h1">{{ title || $t('navbar.accessories') }}</div>
+    <div class="ta-h2">
+      {{ 'Demo Vue2 Component Long Long Long Long Text 01' }}
+    </div>
+    <div class="ta-h2">
+      {{ 'Demo Vue2 Component Long Long Long Long Text 02' }}
+    </div>
+    <div class="ta-h2">
+      {{ `On Sale, ${off} OFF!` }}
+    </div>
+    <div class="ta-h2" v-html="`Cool HTML`" />
+    <div class="ta-h2" v-html="title" />
+    <div class="ta-h1">
+      {{ title || $t('navbar.accessories') }}
+    </div>
     <a
       v-if="item.moreLink"
       :href="item.moreLink"
       rel="nofollow"
       :data-id="`compare-more-${item.id}`"
       :data-href="item.moreLink"
-      :data-phone="`iPhone`"
-      :data-mac="`iMac`"
+      data-phone="iPhone"
+      data-mac="iMac"
       :data-oses="['macOS', 'Windows', `Linux`, 'Android OS']"
-      :data-ndi="`PDF`"
+      data-ndi="PDF"
       target="_blank"
       class="compare-more"
     >
@@ -122,10 +130,12 @@ export default {
         <div
           class="lr-left"
           data-lyric1="You may say I'm a dreamer, but I'm not the only one."
-          :data-lyric2="'Hello, it\'s me. I was wondering if after all these years you\'d like to meet.'"
-          :data-lyric3="`I'm a Barbie girl, in a Barbie world. Life in plastic, it's fantastic.`"
+          data-lyric2="Hello, it's me. I was wondering if after all these years you'd like to meet."
+          data-lyric3="I'm a Barbie girl, in a Barbie world. Life in plastic, it's fantastic."
         >
-          <div class="lr-title ta-h1">Wake me up when September ends.</div>
+          <div class="lr-title ta-h1">
+            Wake me up when September ends.
+          </div>
           <div class="lr-desc ta-text">
             "Just a small town girl, livin' in a lonely world. She took the midnight train goin'
             anywhere." - Journey, Don't Stop Believin' "I've got sunshine on a cloudy day. When it's
@@ -133,9 +143,9 @@ export default {
           </div>
         </div>
         <TestComponent
-          :class="{'item-text-2-cn': isCN}"
-          :title="`I want to break free, I want to break free from your lies.`"
-          :desc="`Head and shoulders, knees and toes. Children's song, Head, Shoulders, Knees and Toes`"
+          :class="{ 'item-text-2-cn': isCN }"
+          title="I want to break free, I want to break free from your lies."
+          desc="Head and shoulders, knees and toes. Children's song, Head, Shoulders, Knees and Toes"
           class="lr-right"
           :box-images="[
             {
@@ -177,7 +187,9 @@ export default {
               poster: 'https://picsum.photos/300/400',
             }"
           />
-          <div class="dialog-tip-item">Like a rolling stone.</div>
+          <div class="dialog-tip-item">
+            Like a rolling stone.
+          </div>
         </div>
         <div class="video-item">
           <SubComponent2
@@ -191,7 +203,9 @@ export default {
               poster: 'https://picsum.photos/200/300',
             }"
           />
-          <div class="dialog-tip-item">Bob Dylan, Like a Rolling Stone</div>
+          <div class="dialog-tip-item">
+            Bob Dylan, Like a Rolling Stone
+          </div>
         </div>
       </div>
     </div>
@@ -199,13 +213,15 @@ export default {
     <SubComponent1
       class="padding-120"
       title-class="ta-h2"
-      :title="`I’ve talked to nearly 30,000 people on my show`"
-      :desc="`And in the words of Maya Angelou, ‘People will forget what you said, people will forget what you did, but people will never forget how you made them feel.’ So, the real work of your life is to figure out what that is that you're supposed to be doing. And the way you do that is by asking yourself the right questions. And I’ve told you a couple of them.`"
+      title="I’ve talked to nearly 30,000 people on my show"
+      desc="And in the words of Maya Angelou, ‘People will forget what you said, people will forget what you did, but people will never forget how you made them feel.’ So, the real work of your life is to figure out what that is that you're supposed to be doing. And the way you do that is by asking yourself the right questions. And I’ve told you a couple of them."
     >
       <template #box>
         <div class="ndi-feats">
           <div class="row-header">
-            <div v-for="(col, index) in demoFeats[0]" :key="index" class="col-item">{{ col }}</div>
+            <div v-for="(col, index) in demoFeats[0]" :key="index" class="col-item">
+              {{ col }}
+            </div>
           </div>
           <div
             v-for="(row, index) in demoFeats.slice(1, demoFeats.length)"

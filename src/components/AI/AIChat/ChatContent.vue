@@ -1,39 +1,39 @@
 <script setup lang="ts">
-import {IMessageItem} from '@/components/AI/types/ai'
-import '@/styles/markdown/github-markdown.css'
-import '@/styles/markdown/github-markdown-dark.css'
-import {useMainStore} from '@/store/main'
-import ChatBubble from '@/components/AI/AIChat/ChatBubble/ChatBubble.vue'
-import {useStyleTag, useThrottleFn} from '@vueuse/core'
-import {useAiSettingsStore} from '@/components/AI/hooks/ai-settings'
-import {useI18n} from 'vue-i18n'
-import {useAiCharacters} from '@/components/AI/hooks/use-ai-characters'
-import {promptConversationAssistant} from '@/components/AI/utils/prompts'
-import globalEventBus, {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
-import ImagePicker from '@/components/AI/AIChat/ChatBubble/ImagePicker.vue'
-import {AIProvider, modelsCanUseVision} from '@/components/AI/types/models'
-import {useCommonAi} from '@/components/AI/hooks/use-common-ai'
-import {GptMessage} from '@/components/AI/types/open-ai'
-import {getChatContentHtml, printChatContent} from '@/components/AI/utils/print-content'
+import type { IMessageItem } from '@/components/AI/types/ai'
+import type { GptMessage } from '@/components/AI/types/open-ai'
 import DropdownMenu from '@canwdev/vgo-ui/src/components/QuickOptions/DropdownMenu.vue'
-import {SettingsTabType} from '@/enum/settings'
+import { useStyleTag } from '@vueuse/core'
 // 代码主题样式
 import codeDarkCss from 'highlight.js/styles/github-dark.css?raw'
 import codeLightCss from 'highlight.js/styles/github.css?raw'
+import { useI18n } from 'vue-i18n'
+import ChatBubble from '@/components/AI/AIChat/ChatBubble/ChatBubble.vue'
+import ImagePicker from '@/components/AI/AIChat/ChatBubble/ImagePicker.vue'
+import { useAiSettingsStore } from '@/components/AI/hooks/ai-settings'
+import { useAiCharacters } from '@/components/AI/hooks/use-ai-characters'
+import { useCommonAi } from '@/components/AI/hooks/use-common-ai'
+import { AIProvider, modelsCanUseVision } from '@/components/AI/types/models'
+import { getChatContentHtml, printChatContent } from '@/components/AI/utils/print-content'
+import { promptConversationAssistant } from '@/components/AI/utils/prompts'
+import { SettingsTabType } from '@/enum/settings'
+import { useMainStore } from '@/store/main'
+import globalEventBus, { GlobalEvents, useGlobalBusOn } from '@/utils/global-event-bus'
+import '@/styles/markdown/github-markdown.css'
+import '@/styles/markdown/github-markdown-dark.css'
 
-const {t: $t} = useI18n()
+const { t: $t } = useI18n()
 const mainStore = useMainStore()
 const aisStore = useAiSettingsStore()
-const {currentCharacter, currentHistory} = useAiCharacters()
+const { currentCharacter, currentHistory } = useAiCharacters()
 
 // 切换代码的明暗主题
-const {css: codeCss} = useStyleTag('', {id: 'highlight-js-code-theme'})
+const { css: codeCss } = useStyleTag('', { id: 'highlight-js-code-theme' })
 watch(
   () => mainStore.isAppDarkMode,
   (val) => {
     codeCss.value = val ? codeDarkCss : codeLightCss
   },
-  {immediate: true},
+  { immediate: true },
 )
 
 const isLoading = ref(false)
@@ -41,7 +41,7 @@ const userInputContent = ref('')
 
 const tempResponseChat = ref<IMessageItem | null>(null)
 
-const getSystemMessage = (): IMessageItem => {
+function getSystemMessage(): IMessageItem {
   return {
     role: 'system',
     content: currentCharacter.value!.systemPrompt,
@@ -49,7 +49,7 @@ const getSystemMessage = (): IMessageItem => {
   }
 }
 // 重置聊天
-const resetChatHistory = () => {
+function resetChatHistory() {
   if (!currentCharacter.value || !currentHistory.value) {
     return
   }
@@ -61,7 +61,7 @@ const respContainerRef = ref()
 const inputRef = ref()
 
 // 滚动到底部
-const scrollBottom = ({behavior = 'smooth'} = {}) => {
+function scrollBottom({ behavior = 'smooth' } = {}) {
   if (!respContainerRef.value) {
     return
   }
@@ -77,7 +77,7 @@ const scrollBottom = ({behavior = 'smooth'} = {}) => {
   })
 }
 // 滚动到底部
-const scrollTop = (force = true) => {
+function scrollTop(force = true) {
   if (!respContainerRef.value) {
     return
   }
@@ -90,18 +90,18 @@ const scrollTop = (force = true) => {
   })
 }
 
-const focusInput = () => {
+function focusInput() {
   setTimeout(() => {
     inputRef.value?.focus()
   })
 }
 
 // DOM 加载完成，自动滚动
-const handleLoad = () => {
+function handleLoad() {
   tempResponseChat.value = null
   setTimeout(() => {
     focusInput()
-    scrollBottom({behavior: 'auto'})
+    scrollBottom({ behavior: 'auto' })
   })
 }
 
@@ -114,10 +114,10 @@ useGlobalBusOn(GlobalEvents.ON_AI_CHARACTER_UPDATE, () => {
   currentHistory.value.history.unshift(getSystemMessage())
 })
 
-const {requestChatStream, requestChatMessage} = useCommonAi()
+const { requestChatStream, requestChatMessage } = useCommonAi()
 
 // 自动生成聊天标题
-const generateChatTitle = async () => {
+async function generateChatTitle() {
   if (!currentHistory.value || !currentHistory.value.history.length) {
     return
   }
@@ -134,7 +134,8 @@ const generateChatTitle = async () => {
       model: aisStore.model,
       messages: promptConversationAssistant(history),
     })
-  } catch (error: any) {
+  }
+  catch (error: any) {
     console.error(error)
   }
 }
@@ -166,14 +167,15 @@ const abortController = shallowRef<AbortController | null>(null)
  * 发送1次聊天请求
  * @param isRetry 是否重新生成
  */
-const sendAiRequest = async (isRetry = false) => {
+async function sendAiRequest(isRetry = false) {
   if (isRetry) {
     // allow to send
-  } else if (!isAllowSend.value) {
+  }
+  else if (!isAllowSend.value) {
     return
   }
   try {
-    scrollBottom({behavior: 'auto'})
+    scrollBottom({ behavior: 'auto' })
     isLoading.value = true
     tempResponseChat.value = {
       role: 'assistant',
@@ -184,7 +186,7 @@ const sendAiRequest = async (isRetry = false) => {
       // 添加用户的对话框输入内容
       let content
 
-      if (isEnableVision && imageList.value.length) {
+      if (isEnableVision.value && imageList.value.length) {
         content = [
           {
             text: userInputContent.value,
@@ -201,7 +203,8 @@ const sendAiRequest = async (isRetry = false) => {
             }
           }),
         ]
-      } else {
+      }
+      else {
         content = userInputContent.value
       }
 
@@ -243,7 +246,7 @@ const sendAiRequest = async (isRetry = false) => {
 
     // 停止请求控制器
     const controller = new AbortController()
-    const {signal} = controller
+    const { signal } = controller
     abortController.value = controller
 
     const provider = currentCharacter.value!.provider || AIProvider.OPEN_AI
@@ -273,8 +276,9 @@ const sendAiRequest = async (isRetry = false) => {
       tempResponseChat.value = null
       chatItem.timestamp = Date.now()
       currentHistory.value!.history.push(chatItem)
-    } else {
-      const message = await requestChatMessage({provider, model, messages})
+    }
+    else {
+      const message = await requestChatMessage({ provider, model, messages })
       // 正常POST完成
       tempResponseChat.value = null
       currentHistory.value!.history.push({
@@ -285,9 +289,10 @@ const sendAiRequest = async (isRetry = false) => {
     }
 
     generateChatTitle()
-  } catch (error: any) {
+  }
+  catch (error: any) {
     if (abortController.value) {
-      const {signal} = abortController.value
+      const { signal } = abortController.value
       if (signal.aborted) {
         window.$message.warning('Fetch request was aborted')
 
@@ -300,14 +305,15 @@ const sendAiRequest = async (isRetry = false) => {
       content: error.message,
       timestamp: Date.now(),
     }
-  } finally {
+  }
+  finally {
     isLoading.value = false
     abortController.value = null
     focusInput()
   }
 }
 
-const handleKeyInput = (event) => {
+function handleKeyInput(event) {
   if (event.key === 'Enter') {
     if (aisStore.isEnterSend) {
       if (!event.shiftKey) {
@@ -316,7 +322,8 @@ const handleKeyInput = (event) => {
         sendAiRequest()
       }
       // 如果同时按下了 Shift，允许默认行为，即换行
-    } else {
+    }
+    else {
       if (event.ctrlKey) {
         event.preventDefault()
         sendAiRequest()
@@ -325,7 +332,7 @@ const handleKeyInput = (event) => {
   }
 }
 
-const handlePaste = (event) => {
+function handlePaste(event) {
   if (!isEnableVision.value) {
     return
   }
@@ -371,7 +378,7 @@ const handlePaste = (event) => {
   }
 }
 
-const handleRetry = (item: IMessageItem, index) => {
+function handleRetry(item: IMessageItem, index) {
   if (!currentHistory.value) {
     return
   }
@@ -382,7 +389,7 @@ const handleRetry = (item: IMessageItem, index) => {
 }
 
 // 停止生成
-const handleStop = () => {
+function handleStop() {
   if (!abortController.value) {
     return
   }
@@ -410,14 +417,14 @@ watch(
     }
     handleLoad()
   },
-  {immediate: true},
+  { immediate: true },
 )
 
-const handlePrint = async () => {
+async function handlePrint() {
   await printChatContent(respContainerRef.value, currentHistory.value?.title || 'Chat')
 }
 
-const handleExportHTML = async () => {
+async function handleExportHTML() {
   const title = currentHistory.value?.title || 'Chat'
   window.$mcUtils.handleExportFile(
     title,
@@ -462,7 +469,7 @@ const exportImportOptions = ref([
   //     },
   //   },
   // },
-  {split: true},
+  { split: true },
   {
     label: 'Import JSON',
     iconClass: 'mdi mdi-import',
@@ -488,30 +495,30 @@ const exportImportOptions = ref([
   },
 ])
 
-const handleSettings = () => {
+function handleSettings() {
   globalEventBus.emit(GlobalEvents.OPEN_SETTINGS, SettingsTabType.AI)
 }
 </script>
 
 <template>
   <transition name="fade" mode="in-out">
-    <div class="chat-gpt-wrap vgo-bg" v-if="currentHistory && currentCharacter">
+    <div v-if="currentHistory && currentCharacter" class="chat-gpt-wrap vgo-bg">
       <div ref="respContainerRef" class="response-container">
         <ChatBubble
           v-for="(item, index) in currentHistory.history"
           :key="item.timestamp"
           :item="item"
           :is-dark="mainStore.isAppDarkMode"
-          @delete="currentHistory.history.splice(index, 1)"
-          @retry="handleRetry(item, index)"
           allow-delete
           allow-edit
           :allow-retry="index === currentHistory.history.length - 1"
           :character="item.role === 'assistant' ? currentCharacter : undefined"
+          @delete="currentHistory.history.splice(index, 1)"
+          @retry="handleRetry(item, index)"
         />
         <ChatBubble
-          :item="tempResponseChat"
           v-if="tempResponseChat"
+          :item="tempResponseChat"
           :is-dark="mainStore.isAppDarkMode"
           :character="currentCharacter"
           :is-loading="!tempResponseChat.content"
@@ -520,8 +527,8 @@ const handleSettings = () => {
       <div class="request-below">
         <textarea
           ref="inputRef"
-          class="vgo-input question-input"
           v-model="userInputContent"
+          class="vgo-input question-input"
           type="textarea"
           :placeholder="
             aisStore.isEnterSend ? $t('ai.enter_send_tips_1') : $t('ai.enter_send_tips_2')
@@ -546,33 +553,35 @@ const handleSettings = () => {
                 </button>
               </template>
               <SettingsAi style="max-height: 70vh; overflow-y: auto" />
-            </el-popover>-->
+            </el-popover> -->
             <button class="vgo-button" title="Settings" @click="handleSettings">
-              <span class="mdi mdi-cog"></span>
+              <span class="mdi mdi-cog" />
             </button>
 
             <DropdownMenu :options="exportImportOptions">
               <button class="vgo-button" title="Export">
-                <span class="mdi mdi-tray-arrow-down"></span>
+                <span class="mdi mdi-tray-arrow-down" />
               </button>
             </DropdownMenu>
 
             <button
-              @click="scrollBottom()"
-              @contextmenu.prevent="scrollTop()"
               class="vgo-button"
               title="Scroll to bottom, right click scroll to top"
+              @click="scrollBottom()"
+              @contextmenu.prevent="scrollTop()"
             >
-              <span class="mdi mdi-unfold-more-horizontal"></span>
+              <span class="mdi mdi-unfold-more-horizontal" />
             </button>
 
             <el-popconfirm
-              @confirm="resetChatHistory"
-              :title="`Confirm clear chat history?`"
+              title="Confirm clear chat history?"
               :teleported="false"
+              @confirm="resetChatHistory"
             >
               <template #reference>
-                <button class="vgo-button" :disabled="isLoading">{{ $t('actions.clear') }}</button>
+                <button class="vgo-button" :disabled="isLoading">
+                  {{ $t('actions.clear') }}
+                </button>
               </template>
             </el-popconfirm>
           </div>
@@ -583,7 +592,7 @@ const handleSettings = () => {
             <ImagePicker v-model:images="imageList" :disabled="isLoading || !isEnableVision" />
 
             <button v-if="isLoading" class="vgo-button" @click="handleStop">
-              <span class="mdi mdi-stop-circle-outline"></span>
+              <span class="mdi mdi-stop-circle-outline" />
 
               {{ $t('ai.stop_generation') }}
             </button>
@@ -594,7 +603,7 @@ const handleSettings = () => {
               :disabled="!isAllowSend"
               @click="sendAiRequest()"
             >
-              <span class="mdi mdi-send"></span>
+              <span class="mdi mdi-send" />
               {{ $t('actions.send') }}
             </button>
           </div>

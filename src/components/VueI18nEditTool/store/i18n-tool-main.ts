@@ -1,8 +1,9 @@
+import type {
+  DirTreeItem,
+  ITranslateTreeItem,
+} from '@/enum/vue-i18n-tool'
 import {
   CopyMode,
-  DirTreeItem,
-  formatTranslateTreeItem,
-  ITranslateTreeItem,
 } from '@/enum/vue-i18n-tool'
 
 // 批量处理文件（夹）列表
@@ -13,11 +14,11 @@ export interface BatchListItem {
   json: object | null
 }
 
-type ChangedLabelMap = {
+interface ChangedLabelMap {
   [key: string]: boolean
 }
 
-type IState = {
+interface IState {
   dirTree: DirTreeItem[]
   // 当前选中文件的翻译树
   translateTreeRoot: ITranslateTreeItem[]

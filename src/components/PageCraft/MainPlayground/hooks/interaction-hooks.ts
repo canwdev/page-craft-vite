@@ -1,25 +1,26 @@
-import {ActionType, BlockItem, BlockType} from '@/enum/page-craft/block'
-import {useMainStore} from '@/store/main'
+import type { QuickOptionItem } from '@canwdev/vgo-ui/src/components/QuickOptions/enum'
+import type { BlockItem } from '@/enum/page-craft/block'
+import { getMenuPosStyle } from '@canwdev/vgo-ui/src/components/QuickOptions/utils/use-context-menu'
+import { onClickOutside } from '@vueuse/core'
+import { useI18n } from 'vue-i18n'
 import {
   appendCustomBlock,
   autoPasteReplaceValue,
   createBlockElement,
 } from '@/components/PageCraft/MainPlayground/utils/dom'
-import {copyToClipboard} from '@/utils'
-import {updateHtmlElement} from '@/components/PageCraft/MainPlayground/utils/element-edit'
-import {LineHelper} from '@/utils/line-helper'
-import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
-import {useI18n} from 'vue-i18n'
-import {useOpenCloseSound, useSfxDestroy, useSfxPlace} from '@/hooks/use-sfx'
-import {onClickOutside} from '@vueuse/core'
-import {QuickOptionItem} from '@canwdev/vgo-ui/src/components/QuickOptions/enum'
-import {getMenuPosStyle} from '@canwdev/vgo-ui/src/components/QuickOptions/utils/use-context-menu'
+import { updateHtmlElement } from '@/components/PageCraft/MainPlayground/utils/element-edit'
+import { ActionType, BlockType } from '@/enum/page-craft/block'
+import { useOpenCloseSound, useSfxDestroy, useSfxPlace } from '@/hooks/use-sfx'
+import { useMainStore } from '@/store/main'
+import { copyToClipboard } from '@/utils'
+import globalEventBus, { GlobalEvents } from '@/utils/global-event-bus'
+import { LineHelper } from '@/utils/line-helper'
 
 const MAX_WAIT_TIME = 0.3 * 1000
 
-export const useInteractionHooks = (options) => {
-  const {t: $t} = useI18n()
-  const {mainPlaygroundRef, saveData, indicatorOptions, copyHtml, recordUndo} = options
+export function useInteractionHooks(options) {
+  const { t: $t } = useI18n()
+  const { mainPlaygroundRef, saveData, indicatorOptions, copyHtml, recordUndo } = options
   const mainStore = useMainStore()
   const waitingTime = ref(0)
   const waitTimer = ref<any>(null)
@@ -103,7 +104,8 @@ export const useInteractionHooks = (options) => {
           sel.removeAllRanges()
         }
       }
-    } catch (e: any) {
+    }
+    catch (e: any) {
       window.$message.error(e.message)
       console.error(e)
     }
@@ -121,7 +123,8 @@ export const useInteractionHooks = (options) => {
           selectionRange.insertNode(element)
         }
       }
-    } catch (e: any) {
+    }
+    catch (e: any) {
       window.$message.error(e.message)
       console.error(e)
     }
@@ -143,14 +146,15 @@ export const useInteractionHooks = (options) => {
       'span',
       'div',
       'br',
-    ].map((tag) => ({
+    ].map(tag => ({
       label: tag,
       onClick: () => {
         recordUndo()
         const el = document.createElement(tag)
         if (tag === 'br') {
           collapseSelection(el)
-        } else {
+        }
+        else {
           surroundSelection(el)
         }
         saveData()
@@ -215,7 +219,7 @@ export const useInteractionHooks = (options) => {
     const isRoot = targetEl === mainPlaygroundRef.value
 
     const iEdit = {
-      label: '✏️ ' + $t('actions.edit_element'),
+      label: `✏️ ${$t('actions.edit_element')}`,
       props: {
         onClick: async () => {
           isShowElementEdit.value = true
@@ -237,7 +241,7 @@ export const useInteractionHooks = (options) => {
             },
           },
           {
-            label: '✂️ ' + $t('actions.cut'),
+            label: `✂️ ${$t('actions.cut')}`,
             props: {
               onClick: async () => {
                 copyToClipboard(targetEl.outerHTML)
@@ -249,7 +253,7 @@ export const useInteractionHooks = (options) => {
             },
           },
           {
-            label: '❌ ' + $t('actions.remove_element'),
+            label: `❌ ${$t('actions.remove_element')}`,
             props: {
               onClick: async () => {
                 recordUndo()
@@ -265,7 +269,7 @@ export const useInteractionHooks = (options) => {
         label: `➕ ${$t('actions.insert')} ${mainStore.currentBlock.title}`,
         children: isRoot
           ? undefined
-          : ['before', 'prepend', 'append', 'after'].map((position) => ({
+          : ['before', 'prepend', 'append', 'after'].map(position => ({
               label: `${$t('actions.insert')} ${position}`,
               props: {
                 onClick: async () => {
@@ -284,7 +288,7 @@ export const useInteractionHooks = (options) => {
         label: `📃 ${$t('actions.paste')} outerHTML`,
         children: isRoot
           ? undefined
-          : ['beforebegin', 'afterbegin', 'beforeend', 'afterend'].map((position) => ({
+          : ['beforebegin', 'afterbegin', 'beforeend', 'afterend'].map(position => ({
               label: `${$t('actions.paste_at')} ${position}`,
               props: {
                 onClick: async () => {
@@ -299,7 +303,7 @@ export const useInteractionHooks = (options) => {
         },
       },
       {
-        label: '🎈 ' + $t('actions.paste_replace_value'),
+        label: `🎈 ${$t('actions.paste_replace_value')}`,
         props: {
           onClick: async () => {
             await pasteReplaceValue(targetEl)
@@ -318,7 +322,7 @@ export const useInteractionHooks = (options) => {
         },
       },
       {
-        label: '💻 ' + $t('actions.print_to_console'),
+        label: `💻 ${$t('actions.print_to_console')}`,
         props: {
           onClick: async () => {
             console.log(editingNode.value)
@@ -330,14 +334,14 @@ export const useInteractionHooks = (options) => {
 
   const isSelectMode = computed(() => {
     return (
-      indicatorOptions.enableSelection ||
-      mainStore.currentBlock.actionType === ActionType.DEBUG ||
-      mainStore.currentBlock.actionType === ActionType.PASTE_REPLACE
+      indicatorOptions.enableSelection
+      || mainStore.currentBlock.actionType === ActionType.DEBUG
+      || mainStore.currentBlock.actionType === ActionType.PASTE_REPLACE
     )
   })
 
-  const {play: playSfxPlace} = useSfxPlace()
-  const {play: playSfxDestroy} = useSfxDestroy()
+  const { play: playSfxPlace } = useSfxPlace()
+  const { play: playSfxDestroy } = useSfxDestroy()
   const handleBlockClick = async (event: Event, newBlock?: BlockItem, addOptions?) => {
     if (!newBlock) {
       newBlock = mainStore.currentBlock
@@ -345,9 +349,9 @@ export const useInteractionHooks = (options) => {
 
     // 以下情况不记录
     if (
-      newBlock.actionType !== ActionType.CURSOR &&
-      newBlock.actionType !== ActionType.DEBUG &&
-      newBlock.actionType !== ActionType.DRAG
+      newBlock.actionType !== ActionType.CURSOR
+      && newBlock.actionType !== ActionType.DEBUG
+      && newBlock.actionType !== ActionType.DRAG
     ) {
       recordUndo()
     }
@@ -356,9 +360,10 @@ export const useInteractionHooks = (options) => {
     await appendCustomBlock(newBlock, event, addOptions, mainPlaygroundRef)
     if (newBlock.actionType === ActionType.DELETE) {
       playSfxDestroy()
-    } else if (
-      newBlock.actionType !== ActionType.DEBUG &&
-      newBlock.actionType !== ActionType.CURSOR
+    }
+    else if (
+      newBlock.actionType !== ActionType.DEBUG
+      && newBlock.actionType !== ActionType.CURSOR
     ) {
       playSfxPlace()
     }
@@ -446,9 +451,11 @@ export const useInteractionHooks = (options) => {
       recordUndo()
       if (currentPosition === 'top') {
         await pasteHtml(targetEl, 'beforebegin', html)
-      } else if (currentPosition === 'bottom') {
+      }
+      else if (currentPosition === 'bottom') {
         await pasteHtml(targetEl, 'afterend', html)
-      } else {
+      }
+      else {
         await pasteHtml(targetEl, 'beforeend', html)
       }
       saveData()
@@ -473,7 +480,7 @@ export const useInteractionHooks = (options) => {
     if (comp) {
       window.$draggingComponentExportData = null
       await dropHTML(comp.html)
-      globalEventBus.emit(GlobalEvents.ON_ADD_STYLE, {code: comp.style, isAppend: true})
+      globalEventBus.emit(GlobalEvents.ON_ADD_STYLE, { code: comp.style, isAppend: true })
       return
     }
 
@@ -492,9 +499,11 @@ export const useInteractionHooks = (options) => {
       const addEl = createBlockElement(block, mainStore)
       if (currentPosition === 'top') {
         insertCurrentBlock(targetEl, 'before', addEl)
-      } else if (currentPosition === 'bottom') {
+      }
+      else if (currentPosition === 'bottom') {
         insertCurrentBlock(targetEl, 'after', addEl)
-      } else {
+      }
+      else {
         insertCurrentBlock(targetEl, 'appendChild', addEl)
       }
       // afterUpdateCallback.value = () => {
@@ -505,13 +514,13 @@ export const useInteractionHooks = (options) => {
       //   editingNode.value = addEl
       //   isShowElementEdit.value = true
       // })
-    } else {
+    }
+    else {
       console.warn('block is unable to insert', block)
-      return
     }
   }
 
-  const updateEditingElement = ({el, data}) => {
+  const updateEditingElement = ({ el, data }) => {
     if (!el) {
       return
     }

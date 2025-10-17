@@ -1,8 +1,8 @@
-import {IEntry} from '../../types/filesystem'
-import {useSelectionArea} from '@/hooks/use-selection-area'
-import {generateTextFile, normalizePath, toggleArrayElement} from '../../utils'
+import type { IEntry } from '../../types/filesystem'
+import { useSelectionArea } from '@/hooks/use-selection-area'
+import { normalizePath, toggleArrayElement } from '../../utils'
 
-export const useSelection = ({filteredFiles, basePath}) => {
+export function useSelection({ filteredFiles, basePath }) {
   const selectedItems = ref<IEntry[]>([])
   const selectedItemsSet = computed(() => {
     return new Set(selectedItems.value)
@@ -12,7 +12,7 @@ export const useSelection = ({filteredFiles, basePath}) => {
   })
 
   const explorerContentRef = ref()
-  const {selectionArea} = useSelectionArea({
+  const { selectionArea } = useSelectionArea({
     containerRef: explorerContentRef,
     onStart: () => {
       selectedItems.value = []
@@ -36,24 +36,26 @@ export const useSelection = ({filteredFiles, basePath}) => {
       selectedItems.value = list
     },
   })
-  const toggleSelect = ({item, event, toggle = false}) => {
+  const toggleSelect = ({ item, event, toggle = false }) => {
     if (event.ctrlKey || event.metaKey || toggle) {
       // 使用ctrl键多选
       selectedItems.value = toggleArrayElement([...selectedItems.value], item)
-    } else if (event.shiftKey) {
+    }
+    else if (event.shiftKey) {
       // 使用shift键选择范围
       let idx = 0
       const first = selectedItems.value[0]
       if (first) {
-        idx = filteredFiles.value.findIndex((i) => i.name === first.name)
+        idx = filteredFiles.value.findIndex(i => i.name === first.name)
       }
-      let itemIdx = filteredFiles.value.findIndex((i) => i.name === item.name)
+      let itemIdx = filteredFiles.value.findIndex(i => i.name === item.name)
       if (idx > itemIdx) {
         // 使最小的index在最前
         ;[itemIdx, idx] = [idx, itemIdx]
       }
       selectedItems.value = filteredFiles.value.slice(idx, itemIdx + 1)
-    } else {
+    }
+    else {
       selectedItems.value = [item]
     }
   }
@@ -61,7 +63,8 @@ export const useSelection = ({filteredFiles, basePath}) => {
     const allFiles = filteredFiles.value
     if (selectedItems.value.length === allFiles.length) {
       selectedItems.value = []
-    } else {
+    }
+    else {
       selectedItems.value = [...allFiles]
     }
     // console.log(selectedItems.value)
@@ -69,7 +72,7 @@ export const useSelection = ({filteredFiles, basePath}) => {
 
   const selectedPaths = computed(() => {
     return selectedItems.value.map((item) => {
-      return normalizePath(basePath.value + '/' + item.name)
+      return normalizePath(`${basePath.value}/${item.name}`)
     })
   })
 

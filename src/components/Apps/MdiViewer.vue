@@ -1,15 +1,15 @@
 <script lang="ts" setup="">
-import {watchDebounced} from '@vueuse/core'
+import { watchDebounced } from '@vueuse/core'
 
 const textInput = ref('')
 
-let metaList = ref([])
+const metaList = ref([])
 
 onMounted(async () => {
-  metaList.value = await fetch('./resources/q-plugins/mdi-icon-viewer/meta-lite.json').then((res) =>
+  metaList.value = await fetch('./resources/q-plugins/mdi-icon-viewer/meta-lite.json').then(res =>
     res.json(),
   )
-  console.log({metaList})
+  console.log({ metaList })
 })
 
 const filteredList = ref([])
@@ -23,18 +23,18 @@ watchDebounced(
     const sVal = textInput.value.trim().toLowerCase()
     filteredList.value = metaList.value.filter((v) => {
       return (
-        v.name.toLowerCase().includes(sVal) ||
-        (v.tags_str ? v.tags_str.toLowerCase().includes(sVal) : false)
+        v.name.toLowerCase().includes(sVal)
+        || (v.tags_str ? v.tags_str.toLowerCase().includes(sVal) : false)
       )
     })
   },
-  {debounce: 500},
+  { debounce: 500 },
 )
 
-const copyText = (item) => {
+function copyText(item) {
   window.$mcUtils.copy(item.name, true)
 }
-const copyHtml = (item) => {
+function copyHtml(item) {
   const iconClass = `mdi mdi-${item.name}`
   const htmlText = `<span class="${iconClass}"></span>`
   window.$mcUtils.copy(htmlText, true)
@@ -44,13 +44,13 @@ const copyHtml = (item) => {
 <template>
   <div class="md-i-viewer font-code">
     <div class="vgo-panel">
-      <span class="mdi mdi-magnify"></span>
+      <span class="mdi mdi-magnify" />
       <input
         v-model="textInput"
         class="vgo-input"
         placeholder="Filter icon name..."
         @keyup.esc="textInput = ''"
-      />
+      >
       <span> {{ filteredList.length }} results </span>
     </div>
     <div v-if="filteredList.length" class="result-list">
@@ -61,7 +61,7 @@ const copyHtml = (item) => {
         @click="copyText(item)"
         @contextmenu.prevent="copyHtml(item)"
       >
-        <span class="i-icon" :class="[`mdi mdi-${item.name}`]"></span>
+        <span class="i-icon" :class="[`mdi mdi-${item.name}`]" />
         <span class="i-title">{{ item.name }}</span>
         <span class="i-desc">{{ item.tags_str }}</span>
       </div>

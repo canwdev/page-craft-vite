@@ -1,25 +1,29 @@
 <script lang="ts" setup>
-import {useVModel} from '@vueuse/core'
+import { useVModel } from '@vueuse/core'
+
 interface Props {
   modelValue?: string
   showTools?: boolean
 }
 
-const emit = defineEmits(['update:modelValue'])
 const props = withDefaults(defineProps<Props>(), {
   modelValue: '',
   showTools: true,
 })
-
+const emit = defineEmits(['update:modelValue'])
 const mValue = useVModel(props, 'modelValue', emit)
 </script>
 
 <template>
   <div class="advanced-input-wrap">
-    <textarea v-model="mValue" placeholder="" rows="2" v-bind="$attrs"></textarea>
-    <div class="action-row" v-if="showTools">
-      <button class="vgo-button" @click="mValue = encodeURI(mValue)">encodeURI</button>
-      <button class="vgo-button" @click="mValue = decodeURI(mValue)">decodeURI</button>
+    <textarea v-model="mValue" placeholder="" rows="2" v-bind="$attrs" />
+    <div v-if="showTools" class="action-row">
+      <button class="vgo-button" @click="mValue = encodeURI(mValue)">
+        encodeURI
+      </button>
+      <button class="vgo-button" @click="mValue = decodeURI(mValue)">
+        decodeURI
+      </button>
     </div>
   </div>
 </template>

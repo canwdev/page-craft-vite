@@ -1,29 +1,28 @@
 <script lang="ts">
-import {defineComponent, ref} from 'vue'
-import FileChooser from '@/components/CommonUI/FileChooser.vue'
-import dynamicLoadScript from '@/utils/dynamic-load-script'
-import {copyToClipboard} from '@/utils'
+import TabLayout from '@canwdev/vgo-ui/src/components/Layouts/TabLayout.vue'
+import RectSwitch from '@canwdev/vgo-ui/src/components/OptionUI/Tools/RectSwitch.vue'
+import DropdownMenu from '@canwdev/vgo-ui/src/components/QuickOptions/DropdownMenu.vue'
+import { useSaveShortcut } from '@canwdev/vgo-ui/src/hooks/use-beforeunload'
+import { useStorage } from '@vueuse/core'
+import { defineComponent, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import CommonNavbar from '@/components/CommonUI/CommonNavbar.vue'
 import DropZone from '@/components/CommonUI/DropZone.vue'
-import {useFileDrop} from '@/hooks/use-file-drop'
+import FileChooser from '@/components/CommonUI/FileChooser.vue'
+import { LS_SettingsKey } from '@/enum/settings'
+import { useFileDrop } from '@/hooks/use-file-drop'
+import { useMainStore } from '@/store/main'
+import { copyToClipboard } from '@/utils'
+import dynamicLoadScript from '@/utils/dynamic-load-script'
+import globalEventBus, { GlobalEvents } from '@/utils/global-event-bus'
+import { handleExportFile, promptGetFileName } from '@/utils/mc-utils/io'
 import {
   TextConvertMode,
-  TextConvertOptions,
   textConvertMultipleLine,
-  textConvertAdvanced,
+  TextConvertOptions,
 } from '@/utils/mc-utils/text-convert'
-import {useSaveShortcut} from '@canwdev/vgo-ui/src/hooks/use-beforeunload'
-import {useMainStore} from '@/store/main'
-import {useI18n} from 'vue-i18n'
-import {useStorage} from '@vueuse/core'
-import {handleExportFile, promptGetFileName} from '@/utils/mc-utils/io'
-import CommonNavbar from '@/components/CommonUI/CommonNavbar.vue'
-import DropdownMenu from '@canwdev/vgo-ui/src/components/QuickOptions/DropdownMenu.vue'
-import RectSwitch from '@canwdev/vgo-ui/src/components/OptionUI/Tools/RectSwitch.vue'
-import TabLayout from '@canwdev/vgo-ui/src/components/Layouts/TabLayout.vue'
-import {LS_SettingsKey} from '@/enum/settings'
-import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 
-const isAllowedElement = (el) => {
+function isAllowedElement(el) {
   return el.tagName.toLowerCase() === 'td'
 }
 
@@ -58,14 +57,6 @@ window.demo_json_to_sheet = [
 
 export default defineComponent({
   name: 'ExcelCopyTool',
-  computed: {
-    GlobalEvents() {
-      return GlobalEvents
-    },
-    globalEventBus() {
-      return globalEventBus
-    },
-  },
   components: {
     TabLayout,
     RectSwitch,
@@ -75,7 +66,7 @@ export default defineComponent({
     DropZone,
   },
   setup() {
-    const {t: $t} = useI18n()
+    const { t: $t } = useI18n()
     const mainStore = useMainStore()
 
     const importFileChooserRef = ref()
@@ -118,7 +109,7 @@ export default defineComponent({
     const handleImport = async (file: File) => {
       fileRef.value = null
       checkPlugin()
-      if (!/\.xlsx$/g.test(file.name)) {
+      if (!/\.xlsx$/.test(file.name)) {
         window.$message.error('Only supports reading xlsx format!')
         return
       }
@@ -128,7 +119,7 @@ export default defineComponent({
         fileRef.value = file
         const data = e.target.result
         sheetNameIndex.value = 0
-        workbookRef.value = window.XLSX.read(data, {type: 'binary'})
+        workbookRef.value = window.XLSX.read(data, { type: 'binary' })
         renderWorkbook()
       }
       reader.readAsBinaryString(file)
@@ -142,8 +133,9 @@ export default defineComponent({
         return
       }
       try {
-        await dynamicLoadScript(import.meta.env.BASE_URL + 'lib/xlsx.mini.js')
-      } catch (err: any) {
+        await dynamicLoadScript(`${import.meta.env.BASE_URL}lib/xlsx.mini.js`)
+      }
+      catch (err: any) {
         window.$message.error(err.message)
         console.error(err)
       }
@@ -165,7 +157,7 @@ export default defineComponent({
       },
     )
     const handleClick = (event: MouseEvent) => {
-      let el = event.target as HTMLElement
+      const el = event.target as HTMLElement
       if (!isAllowedElement(el) || !copyMode.value || copyMode.value === TextConvertMode.DISABLED) {
         return
       }
@@ -180,15 +172,18 @@ export default defineComponent({
       let tip = ''
       if (event.ctrlKey && event.altKey) {
         text = textConvertMultipleLine(text, (tip = TextConvertMode.JSON))
-      } else if (event.ctrlKey) {
+      }
+      else if (event.ctrlKey) {
         text = textConvertMultipleLine(text, (tip = TextConvertMode.TEXT))
-      } else if (event.altKey) {
+      }
+      else if (event.altKey) {
         text = textConvertMultipleLine(text, (tip = TextConvertMode.HTML))
-      } else {
+      }
+      else {
         text = textConvertMultipleLine(text, (tip = copyMode.value as TextConvertMode))
       }
       copyToClipboard(text)
-      window.$message.success(tip + ' ' + $t('msgs.copy_success'))
+      window.$message.success(`${tip} ${$t('msgs.copy_success')}`)
 
       const range = document.createRange()
       range.selectNode(el)
@@ -200,7 +195,7 @@ export default defineComponent({
     }
 
     // 获取excel表格json数据
-    const getSheetsJson = ({currentOnly = false} = {}) => {
+    const getSheetsJson = ({ currentOnly = false } = {}) => {
       // 使用文本转换器自动转换
       const formatArr = (arr) => {
         const mode = copyMode.value as TextConvertMode
@@ -230,7 +225,7 @@ export default defineComponent({
 
       const workbook = workbookRef.value
       const result = {}
-      workbook.SheetNames.forEach(function (sheetName) {
+      workbook.SheetNames.forEach((sheetName) => {
         const roa = window.XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName])
         if (roa.length > 0) {
           result[sheetName] = formatArr(roa)
@@ -278,7 +273,7 @@ export default defineComponent({
             label: '📤 Export JSON',
             props: {
               onClick: async () => {
-                await handleExport({currentOnly: true})
+                await handleExport({ currentOnly: true })
               },
             },
           },
@@ -286,7 +281,7 @@ export default defineComponent({
             label: '📋 Copy JSON',
             props: {
               onClick: async () => {
-                const json = getSheetsJson({currentOnly: true})
+                const json = getSheetsJson({ currentOnly: true })
                 await copyToClipboard(JSON.stringify(json, null, 2))
                 window.$message.success('Sheet JSON Copied!')
               },
@@ -296,7 +291,7 @@ export default defineComponent({
             label: '💻 Print to Console',
             props: {
               onClick: async () => {
-                const json = getSheetsJson({currentOnly: true})
+                const json = getSheetsJson({ currentOnly: true })
                 console.log(json)
                 window.$message.success('Print to Console!')
               },
@@ -361,7 +356,7 @@ export default defineComponent({
       handleClick,
       copyMode,
       modTextConvertOptions: computed(() => {
-        return [{label: 'Disabled', value: TextConvertMode.DISABLED}, ...TextConvertOptions]
+        return [{ label: 'Disabled', value: TextConvertMode.DISABLED }, ...TextConvertOptions]
       }),
       dropdownMenuOptions,
       textConvertMultipleLine,
@@ -381,6 +376,14 @@ export default defineComponent({
       handleCloseFile,
     }
   },
+  computed: {
+    GlobalEvents() {
+      return GlobalEvents
+    },
+    globalEventBus() {
+      return globalEventBus
+    },
+  },
 })
 </script>
 
@@ -392,7 +395,7 @@ export default defineComponent({
     @drop.prevent.stop="fileDrop"
   >
     <transition name="fade">
-      <DropZone position-fixed v-show="showDropzone" text="Drop Excel file here" />
+      <DropZone v-show="showDropzone" position-fixed text="Drop Excel file here" />
     </transition>
 
     <div v-loading="!isReady">
@@ -400,18 +403,18 @@ export default defineComponent({
         <template #extra>
           <div class="flex-row-center-gap">
             <div class="flex-row-center-gap">
-              <el-checkbox size="small" v-model="isTrimEmptyLines">
+              <el-checkbox v-model="isTrimEmptyLines" size="small">
                 {{ $t('msgs.trim_empty_lines') }}
               </el-checkbox>
               <a @click="globalEventBus.emit(GlobalEvents.OPEN_TEXT_TRANSFORMER)">
                 {{ $t('common.text_transformer') }}:
               </a>
-              <RectSwitch size="small" v-model="copyMode" :options="modTextConvertOptions" />
+              <RectSwitch v-model="copyMode" size="small" :options="modTextConvertOptions" />
             </div>
 
             <DropdownMenu v-if="workbookRef" :options="dropdownMenuOptions" :disabled="!isReady">
               <button class="vgo-button">
-                <span class="mdi mdi-download"></span>
+                <span class="mdi mdi-download" />
                 {{ $t('actions.export') }}
               </button>
             </DropdownMenu>
@@ -419,17 +422,17 @@ export default defineComponent({
             <button
               v-if="!fileRef"
               :disabled="!isReady"
-              @click="importFileChooserRef.chooseFile()"
               class="vgo-button primary"
+              @click="importFileChooserRef.chooseFile()"
             >
-              {{ $t('actions.open') + ' Excel' }}
+              {{ `${$t('actions.open')} Excel` }}
             </button>
 
             <button v-else class="vgo-button primary" @click="handleCloseFile">
               {{ $t('actions.close') }}
             </button>
 
-            <button v-if="!fileRef" @click="loadDemo" class="vgo-button" :disabled="!isReady">
+            <button v-if="!fileRef" class="vgo-button" :disabled="!isReady" @click="loadDemo">
               {{ $t('common.demo') }}
             </button>
           </div>
@@ -438,12 +441,11 @@ export default defineComponent({
 
       <div v-if="isReady && sheetNames.length" class="sheet-name-card vgo-panel">
         <el-tabs v-model="sheetNameIndex" type="card">
-          <el-tab-pane v-for="(item, index) in sheetNames" :key="index" :label="item" :name="index">
-          </el-tab-pane>
+          <el-tab-pane v-for="(item, index) in sheetNames" :key="index" :label="item" :name="index" />
         </el-tabs>
       </div>
     </div>
-    <div ref="tableWrapperElRef" class="excel-table-container vgo-panel" @click="handleClick"></div>
+    <div ref="tableWrapperElRef" class="excel-table-container vgo-panel" @click="handleClick" />
 
     <FileChooser
       ref="importFileChooserRef"

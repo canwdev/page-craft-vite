@@ -1,8 +1,8 @@
 <script lang="ts">
-import {defineComponent} from 'vue'
+import { defineComponent } from 'vue'
 import FileChooser from '@/components/CommonUI/FileChooser.vue'
 import ReferenceMap from '@/components/PageCraft/BackgroundLayer/ReferenceMap.vue'
-import {guid} from '@/utils'
+import { guid } from '@/utils'
 
 export default defineComponent({
   name: 'BackgroundLayer',
@@ -52,15 +52,17 @@ export default defineComponent({
 <template>
   <div class="background-layer">
     <ReferenceMap
-      :img-src="item.src"
       v-for="(item, index) in imgSrcList"
       :key="item.id"
+      :img-src="item.src"
       @close="handleImgClose(index)"
     />
     <div class="operation-panel vgo-panel font-emoji">
-      <button class="vgo-button" @click="imageChooserRef.chooseFile()">🖼</button>
+      <button class="vgo-button" @click="imageChooserRef.chooseFile()">
+        🖼
+      </button>
     </div>
-    <FileChooser ref="imageChooserRef" accept="image/*" @selected="handleChooseImage" multiple />
+    <FileChooser ref="imageChooserRef" accept="image/*" multiple @selected="handleChooseImage" />
   </div>
 </template>
 

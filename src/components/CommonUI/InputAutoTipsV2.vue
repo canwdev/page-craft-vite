@@ -1,5 +1,5 @@
 <script lang="ts" setup="">
-import {useStorage, useVModel} from '@vueuse/core'
+import { useStorage, useVModel } from '@vueuse/core'
 
 const props = withDefaults(
   defineProps<{
@@ -28,9 +28,9 @@ watch(
   (val) => {
     emit('historyChanged', val)
   },
-  {immediate: true},
+  { immediate: true },
 )
-const recordHistory = () => {
+function recordHistory() {
   const val = mValue.value
   if (!val || historyItemsSet.value.has(val)) {
     return
@@ -41,7 +41,7 @@ const recordHistory = () => {
   })
 }
 
-const querySearch = (queryString: string, cb: any) => {
+function querySearch(queryString: string, cb: any) {
   console.log('querySearch', queryString)
   let items = historyItems.value
   if (queryString) {
@@ -53,7 +53,8 @@ const querySearch = (queryString: string, cb: any) => {
       .sort((a, b) => {
         return b.count - a.count
       })
-  } else {
+  }
+  else {
     items = items.sort((a, b) => {
       return b.count - a.count
     })
@@ -85,7 +86,7 @@ const querySearch = (queryString: string, cb: any) => {
   ]
   cb(results)
 }
-const handleSelect = (item) => {
+function handleSelect(item) {
   console.log('handleSelect', item)
   item.onClick()
   if (item.isClear) {
@@ -96,19 +97,19 @@ const handleSelect = (item) => {
   emit('onSelectTip', item)
 }
 
-const handleBlur = () => {
+function handleBlur() {
   recordHistory()
 }
 const autocompleteRef = ref()
-const removeItem = (item) => {
-  const idx = historyItems.value.findIndex((i) => i.label === item.value)
+function removeItem(item) {
+  const idx = historyItems.value.findIndex(i => i.label === item.value)
   if (idx !== -1) {
     historyItems.value.splice(idx, 1)
   }
   autocompleteRef.value.getData()
 }
 
-const copyText = (text) => {
+function copyText(text) {
   window.$mcUtils.copy(text, true)
 }
 </script>
@@ -129,7 +130,7 @@ const copyText = (text) => {
       @keyup.esc="mValue = ''"
       @keyup.enter.stop="recordHistory"
     >
-      <template #default="{item}">
+      <template #default="{ item }">
         <div
           class="input-auto-tips-select-item font-code"
           @contextmenu.prevent="copyText(item.value)"
@@ -141,7 +142,7 @@ const copyText = (text) => {
             type="button"
             class="btn-no-style mdi mdi-close"
             @click.stop="removeItem(item)"
-          ></button>
+          />
         </div>
       </template>
     </el-autocomplete>
@@ -160,6 +161,7 @@ const copyText = (text) => {
   }
 }
 </style>
+
 <style lang="scss">
 .input-auto-tips-select-item {
   display: flex;

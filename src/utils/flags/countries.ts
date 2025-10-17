@@ -365,7 +365,7 @@ export const countries = [
     iso3: 'CRI',
   },
   {
-    name: "Côte d'Ivoire",
+    name: 'Côte d\'Ivoire',
     demonym: 'Ivorian',
     flag: createUrl('/f/fe/Flag_of_Côte_d%27Ivoire.svg'),
     iso2: 'CI',

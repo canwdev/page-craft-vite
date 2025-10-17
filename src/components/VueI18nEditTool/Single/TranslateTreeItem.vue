@@ -1,28 +1,26 @@
 <script lang="ts">
-import {defineComponent, PropType} from 'vue'
+import type { PropType } from 'vue'
+import type {
+  ITranslateTreeItem,
+} from '@/enum/vue-i18n-tool'
+import { defineComponent } from 'vue'
+import DialogTextEdit from '@/components/CommonUI/DialogTextEdit.vue'
+import CcFlag from '@/components/VueI18nEditTool/CcFlag.vue'
+import { useArrayEdit } from '@/components/VueI18nEditTool/Single/hooks/use-array-edit'
+import TranslateItem from '@/components/VueI18nEditTool/Single/TranslateItem.vue'
+
+import { useI18nMainStore } from '@/components/VueI18nEditTool/store/i18n-tool-main'
+import { useI18nToolSettingsStore } from '@/components/VueI18nEditTool/store/i18n-tool-settings'
 import {
-  CopyMode,
   exportI18nTreeJsonObj,
   formatTranslateItem,
   formatTranslateTreeItem,
-  ITranslateItem,
-  ITranslateTreeItem,
 } from '@/enum/vue-i18n-tool'
-import TranslateItem from '@/components/VueI18nEditTool/Single/TranslateItem.vue'
-import {copyToClipboard, guid, readClipboardData} from '@/utils'
-import DialogTextEdit from '@/components/CommonUI/DialogTextEdit.vue'
-
-import {useMainStore} from '@/store/main'
-import {useI18nToolSettingsStore} from '@/components/VueI18nEditTool/store/i18n-tool-settings'
+import { useSettingsStore } from '@/store/settings'
+import { copyToClipboard, guid, readClipboardData } from '@/utils'
 import {
-  textConvertMultipleLine,
   textConvertAdvanced,
-  TextConvertMode,
 } from '@/utils/mc-utils/text-convert'
-import {useArrayEdit} from '@/components/VueI18nEditTool/Single/hooks/use-array-edit'
-import CcFlag from '@/components/VueI18nEditTool/CcFlag.vue'
-import {useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
-import {useSettingsStore} from '@/store/settings'
 
 export default defineComponent({
   name: 'TranslateTreeItem',
@@ -55,14 +53,14 @@ export default defineComponent({
   },
   emits: ['onRemove', 'onKeyClick'],
   setup(props) {
-    const {item, index, title} = toRefs(props)
+    const { item, index, title } = toRefs(props)
     const i18nMainStore = useI18nMainStore()
     const i18nSetStore = useI18nToolSettingsStore()
     const settingsStore = useSettingsStore()
 
     const handleAddChildren = () => {
       i18nMainStore.trIsManualAdd = true
-      item.value.children.push(formatTranslateTreeItem({parent: item.value}))
+      item.value.children.push(formatTranslateTreeItem({ parent: item.value }))
     }
     const handleAddTranslate = () => {
       i18nMainStore.trIsManualAdd = true
@@ -135,7 +133,8 @@ export default defineComponent({
       if (txt) {
         if (txt.includes('/')) {
           return txt.split('/')[0]
-        } else if (txt.includes('.')) {
+        }
+        else if (txt.includes('.')) {
           return txt.split('.')[0]
         }
       }
@@ -145,12 +144,12 @@ export default defineComponent({
     const toggleExpand = () => {
       isExpand.value = !isExpand.value
       setTimeout(() => {
-        rootRef.value.scrollIntoView({behavior: 'smooth', block: 'center'})
+        rootRef.value.scrollIntoView({ behavior: 'smooth', block: 'center' })
       })
     }
     const scrollToItemTop = () => {
       if (rootRef.value) {
-        rootRef.value.scrollIntoView({behavior: 'smooth'})
+        rootRef.value.scrollIntoView({ behavior: 'smooth' })
       }
     }
 
@@ -193,19 +192,21 @@ export default defineComponent({
 
 <template>
   <div
+    v-if="item"
     ref="rootRef"
     class="vgo-panel vgo-window-panel translate-tree-item"
-    v-if="item"
-    :class="{isKeyDuplicated}"
+    :class="{ isKeyDuplicated }"
   >
     <div class="group-header vgo-bg">
       <template v-if="isKeyDuplicated">
-        <div class="mc-error-tip-button" title="Group namespace duplicated, may cause bug!">!</div>
+        <div class="mc-error-tip-button" title="Group namespace duplicated, may cause bug!">
+          !
+        </div>
       </template>
 
       <div v-if="isRoot" class="namespace-input-wrap font-code">
-        <CcFlag @click="scrollToItemTop" v-if="i18nSetStore.enableFlag" :cc="ccName" />
-        <span @click="scrollToItemTop" v-else style="color: #f44336" class="namespace-prefix">
+        <CcFlag v-if="i18nSetStore.enableFlag" :cc="ccName" @click="scrollToItemTop" />
+        <span v-else style="color: #f44336" class="namespace-prefix" @click="scrollToItemTop">
           §
         </span>
         <input
@@ -217,82 +218,82 @@ export default defineComponent({
           :readonly="isLite"
           disabled
           @blur="checkDuplicatedGroupKey"
-        />
+        >
       </div>
 
       <div v-else class="namespace-input-wrap font-code">
-        <span @click="scrollToItemTop" class="namespace-prefix">
+        <span class="namespace-prefix" @click="scrollToItemTop">
           § <template v-if="!isLite">{{ namespacePrefix + (namespacePrefix ? '.' : '') }}</template>
         </span>
         <input
           ref="namespaceInputRef"
-          class="font-code vgo-input"
           v-model="item.namespace"
+          class="font-code vgo-input"
           placeholder="namespace"
           style="flex: 1"
           :disabled="isLite"
           @blur="checkDuplicatedGroupKey"
-        />
+        >
       </div>
       <div class="actions-buttons-wrap vgo-button-group">
         <template v-if="!isLite">
-          <button class="vgo-button" @click="handleGetJSON" :title="`${$t('actions.copy')} JSON`">
-            <span class="mdi mdi-content-copy"></span>
+          <button class="vgo-button" :title="`${$t('actions.copy')} JSON`" @click="handleGetJSON">
+            <span class="mdi mdi-content-copy" />
           </button>
 
           <el-popconfirm
             v-if="!isRoot"
-            @confirm="$emit('onRemove')"
             :title="$t('msgs.remove_item')"
             :teleported="false"
+            @confirm="$emit('onRemove')"
           >
             <template #reference>
               <button class="vgo-button danger" :title="$t('msgs.remove_group')">
-                <span class="mdi mdi-delete"></span>
+                <span class="mdi mdi-delete" />
               </button>
             </template>
           </el-popconfirm>
         </template>
-        <button @click="toggleExpand" :title="`Toggle Expand`" class="vgo-button">
-          <span v-if="isExpand" class="mdi mdi-chevron-up"></span>
-          <span v-else class="mdi mdi-chevron-down"></span>
+        <button title="Toggle Expand" class="vgo-button" @click="toggleExpand">
+          <span v-if="isExpand" class="mdi mdi-chevron-up" />
+          <span v-else class="mdi mdi-chevron-down" />
         </button>
       </div>
     </div>
 
-    <div class="group-content" v-if="isExpand">
-      <div class="tr-list" v-if="item.translates && item.translates.length">
+    <div v-if="isExpand" class="group-content">
+      <div v-if="item.translates && item.translates.length" class="tr-list">
         <TranslateItem
           v-for="(vi, vIndex) in item.translates"
+          :key="vIndex"
           :item="vi"
           :tree-item="item"
-          :key="vIndex"
           :index="vIndex"
           :is-lite="isLite"
-          @previewArray="handlePreviewArray"
-          @onRemove="handleRemoveItem(vIndex)"
-          @onKeyClick="(...args) => $emit('onKeyClick', ...args)"
+          @preview-array="handlePreviewArray"
+          @on-remove="handleRemoveItem(vIndex)"
+          @on-key-click="(...args) => $emit('onKeyClick', ...args)"
         />
       </div>
 
       <div class="actions-wrap">
-        <div class="actions-buttons-wrap vgo-button-group" v-if="!isLite">
-          <button title="Add translate item" @click="handleAddTranslate" class="vgo-button">
-            <span class="mdi mdi-plus"></span>
+        <div v-if="!isLite" class="actions-buttons-wrap vgo-button-group">
+          <button title="Add translate item" class="vgo-button" @click="handleAddTranslate">
+            <span class="mdi mdi-plus" />
             {{ $t('common.field') }}
           </button>
           <button
-            @click="handleAutoAdd"
-            :title="$t('msgs.auto_paste_and_copy') + ` (${i18nSetStore.autoPasteTextConvertMode})`"
+            :title="`${$t('msgs.auto_paste_and_copy')} (${i18nSetStore.autoPasteTextConvertMode})`"
             class="vgo-button primary js_focus_auto_action"
+            @click="handleAutoAdd"
           >
-            <span class="mdi mdi-content-paste"></span>
+            <span class="mdi mdi-content-paste" />
 
             {{ $t('msgs.auto_paste') }}
             <span
               v-if="settingsStore.enableFocusAutoAction"
               class="js-focus-auto-action-tip"
-            ></span>
+            />
           </button>
         </div>
       </div>
@@ -302,30 +303,29 @@ export default defineComponent({
       <template v-if="item.children && item.children.length">
         <TranslateTreeItem
           v-for="(vi, index) in item.children"
-          :item="vi"
           :key="index"
+          :item="vi"
           :index="index"
           :is-root="false"
           :is-lite="isLite"
-          @onRemove="handleRemoveTreeItem(index)"
-          @previewArray="handlePreviewArray"
-          @onKeyClick="(...args) => $emit('onKeyClick', ...args)"
+          @on-remove="handleRemoveTreeItem(index)"
+          @preview-array="handlePreviewArray"
+          @on-key-click="(...args) => $emit('onKeyClick', ...args)"
         />
       </template>
 
       <div class="actions-wrap">
         <span class="namespace-display font-code font-italic">
-          {{ namespacePrefix ? namespacePrefix + '.' : '' }}{{ item.namespace }}</span
-        >
+          {{ namespacePrefix ? `${namespacePrefix}.` : '' }}{{ item.namespace }}</span>
 
         <div class="actions-wrap-side">
           <button
             v-if="!isLite"
-            @click="handleAddChildren"
             title="Add translate children group"
             class="vgo-button primary"
+            @click="handleAddChildren"
           >
-            <span class="mdi mdi-plus-box"></span>
+            <span class="mdi mdi-plus-box" />
             {{ $t('common.group') }}
           </button>
         </div>
@@ -333,13 +333,13 @@ export default defineComponent({
     </div>
 
     <DialogTextEdit
+      v-if="isShowArrayEdit"
+      v-model:visible="isShowArrayEdit"
       is-textarea
       :title="$t('common.array_detail')"
       placeholder="Array JSON String"
-      v-model:visible="isShowArrayEdit"
       :text="currentArrayString"
-      @onSave="handleSaveArray"
-      v-if="isShowArrayEdit"
+      @on-save="handleSaveArray"
     />
   </div>
 </template>

@@ -3,7 +3,7 @@
  * @param name 频道名
  * @param cb 回调函数
  */
-export const useBroadcastMessage = (name = 'my_channel', cb?: (event: MessageEvent) => any) => {
+export function useBroadcastMessage(name = 'my_channel', cb?: (event: MessageEvent) => any) {
   const channelRef = shallowRef<BroadcastChannel>()
 
   onMounted(() => {

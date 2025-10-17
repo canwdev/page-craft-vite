@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {useVModel} from '@vueuse/core'
+import { useVModel } from '@vueuse/core'
 import MarkdownRender from '@/components/RichText/MarkdownRender.vue'
 
 const props = withDefaults(
@@ -20,10 +20,10 @@ const mValue = useVModel(props, 'modelValue', emit)
     <div class="editor-container">
       <div class="editor-input font-code">
         <textarea
-          class="vgo-input"
           v-model="mValue"
+          class="vgo-input"
           placeholder="Input markdown content"
-        ></textarea>
+        />
       </div>
       <MarkdownRender class="editor-preview" :dark="dark" :text="mValue" />
     </div>

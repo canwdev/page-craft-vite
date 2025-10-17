@@ -1,10 +1,8 @@
-import {autoSetAttr, tagsHasSrcAttr} from '@/components/PageCraft/MainPlayground/utils/dom'
-import {formatSelectOptions} from '@/utils'
-import {
-  AutoFormItem,
-  AutoFormItemType,
+import type {
   MixedFormItems,
 } from '@/components/CommonUI/AutoFormNaive/enum'
+
+import { tagsHasSrcAttr } from '@/components/PageCraft/MainPlayground/utils/dom'
 import {
   genProp,
   mapCustomPropsKeys,
@@ -57,13 +55,14 @@ const defaultCustomProps = genProp()
 
 tagsHasSrcAttr.forEach((tag) => {
   if (elCustomPropsMap[tag]) {
-  } else {
+  }
+  else {
     // 生成所有具有src属性的标签的自定义属性
     elCustomPropsMap[tag] = genProp([tplFormItem.src])
   }
 })
 
-export const formatForm = (el: HTMLElement | null): ElementEditData => {
+export function formatForm(el: HTMLElement | null): ElementEditData {
   if (!el) {
     return {
       tagName: '',
@@ -86,7 +85,7 @@ export const formatForm = (el: HTMLElement | null): ElementEditData => {
  * 获取元素对应的表单内容
  * @param el HTML DOM元素
  */
-export const getCustomFormItems = (el: HTMLElement | null): MixedFormItems[] => {
+export function getCustomFormItems(el: HTMLElement | null): MixedFormItems[] {
   if (!el) {
     return []
   }
@@ -99,7 +98,7 @@ export const getCustomFormItems = (el: HTMLElement | null): MixedFormItems[] => 
   )
 }
 
-export const updateHtmlElement = (el: HTMLElement, data: ElementEditData) => {
+export function updateHtmlElement(el: HTMLElement, data: ElementEditData) {
   // console.log('[updateHtmlElement]', el, data)
   if (!data.customProps) {
     console.error('[updateHtmlElement] data.customProps is not exist!')
@@ -108,7 +107,8 @@ export const updateHtmlElement = (el: HTMLElement, data: ElementEditData) => {
 
   if (el.outerHTML !== data.outerHTML) {
     el.outerHTML = data.outerHTML
-  } else if (el.innerHTML !== data.innerHTML) {
+  }
+  else if (el.innerHTML !== data.innerHTML) {
     el.innerHTML = data.innerHTML
   }
 

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import {CopyMode, copyModeOptions} from '@/enum/vue-i18n-tool'
-import {useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
+import { useI18nMainStore } from '@/components/VueI18nEditTool/store/i18n-tool-main'
+import { CopyMode, copyModeOptions } from '@/enum/vue-i18n-tool'
 
 const props = withDefaults(
   defineProps<{
@@ -11,21 +11,24 @@ const props = withDefaults(
   },
 )
 const emit = defineEmits([])
-const {content} = toRefs(props)
+const { content } = toRefs(props)
 
 const i18nMainStore = useI18nMainStore()
 // 一键复制模板
 const highlightCopyMode = ref<CopyMode | null>(null)
-const handleCopy = (mode: CopyMode) => {
+function handleCopy(mode: CopyMode) {
   let text = ``
 
   if (mode === CopyMode.ORIGINAL) {
     text = `$t('${content.value}')`
-  } else if (mode === CopyMode.TEMPLATE) {
+  }
+  else if (mode === CopyMode.TEMPLATE) {
     text = `{{ $t('${content.value}') }}`
-  } else if (mode === CopyMode.VHTML) {
+  }
+  else if (mode === CopyMode.VHTML) {
     text = `v-html="$t('${content.value}')"`
-  } else if (mode === CopyMode.DOLLART) {
+  }
+  else if (mode === CopyMode.DOLLART) {
     text = `this.$t('${content.value}')`
   }
 
@@ -47,9 +50,9 @@ defineExpose({
       v-for="item in copyModeOptions"
       :key="item.value"
       :title="item.desc"
-      @click="handleCopy(item.value)"
       class="vgo-button secondary"
-      :class="{primary: item.value === highlightCopyMode}"
+      :class="{ primary: item.value === highlightCopyMode }"
+      @click="handleCopy(item.value)"
     >
       {{ item.label }}
     </button>

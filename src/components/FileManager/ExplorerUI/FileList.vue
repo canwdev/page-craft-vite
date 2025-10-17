@@ -1,18 +1,19 @@
 <script lang="ts" setup>
-import {IEntry} from '../types/filesystem'
-import FileListItem from './FileListItem.vue'
-import {useVModel} from '@vueuse/core'
-import FileGridItem from './FileGridItem.vue'
-
+import type { IEntry } from '../types/filesystem'
+import DropdownMenu from '@canwdev/vgo-ui/src/components/QuickOptions/DropdownMenu.vue'
 import QuickOptions from '@canwdev/vgo-ui/src/components/QuickOptions/index.vue'
 import QuickContextMenu from '@canwdev/vgo-ui/src/components/QuickOptions/QuickContextMenu.vue'
-import {useCopyPaste} from './hooks/use-copy-paste'
-import {useSelection} from './hooks/use-selection'
-import {useLayoutSort} from './hooks/use-layout-sort'
-import {useFileActions} from './hooks/use-file-actions'
-import {setHfsInstance} from '@/components/FileManager/utils/providers/humanfs-api'
-import {useLocalDir} from '@/components/PageCraft/ComponentExplorer/hooks/use-local-dir'
-import DropdownMenu from '@canwdev/vgo-ui/src/components/QuickOptions/DropdownMenu.vue'
+
+import { useVModel } from '@vueuse/core'
+import { useLocalDir } from '@/components/PageCraft/ComponentExplorer/hooks/use-local-dir'
+import FileGridItem from './FileGridItem.vue'
+import FileListItem from './FileListItem.vue'
+import { useCopyPaste } from './hooks/use-copy-paste'
+import { useFileActions } from './hooks/use-file-actions'
+import { useLayoutSort } from './hooks/use-layout-sort'
+import { useSelection } from './hooks/use-selection'
+
+const props = withDefaults(defineProps<Props>(), {})
 
 const emit = defineEmits(['open', 'update:isLoading', 'refresh'])
 
@@ -22,12 +23,11 @@ interface Props {
   basePath: string
 }
 
-const props = withDefaults(defineProps<Props>(), {})
-const {basePath, files} = toRefs(props)
+const { basePath, files } = toRefs(props)
 const isLoading = useVModel(props, 'isLoading', emit)
 
 // 布局和排序方式
-const {isGridView, showSortMenu, sortOptions, filteredFiles} = useLayoutSort(files)
+const { isGridView, showSortMenu, sortOptions, filteredFiles } = useLayoutSort(files)
 
 // 文件选择功能
 const {
@@ -37,10 +37,10 @@ const {
   toggleSelect,
   toggleSelectAll,
   selectedPaths,
-} = useSelection({filteredFiles, basePath})
+} = useSelection({ filteredFiles, basePath })
 
 // 复制粘贴功能
-const {enablePaste, handleCut, handleCopy, handlePaste} = useCopyPaste({
+const { enablePaste, handleCut, handleCopy, handlePaste } = useCopyPaste({
   selectedPaths,
   basePath,
   isLoading,
@@ -70,65 +70,65 @@ const {
   emit,
 })
 
-const {handleOpenLocalDir, localDirHistoryOptions} = useLocalDir({emit})
+const { handleOpenLocalDir, localDirHistoryOptions } = useLocalDir({ emit })
 </script>
 
 <template>
-  <div class="explorer-list-wrap" @contextmenu.prevent v-loading="isLoading">
+  <div v-loading="isLoading" class="explorer-list-wrap" @contextmenu.prevent>
     <div class="explorer-actions vgo-panel">
       <div class="action-group">
-        <button class="btn-action btn-no-style" @click="handleCreateFile()" title="Create Document">
-          <span class="mdi mdi-file-document-plus-outline"></span>
+        <button class="btn-action btn-no-style" title="Create Document" @click="handleCreateFile()">
+          <span class="mdi mdi-file-document-plus-outline" />
         </button>
-        <button class="btn-action btn-no-style" @click="handleCreateFolder" title="Create Folder">
-          <span class="mdi mdi-folder-plus-outline"></span>
+        <button class="btn-action btn-no-style" title="Create Folder" @click="handleCreateFolder">
+          <span class="mdi mdi-folder-plus-outline" />
         </button>
 
-        <div class="split-line"></div>
+        <div class="split-line" />
 
         <button
           class="btn-action btn-no-style"
           :disabled="!enableAction"
-          @click="handleCut"
           title="Cut"
+          @click="handleCut"
         >
-          <span class="mdi mdi-content-cut"></span>
+          <span class="mdi mdi-content-cut" />
         </button>
         <button
           class="btn-action btn-no-style"
           :disabled="!enableAction"
-          @click="handleCopy"
           title="Copy"
+          @click="handleCopy"
         >
-          <span class="mdi mdi-content-copy"></span>
+          <span class="mdi mdi-content-copy" />
         </button>
         <button
           class="btn-action btn-no-style"
           :disabled="!enablePaste"
-          @click="handlePaste"
           title="Paste"
+          @click="handlePaste"
         >
-          <span class="mdi mdi-content-paste"></span>
+          <span class="mdi mdi-content-paste" />
         </button>
 
         <button
           class="btn-action btn-no-style"
           :disabled="selectedItems.length !== 1"
-          @click="handleRename"
           title="Rename"
+          @click="handleRename"
         >
-          <span class="mdi mdi-rename"></span>
+          <span class="mdi mdi-rename" />
         </button>
         <button
           class="btn-action btn-no-style"
           :disabled="!enableAction"
-          @click="confirmDelete"
           title="Delete"
+          @click="confirmDelete"
         >
-          <span class="mdi mdi-delete-forever-outline"></span>
+          <span class="mdi mdi-delete-forever-outline" />
         </button>
 
-        <div class="split-line"></div>
+        <div class="split-line" />
 
         <DropdownMenu :options="localDirHistoryOptions">
           <button
@@ -136,34 +136,34 @@ const {handleOpenLocalDir, localDirHistoryOptions} = useLocalDir({emit})
             title="Open Local Folder"
             @click="handleOpenLocalDir"
           >
-            <span class="mdi mdi-folder-open-outline"></span>
+            <span class="mdi mdi-folder-open-outline" />
           </button>
         </DropdownMenu>
       </div>
       <div class="action-group">
         <button
-          @click="isGridView = !isGridView"
           class="btn-action btn-no-style"
           title="Toggle grid view"
+          @click="isGridView = !isGridView"
         >
           <template v-if="isGridView">
-            <span class="mdi mdi-view-grid-outline"></span>
+            <span class="mdi mdi-view-grid-outline" />
           </template>
           <template v-else>
-            <span class="mdi mdi-view-list-outline"></span>
+            <span class="mdi mdi-view-list-outline" />
           </template>
         </button>
         <div class="action-button-wrap">
           <button class="btn-action btn-no-style" title="Toggle Sort" @click="showSortMenu = true">
-            <span class="mdi mdi-sort-alphabetical-variant"></span>
+            <span class="mdi mdi-sort-alphabetical-variant" />
           </button>
           <transition name="fade-scale">
             <QuickOptions v-model:visible="showSortMenu" :options="sortOptions" />
           </transition>
         </div>
 
-        <button class="btn-action btn-no-style" @click="toggleSelectAll" title="Toggle Select All">
-          <span class="mdi mdi-check-all"></span>
+        <button class="btn-action btn-no-style" title="Toggle Select All" @click="toggleSelectAll">
+          <span class="mdi mdi-check-all" />
         </button>
       </div>
     </div>
@@ -175,17 +175,25 @@ const {handleOpenLocalDir, localDirHistoryOptions} = useLocalDir({emit})
     >
       <div v-if="!isGridView" class="explorer-list-view">
         <div class="vgo-bg file-list-header file-list-row">
-          <div class="list-col c-filename" style="padding-left: 24px">Name</div>
-          <div class="list-col c-size">Size</div>
-          <div class="list-col c-time">Last Modified</div>
-          <div class="list-col c-time">Created</div>
+          <div class="list-col c-filename" style="padding-left: 24px">
+            Name
+          </div>
+          <div class="list-col c-size">
+            Size
+          </div>
+          <div class="list-col c-time">
+            Last Modified
+          </div>
+          <div class="list-col c-time">
+            Created
+          </div>
         </div>
 
         <FileListItem
-          class="selectable"
-          :item="item"
           v-for="item in filteredFiles"
           :key="item.name"
+          class="selectable"
+          :item="item"
           :data-name="item.name"
           :active="selectedItemsSet.has(item)"
           @open="(i) => emit('open', i)"
@@ -195,10 +203,10 @@ const {handleOpenLocalDir, localDirHistoryOptions} = useLocalDir({emit})
       </div>
       <div v-else class="explorer-grid-view">
         <FileGridItem
-          class="selectable"
-          :item="item"
           v-for="item in filteredFiles"
           :key="item.name"
+          class="selectable"
+          :item="item"
           :data-name="item.name"
           :active="selectedItemsSet.has(item)"
           @open="(i) => emit('open', i)"
@@ -208,7 +216,7 @@ const {handleOpenLocalDir, localDirHistoryOptions} = useLocalDir({emit})
       </div>
 
       <Teleport to="body">
-        <QuickContextMenu :options="ctxMenuOptions" ref="ctxMenuRef" />
+        <QuickContextMenu ref="ctxMenuRef" :options="ctxMenuOptions" />
       </Teleport>
     </div>
   </div>

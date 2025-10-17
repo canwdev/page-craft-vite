@@ -1,7 +1,7 @@
-import {TextConvertMode} from '@/utils/mc-utils/text-convert'
-import {LS_SettingsKey} from '@/enum/settings'
+import { LS_SettingsKey } from '@/enum/settings'
+import { TextConvertMode } from '@/utils/mc-utils/text-convert'
 
-type IState = {
+interface IState {
   // 文件夹编辑器:是否为文件夹模式
   isFoldersMode: boolean
   // 自动粘贴: 去掉引号
@@ -26,7 +26,7 @@ export const useI18nToolSettingsStore = defineStore('i18nToolSettings', {
     }
   },
   getters: {
-    ignoreFoldersMap(): {[key: string]: boolean} {
+    ignoreFoldersMap(): { [key: string]: boolean } {
       const map = {}
       this.ignoreFolders.forEach((item) => {
         map[item] = true

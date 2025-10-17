@@ -7,10 +7,12 @@ const textInput = ref('')
 
 <template>
   <div class="qr-code">
-    <textarea v-model="textInput" class="vgo-input" placeholder="Input text..." rows="2"></textarea>
+    <textarea v-model="textInput" class="vgo-input" placeholder="Input text..." rows="2" />
     <QrCodeDisplay :text="textInput" />
-    <div style="opacity: 0.3">--- or ---</div>
-    <QRScanner @onResult="(val) => (textInput = val)" />
+    <div style="opacity: 0.3">
+      --- or ---
+    </div>
+    <QRScanner @on-result="(val) => (textInput = val)" />
   </div>
 </template>
 

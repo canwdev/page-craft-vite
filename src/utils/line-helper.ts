@@ -67,14 +67,15 @@ export class LineHelper {
       this.currentPosition = 'top'
       this.currentTarget = realTarget as HTMLElement
 
-      crossX.style.top = position.top + 'px'
-      crossX.style.left = position.left + 'px'
-      crossX.style.width = position.width + 'px'
+      crossX.style.top = `${position.top}px`
+      crossX.style.left = `${position.left}px`
+      crossX.style.width = `${position.width}px`
       crossX.style.height = '3px'
       crossX.classList.add('visible')
 
       // currentPointer(realTarget.parentElement, findElementIndex(realTarget))
-    } else if (directionObj.bottom && targetElement !== realTarget) {
+    }
+    else if (directionObj.bottom && targetElement !== realTarget) {
       // 如果鼠标点在目标的下部分，则绘制下部分辅助线
       if (this.currentPosition === 'bottom' && this.currentTarget === realTarget) {
         return
@@ -82,22 +83,23 @@ export class LineHelper {
       this.currentPosition = 'bottom'
       this.currentTarget = realTarget as HTMLElement
 
-      crossX.style.top = position.bottom + 'px'
-      crossX.style.left = position.left + 'px'
-      crossX.style.width = position.width + 'px'
+      crossX.style.top = `${position.bottom}px`
+      crossX.style.left = `${position.left}px`
+      crossX.style.width = `${position.width}px`
       crossX.style.height = '3px'
       crossX.classList.add('visible')
 
       // currentPointer(realTarget.parentElement, findElementIndex(realTarget) + 1)
-    } else {
+    }
+    else {
       this.currentPosition = 'middle'
       this.currentTarget = realTarget as HTMLElement
       this.preSelectTarget = realTarget as HTMLElement
 
-      crossX.style.top = position.top + 'px'
-      crossX.style.left = position.left + 'px'
-      crossX.style.width = position.width + 'px'
-      crossX.style.height = position.height + 'px'
+      crossX.style.top = `${position.top}px`
+      crossX.style.left = `${position.left}px`
+      crossX.style.width = `${position.width}px`
+      crossX.style.height = `${position.height}px`
       crossX.classList.add('visible')
 
       // currentPointer(realTarget, -1)

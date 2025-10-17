@@ -1,7 +1,7 @@
 <script lang="ts">
-import {defineComponent} from 'vue'
-import {useFileDrop} from '@/hooks/use-file-drop'
+import { defineComponent } from 'vue'
 import DropZone from '@/components/CommonUI/DropZone.vue'
+import { useFileDrop } from '@/hooks/use-file-drop'
 
 export default defineComponent({
   name: 'FileDrop',
@@ -9,7 +9,7 @@ export default defineComponent({
     DropZone,
   },
   emits: ['onFileDrop'],
-  setup(props, {emit}) {
+  setup(props, { emit }) {
     return {
       ...useFileDrop({
         cbFiles: (files) => {

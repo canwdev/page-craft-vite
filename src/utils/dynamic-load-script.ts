@@ -1,4 +1,4 @@
-const dynamicLoadScript = (src: string) => {
+function dynamicLoadScript(src: string) {
   return new Promise((resolve: any, reject: any) => {
     const existingScript = document.getElementById(src)
     if (!existingScript) {
@@ -18,7 +18,8 @@ const dynamicLoadScript = (src: string) => {
       }
 
       document.body.appendChild(script)
-    } else {
+    }
+    else {
       // script already loaded
       resolve()
     }

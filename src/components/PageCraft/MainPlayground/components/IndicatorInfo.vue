@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import {computed, defineComponent, reactive, toRefs} from 'vue'
-import {useElementBounding, useElementByPoint, useMouse} from '@vueuse/core'
-import {CLASS_MAIN_CANVAS_ROOT} from '@/enum/page-craft'
+import { useElementBounding, useElementByPoint, useMouse } from '@vueuse/core'
+import { computed, reactive, toRefs } from 'vue'
+import { CLASS_MAIN_CANVAS_ROOT } from '@/enum/page-craft'
 
 interface Props {
   // 如果传入此类名，则只在这个类以下进行选择
@@ -10,7 +10,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   parentClass: CLASS_MAIN_CANVAS_ROOT,
 })
-const {parentClass} = toRefs(props)
+const { parentClass } = toRefs(props)
 const parentEl = ref<Element | null>(null)
 onMounted(() => {
   if (parentClass.value) {
@@ -18,15 +18,15 @@ onMounted(() => {
   }
 })
 
-const {x, y} = useMouse({type: 'client'})
-const {element} = useElementByPoint({x, y})
+const { x, y } = useMouse({ type: 'client' })
+const { element } = useElementByPoint({ x, y })
 const bounding = reactive(useElementBounding(element))
 
 // 是否在允许的范围内
 const isInParent = computed(() => {
   if (
-    (parentEl.value && !parentEl.value.contains(element.value)) ||
-    parentEl.value === element.value
+    (parentEl.value && !parentEl.value.contains(element.value))
+    || parentEl.value === element.value
   ) {
     return false
   }
@@ -68,7 +68,9 @@ const hoveredElDisplay = computed(() => {
 </script>
 
 <template>
-  <div v-if="hoveredElDisplay" class="mc-indicator-info font-code">{{ hoveredElDisplay }}</div>
+  <div v-if="hoveredElDisplay" class="mc-indicator-info font-code">
+    {{ hoveredElDisplay }}
+  </div>
   <div :style="boxStyles" class="mc-indicator-box" />
 </template>
 

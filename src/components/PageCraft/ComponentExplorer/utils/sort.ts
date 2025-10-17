@@ -1,31 +1,34 @@
-import {IEntry} from '@/components/FileManager/types/filesystem'
-import {IComponentItem, regComponentV2} from '@/components/PageCraft/ComponentExplorer/enum'
+import type { IEntry } from '@/components/FileManager/types/filesystem'
+import type { IComponentItem } from '@/components/PageCraft/ComponentExplorer/enum'
+import { regComponentV2 } from '@/components/PageCraft/ComponentExplorer/enum'
 
-const isNormalDir = (item: IComponentItem) => {
+function isNormalDir(item: IComponentItem) {
   return item.isDirectory && !regComponentV2.test(item.name)
 }
 
-export const nameSorter = (a: IEntry, b: IEntry) => {
+export function nameSorter(a: IEntry, b: IEntry) {
   return a.name.toLowerCase().localeCompare(b.name.toLowerCase())
 }
 
-export const nameDescSorter = (a: IEntry, b: IEntry) => {
+export function nameDescSorter(a: IEntry, b: IEntry) {
   return -a.name.toLowerCase().localeCompare(b.name.toLowerCase())
 }
 
-export const birthTimeSorter = (a: IComponentItem, b: IComponentItem) => {
+export function birthTimeSorter(a: IComponentItem, b: IComponentItem) {
   const aVal = isNormalDir(a) ? 1 : 2
   const bVal = isNormalDir(b) ? 1 : 2
   const typeDirection = aVal - bVal
-  if (typeDirection !== 0) return typeDirection
+  if (typeDirection !== 0)
+    return typeDirection
   return (a.meta?.timeCreated || 0) - (b.meta?.timeCreated || 0)
 }
 
-export const birthTimeDescSorter = (a: IComponentItem, b: IComponentItem) => {
+export function birthTimeDescSorter(a: IComponentItem, b: IComponentItem) {
   const aVal = isNormalDir(a) ? 1 : 2
   const bVal = isNormalDir(b) ? 1 : 2
   const typeDirection = aVal - bVal
-  if (typeDirection !== 0) return typeDirection
+  if (typeDirection !== 0)
+    return typeDirection
 
   return (b.meta?.timeCreated || 0) - (a.meta?.timeCreated || 0)
 }

@@ -1,16 +1,17 @@
 <script lang="ts">
-export default {
-  name: 'DesktopWindowManager',
-}
 </script>
 
 <script lang="ts" setup>
+import type { TaskItem } from '@/enum/os'
 import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/index.vue'
-import {useSystemStore} from '@/store/system'
-import {useSettingsStore} from '@/store/settings'
-import {TaskItem} from '@/enum/os'
 import ThemedIcon from '@/components/OS/ThemedIcon/ThemedIcon.vue'
-import {useMainStore} from '@/store/main'
+import { useMainStore } from '@/store/main'
+import { useSettingsStore } from '@/store/settings'
+import { useSystemStore } from '@/store/system'
+
+export default {
+  name: 'DesktopWindowManager',
+}
 
 const mainStore = useMainStore()
 const systemStore = useSystemStore()
@@ -34,12 +35,12 @@ watch(
   },
 )
 
-const getIsMaximum = (task: TaskItem) => {
+function getIsMaximum(task: TaskItem) {
   return task.maximized
 }
 
 // pass key into child component
-const handleWindowKeydown = (event, task, index) => {
+function handleWindowKeydown(event, task, index) {
   // console.log(event, task, index)
   const targetComponent = innerComponentRefs.value[index]
   if (targetComponent) {
@@ -49,7 +50,7 @@ const handleWindowKeydown = (event, task, index) => {
   }
 }
 
-const handleRestore = (index) => {
+function handleRestore(index) {
   const targetWindow = vpWindowRefs.value[index]
   if (targetWindow) {
     setTimeout(() => {
@@ -60,23 +61,23 @@ const handleRestore = (index) => {
 </script>
 
 <template>
-  <div class="desktop-window-manager" :class="{'preview-desktop': false}">
+  <div class="desktop-window-manager" :class="{ 'preview-desktop': false }">
     <template v-for="(task, index) in systemStore.tasks" :key="task.guid">
       <ViewPortWindow
-        class="dwm-window"
         ref="vpWindowRefs"
-        @onActive="systemStore.setTaskActive(task)"
-        @onClose="systemStore.closeTask(task.guid)"
-        @onRestored="handleRestore(index)"
+        class="dwm-window"
         :visible="!task.minimized && !task.isClosing"
         :wid="task.appid"
         :init-win-options="task.winOptions"
+        v-model:maximized="task.maximized"
         :allow-move="!getIsMaximum(task)"
         :allow-maximum="true"
-        v-model:maximized="task.maximized"
         :allow-minimum="false"
         v-model:minimized="task.minimized"
+        @on-active="systemStore.setTaskActive(task)"
         tabindex="0"
+        @on-close="systemStore.closeTask(task.guid)"
+        @on-restored="handleRestore(index)"
         @keydown="handleWindowKeydown($event, task, index)"
       >
         <template #titleBarLeft>
@@ -85,23 +86,23 @@ const handleRestore = (index) => {
         </template>
 
         <component
-          ref="innerComponentRefs"
-          v-if="task.component"
           :is="task.component"
+          v-if="task.component"
+          ref="innerComponentRefs"
           :task="task"
-          :appParams="task.params"
-          @exitApp="systemStore.closeTask(task.guid)"
-        ></component>
+          :app-params="task.params"
+          @exit-app="systemStore.closeTask(task.guid)"
+        />
         <iframe
           v-else-if="task.url"
           :src="task.url"
           frameborder="0"
           style="width: 100%; height: 100%"
-        ></iframe>
+        />
       </ViewPortWindow>
     </template>
 
-    <slot></slot>
+    <slot />
   </div>
 </template>
 

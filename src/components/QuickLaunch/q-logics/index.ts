@@ -1,8 +1,8 @@
-import {QuickOptionItem} from '@canwdev/vgo-ui/src/components/QuickOptions/enum'
-import {Ref} from 'vue'
-import {useDebounceFn, useStorage} from '@vueuse/core'
-import {usePluginState, useQuickLaunchCustomPlugins} from './plugins'
-import {filterLabel} from './utils'
+import type { QuickOptionItem } from '@canwdev/vgo-ui/src/components/QuickOptions/enum'
+import type { Ref } from 'vue'
+import { useDebounceFn } from '@vueuse/core'
+import { usePluginState, useQuickLaunchCustomPlugins } from './plugins'
+import { filterLabel } from './utils'
 
 const qLogicHelp = {
   label: `❓ 这是一个快捷工具箱，支持全键盘操作，帮你快速执行操作！
@@ -15,13 +15,13 @@ const qLogicHelp = {
 `,
 }
 
-export const useQLogics = (qlOptionsRef, update) => {
-  const {staticPlugins, dynamicPlugins, customStaticPlugins, customDynamicPlugins} =
-    usePluginState()
+export function useQLogics(qlOptionsRef, update) {
+  const { staticPlugins, dynamicPlugins, customStaticPlugins, customDynamicPlugins }
+    = usePluginState()
   const filteredOptions = ref<QuickOptionItem[]>([])
 
-  const {qLogicManage, editingCustomPlugin, saveCustomPlugin, runCustomPlugin} =
-    useQuickLaunchCustomPlugins(update)
+  const { qLogicManage, editingCustomPlugin, saveCustomPlugin, runCustomPlugin }
+    = useQuickLaunchCustomPlugins(update)
 
   const _handleSearch = (valRef: Ref<string>) => {
     // console.log(valRef.value)
@@ -38,13 +38,13 @@ export const useQLogics = (qlOptionsRef, update) => {
       filteredOptions.value = [qLogicHelp]
       return
     }
-    const labelMap: {[key: string]: boolean} = {}
+    const labelMap: { [key: string]: boolean } = {}
     // 过滤列表功能
     filteredOptions.value = [
       // 函数式插件，通过输入值来显示
-      ...filterableOptions.filter((i) => filterLabel(i, val)),
-      ...dynamicPlugins.value.map((f) => f(valRef)),
-      ...customDynamicPlugins.value.map((f) => f(valRef)),
+      ...filterableOptions.filter(i => filterLabel(i, val)),
+      ...dynamicPlugins.value.map(f => f(valRef)),
+      ...customDynamicPlugins.value.map(f => f(valRef)),
     ].filter((val) => {
       if (!val) {
         return false

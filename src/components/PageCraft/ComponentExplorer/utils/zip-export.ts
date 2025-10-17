@@ -1,5 +1,5 @@
-import JSZip from 'jszip'
 import FileSaver from 'file-saver'
+import JSZip from 'jszip'
 
 /* 以下代码基本上是用GPT-4生成的，太强了 */
 
@@ -21,7 +21,8 @@ async function zipDirectory(
       // 如果是文件，读取文件并添加到zip对象中
       const file = await handle.getFile()
       zip.file(relativePath, file)
-    } else if (handle.kind === 'directory') {
+    }
+    else if (handle.kind === 'directory') {
       // 如果是目录，递归调用
       await zipDirectory(handle, zip, relativePath)
     }
@@ -32,7 +33,7 @@ async function zipDirectory(
 export async function exportZip(directoryHandle: FileSystemDirectoryHandle) {
   console.log('[exportZip]', directoryHandle)
   const zip = await zipDirectory(directoryHandle)
-  zip.generateAsync({type: 'blob'}).then((blob) => {
+  zip.generateAsync({ type: 'blob' }).then((blob) => {
     FileSaver.saveAs(blob, 'page_craft_all_components_export.zip')
   })
 }
@@ -54,14 +55,15 @@ async function processZipObject(
   for (const filename in zip.files) {
     const zipEntry = zip.files[filename]
     const fullPath = (path ? `${path}/` : '') + filename
-    const entryParts = fullPath.split('/').filter((part) => part.length > 0)
+    const entryParts = fullPath.split('/').filter(part => part.length > 0)
     const entryName = entryParts.pop()
 
     let currentHandle = directoryHandle
     for (const part of entryParts) {
       try {
-        currentHandle = await currentHandle.getDirectoryHandle(part, {create: true})
-      } catch (error) {
+        currentHandle = await currentHandle.getDirectoryHandle(part, { create: true })
+      }
+      catch (error) {
         console.error('Error creating/accessing directory:', part, error)
         throw error
       }
@@ -70,11 +72,12 @@ async function processZipObject(
     if (!zipEntry.dir) {
       try {
         const fileData = await zipEntry.async('blob')
-        const fileHandle = await currentHandle.getFileHandle(entryName!, {create: true})
+        const fileHandle = await currentHandle.getFileHandle(entryName!, { create: true })
         const writable = await fileHandle.createWritable()
         await writable.write(fileData)
         await writable.close()
-      } catch (error) {
+      }
+      catch (error) {
         console.error('Error writing file:', entryName, error)
         throw error
       }
@@ -95,7 +98,7 @@ export async function chooseZipFileAndImport(
     types: [
       {
         description: 'Zip Files',
-        accept: {'application/zip': ['.zip']},
+        accept: { 'application/zip': ['.zip'] },
       },
     ],
   })
@@ -125,13 +128,14 @@ export async function chooseDirectoryAndImport(
       if (entry.kind === 'file') {
         // 如果是文件，则直接复制
         const file = await entry.getFile()
-        const newFileHandle = await destHandle.getFileHandle(name, {create: true})
+        const newFileHandle = await destHandle.getFileHandle(name, { create: true })
         const writable = await newFileHandle.createWritable()
         await writable.write(file)
         await writable.close()
-      } else if (entry.kind === 'directory') {
+      }
+      else if (entry.kind === 'directory') {
         // 如果是目录，递归处理
-        const newDirHandle = await destHandle.getDirectoryHandle(name, {create: true})
+        const newDirHandle = await destHandle.getDirectoryHandle(name, { create: true })
         await recursiveCopy(entry, newDirHandle)
       }
     }
@@ -141,9 +145,9 @@ export async function chooseDirectoryAndImport(
   let targetHandle = directoryHandle
   if (basePath) {
     // 如果有 basePath，则需要逐级创建或获取目录
-    const parts = basePath.split('/').filter((p) => p.length > 0)
+    const parts = basePath.split('/').filter(p => p.length > 0)
     for (const part of parts) {
-      targetHandle = await targetHandle.getDirectoryHandle(part, {create: true})
+      targetHandle = await targetHandle.getDirectoryHandle(part, { create: true })
     }
   }
 
@@ -169,9 +173,9 @@ export async function chooseFilesAndImport(
   let targetHandle = directoryHandle
   if (basePath) {
     // 如果有 basePath，则需要逐级创建或获取目录
-    const parts = basePath.split('/').filter((p) => p.length > 0)
+    const parts = basePath.split('/').filter(p => p.length > 0)
     for (const part of parts) {
-      targetHandle = await targetHandle.getDirectoryHandle(part, {create: true})
+      targetHandle = await targetHandle.getDirectoryHandle(part, { create: true })
     }
   }
 
@@ -179,7 +183,7 @@ export async function chooseFilesAndImport(
   for (const fileHandle of fileHandles) {
     const file = await fileHandle.getFile()
     // 创建或获取同名文件句柄
-    const newFileHandle = await targetHandle.getFileHandle(file.name, {create: true})
+    const newFileHandle = await targetHandle.getFileHandle(file.name, { create: true })
     // 创建可写流
     const writable = await newFileHandle.createWritable()
     // 写入文件

@@ -1,6 +1,7 @@
-import {pinyin} from 'pinyin-pro'
-import {formatI18nKey} from '@/enum/vue-i18n-tool'
-import {copy, textConvertAdvanced, TextConvertMode, textConvertMultipleLine} from './text-convert'
+import * as changeCase from 'change-case'
+import { pinyin } from 'pinyin-pro'
+import { formatI18nKey } from '@/enum/vue-i18n-tool'
+import { showInputPrompt } from '@/utils/mc-utils/input-prompt'
 import {
   handleExportFile,
   handleImportJson,
@@ -8,8 +9,7 @@ import {
   handleReadSelectedFile,
   promptGetFileName,
 } from './io'
-import {showInputPrompt} from '@/utils/mc-utils/input-prompt'
-import * as changeCase from 'change-case'
+import { copy, textConvertAdvanced, TextConvertMode, textConvertMultipleLine } from './text-convert'
 
 export const mcUtils = {
   copy,

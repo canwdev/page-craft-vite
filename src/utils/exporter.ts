@@ -1,14 +1,12 @@
-import {sassToCSS} from '@/components/StyleEditor/utils/css'
-import {beautifyCss, beautifyHtml} from '@/components/StyleEditor/utils/formater'
-import {IComponentExportData} from '@/components/PageCraft/ComponentExplorer/enum'
-import {handleExportFile, promptGetFileName} from '@/utils/mc-utils/io'
-import {useStorage} from '@vueuse/core'
+import type { IComponentExportData } from '@/components/PageCraft/ComponentExplorer/enum'
+import { sassToCSS } from '@/components/StyleEditor/utils/css'
+import { beautifyCss, beautifyHtml } from '@/components/StyleEditor/utils/formater'
 
-import {StyleEditorKeys} from '@/enum/settings'
+import { handleExportFile, promptGetFileName } from '@/utils/mc-utils/io'
 
-export const handleExportHtml = async (exportData: IComponentExportData, options?) => {
-  const {html, style} = exportData
-  const {isInline = false, inlineWithStyleTag = false} = options || {}
+export async function handleExportHtml(exportData: IComponentExportData, options?) {
+  const { html, style } = exportData
+  const { isInline = false, inlineWithStyleTag = false } = options || {}
 
   let nameSuffix = ''
   if (isInline) {
@@ -29,7 +27,8 @@ ${html}`)
       htmlStr = `<style>${cssCode}</style>${htmlStr}`
     }
     htmlStr = beautifyHtml(htmlStr)
-  } else {
+  }
+  else {
     htmlStr = `<!doctype html>
 <html>
 <head>
@@ -51,8 +50,8 @@ ${html}
 
   handleExportFile(name, htmlStr, '.html')
 }
-export const handleExportVue = async (exportData: IComponentExportData, version = 2) => {
-  const {html, style} = exportData
+export async function handleExportVue(exportData: IComponentExportData, version = 2) {
+  const { html, style } = exportData
   const name = await promptGetFileName(exportData.name)
 
   const styleStr = `
@@ -77,7 +76,8 @@ ${html}
 
 ${styleStr}
 `
-  } else {
+  }
+  else {
     sfcStr = `<template>
 ${html}
 </template>
@@ -96,7 +96,7 @@ ${styleStr}
   handleExportFile(name, sfcStr, '.vue')
 }
 
-export const fileToBase64 = (file) => {
+export function fileToBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
 

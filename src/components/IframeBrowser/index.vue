@@ -1,16 +1,13 @@
 <script lang="ts">
-export default {
-  name: 'IframeBrowser',
-}
 </script>
 
 <script lang="ts" setup>
-import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/index.vue'
-import {useRouter} from 'vue-router'
-import {useStorage, useVModel} from '@vueuse/core'
-import {useRemoteOptions} from '@canwdev/vgo-ui/src/components/QuickOptions/utils/use-remote-options'
 import QuickOptions from '@canwdev/vgo-ui/src/components/QuickOptions/index.vue'
-import {LS_SettingsKey} from '@/enum/settings'
+import { useRemoteOptions } from '@canwdev/vgo-ui/src/components/QuickOptions/utils/use-remote-options'
+import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/index.vue'
+import { useStorage, useVModel } from '@vueuse/core'
+import { useRouter } from 'vue-router'
+import { LS_SettingsKey } from '@/enum/settings'
 
 const props = withDefaults(
   defineProps<{
@@ -20,7 +17,13 @@ const props = withDefaults(
     visible: false,
   },
 )
+
 const emit = defineEmits(['update:visible'])
+
+export default {
+  name: 'IframeBrowser',
+}
+
 const mVisible = useVModel(props, 'visible', emit)
 
 const router = useRouter()
@@ -55,20 +58,20 @@ onMounted(() => {
   }
 })
 
-const handleGo = () => {
+function handleGo() {
   iframeSrc.value = ''
   iframeSrc.value = addressBarUrl.value
   isLoading.value = true
 }
-const handleIframeLoad = () => {
+function handleIframeLoad() {
   isLoading.value = false
 }
-const handleIframeError = (e) => {
+function handleIframeError(e) {
   isLoading.value = false
   console.error('[handleIframeError]', e)
 }
 
-const {options: shortcutList} = useRemoteOptions({
+const { options: shortcutList } = useRemoteOptions({
   fetchFn: async () => {
     const res = await fetch('./resources/bookmarks.json')
     return await res.json()
@@ -92,17 +95,17 @@ const {options: shortcutList} = useRemoteOptions({
 const showShortcuts = ref(false)
 
 const iframeWinRef = ref()
-const setMobileView = () => {
-  iframeWinRef.value.setPos('width', 375 + 10 + 'px')
-  iframeWinRef.value.setPos('height', 668 + 59 + 'px')
+function setMobileView() {
+  iframeWinRef.value.setPos('width', `${375 + 10}px`)
+  iframeWinRef.value.setPos('height', `${668 + 59}px`)
 }
 </script>
 
 <template>
   <ViewPortWindow
     ref="iframeWinRef"
-    class="iframe-browser-vgo-window"
     v-model:visible="mVisible"
+    class="iframe-browser-vgo-window"
     wid="iframe_browser"
     allow-maximum
     :init-win-options="{
@@ -111,13 +114,13 @@ const setMobileView = () => {
     }"
   >
     <template #titleBarLeft>
-      <span class="mdi mdi-web"></span>
+      <span class="mdi mdi-web" />
       Iframe Browser {{ titleText }}
     </template>
     <template #titleBarRightControls>
       <button @click="setMobileView">
-        <!--  📱-->
-        <span class="mdi mdi-cellphone"></span>
+        <!--  📱 -->
+        <span class="mdi mdi-cellphone" />
       </button>
     </template>
 
@@ -125,30 +128,30 @@ const setMobileView = () => {
       <div class="iframe-browser-address-bar-wrap">
         <div class="button-wrap">
           <button class="vgo-button" @click="showShortcuts = true">
-            <span class="mdi mdi-bookmark-box"></span>
+            <span class="mdi mdi-bookmark-box" />
           </button>
-          <QuickOptions :options="shortcutList" v-model:visible="showShortcuts" title="Shortcuts" />
+          <QuickOptions v-model:visible="showShortcuts" :options="shortcutList" title="Shortcuts" />
         </div>
 
         <input
-          class="vgo-input iframe-browser-input font-code"
           v-model="addressBarUrl"
+          class="vgo-input iframe-browser-input font-code"
           placeholder="input url (https://)"
           type="text"
           @keyup.enter="handleGo()"
-        />
+        >
         <button class="vgo-button" @click="handleGo()">
-          <span class="mdi mdi-arrow-left-bottom"></span>
+          <span class="mdi mdi-arrow-left-bottom" />
         </button>
       </div>
       <iframe
         ref="iframeRef"
-        @load="handleIframeLoad"
-        @error="handleIframeError"
         class="iframe-browser-inner-iframe"
         :src="iframeSrc"
         frameborder="0"
-      ></iframe>
+        @load="handleIframeLoad"
+        @error="handleIframeError"
+      />
     </div>
   </ViewPortWindow>
 </template>

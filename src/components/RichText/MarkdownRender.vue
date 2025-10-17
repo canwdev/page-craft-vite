@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {watchThrottled} from '@vueuse/core'
+import { watchThrottled } from '@vueuse/core'
 import markdown from '@/utils/markdown'
 
 interface Props {
@@ -11,10 +11,10 @@ const props = withDefaults(defineProps<Props>(), {
   dark: false,
   text: '',
 })
-const {text} = toRefs(props)
+const { text } = toRefs(props)
 
 const renderedContent = ref('')
-const renderMd = () => {
+function renderMd() {
   renderedContent.value = markdown.render(text.value)
 }
 watchThrottled(
@@ -22,10 +22,10 @@ watchThrottled(
   (val) => {
     renderMd()
   },
-  {throttle: 100, trailing: true, immediate: true},
+  { throttle: 100, trailing: true, immediate: true },
 )
 
-const handleClick = (event) => {
+function handleClick(event) {
   const el = event.target
   if (el) {
     if (el.tagName === 'A') {
@@ -37,8 +37,8 @@ const handleClick = (event) => {
     const isActionButton = el.classList.contains('_js-action-button')
     if (isActionButton) {
       const code = el.parentElement.nextSibling.textContent
-      const lang =
-        el.parentElement.querySelector('.lang-display')?.getAttribute('data-lang') || 'txt'
+      const lang
+        = el.parentElement.querySelector('.lang-display')?.getAttribute('data-lang') || 'txt'
 
       // console.log(el.parentElement.nextSibling)
       switch (el.getAttribute('data-action')) {
@@ -46,7 +46,7 @@ const handleClick = (event) => {
           window.$mcUtils.copy(code)
           break
         case 'download':
-          window.$mcUtils.handleExportFile('', code, '_code.' + lang)
+          window.$mcUtils.handleExportFile('', code, `_code.${lang}`)
           break
       }
     }
@@ -56,9 +56,9 @@ const handleClick = (event) => {
 
 <template>
   <div
-    @click="handleClick"
     class="markdown-body"
     :class="[dark ? 'markdown-body-dark' : 'markdown-body']"
+    @click="handleClick"
     v-html="renderedContent"
-  ></div>
+  />
 </template>

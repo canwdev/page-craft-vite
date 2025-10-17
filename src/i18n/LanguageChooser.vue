@@ -1,12 +1,12 @@
 <script lang="ts">
-import {defineComponent} from 'vue'
-import {languages, setLanguage} from './languages'
-import {useI18n} from 'vue-i18n'
+import { defineComponent } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { languages, setLanguage } from './languages'
 
 export default defineComponent({
   name: 'LanguageChooser',
   setup() {
-    const {t: $t} = useI18n()
+    const { t: $t } = useI18n()
     return {
       languages,
       handleLanguageSelect(val) {
@@ -26,7 +26,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <el-select class="language-chooser" v-model="$i18n.locale" @change="handleLanguageSelect">
+  <el-select v-model="$i18n.locale" class="language-chooser" @change="handleLanguageSelect">
     <el-option v-for="vi in languages" :key="vi.locale" :label="vi.name" :value="vi.locale" />
   </el-select>
 </template>

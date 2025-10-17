@@ -1,19 +1,17 @@
-import {IEntry} from '../../types/filesystem'
-import {normalizePath, toggleArrayElement} from '../../utils'
-import {useStorage} from '@vueuse/core'
-import {
-  regComponentDir,
-  useComponentStorageV2,
-} from '@/components/PageCraft/ComponentExplorer/hooks/use-component-manage'
-import {LS_SettingsKey} from '@/enum/settings'
-export const useNavigation = ({getListFn, openEntryFn}) => {
+import type { IEntry } from '../../types/filesystem'
+import { useStorage } from '@vueuse/core'
+
+import { LS_SettingsKey } from '@/enum/settings'
+import { normalizePath, toggleArrayElement } from '../../utils'
+
+export function useNavigation({ getListFn, openEntryFn }) {
   const files = ref<IEntry[]>([])
   const basePath = useStorage(LS_SettingsKey.MC_EXPLORER_BASE_PATH, '/', localStorage, {
     listenToStorageChanges: false,
   })
   const basePathNormalized = computed(() => {
     let path = normalizePath(basePath.value)
-    if (!/\/$/gi.test(path)) {
+    if (!/\/$/.test(path)) {
       path += '/'
     }
     return path
@@ -29,10 +27,12 @@ export const useNavigation = ({getListFn, openEntryFn}) => {
       }
 
       files.value = (await getListFn()) as unknown as IEntry[]
-    } catch (e) {
+    }
+    catch (e) {
       console.error(e)
       files.value = []
-    } finally {
+    }
+    finally {
       isLoading.value = false
     }
   }
@@ -67,27 +67,28 @@ export const useNavigation = ({getListFn, openEntryFn}) => {
 
   // 是否允许返回上一级
   const allowUp = computed(() => {
-    const arr = basePath.value.split('/').filter((i) => !!i)
+    const arr = basePath.value.split('/').filter(i => !!i)
     if (isUnix.value) {
       return arr.length > 0
-    } else {
+    }
+    else {
       return arr.length > 1
     }
   })
   // 检测以/开头的路径为unix路径
   const isUnix = computed(() => {
-    return /^\//g.test(basePath.value)
+    return /^\//.test(basePath.value)
   })
   const goUp = async () => {
-    const arr = basePath.value.split('/').filter((i) => !!i)
+    const arr = basePath.value.split('/').filter(i => !!i)
     arr.pop()
     if (!arr.length && !isUnix.value) {
       await handleRefresh()
       return
     }
-    let path = arr.join('/') + '/'
+    let path = `${arr.join('/')}/`
     if (isUnix.value) {
-      path = '/' + path
+      path = `/${path}`
     }
     await handleOpenPath(path)
   }
@@ -103,14 +104,14 @@ export const useNavigation = ({getListFn, openEntryFn}) => {
 
   // 打开文件或文件夹
   const handleOpen = async (item: IEntry) => {
-    const path = normalizePath(basePath.value + '/' + item.name)
+    const path = normalizePath(`${basePath.value}/${item.name}`)
 
     if (item.isDirectory) {
       await handleOpenPath(path)
-      return
-    } else {
+    }
+    else {
       // console.log(item)
-      await openEntryFn({item, path})
+      await openEntryFn({ item, path })
     }
   }
 
@@ -125,7 +126,7 @@ export const useNavigation = ({getListFn, openEntryFn}) => {
   const filterText = ref('')
   const filteredFiles = computed(() => {
     const search = filterText.value.toLowerCase()
-    return files.value.filter((item) => item.name.toLowerCase().includes(search))
+    return files.value.filter(item => item.name.toLowerCase().includes(search))
   })
 
   return {

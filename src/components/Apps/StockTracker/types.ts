@@ -1,7 +1,6 @@
-import {FormRules} from 'element-plus'
-import {CurrencyType} from './utils/currency-symbol'
-import {IOptionItem} from '@canwdev/vgo-ui/src/components/AutoFormElPlus/enum'
-import {guid} from '@/utils'
+import type { IOptionItem } from '@canwdev/vgo-ui/src/components/AutoFormElPlus/enum'
+import type { FormRules } from 'element-plus'
+import { CurrencyType } from './utils/currency-symbol'
 
 export const currencyOptions = Object.values(CurrencyType).map((item) => {
   return {
@@ -16,8 +15,8 @@ export enum EntrustSide {
 }
 
 export const entrustSideOptions: IOptionItem[] = [
-  {label: '买入', value: EntrustSide.BUY},
-  {label: '卖出', value: EntrustSide.SALE},
+  { label: '买入', value: EntrustSide.BUY },
+  { label: '卖出', value: EntrustSide.SALE },
 ]
 
 export interface ITransactionHistory {
@@ -42,7 +41,7 @@ export interface ITransactionHistory {
   createTimestamp: number
 }
 
-export const formatTransactionHistory = (item: any = {}): ITransactionHistory => {
+export function formatTransactionHistory(item: any = {}): ITransactionHistory {
   return {
     id: item.id,
     symbol: item.symbol,
@@ -57,7 +56,7 @@ export const formatTransactionHistory = (item: any = {}): ITransactionHistory =>
   }
 }
 
-export const getTransactionHistoryFormRules = (): FormRules => {
+export function getTransactionHistoryFormRules(): FormRules {
   const getRequired = () => {
     return [
       {

@@ -1,46 +1,47 @@
 <script lang="ts" setup="">
-import {StOptionItem, StOptionType} from '@canwdev/vgo-ui/src/components/OptionUI/enum'
-import {useI18n} from 'vue-i18n'
-import {useAiSettingsStore} from '@/components/AI/hooks/ai-settings'
+import type { StOptionItem } from '@canwdev/vgo-ui/src/components/OptionUI/enum'
+import { AutoFormItemType } from '@canwdev/vgo-ui/src/components/AutoFormElPlus/enum'
+import { StOptionType } from '@canwdev/vgo-ui/src/components/OptionUI/enum'
+import OptionUI from '@canwdev/vgo-ui/src/components/OptionUI/index.vue'
+import { useI18n } from 'vue-i18n'
+import { useAiSettingsStore } from '@/components/AI/hooks/ai-settings'
+import { useAnthropicClaudeAI } from '@/components/AI/hooks/use-claude'
+import { useCommonAi } from '@/components/AI/hooks/use-common-ai'
+import { useOpenAI_GPT } from '@/components/AI/hooks/use-gpt'
 import {
-  anthropicChatModelOptions,
   chatProviderOptions,
   getModelOptions,
-  openAIChatModelOptions,
 } from '@/components/AI/types/models'
-import OptionUI from '@canwdev/vgo-ui/src/components/OptionUI/index.vue'
-import {AutoFormItemType} from '@canwdev/vgo-ui/src/components/AutoFormElPlus/enum'
-import {useOpenAI_GPT} from '@/components/AI/hooks/use-gpt'
-import {useAnthropicClaudeAI} from '@/components/AI/hooks/use-claude'
-import {useCommonAi} from '@/components/AI/hooks/use-common-ai'
 
-const {t: $t} = useI18n()
+const { t: $t } = useI18n()
 const aisStore = useAiSettingsStore()
 
-const {requestChatMessage: gptMessage} = useOpenAI_GPT()
-const {requestChatMessage: claudeMessage} = useAnthropicClaudeAI()
-const {requestChatMessage} = useCommonAi()
+const { requestChatMessage: gptMessage } = useOpenAI_GPT()
+const { requestChatMessage: claudeMessage } = useAnthropicClaudeAI()
+const { requestChatMessage } = useCommonAi()
 
 const isLoading = ref(false)
 
-const testConnectivity = async (fn) => {
+async function testConnectivity(fn) {
   try {
     isLoading.value = true
-    const result = await fn([{role: 'user', content: 'tell me your name briefly'}])
+    const result = await fn([{ role: 'user', content: 'tell me your name briefly' }])
     window.$dialog.alert(result, 'Success', {
       type: 'success',
     })
-  } catch (e: any) {
+  }
+  catch (e: any) {
     console.error(e)
     window.$dialog.alert(e.message, 'Error', {
       type: 'error',
     })
-  } finally {
+  }
+  finally {
     isLoading.value = false
   }
 }
 
-const getTestItem = (fn) => {
+function getTestItem(fn) {
   return {
     label: $t('ai.lian_tong_xing_ce_sh'),
     key: 'test',
@@ -133,8 +134,8 @@ const optionList = computed((): StOptionItem[] => {
             filterable: true,
           },
         },
-        getTestItem((messages) =>
-          requestChatMessage({provider: aisStore.provider, model: aisStore.model, messages}),
+        getTestItem(messages =>
+          requestChatMessage({ provider: aisStore.provider, model: aisStore.model, messages }),
         ),
         {
           label: $t('ai.qi_yong_liu_shi_xian'),
@@ -157,5 +158,5 @@ const optionList = computed((): StOptionItem[] => {
 </script>
 
 <template>
-  <OptionUI :option-list="optionList" :store="aisStore" v-loading="isLoading" />
+  <OptionUI v-loading="isLoading" :option-list="optionList" :store="aisStore" />
 </template>

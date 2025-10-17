@@ -1,14 +1,14 @@
+import type { ReplacementItem } from '@/components/Apps/VueLangExtractor/utils/replacer'
+import { NodeTypes } from '@vue/compiler-core'
+import { parse } from '@vue/compiler-dom'
 import * as acorn from 'acorn'
-import {ReplacementItem, replaceTemplate} from '@/components/Apps/VueLangExtractor/utils/replacer'
 import {
   checkKeyNeedExtract,
-  valueNeedExtract as valueNeedExtract,
+  valueNeedExtract,
 } from '@/components/Apps/VueLangExtractor/utils/checker'
-import {parse} from '@vue/compiler-dom'
-import {NodeTypes} from '@vue/compiler-core'
-import {parse as babelParse} from '@babel/parser'
+import { replaceTemplate } from '@/components/Apps/VueLangExtractor/utils/replacer'
 
-const formatValue = (str) => {
+function formatValue(str) {
   if (typeof str !== 'string') {
     return str
   }
@@ -21,16 +21,16 @@ const formatValue = (str) => {
 }
 
 // 移除首尾括号
-const removeBrackets = (str: string) => {
+function removeBrackets(str: string) {
   return str.replace(/^\(|\)$/g, '')
 }
 
 export class VueLangExtractor {
   // 已提取的 key，用来防止重复
-  private extractedKeyValues: {[key: string]: number}
+  private extractedKeyValues: { [key: string]: number }
 
   // text -> key map
-  private extractedTextValues: {[text: string]: string}
+  private extractedTextValues: { [text: string]: string }
   public keyPrefix: string
 
   constructor(keyPrefix = '') {
@@ -47,12 +47,13 @@ export class VueLangExtractor {
     if (this.extractedKeyValues[key]) {
       console.warn('key duplicate fix!', key, this.extractedKeyValues[key], this.extractedKeyValues)
       this.extractedKeyValues[key]++
-      key = key + '_' + this.extractedKeyValues[key]
-    } else {
+      key = `${key}_${this.extractedKeyValues[key]}`
+    }
+    else {
       // console.log('key set', key)
       this.extractedKeyValues[key] = 1
     }
-    key = this.keyPrefix ? this.keyPrefix + '.' + key : key
+    key = this.keyPrefix ? `${this.keyPrefix}.${key}` : key
 
     // console.log('extractedKeyValues', this.extractedKeyValues)
     this.extractedTextValues[value] = key
@@ -68,11 +69,11 @@ export class VueLangExtractor {
     // const program = tsAst.program
     // console.log('ts ast', program)
 
-    const program = acorn.parse(jsCode, {ecmaVersion: 2020, sourceType: 'module'})
+    const program = acorn.parse(jsCode, { ecmaVersion: 2020, sourceType: 'module' })
     console.log('js ast', program)
 
     const replacements: ReplacementItem[] = []
-    const textMap: {[key: string]: string} = {}
+    const textMap: { [key: string]: string } = {}
     const warnings: any[] = []
 
     const _valueNeedExtractWith = (value: string) => {
@@ -160,18 +161,21 @@ export class VueLangExtractor {
         const replaceValue = replaceValueFn(key)
         if (isLiteral) {
           replacements.push([node.start, node.end, replaceValue])
-        } else {
+        }
+        else {
           // 移除模板字符串的引号
           replacements.push([node.start - 1, node.end + 1, replaceValue])
         }
-      } else if (node.type === 'TemplateLiteral') {
+      }
+      else if (node.type === 'TemplateLiteral') {
         // console.log('TemplateLiteral node', node)
         if (node.expressions.length > 0) {
           // 提取文字
           const value = node.quasis
             .map((quasi, index) => {
-              if (!quasi.value.raw) return ''
-              return quasi.value.raw + `{${index}}`
+              if (!quasi.value.raw)
+                return ''
+              return `${quasi.value.raw}{${index}}`
             })
             .join('')
           const text = formatValue(value)
@@ -190,7 +194,7 @@ export class VueLangExtractor {
           const key = this.generateUniqueKey(text)
           textMap[key] = text
           const message = '请手动处理模板字符串（包含插值）'
-          console.warn(message, {node, exps}, {[key]: value})
+          console.warn(message, { node, exps }, { [key]: value })
           warnings.push({
             message,
             value,
@@ -203,7 +207,8 @@ export class VueLangExtractor {
 
       // 递归遍历子节点
       getChildNodes(node).forEach((child) => {
-        if (child) walk(child) // 确保子节点存在
+        if (child)
+          walk(child) // 确保子节点存在
       })
     }
 
@@ -212,7 +217,8 @@ export class VueLangExtractor {
       // console.log('sub node', node)
       if (node.type === 'ExpressionStatement') {
         walk(node.expression)
-      } else if (node.type === 'ExportDefaultDeclaration') {
+      }
+      else if (node.type === 'ExportDefaultDeclaration') {
         node.declaration.properties.forEach((prop) => {
           walk(prop)
         })
@@ -236,7 +242,7 @@ export class VueLangExtractor {
     const ast = parse(template)
     // console.log('template ast', ast)
     const replacements: ReplacementItem[] = []
-    let textMap: {[key: string]: string} = {}
+    let textMap: { [key: string]: string } = {}
     let warnings: any[] = []
 
     const _valueNeedExtractWith = (value: string) => {
@@ -285,13 +291,14 @@ export class VueLangExtractor {
                 prop.nameLoc.end.offset,
                 `:${prop.nameLoc.source}`,
               ])
-            } else if (
-              prop.type === NodeTypes.DIRECTIVE &&
-              prop.name === 'for' &&
-              prop.forParseResult
+            }
+            else if (
+              prop.type === NodeTypes.DIRECTIVE
+              && prop.name === 'for'
+              && prop.forParseResult
             ) {
               console.log('DIRECTIVE v-for prop', prop)
-              const {source} = prop.forParseResult
+              const { source } = prop.forParseResult
 
               let {
                 textMap: _textMap,
@@ -315,9 +322,10 @@ export class VueLangExtractor {
               warnings = [...warnings, ..._warnings]
 
               replacements.push([source.loc.start.offset, source.loc.end.offset, _newTemplate])
-            } else if (
-              prop.type === NodeTypes.DIRECTIVE &&
-              (prop.name === 'bind' || prop.name === 'html')
+            }
+            else if (
+              prop.type === NodeTypes.DIRECTIVE
+              && (prop.name === 'bind' || prop.name === 'html')
             ) {
               // console.log('DIRECTIVE prop', prop)
               // Node.DIRECTIVE 类型且 name 为 "bind"
@@ -333,7 +341,7 @@ export class VueLangExtractor {
                   }
 
                   // 检测是否以 { 或 [ 开头
-                  if (/^\{|\[/gi.test(value)) {
+                  if (/^\{|\[/.test(value)) {
                     // console.warn('检测到对象或数组，需要进一步处理', value)
 
                     let {
@@ -382,10 +390,11 @@ export class VueLangExtractor {
                     `$t('${key}')`,
                   ])
                 }
-              } else if (
-                prop.name === 'html' &&
-                prop.exp &&
-                prop.exp.type === NodeTypes.SIMPLE_EXPRESSION
+              }
+              else if (
+                prop.name === 'html'
+                && prop.exp
+                && prop.exp.type === NodeTypes.SIMPLE_EXPRESSION
               ) {
                 // 处理 v-html 内容
                 const value = prop.exp.content
@@ -405,13 +414,15 @@ export class VueLangExtractor {
             }
           })
         }
-      } else if (node.type === NodeTypes.TEXT || node.type === NodeTypes.INTERPOLATION) {
+      }
+      else if (node.type === NodeTypes.TEXT || node.type === NodeTypes.INTERPOLATION) {
         let value = ''
         if (node.type === NodeTypes.TEXT) {
           // console.log('TEXT node', node)
           // Node.TEXT 类型 (文本节点)
           value = node.content || ''
-        } else if (node.type === NodeTypes.INTERPOLATION) {
+        }
+        else if (node.type === NodeTypes.INTERPOLATION) {
           // console.log('INTERPOLATION node', node)
           // Node.INTERPOLATION 类型 (插值节点)
           value = node.content.loc.source
@@ -438,8 +449,8 @@ export class VueLangExtractor {
     replacements.sort((a, b) => a[0] - b[0]) // 确保按位置顺序
     const newTemplate = replaceTemplate(template, replacements)
 
-    return {textMap, newTemplate, warnings}
-    return {textMap, newTemplate, warnings}
+    return { textMap, newTemplate, warnings }
+    return { textMap, newTemplate, warnings }
   }
 
   // 提取 script 中的文本内容

@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import {parseComponent} from 'vue-template-compiler'
-import {onMounted, ref} from 'vue'
-import {useStorage} from '@vueuse/core'
-import {VueLangExtractor} from '@/components/Apps/VueLangExtractor/utils/extractor'
 import VueMonaco from '@canwdev/vgo-ui/src/components/VueMonaco/index.vue'
+import { useStorage } from '@vueuse/core'
 import _set from 'lodash-es/set'
+import { onMounted, ref } from 'vue'
+import { parseComponent } from 'vue-template-compiler'
+import { VueLangExtractor } from '@/components/Apps/VueLangExtractor/utils/extractor'
+import { readClipboardData } from '@/utils'
 import demoVue2 from './demo/DemoVue2.vue?raw'
-import {readClipboardData} from '@/utils'
 
 const inputSFC = useStorage('vlx_input_vue_sfc', '', localStorage, {
   listenToStorageChanges: false,
@@ -19,17 +19,17 @@ const extractedTexts = ref('')
 const outputSFC = ref('')
 const outputWarnings = ref('')
 
-const formatValue = (value: string) => {
+function formatValue(value: string) {
   // 处理HTML字符串中的  \n  为空格
   return value.replace(/ *\n */g, ' ')
 }
 
-const runConvert = async () => {
+async function runConvert() {
   try {
     const parsed = parseComponent(inputSFC.value)
     console.log('parsed vueContent', parsed)
     const newVueTmplArr: string[] = []
-    let textMap: {[key: string]: string} = {}
+    const textMap: { [key: string]: string } = {}
 
     const vueLangEx = new VueLangExtractor(keyPrefix.value)
     const warnings: any[] = []
@@ -50,7 +50,7 @@ const runConvert = async () => {
     }
 
     try {
-      let script = parsed.script?.content || parsed.scriptSetup?.content
+      const script = parsed.script?.content || parsed.scriptSetup?.content
       if (script) {
         const result = vueLangEx.extractScript(script)
         // console.log('extract script result', result)
@@ -67,9 +67,10 @@ const runConvert = async () => {
           warnings.push(...result.warnings)
         }
       }
-    } catch (e) {
+    }
+    catch (e) {
       console.error('extract script error', e)
-      window.$message.warning('暂不支持支持TypeScript。extract script error:' + e.message)
+      window.$message.warning(`暂不支持支持TypeScript。extract script error:${e.message}`)
     }
 
     if (parsed.styles) {
@@ -82,14 +83,16 @@ const runConvert = async () => {
 
     if (warnings.length > 0) {
       outputWarnings.value = JSON.stringify(warnings, null, 2)
-    } else {
+    }
+    else {
       outputWarnings.value = ''
     }
     outputSFC.value = newVueTmplArr.join('\n\n')
     extractedTexts.value = JSON.stringify(textMap, null, 2)
-  } catch (e: any) {
+  }
+  catch (e: any) {
     console.error('parse error', e)
-    window.$message.error('template parse error: ' + e.message)
+    window.$message.error(`template parse error: ${e.message}`)
   }
 }
 
@@ -97,13 +100,13 @@ onMounted(() => {
   runConvert()
 })
 
-const copy = (text) => {
+function copy(text) {
   window.$mcUtils.copy(text)
 }
-const saveFile = (text, ext) => {
+function saveFile(text, ext) {
   window.$mcUtils.handleExportFile('', text, '.json')
 }
-const handleClear = () => {
+function handleClear() {
   inputSFC.value = ''
   outputSFC.value = ''
   extractedTexts.value = ''
@@ -111,7 +114,7 @@ const handleClear = () => {
   console.log('---------- 内容已清除 ----------')
 }
 
-const handleDrop = async (event: DragEvent) => {
+async function handleDrop(event: DragEvent) {
   const files = event.dataTransfer?.files
   console.log(files)
   if (files && files.length > 0) {
@@ -119,7 +122,7 @@ const handleDrop = async (event: DragEvent) => {
     runConvert()
   }
 }
-const handleSelectFile = async () => {
+async function handleSelectFile() {
   inputSFC.value = await window.$mcUtils.handleImportTextFile({
     types: [
       {
@@ -133,13 +136,13 @@ const handleSelectFile = async () => {
   runConvert()
 }
 
-const loadDemo = async () => {
+async function loadDemo() {
   handleClear()
   inputSFC.value = demoVue2
   runConvert()
 }
 
-const pasteAndCopy = async () => {
+async function pasteAndCopy() {
   inputSFC.value = await readClipboardData()
   await runConvert()
   copy(outputSFC.value)
@@ -153,42 +156,50 @@ const pasteAndCopy = async () => {
     @dragover.prevent
     @drop.prevent="handleDrop"
   >
-    <!--<textarea class="input-text" v-model="inputSFC" placeholder="Input Vue SFC"></textarea>-->
+    <!-- <textarea class="input-text" v-model="inputSFC" placeholder="Input Vue SFC"></textarea> -->
 
     <div class="input-row">
       <div class="input-box">
         <div class="input-header">
           <div>Input Vue SFC</div>
           <div class="flex-rows">
-            <button @click="handleSelectFile" class="vgo-button">Open *.vue File</button>
+            <button class="vgo-button" @click="handleSelectFile">
+              Open *.vue File
+            </button>
             <span>-- or drop vue file here --</span>
           </div>
 
           <div class="flex-rows">
-            <button @click="handleClear" class="vgo-button">Clear</button>
-            <button @click="loadDemo" class="vgo-button">Demo</button>
+            <button class="vgo-button" @click="handleClear">
+              Clear
+            </button>
+            <button class="vgo-button" @click="loadDemo">
+              Demo
+            </button>
           </div>
         </div>
-        <VueMonaco v-model="inputSFC" class="input-text" language="html" ref="monacoEditorRef" />
+        <VueMonaco ref="monacoEditorRef" v-model="inputSFC" class="input-text" language="html" />
       </div>
     </div>
 
     <div class="flex-rows action-row">
       <div class="flex-rows" style="width: 200px">
-        <span class="mdi mdi-code-json"></span>
+        <span class="mdi mdi-code-json" />
         <input
           v-model="keyPrefix"
-          @keyup.esc="() => (keyPrefix = '')"
           placeholder="key prefix"
           class="vgo-input"
-        />
+          @keyup.esc="() => (keyPrefix = '')"
+        >
       </div>
       <div class="flex-rows">
-        <button @click="runConvert" class="vgo-button primary">↓ Convert ↓</button>
+        <button class="vgo-button primary" @click="runConvert">
+          ↓ Convert ↓
+        </button>
       </div>
       <div class="flex-rows" style="width: 200px; justify-content: flex-end">
-        <button @click="pasteAndCopy" class="vgo-button">
-          <span class="mdi mdi-content-paste"></span> Paste+Copy
+        <button class="vgo-button" @click="pasteAndCopy">
+          <span class="mdi mdi-content-paste" /> Paste+Copy
         </button>
       </div>
     </div>
@@ -201,15 +212,15 @@ const pasteAndCopy = async () => {
 
             <div class="flex-rows">
               <button
-                @click="saveFile(outputSFC, '.vue')"
                 class="btn-no-style mdi mdi-download"
-              ></button>
-              <button @click="copy(outputSFC)" class="btn-no-style mdi mdi-content-copy">
+                @click="saveFile(outputSFC, '.vue')"
+              />
+              <button class="btn-no-style mdi mdi-content-copy" @click="copy(outputSFC)">
                 Copy New SFC
               </button>
             </div>
           </div>
-          <VueMonaco v-model="outputSFC" class="input-text" language="html" ref="monacoEditorRef" />
+          <VueMonaco ref="monacoEditorRef" v-model="outputSFC" class="input-text" language="html" />
         </div>
       </div>
       <div class="out-item">
@@ -219,19 +230,19 @@ const pasteAndCopy = async () => {
 
             <div class="flex-rows">
               <button
-                @click="saveFile(extractedTexts, '.json')"
                 class="btn-no-style mdi mdi-download"
-              ></button>
-              <button @click="copy(extractedTexts)" class="btn-no-style mdi mdi-content-copy">
+                @click="saveFile(extractedTexts, '.json')"
+              />
+              <button class="btn-no-style mdi mdi-content-copy" @click="copy(extractedTexts)">
                 Copy JSON
               </button>
             </div>
           </div>
           <VueMonaco
+            ref="monacoEditorRef"
             v-model="extractedTexts"
             class="input-text"
             language="json"
-            ref="monacoEditorRef"
           />
         </div>
       </div>
@@ -246,21 +257,21 @@ const pasteAndCopy = async () => {
             <div class="flex-rows">
               <div class="flex-rows">
                 <button
-                  @click="saveFile(outputWarnings, '.json')"
                   class="btn-no-style mdi mdi-download"
-                ></button>
+                  @click="saveFile(outputWarnings, '.json')"
+                />
                 <button
-                  @click="copy(outputWarnings)"
                   class="btn-no-style mdi mdi-content-copy"
-                ></button>
+                  @click="copy(outputWarnings)"
+                />
               </div>
             </div>
           </div>
           <VueMonaco
+            ref="monacoEditorRef"
             v-model="outputWarnings"
             class="input-text"
             language="html"
-            ref="monacoEditorRef"
           />
         </div>
       </div>

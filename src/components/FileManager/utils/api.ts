@@ -1,1 +1,1 @@
-export {fsWebApi} from './providers/humanfs-api'
+export { fsWebApi } from './providers/humanfs-api'

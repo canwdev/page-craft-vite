@@ -1,9 +1,8 @@
-import {ActionBlockItems} from '@/enum/page-craft/block'
-import {BlockItem} from '@/enum/page-craft/block'
-import {CopyMode} from '@/enum/vue-i18n-tool'
-import {PageCraftKeys} from '@/enum'
+import type { BlockItem } from '@/enum/page-craft/block'
+import { PageCraftKeys } from '@/enum'
+import { ActionBlockItems } from '@/enum/page-craft/block'
 
-type IStore = {
+interface IStore {
   isAppDarkMode: boolean
 
   // PageCraft 专用
@@ -26,8 +25,8 @@ export const useMainStore = defineStore('main', {
       isAppDarkMode: true,
 
       currentBlock:
-        JSON.parse(localStorage.getItem(PageCraftKeys.CURRENT_BLOCK) || 'null') ||
-        ActionBlockItems.EMPTY,
+        JSON.parse(localStorage.getItem(PageCraftKeys.CURRENT_BLOCK) || 'null')
+        || ActionBlockItems.EMPTY,
       className: '',
       innerText: '',
       selecting: false,

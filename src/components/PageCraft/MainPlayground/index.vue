@@ -1,7 +1,4 @@
 <script lang="ts">
-export default {
-  name: 'MainPlayground',
-}
 </script>
 <script setup lang="ts">
 import {useMainStore} from '@/store/main'
@@ -18,11 +15,14 @@ import VueMonaco from '@canwdev/vgo-ui/src/components/VueMonaco/index.vue'
 import ElementEditDialog from '@/components/PageCraft/MainPlayground/components/ElementEditDialog.vue'
 import DropdownMenu from '@canwdev/vgo-ui/src/components/QuickOptions/DropdownMenu.vue'
 import QuickContextMenu from '@canwdev/vgo-ui/src/components/QuickOptions/QuickContextMenu.vue'
-import IndicatorInfo from '@/components/PageCraft/MainPlayground/components/IndicatorInfo.vue'
-import {useSystemStore} from '@/store/system'
-import {SettingsTabType} from '@/enum/settings'
-import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import ExtractComponentDialog from '@/components/PageCraft/MainPlayground/components/ExtractComponentDialog.vue'
+import IndicatorInfo from '@/components/PageCraft/MainPlayground/components/IndicatorInfo.vue'
+import { SettingsTabType } from '@/enum/settings'
+import { useSystemStore } from '@/store/system'
+import globalEventBus, { GlobalEvents } from '@/utils/global-event-bus'
+export default {
+  name: 'MainPlayground',
+}
 
 const emit = defineEmits([])
 
@@ -54,7 +54,7 @@ const {
   emit,
 })
 
-const {indicatorOptions, mainCanvasClass, toggleList, backgroundStyle} = useIndicator()
+const { indicatorOptions, mainCanvasClass, toggleList, backgroundStyle } = useIndicator()
 
 const {
   isSelectMode,
@@ -85,12 +85,13 @@ const {
   recordUndo,
 })
 
-const listenShortcuts = (event) => {
+function listenShortcuts(event) {
   // console.log(event)
   const key = event.key.toLowerCase()
   if (event.ctrlKey && event.shiftKey && key === 'z') {
     handleRedo()
-  } else if (event.ctrlKey && key === 'z') {
+  }
+  else if (event.ctrlKey && key === 'z') {
     handleUndo()
   }
 }
@@ -100,12 +101,13 @@ useEventListener(document, 'keydown', (event) => {
   const key = event.key.toLowerCase()
   if (event.altKey && key === 'x') {
     indicatorOptions.enableExpand = !indicatorOptions.enableExpand
-  } else if (event.altKey && key === 'z') {
+  }
+  else if (event.altKey && key === 'z') {
     indicatorOptions.enableDevHelpClass = !indicatorOptions.enableDevHelpClass
   }
 })
 
-const openPlayground = () => {
+function openPlayground() {
   const url = router.resolve({
     name: 'PlaygroundPage',
   }).href
@@ -119,29 +121,29 @@ const openPlayground = () => {
   window.open(url)
 }
 
-const doImportAction = () => {
+function doImportAction() {
   handleImportHtml(pasteHtmlText.value)
   isShowImportDialog.value = false
 }
 </script>
 
 <template>
-  <div tabindex="0" @keyup="listenShortcuts" class="page-craft-mc-wrap">
+  <div tabindex="0" class="page-craft-mc-wrap" @keyup="listenShortcuts">
     <IndicatorInfo v-if="isSelectMode" />
 
     <transition name="fade">
       <div
+        v-if="isShowSelectionAction"
         ref="selectionElRef"
         class="selection-action"
-        v-if="isShowSelectionAction"
         :style="selectionActionStyle"
         @click="isShowSelectionAction = false"
       >
         <button
           v-for="item in selectionPopupOptions"
           :key="item.label"
-          @click="item.onClick"
           class="btn-no-style font-code"
+          @click="item.onClick"
         >
           {{ item.label }}
         </button>
@@ -153,8 +155,8 @@ const doImportAction = () => {
     </Teleport>
 
     <el-dialog
-      draggable
       v-model="isShowImportDialog"
+      draggable
       :title="`${$t('actions.paste')} HTML`"
       width="660"
       top="5vh"
@@ -164,7 +166,9 @@ const doImportAction = () => {
 
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="isShowImportDialog = false">{{ $t('actions.cancel') }}</el-button>
+          <el-button @click="isShowImportDialog = false">
+            {{ $t('actions.cancel') }}
+          </el-button>
           <el-button type="primary" @click="doImportAction">
             {{ $t('actions.import') }} HTML
           </el-button>
@@ -177,7 +181,7 @@ const doImportAction = () => {
         v-model:visible="isShowElementEdit"
         :editing-node="editingNode"
         :is-root="isEditingRoot"
-        @onSave="updateEditingElement"
+        @on-save="updateEditingElement"
       />
       <ExtractComponentDialog ref="extractCompRef" />
     </Teleport>
@@ -190,7 +194,7 @@ const doImportAction = () => {
             :title="`${settingsStore.curCompInStore?.basePath}
 ${settingsStore.curCompInStore?.title}`"
           >
-            <span class="mdi mdi-xml"></span>
+            <span class="mdi mdi-xml" />
             {{ settingsStore.curCompInStore?.title?.slice(0, 10) || 'Default' }}
           </button>
         </DropdownMenu>
@@ -198,7 +202,7 @@ ${settingsStore.curCompInStore?.title}`"
         <el-popover width="180" trigger="hover" :persistent="false">
           <template #reference>
             <button class="vgo-button">
-              <span class="mdi mdi-cog"></span>
+              <span class="mdi mdi-cog" />
               {{ $t('common.options') }}
             </button>
           </template>
@@ -209,7 +213,7 @@ ${settingsStore.curCompInStore?.title}`"
               <template v-if="item.desc">
                 <el-popover trigger="hover">
                   <template #reference>
-                    <span class="mdi mdi-help-circle-outline"></span>
+                    <span class="mdi mdi-help-circle-outline" />
                   </template>
                   <span style="font-size: 14px">{{ item.desc }}</span>
                 </el-popover>
@@ -225,7 +229,9 @@ ${settingsStore.curCompInStore?.title}`"
               {{ $t('common.settings') }}
             </button>
 
-            <button class="vgo-button" @click="openPlayground">Playground</button>
+            <button class="vgo-button" @click="openPlayground">
+              Playground
+            </button>
           </div>
         </el-popover>
       </template>
@@ -237,7 +243,7 @@ ${settingsStore.curCompInStore?.title}`"
           :disabled="!undoRedo.undoStack.length"
           @click="handleUndo"
         >
-          <span class="mdi mdi-undo-variant"></span>
+          <span class="mdi mdi-undo-variant" />
         </button>
         <button
           class="vgo-button"
@@ -245,11 +251,11 @@ ${settingsStore.curCompInStore?.title}`"
           :disabled="!undoRedo.redoStack.length"
           @click="handleRedo"
         >
-          <span class="mdi mdi-redo-variant"></span>
+          <span class="mdi mdi-redo-variant" />
         </button>
       </div>
 
-      <span v-if="!isLitePage" style="border-right: 1px solid; opacity: 0.3"></span>
+      <span v-if="!isLitePage" style="border-right: 1px solid; opacity: 0.3" />
     </portal>
 
     <!-- Main Canvas -->
@@ -258,23 +264,23 @@ ${settingsStore.curCompInStore?.title}`"
       :class="mainCanvasClass"
       :contenteditable="indicatorOptions.contentEditable"
       class="page-craft-mc"
+      :style="backgroundStyle"
       @mousedown="handleMouseDown"
       @mouseleave="handleMouseUp"
       @mouseup="handleMouseUp"
       @dragover.prevent.stop="handleDragOver"
       @dragleave.prevent.stop="handleDragLeave"
       @drop.prevent.stop="handleDrop"
-      :style="backgroundStyle"
-    ></div>
+    />
 
     <!-- 辅助定位线 -->
-    <div class="line-helper-x"></div>
+    <div class="line-helper-x" />
 
     <!-- 删除元素的动画 -->
     <div
       v-if="cursorX"
       class="mc-digging-wrap"
-      :style="{top: cursorY + 'px', left: cursorX + 'px'}"
+      :style="{ top: `${cursorY}px`, left: `${cursorX}px` }"
     >
       <div
         class="mc-digging-inner"
@@ -282,7 +288,7 @@ ${settingsStore.curCompInStore?.title}`"
           width: `${waitingProgress}%`,
           height: `${waitingProgress}%`,
         }"
-      ></div>
+      />
     </div>
   </div>
 </template>

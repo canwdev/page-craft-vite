@@ -1,17 +1,16 @@
-import {LdThemeType} from '@/enum/settings'
-import {useSettingsStore} from '@/store/settings'
-import {useMainStore} from '@/store/main'
-import {getSystemIsDarkMode, hexToRgb} from '@/utils/color'
 import {
-  DEFAULT_THEME,
   useThemeOptions,
 } from '@canwdev/vgo-ui/src/components/ViewPortWindow/utils/use-theme'
-import {useElementPlusTheme} from '@canwdev/vgo-ui/src/hooks/use-element-plus-theme/index'
+import { useElementPlusTheme } from '@canwdev/vgo-ui/src/hooks/use-element-plus-theme/index'
+import { LdThemeType } from '@/enum/settings'
+import { useMainStore } from '@/store/main'
+import { useSettingsStore } from '@/store/settings'
+import { getSystemIsDarkMode, hexToRgb } from '@/utils/color'
 
-export const useGlobalTheme = () => {
+export function useGlobalTheme() {
   const mainStore = useMainStore()
   const settingsStore = useSettingsStore()
-  const {loadThemes} = useThemeOptions()
+  const { loadThemes } = useThemeOptions()
 
   onBeforeMount(() => {
     loadThemes()
@@ -20,9 +19,11 @@ export const useGlobalTheme = () => {
   const handleThemeChange = (val: LdThemeType) => {
     if (val === LdThemeType.SYSTEM) {
       mainStore.isAppDarkMode = getSystemIsDarkMode()
-    } else if (val === LdThemeType.LIGHT) {
+    }
+    else if (val === LdThemeType.LIGHT) {
       mainStore.isAppDarkMode = false
-    } else if (val === LdThemeType.DARK) {
+    }
+    else if (val === LdThemeType.DARK) {
       mainStore.isAppDarkMode = true
     }
     settingsStore.ldTheme = val
@@ -47,12 +48,13 @@ export const useGlobalTheme = () => {
         document.body.classList.add('dark')
         // Element Plus 暗黑模式 https://element-plus.org/zh-CN/guide/dark-mode.html
         document.documentElement.classList.add('dark')
-      } else {
+      }
+      else {
         document.body.classList.remove('dark')
         document.documentElement.classList.remove('dark')
       }
     },
-    {immediate: true},
+    { immediate: true },
   )
 
   const lastTheme = ref('')
@@ -70,7 +72,7 @@ export const useGlobalTheme = () => {
     },
   )
 
-  const {changeTheme} = useElementPlusTheme(settingsStore.themeColor)
+  const { changeTheme } = useElementPlusTheme(settingsStore.themeColor)
 
   const updateThemeColor = () => {
     const themeColor = settingsStore.themeColor
@@ -82,10 +84,11 @@ export const useGlobalTheme = () => {
         if (!res) {
           return
         }
-        const {r, g, b} = res
+        const { r, g, b } = res
         const root = document.documentElement
         root.style.setProperty('--primary-rgb', `${r}, ${g}, ${b}`)
-      } catch (e) {
+      }
+      catch (e) {
         console.error(e)
       }
     }
@@ -103,7 +106,8 @@ export const useGlobalTheme = () => {
     (val) => {
       if (val) {
         document.documentElement.classList.add('disable-animation')
-      } else {
+      }
+      else {
         document.documentElement.classList.remove('disable-animation')
       }
     },

@@ -1,19 +1,19 @@
 <script lang="ts" setup>
-import {ref} from 'vue'
-import {copyToClipboard, readClipboardData} from '@/utils'
+import RectSwitch from '@canwdev/vgo-ui/src/components/OptionUI/Tools/RectSwitch.vue'
+import VueMonaco from '@canwdev/vgo-ui/src/components/VueMonaco/index.vue'
+import { useStorage } from '@vueuse/core'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { LS_SettingsKey } from '@/enum/settings'
+import { useSettingsStore } from '@/store/settings'
+import { copyToClipboard, readClipboardData } from '@/utils'
 import {
   TextConvertMode,
-  TextConvertOptions,
   textConvertMultipleLine,
+  TextConvertOptions,
 } from '@/utils/mc-utils/text-convert'
-import {useI18n} from 'vue-i18n'
-import VueMonaco from '@canwdev/vgo-ui/src/components/VueMonaco/index.vue'
-import {useDebounceFn, useStorage} from '@vueuse/core'
-import RectSwitch from '@canwdev/vgo-ui/src/components/OptionUI/Tools/RectSwitch.vue'
-import {useSettingsStore} from '@/store/settings'
-import {LS_SettingsKey} from '@/enum/settings'
 
-const {t: $t} = useI18n()
+const { t: $t } = useI18n()
 const textInput = ref('')
 const textOutput = ref('')
 const mMode = useStorage(
@@ -46,7 +46,7 @@ watch(htmlAttrs, () => {
   updateFormat()
 })
 
-const updateFormat = () => {
+function updateFormat() {
   textOutput.value = textConvertMultipleLine(textInput.value, mMode.value, {
     isTrimEmptyLines: isTrimEmptyLines.value,
     htmlTagName: htmlTagName.value,
@@ -54,16 +54,16 @@ const updateFormat = () => {
   })
 }
 
-const handlePaste = async () => {
+async function handlePaste() {
   textInput.value = await readClipboardData()
 }
 
-const handleCopy = async () => {
+async function handleCopy() {
   await copyToClipboard(textOutput.value)
   window.$message.success($t('msgs.copy_success'))
 }
 
-const handleAutoPasteCopy = async () => {
+async function handleAutoPasteCopy() {
   await handlePaste()
   setTimeout(() => {
     handleCopy()
@@ -77,50 +77,56 @@ const settingsStore = useSettingsStore()
   <div class="text-converter-wrap">
     <div class="tool-header flex-row-center-gap">
       Convert to:
-      <RectSwitch :options="TextConvertOptions" v-model="mMode"> </RectSwitch>
+      <RectSwitch v-model="mMode" :options="TextConvertOptions" />
 
-      <el-checkbox v-model="isTrimEmptyLines">{{ $t('msgs.trim_empty_lines') }}</el-checkbox>
+      <el-checkbox v-model="isTrimEmptyLines">
+        {{ $t('msgs.trim_empty_lines') }}
+      </el-checkbox>
 
       <template v-if="mMode === TextConvertMode.HTML">
-        <input class="vgo-input" v-model="htmlTagName" placeholder="HTML Tag Name" />
-        <input v-if="htmlTagName" v-model="htmlAttrs" placeholder="HTML Attrs" class="vgo-button" />
+        <input v-model="htmlTagName" class="vgo-input" placeholder="HTML Tag Name">
+        <input v-if="htmlTagName" v-model="htmlAttrs" placeholder="HTML Attrs" class="vgo-button">
       </template>
 
       <div class="vgo-button-group">
         <button
-          @click="handleAutoPasteCopy"
           :title="$t('msgs.auto_paste_and_copy')"
           class="vgo-button primary js_focus_auto_action"
+          @click="handleAutoPasteCopy"
         >
           {{ $t('actions.paste') }}+{{ $t('actions.copy') }}
 
-          <span v-if="settingsStore.enableFocusAutoAction" class="js-focus-auto-action-tip"></span>
+          <span v-if="settingsStore.enableFocusAutoAction" class="js-focus-auto-action-tip" />
         </button>
-        <button @click="handlePaste" class="vgo-button" title="Paste">
+        <button class="vgo-button" title="Paste" @click="handlePaste">
           {{ $t('actions.paste') }}
         </button>
-        <button @click="handleCopy" class="vgo-button" title="Copy Result">
+        <button class="vgo-button" title="Copy Result" @click="handleCopy">
           {{ $t('actions.copy') }}
         </button>
       </div>
     </div>
     <div class="main-box font-code">
       <div class="input-wrapper">
-        <div class="input-tip">Text Input: text</div>
+        <div class="input-tip">
+          Text Input: text
+        </div>
         <textarea
+          v-model="textInput"
           class="input-text vgo-input"
           type="textarea"
-          v-model="textInput"
           placeholder="Text Input"
-        ></textarea>
+        />
       </div>
       <div class="input-wrapper">
-        <div class="input-tip">Text Output: {{ mMode }}</div>
+        <div class="input-tip">
+          Text Output: {{ mMode }}
+        </div>
         <VueMonaco
+          ref="monacoEditorRef"
           v-model="textOutput"
           :language="mMode"
           class="input-text"
-          ref="monacoEditorRef"
         />
       </div>
     </div>

@@ -1,14 +1,13 @@
-import {mcUtils} from '@/utils/mc-utils'
-
 export interface ITranslateItem {
   key: string
   value: string
 }
-export const formatTranslateItem = (data: any = {}): ITranslateItem => {
+export function formatTranslateItem(data: any = {}): ITranslateItem {
   let value
   if (typeof data.value === 'number') {
     value = data.value
-  } else {
+  }
+  else {
     value = data.value || ''
   }
   return {
@@ -24,7 +23,7 @@ export interface ITranslateTreeItem {
   parent?: ITranslateTreeItem | null
 }
 
-export const formatTranslateTreeItem = (data: any = {}): ITranslateTreeItem => {
+export function formatTranslateTreeItem(data: any = {}): ITranslateTreeItem {
   return {
     namespace: data.namespace || '',
     children: data.children || [],
@@ -33,11 +32,7 @@ export const formatTranslateTreeItem = (data: any = {}): ITranslateTreeItem => {
   }
 }
 
-export const parseI18nJsonObj = (
-  obj: any = {},
-  tree: ITranslateTreeItem[] = [],
-  parent: ITranslateTreeItem | null = null,
-): ITranslateTreeItem[] => {
+export function parseI18nJsonObj(obj: any = {}, tree: ITranslateTreeItem[] = [], parent: ITranslateTreeItem | null = null): ITranslateTreeItem[] {
   if (!obj) {
     return []
   }
@@ -52,15 +47,16 @@ export const parseI18nJsonObj = (
         const nItem = formatTranslateTreeItem({
           namespace: key,
           translates,
-          parent: parent,
+          parent,
         })
         nItem.children = parseI18nJsonObj(o, [], nItem)
         // console.warn(nItem)
         tree.push(nItem)
-      } else {
+      }
+      else {
         // console.log(`[${key}] is str`, o)
         if (parent && parent.translates) {
-          parent.translates.push(formatTranslateItem({key, value: o}))
+          parent.translates.push(formatTranslateItem({ key, value: o }))
         }
       }
     }
@@ -85,7 +81,7 @@ export const I18nJsonObjUtils = {
   },
 }
 
-export const exportI18nTreeJsonObj = (tree: ITranslateTreeItem[], obj: any = {}) => {
+export function exportI18nTreeJsonObj(tree: ITranslateTreeItem[], obj: any = {}) {
   if (typeof tree === 'object' && !Array.isArray(tree)) {
     tree = [tree]
   }
@@ -115,15 +111,11 @@ export const exportI18nTreeJsonObj = (tree: ITranslateTreeItem[], obj: any = {})
 }
 
 function containsChinese(text: string) {
-  const pattern = /[\u4e00-\u9fa5]/
+  const pattern = /[\u4E00-\u9FA5]/
   return pattern.test(text)
 }
 
-export const formatI18nKey = (
-  val: number | string,
-  replace: string = '_',
-  limitLength: number = 20,
-): string => {
+export function formatI18nKey(val: number | string, replace: string = '_', limitLength: number = 20): string {
   if (typeof val === 'number') {
     return `n${replace}${val}`
   }
@@ -134,13 +126,14 @@ export const formatI18nKey = (
   // 中文转换拼音
   if (containsChinese(str)) {
     try {
-      str = window.$mcUtils.pinyin(str, {toneType: 'none', nonZh: 'consecutive'})
-    } catch (e) {
+      str = window.$mcUtils.pinyin(str, { toneType: 'none', nonZh: 'consecutive' })
+    }
+    catch (e) {
       console.warn(e)
     }
   }
   // 移除非字母和数字字符
-  str = str.replace(/[^a-zA-Z0-9_\s]+/g, '')
+  str = str.replace(/[^\w\s]+/g, '')
   // 大驼峰转换 ABCDeFg -> abc_de_fg
   str = window.$mcUtils.changeCase.snakeCase(str)
   str = str.slice(0, limitLength)
@@ -152,7 +145,7 @@ export const formatI18nKey = (
   return str
 }
 
-export type DirTreeItem = {
+export interface DirTreeItem {
   key: string
   kind: 'directory' | 'file'
   label: string
@@ -170,8 +163,8 @@ export enum CopyMode {
 }
 
 export const copyModeOptions = [
-  {label: '$()', value: CopyMode.ORIGINAL, desc: "Copy $('')"},
-  {label: '{{}}', value: CopyMode.TEMPLATE, desc: 'Copy HTML template'},
-  {label: 'v-html', value: CopyMode.VHTML, desc: 'Copy v-html template'},
-  {label: 'this.$t', value: CopyMode.DOLLART, desc: 'Copy JavaScript this.$t()'},
+  { label: '$()', value: CopyMode.ORIGINAL, desc: 'Copy $(\'\')' },
+  { label: '{{}}', value: CopyMode.TEMPLATE, desc: 'Copy HTML template' },
+  { label: 'v-html', value: CopyMode.VHTML, desc: 'Copy v-html template' },
+  { label: 'this.$t', value: CopyMode.DOLLART, desc: 'Copy JavaScript this.$t()' },
 ]

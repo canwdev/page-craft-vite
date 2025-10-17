@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import CommonNavbar from '@/components/CommonUI/CommonNavbar.vue'
 import ChatRoot from '@/components/AI/AIChat/ChatRoot.vue'
+import CommonNavbar from '@/components/CommonUI/CommonNavbar.vue'
 </script>
 
 <template>

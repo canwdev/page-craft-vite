@@ -1,36 +1,35 @@
 <script lang="ts" setup>
-import {StOptionItem} from '@canwdev/vgo-ui/src/components/OptionUI/enum'
-import OptionUI from '@canwdev/vgo-ui/src/components/OptionUI/index.vue'
-import {IAiCharacter} from '@/components/AI/types/ai'
-import {
-  openAIChatModelOptions,
-  AIProvider,
-  chatProviderOptions,
-  getModelOptions,
-  defaultOpenAIModel,
-} from '@/components/AI/types/models'
-
-import iconUser from '@/assets/textures/user.png?url'
-import {useAiSettingsStore} from '@/components/AI/hooks/ai-settings'
-import {useI18n} from 'vue-i18n'
-import {computed, ref} from 'vue'
-
-import {mergeIdData, useAiCharacters} from '@/components/AI/hooks/use-ai-characters'
-import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
-import {base64Utils} from '@/utils/base64-utils'
-import {generateItemDragProps} from '@canwdev/vgo-ui/src/components/OptionUI/Tools/item-drag'
-import {AutoFormItemType, MixedFormItems} from '@canwdev/vgo-ui/src/components/AutoFormElPlus/enum'
-import {renderDropdownMenu} from '@canwdev/vgo-ui/src/components/OptionUI/Tools/renders'
+import type { MixedFormItems } from '@canwdev/vgo-ui/src/components/AutoFormElPlus/enum'
+import type { StOptionItem } from '@canwdev/vgo-ui/src/components/OptionUI/enum'
+import type { IAiCharacter } from '@/components/AI/types/ai'
+import { AutoFormItemType } from '@canwdev/vgo-ui/src/components/AutoFormElPlus/enum'
 import AutoFormElPlus from '@canwdev/vgo-ui/src/components/AutoFormElPlus/index.vue'
 
-const {t: $t} = useI18n()
+import OptionUI from '@canwdev/vgo-ui/src/components/OptionUI/index.vue'
+import { generateItemDragProps } from '@canwdev/vgo-ui/src/components/OptionUI/Tools/item-drag'
+import { renderDropdownMenu } from '@canwdev/vgo-ui/src/components/OptionUI/Tools/renders'
+import { computed, ref } from 'vue'
+
+import { useI18n } from 'vue-i18n'
+import { useAiSettingsStore } from '@/components/AI/hooks/ai-settings'
+import { mergeIdData, useAiCharacters } from '@/components/AI/hooks/use-ai-characters'
+import {
+  AIProvider,
+  chatProviderOptions,
+  defaultOpenAIModel,
+  getModelOptions,
+} from '@/components/AI/types/models'
+import { base64Utils } from '@/utils/base64-utils'
+import globalEventBus, { GlobalEvents } from '@/utils/global-event-bus'
+
+const { t: $t } = useI18n()
 const aisStore = useAiSettingsStore()
-const {characterList, allChatHistory, updatePresetCharacters, isCharacterListFinished} =
-  useAiCharacters()
+const { characterList, allChatHistory, updatePresetCharacters, isCharacterListFinished }
+  = useAiCharacters()
 
 const isCreate = ref(false)
 const isShowEditDialog = ref(false)
-const formatEditingData = (data: any = {}) => {
+function formatEditingData(data: any = {}) {
   return {
     id: data.id || '',
     name: data.name || '',
@@ -43,16 +42,16 @@ const formatEditingData = (data: any = {}) => {
 }
 const editingItem = ref<IAiCharacter>(formatEditingData())
 
-const switchPosition = (oldIndex: number, newIndex: number) => {
+function switchPosition(oldIndex: number, newIndex: number) {
   const arr = [...characterList.value]
 
   // Validate indices
   if (
-    oldIndex < 0 ||
-    oldIndex >= arr.length ||
-    newIndex < 0 ||
-    newIndex >= arr.length ||
-    oldIndex === newIndex
+    oldIndex < 0
+    || oldIndex >= arr.length
+    || newIndex < 0
+    || newIndex >= arr.length
+    || oldIndex === newIndex
   ) {
     return
   }
@@ -116,7 +115,7 @@ const optionList = computed((): StOptionItem[] => {
               onClick: () => {
                 window.$dialog
                   .confirm(
-                    $t('msgs.que_ren_shan_chu_ci') + ' !!All chat records will be deleted!!',
+                    `${$t('msgs.que_ren_shan_chu_ci')} !!All chat records will be deleted!!`,
                     $t('actions.delete_all'),
                     {
                       type: 'warning',
@@ -151,7 +150,7 @@ const optionList = computed((): StOptionItem[] => {
           clickFn: () => {
             aisStore.currentCharacterId = item.id
           },
-          itemProps: generateItemDragProps({index, cb: switchPosition}),
+          itemProps: generateItemDragProps({ index, cb: switchPosition }),
           actionRender: () =>
             renderDropdownMenu([
               {
@@ -180,7 +179,7 @@ const optionList = computed((): StOptionItem[] => {
                   onClick: () => {
                     window.$dialog
                       .confirm(
-                        $t('msgs.que_ren_shan_chu_ci') + ' !!Chat records will be deleted!!',
+                        `${$t('msgs.que_ren_shan_chu_ci')} !!Chat records will be deleted!!`,
                         $t('actions.confirm'),
                         {
                           type: 'warning',
@@ -189,7 +188,7 @@ const optionList = computed((): StOptionItem[] => {
                       .then(() => {
                         // 删除与当前角色的全部聊天记录
                         allChatHistory.value = allChatHistory.value
-                          .filter((i) => i.cid !== item.id)
+                          .filter(i => i.cid !== item.id)
                           // 转换成原始对象，否则设值报错
                           .map(toRaw)
 
@@ -213,7 +212,7 @@ watch(isCharacterListFinished, (val) => {
     }
     setTimeout(() => {
       document.querySelectorAll('.ai-option-ui .sub-item.active').forEach((el) => {
-        el.scrollIntoView({behavior: 'smooth', block: 'center'})
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' })
       })
     }, 600)
   }
@@ -228,7 +227,7 @@ const formRules = ref({
         return new Error('id is required')
       }
       if (isCreate.value) {
-        const idx = characterList.value.findIndex((i) => i.id === value)
+        const idx = characterList.value.findIndex(i => i.id === value)
         if (idx > -1) {
           return new Error('id can not be same')
         }
@@ -284,7 +283,7 @@ const formItems = computed((): MixedFormItems[] => {
             type: 'button',
             class: 'btn-no-style mdi mdi-image-plus',
             onClick: async () => {
-              const url = await base64Utils.chooseFileToBase64({accept: 'image/*'})
+              const url = await base64Utils.chooseFileToBase64({ accept: 'image/*' })
               if (typeof url === 'string') {
                 editingItem.value.avatar = url
               }
@@ -323,7 +322,7 @@ const formItems = computed((): MixedFormItems[] => {
         type: AutoFormItemType.SELECT,
         options: modelOptions,
         key: 'model',
-        label: $t('ai.model') + ` ${editingItem.value.model}`,
+        label: `${$t('ai.model')} ${editingItem.value.model}`,
         props: {
           // 允许动态创建项
           allowCreate: true,
@@ -354,14 +353,14 @@ const formItems = computed((): MixedFormItems[] => {
   ]
 })
 
-const handleSubmit = () => {
+function handleSubmit() {
   isShowEditDialog.value = false
   // 添加或更新角色
   if (isCreate.value) {
     characterList.value.push(editingItem.value)
     return
   }
-  const idx = characterList.value.findIndex((item) => item.id === editingItem.value.id)
+  const idx = characterList.value.findIndex(item => item.id === editingItem.value.id)
   if (idx > -1) {
     characterList.value.splice(idx, 1, editingItem.value)
   }
@@ -374,10 +373,10 @@ const handleSubmit = () => {
     <OptionUI class="ai-option-ui" :option-list="optionList" />
 
     <el-dialog
+      v-model="isShowEditDialog"
       draggable
       top="10vh"
       width="700"
-      v-model="isShowEditDialog"
       :title="isCreate ? $t('actions.create') : $t('actions.edit')"
     >
       <AutoFormElPlus
@@ -389,7 +388,7 @@ const handleSubmit = () => {
           },
           formItems,
         }"
-        @onSubmit="handleSubmit"
+        @on-submit="handleSubmit"
       />
     </el-dialog>
   </div>

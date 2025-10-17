@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import type { AutoTableColumn } from '@canwdev/vgo-ui/src/components/AutoTableElPlus/types'
+import type { IStockPrices, IStockTrackerPrices, ITransactionHistory } from './types'
 import AutoTableElPlus from '@canwdev/vgo-ui/src/components/AutoTableElPlus/index.vue'
-import {AutoTableColumn} from '@canwdev/vgo-ui/src/components/AutoTableElPlus/types'
-import {EntrustSide, IStockPrices, IStockTrackerPrices, ITransactionHistory} from './types'
-import {getPriceClassName, getPriceWithSymbol} from './utils'
-import {useResizeObserver} from '@vueuse/core'
+import { useResizeObserver } from '@vueuse/core'
+import { EntrustSide } from './types'
+import { getPriceClassName, getPriceWithSymbol } from './utils'
 
 const props = withDefaults(
   defineProps<{
@@ -13,7 +14,7 @@ const props = withDefaults(
   {},
 )
 const emit = defineEmits([])
-const {historyList, stockPrices} = toRefs(props)
+const { historyList, stockPrices } = toRefs(props)
 
 interface IStockLatestPriceBySymbol {
   [symbol: string]: IStockPrices
@@ -65,7 +66,7 @@ const tableColumns: AutoTableColumn[] = [
       sortable: true,
       showOverflowTooltip: true,
     },
-    formatter({row}) {
+    formatter({ row }) {
       return `<div>
 <div class="text-overflow">
 <b>${row.symbolName}</b>
@@ -81,7 +82,7 @@ const tableColumns: AutoTableColumn[] = [
     props: {
       sortable: true,
     },
-    formatter({row}) {
+    formatter({ row }) {
       return `<span class="${getPriceClassName(row.historyProfit)}">${getPriceWithSymbol({
         price: row.historyProfit,
         currency: row.currency,
@@ -96,14 +97,14 @@ const tableColumns: AutoTableColumn[] = [
     props: {
       sortable: true,
     },
-    formatter({row}) {
+    formatter({ row }) {
       return `<div>
 <div>
 <b>${getPriceWithSymbol({
-        price: row.latestPrice_x_Qty,
-        currency: row.currency,
-        showCurrencyCode: false,
-      })}</b>
+  price: row.latestPrice_x_Qty,
+  currency: row.currency,
+  showCurrencyCode: false,
+})}</b>
 </div>
 <div>${row.curQty}</div>
 </div>`
@@ -115,20 +116,20 @@ const tableColumns: AutoTableColumn[] = [
     props: {
       sortable: true,
     },
-    formatter({row}) {
+    formatter({ row }) {
       return `<div>
 <div>
 <b>${getPriceWithSymbol({
-        price: row.latestPrice,
-        currency: row.currency,
-        showCurrencyCode: false,
-      })}</b>
+  price: row.latestPrice,
+  currency: row.currency,
+  showCurrencyCode: false,
+})}</b>
 </div>
 <div>${getPriceWithSymbol({
-        price: row.holdAvgPrice,
-        currency: row.currency,
-        showCurrencyCode: false,
-      })}</div>
+  price: row.holdAvgPrice,
+  currency: row.currency,
+  showCurrencyCode: false,
+})}</div>
 </div>`
     },
   },
@@ -138,25 +139,25 @@ const tableColumns: AutoTableColumn[] = [
     props: {
       sortable: true,
     },
-    formatter({row}) {
+    formatter({ row }) {
       return `<div class="${getPriceClassName(row.holdProfit)}">
 <div >
 <b>${row.holdProfit > 0 ? '+' : ''}${getPriceWithSymbol({
-        price: row.holdProfit,
-        currency: row.currency,
-        showCurrencyCode: false,
-      })}</b>
+  price: row.holdProfit,
+  currency: row.currency,
+  showCurrencyCode: false,
+})}</b>
 </div>
 <div>
-${row.holdProfitPercent > 0 ? '+' : ''}${parseFloat((row.holdProfitPercent * 100).toFixed(2))}%
+${row.holdProfitPercent > 0 ? '+' : ''}${Number.parseFloat((row.holdProfitPercent * 100).toFixed(2))}%
 </div>
 </div>`
     },
   },
 ]
 
-const doCalculate = async () => {
-  type IStockStatistics = {
+async function doCalculate() {
+  interface IStockStatistics {
     currency: string
     symbolName: string
     // 总收益
@@ -167,7 +168,7 @@ const doCalculate = async () => {
       createTimestamp: number
     }>
   }
-  const symbolMap: {[key: string]: IStockStatistics} = {}
+  const symbolMap: { [key: string]: IStockStatistics } = {}
 
   historyList.value
     .sort((a, b) => {
@@ -195,7 +196,7 @@ const doCalculate = async () => {
         }
       }
 
-      let {historyProfit, buyList} = symbolMap[symbol]
+      let { historyProfit, buyList } = symbolMap[symbol]
 
       // console.log(symbolName, symbol, businessQty, businessAvgPrice)
       if (EntrustSide.BUY === entrustSide) {
@@ -206,7 +207,8 @@ const doCalculate = async () => {
             createTimestamp,
           })
         }
-      } else if (EntrustSide.SALE === entrustSide) {
+      }
+      else if (EntrustSide.SALE === entrustSide) {
         // 卖出: 按照先进先出（FIFO）的方法计算每次卖出操作的利润
         let currentEarn = 0
         for (let i = 0; i < businessQty; i++) {
@@ -218,10 +220,10 @@ const doCalculate = async () => {
           buyList.shift()
         }
 
-        currentEarn = parseFloat(currentEarn.toFixed(2))
+        currentEarn = Number.parseFloat(currentEarn.toFixed(2))
         historyProfit += currentEarn
       }
-      historyProfit = parseFloat(historyProfit.toFixed(2))
+      historyProfit = Number.parseFloat(historyProfit.toFixed(2))
 
       // 更新数据对象
       symbolMap[symbol].historyProfit = historyProfit
@@ -236,8 +238,8 @@ const doCalculate = async () => {
     }, 0)
     const curQty = item.buyList.length
 
-    const holdAvgPrice = curQty === 0 ? 0 : parseFloat((curHold / curQty).toFixed(2))
-    const latestPrice = parseFloat(stockLatestPriceBySymbol.value[key]?.close)
+    const holdAvgPrice = curQty === 0 ? 0 : Number.parseFloat((curHold / curQty).toFixed(2))
+    const latestPrice = Number.parseFloat(stockLatestPriceBySymbol.value[key]?.close)
     const latestPrice_x_Qty = latestPrice * curQty
     const holdProfit = holdAvgPrice === 0 ? 0 : latestPrice_x_Qty - curHold
     const holdProfitPercent = holdAvgPrice === 0 || holdProfit === 0 ? 0 : holdProfit / curHold
@@ -273,7 +275,7 @@ const rootRef = ref()
 const maxHeight = ref(300)
 useResizeObserver(rootRef, (entries) => {
   const entry = entries[0]
-  const {width, height} = entry.contentRect
+  const { width, height } = entry.contentRect
   maxHeight.value = height
 })
 

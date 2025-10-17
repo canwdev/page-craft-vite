@@ -1,11 +1,12 @@
-import {useRemoteOptions} from '@canwdev/vgo-ui/src/components/QuickOptions/utils/use-remote-options'
-import {QuickOptionItem} from '@canwdev/vgo-ui/src/components/QuickOptions/enum'
-import {ISnippetItem, monacoStyleGlobal} from './use-monaco-helper'
-import {useStorage} from '@vueuse/core'
+import type { QuickOptionItem } from '@canwdev/vgo-ui/src/components/QuickOptions/enum'
+import type { ISnippetItem } from './use-monaco-helper'
+import { useRemoteOptions } from '@canwdev/vgo-ui/src/components/QuickOptions/utils/use-remote-options'
+import { useStorage } from '@vueuse/core'
 
-import {StyleEditorKeys} from '@/enum/settings'
+import { StyleEditorKeys } from '@/enum/settings'
+import { monacoStyleGlobal } from './use-monaco-helper'
 
-export const useSnippets = ({insertCode, vueMonacoRef}) => {
+export function useSnippets({ insertCode, vueMonacoRef }) {
   const customSnippets = useStorage<ISnippetItem[]>(StyleEditorKeys.CUSTOM_SNIPPETS, [])
 
   const updateCustomSnippetsSuggestion = () => {
@@ -67,12 +68,12 @@ export const useSnippets = ({insertCode, vueMonacoRef}) => {
   }
 
   // scss代码片段自动补全缓存
-  const {options: toolOptions} = useRemoteOptions({
+  const { options: toolOptions } = useRemoteOptions({
     fetchFn: async () => {
       const res = await fetch('./resources/scss-snippets.json')
       return await res.json()
     },
-    mapFn: (i) =>
+    mapFn: i =>
       getMenuItem(i, (item) => {
         if (item.snippet) {
           // 只把snippet放入自动补全缓存，减少性能损耗

@@ -1,9 +1,9 @@
 <script lang="ts">
-import {defineComponent} from 'vue'
-import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
-import DomPreview from '@/components/PageCraft/DomPreview/DomPreview.vue'
+import type { IComponentExportData } from '@/components/PageCraft/ComponentExplorer/enum'
 import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/index.vue'
-import {IComponentExportData} from '@/components/PageCraft/ComponentExplorer/enum'
+import { defineComponent } from 'vue'
+import DomPreview from '@/components/PageCraft/DomPreview/DomPreview.vue'
+import globalEventBus, { GlobalEvents } from '@/utils/global-event-bus'
 
 export default defineComponent({
   name: 'PopWindow',
@@ -12,7 +12,7 @@ export default defineComponent({
     DomPreview,
   },
   emits: ['update:visible'],
-  setup(props, {emit}) {
+  setup(props, { emit }) {
     const mVisible = ref(false)
     const previewData = ref<IComponentExportData | null>(null)
 
@@ -28,14 +28,14 @@ export default defineComponent({
     const previewWinRef = ref()
 
     const handleCompPreview = (options) => {
-      const {item, maximum = false} = options || {}
+      const { item, maximum = false } = options || {}
       previewData.value = item
       previewWinRef.value.isMaximized = maximum
       mVisible.value = true
     }
 
     const handleClosePreview = (options) => {
-      const {maximum = false} = options || {}
+      const { maximum = false } = options || {}
       previewWinRef.value.isMaximized = maximum
       mVisible.value = false
     }
@@ -52,8 +52,8 @@ export default defineComponent({
 <template>
   <ViewPortWindow
     ref="previewWinRef"
-    class="preview-dialog"
     v-model:visible="mVisible"
+    class="preview-dialog"
     wid="preview"
     allow-maximum
     :init-win-options="{
@@ -61,10 +61,12 @@ export default defineComponent({
       height: '500px',
     }"
   >
-    <template #titleBarLeft> {{ $t('actions.preview') }}: {{ previewData?.name }} </template>
+    <template #titleBarLeft>
+      {{ $t('actions.preview') }}: {{ previewData?.name }}
+    </template>
     <template v-if="previewData && mVisible">
       <DomPreview :id="previewData.id" :style="previewData.style">
-        <div v-html="previewData.html"></div>
+        <div v-html="previewData.html" />
       </DomPreview>
     </template>
   </ViewPortWindow>

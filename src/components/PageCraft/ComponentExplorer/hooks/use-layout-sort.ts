@@ -1,12 +1,12 @@
-import {QuickOptionItem} from '@canwdev/vgo-ui/src/components/QuickOptions/enum'
+import type { QuickOptionItem } from '@canwdev/vgo-ui/src/components/QuickOptions/enum'
 
-import {Ref} from 'vue'
-import {sortMethodMap, SortType} from '@/components/PageCraft/ComponentExplorer/utils/sort'
-import {useStorage} from '@vueuse/core'
-import {IComponentItem} from '@/components/PageCraft/ComponentExplorer/enum'
-import {LS_SettingsKey} from '@/enum/settings'
+import type { Ref } from 'vue'
+import type { IComponentItem } from '@/components/PageCraft/ComponentExplorer/enum'
+import { useStorage } from '@vueuse/core'
+import { sortMethodMap, SortType } from '@/components/PageCraft/ComponentExplorer/utils/sort'
+import { LS_SettingsKey } from '@/enum/settings'
 
-export const useLayoutSort = (files: Ref<IComponentItem[]>) => {
+export function useLayoutSort(files: Ref<IComponentItem[]>) {
   const isGridView = ref(false)
   const sortMode = useStorage(
     LS_SettingsKey.MC_EXPLORER_COMPONENT_SORT_TYPE,
@@ -19,10 +19,10 @@ export const useLayoutSort = (files: Ref<IComponentItem[]>) => {
   const showSortMenu = ref(false)
   const sortOptions = computed((): QuickOptionItem[] => {
     return [
-      {label: 'Name ▲', value: SortType.name},
-      {label: 'Name ▼', value: SortType.nameDesc},
-      {label: 'Created Time ▲', value: SortType.birthTime},
-      {label: 'Created Time ▼', value: SortType.birthTimeDesc},
+      { label: 'Name ▲', value: SortType.name },
+      { label: 'Name ▼', value: SortType.nameDesc },
+      { label: 'Created Time ▲', value: SortType.birthTime },
+      { label: 'Created Time ▼', value: SortType.birthTimeDesc },
     ].map((i) => {
       return {
         label: i.label,

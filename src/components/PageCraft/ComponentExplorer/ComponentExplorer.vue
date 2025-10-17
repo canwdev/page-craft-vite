@@ -1,11 +1,13 @@
 <script lang="ts" setup>
-import {useNavigation} from '@/components/FileManager/ExplorerUI/hooks/use-navigation'
-import {fsWebApi} from '@/components/FileManager/utils/providers/humanfs-api'
-import {getLastDirName, normalizePath} from '@/components/FileManager/utils'
-import ComponentList from '@/components/PageCraft/ComponentExplorer/ComponentList.vue'
-import {
+import type {
   IComponentItem,
   IComponentMeta,
+} from '@/components/PageCraft/ComponentExplorer/enum'
+import { useNavigation } from '@/components/FileManager/ExplorerUI/hooks/use-navigation'
+import { getLastDirName, normalizePath } from '@/components/FileManager/utils'
+import { fsWebApi } from '@/components/FileManager/utils/providers/humanfs-api'
+import ComponentList from '@/components/PageCraft/ComponentExplorer/ComponentList.vue'
+import {
   regComponentV2,
 } from '@/components/PageCraft/ComponentExplorer/enum'
 
@@ -38,13 +40,13 @@ const {
       const entry = entries[key]
       let meta: IComponentMeta | undefined
       if (regComponentV2.test(entry.name)) {
-        meta =
-          (await fsWebApi.getFile({
-            path: normalizePath(basePath.value + '/' + entry.name + '/index.json'),
+        meta
+          = (await fsWebApi.getFile({
+            path: normalizePath(`${basePath.value}/${entry.name}/index.json`),
             mode: 'json',
           })) || {}
         meta!.cover = await fsWebApi.getFile({
-          path: normalizePath(basePath.value + '/' + entry.name + '/cover.base64'),
+          path: normalizePath(`${basePath.value}/${entry.name}/cover.base64`),
         })
       }
       cEntries.push({
@@ -57,7 +59,7 @@ const {
     // console.log(cEntries)
     return cEntries
   },
-  openEntryFn: async ({path}) => {
+  openEntryFn: async ({ path }) => {
     const res = await fsWebApi.getFile({
       path,
     })
@@ -78,39 +80,39 @@ onMounted(() => {
           <button
             :disabled="backHistory.length <= 1"
             class="btn-action vgo-button"
-            @click="goBack"
             title="Back"
+            @click="goBack"
           >
-            <span class="mdi mdi-arrow-left"></span>
+            <span class="mdi mdi-arrow-left" />
           </button>
           <button
             :disabled="forwardHistory.length <= 0"
             class="btn-action vgo-button"
-            @click="goForward"
             title="Forward"
+            @click="goForward"
           >
-            <span class="mdi mdi-arrow-right"></span>
+            <span class="mdi mdi-arrow-right" />
           </button>
-          <button class="btn-action vgo-button" :disabled="!allowUp" @click="goUp" title="Up">
-            <span class="mdi mdi-arrow-up"></span>
+          <button class="btn-action vgo-button" :disabled="!allowUp" title="Up" @click="goUp">
+            <span class="mdi mdi-arrow-up" />
           </button>
         </div>
         <div class="input-wrap">
           <input
-            :placeholder="`Filter name in ${basePath}`"
             v-model="filterText"
+            :placeholder="`Filter name in ${basePath}`"
             class="input-addr vgo-input"
-          />
+          >
 
           <button class="vgo-button btn-action" @click="handleRefresh">
-            <span class="mdi mdi-refresh"></span>
+            <span class="mdi mdi-refresh" />
           </button>
           <button class="vgo-button btn-action" @click="toggleStar">
             <template v-if="isStared">
-              <span class="mdi mdi-star"></span>
+              <span class="mdi mdi-star" />
             </template>
             <template v-else>
-              <span class="mdi mdi-star-outline"></span>
+              <span class="mdi mdi-star-outline" />
             </template>
           </button>
         </div>
@@ -118,9 +120,9 @@ onMounted(() => {
         <div v-if="starList.length" class="star-list">
           <div v-for="(path, index) in starList" :key="path">
             <button
-              @click="handleOpenPath(path)"
               class="vgo-button"
               :title="path"
+              @click="handleOpenPath(path)"
               @contextmenu.prevent="() => starList.splice(index, 1)"
             >
               {{ getLastDirName(path) }}
@@ -134,9 +136,9 @@ onMounted(() => {
       <ComponentList
         v-model:is-loading="isLoading"
         :files="filteredFiles"
+        :base-path="basePathNormalized"
         @open="handleOpen"
         @refresh="handleRefresh"
-        :base-path="basePathNormalized"
       />
     </div>
   </div>

@@ -1,13 +1,14 @@
 <script lang="ts" setup>
-import {JSONEditor} from 'vanilla-jsoneditor'
+import { JSONEditor } from 'vanilla-jsoneditor'
 import 'vanilla-jsoneditor/themes/jse-theme-dark.css'
+
 interface Props {
   options: any
   dark?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {})
-const {options} = toRefs(props)
+const { options } = toRefs(props)
 
 const editorWrap = ref()
 const jsonEditor = ref()
@@ -55,7 +56,7 @@ onMounted(() => {
     props: pickDefinedProps(options.value),
   })
 
-  jsonEditor.value.expand((path) => true)
+  jsonEditor.value.expand(path => true)
 })
 onBeforeUnmount(() => {
   jsonEditor.value.destroy()
@@ -73,10 +74,10 @@ defineExpose({
 
 <template>
   <div
-    class="vue-json-editor scrollbar-mini"
-    :class="{'jse-theme-dark': dark}"
     ref="editorWrap"
-  ></div>
+    class="vue-json-editor scrollbar-mini"
+    :class="{ 'jse-theme-dark': dark }"
+  />
 </template>
 
 <style lang="scss" scoped>

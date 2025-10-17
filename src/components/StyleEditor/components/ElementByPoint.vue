@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import {computed, reactive} from 'vue'
-import {useElementBounding, useElementByPoint, useEventListener, useMouse} from '@vueuse/core'
+import { useElementBounding, useElementByPoint, useEventListener, useMouse } from '@vueuse/core'
+import { computed, reactive } from 'vue'
 
 interface Props {
   // 如果传入此类名，则只在这个类以下进行选择
@@ -9,9 +9,8 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   parentClass: undefined,
 })
-const {parentClass} = toRefs(props)
 const emit = defineEmits(['select'])
-
+const { parentClass } = toRefs(props)
 const parentEl = ref<Element | null>(null)
 onMounted(() => {
   if (parentClass.value) {
@@ -19,8 +18,8 @@ onMounted(() => {
   }
 })
 
-const {x, y} = useMouse({type: 'client'})
-const {element} = useElementByPoint({x, y})
+const { x, y } = useMouse({ type: 'client' })
+const { element } = useElementByPoint({ x, y })
 const bounding = reactive(useElementBounding(element))
 
 useEventListener('scroll', bounding.update, true)
@@ -28,8 +27,8 @@ useEventListener('scroll', bounding.update, true)
 // 是否在允许的范围内
 const isInParent = computed(() => {
   if (
-    (parentEl.value && !parentEl.value.contains(element.value)) ||
-    parentEl.value === element.value
+    (parentEl.value && !parentEl.value.contains(element.value))
+    || parentEl.value === element.value
   ) {
     return false
   }

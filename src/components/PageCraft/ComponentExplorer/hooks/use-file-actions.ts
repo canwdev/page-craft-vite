@@ -1,33 +1,35 @@
+import type { QuickOptionItem } from '@canwdev/vgo-ui/src/components/QuickOptions/enum'
+import type { IEntry } from '@/components/FileManager/types/filesystem'
+import type {
+  IComponentExportData,
+  IComponentItem,
+  IComponentMeta,
+} from '@/components/PageCraft/ComponentExplorer/enum'
 import moment from 'moment/moment'
-import {QuickOptionItem} from '@canwdev/vgo-ui/src/components/QuickOptions/enum'
-import {IEntry} from '@/components/FileManager/types/filesystem'
-import {normalizePath} from '@/components/FileManager/utils'
-import {fsWebApi} from '@/components/FileManager/utils/api'
+import { useI18n } from 'vue-i18n'
+import { normalizePath } from '@/components/FileManager/utils'
+import { fsWebApi } from '@/components/FileManager/utils/api'
+import { findHandleByPath } from '@/components/FileManager/utils/providers/opfs-utils'
+import {
+  regComponentV2,
+} from '@/components/PageCraft/ComponentExplorer/enum'
 import {
   createFile,
   useComponentManage,
 } from '@/components/PageCraft/ComponentExplorer/hooks/use-component-manage'
-import {useI18n} from 'vue-i18n'
-import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
-import {useSettingsStore} from '@/store/settings'
-import {
-  IComponentExportData,
-  IComponentItem,
-  IComponentMeta,
-  regComponentV2,
-} from '@/components/PageCraft/ComponentExplorer/enum'
-import {useComponentCover} from '@/components/PageCraft/ComponentExplorer/hooks/use-cover'
-import {guid} from '@/utils'
-import {promptGetFileName} from '@/utils/mc-utils/io'
+import { useComponentCover } from '@/components/PageCraft/ComponentExplorer/hooks/use-cover'
 import {
   chooseDirectoryAndImport,
   chooseFilesAndImport,
   chooseZipFileAndImport,
   exportZip,
 } from '@/components/PageCraft/ComponentExplorer/utils/zip-export'
-import {findHandleByPath} from '@/components/FileManager/utils/providers/opfs-utils'
+import { useSettingsStore } from '@/store/settings'
+import { guid } from '@/utils'
+import globalEventBus, { GlobalEvents } from '@/utils/global-event-bus'
+import { promptGetFileName } from '@/utils/mc-utils/io'
 
-export const useComponentFileActions = ({
+export function useComponentFileActions({
   isLoading,
   selectedPaths,
   basePath,
@@ -39,8 +41,8 @@ export const useComponentFileActions = ({
   selectedItemsSet,
   files,
   emit,
-}) => {
-  const {t: $t} = useI18n()
+}) {
+  const { t: $t } = useI18n()
   const settingsStore = useSettingsStore()
 
   const {
@@ -57,7 +59,7 @@ export const useComponentFileActions = ({
 
   // 检查文件名是否重复
   const checkNameExist = (name) => {
-    if (files.value.some((f) => f.name === name)) {
+    if (files.value.some(f => f.name === name)) {
       window.$message.error('Filename already exists, please rename it!')
       return true
     }
@@ -73,9 +75,10 @@ export const useComponentFileActions = ({
         return
       }
       isLoading.value = true
-      await fsWebApi.createDir({path: normalizePath(basePath.value + '/' + name)})
+      await fsWebApi.createDir({ path: normalizePath(`${basePath.value}/${name}`) })
       emit('refresh')
-    } finally {
+    }
+    finally {
       isLoading.value = false
     }
   }
@@ -93,11 +96,12 @@ export const useComponentFileActions = ({
 
       isLoading.value = true
       await fsWebApi.renameEntry({
-        fromPath: normalizePath(basePath.value + '/' + item.name),
-        toPath: normalizePath(basePath.value + '/' + name),
+        fromPath: normalizePath(`${basePath.value}/${item.name}`),
+        toPath: normalizePath(`${basePath.value}/${name}`),
       })
       emit('refresh')
-    } finally {
+    }
+    finally {
       isLoading.value = false
     }
   }
@@ -108,14 +112,15 @@ export const useComponentFileActions = ({
       await fsWebApi.deleteEntry({
         path: selectedPaths.value,
       })
-    } finally {
+    }
+    finally {
       isLoading.value = false
       emit('refresh')
     }
   }
   const confirmDelete = () => {
     window.$dialog
-      .confirm($t('msgs.are_you_sure_to_dele') + ` component(s) ?`, $t('actions.confirm'), {
+      .confirm(`${$t('msgs.are_you_sure_to_dele')} component(s) ?`, $t('actions.confirm'), {
         type: 'warning',
       })
       .then(() => {
@@ -136,7 +141,8 @@ export const useComponentFileActions = ({
       const res = await fetch('./resources/preset-components.json')
       const data = await res.json()
       await importComponentAllJson(data)
-    } finally {
+    }
+    finally {
       isLoading.value = false
       emit('refresh')
     }
@@ -150,7 +156,8 @@ export const useComponentFileActions = ({
       await importComponentAllJson(list)
       window.$message.success('Import success!')
       emit('refresh')
-    } finally {
+    }
+    finally {
       isLoading.value = false
     }
   }
@@ -176,15 +183,15 @@ export const useComponentFileActions = ({
     try {
       const name = await window.$mcUtils.showInputPrompt({
         title: $t('actions.duplicate'),
-        value: item.name.replace(regComponentV2, '') + '-1.comp',
+        value: `${item.name.replace(regComponentV2, '')}-1.comp`,
       })
       if (checkNameExist(name)) {
         return
       }
       isLoading.value = true
 
-      const fromPath = normalizePath(basePath.value + '/' + item.name)
-      const toPathAbs = normalizePath(basePath.value + '/' + name)
+      const fromPath = normalizePath(`${basePath.value}/${item.name}`)
+      const toPathAbs = normalizePath(`${basePath.value}/${name}`)
 
       await fsWebApi.copyPaste({
         fromPaths: [fromPath],
@@ -207,7 +214,8 @@ export const useComponentFileActions = ({
         // 设置当前选中的组件
         document.querySelector(`.mc-comp-item[data-name="${name}"]`)?.click()
       }, 100)
-    } finally {
+    }
+    finally {
       isLoading.value = false
     }
   }
@@ -231,7 +239,7 @@ export const useComponentFileActions = ({
     cropperEditingSrc,
     handleCropperSave,
     handleCropperCancel,
-  } = useComponentCover({exportComponentJson})
+  } = useComponentCover({ exportComponentJson })
 
   // 当前文件夹下选择的组件，如果没有选择，返回所有组件
   const curDirComponents = computed(() => {
@@ -247,11 +255,11 @@ export const useComponentFileActions = ({
     // 无选择菜单项
     if (!selectedItems.value.length) {
       return [
-        {label: `➕ ${$t('actions.add_component')}`, props: {onClick: handleCreateComponent}},
-        {label: `📁 Create Folder`, props: {onClick: handleCreateFolder}},
-        {label: '🔃 Refresh', props: {onClick: () => emit('refresh')}},
-        {label: '📋 Paste', props: {onClick: handlePaste}, disabled: !enablePaste.value},
-        {split: true},
+        { label: `➕ ${$t('actions.add_component')}`, props: { onClick: handleCreateComponent } },
+        { label: `📁 Create Folder`, props: { onClick: handleCreateFolder } },
+        { label: '🔃 Refresh', props: { onClick: () => emit('refresh') } },
+        { label: '📋 Paste', props: { onClick: handlePaste }, disabled: !enablePaste.value },
+        { split: true },
         {
           label: `🗃️ ${$t('actions.import')}/${$t('actions.export')}`,
           children: [
@@ -272,7 +280,7 @@ export const useComponentFileActions = ({
               },
               disabled: !components.length,
             },
-            {split: true},
+            { split: true },
             {
               label: `🗜️ ${$t('actions.import')} Current Folder Zip (Recursive)`,
               props: {
@@ -281,7 +289,8 @@ export const useComponentFileActions = ({
                     isLoading.value = true
                     await chooseZipFileAndImport(fsWebApi.getRoot(), basePath.value)
                     emit('refresh')
-                  } finally {
+                  }
+                  finally {
                     isLoading.value = false
                   }
                 },
@@ -295,7 +304,8 @@ export const useComponentFileActions = ({
                     isLoading.value = true
                     await chooseDirectoryAndImport(fsWebApi.getRoot(), basePath.value)
                     emit('refresh')
-                  } finally {
+                  }
+                  finally {
                     isLoading.value = false
                   }
                 },
@@ -309,7 +319,8 @@ export const useComponentFileActions = ({
                     isLoading.value = true
                     await chooseFilesAndImport(fsWebApi.getRoot(), basePath.value)
                     emit('refresh')
-                  } finally {
+                  }
+                  finally {
                     isLoading.value = false
                   }
                 },
@@ -330,7 +341,8 @@ export const useComponentFileActions = ({
                       return
                     }
                     await exportZip(handle as FileSystemDirectoryHandle)
-                  } finally {
+                  }
+                  finally {
                     isLoading.value = false
                   }
                 },
@@ -338,7 +350,7 @@ export const useComponentFileActions = ({
             },
           ],
         },
-        {split: true},
+        { split: true },
         {
           label: '📥 Append Preset',
           props: {
@@ -348,7 +360,7 @@ export const useComponentFileActions = ({
           },
         },
         {
-          label: '🔰 ' + $t('common.default_board'),
+          label: `🔰 ${$t('common.default_board')}`,
           props: {
             class: !settingsStore.curCompInStore ? 'active' : '',
             onClick: async () => {
@@ -365,8 +377,8 @@ export const useComponentFileActions = ({
     let isCurrentComp = false
     if (settingsStore.curCompInStore) {
       const sid = settingsStore.curCompInStore.id
-      isCurrentComp =
-        (isComponent && item.meta.id === sid) || !!components.find((i) => i.meta.id === sid)
+      isCurrentComp
+        = (isComponent && item.meta.id === sid) || !!components.find(i => i.meta.id === sid)
     }
 
     // 选择文件菜单项
@@ -383,7 +395,7 @@ export const useComponentFileActions = ({
 
       // 预览
       isComponent && {
-        label: '👀 ' + $t('actions.preview'),
+        label: `👀 ${$t('actions.preview')}`,
         props: {
           onClick: async () => {
             globalEventBus.emit(GlobalEvents.ON_COMP_PREVIEW, {
@@ -394,15 +406,15 @@ export const useComponentFileActions = ({
       },
       // 封面
       isComponent && getCoverOption(item),
-      {split: true},
+      { split: true },
       {
         label: `✂️ ${$t('actions.cut')}`,
-        props: {onClick: handleCut},
+        props: { onClick: handleCut },
         disabled: isCurrentComp,
       },
       {
         label: `📄 ${$t('actions.copy')}`,
-        props: {onClick: handleCopy},
+        props: { onClick: handleCopy },
       },
       isComponent && {
         label: `📄 ${$t('actions.duplicate')}...`,
@@ -433,15 +445,15 @@ export const useComponentFileActions = ({
               },
             }
           : null,
-      {split: true},
+      { split: true },
       isSingle && {
-        label: '✏️ ' + $t('actions.rename'),
-        props: {onClick: handleRename},
+        label: `✏️ ${$t('actions.rename')}`,
+        props: { onClick: handleRename },
         disabled: isCurrentComp,
       },
       {
-        label: '❌ ' + $t('actions.delete'),
-        props: {onClick: confirmDelete},
+        label: `❌ ${$t('actions.delete')}`,
+        props: { onClick: confirmDelete },
         disabled: isCurrentComp,
       },
       isCurrentComp && {
@@ -457,7 +469,8 @@ export const useComponentFileActions = ({
     if (item !== null) {
       if (item === undefined) {
         selectedItems.value = []
-      } else {
+      }
+      else {
         if (!selectedItemsSet.value.has(item)) {
           selectedItems.value = [item]
         }
@@ -471,7 +484,7 @@ export const useComponentFileActions = ({
   })
 
   // 拖拽组件开始
-  const handleDragStart = async ({item, event}) => {
+  const handleDragStart = async ({ item, event }) => {
     if (!regComponentV2.test(item.name)) {
       return false
     }

@@ -1,11 +1,11 @@
 <script lang="ts">
-import {defineComponent} from 'vue'
-import {useModelWrapper} from '@/hooks/use-model-wrapper'
-import {readClipboardData} from '@/utils'
-import {textConvertAdvanced, TextConvertMode} from '@/utils/mc-utils/text-convert'
-import {useI18nToolSettingsStore} from '@/components/VueI18nEditTool/store/i18n-tool-settings'
-import {useAutoPasteConvert} from '@/components/VueI18nEditTool/Single/hooks/use-auto-paste-convert'
-import {isBase64Image, isSrcHttpUrl, isUrlImage} from '@/utils/is'
+import { defineComponent } from 'vue'
+import { useAutoPasteConvert } from '@/components/VueI18nEditTool/Single/hooks/use-auto-paste-convert'
+import { useI18nToolSettingsStore } from '@/components/VueI18nEditTool/store/i18n-tool-settings'
+import { useModelWrapper } from '@/hooks/use-model-wrapper'
+import { readClipboardData } from '@/utils'
+import { isBase64Image, isSrcHttpUrl, isUrlImage } from '@/utils/is'
+import { textConvertAdvanced } from '@/utils/mc-utils/text-convert'
 
 export default defineComponent({
   name: 'FieldEdit',
@@ -15,7 +15,7 @@ export default defineComponent({
     },
   },
   emits: ['onValueBlur', 'previewArray', 'update:modelValue'],
-  setup(props, {emit}) {
+  setup(props, { emit }) {
     const mValue = useModelWrapper(props, emit)
     const i18nSetStore = useI18nToolSettingsStore()
 
@@ -23,10 +23,10 @@ export default defineComponent({
       emit('onValueBlur')
     }
 
-    const {valType, autoPasteConvertMode} = useAutoPasteConvert(mValue)
+    const { valType, autoPasteConvertMode } = useAutoPasteConvert(mValue)
 
     const handlePaste = async () => {
-      let val: any = await readClipboardData()
+      const val: any = await readClipboardData()
 
       mValue.value = textConvertAdvanced(val, autoPasteConvertMode.value, {
         isTrimQuotes: i18nSetStore.autoPasteTrimQuotes,
@@ -70,15 +70,15 @@ export default defineComponent({
 
 <template>
   <div class="item-value-edit-wrap">
-    <div class="res-preview-wrap" v-if="isResUrl">
+    <div v-if="isResUrl" class="res-preview-wrap">
       <a :href="mValue" target="_blank" rel="nofollow noopener">
-        <img :src="mValue" alt="preview" />
+        <img :src="mValue" alt="preview">
       </a>
     </div>
 
     <el-input-number
-      ref="valueInputRef"
       v-if="valType === 'number'"
+      ref="valueInputRef"
       v-model="mValue"
       placeholder="number value"
       class="item-value-edit jssl_value font-code"
@@ -90,27 +90,27 @@ export default defineComponent({
       class="item-value-edit _button vgo-button"
       @click="$emit('previewArray')"
     >
-      <span class="mdi mdi-text-box-edit-outline"></span>
+      <span class="mdi mdi-text-box-edit-outline" />
       {{ $t('common.array') }}
     </button>
     <textarea
       v-else
       ref="valueInputRef"
+      v-model="mValue"
       type="textarea"
       rows="1"
       class="item-value-edit vgo-input font-code"
-      v-model="mValue"
       placeholder="text value"
       @blur="handleValueBlur"
-    ></textarea>
+    />
 
     <button
       v-if="valType !== 'object'"
-      @click="handlePaste"
       class="vgo-button primary"
       :title="`${$t('msgs.auto_paste')} [${autoPasteConvertMode}]`"
+      @click="handlePaste"
     >
-      <span class="mdi mdi-content-paste"></span>
+      <span class="mdi mdi-content-paste" />
     </button>
   </div>
 </template>

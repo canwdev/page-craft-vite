@@ -1,5 +1,5 @@
 <script lang="ts">
-import {defineComponent, ref, toRefs} from 'vue'
+import { defineComponent, ref, toRefs } from 'vue'
 
 export default defineComponent({
   name: 'FileChooser',
@@ -22,8 +22,8 @@ export default defineComponent({
     },
   },
   emits: ['selected'],
-  setup(props, {emit}) {
-    const {multiple, sizeLimit} = toRefs(props)
+  setup(props, { emit }) {
+    const { multiple, sizeLimit } = toRefs(props)
     const fileInputRef = ref<HTMLInputElement>()
 
     const handleInputFileChange = async (event) => {
@@ -54,12 +54,12 @@ export default defineComponent({
 <template>
   <div class="file-chooser">
     <input
-      type="file"
       v-show="showInput"
       ref="fileInputRef"
-      @change="handleInputFileChange"
+      type="file"
       :accept="accept"
       :multiple="multiple"
-    />
+      @change="handleInputFileChange"
+    >
   </div>
 </template>

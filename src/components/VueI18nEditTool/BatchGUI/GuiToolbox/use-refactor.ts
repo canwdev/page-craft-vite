@@ -1,18 +1,19 @@
-import {useOpenAI_GPT} from '@/components/AI/hooks/use-gpt'
-import {
+import type { GptMessage } from '@/components/AI/types/open-ai'
+import type {
   PasteResult,
+} from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox/use-gui-toolbox'
+import { useI18n } from 'vue-i18n'
+import { useCommonAi } from '@/components/AI/hooks/use-common-ai'
+import { promptBatchJsonTranslator } from '@/components/AI/utils/prompts'
+import {
   useGuiToolbox,
 } from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox/use-gui-toolbox'
-import {useI18n} from 'vue-i18n'
-import {useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
-import {promptBatchJsonTranslator} from '@/components/AI/utils/prompts'
-import {OpenAIChatCompletion, GptMessage} from '@/components/AI/types/open-ai'
-import {useCommonAi} from '@/components/AI/hooks/use-common-ai'
+import { useI18nMainStore } from '@/components/VueI18nEditTool/store/i18n-tool-main'
 
-export const useBatchTranslateRefactor = (emit) => {
-  const {t: $t} = useI18n()
+export function useBatchTranslateRefactor(emit) {
+  const { t: $t } = useI18n()
   const i18nMainStore = useI18nMainStore()
-  const {getSubItems, getArrayFromRight, pasteJsonOverrideRight} = useGuiToolbox()
+  const { getSubItems, getArrayFromRight, pasteJsonOverrideRight } = useGuiToolbox()
 
   const doDelete = async () => {
     const items = await getSubItems()
@@ -65,7 +66,7 @@ export const useBatchTranslateRefactor = (emit) => {
     await doRename(newTranslatePath)
   }
 
-  const {requestChatMessage} = useCommonAi()
+  const { requestChatMessage } = useCommonAi()
   /**
    * 自动翻译右侧空缺的字段
    */
@@ -77,11 +78,11 @@ export const useBatchTranslateRefactor = (emit) => {
       if (!iso) {
         throw new Error('iso is missing')
       }
-      const find = sourceList.find((item) => item.label === iso)
+      const find = sourceList.find(item => item.label === iso)
       if (!find) {
         throw new Error('iso item not found')
       }
-      console.log({find, sourceList})
+      console.log({ find, sourceList })
       /**
        * 构建AI提示词
        */
@@ -112,10 +113,12 @@ export const useBatchTranslateRefactor = (emit) => {
       console.log('message', message)
       const content = JSON.parse(message as string)
       await pasteJsonOverrideRight(content)
-    } catch (error: any) {
+    }
+    catch (error: any) {
       console.error(error)
       window.$message.error(error.message)
-    } finally {
+    }
+    finally {
       i18nMainStore.isLoading = false
     }
   }

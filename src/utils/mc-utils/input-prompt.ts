@@ -1,4 +1,4 @@
-export const showInputPrompt = (options: any = {}): Promise<string> => {
+export function showInputPrompt(options: any = {}): Promise<string> {
   const {
     // 弹窗标题
     title = '',
@@ -26,12 +26,11 @@ export const showInputPrompt = (options: any = {}): Promise<string> => {
           if (validateFn) {
             return validateFn(val)
           }
-          return
         },
         confirmButtonText: 'OK',
         cancelButtonText: 'Cancel',
       })
-      .then(({value}) => {
+      .then(({ value }) => {
         resolve(value)
       })
       .catch(() => {

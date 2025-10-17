@@ -1,8 +1,8 @@
-import {useIDBKeyval} from '@vueuse/integrations/useIDBKeyval'
-import {QuickOptionItem} from '@canwdev/vgo-ui/src/components/QuickOptions/enum'
+import type { QuickOptionItem } from '@canwdev/vgo-ui/src/components/QuickOptions/enum'
+import { useIDBKeyval } from '@vueuse/integrations/useIDBKeyval'
 import moment from 'moment/moment'
 
-export type FileHandleHistory = {
+export interface FileHandleHistory {
   handle: FileSystemFileHandle
   lastOpened: number
   alias: string
@@ -23,8 +23,8 @@ export async function verifyPermission(fileHandle) {
   return false
 }
 
-export const useOpenedHistory = (storageKey: string, handleOpenHistory) => {
-  const {data: openedHistory, set: setOpenedHistory} = useIDBKeyval<FileHandleHistory[]>(
+export function useOpenedHistory(storageKey: string, handleOpenHistory) {
+  const { data: openedHistory, set: setOpenedHistory } = useIDBKeyval<FileHandleHistory[]>(
     storageKey,
     [],
   )
@@ -48,7 +48,7 @@ export const useOpenedHistory = (storageKey: string, handleOpenHistory) => {
   }
   const handleRename = async (item) => {
     const list = [...openedHistory.value]
-    const idx = list.findIndex((i) => i === item)
+    const idx = list.findIndex(i => i === item)
     if (idx !== -1) {
       let f = list[idx]
       const newName = await window.$mcUtils.showInputPrompt({
@@ -66,7 +66,7 @@ export const useOpenedHistory = (storageKey: string, handleOpenHistory) => {
   }
   const handleRemove = async (item: FileHandleHistory) => {
     const list = [...openedHistory.value]
-    const idx = list.findIndex((i) => i === item)
+    const idx = list.findIndex(i => i === item)
     if (idx !== -1) {
       list.splice(idx, 1)
       await setOpenedHistory(list)
@@ -83,10 +83,10 @@ export const useOpenedHistory = (storageKey: string, handleOpenHistory) => {
           return b.lastOpened - a.lastOpened
         })
         .map((i) => {
-          const {handle, lastOpened, alias} = i
+          const { handle, lastOpened, alias } = i
           return {
             // 由于API不支持判断文件的绝对路径，使用添加时间来区分
-            label: alias || handle.name + ` (${moment(lastOpened).format('HH:mm:ss')})`,
+            label: alias || `${handle.name} (${moment(lastOpened).format('HH:mm:ss')})`,
             key: `open_${lastOpened}`,
             props: {
               onClick: () => handleOpen(handle),

@@ -1,25 +1,28 @@
 <script lang="ts" setup>
-import {useVModel} from '@vueuse/core'
+import type { IComponentItem } from '@/components/PageCraft/ComponentExplorer/enum'
 
+import DropdownMenu from '@canwdev/vgo-ui/src/components/QuickOptions/DropdownMenu.vue'
 import QuickOptions from '@canwdev/vgo-ui/src/components/QuickOptions/index.vue'
 import QuickContextMenu from '@canwdev/vgo-ui/src/components/QuickOptions/QuickContextMenu.vue'
+import { useVModel } from '@vueuse/core'
+import DialogImageCropper from '@/components/CommonUI/DialogImageCropper.vue'
+import { useCopyPaste } from '@/components/FileManager/ExplorerUI/hooks/use-copy-paste'
+import { useSelection } from '@/components/FileManager/ExplorerUI/hooks/use-selection'
+import { normalizePath } from '@/components/FileManager/utils'
+import { regComponentV2 } from '@/components/PageCraft/ComponentExplorer/enum'
 import {
   useComponentMigrationToV2,
   useComponentStorageV2,
 } from '@/components/PageCraft/ComponentExplorer/hooks/use-component-manage'
-import {useLayoutSort} from './hooks/use-layout-sort'
-import {useSelection} from '@/components/FileManager/ExplorerUI/hooks/use-selection'
-import {useCopyPaste} from '@/components/FileManager/ExplorerUI/hooks/use-copy-paste'
-import ComponentCard from './ComponentCard.vue'
-import {normalizePath} from '@/components/FileManager/utils'
-import {IComponentItem, regComponentV2} from '@/components/PageCraft/ComponentExplorer/enum'
-import {useComponentFileActions} from '@/components/PageCraft/ComponentExplorer/hooks/use-file-actions'
+import { useComponentFileActions } from '@/components/PageCraft/ComponentExplorer/hooks/use-file-actions'
+import { useLocalDir } from '@/components/PageCraft/ComponentExplorer/hooks/use-local-dir'
 import PopFloat from '@/components/PageCraft/ComponentExplorer/PopFloat.vue'
-import DialogImageCropper from '@/components/CommonUI/DialogImageCropper.vue'
-import {useSettingsStore} from '@/store/settings'
-import {useLocalDir} from '@/components/PageCraft/ComponentExplorer/hooks/use-local-dir'
-import DropdownMenu from '@canwdev/vgo-ui/src/components/QuickOptions/DropdownMenu.vue'
-import {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
+import { useSettingsStore } from '@/store/settings'
+import { GlobalEvents, useGlobalBusOn } from '@/utils/global-event-bus'
+import ComponentCard from './ComponentCard.vue'
+import { useLayoutSort } from './hooks/use-layout-sort'
+
+const props = withDefaults(defineProps<Props>(), {})
 
 const emit = defineEmits(['open', 'update:isLoading', 'refresh'])
 
@@ -29,13 +32,12 @@ interface Props {
   basePath: string
 }
 
-const props = withDefaults(defineProps<Props>(), {})
-const {basePath, files} = toRefs(props)
+const { basePath, files } = toRefs(props)
 const isLoading = useVModel(props, 'isLoading', emit)
 const settingsStore = useSettingsStore()
 
 // 布局和排序方式
-const {showSortMenu, sortOptions, filteredFiles} = useLayoutSort(files)
+const { showSortMenu, sortOptions, filteredFiles } = useLayoutSort(files)
 
 // 文件选择功能
 const {
@@ -46,18 +48,18 @@ const {
   toggleSelectAll,
   selectedPaths,
   selectionArea,
-} = useSelection({filteredFiles, basePath})
+} = useSelection({ filteredFiles, basePath })
 
 onMounted(() => {
   {
-    selectionArea.value.on('beforestart', ({event}) => {
+    selectionArea.value.on('beforestart', ({ event }) => {
       return !event.target?.closest('.mc-comp-item')
     })
   }
 })
 
 // 复制粘贴功能
-const {enablePaste, handleCut, handleCopy, handlePaste} = useCopyPaste({
+const { enablePaste, handleCut, handleCopy, handlePaste } = useCopyPaste({
   selectedPaths,
   basePath,
   isLoading,
@@ -99,14 +101,14 @@ useGlobalBusOn(GlobalEvents.CREATE_COMPONENT, handleCreateComponent)
 
 useComponentMigrationToV2(emit)
 
-const {openComponent} = useComponentStorageV2()
-const handleOpen = (item) => {
-  const path = normalizePath(basePath.value + '/' + item.name)
+const { openComponent } = useComponentStorageV2()
+function handleOpen(item) {
+  const path = normalizePath(`${basePath.value}/${item.name}`)
   // 打开.comp为后缀的组件文件夹
   if (regComponentV2.test(path)) {
     if (
-      item.meta.id !== settingsStore.curCompInStore?.id ||
-      item.basePath !== settingsStore.curCompInStore?.basePath
+      item.meta.id !== settingsStore.curCompInStore?.id
+      || item.basePath !== settingsStore.curCompInStore?.basePath
     ) {
       openComponent(item, path)
     }
@@ -115,69 +117,69 @@ const handleOpen = (item) => {
   emit('open', item)
 }
 
-const {handleOpenLocalDir, localDirHistoryOptions} = useLocalDir({emit})
+const { handleOpenLocalDir, localDirHistoryOptions } = useLocalDir({ emit })
 </script>
 
 <template>
-  <div class="comp-list-wrap" @contextmenu.prevent v-loading="isLoading">
+  <div v-loading="isLoading" class="comp-list-wrap" @contextmenu.prevent>
     <div class="explorer-actions vgo-panel">
       <div class="action-group">
         <button
           class="btn-action btn-no-style"
-          @click="handleCreateComponent()"
           :title="$t('actions.add_component')"
+          @click="handleCreateComponent()"
         >
-          <span class="mdi mdi-file-document-plus-outline"></span>
+          <span class="mdi mdi-file-document-plus-outline" />
         </button>
-        <button class="btn-action btn-no-style" @click="handleCreateFolder" title="Create Folder">
-          <span class="mdi mdi-folder-plus-outline"></span>
+        <button class="btn-action btn-no-style" title="Create Folder" @click="handleCreateFolder">
+          <span class="mdi mdi-folder-plus-outline" />
         </button>
 
-        <div class="split-line"></div>
+        <div class="split-line" />
 
         <button
           class="btn-action btn-no-style"
           :disabled="!enableAction"
-          @click="handleCut"
           title="Cut"
+          @click="handleCut"
         >
-          <span class="mdi mdi-content-cut"></span>
+          <span class="mdi mdi-content-cut" />
         </button>
         <button
           class="btn-action btn-no-style"
           :disabled="!enableAction"
-          @click="handleCopy"
           title="Copy"
+          @click="handleCopy"
         >
-          <span class="mdi mdi-content-copy"></span>
+          <span class="mdi mdi-content-copy" />
         </button>
         <button
           class="btn-action btn-no-style"
           :disabled="!enablePaste"
-          @click="handlePaste"
           title="Paste"
+          @click="handlePaste"
         >
-          <span class="mdi mdi-content-paste"></span>
+          <span class="mdi mdi-content-paste" />
         </button>
 
         <button
           class="btn-action btn-no-style"
           :disabled="selectedItems.length !== 1"
-          @click="handleRename"
           title="Rename"
+          @click="handleRename"
         >
-          <span class="mdi mdi-rename"></span>
+          <span class="mdi mdi-rename" />
         </button>
         <button
           class="btn-action btn-no-style"
           :disabled="!enableAction"
-          @click="confirmDelete"
           title="Delete"
+          @click="confirmDelete"
         >
-          <span class="mdi mdi-delete-forever-outline"></span>
+          <span class="mdi mdi-delete-forever-outline" />
         </button>
 
-        <div class="split-line"></div>
+        <div class="split-line" />
 
         <DropdownMenu :options="localDirHistoryOptions">
           <button
@@ -185,30 +187,30 @@ const {handleOpenLocalDir, localDirHistoryOptions} = useLocalDir({emit})
             title="Open Local Folder"
             @click="handleOpenLocalDir"
           >
-            <span class="mdi mdi-folder-open-outline"></span>
+            <span class="mdi mdi-folder-open-outline" />
           </button>
         </DropdownMenu>
       </div>
       <div class="action-group">
         <div class="action-button-wrap">
           <button class="btn-action btn-no-style" title="Toggle Sort" @click="showSortMenu = true">
-            <span class="mdi mdi-sort-alphabetical-variant"></span>
+            <span class="mdi mdi-sort-alphabetical-variant" />
           </button>
           <transition name="fade-scale">
             <QuickOptions v-model:visible="showSortMenu" :options="sortOptions" />
           </transition>
         </div>
 
-        <button class="btn-action btn-no-style" @click="toggleSelectAll" title="Toggle Select All">
-          <span class="mdi mdi-check-all"></span>
+        <button class="btn-action btn-no-style" title="Toggle Select All" @click="toggleSelectAll">
+          <span class="mdi mdi-check-all" />
         </button>
 
         <button
           class="btn-action btn-no-style"
-          @click="($event) => handleShowCtxMenu(null, $event)"
           title="Menu"
+          @click="($event) => handleShowCtxMenu(null, $event)"
         >
-          <span class="mdi mdi-menu"></span>
+          <span class="mdi mdi-menu" />
         </button>
       </div>
     </div>
@@ -220,21 +222,21 @@ const {handleOpenLocalDir, localDirHistoryOptions} = useLocalDir({emit})
     >
       <div class="explorer-grid-view">
         <ComponentCard
-          class="selectable"
-          :item="item"
           v-for="item in filteredFiles"
           :key="item.name"
+          class="selectable"
+          :item="item"
           :data-name="item.name"
           :checked="selectedItemsSet.has(item)"
           @open="handleOpen"
           @select="toggleSelect"
           @contextmenu.prevent.stop="handleShowCtxMenu(item, $event)"
-          @handleDragStart="(event) => handleDragStart({item, event})"
+          @handle-drag-start="(event) => handleDragStart({ item, event })"
         />
       </div>
 
       <Teleport to="body">
-        <QuickContextMenu :options="ctxMenuOptions" ref="ctxMenuRef" />
+        <QuickContextMenu ref="ctxMenuRef" :options="ctxMenuOptions" />
       </Teleport>
     </div>
     <PopFloat />
@@ -242,8 +244,8 @@ const {handleOpenLocalDir, localDirHistoryOptions} = useLocalDir({emit})
     <DialogImageCropper
       v-model:visible="isShowImageCropper"
       :src="cropperEditingSrc"
-      @onSave="handleCropperSave"
-      @onCancel="handleCropperCancel"
+      @on-save="handleCropperSave"
+      @on-cancel="handleCropperCancel"
     />
   </div>
 </template>

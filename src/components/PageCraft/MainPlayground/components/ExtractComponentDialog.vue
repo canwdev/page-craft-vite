@@ -1,10 +1,10 @@
 <script lang="ts" setup="">
-import {useVModel} from '@vueuse/core'
-import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
 import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/index.vue'
 import VueMonaco from '@canwdev/vgo-ui/src/components/VueMonaco/index.vue'
-import {useSettingsStore} from '@/store/settings'
-import {readClipboardData} from '@/utils'
+import { useVModel } from '@vueuse/core'
+import { useSettingsStore } from '@/store/settings'
+import { readClipboardData } from '@/utils'
+import globalEventBus, { GlobalEvents } from '@/utils/global-event-bus'
 
 const props = withDefaults(
   defineProps<{
@@ -15,7 +15,7 @@ const props = withDefaults(
   },
 )
 const emit = defineEmits(['update:visible'])
-const mVisible = useVModel(props, 'visible', emit, {passive: true})
+const mVisible = useVModel(props, 'visible', emit, { passive: true })
 const settingsStore = useSettingsStore()
 
 const className = ref('')
@@ -25,9 +25,9 @@ const dataForm = ref({
   style: '',
 })
 
-const showDialog = (editingNode) => {
+function showDialog(editingNode) {
   className.value = editingNode.className || ''
-  const name = window.$mcUtils.changeCase['pascalCase'](className.value)
+  const name = window.$mcUtils.changeCase.pascalCase(className.value)
 
   dataForm.value = {
     name,
@@ -38,21 +38,21 @@ const showDialog = (editingNode) => {
   mVisible.value = true
 }
 
-const handleCreateComponent = () => {
+function handleCreateComponent() {
   globalEventBus.emit(GlobalEvents.CREATE_COMPONENT, {
     ...dataForm.value,
-    successCallback: ({name}) => {
+    successCallback: ({ name }) => {
       window.$message.success(`[${name}] created successfully!`)
       mVisible.value = false
     },
   })
 }
 
-const pasteStyle = async () => {
+async function pasteStyle() {
   dataForm.value.style = await readClipboardData()
 }
 
-const copyClassName = async () => {
+async function copyClassName() {
   window.$mcUtils.copy(className.value, true)
 }
 
@@ -72,11 +72,11 @@ defineExpose({
     }"
   >
     <template #titleBarLeft>
-      <span class="mdi mdi-star-four-points-box"></span>
+      <span class="mdi mdi-star-four-points-box" />
       Component Extractor
     </template>
     <template #titleBarRightControls>
-      <button @click="handleCreateComponent" class="vgo-button primary">
+      <button class="vgo-button primary" @click="handleCreateComponent">
         {{ $t('actions.ok') }}
       </button>
     </template>
@@ -85,10 +85,10 @@ defineExpose({
       <div class="input-wrapper flex-row-center-gap font-code">
         <label class="flex-row-center-gap">
           Component Name:
-          <input class="vgo-input" v-model="dataForm.name" />
+          <input v-model="dataForm.name" class="vgo-input">
         </label>
-        <button @click="copyClassName" class="btn-no-style font-code">
-          <span class="mdi mdi-content-copy"></span>{{ className }}
+        <button class="btn-no-style font-code" @click="copyClassName">
+          <span class="mdi mdi-content-copy" />{{ className }}
         </button>
       </div>
 
@@ -98,7 +98,7 @@ defineExpose({
             <div class="input-header">
               <div>HTML</div>
 
-              <div class="flex-rows"></div>
+              <div class="flex-rows" />
             </div>
             <VueMonaco v-model="dataForm.html" class="input-text" language="html" />
           </div>
@@ -109,15 +109,15 @@ defineExpose({
               <div class="flex-rows">
                 SCSS
 
-                <button @click="pasteStyle" class="btn-no-style mdi mdi-content-paste"></button>
+                <button class="btn-no-style mdi mdi-content-paste" @click="pasteStyle" />
               </div>
 
               <div class="flex-rows">
                 <button
-                  @click="settingsStore.showStyleEditor = true"
                   class="btn-no-style mdi mdi-format-paint"
                   title="Open style editor"
-                ></button>
+                  @click="settingsStore.showStyleEditor = true"
+                />
               </div>
             </div>
             <VueMonaco v-model="dataForm.style" class="input-text" language="scss" />

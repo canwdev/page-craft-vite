@@ -1,12 +1,12 @@
 <script setup lang="ts">
+import { useBatchWrapper } from '@/components/VueI18nEditTool/BatchGUI/batch-hooks'
 import SubTextItem from '@/components/VueI18nEditTool/BatchJson/SubJsonItem.vue'
-import {useBatchWrapper} from '@/components/VueI18nEditTool/BatchGUI/batch-hooks'
-import {useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
-import {useI18nToolSettingsStore} from '@/components/VueI18nEditTool/store/i18n-tool-settings'
+import { useI18nMainStore } from '@/components/VueI18nEditTool/store/i18n-tool-main'
+import { useI18nToolSettingsStore } from '@/components/VueI18nEditTool/store/i18n-tool-settings'
 
 const i18nMainStore = useI18nMainStore()
 const i18nSetStore = useI18nToolSettingsStore()
-const {isLoading, handleSaveChanged, itemsRef} = useBatchWrapper()
+const { isLoading, handleSaveChanged, itemsRef } = useBatchWrapper()
 
 const currentTab = ref('')
 
@@ -17,7 +17,7 @@ watch(
       return
     }
     // 自动选中当前json文件夹对应的tab
-    const f = batchList.find((item) => item.rootDir.label === i18nMainStore.currentIso)
+    const f = batchList.find(item => item.rootDir.label === i18nMainStore.currentIso)
     if (!f) {
       // 回退默认
       currentTab.value = batchList[0].rootDir.key
@@ -25,12 +25,12 @@ watch(
     }
     currentTab.value = f.rootDir.key
   },
-  {immediate: true},
+  { immediate: true },
 )
 </script>
 
 <template>
-  <div class="batch-text-editor vgo-bg" v-loading="isLoading">
+  <div v-loading="isLoading" class="batch-text-editor vgo-bg">
     <div class="editor-tabs-wrap">
       <el-tabs v-model="currentTab" type="card">
         <el-tab-pane
@@ -40,19 +40,18 @@ watch(
             (i18nMainStore.changedLabelMap[item.rootDir.label] ? '* ' : '') + item.rootDir.label
           "
           :name="item.rootDir.key"
-        >
-        </el-tab-pane>
+        />
       </el-tabs>
     </div>
 
     <div class="editor-wrap">
       <SubTextItem
-        ref="itemsRef"
         v-for="item in i18nMainStore.batchList"
+        ref="itemsRef"
         :key="item.rootDir.key"
         :list-item="item"
         :visible="item.rootDir.key === currentTab"
-        @saveChanged="handleSaveChanged"
+        @save-changed="handleSaveChanged"
       />
     </div>
   </div>

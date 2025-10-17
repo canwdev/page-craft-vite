@@ -1,9 +1,9 @@
-import {GptMessage} from '@/components/AI/types/open-ai'
+import type { GptMessage } from '@/components/AI/types/open-ai'
 
 // 不允许 role 为 system 的模型
 export const NotAllowSystemRoleModels = {
   'o1-mini': true,
-  o1: true,
+  'o1': true,
   'o1-preview': true,
 }
 
@@ -11,7 +11,7 @@ export const NotAllowSystemRoleModels = {
  * 格式化 GPT 模型参数
  * @param params
  */
-export const formatGPTMessages = (params) => {
+export function formatGPTMessages(params) {
   if (params.messages) {
     let messages = params.messages as GptMessage[]
     messages = messages.filter((item) => {

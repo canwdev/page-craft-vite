@@ -1,18 +1,18 @@
 <script lang="ts" setup="">
-import {useRoute} from 'vue-router'
+import { useRoute } from 'vue-router'
 
 const route = useRoute()
 </script>
 
 <template>
   <div class="vgo-bg common-navbar-wrap">
-    <el-page-header @back="$router.push({name: 'HomePage'})">
+    <el-page-header @back="$router.push({ name: 'HomePage' })">
       <template #content>
         <div class="flex-row-center-gap">
           <el-avatar
+            v-if="route.meta?.icon"
             :size="32"
             shape="square"
-            v-if="route.meta?.icon"
             :src="route.meta.icon"
             style="background: none"
           />
@@ -20,13 +20,13 @@ const route = useRoute()
             v-if="route.meta?.iconClass"
             :class="route.meta?.iconClass"
             style="font-size: 28px"
-          ></span>
+          />
           {{ route.meta?.title }}
         </div>
       </template>
 
       <template #extra>
-        <slot name="extra"></slot>
+        <slot name="extra" />
       </template>
     </el-page-header>
   </div>

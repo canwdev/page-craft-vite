@@ -9,7 +9,9 @@ export default {
     <div class="main-container vgo-panel">
       <h1>404</h1>
       <p>Page not found</p>
-      <router-link to="/" class="vgo-button">Go back to home</router-link>
+      <router-link to="/" class="vgo-button">
+        Go back to home
+      </router-link>
     </div>
   </div>
 </template>

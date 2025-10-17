@@ -22,7 +22,7 @@ export const GlobalEvents = {
   OPEN_TEXT_TRANSFORMER: 'OPEN_TEXT_TRANSFORMER',
 }
 
-export const useGlobalBusOn = (eventName, callback) => {
+export function useGlobalBusOn(eventName, callback) {
   onMounted(() => {
     globalEventBus.on(eventName, callback)
   })
@@ -31,7 +31,7 @@ export const useGlobalBusOn = (eventName, callback) => {
   })
 }
 
-export const syncStorageData = () => {
+export function syncStorageData() {
   return new Promise((resolve) => {
     globalEventBus.emit(GlobalEvents.SYNC_STORAGE_DATA, resolve)
   })

@@ -1,7 +1,6 @@
-import {useAnimate, useEventListener, useWindowFocus} from '@vueuse/core'
-import {useSettingsStore} from '@/store/settings'
-import {isDev} from '@/enum'
-import {useI18n} from 'vue-i18n'
+import { useAnimate, useEventListener, useWindowFocus } from '@vueuse/core'
+import { useI18n } from 'vue-i18n'
+import { useSettingsStore } from '@/store/settings'
 
 function isElementInViewport(el) {
   const rect = el.getBoundingClientRect()
@@ -13,8 +12,8 @@ function isElementInViewport(el) {
   return !(rect.bottom < 0 || rect.top - viewHeight >= 0)
 }
 
-export const useFocusAutoAction = () => {
-  const {t: $t} = useI18n()
+export function useFocusAutoAction() {
+  const { t: $t } = useI18n()
   const settingsStore = useSettingsStore()
   // 视口聚焦后自动操作
   const lastClickedEl = shallowRef<any>(null)
@@ -29,10 +28,10 @@ export const useFocusAutoAction = () => {
         // })
         // console.log('[视口聚焦后自动操作]', {el})
         el.click()
-        el.scrollIntoView({behavior: 'smooth', block: 'center'})
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' })
         useAnimate(
           el,
-          [{transform: 'scale(1)'}, {transform: 'scale(0.8)'}, {transform: 'scale(1)'}],
+          [{ transform: 'scale(1)' }, { transform: 'scale(0.8)' }, { transform: 'scale(1)' }],
           500,
         )
       }

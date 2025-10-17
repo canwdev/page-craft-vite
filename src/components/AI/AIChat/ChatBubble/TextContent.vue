@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {useVModel, watchThrottled} from '@vueuse/core'
+import { useVModel } from '@vueuse/core'
 import MarkdownRender from '@/components/RichText/MarkdownRender.vue'
 
 interface Props {
@@ -14,15 +14,15 @@ const props = withDefaults(defineProps<Props>(), {
   text: '',
 })
 
-const {text, isEditing} = toRefs(props)
 const emit = defineEmits(['update:text'])
+const { text, isEditing } = toRefs(props)
 const mText = useVModel(props, 'text', emit)
 
 const editInputRef = ref()
 watch(isEditing, () => {
   setTimeout(() => {
     if (editInputRef.value) {
-      editInputRef.value.scrollIntoView({behavior: 'smooth'})
+      editInputRef.value.scrollIntoView({ behavior: 'smooth' })
       editInputRef.value.focus()
     }
   })
@@ -31,16 +31,16 @@ watch(isEditing, () => {
 
 <template>
   <div
-    class="chat-content vgo-bg"
-    :class="{'markdown-body-dark': isDark}"
     v-if="isEditing"
+    class="chat-content vgo-bg"
+    :class="{ 'markdown-body-dark': isDark }"
     style="width: 100%; padding: 0; display: flex; border-radius: 2px"
   >
     <textarea
-      class="vgo-input font-code"
-      v-model="mText"
-      rows="14"
       ref="editInputRef"
+      v-model="mText"
+      class="vgo-input font-code"
+      rows="14"
       style="width: 100%; font-size: 14px; box-sizing: border-box"
     />
   </div>

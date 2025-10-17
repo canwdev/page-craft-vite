@@ -1,16 +1,16 @@
 <script lang="ts" setup>
-import {useRoute, useRouter} from 'vue-router'
+import type { QuickOptionItem } from '@canwdev/vgo-ui/src/components/QuickOptions/enum'
 import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/index.vue'
-import {useModelWrapper} from '@/hooks/use-model-wrapper'
+import { WebviewWindow } from '@tauri-apps/api/window'
+import { useI18n } from 'vue-i18n'
+import { useRoute, useRouter } from 'vue-router'
 import CLaunch from '@/components/CLaunch/CLaunch.vue'
-import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
-import {useI18n} from 'vue-i18n'
-import {useSystemStore} from '@/store/system'
-import {useMainStore} from '@/store/main'
-import {WebviewWindow} from '@tauri-apps/api/window'
-import {SettingsTabType} from '@/enum/settings'
-import {QuickOptionItem} from '@canwdev/vgo-ui/src/components/QuickOptions/enum'
 import QuickLaunch from '@/components/QuickLaunch/index.vue'
+import { SettingsTabType } from '@/enum/settings'
+import { useModelWrapper } from '@/hooks/use-model-wrapper'
+import { useMainStore } from '@/store/main'
+import { useSystemStore } from '@/store/system'
+import globalEventBus, { GlobalEvents } from '@/utils/global-event-bus'
 
 const props = withDefaults(
   defineProps<{
@@ -26,7 +26,7 @@ const mVisible = useModelWrapper(props, emit, 'visible')
 const router = useRouter()
 const route = useRoute()
 const mainStore = useMainStore()
-const {t: $t} = useI18n()
+const { t: $t } = useI18n()
 const systemStore = useSystemStore()
 
 const showClose = computed(() => {
@@ -36,7 +36,7 @@ const showClose = computed(() => {
 const cLaunchItems = computed((): QuickOptionItem[] => {
   let toolsMenuOptions: QuickOptionItem[] = [
     {
-      label: 'Stylus ' + $t('common.formatting_tool'),
+      label: `Stylus ${$t('common.formatting_tool')}`,
       iconClass: 'mdi mdi-fleur-de-lis',
       // iconClass: 'mdi mdi-language-css3',
       search: 'stylus formatting',
@@ -64,7 +64,7 @@ const cLaunchItems = computed((): QuickOptionItem[] => {
       props: {
         onClick: async () => {
           mainStore.isShowQuickLaunch = false
-          await router.push({name: 'ExcelCopyTool'})
+          await router.push({ name: 'ExcelCopyTool' })
         },
       },
     },
@@ -75,7 +75,7 @@ const cLaunchItems = computed((): QuickOptionItem[] => {
       props: {
         onClick: async () => {
           mainStore.isShowQuickLaunch = false
-          await router.push({name: 'VueI18nEditTool'})
+          await router.push({ name: 'VueI18nEditTool' })
         },
       },
     },
@@ -86,7 +86,7 @@ const cLaunchItems = computed((): QuickOptionItem[] => {
       props: {
         onClick: async () => {
           mainStore.isShowQuickLaunch = false
-          await router.push({name: 'VueI18nBatchTool'})
+          await router.push({ name: 'VueI18nBatchTool' })
         },
       },
     },
@@ -96,7 +96,7 @@ const cLaunchItems = computed((): QuickOptionItem[] => {
       props: {
         onClick: async () => {
           mainStore.isShowQuickLaunch = false
-          await router.push({name: 'AiPage'})
+          await router.push({ name: 'AiPage' })
         },
       },
     },
@@ -155,7 +155,7 @@ const cLaunchItems = computed((): QuickOptionItem[] => {
         props: {
           onClick: async () => {
             mainStore.isShowQuickLaunch = false
-            await router.push({name: 'CraftPage'})
+            await router.push({ name: 'CraftPage' })
           },
         },
       },
@@ -170,7 +170,7 @@ const cLaunchItems = computed((): QuickOptionItem[] => {
         iconClass: 'mdi mdi-home',
         props: {
           onClick: async () => {
-            await router.push({name: 'HomePage'})
+            await router.push({ name: 'HomePage' })
           },
         },
       },
@@ -250,7 +250,7 @@ const cLaunchItems = computed((): QuickOptionItem[] => {
 })
 
 const qlRef = ref()
-const handleTabChange = (value: string) => {
+function handleTabChange(value: string) {
   // console.log(value, qlRef.value)
   if (value === 'ql') {
     setTimeout(() => {
@@ -275,12 +275,12 @@ const handleTabChange = (value: string) => {
     }"
   >
     <template #titleBarLeft>
-      <span class="mdi mdi-pine-tree"></span>
+      <span class="mdi mdi-pine-tree" />
       PageCraft {{ $t('common.toolbox') }} (alt+q)
     </template>
 
-    <CLaunch :items="cLaunchItems" @tabChange="handleTabChange">
-      <template #default="{value}">
+    <CLaunch :items="cLaunchItems" @tab-change="handleTabChange">
+      <template #default="{ value }">
         <div v-show="value === 'ql'">
           <QuickLaunch ref="qlRef" />
         </div>

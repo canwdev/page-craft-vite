@@ -1,6 +1,6 @@
 <script lang="ts">
-import {defineComponent} from 'vue'
-import {WindowController} from '@canwdev/vgo-ui/src/components/ViewPortWindow/utils/window-controller'
+import { WindowController } from '@canwdev/vgo-ui/src/components/ViewPortWindow/utils/window-controller'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'ReferenceMap',
@@ -11,7 +11,7 @@ export default defineComponent({
     },
   },
   emits: ['close'],
-  setup(props, {emit}) {
+  setup(props, { emit }) {
     const dWindow = ref<any>(null)
     const imgRef = ref()
     const isDragMode = ref(false)
@@ -30,7 +30,7 @@ export default defineComponent({
     })
 
     const handleImageScrollZoom = (e) => {
-      const {deltaY} = e
+      const { deltaY } = e
       const percent = Math.max(10, zoomPercent.value - deltaY / 5)
       zoomPercent.value = percent
     }
@@ -45,11 +45,11 @@ export default defineComponent({
       if (!imgRect.value) {
         return
       }
-      const {width, height} = imgRect.value
+      const { width, height } = imgRect.value
       const rate = zoomPercent.value / 100
       return {
-        width: width * rate + 'px',
-        height: height * rate + 'px',
+        width: `${width * rate}px`,
+        height: `${height * rate}px`,
       }
     })
 
@@ -68,17 +68,17 @@ export default defineComponent({
 <template>
   <img
     v-show="imgSrc"
-    class="reference-map"
     ref="imgRef"
+    class="reference-map"
     :src="imgSrc"
     alt="Reference map"
     draggable="false"
+    :style="imgStyle"
     @dblclick="isDragMode = !isDragMode"
     @wheel.stop="handleImageScrollZoom"
     @load="updateImgRect"
-    :style="imgStyle"
     @contextmenu="$emit('close')"
-  />
+  >
 </template>
 
 <style lang="scss" scoped>

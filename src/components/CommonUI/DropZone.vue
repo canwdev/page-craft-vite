@@ -1,5 +1,5 @@
 <script lang="ts">
-import {defineComponent} from 'vue'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'DropZone',
@@ -17,8 +17,10 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="file-dropzone" :class="{'position-fixed': positionFixed}">
-    <div class="border-dashed">{{ text || $t('msgs.drop_files_here') }}</div>
+  <div class="file-dropzone" :class="{ 'position-fixed': positionFixed }">
+    <div class="border-dashed">
+      {{ text || $t('msgs.drop_files_here') }}
+    </div>
   </div>
 </template>
 

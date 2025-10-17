@@ -1,7 +1,7 @@
 <script lang="ts">
-import {defineComponent, toRefs} from 'vue'
+import { defineComponent, toRefs } from 'vue'
+import { sassToCSS } from '@/components/StyleEditor/utils/css'
 import VStyle from './VStyle.vue'
-import {sassToCSS} from '@/components/StyleEditor/utils/css'
 
 export default defineComponent({
   name: 'DomPreview',
@@ -19,8 +19,8 @@ export default defineComponent({
     },
   },
   emits: ['styleCompiled'],
-  setup(props, {emit}) {
-    const {style, id} = toRefs(props)
+  setup(props, { emit }) {
+    const { style, id } = toRefs(props)
     const styleRewrote = ref('')
 
     const mId = computed(() => {
@@ -35,7 +35,8 @@ export default defineComponent({
       async (val) => {
         try {
           styleRewrote.value = await sassToCSS(`div[data-app-name="${mId.value}"] { ${val} }`)
-        } catch (e) {
+        }
+        catch (e) {
           console.error(e)
           styleRewrote.value = ''
         }
@@ -43,7 +44,7 @@ export default defineComponent({
           emit('styleCompiled')
         })
       },
-      {immediate: true},
+      { immediate: true },
     )
 
     return {
@@ -56,7 +57,9 @@ export default defineComponent({
 
 <template>
   <div :data-app-name="mId">
-    <VStyle :id="mId">{{ styleRewrote }}</VStyle>
-    <slot></slot>
+    <VStyle :id="mId">
+      {{ styleRewrote }}
+    </VStyle>
+    <slot />
   </div>
 </template>

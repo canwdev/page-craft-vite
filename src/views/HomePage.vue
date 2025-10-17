@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {useMainStore} from '@/store/main'
+import { useMainStore } from '@/store/main'
 
 const mainStore = useMainStore()
 onMounted(() => {
@@ -8,7 +8,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="mc-welcome-page"></div>
+  <div class="mc-welcome-page" />
 </template>
 
 <style lang="scss">

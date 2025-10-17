@@ -1,17 +1,15 @@
 <script setup lang="ts">
 import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/index.vue'
-import ChatGPT from '@/components/AI/AIChat/ChatContent.vue'
-import {useVModel} from '@vueuse/core'
+import { useVModel } from '@vueuse/core'
 import ChatRoot from '@/components/AI/AIChat/ChatRoot.vue'
-
-const emit = defineEmits(['update:visible'])
-interface Props {
-  visible: boolean
-}
 
 const props = withDefaults(defineProps<Props>(), {
   visible: false,
 })
+const emit = defineEmits(['update:visible'])
+interface Props {
+  visible: boolean
+}
 
 const mVisible = useVModel(props, 'visible', emit)
 </script>
@@ -28,9 +26,9 @@ const mVisible = useVModel(props, 'visible', emit)
     }"
   >
     <template #titleBarLeft>
-      <img src="../../../assets/textures/chat-gpt-logo.svg" alt="icon" class="chat-gpt-logo" />
-      ChatGPT</template
-    >
+      <img src="../../../assets/textures/chat-gpt-logo.svg" alt="icon" class="chat-gpt-logo">
+      ChatGPT
+    </template>
     <ChatRoot v-if="mVisible" />
   </ViewPortWindow>
 </template>

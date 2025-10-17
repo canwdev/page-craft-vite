@@ -1,13 +1,15 @@
 <script lang="ts">
-import {defineComponent, PropType, ref} from 'vue'
-import {useBatchItemV2} from '@/components/VueI18nEditTool/BatchGUI/batch-hooks'
-import {BatchListItem, useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
-import {useMainStore} from '@/store/main'
+import type { PropType } from 'vue'
+import type { BatchListItem } from '@/components/VueI18nEditTool/store/i18n-tool-main'
 import VueMonaco from '@canwdev/vgo-ui/src/components/VueMonaco/index.vue'
+import { defineComponent, ref } from 'vue'
+import { useBatchItemV2 } from '@/components/VueI18nEditTool/BatchGUI/batch-hooks'
+import { useI18nMainStore } from '@/components/VueI18nEditTool/store/i18n-tool-main'
+import { useMainStore } from '@/store/main'
 
 export default defineComponent({
   name: 'SubTextItem',
-  components: {VueMonaco},
+  components: { VueMonaco },
   props: {
     visible: {
       type: Boolean,
@@ -23,10 +25,10 @@ export default defineComponent({
     },
   },
   emits: ['saveChanged'],
-  setup(props, {emit}) {
-    const {visible, listItem} = toRefs(props)
+  setup(props, { emit }) {
+    const { visible, listItem } = toRefs(props)
     const i18nMainStore = useI18nMainStore()
-    const {isLoading, handleSaveFile, handleCreateFile, subFilePathArr} = useBatchItemV2(props)
+    const { isLoading, handleSaveFile, handleCreateFile, subFilePathArr } = useBatchItemV2(props)
     const mainStore = useMainStore()
 
     const vueMonacoRef = ref()
@@ -86,10 +88,10 @@ export default defineComponent({
         }
         await updateLocalJson()
       },
-      {immediate: true},
+      { immediate: true },
     )
 
-    const saveChange = async ({isEmit = false} = {}) => {
+    const saveChange = async ({ isEmit = false } = {}) => {
       if (!isChanged.value) {
         return
       }
@@ -104,7 +106,8 @@ export default defineComponent({
           await handleCreateFile({
             initText: localText.value,
           })
-        } else {
+        }
+        else {
           const text = localText.value
           await handleSaveFile(text)
           listItem.value.json = JSON.parse(text)
@@ -114,11 +117,12 @@ export default defineComponent({
         if (isEmit) {
           emit('saveChanged')
         }
-      } finally {
+      }
+      finally {
         isLoading.value = false
       }
       if (!isChanged.value) {
-        return
+
       }
     }
 
@@ -132,7 +136,8 @@ export default defineComponent({
       // console.log('[handleChange]', data)
       if (data.text) {
         handleChange(data.text)
-      } else if (data.json) {
+      }
+      else if (data.json) {
         handleChange(JSON.stringify(data.json, null, 2))
       }
     }
@@ -154,15 +159,14 @@ export default defineComponent({
 </script>
 
 <template>
-  <div v-show="visible" class="sub-text-editor" v-loading="isLoading">
+  <div v-show="visible" v-loading="isLoading" class="sub-text-editor">
     <div class="editor-action-row">
-      <button class="vgo-button primary" :disabled="!isChanged" @click="saveChange({isEmit: true})">
+      <button class="vgo-button primary" :disabled="!isChanged" @click="saveChange({ isEmit: true })">
         {{ $t('actions.save_all') }}
       </button>
 
       <span class="path-tip">
-        <span class="_primary">{{ listItem.rootDir.label }}</span
-        >/{{ subFilePathArr.join('/') }}
+        <span class="_primary">{{ listItem.rootDir.label }}</span>/{{ subFilePathArr.join('/') }}
 
         <span v-if="!listItem.json" class="_error">File not exist!</span>
       </span>
@@ -171,9 +175,9 @@ export default defineComponent({
       <VueMonaco
         ref="vueMonacoRef"
         :model-value="localText"
-        @update:model-value="handleChange"
         language="json"
         show-line-numbers
+        @update:model-value="handleChange"
       />
     </div>
   </div>

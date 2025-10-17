@@ -1,12 +1,12 @@
-import {CLASS_MAIN_CANVAS_ROOT} from '@/enum/page-craft'
-import {ActionType, BlockType} from '@/enum/page-craft/block'
-import {useMainStore} from '@/store/main'
-import {useI18n} from 'vue-i18n'
-import {useSfxBass, useSfxPop} from '@/hooks/use-sfx'
-import {useBroadcastMessage} from '@/hooks/use-broadcast-messae'
-import {PageCraftKeys} from '@/enum'
+import { useI18n } from 'vue-i18n'
+import { PageCraftKeys } from '@/enum'
+import { CLASS_MAIN_CANVAS_ROOT } from '@/enum/page-craft'
+import { ActionType, BlockType } from '@/enum/page-craft/block'
+import { useBroadcastMessage } from '@/hooks/use-broadcast-messae'
+import { useSfxPop } from '@/hooks/use-sfx'
+import { useMainStore } from '@/store/main'
 
-export type IndicatorOptions = {
+export interface IndicatorOptions {
   enableDevHelpClass: boolean
   enableExpand: boolean
   enableSelection: boolean
@@ -20,15 +20,15 @@ export type IndicatorOptions = {
   enableRightClick: boolean
 }
 
-export const useIndicator = () => {
-  const {t: $t} = useI18n()
+export function useIndicator() {
+  const { t: $t } = useI18n()
   const mainStore = useMainStore()
-  const {play: playSfxPop} = useSfxPop()
+  const { play: playSfxPop } = useSfxPop()
 
   // 用来防止多窗口通信导致的死循环
   const isSelfUpdating = ref(false)
   // 处理多个窗口(iframe)间的状态同步
-  const {channelRef} = useBroadcastMessage('indicatorUpdate', (event) => {
+  const { channelRef } = useBroadcastMessage('indicatorUpdate', (event) => {
     isSelfUpdating.value = true
     Object.assign(indicatorOptions, event.data)
     nextTick(() => {
@@ -58,13 +58,13 @@ export const useIndicator = () => {
         console.warn('isSelfUpdating')
         return
       }
-      const obj = {...indicatorOptions}
+      const obj = { ...indicatorOptions }
       localStorage.setItem(PageCraftKeys.INDICATOR_OPTIONS, JSON.stringify(obj))
 
       // 如果开启了多个窗口（iframe)，发送同步状态
       channelRef.value?.postMessage(obj)
     },
-    {deep: true},
+    { deep: true },
   )
 
   const disableALinkClick = (event) => {
@@ -82,7 +82,8 @@ export const useIndicator = () => {
         document.querySelectorAll(sl).forEach((link) => {
           link.addEventListener('click', disableALinkClick)
         })
-      } else {
+      }
+      else {
         setTimeout(() => {
           document.querySelectorAll(sl).forEach((link) => {
             link.removeEventListener('click', disableALinkClick)
@@ -107,7 +108,7 @@ export const useIndicator = () => {
       'page-craft-mc--full-width': indicatorOptions.fullWidth,
       'page-craft-mc--centered-y': indicatorOptions.centeredElementsY,
       'page-craft-mc--centered-x': indicatorOptions.centeredElementsX,
-      dark: indicatorOptions.bgDark,
+      'dark': indicatorOptions.bgDark,
     }
   })
 
@@ -115,12 +116,12 @@ export const useIndicator = () => {
     {
       flag: 'enableDevHelpClass',
       title: $t('common.outline'),
-      desc: $t('msgs.add_1px_outline_per') + ' (alt+z)',
+      desc: `${$t('msgs.add_1px_outline_per')} (alt+z)`,
     },
     {
       flag: 'enableExpand',
       title: $t('common.padding'),
-      desc: $t('msgs.pad_each_element_wit') + ' (alt+x)',
+      desc: `${$t('msgs.pad_each_element_wit')} (alt+x)`,
     },
     {
       flag: 'contentEditable',
@@ -132,11 +133,11 @@ export const useIndicator = () => {
       title: $t('msgs.enable_hover'),
       desc: $t('msgs.add_cursor_hover_loc'),
     },
-    {flag: 'enableRightClick', title: $t('msgs.enable_right_click'), desc: ''},
-    {flag: 'centeredElementsY', title: $t('msgs.centered') + ' Y', desc: ''},
-    {flag: 'centeredElementsX', title: $t('msgs.centered') + ' X', desc: ''},
-    {flag: 'fullWidth', title: $t('msgs.full_width'), desc: ''},
-    {flag: 'bgDark', title: $t('msgs.dark_bg'), desc: ''},
+    { flag: 'enableRightClick', title: $t('msgs.enable_right_click'), desc: '' },
+    { flag: 'centeredElementsY', title: `${$t('msgs.centered')} Y`, desc: '' },
+    { flag: 'centeredElementsX', title: `${$t('msgs.centered')} X`, desc: '' },
+    { flag: 'fullWidth', title: $t('msgs.full_width'), desc: '' },
+    { flag: 'bgDark', title: $t('msgs.dark_bg'), desc: '' },
   ]
 
   const backgroundStyle = computed(() => {

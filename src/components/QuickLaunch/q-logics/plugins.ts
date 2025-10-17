@@ -1,14 +1,14 @@
-import {createGlobalState, useFileDialog, useStorage} from '@vueuse/core'
-import moment from 'moment/moment'
-import {QuickOptionItem} from '@canwdev/vgo-ui/src/components/QuickOptions/enum'
+import type { QuickOptionItem } from '@canwdev/vgo-ui/src/components/QuickOptions/enum'
+import { createGlobalState, refDebounced, useDebounceFn, useFileDialog, useStorage, useThrottleFn, watchThrottled } from '@vueuse/core'
+
 import * as changeCase from 'change-case'
-import {filterLabel} from './utils'
-import {demoPluginTpl} from './demo.json'
-import {useI18n} from 'vue-i18n'
-import {base64Utils} from '@/utils/base64-utils'
-import {LS_SettingsKey} from '@/enum/settings'
-import {watchThrottled, useThrottleFn, useDebounceFn, refDebounced} from '@vueuse/core'
-import {copy} from '@/utils/mc-utils/text-convert'
+import moment from 'moment/moment'
+import { useI18n } from 'vue-i18n'
+import { LS_SettingsKey } from '@/enum/settings'
+import { base64Utils } from '@/utils/base64-utils'
+import { copy } from '@/utils/mc-utils/text-convert'
+import { demoPluginTpl } from './demo.json'
+import { filterLabel } from './utils'
 
 export type DynamicPlugin = (key: any) => QuickOptionItem
 
@@ -36,7 +36,7 @@ export const usePluginState = createGlobalState(() => {
 })
 
 // 自带插件
-export const useQuickLaunchPlugins = (update, textRef) => {
+export function useQuickLaunchPlugins(update, textRef) {
   const {
     staticPlugins,
     dynamicPlugins,
@@ -55,16 +55,16 @@ export const useQuickLaunchPlugins = (update, textRef) => {
     // 获取插件json
     const res = await fetch(`${basePath}/index.json`)
     const data = await res.json()
-    const {plugins} = data
+    const { plugins } = data
     // console.log('[reloadPlugins] loading plugins...', plugins)
     // 逐个加载js文件
     for (const pluginsKey in plugins) {
       let url = plugins[pluginsKey]
 
-      const outboundUrlRegex = /^(?:http(s)?:\/\/)/
+      const outboundUrlRegex = /^http(s)?:\/\//
       // 允许相对路径
       if (!outboundUrlRegex.test(url)) {
-        url = basePath + '/' + url
+        url = `${basePath}/${url}`
       }
 
       const response = await fetch(url)
@@ -91,14 +91,16 @@ ${code}
     const addStaticPlugin = (plugin: QuickOptionItem) => {
       if (isPresetPlugin) {
         staticPlugins.value.push(plugin)
-      } else {
+      }
+      else {
         customStaticPlugins.value.push(plugin)
       }
     }
     const addDynamicPlugin = (plugin: DynamicPlugin) => {
       if (isPresetPlugin) {
         dynamicPlugins.value.push(plugin)
-      } else {
+      }
+      else {
         customDynamicPlugins.value.push(plugin)
       }
     }
@@ -110,7 +112,8 @@ ${code}
 
     if (typeof plugin === 'function') {
       addDynamicPlugin(plugin)
-    } else {
+    }
+    else {
       addStaticPlugin(plugin)
     }
     // 由于update函数使用了防抖，这里可以直接执行
@@ -158,15 +161,15 @@ export interface ICustomPluginItem {
 }
 
 // 自定义插件系统
-export const useQuickLaunchCustomPlugins = (update) => {
-  const {t: $t} = useI18n()
+export function useQuickLaunchCustomPlugins(update) {
+  const { t: $t } = useI18n()
   // 自定义插件
   const customPluginsStorage = useStorage<ICustomPluginItem[]>(
     LS_SettingsKey.QUICK_LAUNCH_CUSTOM_PLUGINS,
     [],
   )
   const findCustomPlugin = (name: string) => {
-    const index = customPluginsStorage.value.findIndex((i) => i.name === name)
+    const index = customPluginsStorage.value.findIndex(i => i.name === name)
     if (index !== -1) {
       return {
         index,
@@ -186,7 +189,8 @@ export const useQuickLaunchCustomPlugins = (update) => {
     const result = findCustomPlugin(editingCustomPlugin.value.name)
     if (result) {
       customPluginsStorage.value.splice(result.index, 1, editingCustomPlugin.value)
-    } else {
+    }
+    else {
       customPluginsStorage.value.push(editingCustomPlugin.value)
     }
     editingCustomPlugin.value = null
@@ -199,7 +203,8 @@ export const useQuickLaunchCustomPlugins = (update) => {
       eval(`;(function () {
 ${code}  
 })()`)
-    } catch (e: any) {
+    }
+    catch (e: any) {
       window.$message.error(e.message)
     }
   }
@@ -212,7 +217,7 @@ ${code}
     evalPluginCode(editingCustomPlugin.value.code)
   }
 
-  const {customStaticPlugins, customDynamicPlugins} = usePluginState()
+  const { customStaticPlugins, customDynamicPlugins } = usePluginState()
   const reloadCustomPlugins = () => {
     customStaticPlugins.value = []
     customDynamicPlugins.value = []
@@ -277,7 +282,7 @@ ${code}
                   },
                 })
                 // 编辑保存后调用 customPluginsStorage.value.push()
-                editingCustomPlugin.value = {name, code: ''}
+                editingCustomPlugin.value = { name, code: '' }
                 if (name === 'demo') {
                   editingCustomPlugin.value.code = demoPluginTpl
                 }
@@ -338,7 +343,7 @@ ${code}
               },
             ],
           },
-          {split: true},
+          { split: true },
           ...customPluginsStorage.value.map((p) => {
             return {
               label: p.name,
@@ -352,7 +357,7 @@ ${code}
                     onClick: () => {
                       const result = findCustomPlugin(p.name)
                       if (result) {
-                        editingCustomPlugin.value = {...result.item}
+                        editingCustomPlugin.value = { ...result.item }
                       }
                     },
                   },

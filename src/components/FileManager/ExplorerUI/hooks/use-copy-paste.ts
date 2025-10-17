@@ -1,7 +1,6 @@
-import {fsWebApi} from '../../utils/api'
-import {normalizePath} from '../../utils'
+import { fsWebApi } from '../../utils/api'
 
-export const useCopyPaste = ({selectedPaths, basePath, isLoading, emit}) => {
+export function useCopyPaste({ selectedPaths, basePath, isLoading, emit }) {
   const explorerStore = reactive({
     cutPaths: [],
     copyPaths: [],
@@ -27,9 +26,11 @@ export const useCopyPaste = ({selectedPaths, basePath, isLoading, emit}) => {
     if (explorerStore.cutPaths.length) {
       paths = explorerStore.cutPaths
       isMove = true
-    } else if (explorerStore.copyPaths.length) {
+    }
+    else if (explorerStore.copyPaths.length) {
       paths = explorerStore.copyPaths
-    } else {
+    }
+    else {
       return
     }
     // console.log(paths)
@@ -44,7 +45,8 @@ export const useCopyPaste = ({selectedPaths, basePath, isLoading, emit}) => {
       explorerStore.cutPaths = []
       explorerStore.copyPaths = []
       emit('refresh')
-    } finally {
+    }
+    finally {
       isLoading.value = false
     }
   }

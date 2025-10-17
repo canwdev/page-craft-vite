@@ -1,16 +1,15 @@
 <script lang="ts" setup="">
-import QuickOptions from '@canwdev/vgo-ui/src/components/QuickOptions/index.vue'
-import {useI18n} from 'vue-i18n'
-import {useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
-import {ref} from 'vue'
-import {QuickOptionItem} from '@canwdev/vgo-ui/src/components/QuickOptions/enum'
-import {useDebounceFn} from '@vueuse/core'
-import {useGuiToolbox} from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox/use-gui-toolbox'
-import {blinkPanel} from '@/utils/anim'
-import {useBatchTranslateAnalyser} from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox/use-analyser'
-import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/index.vue'
-import {useBatchTranslateRefactor} from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox/use-refactor'
+import type { QuickOptionItem } from '@canwdev/vgo-ui/src/components/QuickOptions/enum'
 import DropdownMenu from '@canwdev/vgo-ui/src/components/QuickOptions/DropdownMenu.vue'
+import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/index.vue'
+import { useDebounceFn } from '@vueuse/core'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useBatchTranslateAnalyser } from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox/use-analyser'
+import { useGuiToolbox } from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox/use-gui-toolbox'
+import { useBatchTranslateRefactor } from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox/use-refactor'
+import { useI18nMainStore } from '@/components/VueI18nEditTool/store/i18n-tool-main'
+
 interface Props {
   isBatchMode?: boolean
 }
@@ -21,49 +20,49 @@ const props = withDefaults(defineProps<Props>(), {
 })
 const emit = defineEmits(['reloadTranslates'])
 const tiSelector = '.translate-item'
-const {t: $t} = useI18n()
+const { t: $t } = useI18n()
 const i18nMainStore = useI18nMainStore()
 
-const {getArrayFromRight, pasteJsonOverrideRight} = useGuiToolbox()
+const { getArrayFromRight, pasteJsonOverrideRight } = useGuiToolbox()
 
 onMounted(() => {
   locateSelectedPath()
 })
 
-const locateSelectedPath = () => {
+function locateSelectedPath() {
   const currentPath = i18nMainStore.translatePath
   if (!currentPath) {
     return
   }
   const el = document.querySelector(`${tiSelector}[data-translate-path="${currentPath}"]`)
   if (el) {
-    el.scrollIntoView({behavior: 'smooth', block: 'center'})
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' })
     el.classList.add('t_selected')
   }
 }
 
-const {handleAnalyse, analyseMessage} = useBatchTranslateAnalyser()
-const {handleDeleteKeys, handleRenameKeys, handleGptTranslate} = useBatchTranslateRefactor(emit)
+const { handleAnalyse, analyseMessage } = useBatchTranslateAnalyser()
+const { handleDeleteKeys, handleRenameKeys, handleGptTranslate } = useBatchTranslateRefactor(emit)
 
 const guiToolboxOptions = computed((): QuickOptionItem[] => {
   const currentPath = i18nMainStore.translatePath
   return [
     {
-      label: '🔍 ' + $t('i18n_tools.fen_xi_fan_yi_shu'),
+      label: `🔍 ${$t('i18n_tools.fen_xi_fan_yi_shu')}`,
       props: {
         onClick: () => handleAnalyse(),
       },
     },
     {
-      label: '✨ ' + $t('i18n_tools.a_i_translate'),
+      label: `✨ ${$t('i18n_tools.a_i_translate')}`,
       disabled: !currentPath,
       props: {
         onClick: () => handleGptTranslate(),
       },
     },
-    {split: true},
+    { split: true },
     {
-      label: '📋 ' + $t('msgs.copy_json_from_right'),
+      label: `📋 ${$t('msgs.copy_json_from_right')}`,
       disabled: !currentPath,
       props: {
         onClick: async () => {
@@ -72,13 +71,13 @@ const guiToolboxOptions = computed((): QuickOptionItem[] => {
       },
     },
     {
-      label: '📋 ' + $t('msgs.paste_json_override_right'),
+      label: `📋 ${$t('msgs.paste_json_override_right')}`,
       disabled: !currentPath,
       props: {
         onClick: () => pasteJsonOverrideRight(),
       },
     },
-    {split: true},
+    { split: true },
     {
       label: '❌ ' + `${$t('actions.refactor')}: ${$t('i18n_tools.delete_keys')}`,
       disabled: !currentPath,
@@ -107,7 +106,7 @@ const toolboxFilterKey = ref('')
 const toolboxFilterIndex = ref(0)
 const toolboxFilterEls = ref<HTMLElement[]>([])
 
-const toolboxFilterKeyChange = () => {
+function toolboxFilterKeyChange() {
   if (!toolboxFilterEls.value.length) {
     Array.from(document.querySelectorAll(tiSelector)).forEach((el) => {
       el.classList.remove('t_highlight')
@@ -130,8 +129,9 @@ const toolboxFilterKeyChange = () => {
     if (index === toolboxFilterIndex.value) {
       // console.log('scrollIntoView', index, el)
       el.classList.add('t_highlight_current')
-      el.scrollIntoView({behavior: 'smooth', block: 'center'})
-    } else {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
+    else {
       el.classList.remove('t_highlight_current')
     }
 
@@ -154,42 +154,46 @@ watch(toolboxFilterKey, () => {
     <template v-if="isBatchMode">
       <DropdownMenu :options="guiToolboxOptions">
         <button class="vgo-button" :title="$t('common.tools')">
-          <span class="mdi mdi-tools"></span>
+          <span class="mdi mdi-tools" />
         </button>
       </DropdownMenu>
       <button
         v-if="i18nMainStore.translatePath"
         class="vgo-button"
-        @click="locateSelectedPath()"
         :title="$t('i18n_tools.locate_translate_pa')"
+        @click="locateSelectedPath()"
       >
-        <span class="mdi mdi-target"></span>
+        <span class="mdi mdi-target" />
       </button>
     </template>
 
     <input
+      v-model="toolboxFilterKey"
       class="vgo-input font-code"
       style="flex: 1; line-height: 1"
-      v-model="toolboxFilterKey"
       :placeholder="$t('i18n_tools.filter_translate_ke')"
       @keyup.enter="toolboxFilterKeyChange"
       @keyup.esc="toolboxFilterKey = ''"
-    />
-    <template v-if="toolboxFilterEls.length">{{
-      `${toolboxFilterIndex}/${toolboxFilterEls.length}`
-    }}</template>
+    >
+    <template v-if="toolboxFilterEls.length">
+      {{
+        `${toolboxFilterIndex}/${toolboxFilterEls.length}`
+      }}
+    </template>
 
-    <!-- {{ i18nMainStore.filePathArr.join('/') }}-->
+    <!-- {{ i18nMainStore.filePathArr.join('/') }} -->
 
     <ViewPortWindow
       :visible="!!analyseMessage"
-      @update:visible="() => (analyseMessage = '')"
       :init-win-options="{
         width: '500px',
         height: '500px',
       }"
+      @update:visible="() => (analyseMessage = '')"
     >
-      <template #titleBarLeft>{{ $t('i18n_tools.fen_xi_fan_yi_shu') }}</template>
+      <template #titleBarLeft>
+        {{ $t('i18n_tools.fen_xi_fan_yi_shu') }}
+      </template>
       <textarea class="analyse-textarea vgo-input font-code" :value="analyseMessage" readonly />
     </ViewPortWindow>
   </div>

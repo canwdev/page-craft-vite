@@ -1,18 +1,18 @@
 <script lang="ts">
-import {defineComponent, PropType} from 'vue'
-import {
-  CopyMode,
-  formatI18nKey,
-  I18N_JSON_OBJ_ROOT_KEY_NAME,
+import type { PropType } from 'vue'
+import type {
   ITranslateItem,
   ITranslateTreeItem,
 } from '@/enum/vue-i18n-tool'
-import {copyToClipboard} from '@/utils'
-import {useI18n} from 'vue-i18n'
-import {useMainStore} from '@/store/main'
-import FieldEdit from '@/components/VueI18nEditTool/Single/FieldEdit.vue'
-import {useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
+import { defineComponent } from 'vue'
+import { useI18n } from 'vue-i18n'
 import CopyButtons from '@/components/VueI18nEditTool/Single/CopyButtons.vue'
+import FieldEdit from '@/components/VueI18nEditTool/Single/FieldEdit.vue'
+import { useI18nMainStore } from '@/components/VueI18nEditTool/store/i18n-tool-main'
+import {
+  formatI18nKey,
+  I18N_JSON_OBJ_ROOT_KEY_NAME,
+} from '@/enum/vue-i18n-tool'
 
 export default defineComponent({
   name: 'TranslateItem',
@@ -39,10 +39,10 @@ export default defineComponent({
     },
   },
   emits: ['onRemove', 'previewArray', 'onKeyClick'],
-  setup(props, {emit}) {
-    const {t: $t} = useI18n()
+  setup(props, { emit }) {
+    const { t: $t } = useI18n()
     const i18nMainStore = useI18nMainStore()
-    const {item, treeItem, index} = toRefs(props)
+    const { item, treeItem, index } = toRefs(props)
 
     const namespacePrefix = computed(() => {
       if (!treeItem.value) {
@@ -63,9 +63,9 @@ export default defineComponent({
       }
       let name = item.value.key
       if (namespacePrefix.value) {
-        name = namespacePrefix.value + '.' + name
+        name = `${namespacePrefix.value}.${name}`
       }
-      const regex = new RegExp(I18N_JSON_OBJ_ROOT_KEY_NAME + '.', 'g')
+      const regex = new RegExp(`${I18N_JSON_OBJ_ROOT_KEY_NAME}.`, 'g')
       name = name.replace(regex, '')
       return name
     })
@@ -107,7 +107,8 @@ export default defineComponent({
         setTimeout(() => {
           cpButtonsRef.value?.handleCopy(i18nMainStore.trLastCopyMode)
         })
-      } else if (i18nMainStore.trIsManualAdd) {
+      }
+      else if (i18nMainStore.trIsManualAdd) {
         // 自动选择value输入框
         if (valueInputRef.value) {
           valueInputRef.value.focus()
@@ -136,47 +137,49 @@ export default defineComponent({
 
 <template>
   <div
-    :data-id="item.key"
     v-if="item"
+    :data-id="item.key"
     class="translate-item"
-    :class="{isLite, isKeyDuplicated}"
+    :class="{ isLite, isKeyDuplicated }"
     :data-translate-path="nameDisplay"
   >
     <div class="flex-row-center-gap">
       <template v-if="isKeyDuplicated">
-        <div class="mc-error-tip-button" title="Key duplicated, may cause bug!">!</div>
+        <div class="mc-error-tip-button" title="Key duplicated, may cause bug!">
+          !
+        </div>
       </template>
       <input
-        class="font-code translate-item-input vgo-input"
         v-model="item.key"
+        class="font-code translate-item-input vgo-input"
         placeholder="key"
+        :readonly="isLite"
         @click="handleInputKeyClick"
         @blur="handleKeyBlur"
-        :readonly="isLite"
-      />
+      >
 
-      <!--        <div>A</div>-->
+      <!--        <div>A</div> -->
 
       <template v-if="!isLite">
         <FieldEdit
           ref="valueInputRef"
           v-model="item.value"
-          @onValueBlur="handleValueBlur"
-          @previewArray="$emit('previewArray', item)"
+          @on-value-blur="handleValueBlur"
+          @preview-array="$emit('previewArray', item)"
         />
       </template>
 
-      <CopyButtons ref="cpButtonsRef" v-if="!isLite && nameDisplay" :content="nameDisplay" />
+      <CopyButtons v-if="!isLite && nameDisplay" ref="cpButtonsRef" :content="nameDisplay" />
 
       <el-popconfirm
         v-if="!isLite"
-        @confirm="$emit('onRemove')"
         :title="$t('msgs.remove_item')"
         :teleported="false"
+        @confirm="$emit('onRemove')"
       >
         <template #reference>
           <button class="vgo-button" :title="$t('actions.delete')">
-            <span class="mdi mdi-delete"></span>
+            <span class="mdi mdi-delete" />
           </button>
         </template>
       </el-popconfirm>

@@ -1,5 +1,5 @@
-import {guid} from '@/utils'
-import {Component} from 'vue'
+import type { Component } from 'vue'
+import { guid } from '@/utils'
 
 export interface ShortcutItem {
   appid: string

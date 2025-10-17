@@ -5,7 +5,7 @@ const defaultFormat = 'YYYY-MM-DD HH:mm:ss'
 const textInput = ref('')
 const textOutput = ref('')
 const timestamp = ref(0)
-const convert = (d = new Date()) => {
+function convert(d = new Date()) {
   timestamp.value = d.getTime()
   const format = textInput.value.trim() || defaultFormat
   textOutput.value = moment(d).format(format)
@@ -22,7 +22,7 @@ onBeforeUnmount(() => {
   clearInterval(timer)
 })
 
-const copyText = (text) => {
+function copyText(text) {
   window.$mcUtils.copy(text, true)
 }
 
@@ -58,8 +58,8 @@ const timestampToDisplay = computed(() => {
         class="vgo-input"
         :placeholder="defaultFormat"
         @keyup.esc="textInput = ''"
-      />
-      <span class="mdi mdi-arrow-right"></span>
+      >
+      <span class="mdi mdi-arrow-right" />
       <span class="clickable" @click="copyText(textOutput)"> {{ textOutput }}</span>
     </div>
     <div class="flex-rows">
@@ -69,15 +69,13 @@ const timestampToDisplay = computed(() => {
         class="vgo-input"
         placeholder="Input string/timestamp"
         @keyup.esc="inputTimestamp = ''"
-      />
-      <span class="mdi mdi-arrow-right"></span>
+      >
+      <span class="mdi mdi-arrow-right" />
       <div class="flex-cols">
         <span class="clickable" @click="copyText(timestampToDisplay.text)">
-          {{ timestampToDisplay.text }}</span
-        >
+          {{ timestampToDisplay.text }}</span>
         <span class="clickable" @click="copyText(timestampToDisplay.timestamp)">
-          {{ timestampToDisplay.timestamp }}</span
-        >
+          {{ timestampToDisplay.timestamp }}</span>
       </div>
     </div>
   </div>

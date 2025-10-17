@@ -1,6 +1,6 @@
-import {formatSiteTitle, githubLink} from '@/router/router-utils'
+import { formatSiteTitle, githubLink } from '@/router/router-utils'
 
-export const getChatContentHtml = async (el: Element, title) => {
+export async function getChatContentHtml(el: Element, title) {
   let html: string = ''
   html += `<!doctype html>
 <html>
@@ -89,7 +89,7 @@ img {
   return html
 }
 
-export const printChatContent = async (el: Element, printTitle = '') => {
+export async function printChatContent(el: Element, printTitle = '') {
   // 获取要打印的元素
 
   // 创建一个 iframe

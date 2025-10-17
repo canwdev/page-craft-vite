@@ -1,25 +1,17 @@
+import type { IAiCharacter, IChatHistoryItem } from '@/components/AI/types/ai'
 // 共享的数据库状态
-import {createGlobalState} from '@vueuse/core'
-import {useIDBKeyval} from '@vueuse/integrations/useIDBKeyval'
-import {IAiCharacter, IChatHistoryItem} from '@/components/AI/types/ai'
-import iconOpenAI from '@/assets/textures/chat-gpt-logo.svg'
-import iconAnthropic from '@/assets/textures/anthropic.svg'
-import {
-  anthropicChatModelOptions,
-  AIProvider,
-  openAIChatModelOptions,
-  defaultOpenAIModel,
-  defaultAnthropicModel,
-} from '@/components/AI/types/models'
-import {useAiSettingsStore} from '@/components/AI/hooks/ai-settings'
-import {IDBSettingsKey} from '@/enum/settings'
+import { createGlobalState } from '@vueuse/core'
+import { useIDBKeyval } from '@vueuse/integrations/useIDBKeyval'
+import { useAiSettingsStore } from '@/components/AI/hooks/ai-settings'
+
+import { IDBSettingsKey } from '@/enum/settings'
 
 /**
  * 自动覆盖相同id的数据，如果id不存在则添加
  */
-export const mergeIdData = (existingData: any[], newData: any[]) => {
+export function mergeIdData(existingData: any[], newData: any[]) {
   // Create a Map from existing data for quick lookup and update
-  const dataMap = new Map(existingData.map((item) => [item.id, item]))
+  const dataMap = new Map(existingData.map(item => [item.id, item]))
 
   // Process new data items
   newData.forEach((item) => {
@@ -32,11 +24,11 @@ export const mergeIdData = (existingData: any[], newData: any[]) => {
 }
 
 const useAiIdbState = createGlobalState(() => {
-  const {data: characterList, isFinished: isCharacterListFinished} = useIDBKeyval<IAiCharacter[]>(
+  const { data: characterList, isFinished: isCharacterListFinished } = useIDBKeyval<IAiCharacter[]>(
     IDBSettingsKey.PAGE_CRAFT_AI_CHARACTERS,
     [],
   )
-  const {data: allChatHistory, isFinished: isAllChatHistory} = useIDBKeyval<IChatHistoryItem[]>(
+  const { data: allChatHistory, isFinished: isAllChatHistory } = useIDBKeyval<IChatHistoryItem[]>(
     IDBSettingsKey.PAGE_CRAFT_AI_HISTORY_GROUP,
     [],
   )
@@ -48,9 +40,9 @@ const useAiIdbState = createGlobalState(() => {
     isAllChatHistory,
   }
 })
-export const useAiCharacters = () => {
+export function useAiCharacters() {
   const aisStore = useAiSettingsStore()
-  const {characterList, allChatHistory, isCharacterListFinished, isAllChatHistory} = useAiIdbState()
+  const { characterList, allChatHistory, isCharacterListFinished, isAllChatHistory } = useAiIdbState()
 
   const getPresetCharacters = async () => {
     const res = await fetch('./resources/ai-preset-characters.json')
@@ -58,12 +50,12 @@ export const useAiCharacters = () => {
   }
   const updatePresetCharacters = async () => {
     characterList.value = mergeIdData(characterList.value, await getPresetCharacters())
-    window.$message.success({message: 'Preset characters updated!'})
+    window.$message.success({ message: 'Preset characters updated!' })
   }
 
   // 当前选中的角色
   const currentCharacter = computed(() => {
-    return characterList.value.find((item) => item.id === aisStore.currentCharacterId)
+    return characterList.value.find(item => item.id === aisStore.currentCharacterId)
   })
 
   // 当前选中的角色的【全部】聊天历史记录数组
@@ -75,7 +67,7 @@ export const useAiCharacters = () => {
       return []
     }
     return allChatHistory.value
-      .filter((group) => group.cid === currentCharacter.value!.id)
+      .filter(group => group.cid === currentCharacter.value!.id)
       .reverse()
   })
 
@@ -84,7 +76,7 @@ export const useAiCharacters = () => {
     if (!currentHistoryGroup.value.length) {
       return
     }
-    return currentHistoryGroup.value.find((item) => item.id === aisStore.currentChatHistoryId)
+    return currentHistoryGroup.value.find(item => item.id === aisStore.currentChatHistoryId)
   })
   return {
     getPresetCharacters,

@@ -1,6 +1,6 @@
-import {Ref} from 'vue'
+import type { Ref } from 'vue'
 
-export const useLocalStorageBoolean = (key, defaultValue = false): Ref<boolean> => {
+export function useLocalStorageBoolean(key, defaultValue = false): Ref<boolean> {
   const updateInitValue = () =>
     defaultValue ? !localStorage.getItem(key) : Boolean(localStorage.getItem(key))
 
@@ -12,7 +12,8 @@ export const useLocalStorageBoolean = (key, defaultValue = false): Ref<boolean> 
     }
     if (val) {
       localStorage.removeItem(key)
-    } else {
+    }
+    else {
       localStorage.setItem(key, '1')
     }
   })
@@ -20,36 +21,39 @@ export const useLocalStorageBoolean = (key, defaultValue = false): Ref<boolean> 
   return val
 }
 
-export const useLocalStorageString = (key, defaultValue = ''): Ref<string> => {
+export function useLocalStorageString(key, defaultValue = ''): Ref<string> {
   const val = ref<string>(localStorage.getItem(key) || defaultValue)
   watch(val, (val) => {
     if (val) {
       localStorage.setItem(key, val)
-    } else {
+    }
+    else {
       localStorage.removeItem(key)
     }
   })
   return val
 }
 
-export const useLocalStorageNumber = (key, defaultValue = 0): Ref<number> => {
+export function useLocalStorageNumber(key, defaultValue = 0): Ref<number> {
   const val = ref<number>(Number(localStorage.getItem(key)) || defaultValue)
   watch(val, (val) => {
     if (val) {
       localStorage.setItem(key, String(val))
-    } else {
+    }
+    else {
       localStorage.removeItem(key)
     }
   })
   return val
 }
 
-export const useLocalStorageObject = (key, defaultValue = {}): Ref<any> => {
+export function useLocalStorageObject(key, defaultValue = {}): Ref<any> {
   const val = ref<object>(JSON.parse(localStorage.getItem(key) || 'null') || defaultValue)
   watch(val, (val) => {
     if (val) {
       localStorage.setItem(key, JSON.stringify(val))
-    } else {
+    }
+    else {
       localStorage.removeItem(key)
     }
   })

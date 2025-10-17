@@ -1,6 +1,6 @@
-import {copyToClipboard} from '@/utils'
+import { copyToClipboard } from '@/utils'
 
-export const copy = async (val, isShowVal = false) => {
+export async function copy(val, isShowVal = false) {
   if (!val) {
     return
   }
@@ -17,13 +17,14 @@ export const copy = async (val, isShowVal = false) => {
   let showVal = ''
   if (isShowVal) {
     if (val.length > 50) {
-      showVal = val.slice(0, 50) + '...'
-    } else {
+      showVal = `${val.slice(0, 50)}...`
+    }
+    else {
       showVal = val
     }
   }
   if (showVal) {
-    showVal = ': ' + showVal
+    showVal = `: ${showVal}`
   }
   window.$message.success(`Copied${showVal}`)
 }
@@ -37,21 +38,17 @@ export enum TextConvertMode {
 }
 
 export const TextConvertOptions = [
-  {label: 'Text', value: TextConvertMode.TEXT},
-  {label: 'HTML', value: TextConvertMode.HTML},
-  {label: 'JSON', value: TextConvertMode.JSON},
+  { label: 'Text', value: TextConvertMode.TEXT },
+  { label: 'HTML', value: TextConvertMode.HTML },
+  { label: 'JSON', value: TextConvertMode.JSON },
 ]
 
-export const textConvertMultipleLine = (
-  str: string,
-  mode: TextConvertMode = TextConvertMode.TEXT,
-  options: any = {},
-) => {
+export function textConvertMultipleLine(str: string, mode: TextConvertMode = TextConvertMode.TEXT, options: any = {}) {
   if (mode === TextConvertMode.DISABLED) {
     return str
   }
-  const {isTrimEmptyLines = false, isTrimQuotes = false, htmlTagName = '', htmlAttrs = ''} = options
-  str = str.trim().replace(/ /gi, ' ') // replace [NBSP]
+  const { isTrimEmptyLines = false, isTrimQuotes = false, htmlTagName = '', htmlAttrs = '' } = options
+  str = str.trim().replace(/\xA0/g, ' ') // replace [NBSP]
 
   if (isTrimEmptyLines) {
     str = str.replace(/^\s*[\r\n]/gm, '')
@@ -67,7 +64,7 @@ export const textConvertMultipleLine = (
     return str
   }
   let arr = str.split('\n')
-  arr = arr.map((i) => i.trim())
+  arr = arr.map(i => i.trim())
   if (mode === TextConvertMode.JSON) {
     if (arr.length === 1) {
       return JSON.stringify(arr[0])
@@ -87,11 +84,7 @@ export const textConvertMultipleLine = (
   return ''
 }
 
-export const textConvertAdvanced = (
-  val: any,
-  mode: TextConvertMode = TextConvertMode.TEXT,
-  options: any = {},
-) => {
+export function textConvertAdvanced(val: any, mode: TextConvertMode = TextConvertMode.TEXT, options: any = {}) {
   if (mode === TextConvertMode.NUMBER) {
     let num = Number(val)
 

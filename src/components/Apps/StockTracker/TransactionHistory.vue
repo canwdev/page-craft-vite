@@ -1,24 +1,28 @@
 <script setup lang="ts">
+import type {
+  IOptionItem,
+  MixedFormItems,
+} from '@canwdev/vgo-ui/src/components/AutoFormElPlus/enum'
+import type { AutoTableColumn } from '@canwdev/vgo-ui/src/components/AutoTableElPlus/types'
+import type {
+  ITransactionHistory,
+} from './types'
+import {
+  AutoFormItemType,
+} from '@canwdev/vgo-ui/src/components/AutoFormElPlus/enum'
+import AutoFormElPlus from '@canwdev/vgo-ui/src/components/AutoFormElPlus/index.vue'
 import AutoTableElPlus from '@canwdev/vgo-ui/src/components/AutoTableElPlus/index.vue'
-import {AutoTableColumn} from '@canwdev/vgo-ui/src/components/AutoTableElPlus/types'
+import { renderDropdownMenu } from '@canwdev/vgo-ui/src/components/OptionUI/Tools/renders'
+import { useResizeObserver } from '@vueuse/core'
+import { getPriceWithSymbol } from '@/components/Apps/StockTracker/utils'
+import { formatDate, guid } from '@/utils'
 import {
   currencyOptions,
   EntrustSide,
   entrustSideOptions,
   formatTransactionHistory,
   getTransactionHistoryFormRules,
-  ITransactionHistory,
 } from './types'
-import {useResizeObserver} from '@vueuse/core'
-import {formatDate, guid} from '@/utils'
-import {getPriceWithSymbol} from '@/components/Apps/StockTracker/utils'
-import {renderDropdownMenu} from '@canwdev/vgo-ui/src/components/OptionUI/Tools/renders'
-import AutoFormElPlus from '@canwdev/vgo-ui/src/components/AutoFormElPlus/index.vue'
-import {
-  AutoFormItemType,
-  IOptionItem,
-  MixedFormItems,
-} from '@canwdev/vgo-ui/src/components/AutoFormElPlus/enum'
 
 const props = withDefaults(
   defineProps<{
@@ -29,15 +33,15 @@ const props = withDefaults(
   {},
 )
 const emit = defineEmits(['editItem', 'duplicateItem', 'deleteItem'])
-const {historyList, stockSymbolOptions, isUpdating} = toRefs(props)
+const { historyList, stockSymbolOptions, isUpdating } = toRefs(props)
 
 const filterData = ref({
   filterName: '',
 })
 
 const filteredList = ref<ITransactionHistory[]>([])
-const updateFilteredList = () => {
-  const {filterName} = filterData.value
+function updateFilteredList() {
+  const { filterName } = filterData.value
   if (!filterName) {
     filteredList.value = historyList.value
     return
@@ -45,8 +49,8 @@ const updateFilteredList = () => {
   filteredList.value = historyList.value.filter((item) => {
     const name = (filterName || '').toLowerCase()
     return (
-      (item.symbol || '').toLowerCase().includes(name) ||
-      (item.symbolName || '').toLowerCase().includes(name)
+      (item.symbol || '').toLowerCase().includes(name)
+      || (item.symbolName || '').toLowerCase().includes(name)
     )
   })
 }
@@ -56,7 +60,7 @@ watch(
   (val) => {
     updateFilteredList()
   },
-  {immediate: true},
+  { immediate: true },
 )
 
 const tableColumns: AutoTableColumn[] = [
@@ -68,7 +72,7 @@ const tableColumns: AutoTableColumn[] = [
       sortable: true,
       showOverflowTooltip: true,
     },
-    formatter({row}) {
+    formatter({ row }) {
       return `<div>
 <div class="text-overflow">
 <b>${row.symbolName}</b>
@@ -83,7 +87,7 @@ const tableColumns: AutoTableColumn[] = [
     props: {
       sortable: true,
     },
-    formatter({row}) {
+    formatter({ row }) {
       return `<span class="${row.entrustSide === EntrustSide.BUY ? 'price-up' : 'price-down'}">${row.entrustSide === EntrustSide.BUY ? '买入' : '卖出'}</span>`
     },
   },
@@ -93,7 +97,7 @@ const tableColumns: AutoTableColumn[] = [
     props: {
       sortable: true,
     },
-    formatter({row}) {
+    formatter({ row }) {
       return getPriceWithSymbol({
         price: row.businessAvgPrice,
         currency: row.currency,
@@ -121,7 +125,7 @@ const tableColumns: AutoTableColumn[] = [
     props: {
       sortable: true,
     },
-    formatter({row}) {
+    formatter({ row }) {
       return getPriceWithSymbol({
         price: row.tip,
         currency: row.currency,
@@ -137,7 +141,7 @@ const tableColumns: AutoTableColumn[] = [
     props: {
       sortable: true,
     },
-    formatter({row}) {
+    formatter({ row }) {
       return formatDate(row.createTimestamp)
     },
   },
@@ -146,7 +150,7 @@ const tableColumns: AutoTableColumn[] = [
     key: 'actions',
     width: 70,
     fixed: 'right',
-    render({row}) {
+    render({ row }) {
       return renderDropdownMenu(
         [
           {
@@ -191,7 +195,7 @@ const rootRef = ref()
 const maxHeight = ref(300)
 useResizeObserver(rootRef, (entries) => {
   const entry = entries[0]
-  const {width, height} = entry.contentRect
+  const { width, height } = entry.contentRect
   maxHeight.value = height
 })
 
@@ -225,7 +229,7 @@ const formItems = computed((): MixedFormItems[] => {
           },
           onSelect() {
             // console.log(dataForm.value.symbol)
-            const find = stockSymbolOptions.value.find((i) => i.value === dataForm.value.symbol)
+            const find = stockSymbolOptions.value.find(i => i.value === dataForm.value.symbol)
             if (find) {
               dataForm.value.symbolName = find.label
             }
@@ -242,16 +246,16 @@ const formItems = computed((): MixedFormItems[] => {
             const results = queryString
               ? stockSymbolOptions.value.filter((item) => {
                   return (
-                    item.value.toLowerCase().includes(queryString.toLowerCase()) ||
-                    item.label.toLowerCase().includes(queryString.toLowerCase())
+                    item.value.toLowerCase().includes(queryString.toLowerCase())
+                    || item.label.toLowerCase().includes(queryString.toLowerCase())
                   )
                 })
               : stockSymbolOptions.value
-            cb(results.map((i) => ({value: i.label})))
+            cb(results.map(i => ({ value: i.label })))
           },
           onSelect() {
             // console.log(dataForm.value.symbol)
-            const find = stockSymbolOptions.value.find((i) => i.label === dataForm.value.symbolName)
+            const find = stockSymbolOptions.value.find(i => i.label === dataForm.value.symbolName)
             if (find) {
               dataForm.value.symbol = find.value
             }
@@ -333,7 +337,7 @@ const formItems = computed((): MixedFormItems[] => {
   ]
 })
 
-const handleCreateEdit = async (item: ITransactionHistory) => {
+async function handleCreateEdit(item: ITransactionHistory) {
   try {
     isUpdating.value = true
 
@@ -344,39 +348,42 @@ const handleCreateEdit = async (item: ITransactionHistory) => {
       historyList.value.push(item)
 
       window.$message.success('创建成功！')
-    } else {
-      const idx = historyList.value.findIndex((i) => item.id === i.id)
+    }
+    else {
+      const idx = historyList.value.findIndex(i => item.id === i.id)
       historyList.value.splice(idx, 1, item)
       window.$message.success('更新成功！')
     }
     isShowEditDialog.value = false
-  } catch (e) {
+  }
+  catch (e) {
     console.error(e)
-  } finally {
+  }
+  finally {
     isUpdating.value = false
   }
 }
 
-const createItem = () => {
+function createItem() {
   isCreate.value = true
   dataForm.value = formatTransactionHistory()
   isShowEditDialog.value = true
 }
 
-const duplicateItem = (item: ITransactionHistory) => {
+function duplicateItem(item: ITransactionHistory) {
   isCreate.value = true
   dataForm.value = formatTransactionHistory(item)
   isShowEditDialog.value = true
 }
 
-const editItem = (item: ITransactionHistory) => {
+function editItem(item: ITransactionHistory) {
   isCreate.value = false
   dataForm.value = formatTransactionHistory(item)
   isShowEditDialog.value = true
 }
 
-const deleteItem = (item: ITransactionHistory) => {
-  const idx = historyList.value.findIndex((i) => item.id === i.id)
+function deleteItem(item: ITransactionHistory) {
+  const idx = historyList.value.findIndex(i => item.id === i.id)
   historyList.value.splice(idx, 1)
 }
 
@@ -392,9 +399,9 @@ defineExpose({
   <div class="transaction-history-wrapper">
     <div class="filter-row flex-row-center-gap">
       <el-input
+        v-model="filterData.filterName"
         clearable
         placeholder="过滤股票代码"
-        v-model="filterData.filterName"
         @change="updateFilteredList"
       />
     </div>
@@ -404,7 +411,7 @@ defineExpose({
         :data="filteredList"
         :columns="tableColumns"
         :height="maxHeight"
-        :default-sort="{prop: 'createTimestamp', order: 'descending'}"
+        :default-sort="{ prop: 'createTimestamp', order: 'descending' }"
       />
     </div>
 
@@ -423,9 +430,9 @@ defineExpose({
     </div>
 
     <el-dialog
+      v-model="isShowEditDialog"
       :close-on-click-modal="false"
       :title="isCreate ? '添加交易记录' : '编辑交易记录'"
-      v-model="isShowEditDialog"
       width="480"
       draggable
     >
@@ -439,7 +446,7 @@ defineExpose({
           },
           formItems,
         }"
-        @onSubmit="handleCreateEdit"
+        @on-submit="handleCreateEdit"
       />
     </el-dialog>
   </div>

@@ -1,4 +1,4 @@
-export const sassToCSS = (sassCode, options?): Promise<string> => {
+export function sassToCSS(sassCode, options?): Promise<string> {
   return new Promise((resolve, reject) => {
     if (!sassCode) {
       return resolve('')
@@ -6,14 +6,15 @@ export const sassToCSS = (sassCode, options?): Promise<string> => {
     window.Sass.compile(sassCode, (output) => {
       if (output.message) {
         reject(output)
-      } else {
+      }
+      else {
         resolve(output.text)
       }
     })
   })
 }
 
-export const suggestElementClass = (el: HTMLElement) => {
+export function suggestElementClass(el: HTMLElement) {
   let className = el.className
   if (!className.replace) {
     // svg 兼容
@@ -22,7 +23,7 @@ export const suggestElementClass = (el: HTMLElement) => {
   }
   className = className.trim()
   if (className) {
-    return '.' + className.split(' ').join('.')
+    return `.${className.split(' ').join('.')}`
   }
   return el.tagName.toLowerCase()
 }

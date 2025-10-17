@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import {formatDate} from '@/utils'
-import {IAiCharacter, ImageUrlObj, IMessageContent, IMessageItem} from '@/components/AI/types/ai'
+import type { IAiCharacter, ImageUrlObj, IMessageContent, IMessageItem } from '@/components/AI/types/ai'
+import { useI18n } from 'vue-i18n'
 
 import MessageContent from '@/components/AI/AIChat/ChatBubble/TextContent.vue'
-import {useI18n} from 'vue-i18n'
-import {copy} from '@/utils/mc-utils/text-convert'
+import { formatDate } from '@/utils'
+import { copy } from '@/utils/mc-utils/text-convert'
 
 interface Props {
   isDark?: boolean
@@ -16,22 +16,22 @@ interface Props {
   item: IMessageItem
 }
 
-const emit = defineEmits(['delete', 'retry'])
 const props = withDefaults(defineProps<Props>(), {
   isDark: false,
   isLoading: false,
   allowRetry: false,
   allowDelete: false,
 })
-const {item, character} = toRefs(props)
-const {t: $t} = useI18n()
+const emit = defineEmits(['delete', 'retry'])
+const { item, character } = toRefs(props)
+const { t: $t } = useI18n()
 
 const isEditing = ref(false)
 const editInputRef = ref()
 watch(isEditing, () => {
   setTimeout(() => {
     if (editInputRef.value) {
-      editInputRef.value.scrollIntoView({behavior: 'smooth'})
+      editInputRef.value.scrollIntoView({ behavior: 'smooth' })
       editInputRef.value.focus()
     }
   })
@@ -44,7 +44,7 @@ const hasAvatarImage = computed(() => {
 })
 
 const rootRef = ref()
-const scrollToTop = () => {
+function scrollToTop() {
   const el = rootRef.value
   const scrollParent = el.parentElement
   scrollParent.scrollTo({
@@ -52,7 +52,7 @@ const scrollToTop = () => {
     behavior: 'smooth',
   })
 }
-const scrollToBottom = () => {
+function scrollToBottom() {
   const el = rootRef.value
   const scrollParent = el.parentElement
   scrollParent.scrollTo({
@@ -69,7 +69,7 @@ const imageList = computed((): ImageUrlObj[] => {
     const content = item.value.content as IMessageContent[]
     const list: ImageUrlObj[] = []
     content.forEach((item) => {
-      const {type, image_url} = item
+      const { type, image_url } = item
       if (type === 'image_url') {
         list.push(image_url as ImageUrlObj)
       }
@@ -79,13 +79,13 @@ const imageList = computed((): ImageUrlObj[] => {
   return []
 })
 const imageSrcList = computed(() => {
-  return imageList.value.map((i) => i.url)
+  return imageList.value.map(i => i.url)
 })
 
-const printLog = () => {
+function printLog() {
   console.log(JSON.parse(JSON.stringify(item.value)))
 }
-const confirmDelete = (item) => {
+function confirmDelete(item) {
   window.$dialog
     .confirm('Delete item?', $t('actions.confirm'), {
       type: 'warning',
@@ -95,7 +95,7 @@ const confirmDelete = (item) => {
     })
 }
 
-const exportMarkdown = (text) => {
+function exportMarkdown(text) {
   window.$mcUtils.handleExportFile('', text, '_chat.md')
 }
 </script>
@@ -105,76 +105,75 @@ const exportMarkdown = (text) => {
     v-if="item.role === 'system'"
     ref="rootRef"
     class="ai-chat-bubble-system"
-    :class="{isEditing}"
+    :class="{ isEditing }"
     @click="isEditing = true"
   >
     <textarea
-      ref="editInputRef"
       v-if="isEditing"
-      class="vgo-input"
+      ref="editInputRef"
       v-model="item.content as string"
+      class="vgo-input"
       rows="6"
       @blur="isEditing = false"
     />
     <div
       v-else-if="item.content"
       class="chat-content"
-      :class="{'markdown-body-dark': isDark}"
+      :class="{ 'markdown-body-dark': isDark }"
       v-html="`[${item.role}] ${item.content}`"
-    ></div>
+    />
   </div>
   <div
     v-else
     ref="rootRef"
     class="ai-chat-bubble"
-    :class="{'no-avatar-image': !hasAvatarImage, 'is-reply': isReply, 'is-editing': isEditing}"
+    :class="{ 'no-avatar-image': !hasAvatarImage, 'is-reply': isReply, 'is-editing': isEditing }"
   >
     <div class="chat-side">
       <div class="chat-header">
         <div
           class="chat-avatar"
-          @click="printLog"
           :title="
-            `[${item.role}]` +
-            '\n' +
-            (character ? `${character.name}\n[${character.provider}/${character.model}]` : '')
+            `[${item.role}]`
+              + `\n${
+                character ? `${character.name}\n[${character.provider}/${character.model}]` : ''}`
           "
+          @click="printLog"
         >
           <template v-if="character">
-            <img v-if="character.avatar" :src="character.avatar" :alt="item.role" />
+            <img v-if="character.avatar" :src="character.avatar" :alt="item.role">
             <span v-else-if="character.name">{{ character.name[0] }}</span>
           </template>
-          <span class="chat-username" v-else>
+          <span v-else class="chat-username">
             {{ item.role }}
           </span>
-          <span class="chat-username _character" v-if="character">
-            {{ character.name }} [{{ `${character.provider}/${character.model}` }}]</span
-          >
+          <span v-if="character" class="chat-username _character">
+            {{ character.name }} [{{ `${character.provider}/${character.model}` }}]</span>
         </div>
 
         <div class="btn-jump-wrap">
           <button class="btn-no-style btn-jump" @click="scrollToTop">
-            <span class="mdi mdi-chevron-up"></span>
+            <span class="mdi mdi-chevron-up" />
           </button>
           <button class="btn-no-style btn-jump" @click="scrollToBottom">
-            <span class="mdi mdi-chevron-down"></span>
+            <span class="mdi mdi-chevron-down" />
           </button>
         </div>
       </div>
     </div>
 
-    <div class="chat-body" :class="{isEditing}">
+    <div class="chat-body" :class="{ isEditing }">
       <transition-group name="fade">
         <div
           v-if="isLoading"
           class="chat-content markdown-body vgo-bg"
-          :class="{'markdown-body-dark': isDark}"
+          :class="{ 'markdown-body-dark': isDark }"
         >
           <div
-            style="width: 50px; height: 50px"
             v-loading="true"
+            style="width: 50px; height: 50px"
             element-loading-background="transparent"
-          ></div>
+          />
         </div>
         <MessageContent
           v-else-if="typeof item.content === 'string'"
@@ -186,13 +185,13 @@ const exportMarkdown = (text) => {
           <template v-for="(sub, subIndex) in item.content as IMessageContent[]" :key="subIndex">
             <MessageContent
               v-if="sub.type === 'text'"
+              v-show="isEditing || !!sub.text"
               v-model:text="sub.text"
               :is-dark="isDark"
               :is-editing="isEditing"
-              v-show="isEditing || !!sub.text"
             />
           </template>
-          <div class="chat-images" v-if="imageList.length">
+          <div v-if="imageList.length" class="chat-images">
             <el-image
               v-for="(item, index) in imageList"
               :key="index"
@@ -208,32 +207,32 @@ const exportMarkdown = (text) => {
       </transition-group>
 
       <div class="chat-actions">
-        <div class="chat-date font-code" v-if="item.timestamp">
+        <div v-if="item.timestamp" class="chat-date font-code">
           {{ formatDate(item.timestamp) }}
         </div>
 
         <template v-if="isEditing">
           <button class="btn-no-style" @click="isEditing = false">
-            <span class="mdi mdi-check"></span> {{ $t('actions.done') }}
+            <span class="mdi mdi-check" /> {{ $t('actions.done') }}
           </button>
         </template>
         <template v-else>
           <button class="btn-no-style" @click="copy(item.content)">
-            <span class="mdi mdi-content-copy"></span> {{ $t('actions.copy') }}
+            <span class="mdi mdi-content-copy" /> {{ $t('actions.copy') }}
           </button>
           <button class="btn-no-style" @click="exportMarkdown(item.content)">
-            <span class="mdi mdi-download"></span> {{ $t('actions.download') }}
+            <span class="mdi mdi-download" /> {{ $t('actions.download') }}
           </button>
 
-          <button class="btn-no-style" v-if="allowRetry" @click="$emit('retry')">
-            <span class="mdi mdi-refresh"></span> {{ $t('actions.retry') }}
+          <button v-if="allowRetry" class="btn-no-style" @click="$emit('retry')">
+            <span class="mdi mdi-refresh" /> {{ $t('actions.retry') }}
           </button>
 
-          <button class="btn-no-style" v-if="allowEdit" @click="isEditing = true">
-            <span class="mdi mdi-pencil"></span> {{ $t('actions.edit') }}
+          <button v-if="allowEdit" class="btn-no-style" @click="isEditing = true">
+            <span class="mdi mdi-pencil" /> {{ $t('actions.edit') }}
           </button>
-          <button class="btn-no-style" v-if="allowDelete" @click="confirmDelete">
-            <span class="mdi mdi-delete-forever"></span> {{ $t('actions.delete') }}
+          <button v-if="allowDelete" class="btn-no-style" @click="confirmDelete">
+            <span class="mdi mdi-delete-forever" /> {{ $t('actions.delete') }}
           </button>
         </template>
       </div>

@@ -1,9 +1,9 @@
-import {useStyleTag} from '@vueuse/core'
-import {sassToCSS} from './css'
-import {useRoute} from 'vue-router'
-import {StyleEditorKeys} from '@/enum/settings'
+import { useStyleTag } from '@vueuse/core'
+import { useRoute } from 'vue-router'
+import { StyleEditorKeys } from '@/enum/settings'
+import { sassToCSS } from './css'
 
-type IStore = {
+interface IStore {
   globalCSS: string
   currentCSS: string
 }
@@ -23,18 +23,18 @@ export const useSharedCssStore = defineStore('playground', {
 })
 
 // 注册 head style 标签同步，每个页面只能注册一次
-export const useCssStyleTag = () => {
+export function useCssStyleTag() {
   const cssStore = useSharedCssStore()
   const route = useRoute()
-  const {css: globalCssTag} = useStyleTag('', {id: StyleEditorKeys.GLOBAL_STYLE})
-  const {css: currentCssTag} = useStyleTag('', {id: StyleEditorKeys.CURRENT_STYLE})
+  const { css: globalCssTag } = useStyleTag('', { id: StyleEditorKeys.GLOBAL_STYLE })
+  const { css: currentCssTag } = useStyleTag('', { id: StyleEditorKeys.CURRENT_STYLE })
 
   watch(
     () => cssStore.globalCSS,
     (val) => {
       globalCssTag.value = val
     },
-    {immediate: true},
+    { immediate: true },
   )
   watch(
     () => cssStore.currentCSS,
@@ -42,7 +42,7 @@ export const useCssStyleTag = () => {
       // console.log('[cssStore.currentCSS]', val)
       currentCssTag.value = val
     },
-    {immediate: false},
+    { immediate: false },
   )
 
   // 初始化时先应用全局样式
@@ -51,7 +51,8 @@ export const useCssStyleTag = () => {
     if (globalStyleCode) {
       try {
         cssStore.globalCSS = globalStyleCode ? await sassToCSS(globalStyleCode) : ''
-      } catch (e: any) {
+      }
+      catch (e: any) {
         window.$message.error(e.message)
       }
     }

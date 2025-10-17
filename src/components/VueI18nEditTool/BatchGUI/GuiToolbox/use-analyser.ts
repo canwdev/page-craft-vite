@@ -1,17 +1,17 @@
-import {I18N_JSON_OBJ_ROOT_KEY_NAME, ITranslateTreeItem} from '@/enum/vue-i18n-tool'
+import type { ITranslateTreeItem } from '@/enum/vue-i18n-tool'
 import _get from 'lodash-es/get'
-import {unicodeProgressBar} from '@/utils/unicode-progress-bar'
-import {useI18n} from 'vue-i18n'
-import {useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
+import { useI18n } from 'vue-i18n'
 import {
-  SubInstanceItem,
   useGuiToolbox,
 } from '@/components/VueI18nEditTool/BatchGUI/GuiToolbox/use-gui-toolbox'
+import { useI18nMainStore } from '@/components/VueI18nEditTool/store/i18n-tool-main'
+import { I18N_JSON_OBJ_ROOT_KEY_NAME } from '@/enum/vue-i18n-tool'
+import { unicodeProgressBar } from '@/utils/unicode-progress-bar'
 
-export const useBatchTranslateAnalyser = () => {
-  const {t: $t} = useI18n()
+export function useBatchTranslateAnalyser() {
+  const { t: $t } = useI18n()
   const i18nMainStore = useI18nMainStore()
-  const {getSubItems} = useGuiToolbox()
+  const { getSubItems } = useGuiToolbox()
 
   // 打印所有数据
   const printAllInfo = async () => {
@@ -24,13 +24,13 @@ export const useBatchTranslateAnalyser = () => {
     const items = await getSubItems()
     console.log('[getSubItems]', items)
     console.warn('====== [printAllInfo] End ======')
-    return {items}
+    return { items }
   }
   // 打印分析数据
   const printAnalytics = () => {
     let log = ``
     const printLog = (...args) => {
-      log += args.join(' ') + '\n'
+      log += `${args.join(' ')}\n`
       // console.log(...args)
     }
     const recursiveAnalyzeTranslateTree = (
@@ -52,21 +52,22 @@ export const useBatchTranslateAnalyser = () => {
           // 统计翻译数量
           let count = 0
           // 忽略未创建的文件夹
-          const filteredBatchList = i18nMainStore.batchList.filter(({json}) => {
+          const filteredBatchList = i18nMainStore.batchList.filter(({ json }) => {
             return !!json
           })
           const len = filteredBatchList.length
           const missingDirs: string[] = []
-          filteredBatchList.forEach(({rootDir, json}) => {
+          filteredBatchList.forEach(({ rootDir, json }) => {
             // 获取翻译key路径（去除虚拟根节点）
-            let tPath = nextParents.join('.') + '.' + i.key
-            const regex = new RegExp(I18N_JSON_OBJ_ROOT_KEY_NAME + '.', 'g')
+            let tPath = `${nextParents.join('.')}.${i.key}`
+            const regex = new RegExp(`${I18N_JSON_OBJ_ROOT_KEY_NAME}.`, 'g')
             tPath = tPath.replace(regex, '')
             const tVal = _get(json, tPath)
             // console.debug(tPath, json, tVal)
             if (tVal) {
               count++
-            } else {
+            }
+            else {
               missingDirs.push(rootDir.label)
             }
           })

@@ -1,24 +1,23 @@
-import {useAiSettingsStore} from '@/components/AI/hooks/ai-settings'
+import type {
+  ClaudeResponseData,
+  ClaudeStreamResponse,
+} from '@/components/AI/types/anthropic'
+import type { GptMessage } from '@/components/AI/types/open-ai'
+import { useAiSettingsStore } from '@/components/AI/hooks/ai-settings'
 import {
-  anthropicChatModelOptions,
+  ClaudeStreamType,
+} from '@/components/AI/types/anthropic'
+import {
   defaultAnthropicModel,
   OpenAIApiErrorCodeMessage,
 } from '@/components/AI/types/models'
-import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
-import {SettingsTabType} from '@/enum/settings'
-import {
-  ClaudeImageSource,
-  ClaudeResponseData,
-  ClaudeStreamResponse,
-  ClaudeStreamType,
-} from '@/components/AI/types/anthropic'
-import {scrollToElementAndBlink} from '@/utils/anim'
-import {GptMessage} from '@/components/AI/types/open-ai'
-import {IMessageContent} from '@/components/AI/types/ai'
+import { formatClaudeParams } from '@/components/AI/utils/format-anthropic'
+import { SettingsTabType } from '@/enum/settings'
+import { scrollToElementAndBlink } from '@/utils/anim'
 
-import {formatClaudeParams, parseClaudeImageSource} from '@/components/AI/utils/format-anthropic'
+import globalEventBus, { GlobalEvents } from '@/utils/global-event-bus'
 
-export const useAnthropicClaudeAI = () => {
+export function useAnthropicClaudeAI() {
   const aisStore = useAiSettingsStore()
 
   const openAiSettings = () => {
@@ -91,14 +90,14 @@ export const useAnthropicClaudeAI = () => {
     let fullResponse = ''
 
     return new Promise((resolve, reject) => {
-      function processStream({done, value}: {done: boolean; value?: Uint8Array}) {
+      function processStream({ done, value }: { done: boolean, value?: Uint8Array }) {
         if (done) {
           resolve(fullResponse)
           return
         }
 
         if (value) {
-          const chunk = decoder.decode(value, {stream: true})
+          const chunk = decoder.decode(value, { stream: true })
           const lines = chunk.split('\n')
 
           lines.forEach((line) => {
@@ -121,7 +120,8 @@ export const useAnthropicClaudeAI = () => {
                 if (jsonData.type === ClaudeStreamType.MESSAGE_STOP) {
                   resolve(fullResponse)
                 }
-              } catch (parseError) {
+              }
+              catch (parseError) {
                 console.error('Parse error:', parseError)
               }
             }

@@ -1,25 +1,25 @@
-import {QuickOptionItem} from '@canwdev/vgo-ui/src/components/QuickOptions/enum'
-import {sortMethodMap, SortType} from '../../utils/sort'
-import {IEntry} from '../../types/filesystem'
-import {Ref} from 'vue'
+import type { QuickOptionItem } from '@canwdev/vgo-ui/src/components/QuickOptions/enum'
+import type { Ref } from 'vue'
+import type { IEntry } from '../../types/filesystem'
+import { sortMethodMap, SortType } from '../../utils/sort'
 
-export const useLayoutSort = (files: Ref<IEntry[]>) => {
+export function useLayoutSort(files: Ref<IEntry[]>) {
   const isGridView = ref(false)
   const sortMode = ref(SortType.default)
   const showSortMenu = ref(false)
   const sortOptions = computed((): QuickOptionItem[] => {
     return [
-      {label: 'Default', value: SortType.default},
-      {label: 'Name ▲', value: SortType.name},
-      {label: 'Name ▼', value: SortType.nameDesc},
-      {label: 'Size ▲', value: SortType.size},
-      {label: 'Size ▼', value: SortType.sizeDesc},
-      {label: 'Extension ▲', value: SortType.extension},
-      {label: 'Extension ▼', value: SortType.extensionDesc},
-      {label: 'Last Modified ▲', value: SortType.lastModified},
-      {label: 'Last Modified ▼', value: SortType.lastModifiedDesc},
-      {label: 'Created Time ▲', value: SortType.birthTime},
-      {label: 'Created Time ▼', value: SortType.birthTimeDesc},
+      { label: 'Default', value: SortType.default },
+      { label: 'Name ▲', value: SortType.name },
+      { label: 'Name ▼', value: SortType.nameDesc },
+      { label: 'Size ▲', value: SortType.size },
+      { label: 'Size ▼', value: SortType.sizeDesc },
+      { label: 'Extension ▲', value: SortType.extension },
+      { label: 'Extension ▼', value: SortType.extensionDesc },
+      { label: 'Last Modified ▲', value: SortType.lastModified },
+      { label: 'Last Modified ▼', value: SortType.lastModifiedDesc },
+      { label: 'Created Time ▲', value: SortType.birthTime },
+      { label: 'Created Time ▼', value: SortType.birthTimeDesc },
     ].map((i) => {
       return {
         label: i.label,

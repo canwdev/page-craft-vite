@@ -1,9 +1,7 @@
-import iconArrow from '../../assets/textures/arrow.png?url'
+import iconFishingRod from '../../assets/textures/fishing_rod.png?url'
 import iconIronPickaxe from '../../assets/textures/iron_pickaxe.png?url'
 import iconIronSword from '../../assets/textures/iron_sword.png?url'
 import iconOakSign from '../../assets/textures/oak_sign.png?url'
-import iconFishingRod from '../../assets/textures/fishing_rod.png?url'
-import iconRedStone from '../../assets/textures/redstone.png?url'
 
 export enum ActionType {
   CURSOR = 'CURSOR',
@@ -71,9 +69,11 @@ export class BlockItem {
     }
     if (prop.blockType === BlockType.HTML_ELEMENT) {
       this.id = prop.data.tag
-    } else if (prop.blockType === BlockType.ACTIONS) {
+    }
+    else if (prop.blockType === BlockType.ACTIONS) {
       this.id = prop.actionType
-    } else if (prop.blockType === BlockType.COMPONENT) {
+    }
+    else if (prop.blockType === BlockType.COMPONENT) {
       this.id = prop.title
     }
     this.blockType = prop.blockType
@@ -117,13 +117,14 @@ export const ActionBlockItems = {
   }),
 }
 
-export const createHtmlBlockItem = (tag: string) =>
-  new BlockItem({
+export function createHtmlBlockItem(tag: string) {
+  return new BlockItem({
     blockType: BlockType.HTML_ELEMENT,
-    data: new HtmlBlockData({tag}),
+    data: new HtmlBlockData({ tag }),
   })
+}
 
-export const actionBlockItemList = Object.values(ActionBlockItems).filter((item) => !item.hidden)
+export const actionBlockItemList = Object.values(ActionBlockItems).filter(item => !item.hidden)
 
 const presetHtmlTags = 'div,span,br,button,input,img,a,p,h1,h2,h3,ul,ol,li'.split(',')
 export const initToolbarList: BlockItem[] = [
@@ -131,6 +132,6 @@ export const initToolbarList: BlockItem[] = [
   ActionBlockItems.PASTE_REPLACE,
   ActionBlockItems.DRAG,
   ActionBlockItems.DEBUG,
-  ...presetHtmlTags.map((tag) => createHtmlBlockItem(tag)),
+  ...presetHtmlTags.map(tag => createHtmlBlockItem(tag)),
   ActionBlockItems.EMPTY,
 ]

@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import {formatDate} from '@/utils'
-import {IComponentItem, regComponentV2} from '@/components/PageCraft/ComponentExplorer/enum'
-import {useSettingsStore} from '@/store/settings'
-import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
-import {useThrottleFn} from '@vueuse/core'
-import {colorHash} from '@/utils/color'
+import type { IComponentItem } from '@/components/PageCraft/ComponentExplorer/enum'
+import { useThrottleFn } from '@vueuse/core'
+import { regComponentV2 } from '@/components/PageCraft/ComponentExplorer/enum'
+import { useSettingsStore } from '@/store/settings'
+import { formatDate } from '@/utils'
+import { colorHash } from '@/utils/color'
+import globalEventBus, { GlobalEvents } from '@/utils/global-event-bus'
+
+const props = withDefaults(defineProps<Props>(), {})
 
 const emit = defineEmits(['open', 'select', 'handleDragStart'])
 
@@ -12,12 +15,11 @@ interface Props {
   item: IComponentItem
   checked: boolean
 }
-const props = withDefaults(defineProps<Props>(), {})
-const {item} = toRefs(props)
+const { item } = toRefs(props)
 
 const settingsStore = useSettingsStore()
 
-const openItem = () => {
+function openItem() {
   emit('open', item.value)
 }
 
@@ -36,8 +38,8 @@ const color = computed(() => {
 })
 
 let currentEvent: any
-const emitMouseMove = () => {
-  globalEventBus.emit(GlobalEvents.ON_COMP_HOVER, {event: currentEvent, item: item.value})
+function emitMouseMove() {
+  globalEventBus.emit(GlobalEvents.ON_COMP_HOVER, { event: currentEvent, item: item.value })
 }
 
 const handleMouseMove = useThrottleFn((event) => {
@@ -47,11 +49,11 @@ const handleMouseMove = useThrottleFn((event) => {
   currentEvent = event
   emitMouseMove()
 }, 70)
-const handleMouseLeave = () => {
+function handleMouseLeave() {
   globalEventBus.emit(GlobalEvents.ON_COMP_HOVER_OUT)
 }
 
-const handleDragStart = (event) => {
+function handleDragStart(event) {
   emit('handleDragStart', event)
   handleMouseLeave()
 }
@@ -64,40 +66,40 @@ const handleDragStart = (event) => {
     :class="{
       checked,
       active:
-        item.meta &&
-        settingsStore.curCompInStore &&
-        item.meta.id === settingsStore.curCompInStore.id &&
-        settingsStore.curCompInStore.basePath === item.basePath,
+        item.meta
+        && settingsStore.curCompInStore
+        && item.meta.id === settingsStore.curCompInStore.id
+        && settingsStore.curCompInStore.basePath === item.basePath,
       hidden: item.hidden,
     }"
-    @click.stop="openItem"
-    @keyup.enter="openItem"
     :style="{
       '--block-color-rgb': color,
     }"
+    :draggable="isComp"
+    :title="nameDisplay"
+    @click.stop="openItem"
+    @keyup.enter="openItem"
     @mousemove="handleMouseMove"
     @mouseleave="handleMouseLeave"
-    :draggable="isComp"
     @dragstart="handleDragStart"
-    :title="nameDisplay"
   >
     <div
       :style="{
         backgroundColor: `rgb(${color}, 0.24)`,
       }"
       class="mc-comp-item-bg"
-    ></div>
+    />
 
     <input
       class="file-checkbox"
       type="checkbox"
       :checked="checked"
-      @click.stop="$emit('select', {item, event: $event, toggle: true})"
+      @click.stop="$emit('select', { item, event: $event, toggle: true })"
       @dblclick.stop
-    />
+    >
 
     <div class="action-menu">
-      <slot name="actionMenu" :item="item"></slot>
+      <slot name="actionMenu" :item="item" />
     </div>
     <div class="title-wrap">
       <span v-if="nameDisplay" class="item-text-c">
@@ -108,10 +110,10 @@ const handleDragStart = (event) => {
     <div
       v-if="item.meta?.cover"
       class="component-cover"
-      :style="{backgroundImage: `url(${item.meta?.cover})`}"
-    ></div>
+      :style="{ backgroundImage: `url(${item.meta?.cover})` }"
+    />
     <div class="meta-info">
-      <span class="timestamp" v-if="item.meta?.timeCreated">{{
+      <span v-if="item.meta?.timeCreated" class="timestamp">{{
         formatDate(item.meta?.timeCreated)
       }}</span>
     </div>

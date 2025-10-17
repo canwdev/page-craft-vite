@@ -1,7 +1,8 @@
-import {ActionType, BlockItem, BlockType} from '@/enum/page-craft/block'
+import type { BlockItem } from '@/enum/page-craft/block'
+import { ActionType, BlockType } from '@/enum/page-craft/block'
 
 // 创建style元素，如果已存在，则直接返回
-export const createOrFindStyleNode = (id, cssText?) => {
+export function createOrFindStyleNode(id, cssText?) {
   const find = document.querySelector(id)
   if (find) {
     return find
@@ -33,8 +34,8 @@ export const tagsHasSrcAttr = [
 ]
 
 // block.blockType === BlockType.HTML_ELEMENT
-export const createBlockElement = (block: BlockItem, addOptions?) => {
-  const {innerText = '', className = ''} = addOptions || {}
+export function createBlockElement(block: BlockItem, addOptions?) {
+  const { innerText = '', className = '' } = addOptions || {}
 
   const text = innerText || ''
 
@@ -45,9 +46,11 @@ export const createBlockElement = (block: BlockItem, addOptions?) => {
       addEl.controls = true
     }
     addEl.src = text
-  } else if (tag === 'input') {
+  }
+  else if (tag === 'input') {
     addEl.setAttribute('placeholder', text)
-  } else if (!['br', 'hr'].includes(tag)) {
+  }
+  else if (!['br', 'hr'].includes(tag)) {
     addEl.innerHTML = text
   }
   if (className) {
@@ -57,18 +60,19 @@ export const createBlockElement = (block: BlockItem, addOptions?) => {
 }
 
 // 自动粘贴并替换值
-export const autoPasteReplaceValue = async (targetEl: Element) => {
+export async function autoPasteReplaceValue(targetEl: Element) {
   const val = await navigator.clipboard.readText()
   if ('src' in targetEl) {
     // 如果有src属性就替换src
     targetEl.src = val
-  } else {
+  }
+  else {
     targetEl.innerHTML = val
   }
   return val
 }
 
-export const appendCustomBlock = async (block: BlockItem, event, addOptions, mainPlaygroundRef) => {
+export async function appendCustomBlock(block: BlockItem, event, addOptions, mainPlaygroundRef) {
   const targetEl = event.target || mainPlaygroundRef.value
 
   if (block.blockType === BlockType.ACTIONS) {
@@ -91,7 +95,7 @@ export const appendCustomBlock = async (block: BlockItem, event, addOptions, mai
         sibling2 = sibling2.nextSibling
       }
 
-      console.log({sibling1, sibling2}) // 上一个元素
+      console.log({ sibling1, sibling2 }) // 上一个元素
 
       console.log('[targetEl]', targetEl)
 
@@ -103,19 +107,21 @@ export const appendCustomBlock = async (block: BlockItem, event, addOptions, mai
       }
       targetEl.parentNode.removeChild(targetEl)
     }
-  } else if (block.blockType === BlockType.HTML_ELEMENT) {
+  }
+  else if (block.blockType === BlockType.HTML_ELEMENT) {
     const addEl = createBlockElement(block, addOptions)
     // console.log('[addEl]', addEl)
     targetEl.appendChild(addEl)
   }
 }
 
-export const autoSetAttr = (el, attr, value) => {
+export function autoSetAttr(el, attr, value) {
   if (value) {
     if (el.getAttribute(attr) !== value) {
       el.setAttribute(attr, value)
     }
-  } else {
+  }
+  else {
     el.removeAttribute(attr)
   }
 }

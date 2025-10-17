@@ -1,19 +1,20 @@
 <script lang="ts">
-import {defineComponent, ref} from 'vue'
-import TranslateTreeItem from '@/components/VueI18nEditTool/Single/TranslateTreeItem.vue'
-import {exportI18nTreeJsonObj, I18nJsonObjUtils, ITranslateTreeItem} from '@/enum/vue-i18n-tool'
-import DropZone from '@/components/CommonUI/DropZone.vue'
-import {useFileDrop} from '@/hooks/use-file-drop'
-import {useBeforeUnload, useSaveShortcut} from '@canwdev/vgo-ui/src/hooks/use-beforeunload'
-import {useMainStore} from '@/store/main'
-import {useI18n} from 'vue-i18n'
-import I18nToolSettings from '@/components/VueI18nEditTool/I18nToolSettings.vue'
-import {useOpenedHistory} from '@/components/VueI18nEditTool/file-history'
-import {handleReadSelectedFile} from '@/utils/mc-utils/io'
-import CommonNavbar from '@/components/CommonUI/CommonNavbar.vue'
+import type { ITranslateTreeItem } from '@/enum/vue-i18n-tool'
 import DropdownMenu from '@canwdev/vgo-ui/src/components/QuickOptions/DropdownMenu.vue'
-import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
-import {IDBSettingsKey, PageCraftKeys, SettingsTabType} from '@/enum/settings'
+import { useBeforeUnload, useSaveShortcut } from '@canwdev/vgo-ui/src/hooks/use-beforeunload'
+import { defineComponent, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import CommonNavbar from '@/components/CommonUI/CommonNavbar.vue'
+import DropZone from '@/components/CommonUI/DropZone.vue'
+import { useOpenedHistory } from '@/components/VueI18nEditTool/file-history'
+import I18nToolSettings from '@/components/VueI18nEditTool/I18nToolSettings.vue'
+import TranslateTreeItem from '@/components/VueI18nEditTool/Single/TranslateTreeItem.vue'
+import { IDBSettingsKey, SettingsTabType } from '@/enum/settings'
+import { exportI18nTreeJsonObj, I18nJsonObjUtils } from '@/enum/vue-i18n-tool'
+import { useFileDrop } from '@/hooks/use-file-drop'
+import { useMainStore } from '@/store/main'
+import globalEventBus, { GlobalEvents } from '@/utils/global-event-bus'
+import { handleReadSelectedFile } from '@/utils/mc-utils/io'
 
 const filePickerOptions = {
   types: [
@@ -35,12 +36,12 @@ export default defineComponent({
     DropZone,
   },
   setup() {
-    const {t: $t} = useI18n()
+    const { t: $t } = useI18n()
     const mainStore = useMainStore()
     const translateTreeRoot = ref<ITranslateTreeItem[]>(I18nJsonObjUtils.parseWithRoot())
     const isLoading = ref(false)
 
-    const {appendHistory, historyMenuOptions} = useOpenedHistory(
+    const { appendHistory, historyMenuOptions } = useOpenedHistory(
       IDBSettingsKey.I18N_FILE_HANDLE_HISTORY,
       async (handle: FileSystemFileHandle) => {
         fileHandle.value = handle
@@ -56,10 +57,12 @@ export default defineComponent({
         const str = await handleReadSelectedFile(file)
         const obj = JSON.parse(str as string)
         translateTreeRoot.value = I18nJsonObjUtils.parseWithRoot(obj)
-      } catch (e: any) {
+      }
+      catch (e: any) {
         console.error(e)
         window.$message.error(e.message)
-      } finally {
+      }
+      finally {
         isLoading.value = false
       }
     }
@@ -86,15 +89,18 @@ export default defineComponent({
               fileHandle.value = handle
               const file = await handle.getFile()
               await handleImport(file)
-            } else {
+            }
+            else {
               window.$message.error('Please drag and drop a json file here!')
             }
           }
         }
-      } catch (e: any) {
+      }
+      catch (e: any) {
         console.error(e)
         window.$message.error(e.message)
-      } finally {
+      }
+      finally {
         isLoading.value = false
       }
     }
@@ -118,10 +124,12 @@ export default defineComponent({
         await writable.write(txt)
         await writable.close()
         window.$message.success($t('msgs.saved'))
-      } catch (e: any) {
+      }
+      catch (e: any) {
         console.error(e)
         window.$message.error(e.message)
-      } finally {
+      }
+      finally {
         isLoading.value = false
       }
     }
@@ -142,10 +150,12 @@ export default defineComponent({
         await writable.close()
 
         window.$message.success($t('msgs.saved'))
-      } catch (e: any) {
+      }
+      catch (e: any) {
         console.error(e)
         window.$message.error(e.message)
-      } finally {
+      }
+      finally {
         isLoading.value = false
       }
     }
@@ -166,13 +176,13 @@ export default defineComponent({
       translateTreeRoot.value = I18nJsonObjUtils.parseWithRoot({
         hello_world: {
           section_a: {
-            test_str: 'This is a test string',
-            test_arr: ['line 1', 'line 2', 'line 3'],
-            test_number: 114514,
+            'test_str': 'This is a test string',
+            'test_arr': ['line 1', 'line 2', 'line 3'],
+            'test_number': 114514,
             '': '中English混合',
           },
           section_b: {
-            '': "Blur this input and it'll generate the key automatically!",
+            '': 'Blur this input and it\'ll generate the key automatically!',
           },
           section_c: {
             '': '平行、行列',
@@ -207,14 +217,14 @@ export default defineComponent({
 
 <template>
   <div
+    v-loading="isLoading"
     class="vue-i18n-edit-tool i18n-style"
     @dragover.prevent.stop="fileDragover"
     @dragleave.prevent.stop="showDropzone = false"
     @drop.prevent.stop="fileDrop"
-    v-loading="isLoading"
   >
     <transition name="fade">
-      <DropZone position-fixed v-show="showDropzone" :text="$t('msgs.drag_file_here')" />
+      <DropZone v-show="showDropzone" position-fixed :text="$t('msgs.drag_file_here')" />
     </transition>
 
     <CommonNavbar>
@@ -233,11 +243,13 @@ export default defineComponent({
 
           <el-popconfirm
             v-if="fileHandle"
-            @confirm="handleCloseFile()"
             :title="$t('msgs.confirm_close')"
+            @confirm="handleCloseFile()"
           >
             <template #reference>
-              <button class="vgo-button">💻 {{ $t('actions.close') }} JSON</button>
+              <button class="vgo-button">
+                💻 {{ $t('actions.close') }} JSON
+              </button>
             </template>
           </el-popconfirm>
 
@@ -255,7 +267,7 @@ export default defineComponent({
             {{ $t('actions.save_as') }} ...
           </button>
 
-          <el-popconfirm @confirm="loadDemo()" :title="$t('msgs.load_demo_this_will')">
+          <el-popconfirm :title="$t('msgs.load_demo_this_will')" @confirm="loadDemo()">
             <template #reference>
               <button class="vgo-button">
                 {{ $t('common.demo') }}
@@ -275,7 +287,7 @@ export default defineComponent({
           :index="index"
           :title="fileHandle?.name"
         />
-        <div class="height-placeholder"></div>
+        <div class="height-placeholder" />
       </div>
     </div>
   </div>

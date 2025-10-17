@@ -3,14 +3,14 @@
  * Reference: https://juejin.cn/post/7157151914667442207
  */
 
-import {sleep} from '@/utils/index'
+import { sleep } from '@/utils/index'
 
 /**
  * Checks if the current browser supports the MediaDevices API.
  */
 const checkIfBrowserSupported = () => Boolean(navigator.mediaDevices?.getDisplayMedia)
 
-const createVideoElementToCaptureFrames = (mediaStream: MediaStream) => {
+function createVideoElementToCaptureFrames(mediaStream: MediaStream) {
   const video = document.createElement('video')
   video.autoplay = true
   video.muted = true
@@ -21,7 +21,7 @@ const createVideoElementToCaptureFrames = (mediaStream: MediaStream) => {
   return video
 }
 
-const paintVideoFrameOnCanvas = (video: HTMLVideoElement) => {
+function paintVideoFrameOnCanvas(video: HTMLVideoElement) {
   // Get the video settings
   // @ts-ignore because getTracks is very much valid in modern browsers
   const videoTrackSettings = video.srcObject?.getTracks()[0].getSettings()
@@ -36,7 +36,7 @@ const paintVideoFrameOnCanvas = (video: HTMLVideoElement) => {
   return canvas
 }
 
-const playCameraClickSound = (url: string) => {
+function playCameraClickSound(url: string) {
   const audio = document.createElement('audio')
   audio.loop = false
   audio.src = url
@@ -44,18 +44,18 @@ const playCameraClickSound = (url: string) => {
   audio.remove()
 }
 
-const stopCapture = (video: HTMLVideoElement) => {
+function stopCapture(video: HTMLVideoElement) {
   // @ts-ignore because getTracks is very much valid in modern browsers
   const tracks = video.srcObject?.getTracks()
-  tracks?.forEach((track: {stop: () => void}) => track.stop())
+  tracks?.forEach((track: { stop: () => void }) => track.stop())
 
   // This is the only way to clean up a video stream in the browser so...
-  // eslint-disable-next-line no-param-reassign
+
   video.srcObject = null
   video.remove()
 }
 
-const waitForFocus = async (result: MediaStream): Promise<MediaStream> => {
+async function waitForFocus(result: MediaStream): Promise<MediaStream> {
   await sleep(300)
   if (document.hasFocus()) {
     return result
@@ -63,7 +63,7 @@ const waitForFocus = async (result: MediaStream): Promise<MediaStream> => {
   return waitForFocus(result)
 }
 
-type Options = {
+interface Options {
   /**
    * The quality between 0-1 of your final image. 1 is uncompressed, 0 is lowest quality.
    * @default 0.7
@@ -96,15 +96,15 @@ type Options = {
 /**
  * Takes a screenshot of the current page using a the native browser [`MediaDevices`](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getDisplayMedia) API.
  */
-export const takeScreenshot = async (options: Options = {}) => {
-  const {onCaptureEnd, onCaptureStart, quality = 0.7, type = 'image/png', soundEffectUrl} = options
+export async function takeScreenshot(options: Options = {}) {
+  const { onCaptureEnd, onCaptureStart, quality = 0.7, type = 'image/png', soundEffectUrl } = options
   await onCaptureStart?.()
   return navigator.mediaDevices
     .getDisplayMedia({
       // This is actually supported, but only in Chrome so not yet part of the TS typedefs, so
       // @ts-ignore
       preferCurrentTab: true,
-      video: {frameRate: 30},
+      video: { frameRate: 30 },
     })
     .then(waitForFocus) // We can only proceed if our tab is in focus.
     .then(async (result) => {
@@ -145,10 +145,10 @@ export const takeScreenshot = async (options: Options = {}) => {
     })
 }
 
-export const pasteImage = async () => {
+export async function pasteImage() {
   const clipboardData = await navigator.clipboard.read()
   // console.log(clipboardData)
-  const item = clipboardData.find((i) => i.types.find((t) => /^image/i.test(t)))
+  const item = clipboardData.find(i => i.types.find(t => /^image/i.test(t)))
   if (!item) {
     throw new Error('No image found in clipboard')
   }
@@ -156,7 +156,7 @@ export const pasteImage = async () => {
   return URL.createObjectURL(blob)
 }
 
-export const getBase64FromImageUrl = async (imageUrl) => {
+export async function getBase64FromImageUrl(imageUrl) {
   try {
     const response = await fetch(imageUrl)
 
@@ -172,7 +172,8 @@ export const getBase64FromImageUrl = async (imageUrl) => {
       reader.onerror = reject
       reader.readAsDataURL(blob)
     })
-  } catch (error) {
+  }
+  catch (error) {
     console.error('Error getting base64 from image:', error)
     return null // 或者抛出错误，根据你的需求
   }

@@ -1,5 +1,5 @@
 <script lang="ts">
-import {defineComponent} from 'vue'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
   setup(props, context) {
@@ -31,5 +31,5 @@ export default defineComponent({
 </script>
 
 <template>
-  <iframe frameborder="0" @load="renderChildren" ref="iFrameRef"></iframe>
+  <iframe ref="iFrameRef" frameborder="0" @load="renderChildren" />
 </template>

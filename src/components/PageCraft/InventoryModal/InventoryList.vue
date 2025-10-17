@@ -1,7 +1,8 @@
 <script lang="ts">
-import {defineComponent, PropType} from 'vue'
+import type { PropType } from 'vue'
+import type { BlockItem } from '@/enum/page-craft/block'
+import { defineComponent } from 'vue'
 import BlockItemCard from '@/components/PageCraft/InventoryModal/BlockItemCard.vue'
-import {BlockItem} from '@/enum/page-craft/block'
 
 export default defineComponent({
   name: 'InventoryList',
@@ -26,7 +27,7 @@ export default defineComponent({
   },
   emits: ['onItemClick', 'contextmenu'],
   setup(props) {
-    const {itemList} = toRefs(props)
+    const { itemList } = toRefs(props)
     const filterText = ref('')
 
     const itemListFiltered = computed(() => {
@@ -46,28 +47,28 @@ export default defineComponent({
 
 <template>
   <div class="inventory-list-wrap">
-    <div class="filter-row flex-row-center-gap" v-if="showFilter">
-      <slot name="filterStart"></slot>
+    <div v-if="showFilter" class="filter-row flex-row-center-gap">
+      <slot name="filterStart" />
 
       <input
-        class="vgo-input"
         v-model="filterText"
+        class="vgo-input"
+        :placeholder="`🔎 ${$t('msgs.filter_items')}`"
         @keyup.esc="filterText = ''"
-        :placeholder="'🔎 ' + $t('msgs.filter_items')"
-      />
+      >
 
-      <slot name="filterEnd"></slot>
+      <slot name="filterEnd" />
     </div>
     <div v-if="!itemListFiltered.length" style="padding: 40px; text-align: center; font-size: 20px">
       {{ $t('msgs.no_items') }}
     </div>
-    <div v-else class="inventory-list scrollbar-mini" :class="{_big: false}">
+    <div v-else class="inventory-list scrollbar-mini" :class="{ _big: false }">
       <template v-for="item in itemListFiltered" :key="item.id">
         <BlockItemCard class="list-item" :item="item" @click="$emit('onItemClick', item)" />
       </template>
     </div>
 
-    <slot name="end"></slot>
+    <slot name="end" />
   </div>
 </template>
 

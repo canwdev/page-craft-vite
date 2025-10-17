@@ -1,14 +1,11 @@
-import {createRouter, createWebHashHistory} from 'vue-router'
-import WelcomePage from '@/views/HomePage.vue'
-import i18n from '@/i18n/index'
-import {window as tauriWin} from '@tauri-apps/api'
-import {formatSiteTitle} from '@/router/router-utils'
-
+import { window as tauriWin } from '@tauri-apps/api'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import iconExcel from '@/assets/textures/excel.svg?url'
+
+import i18n from '@/i18n/index'
+import { formatSiteTitle } from '@/router/router-utils'
+import WelcomePage from '@/views/HomePage.vue'
 import iconTranslate from '../assets/textures/translate.svg?url'
-import iconAi from '@/assets/textures/chat-gpt-logo.svg?url'
-import iconText from '@/assets/textures/enchanted_book.png?url'
-import iconDev from '@/assets/textures/redstone.png?url'
 
 const history = createWebHashHistory()
 const routes = [
@@ -84,9 +81,9 @@ const routes = [
     ],
   },
   // catch all route for 404
-  {path: '/:catchAll(.*)', component: () => import('@/views/404.vue')},
+  { path: '/:catchAll(.*)', component: () => import('@/views/404.vue') },
 ]
-const router = createRouter({history, routes})
+const router = createRouter({ history, routes })
 
 router.beforeEach(async (to, from, next) => {
   return next()

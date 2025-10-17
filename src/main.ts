@@ -1,5 +1,24 @@
-import pkg from '../package.json'
+import ElementPlus from 'element-plus'
 import moment from 'moment/moment'
+
+import { createPinia } from 'pinia'
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+import { PiniaSharedState } from 'pinia-shared-state'
+import PortalVue from 'portal-vue'
+
+import { createApp } from 'vue'
+import i18n from '@/i18n/index'
+
+import pkg from '../package.json'
+import App from './App.vue'
+import router from './router'
+import 'element-plus/dist/index.css'
+import 'element-plus/theme-chalk/dark/css-vars.css'
+// https://pictogrammers.com/library/mdi/
+import '@mdi/font/css/materialdesignicons.min.css'
+import './styles/style.scss'
+
+import '@/components/Apps/app-list'
 
 /**
  * 输出包版本信息
@@ -12,25 +31,6 @@ console.info(
   'background:#f9f9f9; border-radius: 0 3px 3px 0; padding:2px 0; color: #009688; font-size: 10px; font-weight: bold;',
   'background:transparent',
 )
-
-import ElementPlus from 'element-plus'
-import 'element-plus/dist/index.css'
-import 'element-plus/theme-chalk/dark/css-vars.css'
-// https://pictogrammers.com/library/mdi/
-import '@mdi/font/css/materialdesignicons.min.css'
-
-import {createApp} from 'vue'
-import App from './App.vue'
-
-import router from './router'
-import {createPinia} from 'pinia'
-import {PiniaSharedState} from 'pinia-shared-state'
-import PortalVue from 'portal-vue'
-import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
-import i18n from '@/i18n/index'
-import './styles/style.scss'
-
-import '@/components/Apps/app-list'
 
 const app = createApp(App)
 app.use(i18n)

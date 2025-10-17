@@ -1,7 +1,7 @@
 <script lang="ts">
 import Editor from '@tinymce/tinymce-vue'
-import {defineComponent, ref, toRefs} from 'vue'
-import {useScriptTag, useVModel} from '@vueuse/core'
+import { useScriptTag, useVModel } from '@vueuse/core'
+import { defineComponent, ref, toRefs } from 'vue'
 
 export default defineComponent({
   name: 'TinyMceEditor',
@@ -28,8 +28,8 @@ export default defineComponent({
     },
   },
   emits: ['update:modelValue', 'valueChange'],
-  setup(props, {emit}) {
-    const {contentCss, minimal, dark} = toRefs(props)
+  setup(props, { emit }) {
+    const { contentCss, minimal, dark } = toRefs(props)
     // https://www.tiny.cloud/docs/tinymce/s6/basic-setup/
     const initOptions = ref({
       body_class: 'detail-rich-text',
@@ -68,8 +68,8 @@ export default defineComponent({
           ]
         : [
             'undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | ',
-            'bullist numlist outdent indent | link image | print preview media fullscreen | ' +
-              'forecolor backcolor emoticons',
+            'bullist numlist outdent indent | link image | print preview media fullscreen | '
+            + 'forecolor backcolor emoticons',
           ],
       relative_urls: false,
       remove_script_host: false,
@@ -105,7 +105,7 @@ export default defineComponent({
             reject(e)
           }
         })
-      },*/
+      }, */
     })
     const mValue = useVModel(props, 'modelValue', emit)
 
@@ -127,7 +127,9 @@ export default defineComponent({
   <div v-if="isLoaded" class="tiny-mce-editor">
     <Editor v-model="mValue" :init="initOptions" v-bind="$attrs" />
   </div>
-  <div v-else>Loading...</div>
+  <div v-else>
+    Loading...
+  </div>
 </template>
 
 <style lang="scss">

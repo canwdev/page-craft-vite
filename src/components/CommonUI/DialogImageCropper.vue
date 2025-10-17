@@ -1,8 +1,8 @@
 <script lang="ts">
-import {defineComponent, ref} from 'vue'
-import {useModelWrapper} from '@/hooks/use-model-wrapper'
-import 'cropperjs/dist/cropper.css'
 import Cropper from 'cropperjs'
+import { defineComponent, ref } from 'vue'
+import { useModelWrapper } from '@/hooks/use-model-wrapper'
+import 'cropperjs/dist/cropper.css'
 
 export default defineComponent({
   name: 'DialogImageCropper',
@@ -17,8 +17,8 @@ export default defineComponent({
     },
   },
   emits: ['onSave', 'onCancel', 'update:visible'],
-  setup(props, {emit}) {
-    const {src} = toRefs(props)
+  setup(props, { emit }) {
+    const { src } = toRefs(props)
     const mVisible = useModelWrapper(props, emit, 'visible')
     const imgRef = ref()
     const cropperRef = shallowRef()
@@ -32,7 +32,8 @@ export default defineComponent({
             autoCropArea: 0.1,
           })
         })
-      } else {
+      }
+      else {
         cropperRef.value = null
       }
     })
@@ -54,21 +55,23 @@ export default defineComponent({
 
 <template>
   <el-dialog
+    v-model="mVisible"
     fullscreen
     :positive-text="$t('actions.done')"
     title="Image Cropper"
-    v-model="mVisible"
     @keyup.enter="handleSave"
   >
     <template v-if="mVisible">
       <div @dblclick.stop="handleSave">
-        <img ref="imgRef" class="cropping-image" :src="src" />
+        <img ref="imgRef" class="cropping-image" :src="src">
       </div>
     </template>
 
     <template #footer>
       <div class="dialog-footer">
-        <el-button @click="handleCancel">{{ $t('actions.cancel') }}</el-button>
+        <el-button @click="handleCancel">
+          {{ $t('actions.cancel') }}
+        </el-button>
         <el-button type="primary" @click="handleSave">
           {{ $t('actions.save') }}
         </el-button>

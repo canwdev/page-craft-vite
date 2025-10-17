@@ -1,6 +1,6 @@
-import VueRouter, {Route} from 'vue-router'
-import {ElNotification, Message} from 'element-plus'
-import {SFCInstallWithContext} from 'element-plus/es/utils'
+import type { ElNotification, Message } from 'element-plus'
+import type { SFCInstallWithContext } from 'element-plus/es/utils'
+import type VueRouter from 'vue-router'
 
 declare global {
   interface Window {

@@ -36,7 +36,7 @@ export const StyleEditorKeys = {
 export const PageCraftKeys = {
   LANGUAGE: 'page_craft_language',
   CURRENT_BLOCK: 'page_craft_current_block',
-  /*组件专用 start*/
+  /* 组件专用 start */
   COMP_HTML: 'page_craft_main_html',
   COMP_STYLE: 'page_craft_main_style',
   COMP_META: 'page_craft_comp_meta',
@@ -44,7 +44,7 @@ export const PageCraftKeys = {
   COMP_INDEX_LIST: 'page_craft_component_index',
   // 默认画布
   DEFAULT_CANVAS: 'page_craft_default_canvas',
-  /*组件专用 end*/
+  /* 组件专用 end */
   INDICATOR_OPTIONS: 'page_craft_indicator_options',
   TOOL_BAR_LIST: 'page_craft_tool_bar_list',
 }

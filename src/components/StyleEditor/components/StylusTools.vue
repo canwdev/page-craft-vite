@@ -1,13 +1,11 @@
 <script lang="ts" setup>
-import {defineComponent, ref} from 'vue'
-import {copyToClipboard, readClipboardData} from '@/utils'
 import VueMonaco from '@canwdev/vgo-ui/src/components/VueMonaco/index.vue'
-import {useI18n} from 'vue-i18n'
-import {useDebounceFn, useVModel} from '@vueuse/core'
-import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/index.vue'
-import {useSettingsStore} from '@/store/settings'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useSettingsStore } from '@/store/settings'
+import { copyToClipboard, readClipboardData } from '@/utils'
 
-const {t: $t} = useI18n()
+const { t: $t } = useI18n()
 const textInput = ref('')
 const textOutput = ref('')
 const errorText = ref('')
@@ -28,7 +26,8 @@ function doFormat() {
 
     textOutput.value = result
     errorText.value = ''
-  } catch (e: any) {
+  }
+  catch (e: any) {
     console.error(e)
     errorText.value = e.message
   }
@@ -39,16 +38,16 @@ function doClear() {
   doFormat()
 }
 
-const handlePaste = async () => {
+async function handlePaste() {
   textInput.value = await readClipboardData()
 }
 
-const handleCopy = async () => {
+async function handleCopy() {
   await copyToClipboard(textOutput.value)
   window.$message.success($t('msgs.copy_success'))
 }
 
-const handleAutoPasteCopy = async () => {
+async function handleAutoPasteCopy() {
   await handlePaste()
   setTimeout(() => {
     handleCopy()
@@ -73,17 +72,17 @@ function showDemo() {
     <div class="tool-header flex-row-center-gap" style="justify-content: space-between">
       <div class="vgo-button-group">
         <button
-          @click="handleAutoPasteCopy"
           :title="$t('msgs.auto_paste_and_copy')"
           class="vgo-button primary js_focus_auto_action"
+          @click="handleAutoPasteCopy"
         >
           {{ $t('actions.paste') }}+{{ $t('actions.copy') }}
-          <span v-if="settingsStore.enableFocusAutoAction" class="js-focus-auto-action-tip"></span>
+          <span v-if="settingsStore.enableFocusAutoAction" class="js-focus-auto-action-tip" />
         </button>
-        <button @click="handlePaste" class="vgo-button" title="Paste">
+        <button class="vgo-button" title="Paste" @click="handlePaste">
           {{ $t('actions.paste') }}
         </button>
-        <button @click="handleCopy" class="vgo-button" title="Copy Result">
+        <button class="vgo-button" title="Copy Result" @click="handleCopy">
           {{ $t('actions.copy') }}
         </button>
       </div>
@@ -97,17 +96,25 @@ function showDemo() {
       </a>
 
       <div class="vgo-button-group">
-        <button class="vgo-button" @click="doClear">{{ $t('actions.clear') }}</button>
-        <button class="vgo-button" @click="showDemo">{{ $t('common.demo') }}</button>
+        <button class="vgo-button" @click="doClear">
+          {{ $t('actions.clear') }}
+        </button>
+        <button class="vgo-button" @click="showDemo">
+          {{ $t('common.demo') }}
+        </button>
       </div>
     </div>
     <div class="main-box font-code">
       <div class="input-wrapper">
-        <div class="input-tip">Input Stylus Code</div>
-        <VueMonaco language="stylus" v-model="textInput" class="input-text" />
+        <div class="input-tip">
+          Input Stylus Code
+        </div>
+        <VueMonaco v-model="textInput" language="stylus" class="input-text" />
       </div>
       <div class="input-wrapper">
-        <div class="input-tip">Formatted (SCSS)</div>
+        <div class="input-tip">
+          Formatted (SCSS)
+        </div>
         <VueMonaco v-model="textOutput" language="scss" class="input-text" />
       </div>
     </div>

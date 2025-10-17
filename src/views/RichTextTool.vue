@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import {useStorage} from '@vueuse/core'
-import {useMainStore} from '@/store/main'
-import {LS_SettingsKey, SettingsTabType} from '@/enum/settings'
-import {useRoute} from 'vue-router'
 import TabLayout from '@canwdev/vgo-ui/src/components/Layouts/TabLayout.vue'
+import { useStorage } from '@vueuse/core'
+import { useRoute } from 'vue-router'
 import MarkdownEditor from '@/components/RichText/MarkdownEditor.vue'
+import { LS_SettingsKey } from '@/enum/settings'
+import { useMainStore } from '@/store/main'
 
-type AppParams = {
+interface AppParams {
   isReleaseNotes: boolean
 }
 
@@ -25,7 +25,7 @@ const route = useRoute()
 
 const curTab = ref('markdown')
 
-const loadReleaseNotes = async () => {
+async function loadReleaseNotes() {
   const res = await fetch('./release-notes.md')
   editorValue.value = await res.text()
 }
@@ -42,22 +42,22 @@ watch(
       loadReleaseNotes()
     }
   },
-  {immediate: true},
+  { immediate: true },
 )
 </script>
 
 <template>
   <div class="rich-text-tool-wrap scrollbar-mini">
     <TabLayout
+      v-model="curTab"
       class="rich-text-tool-main"
       horizontal
-      v-model="curTab"
-      :options="[{label: 'Markdown', value: 'markdown'}]"
+      :options="[{ label: 'Markdown', value: 'markdown' }]"
     >
       <MarkdownEditor
         v-if="curTab === 'markdown'"
-        :dark="mainStore.isAppDarkMode"
         v-model="editorValue"
+        :dark="mainStore.isAppDarkMode"
       />
     </TabLayout>
   </div>

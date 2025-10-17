@@ -1,24 +1,24 @@
-import currencyJs from './currency-js'
-import {getSymbolFromCurrency} from './currency-symbol.js'
 import moment from 'moment/moment'
+import currencyJs from './currency-js'
+import { getSymbolFromCurrency } from './currency-symbol.js'
 
 /**
  * 格式化字符串，示例：USD $98.99
  * 另见：PriceDisplayV2
  * @param config
  */
-export const getPriceWithSymbol = (config) => {
-  const {price = 0, currency, showCurrencyCode = true, precision = 2} = config || {}
+export function getPriceWithSymbol(config) {
+  const { price = 0, currency, showCurrencyCode = true, precision = 2 } = config || {}
 
   if (Number.isNaN(price)) {
-    return NaN
+    return Number.NaN
   }
 
   // 货币前缀
   const codePrefix = showCurrencyCode && currency ? `${currency} ` : ``
 
   if (!currency) {
-    return codePrefix + currencyJs(price, {precision})
+    return codePrefix + currencyJs(price, { precision })
   }
 
   let _precision = precision
@@ -28,15 +28,15 @@ export const getPriceWithSymbol = (config) => {
 
   const currencySymbol = getSymbolFromCurrency(currency)
   return (
-    codePrefix +
-    currencyJs(price, {
+    codePrefix
+    + currencyJs(price, {
       symbol: currencySymbol,
       precision: _precision,
     }).format()
   )
 }
 
-export const getPriceClassName = (price: number) => {
+export function getPriceClassName(price: number) {
   if (price > 0) {
     return 'price-up'
   }
@@ -47,9 +47,9 @@ export const getPriceClassName = (price: number) => {
 }
 
 // 格式化 key -> label
-export const formatLabel = (key) => {
+export function formatLabel(key) {
   const words = key.split(/(?=[A-Z])/)
-  return words.map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
+  return words.map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
 }
 
 // 使用 Moment.js 将 n 个月转换为 x 年 y 月的代码：
@@ -74,7 +74,7 @@ export function numberToChineseMoney(n) {
   let s = ''
 
   for (var i = 0; i < fraction.length; i++) {
-    s += (digit[Math.floor(n * 10 * Math.pow(10, i)) % 10] + fraction[i]).replace(/零./, '')
+    s += (digit[Math.floor(n * 10 * 10 ** i) % 10] + fraction[i]).replace(/零./, '')
   }
   s = s || '整'
   n = Math.floor(n)
@@ -88,8 +88,8 @@ export function numberToChineseMoney(n) {
     s = p.replace(/(零.)*零$/, '').replace(/^$/, '零') + unit[0][i] + s
   }
   return (
-    head +
-    s
+    head
+    + s
       .replace(/(零.)*零元/, '元')
       .replace(/(零.)+/g, '零')
       .replace(/^整$/, '零元整')

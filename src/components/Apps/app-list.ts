@@ -1,9 +1,9 @@
-import {ShortcutItem} from '@/enum/os'
-import {useSystemStore} from '@/store/system'
-import {useI18n} from 'vue-i18n'
+import type { ShortcutItem } from '@/enum/os'
+import { useI18n } from 'vue-i18n'
+import { useSystemStore } from '@/store/system'
 
-export const useAppList = () => {
-  const {t: $t} = useI18n()
+export function useAppList() {
+  const { t: $t } = useI18n()
   const systemStore = useSystemStore()
 
   const SystemAppSettings: ShortcutItem = {

@@ -1,14 +1,14 @@
 <script setup lang="ts">
+import type { IOptionItem } from '@canwdev/vgo-ui/src/components/AutoFormElPlus/enum'
+import type { IStockTrackerSettings } from './types'
+import RectSwitch from '@canwdev/vgo-ui/src/components/OptionUI/Tools/RectSwitch.vue'
+import DropdownMenu from '@canwdev/vgo-ui/src/components/QuickOptions/DropdownMenu.vue'
+import { useStorage } from '@vueuse/core'
+import { useUpdatePrices } from '@/components/Apps/StockTracker/hooks/update-prices'
+import StockPrices from '@/components/Apps/StockTracker/StockPrices.vue'
+import { LS_SettingsKey } from '@/enum/settings'
 import StockStatistics from './StockStatistics.vue'
 import TransactionHistory from './TransactionHistory.vue'
-import {IStockTrackerSettings} from './types'
-import RectSwitch from '@canwdev/vgo-ui/src/components/OptionUI/Tools/RectSwitch.vue'
-import {useStorage} from '@vueuse/core'
-import {LS_SettingsKey} from '@/enum/settings'
-import StockPrices from '@/components/Apps/StockTracker/StockPrices.vue'
-import DropdownMenu from '@canwdev/vgo-ui/src/components/QuickOptions/DropdownMenu.vue'
-import {useUpdatePrices} from '@/components/Apps/StockTracker/hooks/update-prices'
-import {IOptionItem} from '@canwdev/vgo-ui/src/components/AutoFormElPlus/enum'
 
 const stockTrackerSettings = useStorage<IStockTrackerSettings>(
   LS_SettingsKey.STOCK_TRACKER_SETTINGS,
@@ -25,11 +25,11 @@ const stockSymbolOptions = computed((): IOptionItem[] => {
   })
 
   return Array.from(nameMap.keys()).map((key) => {
-    return {value: key, label: nameMap.get(key) || ''}
+    return { value: key, label: nameMap.get(key) || '' }
   })
 })
 
-const {stockTrackerPrices, isUpdating, updatePrices, confirmUpdatePrices} = useUpdatePrices({
+const { stockTrackerPrices, isUpdating, updatePrices, confirmUpdatePrices } = useUpdatePrices({
   stockSymbolOptions,
 })
 
@@ -46,9 +46,9 @@ enum StockTrackerTab {
 }
 
 const tabOptions = ref([
-  {label: '行情', value: StockTrackerTab.PRICES},
-  {label: '交易记录', value: StockTrackerTab.HISTORY},
-  {label: '统计', value: StockTrackerTab.STATISTICS},
+  { label: '行情', value: StockTrackerTab.PRICES },
+  { label: '交易记录', value: StockTrackerTab.HISTORY },
+  { label: '统计', value: StockTrackerTab.STATISTICS },
 ])
 const curTab = useStorage('stock_tracker_tab', StockTrackerTab.HISTORY)
 
@@ -79,7 +79,7 @@ const exportImportOptions = ref([
       },
     },
   },
-  {split: true},
+  { split: true },
   {
     label: '导入行情数据',
     iconClass: 'mdi mdi-import',
@@ -112,23 +112,25 @@ const transactionHistoryRef = ref()
 </script>
 
 <template>
-  <div class="stock-tracker vgo-bg scrollbar-mini" v-loading="isUpdating">
+  <div v-loading="isUpdating" class="stock-tracker vgo-bg scrollbar-mini">
     <div class="action-row">
       <div class="flex-row-center-gap">
         <button
-          class="vgo-button primary"
           v-if="curTab === StockTrackerTab.HISTORY"
+          class="vgo-button primary"
           @click="transactionHistoryRef.createItem"
         >
           添加交易记录
         </button>
-        <button class="vgo-button" @click="confirmUpdatePrices">更新日行情</button>
+        <button class="vgo-button" @click="confirmUpdatePrices">
+          更新日行情
+        </button>
       </div>
       <RectSwitch v-model="curTab" :options="tabOptions" />
       <div class="flex-row-center-gap">
         <DropdownMenu :options="exportImportOptions">
           <button class="vgo-button" title="Export">
-            <span class="mdi mdi-briefcase-arrow-up-down"></span>
+            <span class="mdi mdi-briefcase-arrow-up-down" />
           </button>
         </DropdownMenu>
       </div>
@@ -137,11 +139,11 @@ const transactionHistoryRef = ref()
     <div class="content-wrapper">
       <StockPrices v-if="curTab === StockTrackerTab.PRICES" :stock-prices="stockTrackerPrices" />
       <TransactionHistory
-        ref="transactionHistoryRef"
         v-if="curTab === StockTrackerTab.HISTORY"
+        ref="transactionHistoryRef"
+        v-model:is-updating="isUpdating"
         :history-list="stockTrackerSettings.transactionHistory"
         :stock-symbol-options="stockSymbolOptions"
-        v-model:is-updating="isUpdating"
       />
       <StockStatistics
         v-if="curTab === StockTrackerTab.STATISTICS"

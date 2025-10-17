@@ -1,12 +1,13 @@
-import {DirTreeItem} from '@/enum/vue-i18n-tool'
-import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
-import {useI18n} from 'vue-i18n'
-import {useI18nToolSettingsStore} from '@/components/VueI18nEditTool/store/i18n-tool-settings'
-import {BatchListItem, useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
+import type { BatchListItem } from '@/components/VueI18nEditTool/store/i18n-tool-main'
+import type { DirTreeItem } from '@/enum/vue-i18n-tool'
+import { useI18n } from 'vue-i18n'
+import { useI18nMainStore } from '@/components/VueI18nEditTool/store/i18n-tool-main'
+import { useI18nToolSettingsStore } from '@/components/VueI18nEditTool/store/i18n-tool-settings'
+import globalEventBus, { GlobalEvents } from '@/utils/global-event-bus'
 
-import {handleReadSelectedFile} from '@/utils/mc-utils/io'
+import { handleReadSelectedFile } from '@/utils/mc-utils/io'
 
-const useCommon = () => {
+function useCommon() {
   const i18nMainStore = useI18nMainStore()
   const i18nSetStore = useI18nToolSettingsStore()
 
@@ -27,8 +28,8 @@ const useCommon = () => {
 /**
  * 批处理管理器hook
  */
-export const useBatchWrapper = () => {
-  const {i18nMainStore, i18nSetStore, subFilePathArr} = useCommon()
+export function useBatchWrapper() {
+  const { i18nMainStore, i18nSetStore, subFilePathArr } = useCommon()
   const itemsRef = ref()
   const isLoading = ref(false)
 
@@ -39,7 +40,7 @@ export const useBatchWrapper = () => {
     // 逐个更新文件，而不是在组件内更新，以减少磁盘读写
     for (let i = 0; i < itemsRef.value.length; i++) {
       const item = itemsRef.value[i]
-      await item.saveChange({isSetValue: true})
+      await item.saveChange({ isSetValue: true })
     }
   }
   onMounted(() => {
@@ -52,7 +53,7 @@ export const useBatchWrapper = () => {
   const filePathArrFiltered = computed(() => {
     if (i18nSetStore.isFoldersMode) {
       // console.log(i18nMainStore.dirTree)
-      return i18nMainStore.dirTree.filter((i) => i.kind === 'directory')
+      return i18nMainStore.dirTree.filter(i => i.kind === 'directory')
     }
     return i18nMainStore.dirTree
   })
@@ -97,7 +98,8 @@ export const useBatchWrapper = () => {
           }
           try {
             recursiveFindItem(dirItem.children, subFilePathArr.value)
-          } catch (e) {
+          }
+          catch (e) {
             // console.warn(e)
           }
           return find
@@ -108,7 +110,7 @@ export const useBatchWrapper = () => {
 
         if (!currentItem) {
           list.push({
-            dirItem: dirItem,
+            dirItem,
             rootDir: dirItem,
             json: null,
           })
@@ -124,30 +126,33 @@ export const useBatchWrapper = () => {
           list.push({
             dirItem: currentItem,
             rootDir: dirItem,
-            json: json,
+            json,
           })
-        } catch (error: any) {
+        }
+        catch (error: any) {
           throw new Error(
-            `${currentItem.parentDirs.join('/') + '/' + currentItem.label}: ${error.message}`,
+            `${`${currentItem.parentDirs.join('/')}/${currentItem.label}`}: ${error.message}`,
           )
         }
       }
       i18nMainStore.batchList = list
       // console.log('batchList.value', batchList.value)
-    } catch (error: any) {
+    }
+    catch (error: any) {
       window.$message.error(error.message)
       console.error(error)
-    } finally {
+    }
+    finally {
       isLoading.value = false
     }
   }
-  watch(subFilePathArr, reloadBatchList, {immediate: true})
+  watch(subFilePathArr, reloadBatchList, { immediate: true })
   watch(() => i18nMainStore.dirTree, reloadBatchList)
   onMounted(() => {
     reloadBatchList()
   })
 
-  return {isLoading, handleSaveChanged, itemsRef, filePathArrFiltered, subFilePathArr}
+  return { isLoading, handleSaveChanged, itemsRef, filePathArrFiltered, subFilePathArr }
 }
 
 /**
@@ -165,7 +170,7 @@ async function createFolder(directoryHandle: FileSystemDirectoryHandle, folderPa
 
   // 逐级创建文件夹
   for (const folder of folders) {
-    currentDirectory = await currentDirectory.getDirectoryHandle(folder, {create: true})
+    currentDirectory = await currentDirectory.getDirectoryHandle(folder, { create: true })
   }
 
   console.log(`Folder "${folderPath}" created successfully.`)
@@ -184,7 +189,7 @@ async function createFile(
   content: string,
 ) {
   console.log('[createFile] 获取文件的可写入流')
-  const fileHandle = await directoryHandle.getFileHandle(filePath, {create: true})
+  const fileHandle = await directoryHandle.getFileHandle(filePath, { create: true })
   const writable = await fileHandle.createWritable()
 
   console.log('[createFile] 将数据写入文件')
@@ -197,11 +202,11 @@ async function createFile(
   return fileHandle
 }
 
-export const useBatchItemV2 = (props) => {
-  const {i18nMainStore, i18nSetStore, subFilePathArr} = useCommon()
-  const {t: $t} = useI18n()
+export function useBatchItemV2(props) {
+  const { i18nMainStore, i18nSetStore, subFilePathArr } = useCommon()
+  const { t: $t } = useI18n()
   const isLoading = ref(false)
-  const {listItem} = toRefs(props)
+  const { listItem } = toRefs(props)
 
   const handleSaveFile = async (txt: string) => {
     try {
@@ -220,14 +225,16 @@ export const useBatchItemV2 = (props) => {
 
       await writable.write(txt)
       await writable.close()
-      const pathTip = listItem.value.rootDir.label + ': ' + fileHandle.name
+      const pathTip = `${listItem.value.rootDir.label}: ${fileHandle.name}`
       console.log('[handleSaveFile]', pathTip)
-      window.$message.success(`${pathTip} ` + $t('msgs.saved'))
-    } catch (error: any) {
+      window.$message.success(`${pathTip} ${$t('msgs.saved')}`)
+    }
+    catch (error: any) {
       console.error(error)
       window.$message.error($t('msgs.error') + error.message)
       throw error
-    } finally {
+    }
+    finally {
       isLoading.value = false
     }
   }
@@ -235,7 +242,7 @@ export const useBatchItemV2 = (props) => {
   const isLocalCreated = ref(false)
   const handleCreateFile = async (options: any = {}) => {
     try {
-      const {initText = '', initObj = {}, cb, isReload = true} = options
+      const { initText = '', initObj = {}, cb, isReload = true } = options
       isLoading.value = true
 
       if (!listItem.value.dirItem) {
@@ -257,7 +264,7 @@ export const useBatchItemV2 = (props) => {
         txt,
       )
 
-      window.$message.success('Created ' + fullPath)
+      window.$message.success(`Created ${fullPath}`)
       isLocalCreated.value = true
 
       if (typeof cb === 'function') {
@@ -268,10 +275,12 @@ export const useBatchItemV2 = (props) => {
           handleReload()
         })
       }
-    } catch (error: any) {
+    }
+    catch (error: any) {
       console.error(error)
       window.$message.error(error.message)
-    } finally {
+    }
+    finally {
       isLoading.value = false
     }
   }

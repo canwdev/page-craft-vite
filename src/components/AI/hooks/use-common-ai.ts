@@ -1,15 +1,15 @@
-import {useOpenAI_GPT} from '@/components/AI/hooks/use-gpt'
-import {useAnthropicClaudeAI} from '@/components/AI/hooks/use-claude'
-import {AIProvider} from '@/components/AI/types/models'
-import {GptMessage} from '@/components/AI/types/open-ai'
-import {useAiSettingsStore} from '@/components/AI/hooks/ai-settings'
+import type { GptMessage } from '@/components/AI/types/open-ai'
+import { useAiSettingsStore } from '@/components/AI/hooks/ai-settings'
+import { useAnthropicClaudeAI } from '@/components/AI/hooks/use-claude'
+import { useOpenAI_GPT } from '@/components/AI/hooks/use-gpt'
+import { AIProvider } from '@/components/AI/types/models'
 
-export const useCommonAi = () => {
+export function useCommonAi() {
   const aisStore = useAiSettingsStore()
 
-  const {requestChatStream: gptStream, requestChatMessage: gptMessage} = useOpenAI_GPT()
-  const {requestChatStream: claudeStream, requestChatMessage: claudeMessage} =
-    useAnthropicClaudeAI()
+  const { requestChatStream: gptStream, requestChatMessage: gptMessage } = useOpenAI_GPT()
+  const { requestChatStream: claudeStream, requestChatMessage: claudeMessage }
+    = useAnthropicClaudeAI()
 
   const requestChatStream = (
     provider: AIProvider,
@@ -51,9 +51,9 @@ export const useCommonAi = () => {
   }) => {
     switch (provider) {
       case AIProvider.ANTHROPIC:
-        return claudeMessage(messages, {model})
+        return claudeMessage(messages, { model })
       default:
-        return gptMessage(messages, {model})
+        return gptMessage(messages, { model })
     }
   }
 

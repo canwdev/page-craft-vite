@@ -1,13 +1,13 @@
 <script lang="ts" setup>
+import { ref } from 'vue'
+import { pasteImage, takeScreenshot } from '@/utils/screenshot'
 import QrcodeDecoder from './qrcode-decoder'
-import {ref} from 'vue'
-import {pasteImage, takeScreenshot} from '@/utils/screenshot'
 
 const emit = defineEmits(['onResult'])
 
 const isLoading = ref()
 let qr: QrcodeDecoder | null = null
-const startVideoScan = async () => {
+async function startVideoScan() {
   if (qr) {
     qr.stop()
     qr = null
@@ -26,20 +26,22 @@ const startVideoScan = async () => {
     emit('onResult', res.data)
 
     await window.$mcUtils.copy(res.data)
-  } catch (error: any) {
+  }
+  catch (error: any) {
     console.error(error)
     window.$notification({
       type: 'error',
       message: error.message,
       timeout: 3000,
     })
-  } finally {
+  }
+  finally {
     isLoading.value = false
     qr = null
   }
 }
 
-const startScanUploadImage = async (type: 'screen' | 'file' | 'clipboard') => {
+async function startScanUploadImage(type: 'screen' | 'file' | 'clipboard') {
   if (qr) {
     qr.stop()
     qr = null
@@ -73,43 +75,49 @@ const startScanUploadImage = async (type: 'screen' | 'file' | 'clipboard') => {
       // 添加 change 事件监听器
       fileInput.addEventListener('change', async (event) => {
         const file = event.target.files[0]
-        if (!file) return
+        if (!file)
+          return
 
         try {
           const imgSrc = await readFile(file)
           await handleImage(imgSrc)
-        } catch (error) {
+        }
+        catch (error) {
           window.$message.error(error.message)
           console.error(error)
         }
       })
 
       fileInput.click()
-    } else if (type === 'screen') {
+    }
+    else if (type === 'screen') {
       const base64url = await takeScreenshot()
       if (!base64url) {
         throw new Error('Failed to take screenshot')
       }
       await handleImage(base64url)
-    } else if (type === 'clipboard') {
+    }
+    else if (type === 'clipboard') {
       const imgSrc = await pasteImage()
       await handleImage(imgSrc)
     }
-  } catch (error) {
+  }
+  catch (error) {
     console.error(error)
     window.$notification({
       type: 'error',
       message: error.message,
       timeout: 3000,
     })
-  } finally {
+  }
+  finally {
     isLoading.value = false
     qr = null
   }
 }
 
 // 使用 Promise 封装 FileReader
-const readFile = (file) => {
+function readFile(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
     reader.onload = () => resolve(reader.result)
@@ -119,7 +127,7 @@ const readFile = (file) => {
 }
 
 // 使用 Promise 封装图像加载
-const loadImage = (src) => {
+function loadImage(src) {
   return new Promise((resolve, reject) => {
     const img = new Image()
     img.src = src
@@ -131,22 +139,22 @@ const loadImage = (src) => {
 
 <template>
   <div class="btn-qr-scanner">
-    <button class="vgo-button" :class="{active: isLoading}" @click="startScanUploadImage('screen')">
-      <span class="mdi mdi-qrcode-scan"></span>
+    <button class="vgo-button" :class="{ active: isLoading }" @click="startScanUploadImage('screen')">
+      <span class="mdi mdi-qrcode-scan" />
       Scan QR from screen...
     </button>
 
-    <button class="vgo-button" :class="{active: isLoading}" @click="startScanUploadImage('file')">
-      <span class="mdi mdi-upload"></span>
+    <button class="vgo-button" :class="{ active: isLoading }" @click="startScanUploadImage('file')">
+      <span class="mdi mdi-upload" />
       Scan QR from image file...
     </button>
 
     <button
       class="vgo-button"
-      :class="{active: isLoading}"
+      :class="{ active: isLoading }"
       @click="startScanUploadImage('clipboard')"
     >
-      <span class="mdi mdi-clipboard-outline"></span>
+      <span class="mdi mdi-clipboard-outline" />
       Scan QR from clipboard...
     </button>
   </div>

@@ -45,7 +45,7 @@ monaco.languages.registerCompletionItemProvider('scss', {
       return (arr || []).map((item) => {
         let sl = ''
         item.label.split(' ').forEach((c) => {
-          sl += '.' + c
+          sl += `.${c}`
         })
         return {
           ...getCommonOptions(),
@@ -63,12 +63,12 @@ monaco.languages.registerCompletionItemProvider('scss', {
       return (arr || []).map((item) => {
         let label = item.label.toLowerCase()
         // 如果标题前面没有“.”，就添加“`”符号，避免高频词汇占用，输入“`”触发更加方便
-        if (!/^\./g.test(label)) {
-          label = '`' + label
+        if (!/^\./.test(label)) {
+          label = `\`${label}`
         }
         return {
           ...getCommonOptions(),
-          label: label,
+          label,
           insertText: item.snippet,
           kind: monaco.languages.CompletionItemKind.Snippet,
         }

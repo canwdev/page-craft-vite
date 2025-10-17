@@ -1,12 +1,12 @@
 <script setup lang="ts">
+import { useBatchWrapper } from '@/components/VueI18nEditTool/BatchGUI/batch-hooks'
 import SubGuiItem from '@/components/VueI18nEditTool/BatchGUI/SubGuiItem.vue'
-import {useBatchWrapper} from '@/components/VueI18nEditTool/BatchGUI/batch-hooks'
-import {GlobalEvents, useGlobalBusOn} from '@/utils/global-event-bus'
-import {useI18nMainStore} from '@/components/VueI18nEditTool/store/i18n-tool-main'
 import CopyButtons from '@/components/VueI18nEditTool/Single/CopyButtons.vue'
+import { useI18nMainStore } from '@/components/VueI18nEditTool/store/i18n-tool-main'
+import { GlobalEvents, useGlobalBusOn } from '@/utils/global-event-bus'
 
 const i18nMainStore = useI18nMainStore()
-const {isLoading, handleSaveChanged, itemsRef} = useBatchWrapper()
+const { isLoading, handleSaveChanged, itemsRef } = useBatchWrapper()
 
 useGlobalBusOn(GlobalEvents.I18N_BATCH_GUI_GET_SUBS, (resolve) => {
   resolve(itemsRef.value)
@@ -14,26 +14,25 @@ useGlobalBusOn(GlobalEvents.I18N_BATCH_GUI_GET_SUBS, (resolve) => {
 </script>
 
 <template>
-  <div class="batch-translate" v-loading="isLoading">
+  <div v-loading="isLoading" class="batch-translate">
     <div v-if="i18nMainStore.translatePath" class="vgo-bg t-action-row flex-row-center-gap">
       <span class="font-code">
         {{ i18nMainStore.translatePath }}
       </span>
       <div class="flex-row-center-gap">
         <span>
-          <span class="mdi mdi-content-copy"></span>
-          :</span
-        >
+          <span class="mdi mdi-content-copy" />
+          :</span>
         <CopyButtons ref="cpButtonsRef" :content="i18nMainStore.translatePath" />
       </div>
     </div>
     <div class="batch-translate-list-wrap">
       <SubGuiItem
-        ref="itemsRef"
         v-for="item in i18nMainStore.batchList"
+        ref="itemsRef"
         :key="item.dirItem.key"
         :list-item="item"
-        @saveChanged="handleSaveChanged"
+        @save-changed="handleSaveChanged"
       />
     </div>
   </div>

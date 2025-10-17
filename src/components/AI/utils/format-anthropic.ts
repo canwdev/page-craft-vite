@@ -1,7 +1,7 @@
-import {ClaudeImageSource} from '@/components/AI/types/anthropic'
-import {IMessageContent, IMessageItem} from '@/components/AI/types/ai'
+import type { IMessageContent, IMessageItem } from '@/components/AI/types/ai'
+import type { ClaudeImageSource } from '@/components/AI/types/anthropic'
 
-export const parseClaudeImageSource = (base64String: string): ClaudeImageSource | null => {
+export function parseClaudeImageSource(base64String: string): ClaudeImageSource | null {
   // 匹配 data URL 的正则表达式
   const regex = /^data:(image\/(jpeg|png|gif|webp));base64,(.+)$/
 
@@ -15,7 +15,7 @@ export const parseClaudeImageSource = (base64String: string): ClaudeImageSource 
   const data = matches[3]
 
   return {
-    data: data,
+    data,
     media_type: mediaType,
     type: 'base64',
   }
@@ -25,7 +25,7 @@ export const parseClaudeImageSource = (base64String: string): ClaudeImageSource 
  * 格式化 Claude 模型参数
  * @param params
  */
-export const formatClaudeParams = (params) => {
+export function formatClaudeParams(params) {
   if (params.messages && params.messages[0] && params.messages[0].role === 'system') {
     // 注意：claude 系列模型的 system 字段直接放在 params 里
     // 把 system role 信息单独设置到params，并删除 system role

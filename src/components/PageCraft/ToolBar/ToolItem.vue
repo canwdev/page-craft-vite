@@ -1,10 +1,10 @@
 <script lang="ts">
-import {defineComponent, PropType} from 'vue'
-import {useMainStore} from '@/store/main'
-import {BlockItem} from '@/enum/page-craft/block'
-import {useFileDrop} from '@/hooks/use-file-drop'
-import {useSettingsStore} from '@/store/settings'
-import {colorHash} from '@/utils/color'
+import type { PropType } from 'vue'
+import type { BlockItem } from '@/enum/page-craft/block'
+import { defineComponent } from 'vue'
+import { useMainStore } from '@/store/main'
+import { useSettingsStore } from '@/store/settings'
+import { colorHash } from '@/utils/color'
 
 export default defineComponent({
   name: 'ToolItem',
@@ -19,8 +19,8 @@ export default defineComponent({
     },
   },
   emits: ['onDrop', 'onDragStart'],
-  setup(props, {emit}) {
-    const {item} = toRefs(props)
+  setup(props, { emit }) {
+    const { item } = toRefs(props)
     const mainStore = useMainStore()
     const settingsStore = useSettingsStore()
 
@@ -51,7 +51,7 @@ export default defineComponent({
 
 <template>
   <div
-    :class="{active, blink: showDropzone}"
+    :class="{ active, blink: showDropzone }"
     class="mc-tool-item _mini font-code vgo-button"
     :title="item.title"
     draggable="true"
@@ -65,8 +65,8 @@ export default defineComponent({
         backgroundColor: color,
       }"
       class="mc-tool-item-bg"
-    ></div>
-    <img v-if="item.icon" :src="item.icon" alt="icon" />
+    />
+    <img v-if="item.icon" :src="item.icon" alt="icon">
     <span v-else-if="item.title" class="item-text">{{ item.title }}</span>
   </div>
 </template>

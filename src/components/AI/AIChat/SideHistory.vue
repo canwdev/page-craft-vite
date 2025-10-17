@@ -1,15 +1,13 @@
 <script lang="ts" setup>
-import {StOptionItem} from '@canwdev/vgo-ui/src/components/OptionUI/enum'
+import type { StOptionItem } from '@canwdev/vgo-ui/src/components/OptionUI/enum'
 import OptionUI from '@canwdev/vgo-ui/src/components/OptionUI/index.vue'
-import {useAiSettingsStore} from '@/components/AI/hooks/ai-settings'
-import {formatDate, guid} from '@/utils'
-import {renderDropdownMenu} from '@canwdev/vgo-ui/src/components/OptionUI/Tools/renders'
-import {useI18n} from 'vue-i18n'
-import {IChatHistoryItem} from '@/components/AI/types/ai'
-import {useMounted} from '@vueuse/core'
-import {mergeIdData, useAiCharacters} from '@/components/AI/hooks/use-ai-characters'
+import { renderDropdownMenu } from '@canwdev/vgo-ui/src/components/OptionUI/Tools/renders'
+import { useI18n } from 'vue-i18n'
+import { useAiSettingsStore } from '@/components/AI/hooks/ai-settings'
+import { mergeIdData, useAiCharacters } from '@/components/AI/hooks/use-ai-characters'
+import { formatDate, guid } from '@/utils'
 
-const {t: $t} = useI18n()
+const { t: $t } = useI18n()
 const aisStore = useAiSettingsStore()
 
 const {
@@ -21,7 +19,7 @@ const {
   currentHistoryGroup,
   currentHistory,
 } = useAiCharacters()
-const createChat = () => {
+function createChat() {
   if (!currentCharacter.value) {
     return
   }
@@ -53,7 +51,7 @@ watch(isAllChatHistory, (val) => {
   }
   autoInit()
 })
-const autoInit = () => {
+function autoInit() {
   // 等待另一个计算属性求值
   setTimeout(() => {
     // 如果没有历史记录，则创建
@@ -75,7 +73,7 @@ const optionList = computed((): StOptionItem[] => {
   // 删除与当前角色的全部聊天记录
   const deleteCurrentAllHistory = () => {
     allChatHistory.value = allChatHistory.value
-      .filter((i) => i.cid !== currentCharacter.value!.id)
+      .filter(i => i.cid !== currentCharacter.value!.id)
       // 转换成原始对象，否则设值报错
       .map(toRaw)
   }
@@ -92,7 +90,7 @@ const optionList = computed((): StOptionItem[] => {
               onClick: async () => {
                 // 导出与当前角色的全部聊天记录
                 const list = allChatHistory.value.filter(
-                  (i) => i.cid === currentCharacter.value!.id,
+                  i => i.cid === currentCharacter.value!.id,
                 )
                 window.$mcUtils.handleExportFile(
                   await window.$mcUtils.promptGetFileName(historyLabel),
@@ -111,7 +109,7 @@ const optionList = computed((): StOptionItem[] => {
                 allChatHistory.value = list || []
 
                 const oList = allChatHistory.value.filter(
-                  (i) => i.cid === currentCharacter.value!.id,
+                  i => i.cid === currentCharacter.value!.id,
                 )
                 const mergedList = mergeIdData(oList, list)
 
@@ -174,7 +172,7 @@ const optionList = computed((): StOptionItem[] => {
                   label: `🗑️ ${$t('actions.delete')}`,
                   props: {
                     onClick: () => {
-                      const idx = allChatHistory.value.findIndex((i) => i.id === item.id)
+                      const idx = allChatHistory.value.findIndex(i => i.id === item.id)
                       if (idx > -1) {
                         allChatHistory.value.splice(idx, 1)
                       }

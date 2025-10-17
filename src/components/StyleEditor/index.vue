@@ -1,21 +1,21 @@
 <script setup lang="ts">
-import {sassToCSS, suggestElementClass} from './utils/css'
-import {beautifyCss} from './utils/formater'
+import TabLayout from '@canwdev/vgo-ui/src/components/Layouts/TabLayout.vue'
+import QuickOptions from '@canwdev/vgo-ui/src/components/QuickOptions/index.vue'
 import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/index.vue'
 
-import {useI18n} from 'vue-i18n'
-import TabLayout from '@canwdev/vgo-ui/src/components/Layouts/TabLayout.vue'
-import monaco from '@canwdev/vgo-ui/src/components/VueMonaco/monaco-helper'
 import VueMonaco from '@canwdev/vgo-ui/src/components/VueMonaco/index.vue'
-import QuickOptions from '@canwdev/vgo-ui/src/components/QuickOptions/index.vue'
-import {useEventListener, useStorage, useVModel} from '@vueuse/core'
-import {useGlobalStyle} from './hooks/use-global-style'
-import {StyleTabType} from './enum'
+import monaco from '@canwdev/vgo-ui/src/components/VueMonaco/monaco-helper'
+import { useEventListener, useStorage, useVModel } from '@vueuse/core'
+import { useI18n } from 'vue-i18n'
+import { StyleEditorKeys } from '@/enum/settings'
+import { useBroadcastMessage } from '@/hooks/use-broadcast-messae'
 import ElementByPoint from './components/ElementByPoint.vue'
-import {useSharedCssStore} from './utils/css-store'
-import {useSnippets} from './hooks/use-snippets'
-import {useBroadcastMessage} from '@/hooks/use-broadcast-messae'
-import {StyleEditorKeys} from '@/enum/settings'
+import { StyleTabType } from './enum'
+import { useGlobalStyle } from './hooks/use-global-style'
+import { useSnippets } from './hooks/use-snippets'
+import { sassToCSS, suggestElementClass } from './utils/css'
+import { useSharedCssStore } from './utils/css-store'
+import { beautifyCss } from './utils/formater'
 
 interface Props {
   // 窗口是否可见
@@ -37,7 +37,6 @@ const props = withDefaults(defineProps<Props>(), {
   showTabs: false,
   styleCode: '',
 })
-const {showTabs} = toRefs(props)
 const emit = defineEmits([
   'update:visible',
   'update:selecting',
@@ -45,15 +44,15 @@ const emit = defineEmits([
   'onInsertCode',
   'update:styleCode',
 ])
-
-const {t: $t} = useI18n()
+const { showTabs } = toRefs(props)
+const { t: $t } = useI18n()
 const mVisible = useVModel(props, 'visible', emit)
 
 const cssStore = useSharedCssStore()
 
-const {globalStyleCode} = useGlobalStyle()
+const { globalStyleCode } = useGlobalStyle()
 const variableStyleCode = useStorage(StyleEditorKeys.VARIABLES_STYLE, '')
-const currentStyleCode = useVModel(props, 'styleCode', emit, {passive: true})
+const currentStyleCode = useVModel(props, 'styleCode', emit, { passive: true })
 
 watch(currentStyleCode, () => {
   handleUpdateStyle()
@@ -63,11 +62,11 @@ const vueMonacoRef = ref()
 
 const isShowQuickOptions = ref(false)
 
-const updateEditorLayout = () => {
+function updateEditorLayout() {
   const editor = vueMonacoRef.value.getInstance()
   editor?.layout()
 }
-const focusEditor = () => {
+function focusEditor() {
   if (isShowQuickOptions.value) {
     return
   }
@@ -88,8 +87,8 @@ watch(isShowQuickOptions, (val) => {
 })
 
 const errorTip = ref()
-const handleErrorTipClick = () => {
-  console.warn(errorTip.value.message, {...errorTip.value})
+function handleErrorTipClick() {
+  console.warn(errorTip.value.message, { ...errorTip.value })
   setTimeout(() => {
     errorTip.value = null
   }, 500)
@@ -101,10 +100,10 @@ const _prevStyleValue = ref('')
 /**
  * 把样式应用到页面
  */
-const handleUpdateStyle = async (forceUpdate = false) => {
+async function handleUpdateStyle(forceUpdate = false) {
   try {
     // combine variables and styles
-    const value = variableStyleCode.value + '\n' + currentStyleCode.value
+    const value = `${variableStyleCode.value}\n${currentStyleCode.value}`
     if (_prevStyleValue.value === value && !forceUpdate) {
       // console.log('prevent update')
       return
@@ -116,7 +115,8 @@ const handleUpdateStyle = async (forceUpdate = false) => {
     cssStore.currentCSS = result
 
     errorTip.value = ''
-  } catch (error: any) {
+  }
+  catch (error: any) {
     // console.error(error)
     errorTip.value = error
   }
@@ -126,7 +126,7 @@ watch(
   () => {
     handleUpdateStyle()
   },
-  {immediate: true},
+  { immediate: true },
 )
 // 初始化时同步浏览器不同窗口间的组件样式
 useBroadcastMessage('PlaygroundPageStyleSync', () => {
@@ -134,7 +134,7 @@ useBroadcastMessage('PlaygroundPageStyleSync', () => {
   handleUpdateStyle(true)
 })
 
-const execBeautifyCssAction = async () => {
+async function execBeautifyCssAction() {
   const editor = vueMonacoRef.value.getInstance()
   const textValue = editor.getValue()
 
@@ -153,7 +153,8 @@ const execBeautifyCssAction = async () => {
         ])
         // Indicates the above edit is a complete undo/redo change.
         // editor.pushUndoStop()
-      } else {
+      }
+      else {
         currentStyleCode.value = beautifiedCSS
       }
 
@@ -164,27 +165,27 @@ const execBeautifyCssAction = async () => {
   emit('onFormat')
 }
 
-const copyStyle = () => {
+function copyStyle() {
   const editor = vueMonacoRef.value.getInstance()
   const textValue = editor.getValue()
   window.$mcUtils.copy(textValue)
 }
 
-const isSelecting = useVModel(props, 'selecting', emit, {passive: true})
+const isSelecting = useVModel(props, 'selecting', emit, { passive: true })
 
-const handleSelectEl = (el) => {
+function handleSelectEl(el) {
   if (!isSelecting.value) {
     return
   }
-  handleAddStyle({el})
+  handleAddStyle({ el })
   isSelecting.value = false
 }
 
-const handleAddStyle = ({el, code = '', isAppend = false}) => {
+function handleAddStyle({ el, code = '', isAppend = false }) {
   nextTick(() => {
     if (el) {
       // el 是可选参数，如果传入了el，就生成类名选择器
-      let className = suggestElementClass(el)
+      const className = suggestElementClass(el)
       if (!className) {
         return
       }
@@ -198,10 +199,10 @@ const handleAddStyle = ({el, code = '', isAppend = false}) => {
   })
 }
 
-const insertStyleCode = (code, isAppend = false) => {
+function insertStyleCode(code, isAppend = false) {
   emit('onInsertCode')
   if (isAppend) {
-    currentStyleCode.value = currentStyleCode.value + '\n' + code
+    currentStyleCode.value = `${currentStyleCode.value}\n${code}`
     return
   }
 
@@ -226,15 +227,15 @@ const insertStyleCode = (code, isAppend = false) => {
   }, 100)
 }
 
-const {snippetsOptions, updateEditorAutoComplete} = useSnippets({
+const { snippetsOptions, updateEditorAutoComplete } = useSnippets({
   insertCode: insertStyleCode,
   vueMonacoRef,
 })
 
 const tabList = ref([
-  {label: $t('common.global_style'), value: StyleTabType.GLOBAL},
-  {label: $t('common.variables'), value: StyleTabType.VARIABLES},
-  {label: $t('actions.current'), value: StyleTabType.CURRENT},
+  { label: $t('common.global_style'), value: StyleTabType.GLOBAL },
+  { label: $t('common.variables'), value: StyleTabType.VARIABLES },
+  { label: $t('actions.current'), value: StyleTabType.CURRENT },
 ])
 const styleEditorTab = useStorage(StyleEditorKeys.CURRENT_TAB, StyleTabType.CURRENT, localStorage, {
   listenToStorageChanges: false,
@@ -246,7 +247,7 @@ watch(
       styleEditorTab.value = StyleTabType.GLOBAL
     }
   },
-  {immediate: true},
+  { immediate: true },
 )
 watch(
   () => styleEditorTab,
@@ -258,7 +259,7 @@ watch(
   },
 )
 
-const listenShortcuts = (event) => {
+function listenShortcuts(event) {
   // console.log(event)
   const key = event.key.toLowerCase()
   if (event.ctrlKey && event.shiftKey && key === 'f') {
@@ -274,7 +275,8 @@ useEventListener(document, 'keydown', (event) => {
   const key = event.key.toLowerCase()
   if (event.ctrlKey && event.shiftKey && key === 'x') {
     isSelecting.value = !isSelecting.value
-  } else if (event.altKey && key === '`') {
+  }
+  else if (event.altKey && key === '`') {
     isShowQuickOptions.value = !isShowQuickOptions.value
   }
 })
@@ -287,50 +289,50 @@ defineExpose({
 <template>
   <ElementByPoint
     v-if="isSelecting"
-    @select="handleSelectEl"
     :parent-class="styleEditorTab === StyleTabType.CURRENT ? selectingParentClass : undefined"
+    @select="handleSelectEl"
   />
   <ViewPortWindow
-    class="mc-style-editor-dialog"
     v-model:visible="mVisible"
+    class="mc-style-editor-dialog"
     wid="style_editor"
-    @keyup="listenShortcuts"
-    @onActive="focusEditor"
     allow-maximum
     :init-win-options="{
       width: '400px',
       height: '500px',
     }"
+    @keyup="listenShortcuts"
+    @on-active="focusEditor"
   >
     <template #titleBarLeft>
-      <span class="mdi mdi-format-paint"></span>SCSS {{ $t('common.style_editor') }}
+      <span class="mdi mdi-format-paint" />SCSS {{ $t('common.style_editor') }}
       (alt+s)
     </template>
     <template #titleBarRightControls>
       <button
-        :title="$t('msgs.select_an_element_in') + ' (ctrl+shift+x)'"
-        :class="{active: isSelecting}"
+        :title="`${$t('msgs.select_an_element_in')} (ctrl+shift+x)`"
+        :class="{ active: isSelecting }"
         @click.stop.prevent="isSelecting = !isSelecting"
       >
-        <span class="mdi mdi-button-cursor"></span>
+        <span class="mdi mdi-button-cursor" />
       </button>
       <button
-        @click="isShowQuickOptions = !isShowQuickOptions"
-        :class="{active: isShowQuickOptions}"
+        :class="{ active: isShowQuickOptions }"
         :title="$t('actions.add_tool_codes')"
+        @click="isShowQuickOptions = !isShowQuickOptions"
       >
-        <span class="mdi mdi-menu"></span>
+        <span class="mdi mdi-menu" />
       </button>
 
       <button
-        :title="$t('actions.beautify_code') + ' (ctrl+shift+f)'"
+        :title="`${$t('actions.beautify_code')} (ctrl+shift+f)`"
         @click="execBeautifyCssAction"
       >
-        <span class="mdi mdi-code-braces"></span>
+        <span class="mdi mdi-code-braces" />
       </button>
 
-      <button :title="$t('actions.copy_code') + ' (ctrl+a ctrl+c)'" @click="copyStyle">
-        <span class="mdi mdi-content-copy"></span>
+      <button :title="`${$t('actions.copy_code')} (ctrl+a ctrl+c)`" @click="copyStyle">
+        <span class="mdi mdi-content-copy" />
       </button>
     </template>
 

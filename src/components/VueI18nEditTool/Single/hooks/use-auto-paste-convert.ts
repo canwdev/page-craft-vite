@@ -1,7 +1,7 @@
-import {TextConvertMode} from '@/utils/mc-utils/text-convert'
-import {useI18nToolSettingsStore} from '@/components/VueI18nEditTool/store/i18n-tool-settings'
+import { useI18nToolSettingsStore } from '@/components/VueI18nEditTool/store/i18n-tool-settings'
+import { TextConvertMode } from '@/utils/mc-utils/text-convert'
 
-export const useAutoPasteConvert = (valueRef) => {
+export function useAutoPasteConvert(valueRef) {
   const i18nSetStore = useI18nToolSettingsStore()
 
   const valType = ref<string | null>(null)
@@ -14,7 +14,7 @@ export const useAutoPasteConvert = (valueRef) => {
       }
       valType.value = typeof val
     },
-    {immediate: true},
+    { immediate: true },
   )
 
   // 自动根据当前输入框类型判断粘贴类型

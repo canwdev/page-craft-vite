@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import {IEntry} from '../types/filesystem'
-import {useFileItem} from './hooks/use-file-item'
+import type { IEntry } from '../types/filesystem'
+import { useFileItem } from './hooks/use-file-item'
+
+const props = withDefaults(defineProps<Props>(), {})
 
 const emit = defineEmits(['open', 'select'])
 
@@ -8,27 +10,25 @@ interface Props {
   item: IEntry
   active: boolean
 }
-const props = withDefaults(defineProps<Props>(), {})
-
-const {iconName, titleDesc} = useFileItem(props)
+const { iconName, titleDesc } = useFileItem(props)
 </script>
 
 <template>
   <button
     class="file-grid-item btn-no-style"
-    :class="{active, hidden: item.hidden}"
-    @click.stop="$emit('select', {item, event: $event})"
+    :class="{ active, hidden: item.hidden }"
+    :title="titleDesc"
+    @click.stop="$emit('select', { item, event: $event })"
     @keyup.enter="$emit('open', item)"
     @dblclick.stop="$emit('open', item)"
-    :title="titleDesc"
   >
     <input
       class="file-checkbox"
       type="checkbox"
       :checked="active"
-      @click.stop="$emit('select', {item, event: $event, toggle: true})"
+      @click.stop="$emit('select', { item, event: $event, toggle: true })"
       @dblclick.stop
-    />
+    >
     <span class="desktop-icon-image">
       {{ item.isDirectory ? '📁' : '📄' }}
     </span>

@@ -1,16 +1,17 @@
 <script lang="ts">
-import {useMainStore} from '@/store/main'
-import {BlockItem, initToolbarList} from '@/enum/page-craft/block'
-import ToolItem from '@/components/PageCraft/ToolBar/ToolItem.vue'
-import InventoryModal from '@/components/PageCraft/InventoryModal/index.vue'
-import {useRouter} from 'vue-router'
-import {useSettingsStore} from '@/store/settings'
+import type { BlockItem } from '@/enum/page-craft/block'
+import { useStorage } from '@vueuse/core'
+import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 import PreviewWindow from '@/components/PageCraft/DomPreview/PreviewWindow.vue'
-import {useI18n} from 'vue-i18n'
-import {useOpenCloseSound, useSfxSelect} from '@/hooks/use-sfx'
+import InventoryModal from '@/components/PageCraft/InventoryModal/index.vue'
 import ClassNameInput from '@/components/PageCraft/ToolBar/ClassNameInput.vue'
-import {useStorage} from '@vueuse/core'
-import {PageCraftKeys} from '@/enum'
+import ToolItem from '@/components/PageCraft/ToolBar/ToolItem.vue'
+import { PageCraftKeys } from '@/enum'
+import { initToolbarList } from '@/enum/page-craft/block'
+import { useOpenCloseSound, useSfxSelect } from '@/hooks/use-sfx'
+import { useMainStore } from '@/store/main'
+import { useSettingsStore } from '@/store/settings'
 
 export default defineComponent({
   name: 'BottomToolBar',
@@ -20,8 +21,8 @@ export default defineComponent({
     ToolItem,
     InventoryModal,
   },
-  setup(props, {emit}) {
-    const {t: $t} = useI18n()
+  setup(props, { emit }) {
+    const { t: $t } = useI18n()
     const router = useRouter()
     const mainStore = useMainStore()
     const settingsStore = useSettingsStore()
@@ -55,7 +56,7 @@ export default defineComponent({
       playSfxSelect()
     }
 
-    const {play: playSfxSelect, stop: stopSfxSelect} = useSfxSelect()
+    const { play: playSfxSelect, stop: stopSfxSelect } = useSfxSelect()
     watch(
       () => settingsStore.toolbarIndex,
       (newIndex) => {
@@ -83,7 +84,8 @@ export default defineComponent({
       event.preventDefault()
       if (event.deltaY > 0) {
         selectNext()
-      } else {
+      }
+      else {
         selectPrev()
       }
     }
@@ -92,7 +94,8 @@ export default defineComponent({
       if (event.shiftKey) {
         if (event.deltaY > 0) {
           selectNext()
-        } else {
+        }
+        else {
           selectPrev()
         }
       }
@@ -106,7 +109,7 @@ export default defineComponent({
 
     onMounted(() => {
       document.addEventListener('wheel', handleGlobalScroll)
-      toolbarRef.value.addEventListener('wheel', handleScroll, {passive: false})
+      toolbarRef.value.addEventListener('wheel', handleScroll, { passive: false })
     })
     onBeforeUnmount(() => {
       document.removeEventListener('wheel', handleGlobalScroll)
@@ -119,8 +122,8 @@ export default defineComponent({
       event.dataTransfer.setData('data-block', JSON.stringify(item))
     }
     const switchItemsPosition = (event, newIndex) => {
-      const oldIndex =
-        Number(event.dataTransfer.getData('data-index')) || settingsStore.toolbarIndex
+      const oldIndex
+        = Number(event.dataTransfer.getData('data-index')) || settingsStore.toolbarIndex
       const arr = [...toolBarList.value]
       ;[arr[newIndex], arr[oldIndex]] = [arr[oldIndex], arr[newIndex]]
       toolBarList.value = arr
@@ -161,7 +164,7 @@ export default defineComponent({
   <InventoryModal
     v-if="!settingsStore.isInvDocked"
     v-model:visible="settingsStore.showInventory"
-    @onItemClick="setCurrentToolItem"
+    @on-item-click="setCurrentToolItem"
   />
 
   <div
@@ -173,7 +176,7 @@ export default defineComponent({
     <InventoryModal
       v-if="settingsStore.isInvDocked"
       v-model:visible="settingsStore.showInventory"
-      @onItemClick="setCurrentToolItem"
+      @on-item-click="setCurrentToolItem"
     />
 
     <div ref="toolbarRef" class="mc-toolbar vgo-panel vgo-window-panel _panel-bg">
@@ -192,30 +195,30 @@ export default defineComponent({
           <el-popconfirm :title="$t('msgs.confirm_reset_toolba')" @confirm="resetToolbar">
             <template #reference>
               <button class="vgo-button">
-                <span class="mdi mdi-refresh"></span>
+                <span class="mdi mdi-refresh" />
               </button>
             </template>
           </el-popconfirm>
 
           <button
             class="vgo-button"
-            :class="{primary: settingsStore.showInventory}"
+            :class="{ primary: settingsStore.showInventory }"
             style="min-width: 80px"
-            @click="settingsStore.showInventory = !settingsStore.showInventory"
             title="(alt+a)"
+            @click="settingsStore.showInventory = !settingsStore.showInventory"
           >
-            <span class="mdi mdi-archive"></span>
+            <span class="mdi mdi-archive" />
             {{ $t('common.inventory') }}
           </button>
 
-          <slot></slot>
+          <slot />
 
           <button
             class="vgo-button"
-            :class="{primary: mainStore.isShowQuickLaunch}"
+            :class="{ primary: mainStore.isShowQuickLaunch }"
             @click="mainStore.isShowQuickLaunch = !mainStore.isShowQuickLaunch"
           >
-            <span class="mdi mdi-toolbox"></span> {{ $t('common.toolbox') }}
+            <span class="mdi mdi-toolbox" /> {{ $t('common.toolbox') }}
           </button>
         </div>
       </div>
@@ -224,16 +227,16 @@ export default defineComponent({
           v-for="(item, index) in toolBarList"
           :key="index"
           :item="item"
-          :class="{blinkFast: blinkAnimIndex === index}"
-          @click="handleToolItemClick(item, index)"
+          :class="{ blinkFast: blinkAnimIndex === index }"
           :active="settingsStore.toolbarIndex === index"
-          @onDragStart="(e) => handleDragStart(e, index, item)"
-          @onDrop="(e) => switchItemsPosition(e, index)"
+          @click="handleToolItemClick(item, index)"
+          @on-drag-start="(e) => handleDragStart(e, index, item)"
+          @on-drop="(e) => switchItemsPosition(e, index)"
         />
       </div>
     </div>
 
-    <slot name="end"></slot>
+    <slot name="end" />
   </div>
 </template>
 

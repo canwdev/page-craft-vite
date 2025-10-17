@@ -21,7 +21,7 @@ export class path {
    * @return [String]
    */
   public static normalize(p: string): string {
-    return p.replace(/\\/gi, '/').replace(/\/+/gi, '/')
+    return p.replace(/\\/g, '/').replace(/\/+/g, '/')
   }
 
   /**
@@ -46,8 +46,9 @@ export class path {
     for (let i = 0; i < paths.length; i++) {
       const segment = paths[i]
       if (typeof segment !== 'string') {
-        throw new TypeError('Invalid argument type to path.join: ' + typeof segment)
-      } else if (segment !== '') {
+        throw new TypeError(`Invalid argument type to path.join: ${typeof segment}`)
+      }
+      else if (segment !== '') {
         processed.push(segment)
       }
     }
@@ -100,8 +101,9 @@ export class path {
     for (let i = 0; i < paths.length; i++) {
       const p = paths[i]
       if (typeof p !== 'string') {
-        throw new TypeError('Invalid argument type to path.join: ' + typeof p)
-      } else if (p !== '') {
+        throw new TypeError(`Invalid argument type to path.join: ${typeof p}`)
+      }
+      else if (p !== '') {
         // Remove anything that has occurred before this absolute path, as it
         // doesn't matter.
         if (p.charAt(0) === path.sep) {
@@ -120,8 +122,8 @@ export class path {
     if (resolved.charAt(0) !== path.sep) {
       // Remove ./, since we're going to append the current directory.
       if (
-        resolved.charAt(0) === '.' &&
-        (resolved.length === 1 || resolved.charAt(1) === path.sep)
+        resolved.charAt(0) === '.'
+        && (resolved.length === 1 || resolved.charAt(1) === path.sep)
       ) {
         resolved = resolved.length === 1 ? '' : resolved.substr(2)
       }
@@ -130,7 +132,8 @@ export class path {
       if (resolved !== '') {
         // cwd will never end in a /... unless it's the root.
         resolved = this.normalize(cwd + (cwd !== '/' ? path.sep : '') + resolved)
-      } else {
+      }
+      else {
         resolved = cwd
       }
     }
@@ -234,9 +237,11 @@ export class path {
     }
     if (sections.length > 1) {
       return sections.join(path.sep)
-    } else if (absolute) {
+    }
+    else if (absolute) {
       return path.sep
-    } else {
+    }
+    else {
       return '.'
     }
   }
@@ -338,7 +343,7 @@ export class path {
   // The platform-specific file separator. BrowserFS uses `/`.
   public static sep: string = '/'
 
-  private static _replaceRegex = new RegExp('//+', 'g')
+  private static _replaceRegex = new RegExp('/{2,}', 'g')
 
   private static _removeDuplicateSeps(p: string): string {
     p = p.replace(this._replaceRegex, this.sep)

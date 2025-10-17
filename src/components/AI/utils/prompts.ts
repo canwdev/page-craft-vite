@@ -1,5 +1,5 @@
-import {IMessageContent, IMessageItem} from '@/components/AI/types/ai'
-import {GptMessage} from '@/components/AI/types/open-ai'
+import type { IMessageContent, IMessageItem } from '@/components/AI/types/ai'
+import type { GptMessage } from '@/components/AI/types/open-ai'
 
 /**
  * 获取json批量翻译提示词
@@ -7,11 +7,7 @@ import {GptMessage} from '@/components/AI/types/open-ai'
  * @param iso 当前语言iso
  * @param translateContent 要翻译的内容
  */
-export const promptBatchJsonTranslator = (
-  jsonTpl: any,
-  iso: string,
-  translateContent: string,
-): GptMessage[] => {
+export function promptBatchJsonTranslator(jsonTpl: any, iso: string, translateContent: string): GptMessage[] {
   return [
     {
       role: 'system',
@@ -31,19 +27,20 @@ export const promptBatchJsonTranslator = (
  * 会话总结标题
  * @param history 聊天历史记录
  */
-export const promptConversationAssistant = (history: IMessageItem[]): GptMessage[] => {
+export function promptConversationAssistant(history: IMessageItem[]): GptMessage[] {
   // 自动优化聊天内容
   const optimizeTextContent = (content: string | IMessageContent[], maxLength = 200) => {
     let text = ''
     // 如果不是纯文字则转换成纯文字（适用于上传图片的情况）
     if (typeof content !== 'string') {
-      text = content.map((i) => i.text).join('\n')
-    } else {
+      text = content.map(i => i.text).join('\n')
+    }
+    else {
       text = content
     }
     // 限制内容长度
     if (text.length > maxLength) {
-      return text.slice(0, maxLength) + '...'
+      return `${text.slice(0, maxLength)}...`
     }
     return text
   }
@@ -54,7 +51,7 @@ export const promptConversationAssistant = (history: IMessageItem[]): GptMessage
       role: 'system',
     },
     {
-      content: `${history.map((i) => `${i.role}:${optimizeTextContent(i.content)}`).join('\n')}`,
+      content: `${history.map(i => `${i.role}:${optimizeTextContent(i.content)}`).join('\n')}`,
       role: 'user',
     },
   ]

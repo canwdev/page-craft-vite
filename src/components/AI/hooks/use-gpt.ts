@@ -1,18 +1,16 @@
-import {useAiSettingsStore} from '@/components/AI/hooks/ai-settings'
+import type { GptMessage, OpenAIChatCompletion } from '@/components/AI/types/open-ai'
+import { useAiSettingsStore } from '@/components/AI/hooks/ai-settings'
 import {
   defaultOpenAIModel,
-  NotAllowSystemRoleModels,
   OpenAIApiErrorCodeMessage,
-  openAIChatModelOptions,
 } from '@/components/AI/types/models'
-import {blinkPanel, scrollToElementAndBlink} from '@/utils/anim'
-import globalEventBus, {GlobalEvents} from '@/utils/global-event-bus'
-import {SettingsTabType} from '@/enum/settings'
-import {OpenAIChatCompletion, GptMessage} from '@/components/AI/types/open-ai'
+import { formatGPTMessages } from '@/components/AI/utils/format-open-ai'
+import { SettingsTabType } from '@/enum/settings'
+import { scrollToElementAndBlink } from '@/utils/anim'
 
-import {formatGPTMessages} from '@/components/AI/utils/format-open-ai'
+import globalEventBus, { GlobalEvents } from '@/utils/global-event-bus'
 
-export const useOpenAI_GPT = () => {
+export function useOpenAI_GPT() {
   const aisStore = useAiSettingsStore()
 
   const openAiSettings = () => {
@@ -48,7 +46,7 @@ export const useOpenAI_GPT = () => {
     const response = await fetch(`${apiProxy}/chat/completions`, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${aisStore.openAiApiKey}`,
+        'Authorization': `Bearer ${aisStore.openAiApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(params),
@@ -73,13 +71,13 @@ export const useOpenAI_GPT = () => {
       const decoder = new TextDecoder('utf-8')
       const result = ''
 
-      // eslint-disable-next-line no-constant-condition
       while (true) {
-        const {done, value} = await reader.read()
-        if (done) break
+        const { done, value } = await reader.read()
+        if (done)
+          break
 
-        const chunk = decoder.decode(value, {stream: true})
-        const lines = chunk.split('\n').filter((line) => line.trim() !== '')
+        const chunk = decoder.decode(value, { stream: true })
+        const lines = chunk.split('\n').filter(line => line.trim() !== '')
 
         for (const line of lines) {
           if (line.startsWith('data: ')) {
@@ -93,7 +91,8 @@ export const useOpenAI_GPT = () => {
                   // result+=text
                   // console.log(text) // 实时打印每段文字到控制台
                 }
-              } catch (e) {
+              }
+              catch (e) {
                 console.error('Error parsing JSON:', e)
                 console.error('JSON:', jsonStr)
               }

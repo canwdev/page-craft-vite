@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import {useDebounceFn, useStorage, useThrottleFn, useVModel, watchDebounced} from '@vueuse/core'
+import type { QuickOptionItem } from '@canwdev/vgo-ui/src/components/QuickOptions/enum'
 import QuickOptions from '@canwdev/vgo-ui/src/components/QuickOptions/index.vue'
-import {QuickOptionItem} from '@canwdev/vgo-ui/src/components/QuickOptions/enum'
-import {useContextMenu} from '@canwdev/vgo-ui/src/components/QuickOptions/utils/use-context-menu'
+import { useContextMenu } from '@canwdev/vgo-ui/src/components/QuickOptions/utils/use-context-menu'
+import { useStorage, useThrottleFn, useVModel, watchDebounced } from '@vueuse/core'
 
 interface Props {
   modelValue: any
@@ -32,10 +32,10 @@ watch(
   (val) => {
     emit('historyChanged', val)
   },
-  {immediate: true},
+  { immediate: true },
 )
 
-const recordHistory = () => {
+function recordHistory() {
   const val = mValue.value
   if (!val || historyItemsSet.value.has(val)) {
     return
@@ -47,7 +47,7 @@ const recordHistory = () => {
 }
 
 const tipOptions = ref<QuickOptionItem[]>([])
-const refreshOptions = () => {
+function refreshOptions() {
   // 最多显示9条，并过滤
   let items = historyItems.value
 
@@ -78,7 +78,7 @@ const refreshOptions = () => {
               type: 'warning',
             })
             .then(() => {
-              const idx = historyItems.value.findIndex((i) => i.label === item.label)
+              const idx = historyItems.value.findIndex(i => i.label === item.label)
               if (idx !== -1) {
                 historyItems.value.splice(idx, 1)
                 refreshOptions()
@@ -122,13 +122,13 @@ watchDebounced(
   () => {
     refreshOptions()
   },
-  {debounce: 300, immediate: true},
+  { debounce: 300, immediate: true },
 )
 
-const {menuRef, ctxMenuStyle, showMenuByPoint, isShow, updateMenuSize} = useContextMenu({
+const { menuRef, ctxMenuStyle, showMenuByPoint, isShow, updateMenuSize } = useContextMenu({
   getExtraSize() {
-    const {height} = inputRef.value.getBoundingClientRect()
-    return {height, width: 0}
+    const { height } = inputRef.value.getBoundingClientRect()
+    return { height, width: 0 }
   },
 })
 const _updateMenuSize = useThrottleFn(
@@ -142,7 +142,7 @@ const _updateMenuSize = useThrottleFn(
 const inputRef = ref()
 const rootRef = ref()
 
-const showMenu = () => {
+function showMenu() {
   if (isShow.value) {
     return
   }
@@ -153,13 +153,13 @@ const showMenu = () => {
     y: rect.y + rect.height,
   })
 }
-const showAndFocus = () => {
+function showAndFocus() {
   showMenu()
   setTimeout(() => {
     menuRef.value?.focus()
   })
 }
-const hideMenu = () => {
+function hideMenu() {
   setTimeout(() => {
     if (menuRef.value?.isFocused()) {
       isShow.value = false
@@ -167,14 +167,14 @@ const hideMenu = () => {
   }, 100)
 }
 
-const focusBackInput = () => {
+function focusBackInput() {
   setTimeout(() => {
     inputRef.value.focus()
     hideMenu()
   }, 100)
 }
 
-const handleBlur = () => {
+function handleBlur() {
   recordHistory()
   refreshOptions()
   hideMenu()
@@ -187,13 +187,13 @@ const handleBlur = () => {
       <transition name="fade-scale">
         <QuickOptions
           ref="menuRef"
-          :style="{...ctxMenuStyle, transition: 'all .2s'}"
+          v-model:visible="isShow"
+          :style="{ ...ctxMenuStyle, transition: 'all .2s' }"
           class="auto-tips-wrap"
           :options="tipOptions"
-          v-model:visible="isShow"
           :auto-focus="false"
           :close-on-click="false"
-          @onClose="focusBackInput"
+          @on-close="focusBackInput"
         />
       </transition>
     </Teleport>
@@ -212,7 +212,7 @@ const handleBlur = () => {
       @keyup.up.prevent="showAndFocus"
       @keyup.down.prevent="showAndFocus"
       @input="showMenu"
-    />
+    >
   </div>
 </template>
 

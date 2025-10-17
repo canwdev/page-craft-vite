@@ -7,7 +7,7 @@ import mathjax3 from 'markdown-it-mathjax3'
 const langMap = {
   vue: 'html',
 }
-const getLang = (lang: string) => {
+function getLang(lang: string) {
   lang = lang.toLowerCase()
   return langMap[lang] || lang
 }
@@ -23,7 +23,7 @@ const md = new MarkdownIt({
       langDisplay = `${langDisplay} (${lang})`
     }
     const language = hljs.getLanguage(lang) ? lang : 'plaintext'
-    const content = hljs.highlight(code, {language: language, ignoreIllegals: true}).value
+    const content = hljs.highlight(code, { language, ignoreIllegals: true }).value
     return `<pre class="hljs-code-container">
 <div class="hljs-code-header vgo-panel">
   <span class="lang-display" data-lang="${langOriginal}">${langDisplay}</span>

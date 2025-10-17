@@ -1,12 +1,13 @@
 <script lang="ts">
-import {computed, defineComponent, PropType, ref} from 'vue'
-import {formatForm, getCustomFormItems} from '../utils/element-edit'
-import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/index.vue'
-import {FormRules} from 'element-plus'
+import type { MixedFormItems } from '@canwdev/vgo-ui/src/components/AutoFormElPlus/enum'
+import type { FormRules } from 'element-plus'
+import type { PropType } from 'vue'
 import AutoFormElPlus from '@canwdev/vgo-ui/src/components/AutoFormElPlus/index.vue'
-import {AutoFormItemType, MixedFormItems} from '@canwdev/vgo-ui/src/components/AutoFormElPlus/enum'
+import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/index.vue'
 import VueMonaco from '@canwdev/vgo-ui/src/components/VueMonaco/index.vue'
-import {useVModel} from '@vueuse/core'
+import { useVModel } from '@vueuse/core'
+import { computed, defineComponent, ref } from 'vue'
+import { formatForm, getCustomFormItems } from '../utils/element-edit'
 
 export default defineComponent({
   name: 'ElementEditDialog',
@@ -29,8 +30,8 @@ export default defineComponent({
     },
   },
   emits: ['onSave', 'update:visible'],
-  setup(props, {emit}) {
-    const {isRoot, editingNode} = toRefs(props)
+  setup(props, { emit }) {
+    const { isRoot, editingNode } = toRefs(props)
     const mVisible = useVModel(props, 'visible', emit)
     const isEditInnerHTML = ref(true)
 
@@ -44,7 +45,8 @@ export default defineComponent({
     watch(mVisible, (val) => {
       if (val) {
         initEditingNode()
-      } else {
+      }
+      else {
         dataForm.value = formatForm(null)
         customFormItems.value = []
       }
@@ -76,8 +78,8 @@ export default defineComponent({
 
     const monacoRender = (_, modelValue, emit) => {
       return h(VueMonaco, {
-        showLineNumbers: true,
-        style: 'height: 400px; border-bottom: 1px solid rgba(91, 85, 85, 0.3)',
+        'showLineNumbers': true,
+        'style': 'height: 400px; border-bottom: 1px solid rgba(91, 85, 85, 0.3)',
         modelValue,
         'onUpdate:modelValue': (val: string) => {
           emit('update:modelValue', val)
@@ -156,9 +158,9 @@ export default defineComponent({
         },
         formItems,
       }"
-      @onSubmit="handleSubmit"
       class="element-edit-form font-code"
       hide-actions
+      @on-submit="handleSubmit"
     >
       <div class="action-row vgo-bg">
         <el-switch
@@ -167,8 +169,7 @@ export default defineComponent({
           :disabled="isRoot"
           active-text="innerHTML"
           inactive-text="outerHTML"
-        >
-        </el-switch>
+        />
 
         <div class="flex-row-center-gap">
           <button type="button" class="vgo-button" @click="handleCancel">

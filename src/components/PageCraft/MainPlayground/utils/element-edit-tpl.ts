@@ -1,31 +1,33 @@
 // 通用表单item模板
 
-import {formatSelectOptions} from '@/utils'
-import {autoSetAttr} from '@/components/PageCraft/MainPlayground/utils/dom'
-import {IElCustomProp} from '@/components/PageCraft/MainPlayground/utils/element-edit'
-import {
+import type {
   AutoFormItem,
-  AutoFormItemType,
   MixedFormItems,
 } from '@canwdev/vgo-ui/src/components/AutoFormElPlus/enum'
+import type { IElCustomProp } from '@/components/PageCraft/MainPlayground/utils/element-edit'
+import {
+  AutoFormItemType,
+} from '@canwdev/vgo-ui/src/components/AutoFormElPlus/enum'
+import { autoSetAttr } from '@/components/PageCraft/MainPlayground/utils/dom'
+import { formatSelectOptions } from '@/utils'
 
-const genInputFormItem = (key: string, rows = 0) => {
+function genInputFormItem(key: string, rows = 0) {
   return {
     label: key,
-    key: key,
+    key,
     type: AutoFormItemType.INPUT,
     props: {
       clearable: true,
       type: rows > 0 ? 'textarea' : undefined,
-      rows: rows,
+      rows,
     },
   }
 }
 
-const genSwitchFormItem = (key: string) => {
+function genSwitchFormItem(key: string) {
   return {
     label: key,
-    key: key,
+    key,
     type: AutoFormItemType.SWITCH,
     props: {
       checkedValue: 'true',
@@ -33,7 +35,7 @@ const genSwitchFormItem = (key: string) => {
   }
 }
 
-export const tplFormItem: {[key: string]: AutoFormItem} = {
+export const tplFormItem: { [key: string]: AutoFormItem } = {
   src: {
     label: 'src',
     key: 'src',
@@ -152,7 +154,7 @@ export const tplFormItem: {[key: string]: AutoFormItem} = {
 }
 
 // 自动给key添加前缀
-export const mapCustomPropsKeys = (item: MixedFormItems) => {
+export function mapCustomPropsKeys(item: MixedFormItems) {
   if ('cols' in item) {
     item.children = item.children.map(mapCustomPropsKeys)
     return item
@@ -168,7 +170,7 @@ export const mapCustomPropsKeys = (item: MixedFormItems) => {
 }
 
 // 根据表单数据生成 IElCustomProp
-export const genProp = (items: MixedFormItems[] = []): IElCustomProp => {
+export function genProp(items: MixedFormItems[] = []): IElCustomProp {
   // console.log('[genProp]', items)
   items = [
     tplFormItem.className,
@@ -180,10 +182,12 @@ export const genProp = (items: MixedFormItems[] = []): IElCustomProp => {
   const attrKeys: string[] = []
   const traverseItem = (item: MixedFormItems) => {
     if ('cols' in item) {
-      item.children.forEach((i) => traverseItem(i))
-    } else if (Array.isArray(item)) {
-      item.forEach((i) => traverseItem(i))
-    } else {
+      item.children.forEach(i => traverseItem(i))
+    }
+    else if (Array.isArray(item)) {
+      item.forEach(i => traverseItem(i))
+    }
+    else {
       attrKeys.push(item.key)
     }
   }

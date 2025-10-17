@@ -1,4 +1,4 @@
-import {parse} from 'acorn'
+import { parse } from 'acorn'
 
 const vueKeyMap = {
   id: true,
@@ -15,7 +15,7 @@ const vueKeyMap = {
   src: true,
   visible: true,
 }
-export const checkKeyNeedExtract = (key: string) => {
+export function checkKeyNeedExtract(key: string) {
   // console.log('key', key)
   if (vueKeyMap[key]) {
     return false
@@ -34,7 +34,7 @@ function isValidCodeName(str) {
     return false
   }
   // 检查首字符是否为字母
-  if (!/^[A-Za-z]/.test(str)) {
+  if (!/^[A-Z]/i.test(str)) {
     return false
   }
   // 检查从第二个字符开始是否有大写字母
@@ -42,7 +42,7 @@ function isValidCodeName(str) {
 }
 
 // 检测内容是否需要提取，如人类可读的文本内容，不包括代码内容
-export const valueNeedExtract = (value: string, handleWarning) => {
+export function valueNeedExtract(value: string, handleWarning) {
   if (!Number.isNaN(Number(value))) {
     // 忽略数字
     return false
@@ -87,38 +87,39 @@ export const valueNeedExtract = (value: string, handleWarning) => {
   }
 
   // 检测文本中是否包含 $(任意内容) 模式
-  if (/\${[^}]*}/gi.test(value)) {
+  if (/\$\{[^}]*\}/.test(value)) {
     const message = '请手动处理 $(任意内容)'
-    console.warn(message, {value})
-    handleWarning &&
-      handleWarning({
-        message,
-        value,
-      })
+    console.warn(message, { value })
+    handleWarning
+    && handleWarning({
+      message,
+      value,
+    })
     return false
   }
 
   // 检测文本中是否包含 $t(任意内容) 模式
   // if (/\$\w+\('[^']*'\)/gi.test(value)) {
-  if (/\$t\('[^']*'\)/gi.test(value)) {
+  if (/\$t\('[^']*'\)/i.test(value)) {
     const message = '请手动处理 $任意(任意内容)'
-    console.warn(message, {value})
-    handleWarning &&
-      handleWarning({
-        message,
-        value,
-      })
+    console.warn(message, { value })
+    handleWarning
+    && handleWarning({
+      message,
+      value,
+    })
     return false
   }
 
   // 检测是否包含 ? : () => { }
-  if (/\?|:|=>|=|{|}/gi.test(value)) {
+  if (/[?:]|=>|[={}]/.test(value)) {
     // 尝试用 acorn 解析文本，检测是否为代码内容
     try {
-      parse(value, {ecmaVersion: 2020})
+      parse(value, { ecmaVersion: 2020 })
       // console.warn('解析成功，是代码内容：', value)
       return false
-    } catch (error) {
+    }
+    catch (error) {
       // 解析失败，为文本内容
     }
   }

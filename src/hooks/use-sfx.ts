@@ -1,63 +1,65 @@
-import {useSound} from '@vueuse/sound'
-import sfxOpen from '@/assets/sound/open.ogg'
-import sfxClose from '@/assets/sound/close1.ogg'
-import sfxSelect from '@/assets/sound/select_pattern_mix.ogg'
-import sfxWood from '@/assets/sound/wood_mix.ogg'
-import sfxGrass from '@/assets/sound/grass_mix.ogg'
-import sfxLoading from '@/assets/sound/loading_middle2.ogg'
-import sfxShoot from '@/assets/sound/shoot2.ogg'
-import sfxBrush from '@/assets/sound/brushing_generic2.ogg'
-import sfxBell from '@/assets/sound/bell.ogg'
-import sfxFill from '@/assets/sound/fill1.ogg'
-import sfxGuitar from '@/assets/sound/guitar.ogg'
+import { useSound } from '@vueuse/sound'
 import sfxBass from '@/assets/sound/bass.ogg'
+import sfxBell from '@/assets/sound/bell.ogg'
+import sfxBrush from '@/assets/sound/brushing_generic2.ogg'
+import sfxClose from '@/assets/sound/close1.ogg'
+import sfxFill from '@/assets/sound/fill1.ogg'
+import sfxGrass from '@/assets/sound/grass_mix.ogg'
+import sfxGuitar from '@/assets/sound/guitar.ogg'
+import sfxLoading from '@/assets/sound/loading_middle2.ogg'
+import sfxOpen from '@/assets/sound/open.ogg'
 import sfxPop from '@/assets/sound/pop-down.mp3'
-import {useSettingsStore} from '@/store/settings'
+import sfxSelect from '@/assets/sound/select_pattern_mix.ogg'
+import sfxShoot from '@/assets/sound/shoot2.ogg'
+import sfxWood from '@/assets/sound/wood_mix.ogg'
+import { useSettingsStore } from '@/store/settings'
 
 export const SFX_VOLUME = 1
 
-export const useOpenCloseSound = (watchFn) => {
+export function useOpenCloseSound(watchFn) {
   const settingsStore = useSettingsStore()
 
-  const {play: playSfxOpen} = useSound(sfxOpen, {
+  const { play: playSfxOpen } = useSound(sfxOpen, {
     volume: SFX_VOLUME,
     soundEnabled: settingsStore.enableSoundFx,
   })
-  const {play: playSfxClose} = useSound(sfxClose, {
+  const { play: playSfxClose } = useSound(sfxClose, {
     volume: SFX_VOLUME,
     soundEnabled: settingsStore.enableSoundFx,
   })
   watch(watchFn, (val) => {
     if (val) {
       playSfxOpen()
-    } else {
+    }
+    else {
       playSfxClose()
     }
   })
 }
-export const useSfxOpenCloseSelect = (watchFn) => {
+export function useSfxOpenCloseSelect(watchFn) {
   const settingsStore = useSettingsStore()
 
-  const {play: playSfxOpen} = useSound(sfxLoading, {
+  const { play: playSfxOpen } = useSound(sfxLoading, {
     volume: SFX_VOLUME,
     soundEnabled: settingsStore.enableSoundFx,
   })
-  const {play: playSfxClose} = useSound(sfxShoot, {
+  const { play: playSfxClose } = useSound(sfxShoot, {
     volume: SFX_VOLUME,
     soundEnabled: settingsStore.enableSoundFx,
   })
   watch(watchFn, (val) => {
     if (val) {
       playSfxOpen()
-    } else {
+    }
+    else {
       playSfxClose()
     }
   })
 }
 
-export const useSfxSelect = () => {
+export function useSfxSelect() {
   const settingsStore = useSettingsStore()
-  const {play: playSfx, stop} = useSound(sfxSelect, {
+  const { play: playSfx, stop } = useSound(sfxSelect, {
     volume: SFX_VOLUME,
     soundEnabled: settingsStore.enableSoundFx,
     sprite: {
@@ -71,14 +73,14 @@ export const useSfxSelect = () => {
 
   const play = () => {
     // @ts-ignore
-    playSfx({id: `id_${Math.floor(Math.random() * 5)}`})
+    playSfx({ id: `id_${Math.floor(Math.random() * 5)}` })
   }
-  return {play, stop}
+  return { play, stop }
 }
 
-export const useSfxPlace = () => {
+export function useSfxPlace() {
   const settingsStore = useSettingsStore()
-  const {play: playSfx} = useSound(sfxWood, {
+  const { play: playSfx } = useSound(sfxWood, {
     volume: SFX_VOLUME,
     soundEnabled: settingsStore.enableSoundFx,
     sprite: {
@@ -90,13 +92,13 @@ export const useSfxPlace = () => {
   })
 
   // @ts-ignore
-  const play = () => playSfx({id: `id_${Math.floor(Math.random() * 4)}`})
-  return {play}
+  const play = () => playSfx({ id: `id_${Math.floor(Math.random() * 4)}` })
+  return { play }
 }
 
-export const useSfxDestroy = () => {
+export function useSfxDestroy() {
   const settingsStore = useSettingsStore()
-  const {play: playSfx} = useSound(sfxGrass, {
+  const { play: playSfx } = useSound(sfxGrass, {
     volume: SFX_VOLUME,
     soundEnabled: settingsStore.enableSoundFx,
     sprite: {
@@ -108,18 +110,18 @@ export const useSfxDestroy = () => {
   })
 
   // @ts-ignore
-  const play = () => playSfx({id: `id_${Math.floor(Math.random() * 4)}`})
-  return {play}
+  const play = () => playSfx({ id: `id_${Math.floor(Math.random() * 4)}` })
+  return { play }
 }
 
-export const useSfxBrush = () => {
+export function useSfxBrush() {
   const settingsStore = useSettingsStore()
   return useSound(sfxBrush, {
     volume: SFX_VOLUME,
     soundEnabled: settingsStore.enableSoundFx,
   })
 }
-export const useSfxBell = () => {
+export function useSfxBell() {
   const settingsStore = useSettingsStore()
   return useSound(sfxBell, {
     volume: SFX_VOLUME,
@@ -127,21 +129,21 @@ export const useSfxBell = () => {
   })
 }
 
-export const useSfxFill = () => {
+export function useSfxFill() {
   const settingsStore = useSettingsStore()
   return useSound(sfxFill, {
     volume: SFX_VOLUME,
     soundEnabled: settingsStore.enableSoundFx,
   })
 }
-export const useSfxGuitar = () => {
+export function useSfxGuitar() {
   const settingsStore = useSettingsStore()
   return useSound(sfxGuitar, {
     volume: SFX_VOLUME,
     soundEnabled: settingsStore.enableSoundFx,
   })
 }
-export const useSfxBass = () => {
+export function useSfxBass() {
   const settingsStore = useSettingsStore()
   return useSound(sfxBass, {
     volume: SFX_VOLUME,
@@ -149,7 +151,7 @@ export const useSfxBass = () => {
   })
 }
 
-export const useSfxPop = () => {
+export function useSfxPop() {
   const settingsStore = useSettingsStore()
   return useSound(sfxPop, {
     volume: SFX_VOLUME,

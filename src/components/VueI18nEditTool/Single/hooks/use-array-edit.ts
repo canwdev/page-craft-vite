@@ -1,6 +1,6 @@
-import {ITranslateItem} from '@/enum/vue-i18n-tool'
+import type { ITranslateItem } from '@/enum/vue-i18n-tool'
 
-export const useArrayEdit = () => {
+export function useArrayEdit() {
   const isShowArrayEdit = ref(false)
   const curTranslateItem = shallowRef<ITranslateItem | null>(null)
   const currentArrayString = ref<string>('')
@@ -26,7 +26,8 @@ export const useArrayEdit = () => {
         try {
           curTranslateItem.value.value = JSON.parse(val || '[]')
           isShowArrayEdit.value = false
-        } catch (e: any) {
+        }
+        catch (e: any) {
           console.error(e)
           window.$message.error(e.message)
         }

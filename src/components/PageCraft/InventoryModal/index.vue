@@ -1,17 +1,17 @@
 <script lang="ts">
-import {defineComponent} from 'vue'
-import {useModelWrapper} from '@/hooks/use-model-wrapper'
-import {actionBlockItemList, BlockType} from '@/enum/page-craft/block'
-import {htmlBlockItemList, TabType} from '@/enum/page-craft/inventory'
-import InventoryList from '@/components/PageCraft/InventoryModal/InventoryList.vue'
-import {useMainStore} from '@/store/main'
-import {useSettingsStore} from '@/store/settings'
-import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/index.vue'
-import {useI18n} from 'vue-i18n'
-import {useSfxPop} from '@/hooks/use-sfx'
 import TabLayout from '@canwdev/vgo-ui/src/components/Layouts/TabLayout.vue'
+import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/index.vue'
+import { defineComponent } from 'vue'
+import { useI18n } from 'vue-i18n'
 import ComponentExplorer from '@/components/PageCraft/ComponentExplorer/ComponentExplorer.vue'
-import {colorHash} from '@/utils/color'
+import InventoryList from '@/components/PageCraft/InventoryModal/InventoryList.vue'
+import { actionBlockItemList, BlockType } from '@/enum/page-craft/block'
+import { htmlBlockItemList, TabType } from '@/enum/page-craft/inventory'
+import { useModelWrapper } from '@/hooks/use-model-wrapper'
+import { useSfxPop } from '@/hooks/use-sfx'
+import { useMainStore } from '@/store/main'
+import { useSettingsStore } from '@/store/settings'
+import { colorHash } from '@/utils/color'
 
 export default defineComponent({
   name: 'InventoryModal',
@@ -28,12 +28,12 @@ export default defineComponent({
     },
   },
   emits: ['onItemClick', 'update:visible'],
-  setup(props, {emit}) {
-    const {t: $t} = useI18n()
+  setup(props, { emit }) {
+    const { t: $t } = useI18n()
     const mVisible = useModelWrapper(props, emit, 'visible')
     const mainStore = useMainStore()
     const settingsStore = useSettingsStore()
-    const {play: playSfxPop} = useSfxPop()
+    const { play: playSfxPop } = useSfxPop()
 
     watch(
       () => settingsStore.inventoryTab,
@@ -59,27 +59,27 @@ export default defineComponent({
 
 <template>
   <ViewPortWindow
-    class="inventory-modal"
     v-model:visible="mVisible"
+    class="inventory-modal"
     wid="inv"
     :class="{
       _topLayout: settingsStore.enableTopLayout,
       _docked: settingsStore.isInvDocked,
     }"
-    :init-win-options="{height: '400px'}"
+    :init-win-options="{ height: '400px' }"
     :allow-move="!settingsStore.isInvDocked"
   >
     <template #titleBarLeft>
-      <span class="mdi mdi-archive"></span>
+      <span class="mdi mdi-archive" />
       {{ $t('common.inventory_list') }} (alt+a)
     </template>
     <template #titleBarRightControls>
       <button @click="settingsStore.isInvDocked = !settingsStore.isInvDocked">
         <template v-if="!settingsStore.isInvDocked">
-          <span class="mdi mdi-dock-bottom"></span>
+          <span class="mdi mdi-dock-bottom" />
         </template>
         <template v-else>
-          <span class="mdi mdi-dock-window"></span>
+          <span class="mdi mdi-dock-window" />
         </template>
       </button>
     </template>
@@ -104,12 +104,12 @@ export default defineComponent({
       <InventoryList
         v-if="settingsStore.inventoryTab === TabType.TOOLS"
         :item-list="actionBlockItemList"
-        @onItemClick="(v) => $emit('onItemClick', v)"
+        @on-item-click="(v) => $emit('onItemClick', v)"
       />
       <InventoryList
         v-else-if="settingsStore.inventoryTab === TabType.HTML_ELEMENTS"
         :item-list="htmlBlockItemList"
-        @onItemClick="(v) => $emit('onItemClick', v)"
+        @on-item-click="(v) => $emit('onItemClick', v)"
       />
 
       <ComponentExplorer v-else-if="settingsStore.inventoryTab === TabType.COMPONENTS" />
