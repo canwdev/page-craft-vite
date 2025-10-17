@@ -2,6 +2,7 @@ import type { IComponentExportData } from '@/components/PageCraft/ComponentExplo
 import { sassToCSS } from '@/components/StyleEditor/utils/css'
 import { beautifyCss, beautifyHtml } from '@/components/StyleEditor/utils/formater'
 
+import dynamicLoadScript from '@/utils/dynamic-load-script'
 import { handleExportFile, promptGetFileName } from '@/utils/mc-utils/io'
 
 export async function handleExportHtml(exportData: IComponentExportData, options?) {
@@ -21,6 +22,7 @@ export async function handleExportHtml(exportData: IComponentExportData, options
   const cssCode = style ? beautifyCss(await sassToCSS(style)) : ''
   let htmlStr
   if (isInline) {
+    await dynamicLoadScript('lib/juice.min.js')
     htmlStr = window.$juice(`<style>${cssCode}</style>
 ${html}`)
     if (inlineWithStyleTag) {

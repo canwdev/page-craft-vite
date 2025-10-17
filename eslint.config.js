@@ -12,5 +12,6 @@ export default antfu({
     'regexp/no-unused-capturing-group': 'off',
     'regexp/no-dupe-disjunctions': 'warn',
     'unused-imports/no-unused-vars': 'warn',
+    'no-async-promise-executor': 'warn',
   },
 })

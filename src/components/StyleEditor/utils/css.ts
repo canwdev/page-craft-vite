@@ -1,7 +1,12 @@
-export function sassToCSS(sassCode, options?): Promise<string> {
-  return new Promise((resolve, reject) => {
+import dynamicLoadScript from '@/utils/dynamic-load-script'
+
+export function sassToCSS(sassCode): Promise<string> {
+  return new Promise(async (resolve, reject) => {
     if (!sassCode) {
       return resolve('')
+    }
+    if (!window.Sass) {
+      await dynamicLoadScript('lib/sass/sass.sync.min.js')
     }
     window.Sass.compile(sassCode, (output) => {
       if (output.message) {

@@ -7,7 +7,6 @@ import { sassToCSS } from '@/components/StyleEditor/utils/css'
 import { beautifyCss, beautifyHtml } from '@/components/StyleEditor/utils/formater'
 import { StyleEditorKeys } from '@/enum/settings'
 import { useBroadcastMessage } from '@/hooks/use-broadcast-messae'
-import { useMainStore } from '@/store/main'
 import { useSettingsStore } from '@/store/settings'
 import { copyToClipboard } from '@/utils'
 import { handleExportHtml, handleExportVue } from '@/utils/exporter'
@@ -17,7 +16,6 @@ import { UndoRedo } from '@/utils/undo-redo'
 export function useMcMain(options) {
   const { t: $t } = useI18n()
   const { mainPlaygroundRef, emit } = options
-  const mainStore = useMainStore()
   const settingsStore = useSettingsStore()
   const isShowImportDialog = ref(false)
   const { loadCurCompHtml, saveCurCompHtml, saveCurCompStyle, loadCurCompStyle }
