@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { watchThrottled } from '@vueuse/core'
-import markdown from '@/utils/markdown'
+import markdown, { suffixLangMap } from '@/utils/markdown'
 
 interface Props {
   dark?: boolean
@@ -46,7 +46,7 @@ function handleClick(event) {
           window.$mcUtils.copy(code)
           break
         case 'download':
-          window.$mcUtils.handleExportFile('', code, `_code.${lang}`)
+          window.$mcUtils.handleExportFile('', code, `_code.${suffixLangMap[lang] || lang}`)
           break
       }
     }

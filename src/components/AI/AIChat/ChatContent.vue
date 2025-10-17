@@ -378,12 +378,15 @@ function handlePaste(event) {
   }
 }
 
-function handleRetry(item: IMessageItem, index) {
+function handleRetry(item: IMessageItem, index: number) {
   if (!currentHistory.value) {
     return
   }
   if (item.role === 'assistant') {
     currentHistory.value.history.splice(index, 1)
+  }
+  else if (item.role === 'user' && index === currentHistory.value.history.length - 2) {
+    currentHistory.value.history.pop()
   }
   sendAiRequest(true)
 }
@@ -513,7 +516,7 @@ function handleSettings() {
               :is-dark="mainStore.isAppDarkMode"
               allow-delete
               allow-edit
-              :allow-retry="index === currentHistory.history.length - 1"
+              :allow-retry="index === currentHistory.history.length - 1 || (index === currentHistory.history.length - 2 && currentHistory.history[index].role === 'user')"
               :character="item.role === 'assistant' ? currentCharacter : undefined"
               @delete="currentHistory.history.splice(index, 1)"
               @retry="handleRetry(item, index)"

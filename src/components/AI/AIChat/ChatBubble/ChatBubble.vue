@@ -242,6 +242,7 @@ function exportMarkdown(text) {
 
 <style lang="scss" scoped>
 .ai-chat-bubble-system {
+  margin-top: 10px;
   margin-bottom: 8px;
   opacity: 0.6;
   background-color: var(--vgo-primary-opacity);

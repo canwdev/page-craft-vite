@@ -47,6 +47,7 @@ export function useOpenAI_GPT() {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${aisStore.openAiApiKey}`,
+        'APP-Code': 'RSDC7749',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(params),

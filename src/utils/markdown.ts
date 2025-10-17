@@ -3,6 +3,20 @@ import MarkdownIt from 'markdown-it'
 import mathjax3 from 'markdown-it-mathjax3'
 // import 'highlight.js/styles/github-dark.css'
 
+// https://highlightjs.readthedocs.io/en/latest/supported-languages.html
+// node_modules/highlight.js/SUPPORTED_LANGUAGES.md
+export const suffixLangMap = {
+  javascript: 'js',
+  typescript: 'ts',
+  bash: 'sh',
+  shell: 'sh',
+  csharp: 'cs',
+  kotlin: 'kt',
+  rust: 'rs',
+  autohotkey: 'ahk',
+  vbscript: 'vbs',
+}
+
 // 兼容不能识别的语言
 const langMap = {
   vue: 'html',
