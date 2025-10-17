@@ -1,4 +1,3 @@
-import { window as tauriWin } from '@tauri-apps/api'
 import { createRouter, createWebHashHistory } from 'vue-router'
 import iconExcel from '@/assets/textures/excel.svg?url'
 
