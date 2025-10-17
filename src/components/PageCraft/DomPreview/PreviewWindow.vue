@@ -1,6 +1,6 @@
 <script lang="ts">
 import type { IComponentExportData } from '@/components/PageCraft/ComponentExplorer/enum'
-import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/index.vue'
+import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/ViewPortWindow.vue'
 import { defineComponent } from 'vue'
 import DomPreview from '@/components/PageCraft/DomPreview/DomPreview.vue'
 import globalEventBus, { GlobalEvents } from '@/utils/global-event-bus'

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { WindowController } from '@canwdev/vgo-ui/src/components/ViewPortWindow/utils/window-controller'
+import { WindowController } from '@canwdev/vgo-ui/src/components/ViewPortWindow/window-controller'
 import { defineComponent } from 'vue'
 
 export default defineComponent({

@@ -1,17 +1,10 @@
-<script lang="ts">
-</script>
-
 <script lang="ts" setup>
 import type { TaskItem } from '@/enum/os'
-import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/index.vue'
-import ThemedIcon from '@/components/OS/ThemedIcon/ThemedIcon.vue'
+import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/ViewPortWindow.vue'
+import ThemedIcon from '@/components/OS/ThemedIcon.vue'
 import { useMainStore } from '@/store/main'
 import { useSettingsStore } from '@/store/settings'
 import { useSystemStore } from '@/store/system'
-
-export default {
-  name: 'DesktopWindowManager',
-}
 
 const mainStore = useMainStore()
 const systemStore = useSystemStore()
@@ -65,17 +58,17 @@ function handleRestore(index) {
     <template v-for="(task, index) in systemStore.tasks" :key="task.guid">
       <ViewPortWindow
         ref="vpWindowRefs"
+        v-model:maximized="task.maximized"
+        v-model:minimized="task.minimized"
         class="dwm-window"
         :visible="!task.minimized && !task.isClosing"
         :wid="task.appid"
         :init-win-options="task.winOptions"
-        v-model:maximized="task.maximized"
         :allow-move="!getIsMaximum(task)"
         :allow-maximum="true"
         :allow-minimum="false"
-        v-model:minimized="task.minimized"
-        @on-active="systemStore.setTaskActive(task)"
         tabindex="0"
+        @on-active="systemStore.setTaskActive(task)"
         @on-close="systemStore.closeTask(task.guid)"
         @on-restored="handleRestore(index)"
         @keydown="handleWindowKeydown($event, task, index)"

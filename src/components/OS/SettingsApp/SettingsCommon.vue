@@ -1,10 +1,10 @@
 <script lang="ts" setup="">
 import type { StOptionItem } from '@canwdev/vgo-ui/src/components/OptionUI/enum'
 import { StOptionType } from '@canwdev/vgo-ui/src/components/OptionUI/enum'
-import OptionUI from '@canwdev/vgo-ui/src/components/OptionUI/index.vue'
+import OptionUI from '@canwdev/vgo-ui/src/components/OptionUI/OptionUI.vue'
 import {
   useThemeOptions,
-} from '@canwdev/vgo-ui/src/components/ViewPortWindow/utils/use-theme'
+} from '@canwdev/vgo-ui/src/components/ViewPortWindow/use-theme'
 import { useI18n } from 'vue-i18n'
 import { useBackupRestore } from '@/components/OS/SettingsApp/use-backup-restore'
 import { ldThemeOptions, LdThemeType } from '@/enum/settings'
@@ -95,12 +95,6 @@ const optionList = computed((): StOptionItem[] => {
           label: $t('common.top_layout'),
           key: 'enableTopLayout',
           iconClass: 'mdi mdi-dock-top',
-          type: StOptionType.SWITCH,
-        },
-        {
-          label: $t('common.sound_fx'),
-          key: 'enableSoundFx',
-          iconClass: 'mdi mdi-music-accidental-flat',
           type: StOptionType.SWITCH,
         },
       ],

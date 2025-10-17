@@ -1,6 +1,6 @@
 import type { IComponentInStore } from '@/components/PageCraft/ComponentExplorer/enum'
 import type { BlockItem } from '@/enum/page-craft/block'
-import { DEFAULT_THEME } from '@canwdev/vgo-ui/src/components/ViewPortWindow/utils/use-theme'
+import { DEFAULT_THEME } from '@canwdev/vgo-ui/src/components/ViewPortWindow/use-theme'
 import { TabType } from '@/enum/page-craft/inventory'
 import { LdThemeType, LS_SettingsKey } from '@/enum/settings'
 

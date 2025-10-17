@@ -1,7 +1,7 @@
 <script lang="ts">
 import type { PropType } from 'vue'
 import type { BatchListItem } from '@/components/VueI18nEditTool/store/i18n-tool-main'
-import VueMonaco from '@canwdev/vgo-ui/src/components/VueMonaco/index.vue'
+import VueMonaco from '@canwdev/vgo-ui/src/components/VueMonaco/VueMonaco.vue'
 import { defineComponent, ref } from 'vue'
 import { useBatchItemV2 } from '@/components/VueI18nEditTool/BatchGUI/batch-hooks'
 import { useI18nMainStore } from '@/components/VueI18nEditTool/store/i18n-tool-main'

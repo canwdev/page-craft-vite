@@ -3,7 +3,6 @@ import { PageCraftKeys } from '@/enum'
 import { CLASS_MAIN_CANVAS_ROOT } from '@/enum/page-craft'
 import { ActionType, BlockType } from '@/enum/page-craft/block'
 import { useBroadcastMessage } from '@/hooks/use-broadcast-messae'
-import { useSfxPop } from '@/hooks/use-sfx'
 import { useMainStore } from '@/store/main'
 
 export interface IndicatorOptions {
@@ -23,7 +22,6 @@ export interface IndicatorOptions {
 export function useIndicator() {
   const { t: $t } = useI18n()
   const mainStore = useMainStore()
-  const { play: playSfxPop } = useSfxPop()
 
   // 用来防止多窗口通信导致的死循环
   const isSelfUpdating = ref(false)

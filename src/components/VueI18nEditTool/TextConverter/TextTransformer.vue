@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import RectSwitch from '@canwdev/vgo-ui/src/components/OptionUI/Tools/RectSwitch.vue'
-import VueMonaco from '@canwdev/vgo-ui/src/components/VueMonaco/index.vue'
+import RectSwitch from '@canwdev/vgo-ui/src/components/OptionUI/components/RectSwitch.vue'
+import VueMonaco from '@canwdev/vgo-ui/src/components/VueMonaco/VueMonaco.vue'
 import { useStorage } from '@vueuse/core'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'

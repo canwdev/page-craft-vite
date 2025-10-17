@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import QuickOptions from '@canwdev/vgo-ui/src/components/QuickOptions/index.vue'
-import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/index.vue'
-import VueMonaco from '@canwdev/vgo-ui/src/components/VueMonaco/index.vue'
+import QuickOptions from '@canwdev/vgo-ui/src/components/QuickOptions/QuickOptions.vue'
+import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/ViewPortWindow.vue'
+import VueMonaco from '@canwdev/vgo-ui/src/components/VueMonaco/VueMonaco.vue'
 import { useTextareaAutosize } from '@vueuse/core'
 import { useRoute } from 'vue-router'
 import { useQLogics } from './q-logics'

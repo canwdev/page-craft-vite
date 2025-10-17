@@ -5,11 +5,15 @@ const textInput = ref('')
 
 const metaList = ref([])
 
+const inputRef = ref<HTMLInputElement>()
 onMounted(async () => {
   metaList.value = await fetch('./resources/q-plugins/mdi-icon-viewer/meta-lite.json').then(res =>
     res.json(),
   )
   console.log({ metaList })
+  setTimeout(() => {
+    inputRef.value?.focus()
+  })
 })
 
 const filteredList = ref([])
@@ -46,6 +50,7 @@ function copyHtml(item) {
     <div class="vgo-panel">
       <span class="mdi mdi-magnify" />
       <input
+        ref="inputRef"
         v-model="textInput"
         class="vgo-input"
         placeholder="Filter icon name..."

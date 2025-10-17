@@ -7,7 +7,6 @@ import { sassToCSS } from '@/components/StyleEditor/utils/css'
 import { beautifyCss, beautifyHtml } from '@/components/StyleEditor/utils/formater'
 import { StyleEditorKeys } from '@/enum/settings'
 import { useBroadcastMessage } from '@/hooks/use-broadcast-messae'
-import { useSfxBass, useSfxBell, useSfxFill, useSfxGuitar } from '@/hooks/use-sfx'
 import { useMainStore } from '@/store/main'
 import { useSettingsStore } from '@/store/settings'
 import { copyToClipboard } from '@/utils'
@@ -28,8 +27,6 @@ export function useMcMain(options) {
   useBeforeUnload(() => {
     return undoRedo.value.getCount() > 0
   })
-  const { play: playSfxBell } = useSfxBell()
-  const { play: sfxFill } = useSfxFill()
 
   onMounted(() => {
     reloadHtml()
@@ -47,7 +44,6 @@ export function useMcMain(options) {
     window.$message.success($t('msgs.copy_success'))
 
     saveData()
-    playSfxBell()
   }
 
   const pasteHtmlText = ref('')
@@ -101,7 +97,6 @@ export function useMcMain(options) {
     const html = await loadCurCompHtml()
     setPlaygroundHtml(html)
     undoRedo.value.clear()
-    sfxFill()
   }
 
   const variableStyleCode = useStorage(StyleEditorKeys.VARIABLES_STYLE, '')
@@ -130,7 +125,6 @@ export function useMcMain(options) {
     recordUndo()
     setPlaygroundHtml(html)
     saveData()
-    sfxFill()
   }
 
   const htmlMenuOptions = [
@@ -240,13 +234,10 @@ export function useMcMain(options) {
     const innerHTML = mainPlaygroundRef.value.innerHTML
     undoRedo.value.recordUndo(innerHTML)
   }
-  const { play: playSfxGuitar } = useSfxGuitar()
-  const { play: playSfxBass } = useSfxBass()
   const handleUndo = () => {
     if (!undoRedo.value.undoStack.length) {
       return
     }
-    playSfxGuitar()
     const innerHTML = mainPlaygroundRef.value.innerHTML
     const html = undoRedo.value.undo(innerHTML)
     setPlaygroundHtml(html)
@@ -257,7 +248,6 @@ export function useMcMain(options) {
     if (!undoRedo.value.redoStack.length) {
       return
     }
-    playSfxBass()
     const innerHTML = mainPlaygroundRef.value.innerHTML
     const html = undoRedo.value.redo(innerHTML)
     setPlaygroundHtml(html)

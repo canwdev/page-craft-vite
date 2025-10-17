@@ -1,60 +1,24 @@
-<script lang="ts">
+<script lang="ts" setup>
 import TabLayout from '@canwdev/vgo-ui/src/components/Layouts/TabLayout.vue'
-import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/index.vue'
-import { defineComponent } from 'vue'
+import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/ViewPortWindow.vue'
 import { useI18n } from 'vue-i18n'
 import ComponentExplorer from '@/components/PageCraft/ComponentExplorer/ComponentExplorer.vue'
 import InventoryList from '@/components/PageCraft/InventoryModal/InventoryList.vue'
-import { actionBlockItemList, BlockType } from '@/enum/page-craft/block'
+import { actionBlockItemList } from '@/enum/page-craft/block'
 import { htmlBlockItemList, TabType } from '@/enum/page-craft/inventory'
 import { useModelWrapper } from '@/hooks/use-model-wrapper'
-import { useSfxPop } from '@/hooks/use-sfx'
-import { useMainStore } from '@/store/main'
 import { useSettingsStore } from '@/store/settings'
-import { colorHash } from '@/utils/color'
 
-export default defineComponent({
-  name: 'InventoryModal',
-  components: {
-    TabLayout,
-    ViewPortWindow,
-    InventoryList,
-    ComponentExplorer,
-  },
-  props: {
-    visible: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  emits: ['onItemClick', 'update:visible'],
-  setup(props, { emit }) {
-    const { t: $t } = useI18n()
-    const mVisible = useModelWrapper(props, emit, 'visible')
-    const mainStore = useMainStore()
-    const settingsStore = useSettingsStore()
-    const { play: playSfxPop } = useSfxPop()
-
-    watch(
-      () => settingsStore.inventoryTab,
-      () => {
-        playSfxPop()
-      },
-    )
-
-    return {
-      mainStore,
-      settingsStore,
-      mVisible,
-      BlockType,
-      TabType,
-      actionBlockItemList,
-      htmlBlockItemList,
-      colorHash,
-      playSfxPop,
-    }
-  },
+const props = withDefaults(defineProps<{
+  visible?: boolean
+}>(), {
+  visible: false,
 })
+const emit = defineEmits(['update:visible'])
+
+const { t: $t } = useI18n()
+const mVisible = useModelWrapper(props, emit, 'visible')
+const settingsStore = useSettingsStore()
 </script>
 
 <template>

@@ -2,10 +2,9 @@
 import { useEventListener } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
 import { useComponentStorageV2 } from '@/components/PageCraft/ComponentExplorer/hooks/use-component-manage'
-import MainPlayground from '@/components/PageCraft/MainPlayground/index.vue'
-import ToolBar from '@/components/PageCraft/ToolBar/index.vue'
+import MainPlayground from '@/components/PageCraft/MainPlayground/MainPlayground.vue'
+import ToolBar from '@/components/PageCraft/ToolBar/ToolBar.vue'
 import { CLASS_MAIN_CANVAS_ROOT } from '@/enum/page-craft'
-import { useOpenCloseSound, useSfxBrush, useSfxFill, useSfxOpenCloseSelect } from '@/hooks/use-sfx'
 import { useMainStore } from '@/store/main'
 import { useSettingsStore } from '@/store/settings'
 import { GlobalEvents, useGlobalBusOn } from '@/utils/global-event-bus'
@@ -15,12 +14,6 @@ const StyleEditor = defineAsyncComponent(() => import('@/components/StyleEditor/
 const { t: $t } = useI18n()
 const settingsStore = useSettingsStore()
 const mainStore = useMainStore()
-
-const { play: playSfxBrush } = useSfxBrush()
-const { play: sfxFill } = useSfxFill()
-
-useOpenCloseSound(() => settingsStore.showStyleEditor)
-useSfxOpenCloseSelect(() => mainStore.selecting)
 
 watch(
   () => settingsStore.enableSoundFx,
@@ -112,8 +105,6 @@ useGlobalBusOn(GlobalEvents.ON_ADD_STYLE, (arg) => {
     v-model:style-code="styleCode"
     :selecting-parent-class="CLASS_MAIN_CANVAS_ROOT"
     show-tabs
-    @on-format="playSfxBrush"
-    @on-insert-code="sfxFill"
   />
 </template>
 

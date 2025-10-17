@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import VueMonaco from '@canwdev/vgo-ui/src/components/VueMonaco/index.vue'
+import VueMonaco from '@canwdev/vgo-ui/src/components/VueMonaco/VueMonaco.vue'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useSettingsStore } from '@/store/settings'

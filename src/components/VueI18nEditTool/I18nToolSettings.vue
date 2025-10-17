@@ -1,7 +1,7 @@
 <script lang="ts">
 import type { StOptionItem } from '@canwdev/vgo-ui/src/components/OptionUI/enum'
 import { StOptionType } from '@canwdev/vgo-ui/src/components/OptionUI/enum'
-import OptionUI from '@canwdev/vgo-ui/src/components/OptionUI/index.vue'
+import OptionUI from '@canwdev/vgo-ui/src/components/OptionUI/OptionUI.vue'
 import { defineComponent } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useI18nToolSettingsStore } from '@/components/VueI18nEditTool/store/i18n-tool-settings'

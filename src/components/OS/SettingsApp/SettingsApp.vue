@@ -1,6 +1,3 @@
-<script lang="ts">
-</script>
-
 <script setup lang="ts">
 import TabLayout from '@canwdev/vgo-ui/src/components/Layouts/TabLayout.vue'
 import { useI18n } from 'vue-i18n'
@@ -15,10 +12,6 @@ const props = withDefaults(
   }>(),
   {},
 )
-
-export default {
-  name: 'SettingsApp',
-}
 
 interface AppParams {
   curTab: SettingsTabType

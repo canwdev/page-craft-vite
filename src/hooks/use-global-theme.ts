@@ -1,6 +1,6 @@
 import {
   useThemeOptions,
-} from '@canwdev/vgo-ui/src/components/ViewPortWindow/utils/use-theme'
+} from '@canwdev/vgo-ui/src/components/ViewPortWindow/use-theme'
 import { useElementPlusTheme } from '@canwdev/vgo-ui/src/hooks/use-element-plus-theme/index'
 import { LdThemeType } from '@/enum/settings'
 import { useMainStore } from '@/store/main'
@@ -45,12 +45,10 @@ export function useGlobalTheme() {
     isAppDarkMode,
     (val) => {
       if (val) {
-        document.body.classList.add('dark')
         // Element Plus 暗黑模式 https://element-plus.org/zh-CN/guide/dark-mode.html
         document.documentElement.classList.add('dark')
       }
       else {
-        document.body.classList.remove('dark')
         document.documentElement.classList.remove('dark')
       }
     },
@@ -86,7 +84,7 @@ export function useGlobalTheme() {
         }
         const { r, g, b } = res
         const root = document.documentElement
-        root.style.setProperty('--primary-rgb', `${r}, ${g}, ${b}`)
+        root.style.setProperty('--vgo-primary-rgb', `${r}, ${g}, ${b}`)
       }
       catch (e) {
         console.error(e)

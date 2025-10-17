@@ -10,7 +10,6 @@ import {
 } from '@/components/PageCraft/MainPlayground/utils/dom'
 import { updateHtmlElement } from '@/components/PageCraft/MainPlayground/utils/element-edit'
 import { ActionType, BlockType } from '@/enum/page-craft/block'
-import { useOpenCloseSound, useSfxDestroy, useSfxPlace } from '@/hooks/use-sfx'
 import { useMainStore } from '@/store/main'
 import { copyToClipboard } from '@/utils'
 import globalEventBus, { GlobalEvents } from '@/utils/global-event-bus'
@@ -30,8 +29,6 @@ export function useInteractionHooks(options) {
   const isEditingRoot = ref(false)
 
   const extractCompRef = ref()
-
-  useOpenCloseSound(() => isShowElementEdit.value)
 
   const lineHelper = shallowRef()
 
@@ -158,7 +155,6 @@ export function useInteractionHooks(options) {
           surroundSelection(el)
         }
         saveData()
-        playSfxPlace()
       },
     })),
   ]
@@ -174,14 +170,12 @@ export function useInteractionHooks(options) {
       text,
     )
     saveData()
-    playSfxPlace()
   }
 
   const pasteReplaceValue = async (targetEl) => {
     recordUndo()
     await autoPasteReplaceValue(targetEl)
     saveData()
-    playSfxPlace()
   }
 
   const insertCurrentBlock = (targetEl, position = 'append', el?) => {
@@ -191,7 +185,6 @@ export function useInteractionHooks(options) {
     }
     targetEl[<any>position](el)
     saveData()
-    playSfxPlace()
   }
 
   const editingNode = ref<HTMLElement | null>(null)
@@ -248,7 +241,6 @@ export function useInteractionHooks(options) {
                 recordUndo()
                 targetEl.parentNode?.removeChild(targetEl)
                 saveData()
-                playSfxDestroy()
               },
             },
           },
@@ -259,7 +251,6 @@ export function useInteractionHooks(options) {
                 recordUndo()
                 targetEl.parentNode?.removeChild(targetEl)
                 saveData()
-                playSfxDestroy()
               },
             },
           },
@@ -340,8 +331,6 @@ export function useInteractionHooks(options) {
     )
   })
 
-  const { play: playSfxPlace } = useSfxPlace()
-  const { play: playSfxDestroy } = useSfxDestroy()
   const handleBlockClick = async (event: Event, newBlock?: BlockItem, addOptions?) => {
     if (!newBlock) {
       newBlock = mainStore.currentBlock
@@ -358,15 +347,13 @@ export function useInteractionHooks(options) {
     addOptions = addOptions || mainStore
 
     await appendCustomBlock(newBlock, event, addOptions, mainPlaygroundRef)
-    if (newBlock.actionType === ActionType.DELETE) {
-      playSfxDestroy()
-    }
-    else if (
-      newBlock.actionType !== ActionType.DEBUG
-      && newBlock.actionType !== ActionType.CURSOR
-    ) {
-      playSfxPlace()
-    }
+    // if (newBlock.actionType === ActionType.DELETE) {
+    // }
+    // else if (
+    //   newBlock.actionType !== ActionType.DEBUG
+    //   && newBlock.actionType !== ActionType.CURSOR
+    // ) {
+    // }
     saveData()
   }
 
@@ -459,7 +446,6 @@ export function useInteractionHooks(options) {
         await pasteHtml(targetEl, 'beforeend', html)
       }
       saveData()
-      playSfxPlace()
     }
 
     // 处理DOM元素放置

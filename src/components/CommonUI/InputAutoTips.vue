@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { QuickOptionItem } from '@canwdev/vgo-ui/src/components/QuickOptions/enum'
-import QuickOptions from '@canwdev/vgo-ui/src/components/QuickOptions/index.vue'
+import QuickOptions from '@canwdev/vgo-ui/src/components/QuickOptions/QuickOptions.vue'
 import { useContextMenu } from '@canwdev/vgo-ui/src/components/QuickOptions/utils/use-context-menu'
 import { useStorage, useThrottleFn, useVModel, watchDebounced } from '@vueuse/core'
 

@@ -4,7 +4,7 @@ import type {
   DirTreeItem,
 } from '@/enum/vue-i18n-tool'
 import FoldableSidebarLayout from '@canwdev/vgo-ui/src/components/Layouts/FoldableSidebarLayout.vue'
-import RectSwitch from '@canwdev/vgo-ui/src/components/OptionUI/Tools/RectSwitch.vue'
+import RectSwitch from '@canwdev/vgo-ui/src/components/OptionUI/components/RectSwitch.vue'
 import DropdownMenu from '@canwdev/vgo-ui/src/components/QuickOptions/DropdownMenu.vue'
 import { useBeforeUnload, useSaveShortcut } from '@canwdev/vgo-ui/src/hooks/use-beforeunload'
 import { useStorage } from '@vueuse/core'

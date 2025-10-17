@@ -2,7 +2,7 @@
 import type { StOptionItem } from '@canwdev/vgo-ui/src/components/OptionUI/enum'
 import { AutoFormItemType } from '@canwdev/vgo-ui/src/components/AutoFormElPlus/enum'
 import { StOptionType } from '@canwdev/vgo-ui/src/components/OptionUI/enum'
-import OptionUI from '@canwdev/vgo-ui/src/components/OptionUI/index.vue'
+import OptionUI from '@canwdev/vgo-ui/src/components/OptionUI/OptionUI.vue'
 import { useI18n } from 'vue-i18n'
 import { useAiSettingsStore } from '@/components/AI/hooks/ai-settings'
 import { useAnthropicClaudeAI } from '@/components/AI/hooks/use-claude'

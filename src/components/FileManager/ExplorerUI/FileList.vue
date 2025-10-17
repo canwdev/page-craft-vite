@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { IEntry } from '../types/filesystem'
 import DropdownMenu from '@canwdev/vgo-ui/src/components/QuickOptions/DropdownMenu.vue'
-import QuickOptions from '@canwdev/vgo-ui/src/components/QuickOptions/index.vue'
 import QuickContextMenu from '@canwdev/vgo-ui/src/components/QuickOptions/QuickContextMenu.vue'
+import QuickOptions from '@canwdev/vgo-ui/src/components/QuickOptions/QuickOptions.vue'
 
 import { useVModel } from '@vueuse/core'
 import { useLocalDir } from '@/components/PageCraft/ComponentExplorer/hooks/use-local-dir'

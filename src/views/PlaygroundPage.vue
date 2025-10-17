@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import MainPlayground from '@/components/PageCraft/MainPlayground/index.vue'
+import MainPlayground from '@/components/PageCraft/MainPlayground/MainPlayground.vue'
 import { useBroadcastMessage } from '@/hooks/use-broadcast-messae'
 
 // 初始化时同步浏览器不同窗口间的组件样式

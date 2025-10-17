@@ -1,7 +1,7 @@
 <script lang="ts" setup="">
 import type { QuickOptionItem } from '@canwdev/vgo-ui/src/components/QuickOptions/enum'
 import DropdownMenu from '@canwdev/vgo-ui/src/components/QuickOptions/DropdownMenu.vue'
-import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/index.vue'
+import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/ViewPortWindow.vue'
 import { useDebounceFn } from '@vueuse/core'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'

@@ -1,10 +1,7 @@
-<script lang="ts">
-</script>
-
 <script lang="ts" setup>
-import QuickOptions from '@canwdev/vgo-ui/src/components/QuickOptions/index.vue'
+import QuickOptions from '@canwdev/vgo-ui/src/components/QuickOptions/QuickOptions.vue'
 import { useRemoteOptions } from '@canwdev/vgo-ui/src/components/QuickOptions/utils/use-remote-options'
-import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/index.vue'
+import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/ViewPortWindow.vue'
 import { useStorage, useVModel } from '@vueuse/core'
 import { useRouter } from 'vue-router'
 import { LS_SettingsKey } from '@/enum/settings'
@@ -19,10 +16,6 @@ const props = withDefaults(
 )
 
 const emit = defineEmits(['update:visible'])
-
-export default {
-  name: 'IframeBrowser',
-}
 
 const mVisible = useVModel(props, 'visible', emit)
 

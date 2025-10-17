@@ -1,6 +1,6 @@
 <script lang="ts" setup="">
-import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/index.vue'
-import VueMonaco from '@canwdev/vgo-ui/src/components/VueMonaco/index.vue'
+import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/ViewPortWindow.vue'
+import VueMonaco from '@canwdev/vgo-ui/src/components/VueMonaco/VueMonaco.vue'
 import { useVModel } from '@vueuse/core'
 import { useSettingsStore } from '@/store/settings'
 import { readClipboardData } from '@/utils'

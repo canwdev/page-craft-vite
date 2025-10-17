@@ -2,8 +2,8 @@
 import type { IComponentItem } from '@/components/PageCraft/ComponentExplorer/enum'
 
 import DropdownMenu from '@canwdev/vgo-ui/src/components/QuickOptions/DropdownMenu.vue'
-import QuickOptions from '@canwdev/vgo-ui/src/components/QuickOptions/index.vue'
 import QuickContextMenu from '@canwdev/vgo-ui/src/components/QuickOptions/QuickContextMenu.vue'
+import QuickOptions from '@canwdev/vgo-ui/src/components/QuickOptions/QuickOptions.vue'
 import { useVModel } from '@vueuse/core'
 import DialogImageCropper from '@/components/CommonUI/DialogImageCropper.vue'
 import { useCopyPaste } from '@/components/FileManager/ExplorerUI/hooks/use-copy-paste'

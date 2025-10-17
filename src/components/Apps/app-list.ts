@@ -14,7 +14,7 @@ export function useAppList() {
       width: '450px',
       height: '600px',
     },
-    component: defineAsyncComponent(() => import('@/components/OS/SettingsApp/index.vue')),
+    component: defineAsyncComponent(() => import('@/components/OS/SettingsApp/SettingsApp.vue')),
     singleInstance: true,
   }
 

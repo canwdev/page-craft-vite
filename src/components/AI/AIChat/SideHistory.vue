@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { StOptionItem } from '@canwdev/vgo-ui/src/components/OptionUI/enum'
-import OptionUI from '@canwdev/vgo-ui/src/components/OptionUI/index.vue'
-import { renderDropdownMenu } from '@canwdev/vgo-ui/src/components/OptionUI/Tools/renders'
+import OptionUI from '@canwdev/vgo-ui/src/components/OptionUI/OptionUI.vue'
+import { renderDropdownMenu } from '@canwdev/vgo-ui/src/components/OptionUI/utils/renders'
 import { useI18n } from 'vue-i18n'
 import { useAiSettingsStore } from '@/components/AI/hooks/ai-settings'
 import { mergeIdData, useAiCharacters } from '@/components/AI/hooks/use-ai-characters'

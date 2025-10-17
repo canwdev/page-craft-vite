@@ -1,161 +1,128 @@
-<script lang="ts">
+<script lang="ts" setup>
 import type { BlockItem } from '@/enum/page-craft/block'
 import { useStorage } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
 import PreviewWindow from '@/components/PageCraft/DomPreview/PreviewWindow.vue'
-import InventoryModal from '@/components/PageCraft/InventoryModal/index.vue'
+import InventoryModal from '@/components/PageCraft/InventoryModal/InventoryModal.vue'
 import ClassNameInput from '@/components/PageCraft/ToolBar/ClassNameInput.vue'
 import ToolItem from '@/components/PageCraft/ToolBar/ToolItem.vue'
 import { PageCraftKeys } from '@/enum'
 import { initToolbarList } from '@/enum/page-craft/block'
-import { useOpenCloseSound, useSfxSelect } from '@/hooks/use-sfx'
 import { useMainStore } from '@/store/main'
 import { useSettingsStore } from '@/store/settings'
 
-export default defineComponent({
-  name: 'BottomToolBar',
-  components: {
-    ClassNameInput,
-    PreviewWindow,
-    ToolItem,
-    InventoryModal,
+const { t: $t } = useI18n()
+const mainStore = useMainStore()
+const settingsStore = useSettingsStore()
+
+const toolBarList = useStorage(PageCraftKeys.TOOL_BAR_LIST, [...initToolbarList])
+
+const blinkAnimIndex = ref(-1)
+// add blink animation
+function playBlinkAnim(index: number) {
+  blinkAnimIndex.value = index
+  setTimeout(() => {
+    blinkAnimIndex.value = -1
+  }, 200)
+}
+
+function setCurrentToolItem(item: BlockItem) {
+  const list = [...toolBarList.value]
+  list.splice(settingsStore.toolbarIndex, 1, item)
+  toolBarList.value = list
+  updateCurrentBlock(item)
+  playBlinkAnim(settingsStore.toolbarIndex)
+}
+
+function updateCurrentBlock(item: BlockItem) {
+  mainStore.setCurrentBlock(item)
+}
+
+function handleToolItemClick(item: BlockItem, index) {
+  settingsStore.toolbarIndex = index
+}
+
+watch(
+  () => settingsStore.toolbarIndex,
+  (newIndex) => {
+    updateCurrentBlock(toolBarList.value[newIndex])
   },
-  setup(props, { emit }) {
-    const { t: $t } = useI18n()
-    const router = useRouter()
-    const mainStore = useMainStore()
-    const settingsStore = useSettingsStore()
+)
 
-    const toolBarList = useStorage(PageCraftKeys.TOOL_BAR_LIST, [...initToolbarList])
+function selectNext() {
+  if (settingsStore.toolbarIndex === toolBarList.value.length - 1) {
+    settingsStore.toolbarIndex = 0
+    return
+  }
+  settingsStore.toolbarIndex += 1
+}
+function selectPrev() {
+  if (settingsStore.toolbarIndex <= 0) {
+    settingsStore.toolbarIndex = toolBarList.value.length - 1
+    return
+  }
+  settingsStore.toolbarIndex -= 1
+}
+function handleScroll(event) {
+  event.preventDefault()
+  if (event.deltaY > 0) {
+    selectNext()
+  }
+  else {
+    selectPrev()
+  }
+}
 
-    const blinkAnimIndex = ref(-1)
-    // add blink animation
-    const playBlinkAnim = (index: number) => {
-      blinkAnimIndex.value = index
-      setTimeout(() => {
-        blinkAnimIndex.value = -1
-      }, 200)
+function handleGlobalScroll(event) {
+  if (event.shiftKey) {
+    if (event.deltaY > 0) {
+      selectNext()
     }
-
-    const setCurrentToolItem = (item: BlockItem) => {
-      const list = [...toolBarList.value]
-      list.splice(settingsStore.toolbarIndex, 1, item)
-      toolBarList.value = list
-      updateCurrentBlock(item)
-      playBlinkAnim(settingsStore.toolbarIndex)
+    else {
+      selectPrev()
     }
+  }
+}
 
-    const updateCurrentBlock = (item: BlockItem) => {
-      mainStore.setCurrentBlock(item)
-      playSfxSelect()
-    }
+const toolbarRef = ref()
 
-    const handleToolItemClick = (item: BlockItem, index) => {
-      settingsStore.toolbarIndex = index
-      playSfxSelect()
-    }
-
-    const { play: playSfxSelect, stop: stopSfxSelect } = useSfxSelect()
-    watch(
-      () => settingsStore.toolbarIndex,
-      (newIndex) => {
-        updateCurrentBlock(toolBarList.value[newIndex])
-        stopSfxSelect()
-        playSfxSelect()
-      },
-    )
-
-    const selectNext = () => {
-      if (settingsStore.toolbarIndex === toolBarList.value.length - 1) {
-        settingsStore.toolbarIndex = 0
-        return
-      }
-      settingsStore.toolbarIndex += 1
-    }
-    const selectPrev = () => {
-      if (settingsStore.toolbarIndex <= 0) {
-        settingsStore.toolbarIndex = toolBarList.value.length - 1
-        return
-      }
-      settingsStore.toolbarIndex -= 1
-    }
-    const handleScroll = (event) => {
-      event.preventDefault()
-      if (event.deltaY > 0) {
-        selectNext()
-      }
-      else {
-        selectPrev()
-      }
-    }
-
-    const handleGlobalScroll = (event) => {
-      if (event.shiftKey) {
-        if (event.deltaY > 0) {
-          selectNext()
-        }
-        else {
-          selectPrev()
-        }
-      }
-    }
-
-    const toolbarRef = ref()
-
-    onBeforeUnmount(() => {
-      updateCurrentBlock(toolBarList.value[settingsStore.toolbarIndex])
-    })
-
-    onMounted(() => {
-      document.addEventListener('wheel', handleGlobalScroll)
-      toolbarRef.value.addEventListener('wheel', handleScroll, { passive: false })
-    })
-    onBeforeUnmount(() => {
-      document.removeEventListener('wheel', handleGlobalScroll)
-      toolbarRef.value.removeEventListener('wheel', handleScroll)
-    })
-
-    // drag & drop switch toolbar item position
-    const handleDragStart = (event, index, item: BlockItem) => {
-      event.dataTransfer.setData('data-index', index)
-      event.dataTransfer.setData('data-block', JSON.stringify(item))
-    }
-    const switchItemsPosition = (event, newIndex) => {
-      const oldIndex
-        = Number(event.dataTransfer.getData('data-index')) || settingsStore.toolbarIndex
-      const arr = [...toolBarList.value]
-      ;[arr[newIndex], arr[oldIndex]] = [arr[oldIndex], arr[newIndex]]
-      toolBarList.value = arr
-      if (oldIndex === settingsStore.toolbarIndex) {
-        settingsStore.toolbarIndex = newIndex
-      }
-      playBlinkAnim(newIndex)
-    }
-
-    const isShowPreviewDialog = ref(true)
-
-    useOpenCloseSound(() => settingsStore.showInventory)
-
-    return {
-      settingsStore,
-      toolbarRef,
-      toolBarList,
-      mainStore,
-      setCurrentToolItem,
-      handleToolItemClick,
-      resetToolbar() {
-        toolBarList.value = [...initToolbarList]
-        updateCurrentBlock(toolBarList.value[settingsStore.toolbarIndex])
-        window.$message.success('Toolbar reset success!')
-      },
-      handleDragStart,
-      switchItemsPosition,
-      blinkAnimIndex,
-      isShowPreviewDialog,
-    }
-  },
+onBeforeUnmount(() => {
+  updateCurrentBlock(toolBarList.value[settingsStore.toolbarIndex])
 })
+
+onMounted(() => {
+  document.addEventListener('wheel', handleGlobalScroll)
+  toolbarRef.value.addEventListener('wheel', handleScroll, { passive: false })
+})
+onBeforeUnmount(() => {
+  document.removeEventListener('wheel', handleGlobalScroll)
+  toolbarRef.value.removeEventListener('wheel', handleScroll)
+})
+
+// drag & drop switch toolbar item position
+function handleDragStart(event, index, item: BlockItem) {
+  event.dataTransfer.setData('data-index', index)
+  event.dataTransfer.setData('data-block', JSON.stringify(item))
+}
+function switchItemsPosition(event, newIndex) {
+  const oldIndex
+    = Number(event.dataTransfer.getData('data-index')) || settingsStore.toolbarIndex
+  const arr = [...toolBarList.value]
+  ;[arr[newIndex], arr[oldIndex]] = [arr[oldIndex], arr[newIndex]]
+  toolBarList.value = arr
+  if (oldIndex === settingsStore.toolbarIndex) {
+    settingsStore.toolbarIndex = newIndex
+  }
+  playBlinkAnim(newIndex)
+}
+
+const isShowPreviewDialog = ref(true)
+
+function resetToolbar() {
+  toolBarList.value = [...initToolbarList]
+  updateCurrentBlock(toolBarList.value[settingsStore.toolbarIndex])
+  window.$message.success('Toolbar reset success!')
+}
 </script>
 
 <template>

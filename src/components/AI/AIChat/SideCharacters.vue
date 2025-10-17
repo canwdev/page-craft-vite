@@ -2,12 +2,12 @@
 import type { MixedFormItems } from '@canwdev/vgo-ui/src/components/AutoFormElPlus/enum'
 import type { StOptionItem } from '@canwdev/vgo-ui/src/components/OptionUI/enum'
 import type { IAiCharacter } from '@/components/AI/types/ai'
+import AutoFormElPlus from '@canwdev/vgo-ui/src/components/AutoFormElPlus/AutoFormElPlus.vue'
 import { AutoFormItemType } from '@canwdev/vgo-ui/src/components/AutoFormElPlus/enum'
-import AutoFormElPlus from '@canwdev/vgo-ui/src/components/AutoFormElPlus/index.vue'
 
-import OptionUI from '@canwdev/vgo-ui/src/components/OptionUI/index.vue'
-import { generateItemDragProps } from '@canwdev/vgo-ui/src/components/OptionUI/Tools/item-drag'
-import { renderDropdownMenu } from '@canwdev/vgo-ui/src/components/OptionUI/Tools/renders'
+import OptionUI from '@canwdev/vgo-ui/src/components/OptionUI/OptionUI.vue'
+import { generateItemDragProps } from '@canwdev/vgo-ui/src/components/OptionUI/utils/item-drag'
+import { renderDropdownMenu } from '@canwdev/vgo-ui/src/components/OptionUI/utils/renders'
 import { computed, ref } from 'vue'
 
 import { useI18n } from 'vue-i18n'

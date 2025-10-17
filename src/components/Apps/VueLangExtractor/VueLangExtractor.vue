@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import VueMonaco from '@canwdev/vgo-ui/src/components/VueMonaco/index.vue'
+import VueMonaco from '@canwdev/vgo-ui/src/components/VueMonaco/VueMonaco.vue'
 import { useStorage } from '@vueuse/core'
 import _set from 'lodash-es/set'
 import { onMounted, ref } from 'vue'

@@ -1,28 +1,23 @@
-<script lang="ts">
-</script>
 <script setup lang="ts">
-import {useMainStore} from '@/store/main'
-import {useIndicator} from '@/components/PageCraft/MainPlayground/hooks/indicator-hooks'
-import {useInteractionHooks} from '@/components/PageCraft/MainPlayground/hooks/interaction-hooks'
-import {useMcMain} from '@/components/PageCraft/MainPlayground/hooks/main-hooks'
-
-import {useSettingsStore} from '@/store/settings'
-
-import {WebviewWindow} from '@tauri-apps/api/window'
-import {useRoute, useRouter} from 'vue-router'
-import {useEventListener} from '@vueuse/core'
-import VueMonaco from '@canwdev/vgo-ui/src/components/VueMonaco/index.vue'
-import ElementEditDialog from '@/components/PageCraft/MainPlayground/components/ElementEditDialog.vue'
 import DropdownMenu from '@canwdev/vgo-ui/src/components/QuickOptions/DropdownMenu.vue'
 import QuickContextMenu from '@canwdev/vgo-ui/src/components/QuickOptions/QuickContextMenu.vue'
+import VueMonaco from '@canwdev/vgo-ui/src/components/VueMonaco/VueMonaco.vue'
+import { WebviewWindow } from '@tauri-apps/api/window'
+
+import { useEventListener } from '@vueuse/core'
+
+import { useRoute, useRouter } from 'vue-router'
+import ElementEditDialog from '@/components/PageCraft/MainPlayground/components/ElementEditDialog.vue'
 import ExtractComponentDialog from '@/components/PageCraft/MainPlayground/components/ExtractComponentDialog.vue'
 import IndicatorInfo from '@/components/PageCraft/MainPlayground/components/IndicatorInfo.vue'
+import { useIndicator } from '@/components/PageCraft/MainPlayground/hooks/indicator-hooks'
+import { useInteractionHooks } from '@/components/PageCraft/MainPlayground/hooks/interaction-hooks'
+import { useMcMain } from '@/components/PageCraft/MainPlayground/hooks/main-hooks'
 import { SettingsTabType } from '@/enum/settings'
+import { useMainStore } from '@/store/main'
+import { useSettingsStore } from '@/store/settings'
 import { useSystemStore } from '@/store/system'
 import globalEventBus, { GlobalEvents } from '@/utils/global-event-bus'
-export default {
-  name: 'MainPlayground',
-}
 
 const emit = defineEmits([])
 

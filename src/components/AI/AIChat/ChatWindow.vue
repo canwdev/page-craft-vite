@@ -1,15 +1,14 @@
 <script setup lang="ts">
-import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/index.vue'
+import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/ViewPortWindow.vue'
 import { useVModel } from '@vueuse/core'
 import ChatRoot from '@/components/AI/AIChat/ChatRoot.vue'
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<{
+  visible: boolean
+}>(), {
   visible: false,
 })
 const emit = defineEmits(['update:visible'])
-interface Props {
-  visible: boolean
-}
 
 const mVisible = useVModel(props, 'visible', emit)
 </script>

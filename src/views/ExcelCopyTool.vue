@@ -1,6 +1,6 @@
 <script lang="ts">
 import TabLayout from '@canwdev/vgo-ui/src/components/Layouts/TabLayout.vue'
-import RectSwitch from '@canwdev/vgo-ui/src/components/OptionUI/Tools/RectSwitch.vue'
+import RectSwitch from '@canwdev/vgo-ui/src/components/OptionUI/components/RectSwitch.vue'
 import DropdownMenu from '@canwdev/vgo-ui/src/components/QuickOptions/DropdownMenu.vue'
 import { useSaveShortcut } from '@canwdev/vgo-ui/src/hooks/use-beforeunload'
 import { useStorage } from '@vueuse/core'

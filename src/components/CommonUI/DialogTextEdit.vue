@@ -1,5 +1,5 @@
 <script lang="ts">
-import VueMonaco from '@canwdev/vgo-ui/src/components/VueMonaco/index.vue'
+import VueMonaco from '@canwdev/vgo-ui/src/components/VueMonaco/VueMonaco.vue'
 import { defineComponent, ref } from 'vue'
 import { useModelWrapper } from '@/hooks/use-model-wrapper'
 

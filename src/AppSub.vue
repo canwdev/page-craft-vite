@@ -4,7 +4,7 @@ import { defineComponent } from 'vue'
 import { useRoute } from 'vue-router'
 
 import { useAppList } from '@/components/Apps/app-list'
-import DesktopWindowManager from '@/components/OS/DesktopWindowManager/index.vue'
+import DesktopWindowManager from '@/components/OS/DesktopWindowManager.vue'
 import { SettingsTabType } from '@/enum/settings'
 import { useMainStore } from '@/store/main'
 import { useSettingsStore } from '@/store/settings'
@@ -17,7 +17,7 @@ export default defineComponent({
   name: 'AppSub',
   components: {
     DesktopWindowManager,
-    IframeBrowser: defineAsyncComponent(() => import('@/components/IframeBrowser/index.vue')),
+    IframeBrowser: defineAsyncComponent(() => import('@/components/IframeBrowser/IframeBrowser.vue')),
     QuickLaunchWindow: defineAsyncComponent(
       () => import('@/components/QuickLaunch/QuickLaunchWindow.vue'),
     ),

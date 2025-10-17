@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import TabLayout from '@canwdev/vgo-ui/src/components/Layouts/TabLayout.vue'
-import QuickOptions from '@canwdev/vgo-ui/src/components/QuickOptions/index.vue'
-import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/index.vue'
+import QuickOptions from '@canwdev/vgo-ui/src/components/QuickOptions/QuickOptions.vue'
+import ViewPortWindow from '@canwdev/vgo-ui/src/components/ViewPortWindow/ViewPortWindow.vue'
 
-import VueMonaco from '@canwdev/vgo-ui/src/components/VueMonaco/index.vue'
 import monaco from '@canwdev/vgo-ui/src/components/VueMonaco/monaco-helper'
+import VueMonaco from '@canwdev/vgo-ui/src/components/VueMonaco/VueMonaco.vue'
 import { useEventListener, useStorage, useVModel } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
 import { StyleEditorKeys } from '@/enum/settings'
