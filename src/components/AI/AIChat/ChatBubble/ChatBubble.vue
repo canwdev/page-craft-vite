@@ -242,16 +242,13 @@ function exportMarkdown(text) {
 
 <style lang="scss" scoped>
 .ai-chat-bubble-system {
-  margin-top: 10px;
-  margin-bottom: 8px;
   opacity: 0.6;
   background-color: var(--vgo-primary-opacity);
   display: block;
   width: fit-content;
   padding: 4px 10px;
   border-radius: 10px;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 10px auto;
   box-sizing: border-box;
   &.isEditing {
     width: 100%;
@@ -271,7 +268,7 @@ function exportMarkdown(text) {
 }
 
 .ai-chat-bubble {
-  margin-bottom: 4px;
+  margin-bottom: 10px;
   display: flex;
   align-items: flex-start;
   gap: 8px;

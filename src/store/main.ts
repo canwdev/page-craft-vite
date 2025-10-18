@@ -1,53 +1,52 @@
 import type { BlockItem } from '@/enum/page-craft/block'
+import { defineStore } from 'pinia'
+import { ref } from 'vue'
+
 import { PageCraftKeys } from '@/enum'
 import { ActionBlockItems } from '@/enum/page-craft/block'
 
-interface IStore {
-  isAppDarkMode: boolean
+export const useMainStore = defineStore(
+  'main',
+  () => {
+    const isAppDarkMode = ref(true)
 
-  // PageCraft 专用
-  currentBlock: BlockItem
-  className: string
-  innerText: string
-  // 是否处于元素选择状态
-  selecting: boolean
+    const currentBlock = ref<BlockItem>(
+      JSON.parse(localStorage.getItem(PageCraftKeys.CURRENT_BLOCK) || 'null')
+      || ActionBlockItems.EMPTY,
+    )
+    const className = ref('')
+    const innerText = ref('')
+    const selecting = ref(false)
 
-  // 窗口打开状态
-  isShowQuickLaunch: boolean
-  isShowIframeBrowser: boolean
+    const isShowQuickLaunch = ref(false)
+    const isShowIframeBrowser = ref(false)
 
-  upgradeInfo: string
-}
+    const upgradeInfo = ref('')
 
-export const useMainStore = defineStore('main', {
-  state: (): IStore => {
+    function setCurrentBlock(block: BlockItem) {
+      // 修改 ref 的值需要使用 .value
+      currentBlock.value = block
+      // 副作用（side effects）保持不变
+      localStorage.setItem(PageCraftKeys.CURRENT_BLOCK, JSON.stringify(block))
+    }
+
     return {
-      isAppDarkMode: true,
-
-      currentBlock:
-        JSON.parse(localStorage.getItem(PageCraftKeys.CURRENT_BLOCK) || 'null')
-        || ActionBlockItems.EMPTY,
-      className: '',
-      innerText: '',
-      selecting: false,
-
-      isShowQuickLaunch: false,
-      isShowIframeBrowser: false,
-
-      upgradeInfo: '',
+      isAppDarkMode,
+      currentBlock,
+      className,
+      innerText,
+      selecting,
+      isShowQuickLaunch,
+      isShowIframeBrowser,
+      upgradeInfo,
+      setCurrentBlock,
     }
   },
-  actions: {
-    setCurrentBlock(block: BlockItem) {
-      this.currentBlock = block
-      localStorage.setItem(PageCraftKeys.CURRENT_BLOCK, JSON.stringify(block))
+  {
+    share: {
+      omit: ['isShowQuickLaunch', 'isShowIframeBrowser', 'upgradeInfo'],
+      enable: true,
+      initialize: true,
     },
   },
-  share: {
-    // 这些变量不参与多页面数据共享
-    // An array of fields that the plugin will ignore.
-    omit: ['isShowQuickLaunch', 'isShowIframeBrowser', 'upgradeInfo'],
-    enable: true,
-    initialize: true,
-  },
-})
+)

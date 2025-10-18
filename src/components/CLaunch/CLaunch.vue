@@ -11,7 +11,9 @@ const props = withDefaults(
   {},
 )
 const emit = defineEmits(['tabChange'])
-const currentTab = useStorage(LS_SettingsKey.C_LAUNCH_CURRENT_TAB, '')
+const currentTab = useStorage(LS_SettingsKey.C_LAUNCH_CURRENT_TAB, '', localStorage, {
+  listenToStorageChanges: false,
+})
 
 watch(currentTab, (val) => {
   emit('tabChange', val)

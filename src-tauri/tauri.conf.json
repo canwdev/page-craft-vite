@@ -4,7 +4,7 @@
   "version": "1.8.0",
   "identifier": "com.canwdev.pagecraft",
   "build": {
-    "beforeDevCommand": "npm run dev",
+    "beforeDevCommand": "",
     "devUrl": "http://localhost:5173",
     "beforeBuildCommand": "npm run build",
     "frontendDist": "../dist"
@@ -15,7 +15,8 @@
         "title": "Page Craft",
         "width": 1000,
         "height": 700,
-        "useHttpsScheme": true
+        "useHttpsScheme": true,
+        "dragDropEnabled": false
       }
     ],
     "security": {
