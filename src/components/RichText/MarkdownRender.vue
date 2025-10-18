@@ -41,13 +41,13 @@ function handleClick(event) {
         = el.parentElement.querySelector('.lang-display')?.getAttribute('data-lang') || 'txt'
 
       // console.log(el.parentElement.nextSibling)
-      switch (el.getAttribute('data-action')) {
-        case 'copy':
-          window.$mcUtils.copy(code)
-          break
-        case 'download':
-          window.$mcUtils.handleExportFile('', code, `_code.${suffixLangMap[lang] || lang}`)
-          break
+      const attribute = el.getAttribute('data-action')
+      if (attribute === 'copy') {
+        window.$mcUtils.copy(code)
+      }
+      else if (attribute === 'download') {
+        const fullFilename = window.$mcUtils.handleExportFile('', code, `_code.${suffixLangMap[lang] || lang}`) as string
+        window.$message.success(`Downloaded: ${fullFilename}`)
       }
     }
   }

@@ -8,32 +8,15 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    ElAutocomplete: typeof import('element-plus/es')['ElAutocomplete']
     ElAvatar: typeof import('element-plus/es')['ElAvatar']
-    ElButton: typeof import('element-plus/es')['ElButton']
-    ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
     ElDialog: typeof import('element-plus/es')['ElDialog']
     ElImage: typeof import('element-plus/es')['ElImage']
-    ElInput: typeof import('element-plus/es')['ElInput']
-    ElInputNumber: typeof import('element-plus/es')['ElInputNumber']
-    ElOption: typeof import('element-plus/es')['ElOption']
     ElPageHeader: typeof import('element-plus/es')['ElPageHeader']
     ElPopconfirm: typeof import('element-plus/es')['ElPopconfirm']
-    ElPopover: typeof import('element-plus/es')['ElPopover']
-    ElScrollbar: typeof import('element-plus/es')['ElScrollbar']
-    ElSelect: typeof import('element-plus/es')['ElSelect']
-    ElSlider: typeof import('element-plus/es')['ElSlider']
     ElSplitter: typeof import('element-plus/es')['ElSplitter']
     ElSplitterPanel: typeof import('element-plus/es')['ElSplitterPanel']
-    ElSwitch: typeof import('element-plus/es')['ElSwitch']
-    ElTabPane: typeof import('element-plus/es')['ElTabPane']
-    ElTabs: typeof import('element-plus/es')['ElTabs']
     ElTag: typeof import('element-plus/es')['ElTag']
-    ElTree: typeof import('element-plus/es')['ElTree']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-  }
-  export interface GlobalDirectives {
-    vLoading: typeof import('element-plus/es')['ElLoadingDirective']
   }
 }

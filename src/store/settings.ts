@@ -61,7 +61,7 @@ export const useSettingsStore = defineStore('settingsStore', {
       toolbarList: [],
       curCompInStore: null,
 
-      autoCheckUpdate: true,
+      autoCheckUpdate: false,
 
       openAiApiKey: '',
       openAiApiProxy: '',

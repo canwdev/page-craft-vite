@@ -8,6 +8,7 @@ import mathjax3 from 'markdown-it-mathjax3'
 export const suffixLangMap = {
   javascript: 'js',
   typescript: 'ts',
+  powershell: 'ps1',
   bash: 'sh',
   shell: 'sh',
   csharp: 'cs',

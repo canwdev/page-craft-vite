@@ -1,3 +1,4 @@
+import { getCurrentWindow } from '@tauri-apps/api/window'
 import { createRouter, createWebHashHistory } from 'vue-router'
 import iconExcel from '@/assets/textures/excel.svg?url'
 
@@ -98,14 +99,11 @@ const router = createRouter({ history, routes })
 router.beforeEach(async (to, from, next) => {
   return next()
 })
-
 router.afterEach((to, _, failure) => {
   document.title = formatSiteTitle(to?.meta?.title as string)
 
   if (window.isTauri) {
-    const curWin = tauriWin.getCurrent()
-    // console.log('curWin', curWin)
-    curWin.setTitle(document.title)
+    getCurrentWindow().setTitle(document.title)
   }
 })
 export default router

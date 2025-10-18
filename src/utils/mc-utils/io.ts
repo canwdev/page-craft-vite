@@ -14,7 +14,9 @@ export function handleExportFile(filename, contentStr, ext) {
   const blob = new Blob([contentStr], {
     type: 'text/plain;charset=utf-8',
   })
-  FileSaver.saveAs(blob, filename + ext)
+  const fullFilename = filename + ext
+  FileSaver.saveAs(blob, fullFilename)
+  return fullFilename
 }
 
 export async function handleImportTextFile(options: any) {

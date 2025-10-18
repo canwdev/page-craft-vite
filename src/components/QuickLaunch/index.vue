@@ -13,7 +13,7 @@ const qRef = ref()
 const isEnterSub = ref(false)
 
 function focus() {
-  textareaRef.value.focus()
+  textareaRef.value?.focus()
 }
 
 onMounted(() => {
