@@ -4,14 +4,14 @@
   "version": "1.8.0",
   "scripts": {
     "dev": "vite",
-    "dev:bun": "bunx --bun vite",
+    "dev:tauri": "tauri dev",
     "build": "vite build --emptyOutDir",
+    "build:tauri": "tauri build",
     "build:strict": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "type-check": "vue-tsc --build --force",
     "lint": "eslint src/**/*.{ts,tsx,vue} --fix",
     "tauri": "tauri",
-    "build:tauri": "tauri build",
     "tauri:icon": "tauri icon ./public/favicon-256.png"
   },
   "dependencies": {
