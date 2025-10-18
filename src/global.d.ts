@@ -17,7 +17,7 @@ declare global {
     $juice: any
     XLSX: any
 
-    __TAURI__: any
+    isTauri: boolean
 
     // 拖拽组件到画布
     $draggingComponentExportData: any

@@ -220,7 +220,7 @@ const cLaunchItems = computed((): QuickOptionItem[] => {
           props: {
             onClick: async () => {
               const url = './vue.html'
-              if (window.__TAURI__) {
+              if (window.isTauri) {
                 console.log('WebviewWindow', WebviewWindow)
                 const webview = new WebviewWindow('Vue3SFCLoader', {
                   url,

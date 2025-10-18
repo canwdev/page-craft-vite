@@ -107,7 +107,7 @@ function openPlayground() {
     name: 'PlaygroundPage',
   }).href
   console.log(url)
-  if (window.__TAURI__) {
+  if (window.isTauri) {
     new WebviewWindow('PlaygroundPage', {
       url,
     })

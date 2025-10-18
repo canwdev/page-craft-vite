@@ -6,7 +6,7 @@
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:5173",
-    "beforeBuildCommand": "",
+    "beforeBuildCommand": "npm run build",
     "frontendDist": "../dist"
   },
   "app": {
@@ -14,7 +14,8 @@
       {
         "title": "Page Craft",
         "width": 1000,
-        "height": 700
+        "height": 700,
+        "useHttpsScheme": true
       }
     ],
     "security": {

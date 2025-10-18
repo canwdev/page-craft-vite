@@ -77,7 +77,7 @@ export function useUpdater(author, name, branch = 'master') {
   }
 
   onMounted(async () => {
-    if (window.__TAURI__ && settingsStore.autoCheckUpdate) {
+    if (window.isTauri && settingsStore.autoCheckUpdate) {
       const { update, version, releaseNotes } = await checkForNewVersion()
       console.log(update)
       if (update) {

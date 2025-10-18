@@ -181,7 +181,7 @@ return
           iconClass: 'mdi mdi-translate',
           actionRender: h(LanguageChooser),
         },
-        window.__TAURI__ && {
+        window.isTauri && {
           label: $t('msgs.auto_check_update'),
           key: 'autoCheckUpdate',
           iconClass: 'mdi mdi-cellphone-arrow-down',

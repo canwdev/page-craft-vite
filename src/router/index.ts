@@ -102,7 +102,7 @@ router.beforeEach(async (to, from, next) => {
 router.afterEach((to, _, failure) => {
   document.title = formatSiteTitle(to?.meta?.title as string)
 
-  if (window.__TAURI__) {
+  if (window.isTauri) {
     const curWin = tauriWin.getCurrent()
     // console.log('curWin', curWin)
     curWin.setTitle(document.title)
