@@ -33,8 +33,6 @@ interface IStore {
   curCompInStore: IComponentInStore | null
 
   autoCheckUpdate: boolean
-  // 网页版推荐下载桌面客户端
-  recommendDesktopClient: boolean
 
   // AI
   openAiApiKey: string
@@ -64,7 +62,6 @@ export const useSettingsStore = defineStore('settingsStore', {
       curCompInStore: null,
 
       autoCheckUpdate: true,
-      recommendDesktopClient: true,
 
       openAiApiKey: '',
       openAiApiProxy: '',

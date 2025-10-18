@@ -225,9 +225,6 @@
     "enter_key_send": "Enter 键发送"
   },
   "app_client": {
-    "recommend_desc": "<b>🖥️ 推荐下载桌面客户端</b><br>💡 完全开源，离线可用<br>⚡ 使用 Tauri 技术构建，体积小于 10MB<br>🚀 调用系统 WebView 2，快速稳定<br>💽 exe 安装包可解压后直接运行",
-    "desktop_client": "桌面客户端",
-    "go_release": "前往下载",
-    "never_show_again": "不再提示"
+    "go_release": "前往下载"
   }
 }

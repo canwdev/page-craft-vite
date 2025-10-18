@@ -224,9 +224,6 @@
     "enter_key_send": "Enter key send"
   },
   "app_client": {
-    "recommend_desc": "<b>🖥️ Recommended to download the desktop client</b><br>💡 Fully open source and available offline<br>⚡ Built using Tauri technology, lightweight at under 10MB<br>🚀 Utilizes system WebView 2 for fast and stable performance<br>💽 exe installation package can be extracted and run directly",
-    "desktop_client": "Desktop Client",
-    "go_release": "Go to Download",
-    "never_show_again": "Do not remind me again"
+    "go_release": "Go to Download"
   }
 }

@@ -77,52 +77,6 @@ export function useUpdater(author, name, branch = 'master') {
   }
 
   onMounted(async () => {
-    if (!window.__TAURI__ && settingsStore.recommendDesktopClient) {
-      const n = window.$notification({
-        type: 'info',
-        position: 'top-right',
-        title: `PageCraft ${$t('app_client.desktop_client')}`,
-        // onClose: () => {},
-        duration: 1000 * 30,
-        message: h(
-          'div',
-          {
-            style: 'font-size: 12px;',
-          },
-          [
-            h('div', { innerHTML: $t('app_client.recommend_desc') }),
-            h(
-              'div',
-              { class: 'flex-row-center-gap', style: 'margin-top: 10px; justify-content: center;' },
-              [
-                h(
-                  'button',
-                  {
-                    class: 'vgo-button',
-                    onClick: () => {
-                      n.close()
-                      settingsStore.recommendDesktopClient = false
-                    },
-                  },
-                  $t('app_client.never_show_again'),
-                ),
-                h(
-                  'button',
-                  {
-                    class: 'vgo-button primary',
-                    onClick: () => {
-                      window.open(releasePage)
-                      n.destroy()
-                    },
-                  },
-                  $t('app_client.go_release'),
-                ),
-              ],
-            ),
-          ],
-        ),
-      })
-    }
     if (window.__TAURI__ && settingsStore.autoCheckUpdate) {
       const { update, version, releaseNotes } = await checkForNewVersion()
       console.log(update)

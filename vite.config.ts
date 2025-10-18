@@ -1,20 +1,13 @@
-import {defineConfig, loadEnv} from 'vite'
-import {fileURLToPath, URL} from 'node:url'
+import { fileURLToPath, URL } from 'node:url'
 import vue from '@vitejs/plugin-vue'
-import vueJsx from '@vitejs/plugin-vue-jsx'
 import AutoImport from 'unplugin-auto-import/vite'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import Components from 'unplugin-vue-components/vite'
-import {ElementPlusResolver} from 'unplugin-vue-components/resolvers'
+import { defineConfig } from 'vite'
 // import {visualizer} from 'rollup-plugin-visualizer'
 
-// 不扫描这些文件夹
-const filesNeedToExclude = ['src-tauri']
-const filesPathToExclude = filesNeedToExclude.map((src) => {
-  return fileURLToPath(new URL(src, import.meta.url))
-})
-
 // https://vitejs.dev/config/
-export default defineConfig(({mode}) => {
+export default defineConfig(({ mode }) => {
   // const env = loadEnv(mode, process.cwd())
   const isProd = mode === 'production'
   console.log('vite config mode', mode)
@@ -23,21 +16,6 @@ export default defineConfig(({mode}) => {
       BUILD_TIMESTAMP: Date.now(),
     },
     base: './',
-    build: {
-      emptyOutDir: true,
-      rollupOptions: {
-        external: [...filesPathToExclude],
-        output: {
-          manualChunks: {
-            monaco: ['monaco-editor', 'emmet-monaco-es'],
-            ui: ['element-plus'],
-            utils: ['markdown-it-mathjax3', 'mathjax-full', 'highlight.js'],
-          },
-        },
-      },
-      target: 'esnext',
-      sourcemap: isProd ? false : 'inline',
-    },
     resolve: {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url)),
@@ -49,24 +27,20 @@ export default defineConfig(({mode}) => {
     esbuild: {
       supported: {
         // https://stackoverflow.com/questions/72618944/get-error-to-build-my-project-in-vite-top-level-await-is-not-available-in-the
-        'top-level-await': true, //browsers can handle top-level-await features
+        'top-level-await': true, // browsers can handle top-level-await features
       },
     },
     css: {
       preprocessorOptions: {
-        // Deprecation Warning [import]: Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
-        // scss: {additionalData: `@use "@/styles/_variables.scss" as *;`},
-
         scss: {
           additionalData: `@import "@/styles/_variables.scss";`,
-          quietDeps: true, // Suppresses warnings from imported files
-          silenceDeprecations: ['import', 'legacy-js-api'], // Specifically silences @import deprecation warnings
+          quietDeps: true,
+          silenceDeprecations: ['import', 'legacy-js-api'],
         },
       },
     },
     plugins: [
       vue(),
-      vueJsx(),
       // visualizer({
       //   template: 'flamegraph', // 'treemap' | 'sunburst' | 'network' | 'flamegraph'
       //   gzipSize: true,

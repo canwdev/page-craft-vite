@@ -1,8 +1,8 @@
 [package]
 name = "page-craft-vite"
 version = "1.8.0"
-description = "A Tauri App"
-authors = ["you"]
+description = "PageCraft is an all-in-one web development assistant tool designed to help developers quickly build static pages and components, enhancing development efficiency."
+authors = ["canwdev"]
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
