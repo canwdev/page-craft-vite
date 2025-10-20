@@ -9,6 +9,7 @@ export const suffixLangMap = {
   javascript: 'js',
   typescript: 'ts',
   powershell: 'ps1',
+  batch: 'bat',
   bash: 'sh',
   shell: 'sh',
   csharp: 'cs',
@@ -21,6 +22,7 @@ export const suffixLangMap = {
 // 兼容不能识别的语言
 const langMap = {
   vue: 'html',
+  batch: 'bat',
 }
 function getLang(lang: string) {
   lang = lang.toLowerCase()
